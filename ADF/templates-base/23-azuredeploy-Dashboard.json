@@ -75,7 +75,7 @@
     //     "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "rgName-Monitoring": "[resourceGroup().name]",
-    "prefix": "azatmos",
+    "prefix": "azADF",
     "ApplicationList": [
       {
         "AppServerQuery": "[concat('Computer startswith \"',variables('Prefix'),'\"')]",

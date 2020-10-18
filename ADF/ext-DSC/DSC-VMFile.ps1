@@ -1323,7 +1323,7 @@ Configuration VMFile
 
 
 
-    # AZE2 ATMOS D 1
+    # AZE2 ADF D 1
 
     # D2    (1 chars)
     if ($env:computername -match 'ADF')
@@ -1341,10 +1341,10 @@ Configuration VMFile
     $network = 30 - ([Int]$Depid * 2)
     $networkID = "172.16.${network}."
 
-    # Azure resource names (for storage account) E.g. spze2atmosd2
+    # Azure resource names (for storage account) E.g. AZE2ADFd2
     $dep = "{0}{1}{2}" -f $prefix, $app, $depname
 
-    # Azure hostnames E.g. azatmosd2
+    # Azure hostnames E.g. azADFd2
     $cn = "az{0}{1}" -f $app, $depname
  
     # Computer short name e.g. SQL01

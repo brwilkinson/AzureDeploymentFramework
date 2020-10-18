@@ -8,7 +8,7 @@ Login-AzureRmAccount
 Get-AzureRmSubscription
  
 
- $ResourceGroup = 'SPZE2-ATMOS-SB-DEV-D1'
+ $ResourceGroup = 'AZE2-ADF-SB-DEV-D1'
 # view all VM's in the resource group
 Get-AzureRmVM -ResourceGroupName $ResourceGroup | foreach Name
 #Filter on the VM's that you want to remove

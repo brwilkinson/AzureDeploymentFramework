@@ -90,9 +90,9 @@
       "type": "object",
       "value": {
         "APIM": "[reference(resourceId('Microsoft.ApiManagement/service',concat(variables('Deployment'),'-APIM01')),'2018-01-01','Full').properties.PublicIPAddresses[0]]",
-        "APIMDEV": "[reference(resourceId('SPZE2-ATMOS-D7','Microsoft.ApiManagement/service',concat(variables('DeploymentDev'),'-APIM01')),'2018-01-01','Full').properties.PublicIPAddresses[0]]",
+        "APIMDEV": "[reference(resourceId('AZE2-ADF-D7','Microsoft.ApiManagement/service',concat(variables('DeploymentDev'),'-APIM01')),'2018-01-01','Full').properties.PublicIPAddresses[0]]",
         "WAF": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-wafAPI-publicip1')),'2017-08-01','Full').properties.dnssettings.fqdn]",
-        "WAFDEV": "[reference(resourceId('SPZE2-ATMOS-D7','Microsoft.network/publicipaddresses',concat(variables('DeploymentDev'),'-wafAPI-publicip1')),'2017-08-01','Full').properties.dnssettings.fqdn]"
+        "WAFDEV": "[reference(resourceId('AZE2-ADF-D7','Microsoft.network/publicipaddresses',concat(variables('DeploymentDev'),'-wafAPI-publicip1')),'2017-08-01','Full').properties.dnssettings.fqdn]"
       }
     }
   }

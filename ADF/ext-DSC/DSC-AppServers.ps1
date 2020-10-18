@@ -1047,7 +1047,7 @@ $depid = $depname.substring(1, 1)
 $network = 30 - ([Int]$Depid * 2)
 $Net = "172.16.${network}."
 
-# Azure resource names (for storage account) E.g. spze2atmosd2
+# Azure resource names (for storage account) E.g. AZE2ADFd2
 $dep = "{0}{1}{2}" -f $prefix, $app, $depname
 
 $ClientId = @{

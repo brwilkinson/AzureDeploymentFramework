@@ -115,7 +115,7 @@
                     "Extensions": "[if(contains(variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType],'RoleExtensions'),union(parameters('Extensions'),variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType].RoleExtensions),parameters('Extensions'))]",
                     "NodeType": "[toLower(concat('ATM',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
                     "vmHostName": "[toLower(concat('ATM',parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
-                    "vmName": "[concat('SPZE2-',parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName)]",
+                    "vmName": "[concat('AZE2-',parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName)]",
                     "Primary": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].IsPrimary]",
                     "durabilityLevel": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].durabilityLevel]",
                     "placementProperties": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].placementProperties]",

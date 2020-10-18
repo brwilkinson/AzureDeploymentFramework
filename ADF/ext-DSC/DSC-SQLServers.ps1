@@ -1313,7 +1313,7 @@ $ClusterInfo = @{
     # SQL04 = "{'CLNAME':'CLS02','CLIP':'214','Primary':'SQL03','Secondary':['SQL04']}"
 }
 
-# SPZE2 ATMOS D 1
+# AZE2 ADF D 1
 
 # D2    (1 chars)
 if ($env:computername -match 'ADF')
@@ -1327,10 +1327,10 @@ if ($env:computername -match 'ADF')
 
 $depid = $depname.substring(1, 1)
 
-# Azure resource names (for storage account) E.g. spze2atmosd2
+# Azure resource names (for storage account) E.g. AZE2ADFd2
 $dep = "{0}{1}{2}" -f $prefix, $app, $depname
 
-# Azure hostnames E.g. azatmosd2
+# Azure hostnames E.g. azADFd2
 $cn = "az{0}{1}" -f $app, $depname
  
 # Computer short name e.g. SQL01

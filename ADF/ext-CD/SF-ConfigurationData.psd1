@@ -22,12 +22,15 @@
             GroupMemberPresent          = @(
                 @{
                     GroupName        = "Administrators"
-                    MembersToInclude = "{1}\ATMOS-{0}-Rights-VM-SFAdmin"
+                    MembersToInclude = "{1}\ADF-{0}-Rights-VM-SFAdmin"
                 }
             )
         }
     )
 }
+
+
+
 
 
 

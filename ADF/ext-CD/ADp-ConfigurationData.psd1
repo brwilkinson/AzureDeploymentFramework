@@ -35,7 +35,7 @@
                     Description = "DomainAdmin"
                 }    
             )
-                                            
+
             ConditionalForwarderPresent = @(
                 @{Name = "windows.net"; MasterServers = "168.63.129.16" },
                 @{Name = "azure.com"; MasterServers = "168.63.129.16" },
@@ -45,7 +45,6 @@
                 @{Name = "azconfig.io"; MasterServers = "168.63.129.16" },
                 @{Name = "azure.net"; MasterServers = "168.63.129.16" },
                 @{Name = "azurewebsites.net"; MasterServers = "168.63.129.16" },
-                # @{Name = "psobject.com";        MasterServers = "168.63.129.16"},
                 @{Name = "fabrikam.com"; MasterServers = "168.63.129.16" },
                 @{Name = "contoso.com"; MasterServers = "168.63.129.16" }
             )
@@ -65,7 +64,6 @@
                 }
             )
     
-                                                                                            
             RegistryKeyPresent          = @(
                 @{ Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
                     ValueName = 'DontUsePowerShellOnWinX';	ValueData = 0 ; ValueType = 'Dword'
@@ -78,6 +76,9 @@
         } 
     )
 }
+
+
+
 
 
 

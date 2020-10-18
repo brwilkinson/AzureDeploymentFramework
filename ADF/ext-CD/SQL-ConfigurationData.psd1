@@ -57,12 +57,12 @@
                 #@{Name = 'NT SERVICE\AzureWLBackupPluginSvc'}
             )
             SQLServerLoginsSQL          = @(
-                @{Name = 'skyatmos' }
+                @{Name = 'skyADF' }
             )
 
             SQLServerRoles              = @(
                 @{
-                    MembersToInclude = 'skyatmos', '{0}\Domain Admins' #, 'NT SERVICE\AzureWLBackupPluginSvc'
+                    MembersToInclude = 'skyADF', '{0}\Domain Admins' #, 'NT SERVICE\AzureWLBackupPluginSvc'
                     ServerRoleName   = 'sysadmin'
                 }
             )
@@ -134,6 +134,9 @@
         }
     )
 }
+
+
+
 
 
 
