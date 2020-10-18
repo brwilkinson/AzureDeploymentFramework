@@ -23,10 +23,10 @@ Configuration AppServers
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xPendingReboot
     Import-DscResource -ModuleName xWebAdministration
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration 
-    Import-DscResource -ModuleName SecurityPolicyDSC    
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration
+    Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName xTimeZone
-    Import-DscResource -ModuleName xWindowsUpdate 
+    Import-DscResource -ModuleName xWindowsUpdate
     Import-DscResource -ModuleName xDSCFirewall
     Import-DscResource -ModuleName NetworkingDSC
     Import-DscResource -ModuleName SQLServerDsc
