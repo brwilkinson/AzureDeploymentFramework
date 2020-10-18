@@ -13,7 +13,6 @@
 |Environment|S + D + T + Q + U + P |The specific environment type [Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
 |etype|PreProd + Prod|The general environment type |
 |Enviro |D03 + T04 + Q06 + U08 + P09 + P00 <br/>S1 + D2 + D3 + T4 + U5 + P6 |The environment name (16 environments)<br/>The environment name (8 environments)<br/> - Network ranges in Hub/Spoke are dynamically assigned based on this Enviro [DeploymentID]|
-|ENV |D03 + T04 + Q06 + U08 + P09 + P00|**The environment only for Pipeline variables**|
 |App|ADF HUB PSO ABC|The App (tenant) name|
 |Deployment | AZC1ADFS1 + AZC1-ADF-S1 | Used for naming resources e.g. part of hostname and Azure Resource names<br/> [Prefix + App + Enviro]|
 |Global|A Global environment G0 represents Azure Subscription Deployments|E.g. RBAC or Policy|
