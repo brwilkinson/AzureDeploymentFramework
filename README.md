@@ -1,19 +1,15 @@
 
-# Azure Deployment Framework [ADF] - Declarative Infrastructure
-
-### Azure Resource Group Deployment - MultiTier Hub/Spoke Environment
-
+## Azure Deployment Framework [ADF] - Declarative Infrastructure
+#### Azure Resource Group Deployment - MultiTier Hub/Spoke Environment
 <br/>
 
 ---
-
     Common naming standards/conventions:
-
 
 |Name |Allowed Values |Defintion |
 |---|---|---|
 |Prefix |AZE2 + AZC1|Location - Azure Region |
-|DeploymentID |0 + 1 --> 8 or: 00 + 01 --> 15|The deployment iteration (configured to 8 or 16 environments) |
+|DeploymentID |0 + 1 --> 8 <br/> 00 + 01 --> 15|The deployment iterations (configured to 8 environments) <br/>The deployment iterations (configured to 16 environments) |
 |Environment|S + D + T + Q + U + P |The specific environment type [Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
 |etype|PreProd + Prod|The general environment type |
 |Enviro |D03 + T04 + Q06 + U08 + P09 + P00|The environment name|
@@ -25,11 +21,11 @@
 
 ---
 
-## Environment Information - Global Resources  
-### TODO update from Azure DevOps Pipelines to GitHub Actions on these links
+### Environment Information - Global Resources  
+#### TODO update from Azure DevOps Pipelines to GitHub Actions on these links
 <br/>
 
-    Global - Environment
+    Global - Azure Environment
 ### G0 - Subscription 
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/G0%20-%20%5BSubscription%20Deployment%5D?branchName=master)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=2&branchName=master)
@@ -42,9 +38,9 @@
 
 ---
 
-## Environment Information - Individual Environments
+### Environment Information - Individual Environments
 
-    Central - Environment
+    Central - Azure Environment (Region)
 
 ### P0 - Hub Environment - Hub Central
 
@@ -58,9 +54,9 @@
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/AZC1%20S3%20-%20%5BSpoke%20Environment%5D?branchName=master)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=15&branchName=master)
 
-## Environment Information - Individual Environments
+### Environment Information - Individual Environments
 
-    EastUS2 - Environment
+    EastUS2 - Azure Environment (Region)
 
 ### P0 - Hub Environment DR - Hub EastUS2
 
@@ -73,25 +69,25 @@
 <br/>
 
 ---
-## Azure Resource Group Deployment - ADF App Environment
+### Azure Resource Group Deployment - ADF App Environment
 
     To Deploy all Tiers simply choose the following template
 
-    0-azuredeploy-ALL.json
+        0-azuredeploy-ALL.json
 
     Otherwise start with the template that you need, then proceed onto the next one
 
-                  1-azuredeploy-OMS.json
-                  2-azuredeploy-NSG.json
-                  3-azuredeploy-VNet.json
-                  4-azuredeploy-ILBalancer.json
-                  5-azuredeploy-VMApp.json
-                  6-azuredeploy-WAF.json
-                  7-azuredeploy-Dashboard.json
-                  8-azuredeploy-VMAppSS.json
-                  9-azuredeploy-API.json
-                  10-azuredeploy-CosmosDB.json
-                  11-azuredeploy-SQLManaged.json
+        1-azuredeploy-OMS.json
+        2-azuredeploy-NSG.json
+        3-azuredeploy-VNet.json
+        4-azuredeploy-ILBalancer.json
+        5-azuredeploy-VMApp.json
+        6-azuredeploy-WAF.json
+        7-azuredeploy-Dashboard.json
+        8-azuredeploy-VMAppSS.json
+        9-azuredeploy-API.json
+        10-azuredeploy-CosmosDB.json
+        11-azuredeploy-SQLManaged.json
 
     Define the servers you want to deploy using a table in JSON, so you can create as many servers that you need for your application tiers.
 
@@ -99,9 +95,9 @@
 
     As an example you may have the following Environments:
 
-    azuredeploy.1-dev.parameters.json
-    azuredeploy.2-test.parameters.json
-    azuredeploy.3-prod.parameters.json
+        azuredeploy.1-dev.parameters.json
+        azuredeploy.2-test.parameters.json
+        azuredeploy.3-prod.parameters.json
 
     Within these parameter files you define static things within your environment
 
