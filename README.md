@@ -1,8 +1,35 @@
 
 # Azure Deployment Framework [ADF] - Declarative Infrastructure
 
-## Environment Information - Global Resources
+### Azure Resource Group Deployment - MultiTier Hub/Spoke Environment
 
+<br/>
+
+---
+
+    Common naming standards/conventions:
+
+
+|Name |Allowed Values |Defintion |
+|---|---|---|
+|Prefix |AZE2 + AZC1|Location - Azure Region |
+|DeploymentID |0 + 1 --> 8 or: 00 + 01 --> 15|The deployment iteration (configured to 8 or 16 environments) |
+|Environment|S + D + T + Q + U + P |The specific environment type [Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
+|etype|PreProd + Prod|The general environment type |
+|Enviro |D03 + T04 + Q06 + U08 + P09 + P00|The environment name|
+|ENV |D03 + T04 + Q06 + U08 + P09 + P00|**The environment only for Pipeline variables**|
+|Application|ADF HUB PSO ABC|The App (tenant) name|
+|Deployment | AZC1ADFS1 + AZC1-ADF-S1 | Used for naming resources e.g. part of hostname and Azure Resource names|
+
+<br/>
+
+---
+
+## Environment Information - Global Resources  
+### TODO update from Azure DevOps Pipelines to GitHub Actions on these links
+<br/>
+
+    Global - Environment
 ### G0 - Subscription 
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/G0%20-%20%5BSubscription%20Deployment%5D?branchName=master)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=2&branchName=master)
@@ -11,9 +38,13 @@
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/G1%20-%20%5BGlobal%20RG%20Deployment%5D?branchName=master)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=7&branchName=master)
 
+<br/>
+
 ---
 
-## Environment Information - Individual Environments - Central
+## Environment Information - Individual Environments
+
+    Central - Environment
 
 ### P0 - Hub Environment - Hub Central
 
@@ -27,7 +58,9 @@
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/AZC1%20S3%20-%20%5BSpoke%20Environment%5D?branchName=master)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=15&branchName=master)
 
-## Environment Information - Individual Environments - EastUS2
+## Environment Information - Individual Environments
+
+    EastUS2 - Environment
 
 ### P0 - Hub Environment DR - Hub EastUS2
 
@@ -37,8 +70,9 @@
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/S2%20-%20%5BSpoke%20Environment%5D?branchName=master)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=12&branchName=master)
 
----
+<br/>
 
+---
 ## Azure Resource Group Deployment - ADF App Environment
 
     To Deploy all Tiers simply choose the following template
