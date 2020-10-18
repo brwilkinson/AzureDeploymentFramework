@@ -1,0 +1,360 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "deploymentTime": {
+      "type": "string",
+      "defaultValue": "[utcNow()]"
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  BRWDev101
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "subscriptionId": "[subscription().subscriptionId]",
+    "resourceGroupName": "[resourceGroup().name]",
+    // Network
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
+    "APIMInfo": "[parameters('DeploymentInfo').APIMInfo]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+    "AppInsightsName": "[replace(concat(variables('Deployment'),'AppInsights'),'-','')]",
+    "userAssignedIdentities": {
+      "Default": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+        }
+      }
+    }
+  },
+  "resources": [
+    // {
+    //   "apiVersion": "2019-05-01",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "name": "[concat('nested-roleAssignmentsGlobal',variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)]",
+    //   "resourceGroup": "[parameters('Global').HubRGName]",
+    //   "subscriptionId": "[variables('SubscriptionID')]",
+    //   "dependsOn": [ ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "template": {
+    //       "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    //       "contentVersion": "1.0.0.0",
+    //       "parameters": {},
+    //       "variables": {},
+    //       "resources": [
+    //         {
+    //           "type": "Microsoft.KeyVault/vaults/accessPolicies",
+    //           "name": "[concat(parameters('Global').KVName, '/add')]",
+    //           "apiVersion": "2015-06-01",
+    //         "dependsOn": [
+    //           "[resourceId('Microsoft.ApiManagement/service', variables('apiManagementServiceName'))]"
+    //         ],
+    //           "properties": {
+    //               "accessPolicies": [{
+    //                   "tenantId": "[reference(variables('apimServiceIdentityResourceId'), '2015-08-31-PREVIEW').tenantId]",
+    //                   "objectId": "[reference(variables('apimServiceIdentityResourceId'), '2015-08-31-PREVIEW').principalId]",
+    //                   "permissions": {
+    //                       "secrets": ["get"]
+    //                   }
+    //               }]
+    //           }
+    //       },
+    //       ]
+    //     },
+    //     "parameters": {}
+    //   }
+    // },
+    {
+      "type": "Microsoft.ApiManagement/service",
+      "sku": {
+        "name": "[variables('APIMInfo')[copyIndex(0)].apimSku]",
+        "capacity": 1
+      },
+      "name": "[concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)]",
+      "apiVersion": "2019-12-01",
+      "location": "[resourceGroup().location]",
+      "identity": {
+        "type": "SystemAssigned, UserAssigned",
+        "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
+      },
+      "copy": {
+        "name": "apimLoop",
+        "count": "[length(variables('APIMInfo'))]"
+      },
+      "properties": {
+        "publisherEmail": "[parameters('global').apimPublisherEmail]",
+        "publisherName": "[parameters('global').apimpublisherName]",
+        "hostnameConfigurations": [
+              //  user assigned identity not supported for cert access to keyvault
+          // {
+          //   "type": "Proxy",
+          //   "hostName": "[tolower(concat('api-',parameters('Environment'),parameters('DeploymentID'),'.',parameters('Global').DomainNameExt))]",
+          //   // needs MSI enabled for this
+          //   "keyVaultId": "[parameters('Global').certificateUrl]"
+          // },
+          // {
+          //   "type": "Portal",
+          //   "hostName": "[tolower(concat('api-portal-',parameters('Environment'),parameters('DeploymentID'),'.',parameters('Global').DomainNameExt))]",
+          //   // needs MSI enabled for this
+          //   "keyVaultId": "[parameters('Global').certificateUrl]"
+          // }
+        ],
+        "runtimeUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.azure-api.net'))]",
+        "portalUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.portal.azure-api.net'))]",
+        "managementApiUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.management.azure-api.net'))]",
+        //"managementApiUrl": "[tolower(concat('sky',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]",
+        "scmUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.scm.azure-api.net'))]",
+        "customProperties": {
+          "subnetAddress": "[reference(concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName), '2015-06-15').addressprefix]"
+        },
+        "VirtualNetworkType": "External"
+        // "virtualNetworkConfiguration": {
+        //   "subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]",
+        //   //"location": "[resourceGroup().location]"
+        //   //"vnetid": "[variables('VNetID')]",
+        //   //"subnetname": "[concat('sn', variables('APIMInfo')[copyIndex(0)].snName)]"
+        // }
+      },
+      "resources": [
+        {
+          "type": "loggers",
+          "apiVersion": "2019-12-01",
+          "name": "[variables('AppInsightsName')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+          ],
+          "properties": {
+            "loggerType": "applicationInsights",
+            "description": "Application Insights logger", 
+            "credentials": {
+              "instrumentationKey": "{{logAnalyticsKey}}"
+
+            },
+            "isBuffered": true,
+            "resourceId": "[resourceId('microsoft.insights/components',variables('AppInsightsName'))]"
+          }
+        },
+        {
+            "type": "namedValues",
+            "apiVersion": "2019-12-01",
+            "name": "logAnalyticsKey",
+            "dependsOn": [
+            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+            ],
+            "properties": {
+                "displayName": "logAnalyticsKey",
+                "secret": true,
+                "value": "[reference(resourceId('Microsoft.Insights/components', variables('AppInsightsName')), '2014-04-01').InstrumentationKey]"
+            }
+        },
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+          ],
+          "apiVersion": "2015-07-01",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "GatewayLogs",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 30,
+                  "enabled": false
+                }
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        },
+        // {
+        //   "apiVersion": "2017-03-01",
+        //   "type": "certificates",
+        //   "name": "multidomaincert",
+        //   "dependsOn": [
+        //     "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+        //   ],
+        //   "properties": {
+        //     "data": "[parameters('WildcardCertBase64')]",
+        //     "password": "[parameters('')]"
+        //   }
+        // },
+        // {
+        //   "apiVersion": "2017-03-01",
+        //   "type": "backends",
+        //   "name": "Commands",
+        //   "dependsOn": [
+        //     "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+        //     // "[resourceId('Microsoft.ApiManagement/service/certificates',concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name),'multidomaincert')]"
+        //   ],
+        //   "properties": {
+        //     "description": "commands",
+        //     "url": "fabric:/SoftPro.Commands",
+        //     "protocol": "http",
+        //     "resourceId": "[tolower(concat('https://sky',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]",
+        //     "properties": {
+        //       "serviceFabricCluster": {
+        //         "managementEndpoints": [
+        //           "[tolower(concat('https://sky',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]"
+        //         ],
+        //         "clientCertificatethumbprint": "[parameters('global').certificateThumbprint]",
+        //         "serverCertificatethumbprints": [
+        //           "[parameters('Global').certificateThumbprint]"
+        //         ],
+        //         "maxPartitionResolutionRetries": 5
+        //       }
+        //     }
+        //   }
+        // },
+        {
+          "name": "Public",
+          "type": "products",
+          "apiVersion": "2017-03-01",
+          "properties": {
+            "subscriptionRequired": false,
+            "state": "published",
+            "displayName": "Public"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": "[equals(parameters('Stage').SetWAFDNS,1)]",
+      "apiVersion": "2019-05-01",
+      "name": "setdns",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('global').dnsZoneRGName]",
+      "subscriptionId": "[variables('SubscriptionID')]",
+      "copy": {
+        "name": "apimLoop",
+        "count": "[length(variables('APIMInfo'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/dnsZones/CNAME",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',variables('APIMInfo')[copyIndex(0)].dnsName,'-portal-',parameters('Environment'),parameters('DeploymentID')))]",
+              "apiVersion": "2017-09-01",
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[tolower(concat(variables('APIMInfo')[copyIndex(0)].dnsName,'-',parameters('Environment'),parameters('DeploymentID'),'.',parameters('global').DomainNameExt))]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/dnszones/a",
+              "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('APIMInfo')[copyIndex(0)].dnsName,'-',parameters('Environment'),parameters('DeploymentID')))]",
+              "apiVersion": "2017-09-01",
+              "location": "global",
+              "dependsOn": [],
+              "properties": {
+                "TTL": 3600,
+                "ARecords": [
+                  {
+                    "ipv4Address": "[reference(resourceId(variables('resourceGroupName'),'Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)),'2018-01-01','Full').properties.publicIPAddresses[0]]"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

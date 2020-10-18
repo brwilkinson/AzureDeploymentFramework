@@ -1,0 +1,18 @@
+{
+    "Global": {
+        "HubRGName": "AZE2-ADF-RG-P0",
+        "hubVnetName": "AZE2-ADF-P0-vn",
+        "KVName": "AZE2-ADF-P0-kvVault01",
+        "KVUrl": "https://AZE2-ADF-P0-kvVault01.vault.azure.net/",
+        "SAName": "stagecus1",
+        "certificateUrl": "https://aze2-adf-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/fe9843f772b548868fd160f1a09cdb77",
+        "networkId": [
+            "172.100.",
+            142
+        ],
+        "nsgRGName": "AZE2-ADF-RG-P0",
+        "RTRGName": "AZE2-ADF-RG-P0",
+        "RTName": "rtContoso-Hub",
+        "dnsZoneRGName": "AZE2-ADF-RG-P0"
+    }
+}

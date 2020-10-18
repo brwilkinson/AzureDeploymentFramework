@@ -1,0 +1,156 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "deploymentTime": {
+      "type": "string",
+      "defaultValue": "[utcNow()]"
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  This Deployment variable is used to name EVERY resource.
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+
+    "StorageSyncInfo": "[parameters('DeploymentInfo').StorageSyncInfo]"
+
+
+  },
+  "resources": [
+    {
+      "condition": "[equals(parameters('Stage').StorageSync,1)]",
+      "name": "[toLower(replace(concat(variables('Deployment'),'sa',variables('StorageSyncInfo')[copyindex(0)].sasuffix,'/default/',variables('StorageSyncInfo')[copyindex(0)].Name),'-',''))]",
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2019-04-01",
+      "copy": {
+        "name": "StorageSyncShare",
+        "count": "[length( variables('StorageSyncInfo') )]"
+      },
+      "properties": {
+        "shareQuota": "[variables('StorageSyncInfo')[copyindex(0)].ShareQuota]",
+        "metadata": {
+        }
+      }
+    },
+    {
+      // Sync Service
+      "condition": "[equals(parameters('Stage').StorageSync,1)]",
+      "name": "[concat(variables('Deployment'),'-ss',variables('StorageSyncInfo')[copyindex(0)].Name)]",
+      "type": "Microsoft.StorageSync/storageSyncServices",
+      "apiVersion": "2019-06-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+      },
+      "copy": {
+        "name": "StorageSyncInfo",
+        "count": "[length( variables('StorageSyncInfo') )]"
+      },
+      "properties": {
+      },
+      "resources": [
+        {
+          //  Sync Group - Currently only supports 1 sync group per sync Service
+          //  need to update to do nested to allow looping through the SyncGroups for each Sync service.
+          "name": "[variables('StorageSyncInfo')[copyindex(0)].Name]",
+          "type": "syncGroups",
+          "apiVersion": "2019-06-01",
+          "tags": {
+          },
+          "dependsOn": [
+            "[concat(variables('Deployment'),'-ss',variables('StorageSyncInfo')[copyindex(0)].Name)]"
+          ],
+          "properties": {
+          },
+          "resources": [
+            // {
+            //   //  Sync Group - Cloud Endpoint
+            //   "name": "[variables('StorageSyncInfo')[copyindex(0)].Name]",
+            //   "type": "cloudEndpoints",
+            //   "apiVersion": "2019-06-01",
+            //   "tags": {
+            //   },
+            //   "dependsOn": [
+            //     "[resourceid('Microsoft.StorageSync/storageSyncServices/syncGroups',concat(variables('Deployment'),'-ss',variables('StorageSyncInfo')[copyindex(0)].Name),variables('StorageSyncInfo')[copyindex(0)].Name)]"
+            //   ],
+            //   "properties": {
+            //     "storageAccountResourceId": "[resourceid('Microsoft.Storage/storageAccounts',toLower(replace(concat(variables('Deployment'),'sa',variables('StorageSyncInfo')[copyindex(0)].sasuffix),'-','')))]",
+            //     "azureFileShareName": "[toLower(variables('StorageSyncInfo')[copyindex(0)].Name)]",
+            //     "storageAccountTenantId": "[subscription().tenantId]",
+            //     "friendlyName" : "[toLower(variables('StorageSyncInfo')[copyindex(0)].Name)]"
+            //   }
+            // }
+          ]
+        }
+      ]
+    }
+  ]
+}

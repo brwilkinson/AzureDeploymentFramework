@@ -1,0 +1,256 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  BRWDev101
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    // subscriptionId
+    "subscriptionId": "[subscription().subscriptionId]",
+    // rgName
+    "resourceGroupName": "[resourceGroup().name]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(variables('Deployment'),'-vn'))]",
+    "snWAF01Name": "snWAF01",
+    "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snWAF01Name'))]",
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],int(parameters('DeploymentID')))))]",
+    "WAFInfo": "[parameters('DeploymentInfo').WAFInfoNTE]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+    "dnsRG": {"AZC1-T07-FNFTE": "T07"}
+  },
+  "resources": [
+    // {
+    //   // move this to RG deployment
+    //   "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+    //   "name": "[concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')]",
+    //   "apiVersion": "2018-11-30",
+    //   "location": "[resourceGroup().location]"
+    // },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2019-02-01",
+      "name": "[concat(variables('Deployment'),'-waf',variables('WAFInfo')[copyIndex(0)].WAFName,'-publicip1')]",
+      "sku": {
+        "name": "[if(or(equals(variables('WAFInfo')[copyIndex(0)].WAFTier,'Standard_V2'),equals(variables('WAFInfo')[copyIndex(0)].WAFTier,'WAF_V2')),'Standard','Basic')]"
+      },
+      "copy": {
+        "name": "PublicIPLoop",
+        "count": "[length( variables('WAFInfo') )]"
+      },
+      "dependsOn": [
+        //"[concat('Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiKeyVaultSecretsGet')]"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "[if(or(equals(variables('WAFInfo')[copyIndex(0)].WAFTier,'Standard_V2'),equals(variables('WAFInfo')[copyIndex(0)].WAFTier,'WAF_V2')),'Static','Dynamic')]",
+        "dnsSettings": {
+          "domainNameLabel": "[replace(toLower(concat(variables('Deployment'),'waf',variables('WAFInfo')[copyIndex(0)].WAFName)),'-','')]"
+        }
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[concat(variables('Deployment'),'-waf',variables('WAFInfo')[copyIndex(0)].WAFName,'-publicip1')]"
+          ],
+          "apiVersion": "2015-07-01",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "DDoSProtectionNotifications",
+                "enabled": true
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    // {
+    //   "condition": false,
+    //   "name": "[concat('dp', variables('Deployment'), '-wafDeployDNS-', variables('WAFInfo')[copyIndex(0)].WAFName)]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2019-10-01",
+    //   "resourceGroup": "[if(contains(variables('dnsRG'),resourceGroup().name),variables('dnsRG')[resourceGroup().name],parameters('Global').HubVNetRGName)]",
+    //   "dependsOn": [
+    //     "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-waf',variables('WAFInfo')[copyIndex(0)].WAFName,'-publicip1'))]"
+    //   ],
+    //   "copy": {
+    //     "name": "PublicIPLoopDNS",
+    //     "count": "[length( variables('WAFInfo') )]"
+    //   },
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateDNSRecords.json', parameters('_artifactsLocationSasToken'))]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": {
+    //       "ZoneName": {
+    //         "value": "titleedge.com"
+    //       },
+    //       "CNameRecords": {
+    //         "value": []
+    //       },
+    //       "ARecords": {
+    //         "value": [
+    //           {
+    //             "Name": "[concat(if(equals(parameters('Prefix'),'AZC1'),parameters('Prefix'),''),parameters('Environment'),parameters('DeploymentID'),variables('WAFInfo')[copyIndex(0)].WAFName)]",
+    //             "Data": "[if(equals(variables('WAFInfo')[copyIndex(0)].Interface,'Private'),concat(variables('networkid'),'.',variables('WAFInfo')[copyIndex(0)].PrivateIP),reference(resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-waf',variables('WAFInfo')[copyIndex(0)].WAFName,'-publicip1')),'2019-02-01').ipAddress)]"
+    //           }
+    //         ]
+    //       },
+    //       "Prefix": {
+    //         "value": ""
+    //       }
+    //     }
+    //   }
+    // },
+    {
+      // "condition": false,
+      "name": "[concat('dp', variables('Deployment'), '-wafDeploy', variables('WafInfo')[copyIndex(0)].WAFName)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-waf',variables('WAFInfo')[copyIndex(0)].WAFName,'-publicip1'))]"
+      ],
+      "copy": {
+        "name": "WAFLoop",
+        "count": "[length( variables('WafInfo') )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/wafnte.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "Environment": {
+            "value": "[parameters('Environment')]"
+          },
+          "Prefix": {
+            "value": "[parameters('Prefix')]"
+          },
+          "wafInfo": {
+            "value": "[variables('WAfInfo')[copyIndex(0)]]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "OMSworkspaceID": {
+            "value": "[variables('OMSworkspaceID')]"
+          },
+          "WildcardCertBase64": {
+            "value": "[parameters('WildcardCertBase64')]"
+          },
+          // "WildcardCertBase64Public": {
+          //   "reference": {
+          //     "keyVault": {
+          //       "id": "[concat('/subscriptions/29f50f59-74bc-446a-939e-6e8ee092bf91/resourceGroups/',parameters('Global').HubRGName,'/providers/Microsoft.KeyVault/vaults/',parameters('Global').KVName)]"
+          //     },
+          //     "secretName": "wildcardNextAceBase64Public"
+          //   }
+          // },
+          // "WildcardCertBase64Password": {
+          //   "value": "[parameters('vmAdminPassword')]"
+          // }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    // "DNS": {
+    //   "type": "object",
+    //   "value": {
+    //     "CONNECTS": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-publicipWAFCONNECTS')),'2017-08-01','Full').properties.dnssettings.fqdn]",
+    //     "MYORDERS": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-publicipWAFMYORDERS')),'2017-08-01','Full').properties.dnssettings.fqdn]",
+    //     "XML": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-publicipWAFXML')),'2017-08-01','Full').properties.dnssettings.fqdn]"
+    //   }
+    // }
+  }
+}

@@ -1,0 +1,248 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "hubRG": "[concat(parameters('Prefix'),'-P00-FNFTE')]",
+    "vmReboot": [
+      "vmDNS01",
+      "vmDNS02"
+    ],
+    "DeploymentInfoObject": {
+      "InitialDNS": "templates-base\\5-azuredeploy-VMApp.json",
+      "SetvNetDNSHub": "templates-nested/SetvNetDNSHub.json",
+      "ERGW": "templates-base\\15-azuredeploy-ERGW.json",
+      "InitialJMP": "templates-base\\5-azuredeploy-VMApp.json"
+    },
+    "DC1PrivateIPAddress": "10.144.143.4",
+    "DC2PrivateIPAddress": "10.144.143.5",
+    "RebootScriptFolder": "CustomScripts",
+    "RebootScriptFileName": "Reboot.ps1"
+  },
+  "resources": [
+    {
+      "name": "AddPublicDNSHub",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-05-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SetvNetDNSHub, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "hubRG": {
+            "value": "[variables('hubRG')]"
+          },
+          "prefix": {
+            "value": "[parameters('Prefix')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "DeploymentInfo": {
+            "value": "[parameters('DeploymentInfo')]"
+          },
+          "DNSServers": {
+            "value": [
+              "10.36.130.14",
+              "[variables('DC1PrivateIPAddress')]"
+            ]
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          }
+        }
+      }
+    },
+    {
+      //"condition": "[equals(parameters('Stage').InitialDNS,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-InitialDNS')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-05-01",
+      "dependsOn": [
+        "AddPublicDNSHub"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').InitialDNS, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "name": "RemovePublicDNSHub",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-05-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-InitialDNS')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SetvNetDNSHub, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "hubRG": {
+            "value": "[variables('hubRG')]"
+          },
+          "prefix": {
+            "value": "[parameters('Prefix')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "DeploymentInfo": {
+            "value": "[parameters('DeploymentInfo')]"
+          },
+          "DNSServers": {
+            "value": [
+              "[variables('DC1PrivateIPAddress')]",
+              "[variables('DC2PrivateIPAddress')]"
+            ]
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "ERGW",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-05-01",
+      "dependsOn": [
+        "RemovePublicDNSHub"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ERGW, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "name": "[concat(variables('Deployment'),'-',variables('vmReboot')[copyIndex(0)], '/', 'Reboot')]",
+      "copy": {
+        "name": "vmLoop",
+        "count": "[length(variables('vmReboot'))]"
+      },
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "eastus2",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [
+        "RemovePublicDNSHub"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.4",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[concat(parameters('_artifactsLocation'), '/', variables('RebootScriptFolder'), '/', variables('RebootScriptFileName'), parameters('_artifactsLocationSasToken'))]"
+          ],
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('RebootScriptFolder'), '/', variables('RebootScriptFileName'))]"
+        }
+      }
+    },
+    {
+      "name": "[concat('dp', variables('Deployment'), '-InitialJMP')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-05-01",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-',variables('vmReboot')[0], '/extensions/Reboot')]",
+        "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-',variables('vmReboot')[1], '/extensions/Reboot')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').InitialJMP, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    }
+  ],
+  "outputs": {}
+}

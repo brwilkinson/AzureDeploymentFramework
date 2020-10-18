@@ -1,0 +1,85 @@
+trigger: none
+  # batch: 'true'
+  # branches:
+  #   include: [ master ]
+  # tags:
+  #   exclude: [ NoBuild ]
+
+stages:
+# Subscription
+- stage: Subscription
+  variables:
+    APP : ABC
+    ENV: G0
+    PREFIX : AZC1
+  jobs:
+  - job: Subscription_RBAC
+    pool:
+      vmImage: 'windows-2019'
+    steps:
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ABC-RG-G0'
+        ScriptType: 'FilePath'
+        ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload' 
+        FailOnStandardError: true
+        azurePowerShellVersion: 'LatestVersion'
+# # G1
+# - stage: G1
+#   variables:
+#     APP : ABC
+#     ENV : G1
+#     PREFIX : AZC1
+#   jobs:
+#   - job: RG_RBAC
+#     pool:
+#       vmImage: windows-2019
+#     steps:
+#     - task: AzurePowerShell@5
+#       inputs:
+#         azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ABC-RG-G0'
+#         ScriptType: 'FilePath'
+#         ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+#         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
+#         FailOnStandardError: true
+#         azurePowerShellVersion: 'LatestVersion'
+# # P0
+# - stage: P0
+#   variables:
+#     APP : ABC
+#     ENV: P0
+#     PREFIX : AZC1
+#   jobs:
+#   - job: RG_RBAC
+#     pool:
+#       vmImage: 'windows-2019'
+#     steps:
+#     - task: AzurePowerShell@5
+#       inputs:
+#         azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ABC-RG-G0'
+#         ScriptType: 'FilePath'
+#         ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+#         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
+#         FailOnStandardError: true
+#         azurePowerShellVersion: 'LatestVersion'
+# # S1
+# - stage: S1
+#   variables:
+#     APP : ABC
+#     ENV : S1
+#     PREFIX : AZC1
+#   jobs:
+#   - job: RG_RBAC
+#     pool:
+#       vmImage: windows-2019
+#     steps:
+#     - task: AzurePowerShell@5
+#       inputs:
+#         azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ABC-RG-G0'
+#         ScriptType: 'FilePath'
+#         ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+#         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
+#         FailOnStandardError: true
+#         azurePowerShellVersion: 'LatestVersion'
+

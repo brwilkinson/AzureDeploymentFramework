@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "RoleDefinitionsInfo": {
+      "type": "array"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[guid(subscription().id,parameters('RoleDefinitionsInfo')[copyIndex(0)].roleName)]",
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2017-09-01",
+      "copy": {
+        "name": "vmRoleDefinitionLoop",
+        "count": "[length( parameters('RoleDefinitionsInfo') )]"
+      },
+      "properties": {
+        "roleName": "[parameters('RoleDefinitionsInfo')[copyIndex(0)].roleName]",
+        "description": "[parameters('RoleDefinitionsInfo')[copyIndex(0)].description]",
+        "permissions": [
+          {
+            "actions": "[parameters('RoleDefinitionsInfo')[copyIndex(0)].actions]",
+            "notActions": "[parameters('RoleDefinitionsInfo')[copyIndex(0)].notActions]"
+          }
+        ],
+        "assignableScopes": "[if(contains(parameters('RoleDefinitionsInfo')[copyIndex(0)],'assignableScopes'),parameters('RoleDefinitionsInfo')[copyIndex(0)].assignableScopes,array(subscription().id))]"
+      }
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  BRWDev101
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    // Network
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
+    "addressPrefixes": [
+      "[concat(variables('networkId'),'.0/23')]"
+    ],
+    "DC1PrivateIPAddress": "[concat(variables('networkId'),'.',parameters('DeploymentInfo').DC1PrivateIPAddress)]",
+    "DC2PrivateIPAddress": "[concat(variables('networkId'),'.',parameters('DeploymentInfo').DC2PrivateIPAddress)]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
+    "CosmosDB": "[parameters('DeploymentInfo').CosmosDB]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-03-31",
+      "kind": "[variables('cosmosDB')[copyIndex(0)].Kind]",
+      "type": "Microsoft.DocumentDb/databaseAccounts",
+      "name": "[tolower(concat(variables('Deployment'), '-cosmos-', variables('cosmosDB')[copyIndex(0)].dbName))]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "cosmosLoop",
+        "count": "[length(variables('CosmosDB'))]"
+      },
+      "properties": {
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[variables('cosmosDB')[copyIndex(0)].defaultConsistencyLevel]"
+        },
+        "enableMultipleWriteLocations": "[variables('cosmosDB')[copyIndex(0)].enableMultipleWriteLocations]",
+        "enableAutomaticFailover": "[variables('cosmosDB')[copyIndex(0)].enableAutomaticFailover]",
+        "databaseAccountOfferType": "Standard",
+        "locations": [
+          {
+            "id": "[tolower(concat(variables('Deployment'),'-',resourceGroup().location,'-cosmos-',variables('cosmosDB')[copyIndex(0)].dbName))]",
+            "failoverPriority": 0,
+            "locationName": "[resourceGroup().location]"
+          }
+        ]
+        //"ipRangeFilter": "104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,0.0.0.0",
+        // "isVirtualNetworkFilterEnabled": true,
+        // "copy": [
+        //   {
+        //     "name": "virtualNetworkRules",
+        //     "count": "[length(variables('SubnetInfo'))]",
+        //     "input": {
+        //       "id": "[concat(variables('VNetID'), '/subnets/sn', variables('SubnetInfo')[copyIndex('virtualNetworkRules')].name)]"
+        //     }
+        //   }
+        // ]
+      },
+      "resources": [
+        {
+          "type": "sqlDatabases",
+          "name": "[variables('cosmosDB')[copyIndex(0)].databaseName]",
+          "apiVersion": "2019-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.DocumentDb/databaseAccounts',tolower(concat(variables('Deployment'),'-cosmos-',variables('cosmosDB')[copyIndex(0)].dbName)))]"
+          ],
+          "properties": {
+            "resource": {
+              "id": "[variables('cosmosDB')[copyIndex(0)].databaseName]"
+            },
+            "options": {
+              "throughput": 400
+            }
+          },
+          "resources": [
+            {
+              "type": "containers",
+              "name": "[variables('cosmosDB')[copyIndex(0)].containerName]",
+              "apiVersion": "2019-08-01",
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDb/databaseAccounts/sqlDatabases', 
+                             tolower(concat(variables('Deployment'), '-cosmos-', variables('cosmosDB')[copyIndex(0)].dbName)),
+                             variables('cosmosDB')[copyIndex(0)].databaseName)]"
+              ],
+              "properties": {
+                "resource": {
+                  "id": "[variables('cosmosDB')[copyIndex(0)].containerName]",
+                  "partitionKey": {
+                    "paths": [
+                      "/myPartitionKey"
+                    ],
+                    "kind": "Hash"
+                  },
+                  "indexingPolicy": {
+                    "indexingMode": "consistent",
+                    "includedPaths": [
+                      {
+                        "path": "/*"
+                      }
+                    ],
+                    "excludedPaths": [
+                      {
+                        "path": "/myPathToNotIndex/*"
+                      }
+                    ]
+                  }
+                }
+              },
+              "resources": [
+                {
+                  "type": "userDefinedFunctions",
+                  "name": "REGEX_MATCH",
+                  "apiVersion": "2019-08-01",
+                  "dependsOn": [
+                    "[resourceId('Microsoft.DocumentDb/databaseAccounts/sqlDatabases/containers',
+                                  tolower(concat(variables('Deployment'), '-cosmos-',variables('cosmosDB')[copyIndex(0)].dbName)),
+                                  variables('cosmosDB')[copyIndex(0)].databaseName,
+                                  variables('cosmosDB')[copyIndex(0)].containerName)]"
+                  ],
+                  "properties": {
+                    "resource": {
+                      "id": "REGEX_MATCH",
+                      "body": "function REGEX_MATCH(input,pattern)\r\n{\r\n    if (input.match(pattern))\r\n    {\r\n        return input\r\n    }\r\n}"
+                    },
+                    "options": {
+
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[resourceId('Microsoft.DocumentDb/databaseAccounts', 
+                          tolower(concat(variables('Deployment'), '-cosmos-', variables('cosmosDB')[copyIndex(0)].dbName))
+                          )]"
+          ],
+          "apiVersion": "2015-07-01",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "DataPlaneRequests",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 30,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "QueryRuntimeStatistics",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 30,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "MongoRequests",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 30,
+                  "enabled": false
+                }
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+  }
+}

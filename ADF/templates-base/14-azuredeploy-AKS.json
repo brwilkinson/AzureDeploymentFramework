@@ -1,0 +1,150 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentDev": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-D7')]",
+    "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
+    "subscriptionId": "[subscription().subscriptionId]",
+    "resourceGroupName": "[resourceGroup().name]",
+    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    //"subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]",
+    "subnetResourceId": "[concat(variables('VNetID'), '/subnets/snMT01')]",
+    // "subnetAddress": "[reference(variables('subnetResourceID'), '2015-06-15' )]"
+    "AppInsightsName": "[replace(concat(variables('Deployment'),'AppInsights'),'-','')]",
+    "AppInsightsID": "[resourceid('microsoft.insights/components',variables('AppInsightsName'))]",
+    "AKS": "[parameters('DeploymentInfo').AKS]"
+  },
+  "resources": [
+    {
+      "name": "[concat(variables('Deployment'), '-vm', variables('AKS')[copyIndex(0)].Name)]",
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2018-03-31",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "AKSLoop",
+        "count": "[length(variables('AKS'))]"
+      },
+      "properties": {
+        "kubernetesVersion": "[variables('AKS')[copyIndex(0)].Version]",
+        "dnsPrefix": "[toLower( concat(variables('Domain'), variables('Deployment'), '-aks', variables('AKS')[copyIndex(0)].Name,'-',copyIndex(1) ) ) ]",
+        "copy": [
+          {
+            "name": "agentPoolProfiles",
+            "count": 1,
+            "Input": {
+              "name": "NodePool1",
+              "count": 2,
+              "osDiskSizeGb": 30,
+              "osType": "Linux",
+              "maxPods": 110,
+              "storageProfile": "ManagedDisks",
+              "vmSize": "Standard_D1_v2"
+            }
+          }
+        ],
+        "linuxProfile": {
+          "adminUsername": "[if(contains(variables('AKS')[copyIndex(0)],'AdminUser'),variables('AKS')[copyIndex(0)].AdminUser,parameters('Global').vmAdminUserName)]",
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6DcUsyuHfKUzgx2RfBp8Uw/DstQrkdLKXkxn5R/xz8QWIEFloTlRjiC2aOXYzMm80HXsrJcHLUJ87NmKETvqT1hSmhCaZdQ5b7SFcE/L1G9bQJe1aqPJgEcRFZJUqnJfbE3o+MCTSc1S1VFCzT8Iz6fFVzcizQjM6cIIGEdFRxG28G7tFGL4064a7MI4Qas13gXaocGrQaiIrdtxY9URUSuvNBW4fTb3beMaXFyLl4+wKerqJ5jPFmvqPKx9tbURZ0GOdudRoZpa8No2lxyZ07+2jK2ZxRByWYHxLqXDqe8JtAkkhBHk0GLJ8KpocHd0Lfl7uer02F9EypbcwtSSR"
+              }
+            ]
+          }
+        },
+        "servicePrincipalProfile": {
+          "clientId": "77fa0d1b-b756-48b2-a8ca-87ac087c37e1",
+          "secret": "[if(contains(variables('AKS')[copyIndex(0)],'AdminUser'),variables('AKS')[copyIndex(0)].AdminUser,parameters('Global').vmAdminUserName)]"
+        },
+        "addonProfiles": {},
+        "enableRBAC": false
+        // "networkProfile": {
+        //   "networkPlugin": "string",
+        //   "networkPolicy": "calico",
+        //   "podCidr": "string",
+        //   "serviceCidr": "string",
+        //   "dnsServiceIP": "string",
+        //   "dockerBridgeCidr": "string"
+        // },
+        // "aadProfile": {
+        //   "clientAppID": "string",
+        //   "serverAppID": "string",
+        //   "serverAppSecret": "string",
+        //   "tenantID": "string"
+        // }
+      }
+    }
+  ],
+  "outputs": {}
+}

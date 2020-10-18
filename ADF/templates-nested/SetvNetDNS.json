@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deploymentnsg": {
+      "type": "string"
+    },
+    "Deployment": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "DNSServers": {
+      "type": "array"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "Prefix": {
+      "type": "string"
+    }
+  },
+
+  "variables": {
+
+    // Network
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
+
+    "addressPrefixes": [
+      "[concat(variables('networkId'),'.0/23')]"
+    ],
+    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
+
+    "serviceEndpoints": [
+      {
+        "service": "Microsoft.AzureCosmosDB",
+        "locations": [
+          "*"
+        ]
+      },
+      {
+        "service": "Microsoft.Storage",
+        "locations": [
+          "eastus2",
+          "centralus"
+        ]
+      }
+    ],
+
+    // subscriptionId
+    "subscriptionId": "[subscription().subscriptionId]",
+    // rgName
+    "resourceGroupName": "[resourceGroup().name]",
+    "RouteTableGlobal": {
+      "id": "[resourceid(parameters('Global').HubRGName,'Microsoft.Network/routeTables/',concat(parameters('Prefix'),'-rt',parameters('Global').RTName))]"
+    },
+
+    "VNetID": "[resourceId(variables('subscriptionId'),variables('ResourceGroupName'), 'Microsoft.Network/VirtualNetworks', concat(parameters('Deployment'),'-vn'))]",
+
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('Deployment'),'-vn')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2018-07-01",
+      "dependsOn": [],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": "[variables('addressPrefixes')]"
+
+        },
+        "dhcpOptions": {
+          "dnsServers": "[parameters('DNSServers')]"
+        },
+        "copy": [
+          {
+            "name": "subnets",
+            "count": "[length(variables('SubnetInfo'))]",
+            "input": {
+              "name": "[concat(variables('SubnetInfo')[copyIndex('subnets')].name)]",
+              "properties": {
+                "addressPrefix": "[concat(if(equals(variables('SubnetInfo')[copyIndex('subnets')].name,'snMT02'),variables('networkIdUpper'),variables('networkId')),'.',variables('SubnetInfo')[copyIndex('subnets')].Prefix)]",
+                "networkSecurityGroup": "[if( and(contains(variables('SubnetInfo')[copyIndex('subnets')],'NSG' ), or(equals(variables('SubnetInfo')[copyIndex('subnets')].NSG,'Hub'),equals(variables('SubnetInfo')[copyIndex('subnets')].NSG,'Spoke'))) , json( concat('{\"id\":\"',string(resourceid(parameters('Global').HubRGName,'Microsoft.Network/networkSecurityGroups',concat(parameters('Deploymentnsg'),variables('SubnetInfo')[copyIndex('subnets')].NSG,'-nsg',variables('SubnetInfo')[copyIndex('subnets')].name))),'\"}')) , json('null'))]",
+                "routeTable":           "[if( and(contains(variables('SubnetInfo')[copyIndex('subnets')],'RT'), equals(variables('SubnetInfo')[copyIndex('subnets')].RT,1)), variables('RouteTableGlobal'),json('null'))]",
+                // "serviceEndpoints": "[if(contains(variables('SubnetInfo')[copyIndex('subnets')],'serviceEndpoints'),variables('serviceEndpoints'),json('null'))]"
+                "privateEndpointNetworkPolicies":"Disabled"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

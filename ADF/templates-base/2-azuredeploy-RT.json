@@ -1,0 +1,107 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  This Deployment variable is used to name EVERY resource.
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "RTInfo": "[parameters('DeploymentInfo').RTInfo]"
+  },
+  "resources": [
+    {
+      "name": "[concat(variables('Deployment'), '-rt',variables('RTInfo')[copyIndex(0)].Name)]",
+      "type": "Microsoft.Network/routeTables",
+      "apiVersion": "2018-11-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "vmLoop",
+        "count": "[length(variables('RTInfo'))]"
+      },
+      "properties": {
+        "copy": [
+          {
+            "name": "routes",
+            "count": "[length(variables('RTInfo')[copyIndex()].Routes)]",
+            "input": {
+              "name": "[concat(parameters('Prefix'),'-',variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].Name)]",
+              "properties": {
+                "addressPrefix": "[variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].addressPrefix]",
+                "nextHopType": "[variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].nextHopType]",
+                "nextHopIpAddress": "[variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].nextHopIpAddress]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {}
+}

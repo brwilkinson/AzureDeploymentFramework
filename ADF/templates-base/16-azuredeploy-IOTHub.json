@@ -1,0 +1,219 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // subscriptionId
+    "subscriptionId": "[subscription().subscriptionId]",
+    // rgName
+    "resourceGroupName": "[resourceGroup().name]",
+    // Global  BRWDev101
+    // "Deployment": "[concat(parameters('Prefix'),'-',parameters('Environment'),parameters('DeploymentID'),'-', parameters('Global').AppName)]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "vNetName": "[concat(Variables('Deployment'),'-vn')]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]",
+    "gatewaySubnet": "gatewaySubnet",
+    "gatewaySubnetRef": "[concat(variables('VNetID'), '/subnets/', variables('gatewaySubnet'))]",
+    "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
+    "IOTHubInfo": [
+      {
+        "name": "HUB01",
+        "comments": "My IOT hub",
+        "skuName": "F1",
+        "skuCapacity": 1
+      }
+    ],
+    "sbInfo": [
+      {
+        "name": "IOT01",
+        "skuName": "Basic",
+        "skuTier": "Basic",
+        "skuCapacity": 1,
+        "queueName": "IOT01",
+        "requiresDuplicateDetection": false,
+        "requiresSession": false
+      }
+    ],
+    "eventHubInfo": [
+      {
+        "name": "IOT01",
+        "skuName": "Basic",
+        "skuTier": "Basic",
+        "skuCapacity": 1
+      }
+    ],
+    // "ERGWInfo": "[parameters('DeploymentInfo').ERGWInfo]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]"
+  },
+  "resources": [
+    {
+      "name": "[concat(variables('Deployment'),'-eh',variables('eventhubInfo')[copyIndex()].Name)]",
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2017-04-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "ehLoop",
+        "count": "[length( variables('eventhubInfo') )]"
+      },
+      "sku": {
+        "name": "[variables('eventhubInfo')[copyIndex()].skuName]",
+        "capacity": "[variables('eventhubInfo')[copyIndex()].skuCapacity]",
+        "tier": "[variables('eventhubInfo')[copyIndex()].skutier]",
+      },
+      "properties": {
+        // "isAutoInflateEnabled": boolean,
+        // "maximumThroughputUnits": "integer",
+        // "kafkaEnabled": boolean
+      },
+      "resources": []
+    },
+    {
+      "name": "[concat(variables('Deployment'),'-sb',variables('sbInfo')[copyIndex()].Name)]",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2017-04-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "sbLoop",
+        "count": "[length( variables('sbInfo') )]"
+      },
+      "sku": {
+        "name": "[variables('sbInfo')[copyIndex()].skuName]",
+        "capacity": "[variables('sbInfo')[copyIndex()].skuCapacity]",
+        "tier": "[variables('sbInfo')[copyIndex()].skutier]",
+      },
+      "properties": {},
+      "resources": [
+        {
+          "name": "[variables('sbInfo')[copyIndex()].queueName]",
+          "type": "queues",
+          "apiVersion": "2017-04-01",
+          "dependsOn": [
+            "[concat(variables('Deployment'),'-sb',variables('sbInfo')[copyIndex()].Name)]"
+          ],
+          "properties": {
+            "lockDuration": "PT1M",
+            "maxSizeInMegabytes": 5120,
+            "requiresDuplicateDetection": "[variables('sbInfo')[copyIndex()].requiresDuplicateDetection]",
+            "requiresSession": "[variables('sbInfo')[copyIndex()].requiresSession]",
+            "defaultMessageTimeToLive": "P00000000DT2H48M5.4775807S",
+            // "deadLetteringOnMessageExpiration": boolean,
+            // "duplicateDetectionHistoryTimeWindow": "string",
+            "maxDeliveryCount": 10,
+            "status": "Active",
+            // "enableBatchedOperations": boolean,
+            // "autoDeleteOnIdle": "string",
+            "enablePartitioning": true,
+            "enableExpress": false
+            // "forwardTo": "string",
+            // "forwardDeadLetteredMessagesTo": "string"
+          },
+          "resources": []
+        }
+      ]
+    },
+    {
+      "name": "[concat(variables('Deployment'),'-iot',variables('IOTHubInfo')[copyIndex()].Name)]",
+      "type": "Microsoft.Devices/IotHubs",
+      "apiVersion": "2018-04-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "IOTLoop",
+        "count": "[length( variables('IOTHubInfo') )]"
+      },
+      "properties": {
+        // "eventHubEndpoints": {},
+        // "storageEndpoints": {},
+        // "messagingEndpoints": {},
+        // "enableFileUploadNotifications": true,
+        // "cloudToDevice": {
+        //   "maxDeliveryCount": 1024,
+        //   "defaultTtlAsIso8601": "string",
+        //   "feedback": {
+        //     "lockDurationAsIso8601": "string",
+        //     "ttlAsIso8601": "string",
+        //     "maxDeliveryCount": "integer"
+        //   }
+        // },
+        "comments": "[variables('IOTHubInfo')[copyIndex()].Comments]",
+        "operationsMonitoringProperties": {
+          "events": {}
+        },
+        "features": "DeviceManagement"
+      },
+      "sku": {
+        "name": "[variables('IOTHubInfo')[copyIndex()].skuName]",
+        "capacity": "[variables('IOTHubInfo')[copyIndex()].skuCapacity]",
+      },
+      "resources": []
+    }
+  ]
+}

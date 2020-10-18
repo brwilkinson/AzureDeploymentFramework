@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "rolesInfo": {
+      "type": "array"
+    },
+    "RolesLookup": {
+      "type": "object"
+    },
+    "RolesGroupsLookup": {
+      "type": "object"
+    },
+    "location" : {
+      "type": "string"
+    }
+  },
+  "variables": {
+    
+  },
+  "resources": [
+    {
+      // For user/group assigned RBAC in RG, run in deployment for easier troubleshooting
+      "name": "[concat('dpRoleAssignment-Sub-', replace(parameters('rolesInfo')[copyIndex(0)].Name,' ',''))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-05-01",
+      "location" : "[parameters('location')]",
+      "dependsOn": [],
+      "copy": {
+        "name": "vmSubRoleAssignmentLoop",
+        "count": "[length( parameters('rolesInfo') )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              // For user/group assigned RBAC in Sub
+              "type": "Microsoft.Authorization/roleAssignments",
+              "name": "[guid(parameters('rolesInfo')[copyIndex(0)].Name,parameters('rolesInfo')[copyIndex(0)].Member,subscription().id)]",
+              "apiVersion": "2018-01-01-preview",
+              "properties": {
+                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',parameters('RolesGroupsLookup')[parameters('rolesInfo')[copyIndex(0)].Name].Id)]",
+                "principalId": "[parameters('RolesLookup')[parameters('rolesInfo')[copyIndex(0)].Member]]",
+                "scope": "[subscription().id]"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

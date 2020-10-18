@@ -1,0 +1,99 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentDev": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-D7')]",
+    "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
+    "subscriptionId": "[subscription().subscriptionId]",
+    "resourceGroupName": "[resourceGroup().name]",
+    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    //"subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]",
+    "subnetResourceId": "[concat(variables('VNetID'), '/subnets/snMT01')]",
+    // "subnetAddress": "[reference(variables('subnetResourceID'), '2015-06-15' )]"
+    "AppInsightsName": "[replace(concat(variables('Deployment'),'AppInsights'),'-','')]",
+    "AppInsightsID": "[resourceid('microsoft.insights/components',variables('AppInsightsName'))]"
+  },
+  "resources": [],
+  "outputs": {
+    "DNS": {
+      "type": "object",
+      "value": {
+        "APIM": "[reference(resourceId('Microsoft.ApiManagement/service',concat(variables('Deployment'),'-APIM01')),'2018-01-01','Full').properties.PublicIPAddresses[0]]",
+        "APIMDEV": "[reference(resourceId('SPZE2-ATMOS-D7','Microsoft.ApiManagement/service',concat(variables('DeploymentDev'),'-APIM01')),'2018-01-01','Full').properties.PublicIPAddresses[0]]",
+        "WAF": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-wafAPI-publicip1')),'2017-08-01','Full').properties.dnssettings.fqdn]",
+        "WAFDEV": "[reference(resourceId('SPZE2-ATMOS-D7','Microsoft.network/publicipaddresses',concat(variables('DeploymentDev'),'-wafAPI-publicip1')),'2017-08-01','Full').properties.dnssettings.fqdn]"
+      }
+    }
+  }
+}

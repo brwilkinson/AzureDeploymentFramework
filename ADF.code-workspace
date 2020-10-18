@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"azureResourceManagerTools.autoDetectJsonTemplates": true,
+		"azureResourceManagerTools.checkForLatestSchema": true,
+		"powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1"
+
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.azure-account",
+			"ms-vscode.powershell-preview",
+			"msazurermtools.azurerm-vscode-tools",
+			"GitHub.vscode-pull-request-github",
+			"eamodio.gitlens",
+			"ms-dotnettools.vscode-dotnet-runtime",
+			"oderwat.indent-rainbow"
+		]
+	}
+}

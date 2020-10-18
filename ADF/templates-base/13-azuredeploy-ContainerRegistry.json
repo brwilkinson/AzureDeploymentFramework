@@ -1,0 +1,151 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentDev": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-D7')]",
+    "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
+    "subscriptionId": "[subscription().subscriptionId]",
+    "resourceGroupName": "[resourceGroup().name]",
+    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    //"subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]",
+    "subnetResourceId": "[concat(variables('VNetID'), '/subnets/snMT01')]",
+    // "subnetAddress": "[reference(variables('subnetResourceID'), '2015-06-15' )]"
+    "AppInsightsName": "[replace(concat(variables('Deployment'),'AppInsights'),'-','')]",
+    "AppInsightsID": "[resourceid('microsoft.insights/components',variables('AppInsightsName'))]",
+    "ContainerRegistry": "[parameters('DeploymentInfo').ContainerRegistry]",
+  },
+  "resources": [
+    {
+      "name": "[replace(tolower(concat(variables('Deployment'),'sareg',variables('ContainerRegistry')[copyIndex(0)].Name)),'-','')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2018-07-01",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "dependsOn": [],
+      "kind": "StorageV2",
+      "copy": {
+        "name": "RegistryLoop",
+        "count": "[length(variables('ContainerRegistry'))]"
+      },
+      "properties": {
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        //"azureFilesAadIntegration": true,
+        "encryption": {
+          "keySource": "Microsoft.Storage",
+          "services": {
+            "blob": {
+              "enabled": true
+            },
+            "file": {
+              "enabled": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "[replace(tolower(concat(variables('Deployment'),'-registry-',variables('ContainerRegistry')[copyIndex(0)].Name)),'-','')]",
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2017-10-01",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[variables('ContainerRegistry')[copyIndex(0)].SKU]"
+      },
+      "copy": {
+        "name": "RegistryLoop",
+        "count": "[length(variables('ContainerRegistry'))]"
+      },
+      "properties": {
+        "adminUserEnabled": "[variables('ContainerRegistry')[copyIndex(0)].adminUserEnabled]"
+        // "storageAccount": {
+        //   "id": "[resourceId('Microsoft.Storage/storageAccounts','sareg',concat(variables('Deployment'),variables('ContainerRegistry')[copyIndex(0)].Name))]"
+        // }
+      },
+      "resources": []
+    }
+  ],
+  "outputs": {}
+}

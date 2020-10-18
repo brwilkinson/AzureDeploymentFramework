@@ -1,0 +1,60 @@
+trigger: none 
+  # batch: 'true'
+  # branches:
+  #   include: [ master ]
+  # tags:
+  #   exclude: [ NoBuild ]
+
+variables:
+  PREFIX: AZC1
+  APP :   ADF
+  ENV:    S1
+
+
+stages:
+- stage: S1_Subscription
+  jobs:
+  - job: Subscription_RG_RBAC
+    
+    pool:
+      vmImage: windows-2019
+      
+    steps:
+    
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'ADF_AZC1-ADF-RG-G0'
+        ScriptType: 'FilePath'
+        ScriptPath: 'ADF/release/AzDeploy.ps1'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload'
+        FailOnStandardError: true
+        azurePowerShellVersion: 'LatestVersion'
+
+- stage: S2_RG_Initial
+  jobs:
+  - job: S1_Initial
+    pool:
+      vmImage: windows-2019
+    steps:
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'ADF_AZC1-ADF-RG-S1'
+        ScriptType: 'FilePath'
+        ScriptPath: 'ADF/release/AzDeploy.ps1'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "Initial"'
+        FailOnStandardError: true
+        azurePowerShellVersion: 'LatestVersion'
+
+- stage: S3_RG_ALL
+  jobs:
+  - job: S1_ALL
+    pool: AZC1-S1-Infra
+    steps:
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'ADF_AZC1-ADF-RG-S1'
+        ScriptType: 'FilePath'
+        ScriptPath: 'ADF/release/AzDeploy.ps1'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "ALL"'
+        FailOnStandardError: true
+        azurePowerShellVersion: 'LatestVersion'

@@ -1,0 +1,214 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "NIC": {
+      "type": "object"
+    },
+    "NICNumber" : {
+      "type": "string"
+    },
+    "VM": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    // Network
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
+    "addressPrefixes": [
+      "[concat(variables('networkId'),'.0/23')]"
+    ],
+    // subscriptionId
+    "subscriptionId": "[subscription().subscriptionId]",
+    // rgName
+    "resourceGroupName": "[resourceGroup().name]",
+    "VNetID": "[resourceId(variables('subscriptionId'),variables('ResourceGroupName'), 'Microsoft.Network/VirtualNetworks', concat(parameters('Deployment'),'-vn'))]",
+
+    "copy": [
+      {
+        "name": "loadBalancerInboundNatRules",
+        "count": "[if(contains(parameters('NIC'),'NATRules'),length(parameters('NIC').NatRules),1)]",
+        "input": {
+          "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/loadBalancers/', concat(parameters('Deployment'),'-lb',if( contains(parameters('NIC'),'PLB'),parameters('NIC').PLB,'none')),'/inboundNatRules/',if(contains(parameters('NIC'),'NATRules'),parameters('NIC').NATRules[copyIndex('loadBalancerInboundNatRules')],'none'))]"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      // No load balancer for this NIC
+      "condition": "[not(or(contains(parameters('NIC'),'LB'),or(contains(parameters('NIC'),'PLB'),or(contains(parameters('NIC'),'SLB'),contains(parameters('NIC'),'ISLB')))))]",
+      "apiVersion": "2018-03-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      // Nic name without index for the first, then add the nicnumber for the rest
+      "name": "[concat(parameters('Deployment'),'-nic',if(equals(parameters('NICNumber'),'1'),'',parameters('NICNumber')),parameters('VM').VMName)]",
+      //"name": "[concat(parameters('Deployment'),'-',parameters('VM').VMName,'-nic',parameters('NICNumber'))]",
+      "properties": {
+        // "networkSecurityGroup": "[if(contains(parameters('NIC'),'PublicIP'), json( concat('{\"id\":\"',string(resourceid('Microsoft.Network/networkSecurityGroups',concat(parameters('Deployment'),'-vm',parameters('VM').VMName,'-nsgJMP',parameters('NICNumber')))),'\"}')), json('null'))]",
+        "enableAcceleratedNetworking": "[if(contains(parameters('NIC'),'FastNic'),'true','false')]",
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "publicIPAddress": "[if(contains(parameters('NIC'),'PublicIP'), json( concat('{\"id\":\"',string(resourceid('Microsoft.Network/publicIPAddresses',concat(parameters('Deployment'),'-',parameters('VM').VMName,'-publicip',parameters('NICNumber')))),'\"}')), json('null'))]",
+              "privateIPAllocationMethod": "[if(contains(parameters('NIC'),'StaticIP'),'Static','Dynamic')]",
+              "PrivateIPAddress": "[if(contains(parameters('NIC'),'StaticIP'),concat(if(equals(parameters('NIC').Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',parameters('NIC').StaticIP),json('null'))]",
+              "subnet": {
+                "id": "[concat(variables('VNetID'), '/subnets/','sn',parameters('NIC').Subnet)]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      // NIC with Public Load balancer
+      "condition": "[contains(parameters('NIC'),'PLB')]",
+      "apiVersion": "2018-03-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      //"name": "[concat(parameters('Deployment'),'-',parameters('VM').VMName,'-nicplb',parameters('NICNumber'))]",
+      // Nic name without index for the first, then add the nicnumber for the rest
+      "name": "[concat(parameters('Deployment'),'-nicplb',if(equals(parameters('NICNumber'),'1'),'',parameters('NICNumber')),parameters('VM').VMName)]",
+      "properties": {
+        "enableAcceleratedNetworking": "[if(contains(parameters('NIC'),'FastNic'),'true','false')]",
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[resourceid('Microsoft.Network/loadBalancers/backendAddressPools', concat(parameters('Deployment'),'-lb', parameters('NIC').PLB),parameters('NIC').PLB)]"
+                }
+              ],
+              "loadBalancerInboundNatRules" : "[if(contains(parameters('NIC'),'NATRules'),variables('loadBalancerInboundNatRules'),json('null'))]",
+              "privateIPAllocationMethod": "[if(contains(parameters('NIC'),'StaticIP'),'Static','Dynamic')]",
+              "PrivateIPAddress": "[if(contains(parameters('NIC'),'StaticIP'),concat(if(equals(parameters('NIC').Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',parameters('NIC').StaticIP),json('null'))]",
+              "subnet": {
+                "id": "[concat(variables('VNetID'), '/subnets/','sn',parameters('NIC').Subnet)]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      // NIC with Internal Load balancer
+      "condition": "[contains(parameters('NIC'),'LB')]",
+      "apiVersion": "2018-03-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      // Nic name without index for the first, then add the nicnumber for the rest
+      "name": "[concat(parameters('Deployment'),'-nicLB',if(equals(parameters('NICNumber'),'1'),'',parameters('NICNumber')),parameters('VM').VMName)]",    
+      //"name": "[concat(parameters('Deployment'),'-',parameters('VM').VMName,'-niclb',parameters('NICNumber'))]",
+      "properties": {
+        "enableAcceleratedNetworking": "[if(contains(parameters('NIC'),'FastNic'),'true','false')]",
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[resourceid('Microsoft.Network/loadBalancers/backendAddressPools', concat(parameters('Deployment'),'-ilb', parameters('NIC').LB),parameters('NIC').LB)]"
+                }
+              ],
+              "privateIPAllocationMethod": "[if(contains(parameters('NIC'),'StaticIP'),'Static','Dynamic')]",
+              "PrivateIPAddress": "[if(contains(parameters('NIC'),'StaticIP'),concat(if(equals(parameters('NIC').Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',parameters('NIC').StaticIP),json('null'))]",
+              "subnet": {
+                "id": "[concat(variables('VNetID'), '/subnets/','sn',parameters('NIC').Subnet)]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      // NIC with Internal Standard Load balancer, needs a second Public Load balancer for outbound Internet
+      "condition": "[contains(parameters('NIC'),'SLB')]",
+      "apiVersion": "2018-03-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      // Nic name without index for the first, then add the nicnumber for the rest
+      "name": "[concat(parameters('Deployment'),'-nicSLB',if(equals(parameters('NICNumber'),'1'),'',parameters('NICNumber')),parameters('VM').VMName)]",
+      "tags": {
+        "displayName": "vmAZX10X_slbNIC"
+      },
+      "properties": {
+        "enableAcceleratedNetworking": "[if(contains(parameters('NIC'),'FastNic'),'true','false')]",
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[resourceid('Microsoft.Network/loadBalancers/backendAddressPools', concat(parameters('Deployment'),'-slbPLB01'),'PLB01')]"
+                },
+                {
+                  "id": "[resourceid('Microsoft.Network/loadBalancers/backendAddressPools', concat(parameters('Deployment'),'-slb', parameters('NIC').SLB),parameters('NIC').SLB)]"
+                }
+              ],
+              "privateIPAllocationMethod": "[if(contains(parameters('NIC'),'StaticIP'),'Static','Dynamic')]",
+              "PrivateIPAddress": "[if(contains(parameters('NIC'),'StaticIP'),concat(if(equals(parameters('NIC').Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',parameters('NIC').StaticIP),json('null'))]",
+              "subnet": {
+                "id": "[concat(variables('VNetID'), '/subnets/','sn',parameters('NIC').Subnet)]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      // NIC with Internal Standard Load balancer
+      "condition": "[contains(parameters('NIC'),'ISLB')]",
+      "apiVersion": "2018-03-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      // Nic name without index for the first, then add the nicnumber for the rest
+      "name": "[concat(parameters('Deployment'),'-nicISLB',if(equals(parameters('NICNumber'),'1'),'',parameters('NICNumber')),parameters('VM').VMName)]",
+      "tags": {
+        "displayName": "vmAZX10X_islbNIC"
+      },
+      "properties": {
+        "enableAcceleratedNetworking": "[if(contains(parameters('NIC'),'FastNic'),'true','false')]",
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[resourceid('Microsoft.Network/loadBalancers/backendAddressPools', concat(parameters('Deployment'),'-slb', parameters('NIC').ISLB),parameters('NIC').ISLB)]"
+                }
+              ],
+              "privateIPAllocationMethod": "[if(contains(parameters('NIC'),'StaticIP'),'Static','Dynamic')]",
+              "PrivateIPAddress": "[if(contains(parameters('NIC'),'StaticIP'),concat(if(equals(parameters('NIC').Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',parameters('NIC').StaticIP),json('null'))]",
+              "subnet": {
+                "id": "[concat(variables('VNetID'), '/subnets/','sn',parameters('NIC').Subnet)]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "foo7": {
+      "type": "array",
+      "value": "[variables('loadBalancerInboundNatRules')]"
+    },
+    "foo": {
+      "type": "object",
+      "value": "[parameters('NIC')]"
+    }
+  }
+}

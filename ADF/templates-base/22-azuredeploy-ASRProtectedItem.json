@@ -1,0 +1,223 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "dataRetention": 31,
+    "serviceTier": "pernode",
+
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+    "AAName": "[replace(concat(variables('Deployment'),'OMSAutomation'),'-','')]",
+    "AppInsightsName": "[replace(concat(variables('Deployment'),'AppInsights'),'-','')]",
+    "SADiagName": "[concat(variables('Deployment'),'sadiag')]",
+
+    "regionLookup": {
+      "AZE2": "eastus2",
+      "AZC1": "centralus"
+    },
+
+    "copy": [
+      {
+        "name": "Vault",
+        "count": "[length(variables('ASRInfo'))]",
+        "input": {
+          "name": "[concat(variables('ASRInfo')[copyIndex('Vault')].DestinationRegion,parameters('Global').Appname,variables('ASRInfo')[copyIndex('Vault')].DestinationRG,variables('ASRInfo')[copyIndex('Vault')].DestinationRSVName)]",
+          "SourceRG": "[concat(variables('ASRInfo')[copyIndex('Vault')].SourceRegion,'-',parameters('Global').AppName,'-RG-', variables('ASRInfo')[copyIndex('Vault')].SourceRG)]",
+          "SourceVNet": "[concat(variables('ASRInfo')[copyIndex('Vault')].SourceRegion,'-',parameters('Global').Appname,'-',variables('ASRInfo')[copyIndex('Vault')].SourceRG,'-vn')]",
+          "DestinationRG": "[concat(variables('ASRInfo')[copyIndex('Vault')].DestinationRegion,'-',parameters('Global').AppName,'-RG-', variables('ASRInfo')[copyIndex('Vault')].DestinationRG)]",
+          "DestinationVNet": "[concat(variables('ASRInfo')[copyIndex('Vault')].DestinationRegion,'-',parameters('Global').Appname,'-',variables('ASRInfo')[copyIndex('Vault')].DestinationRG,'-vn')]",
+          "SourcesaName": "[tolower(concat(variables('ASRInfo')[copyIndex('Vault')].SourceRegion,parameters('Global').Appname,variables('ASRInfo')[copyIndex('Vault')].SourceRG,'sa',variables('ASRInfo')[copyIndex('Vault')].SourceSasuffix))]",
+          "DestinationLogAnalytics": "[concat(variables('ASRInfo')[copyIndex('Vault')].DestinationRegion,variables('ASRInfo')[copyIndex('Vault')].DestinationRG,parameters('Global').Appname,variables('ASRInfo')[copyIndex('Vault')].DestinationLogAnalytics)]",
+          "FabricSource": "[concat('asr-a2a-default-',variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].SourceRegion])]",
+          "FabricDestination": "[concat('asr-a2a-default-',variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].DestinationRegion])]",
+          "ContainerSource": "[concat('asr-a2a-default-',variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].SourceRegion],'-container')]",
+          "ContainerDestination": "[concat('asr-a2a-default-',variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].DestinationRegion],'-container')]",
+          "MappingSource": "[concat(variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].SourceRegion],'-',variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].DestinationRegion],'-',variables('ASRInfo')[copyIndex('Vault')].ReplicationPolicyName)]",
+          "MappingDestination": "[concat(variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].DestinationRegion],'-',variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].SourceRegion],'-',variables('ASRInfo')[copyIndex('Vault')].ReplicationPolicyName)]",
+          "NetworkMappingSource": "[concat(variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].SourceRegion],'-',variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].DestinationRegion],'-NetworkMap')]",
+          "NetworkMappingDestination": "[concat(variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].DestinationRegion],'-',variables('regionLookup')[variables('ASRInfo')[copyIndex('Vault')].SourceRegion],'-NetworkMap')]"
+
+        }
+      }
+    ],
+
+    //     {
+    //         "name": "AZE2ADFS2ASRRecoveryVault",
+    //         "SourceRG": "AZC1-ADF-RG-S1",
+    //         "SourceVNet": "AZC1-ADF-S1-vn",
+    //         "DestinationRG": "AZE2-ADF-RG-S2",
+    //         "DestinationVNet": "AZE2-ADF-S2-vn",
+    //         "SourcesaName": "azc1adfs1sacache",
+    //         "DestinationLogAnalytics": "AZE2S2ADFASRLogAnalytics",
+    //         "FabricSource": "asr-a2a-default-centralus",
+    //         "FabricDestination": "asr-a2a-default-eastus2",
+    //         "ContainerSource": "asr-a2a-default-centralus-container",
+    //         "ContainerDestination": "asr-a2a-default-eastus2-container",
+    //         "MappingSource": "centralus-eastus2-24-hour-retention-policy",
+    //         "MappingDestination": "eastus2-centralus-24-hour-retention-policy",
+    //         "NetworkMappingSource": "centralus-eastus2-NetworkMap",
+    //         "NetworkMappingDestination": "eastus2-centralus-NetworkMap"
+    //     }
+
+    "ASRInfo": "[parameters('DeploymentInfo').ASRInfo]",
+
+    "condition": false
+
+  },
+  "resources": [
+    {
+      "condition": "[variables('condition')]",
+      "name": "[variables('Vault')[copyIndex(0)].DestinationRG]",
+      "location": "[variables('regionLookup')[variables('ASRInfo')[copyIndex(0)].DestinationRegion]]",
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "copy": {
+        "name": "rgCopy",
+        "count": "[length(variables('ASRInfo'))]"
+      },
+      "properties": {
+      }
+    },
+    {
+      "name": "DestinationRSVASR",
+      "apiVersion": "2019-05-01",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('Vault')[copyIndex(0)].DestinationRG]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups', variables('Vault')[copyIndex(0)].DestinationRG)]"
+      ],
+      "copy": {
+        "name": "destinationLoop",
+        "count": "[length(variables('ASRInfo'))]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+          },
+          "outputs": {
+          },
+          "variables": {
+          },
+          "resources": [
+            {
+              // "name": "[concat('AZE2ADFS2ASRRecoveryVault/asr-a2a-default-centralus/asr-a2a-default-centralus-container/AZC1-ADF-S1-vmJMP02')]",
+              "name": "AZE2ADFS2ASRRecoveryVault/asr-a2a-default-centralus/asr-a2a-default-centralus-container/AZC1-ADF-S1-vmJMP02",
+              "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectedItems",
+              "apiVersion": "2018-07-10",
+              "properties": {
+                "policyId": "/Subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZE2-ADF-RG-S2/providers/Microsoft.RecoveryServices/vaults/AZE2ADFS2ASRRecoveryVault/replicationPolicies/24-hour-retention-policy",
+                // work from these
+                "providerSpecificDetails": {
+                  "instanceType": "A2A",
+                  "fabricObjectId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourcegroups/azc1-adf-rg-s1/providers/microsoft.compute/virtualmachines/azc1-adf-s1-vmjmp02",
+                  "recoveryAzureNetworkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZE2-ADF-RG-S2/providers/Microsoft.Network/virtualNetworks/AZE2-ADF-S2-vn",
+                  // "multiVmGroupName": "",
+                  "recoveryAvailabilityZone": "1",
+                  // "recoveryAvailabilitySet": null,
+                  // "recoveryBootDiagStorageAccountId": null,
+                  "recoveryResourceGroupId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZE2-ADF-RG-S2",
+                  "recoverySubnetName": "snFE01",
+                  "vmManagedDisks": [
+                    {
+                      "diskId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourcegroups/azc1-adf-rg-s1/providers/microsoft.compute/disks/azc1-adf-s1-jmp02-osdisk",
+                      "primaryStagingAzureStorageAccountId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-S1/providers/Microsoft.Storage/storageAccounts/azc1adfs1sacache",
+                      // "recoveryReplicaDiskAccountType": "Standard_LRS",
+                      "recoveryResourceGroupId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZE2-ADF-RG-S2"
+                      // "recoveryTargetDiskAccountType": "Standard_LRS"
+                    },
+                    {
+                      "diskId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourcegroups/azc1-adf-rg-s1/providers/microsoft.compute/disks/azc1-adf-s1-jmp02-data-data00",
+                      "primaryStagingAzureStorageAccountId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-S1/providers/Microsoft.Storage/storageAccounts/azc1adfs1sacache",
+                      // "recoveryReplicaDiskAccountType": "Standard_LRS",
+                      "recoveryResourceGroupId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZE2-ADF-RG-S2"
+                      // "recoveryTargetDiskAccountType": "Standard_LRS"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    // "Vault": {
+    //   "type": "array",
+    //   "value": "[variables('Vault')]"
+    // }
+  }
+}

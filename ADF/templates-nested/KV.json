@@ -1,0 +1,184 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "Deployment": {
+            "type": "string"
+        },
+        "DeploymentID": {
+            "type": "string"
+        },
+        "Environment": {
+            "type": "string"
+        },
+        "kvInfo": {
+            "type": "object"
+        },
+        "Global": {
+            "type": "object"
+        },
+        "OMSworkspaceID": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "OMSworkspaceName": "[replace(concat(parameters('Deployment'),'LogAnalytics'),'-','')]",
+        "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+        "copy": [
+            {
+                "name": "accessPolicies",
+                "count": "[if(not(contains(parameters('KVInfo'),'accessPolicies')),0,length(parameters('KVInfo').accessPolicies))]",
+                "input": {
+                    "tenantId": "[subscription().tenantId]",
+                    "objectId": "[parameters('KVInfo').accessPolicies[copyIndex('accessPolicies')].objectId]",
+                    "permissions": "[variables('keyVaultPermissions')[parameters('KVInfo').accessPolicies[copyIndex('accessPolicies')].Permissions]]"
+                }
+            }
+        ],
+        "Defaults": {
+            "enabledForDeployment": true,
+            "enabledForDiskEncryption": true,
+            "enabledForTemplateDeployment": true
+        },
+        "keyVaultPermissions": {
+            "All": {
+                "keys": [
+                    "Get",
+                    "List",
+                    "Update",
+                    "Create",
+                    "Import",
+                    "Delete",
+                    "Recover",
+                    "Backup",
+                    "Restore"
+                ],
+                "secrets": [
+                    "Get",
+                    "List",
+                    "Set",
+                    "Delete",
+                    "Recover",
+                    "Backup",
+                    "Restore"
+                ],
+                "certificates": [
+                    "Get",
+                    "List",
+                    "Update",
+                    "Create",
+                    "Import",
+                    "Delete",
+                    "Recover",
+                    "Backup",
+                    "Restore",
+                    "ManageContacts",
+                    "ManageIssuers",
+                    "GetIssuers",
+                    "ListIssuers",
+                    "SetIssuers",
+                    "DeleteIssuers"
+                ]
+            },
+            "SecretsGet": {
+                "keys": [
+                ],
+                "secrets": [
+                    "Get"
+                ],
+                "certificates": [
+                ]
+            },
+            "SecretsGetAndList": {
+                "keys": [
+                ],
+                "secrets": [
+                    "Get",
+                    "List"
+                ],
+                "certificates": [
+                ]
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('Deployment'),'-kv',parameters('kvInfo').Name)]",
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2019-09-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "tenantId": "[subscription().tenantId]",
+                "sku": {
+                    "family": "A",
+                    "name": "[parameters('KVInfo').skuName]"
+                },
+                // "networkAcls": {
+                //     "bypass": "AzureServices",
+                //     "defaultAction": "[parameters('KVInfo').allNetworks]"
+                //     // "ipRules": [
+                //     // ],
+                //     // "virtualNetworkRules": [
+                //     // ]
+                // },
+                "enabledForDeployment": "[variables('Defaults').enabledForDeployment]",
+                "enabledForDiskEncryption": "[variables('Defaults').enabledForDiskEncryption]",
+                "enabledForTemplateDeployment": "[variables('Defaults').enabledForTemplateDeployment]",
+                "enableSoftDelete": "[parameters('KVInfo').softDelete]",
+                "enablePurgeProtection": "[parameters('KVInfo').PurgeProtection]",
+                "enableRbacAuthorization": "[if(contains(parameters('KVInfo'),'PurgeProtection'),parameters('KVInfo').PurgeProtection,bool('false'))]",
+                "accessPolicies": "[if(parameters('KVInfo').RbacAuthorization,createArray(),variables('accessPolicies'))]"
+            },
+            "resources": [
+                {
+                    "type": "providers/diagnosticSettings",
+                    "name": "Microsoft.Insights/service",
+                    "dependsOn": [
+                        "[concat(parameters('Deployment'),'-kv',parameters('kvInfo').Name)]"
+                    ],
+                    "apiVersion": "2017-05-01-preview",
+                    "properties": {
+                        "workspaceId": "[variables('OMSworkspaceID')]",
+                        "logs": [
+                            {
+                                "category": "AuditEvent",
+                                "enabled": true
+                            }
+                        ],
+                        "metrics": [
+                            {
+                                "timeGrain": "PT5M",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "enabled": false,
+                                    "days": 0
+                                }
+                            }
+                        ]
+                    }
+
+                }
+                // {
+                //     "condition": "[and(not(parameters('KVInfo').RbacAuthorization),contains(parameters('KVInfo'),'UserAssignedIdentity'))]",
+                //     "name": "add",
+                //     "type": "accessPolicies",
+                //     "apiVersion": "2018-02-14",
+                //     "Dependson": [
+                //         "[concat(parameters('Deployment'),'-kv',parameters('kvInfo').Name)]"
+                //     ],
+                //     "properties": {
+                //         "accessPolicies": [
+                //             {
+                //                 "tenantId": "[subscription().tenantId]",
+                //                 "objectId": "[if(contains(parameters('KVInfo'),'UserAssignedIdentity'),reference(concat('Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('Deployment'),'-uai',parameters('KVInfo').UserAssignedIdentity.name),'2018-11-30').principalId,'noUAI')]",
+                //                 "permissions": "[variables('keyVaultPermissions')['SecretsGet']]"
+                //             }
+                //         ]
+                //     }
+                // }
+            ]
+        }
+    ],
+    "outputs": {
+    }
+}

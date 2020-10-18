@@ -1,0 +1,99 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "RolesGroupsLookup": "[json(parameters('Global').RolesGroupsLookup)]",
+    "RolesLookup": "[json(parameters('Global').RolesLookup)]"
+
+  },
+  "resources": [
+  ],
+  "outputs": {
+    // "foo3": {
+    //   "type": "string",
+    //   "value": "[reference(resourceId(parameters('global').HubRGName,'Microsoft.KeyVault/vaults', parameters('global').KVNAME),'2018-02-14').vaultUri]"
+    // },
+    // "foo4": {
+    //   "type": "string",
+    //   "value": "[reference('Microsoft.KeyVault/vaults/AZC1-ADF-P0-kvVault01/secrets/localadmin/f5c73d416ffa4631b188082c0ae60a99','2018-02-14','Full')]"
+    // }
+    "foo": {
+      "type": "object",
+      "value": "[variables('RolesGroupsLookup')]"
+    },
+    "foo2": {
+      "type": "string",
+      "value": "[reference(resourceId('AZC1-ADF-RG-P0','Microsoft.KeyVault/vaults/secrets','AZC1-ADF-P0-kvVault01','psthing7e7f14c0-92fc-4167-bb5d-d5d6e4b82b68'),'2019-09-01').secretUriWithVersion]"
+    }
+  }
+}

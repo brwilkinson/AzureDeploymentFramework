@@ -1,0 +1,293 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Global
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "01",
+      "maxLength": 2,
+      "allowedValues": [
+        "00",
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "99"
+      ]
+    },
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "D",
+        "Q",
+        "T",
+        "U",
+        "A",
+        "P"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    // Used for all VM's, local and Domain Admin Password
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    },
+    "vmDomainJoinPassword": {
+      "type": "securestring"
+    },
+    "vmDomainAppPasswordProd": {
+      "type": "securestring"
+    },
+    "vmDomainAppPasswordPre": {
+      "type": "securestring"
+    },
+    "vmDomainSQLPasswordProd": {
+      "type": "securestring"
+    },
+    "vmDomainSQLPasswordPre": {
+      "type": "securestring"
+    },
+    "vmUserPassword": {
+      "type": "securestring"
+    },
+    "vmDomainSRVPassword": {
+      "type": "securestring"
+    },
+    "vmDomainFormcomSQLPasswordProd": {
+      "type": "securestring"
+    },
+    "vmDomainFormcomAppSrvPasswordPre": {
+      "type": "securestring"
+    },
+    "vmFormcomSQLPasswordProd": {
+      "type": "securestring"
+    },
+    "vmDomainFormcomSQLPasswordPre": {
+      "type": "securestring"
+    },
+    "vmDomainFormcomAppSrvPasswordProd": {
+      "type": "securestring"
+    },
+    "vmFormcomSQLPasswordPre": {
+      "type": "securestring"
+    },
+    "ERAuthKey": {
+      "type": "securestring"
+    },
+    "OMSWorkspaceKey": {
+      "type": "securestring"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "WildcardCertBase64": {
+      "type": "securestring"
+    },
+    "WildcardCertBase64Public": {
+      "type": "securestring"
+    },
+    "DSCUpdateTagVersion": {
+      "type": "string",
+      "defaultValue": "1.0",
+      "metadata": {
+        "description": "This value must be changed from a previous deployment to ensure the DSC extensions will re-run"
+      }
+    },
+    "StorageAccountKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Used for copying source files to DSC from Azure Files storage"
+      }
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object",
+      "metadata": {
+        "description": "Can be used to input LB/VM Etc objects from Parameters file"
+      }
+    },
+    "Global": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    // subscriptionId
+    "subscriptionId": "[subscription().subscriptionId]",
+    // rgName
+    "resourceGroupName": "[resourceGroup().name]",
+    // Global  BRWDev101
+    // "Deployment": "[concat(parameters('Prefix'),'-',parameters('Environment'),parameters('DeploymentID'),'-', parameters('Global').AppName)]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Environment'),parameters('DeploymentID'),'-', parameters('Global').AppName)]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(variables('Deployment'),'-vn'))]",
+    "gatewaySubnet": "gatewaySubnet",
+    "gatewaySubnetRef": "[concat(variables('VNetID'), '/subnets/', variables('gatewaySubnet'))]",
+    "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
+    // "ERGWOptionsOLD": {
+    //   "name": "HighPerformance",
+    //   "tier": "HighPerformance",
+    //   "capacity": 2,
+    //   "gatewayType": "ExpressRoute",
+    //   "vpnType": "PolicyBased"
+    // },
+    "ERGWInfo": "[parameters('DeploymentInfo').ERGWInfo]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]"
+  },
+  "resources": [
+    {
+      "name": "[concat(variables('Deployment'),'-vn',variables('ERGWInfo')[copyIndex()].Name,'-publicip1')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2018-03-01",
+      "sku": {
+        "name": "Standard"
+      },
+      "copy": {
+        "name": "ERGWLoop",
+        "count": "[length( variables('ERGWInfo') )]"
+      },
+      "dependsOn": [],
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "dnsSettings": {
+          "domainNameLabel": "[toLower( concat(variables('Domain'), variables('Deployment'), '-',variables('ERGWInfo')[copyIndex()].Name ) ) ]"
+        }
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[concat(variables('Deployment'),'-vn',variables('ERGWInfo')[copyIndex()].Name,'-publicip1')]"
+          ],
+          "apiVersion": "2015-07-01",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "DDoSProtectionNotifications",
+                "enabled": true
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "name": "[concat(variables('Deployment'),'-vn',variables('ERGWInfo')[copyIndex()].Name)]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('Deployment'),'-vn',variables('ERGWInfo')[copyIndex()].Name,'-publicip1'))]"
+      ],
+      "copy": {
+        "name": "ERGWLoop",
+        "count": "[length( variables('ERGWInfo') )]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "vnetGatewayConfig",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('gatewaySubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-vn',variables('ERGWInfo')[copyIndex()].Name,'-publicip1'))]"
+              }
+            }
+          }
+        ],
+        "sku": {
+          "name": "[variables('ERGWInfo')[copyIndex()].skuname]",
+          "tier": "[variables('ERGWInfo')[copyIndex()].skutier]",
+          "capacity": "[variables('ERGWInfo')[copyIndex()].skucapacity]"
+        },
+        "gatewayType": "[variables('ERGWInfo')[copyIndex()].gatewayType]",
+        "vpnType": "[variables('ERGWInfo')[copyIndex()].vpnType]"
+      }
+    },
+    {
+      "condition": "[variables('ERGWInfo')[copyIndex()].ERConnectionOptions.EREnableConnection]",
+      "apiVersion": "2018-11-01",
+      "type": "Microsoft.Network/connections",
+      //"name": "NacToMpls",
+      "name": "[concat(variables('Deployment'),'-vn',variables('ERGWInfo')[copyIndex()].Name,'-connection-',variables('ERGWInfo')[copyIndex()].ERConnectionOptions.Name)]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "ERGWLoop",
+        "count": "[length( variables('ERGWInfo') )]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworkGateways/', concat(variables('Deployment'),'-vn',variables('ERGWInfo')[copyIndex()].Name))]"
+      ],
+      "properties": {
+        "virtualNetworkGateway1": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworkGateways',concat(variables('Deployment'),'-vn',variables('ERGWInfo')[copyIndex()].Name))]"
+        },
+        "connectionType": "[variables('ERGWInfo')[copyIndex()].ERConnectionOptions.connectionType]",
+        "routingWeight": 0,
+        "enableBgp": false,
+        "usePolicyBasedTrafficSelectors": false,
+        "ipsecPolicies": [],
+        "authorizationKey": "[if(contains(variables('ERGWInfo')[copyIndex()].ERConnectionOptions,'ERAuthKey'),variables('ERGWInfo')[copyIndex()].ERConnectionOptions.ERAuthKey,json('null'))]",
+        // "authorizationKey": "[parameters('ERAuthKey')]",        
+        "peer": {
+          "id": "[variables('ERGWInfo')[copyIndex()].ERConnectionOptions.peerid]"
+        }
+      }
+    }
+  ]
+}

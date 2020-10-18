@@ -1,0 +1,134 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  BRWDev101
+    "Deployment": "[concat('AZE2','-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    // subscriptionId
+    "subscriptionId": "[subscription().subscriptionId]",
+    // rgName
+    //"resourceGroupName": "[resourceGroup().name]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    "snWAF01Name": "snWAF01",
+    "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snWAF01Name'))]",
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
+    // "WAFInfo": "[parameters('DeploymentInfo').WAFInfo]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+
+    "skuNameLookup": {
+      "GeneralPurpose": "GP",
+      "MemoryOptimized": "MO",
+      "Basic": "B"
+    },
+    "MYSQLInfo": "[parameters('DeploymentInfo').MYSQLInfo]"
+
+  },
+  "resources": [
+    {
+      "name": "[concat(variables('Deployment'),'-mysql',variables('MYSQLInfo')[copyIndex()].Name)]",
+      "type": "Microsoft.DBforMySQL/servers",
+      "apiVersion": "2017-12-01",
+      "location": "East US 2", //"[resourceGroup().location]",
+      "copy": {
+        "name": "MySQLLoop",
+        "count": "[length( variables('MYSQLInfo') )]"
+      },
+      "sku": {
+        // GP_Gen5_2
+        "name": "[concat(variables('skuNameLookup')[variables('MYSQLInfo')[copyIndex()].skuTier],'_',variables('MYSQLInfo')[copyIndex()].skuFamily,'_',variables('MYSQLInfo')[copyIndex()].skuCoreCount)]",
+        "tier": "[variables('MYSQLInfo')[copyIndex()].skuTier]",
+        "capacity": "[variables('MYSQLInfo')[copyIndex()].skuCoreCount]",
+        "family": "[variables('MYSQLInfo')[copyIndex()].skuFamily]"
+        // "size": "string",
+      },
+      "properties": {
+        "version": "[variables('MYSQLInfo')[copyIndex()].MySQLVersion]",
+        "sslEnforcement": "Enabled",
+        "storageProfile": {
+          "backupRetentionDays": "[variables('MYSQLInfo')[copyIndex()].backupRetentionDays]",
+          // "geoRedundantBackup": "Enabled",
+          "storageMB": "[variables('MYSQLInfo')[copyIndex()].StorageMB]",
+          "storageAutogrow": "Enabled"
+        },
+        "createMode": "Default",
+        "administratorLogin": "[variables('MYSQLInfo')[copyIndex()].dbUserName]",
+        "administratorLoginPassword": "[parameters('vmAdminPassword')]"
+      },
+      "resources": [
+      ]
+    }
+  ],
+  "outputs": {
+  }
+}

@@ -1,0 +1,56 @@
+trigger: none
+  # batch: 'true'
+  # branches:
+  #   include: [ master ]
+  # tags:
+  #   exclude: [ NoBuild ]
+
+stages:
+# S1 - Sub Deploy (G0)
+- stage: S1_Sub
+  variables:
+    APP : ADF
+    ENV: S1
+    PREFIX : AZC1
+  jobs:
+  - job: RG_RBAC
+    pool:
+      vmImage: windows-2019
+    steps:
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-G0'
+        ScriptType: 'FilePath'
+        ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload'
+        FailOnStandardError: true
+        azurePowerShellVersion: 'LatestVersion'
+
+# S1 - RG Deploy
+- stage: S1_RG
+  variables:
+    APP : ADF
+    ENV: S1
+    PREFIX : AZC1
+  jobs:
+  - job: Initial_S1
+    pool:
+      vmImage: 'windows-2019'
+    steps:
+
+    # # Update Az modules for zero copy loops to 2.8.0
+    # - task: AzurePowerShell@5
+    #   inputs:
+    #     azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-S1'
+    #     ScriptType: 'InlineScript'
+    #     Inline: 'install-module az -force -verbose -SkipPublisherCheck -AllowClobber; gmo az* | remove-module -force'
+    #     azurePowerShellVersion: 'LatestVersion'
+      
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-S1'
+        ScriptType: 'FilePath'
+        ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(Prefix) -stage "ALL"'
+        FailOnStandardError: true
+        azurePowerShellVersion: 'LatestVersion'

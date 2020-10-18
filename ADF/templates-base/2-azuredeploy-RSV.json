@@ -1,0 +1,186 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+
+    "RSVInfo" : [
+      {
+        "Name" : "ASRVault01",
+        "skuName" : "RS0",
+        "skuTier" : "Standard"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "condition": "[equals(parameters('Stage').RSV,1)]",
+      "apiVersion": "2018-01-10",
+      "location": "[resourceGroup().location]",
+      "name": "[replace(concat(variables('Deployment'),variables('RSVInfo')[copyIndex(0)].Name),'-','')]",
+      "type": "Microsoft.RecoveryServices/vaults",
+      "sku": {
+        "name": "[variables('RSVInfo')[copyIndex(0)].skuName]",
+        "tier": "[variables('RSVInfo')[copyIndex(0)].skuTier]"
+      },
+      "copy": {
+        "name": "rsvLoop",
+        "count":"[length(variables('RSVInfo'))]"
+      },
+      "properties": {},
+      "resources": [
+        {
+          "condition": "[equals(parameters('Stage').RSV,1)]",
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[replace(concat(variables('Deployment'),variables('RSVInfo')[copyIndex(0)].Name),'-','')]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "name": "service",
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "AzureBackupReport",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "AzureSiteRecoveryJobs",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "AzureSiteRecoveryEvents",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "AzureSiteRecoveryReplicatedItems",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "AzureSiteRecoveryReplicationStats",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "AzureSiteRecoveryRecoveryPoints",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "AzureSiteRecoveryReplicationDataUploadRate",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "AzureSiteRecoveryProtectedDiskDataChurn",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

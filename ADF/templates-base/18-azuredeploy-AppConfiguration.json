@@ -1,0 +1,197 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  AZE2-ADF-S1
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    // subscriptionId
+    "subscriptionId": "[subscription().subscriptionId]",
+    // rgName
+    //"resourceGroupName": "[resourceGroup().name]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    "snWAF01Name": "snWAF01",
+    "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snWAF01Name'))]",
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
+    // "WAFInfo": "[parameters('DeploymentInfo').WAFInfo]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+    "appConfigurationInfo": "[parameters('DeploymentInfo').appConfigurationInfo]",
+    "hubRG": "[parameters('Global').hubRGName]"
+
+  },
+  "resources": [
+    {
+      "name": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo')[copyIndex()].Name)]",
+      "type": "Microsoft.AppConfiguration/configurationStores",
+      "apiVersion": "2020-06-01",
+      "location": "centralus",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+          }
+        }
+      },
+      "sku": {
+        "name": "[variables('appConfigurationInfo')[copyIndex()].sku]"
+      },
+      "copy": {
+        "name": "ACLoop",
+        "count": "[length( variables('appConfigurationInfo') )]"
+      },
+      "properties": {
+        "publicNetworkAccess": "[variables('appConfigurationInfo')[copyIndex()].publicNetworkAccess]",
+        "encryption": {
+
+          //  This is for customer managed keys for encryption
+          // "keyVaultProperties": {
+          //   "keyIdentifier": "",
+          //   "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGetApp')),'2018-11-30').clientId]"
+          // }
+        }
+      }
+    },
+    {
+      // Call the nested deployment for the Private Link
+      "condition": "[contains(variables('appConfigurationInfo')[copyIndex(0)],'privatelinkinfo')]",
+      "name": "[concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('appConfigurationInfo')[copyIndex(0)].name)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [
+        "ACLoop"
+      ],
+      "copy": {
+        "name": "plLoop",
+        "count": "[length( variables('appConfigurationInfo') )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vNetPrivateLink.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "PrivateLinkInfo": {
+            "value": "[variables('appConfigurationInfo')[copyIndex(0)].privateLinkInfo]"
+          },
+          "providerType": {
+            "value": "Microsoft.AppConfiguration/configurationStores"
+          },
+          "resourceName": {
+            "value": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo')[copyIndex()].Name)]"
+          }
+        }
+      }
+    },
+    {
+      // Call the nested deployment for the Private Link DNS registration
+      "condition": "[contains(variables('appConfigurationInfo')[copyIndex(0)],'privatelinkinfo')]",
+      "name": "[concat('dp', variables('Deployment'), '-registerPrivateDNS', variables('appConfigurationInfo')[copyIndex(0)].name)]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('hubRG')]",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [
+        "plLoop"
+      ],
+      "copy": {
+        "name": "plDNSLoop",
+        "count": "[length( variables('appConfigurationInfo') )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "PrivateLinkInfo": {
+            "value": "[variables('appConfigurationInfo')[copyIndex(0)].privateLinkInfo]"
+          },
+          "providerURL": {
+            "value": ".io/"
+          },
+          "resourceName": {
+            "value": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo')[copyIndex()].Name)]"
+          },
+          "Nics": {
+            "value": "[if(contains(variables('appConfigurationInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('appConfigurationInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

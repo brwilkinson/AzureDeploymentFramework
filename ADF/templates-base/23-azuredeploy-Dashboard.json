@@ -1,0 +1,770 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "00",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    //     "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "rgName-Monitoring": "[resourceGroup().name]",
+    "prefix": "azatmos",
+    "ApplicationList": [
+      {
+        "AppServerQuery": "[concat('Computer startswith \"',variables('Prefix'),'\"')]",
+        "WebServerQuery": "[concat('Computer startswith \"',variables('Prefix'),'\"')]",
+        "SQLServerQuery": "[concat('Computer startswith \"',variables('Prefix'),'\"')]",
+        "AppName": "[parameters('Global').AppName]"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Portal/dashboards",
+      "apiVersion": "2015-08-01-preview",
+      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('ApplicationList')[copyIndex()].AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-Default-Dashboard')]",
+      "copy": {
+        "name": "dashboardLoop",
+        "count": "[length( variables('ApplicationList') )]"
+      },
+      "properties": {
+        "lenses": {
+          "0": {
+            "order": 0,
+            "parts": {
+              "0": {
+                "position": {
+                  "x": 0,
+                  "y": 0,
+                  "rowSpan": 4,
+                  "colSpan": 6
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[subscription().subscriptionId]",
+                        "ResourceGroup": "[variables('rgName-Monitoring')]",
+                        "Name": "[variables('OMSworkspaceName')]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat( 'Perf\n| where TimeGenerated > ago(1h)\n| where ',variables('ApplicationList')[copyIndex()].AppServerQuery,'\n| where CounterName == @\"% Processor Time\"\n| summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1m) \r\n| render timechart' )]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "DateTime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "avg_CounterValue",
+                            "type": "Double"
+                          }
+                        ],
+                        "splitBy": [
+                          {
+                            "name": "Computer",
+                            "type": "String"
+                          }
+                        ],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "DashboardId",
+                      "value": "/subscriptions/c48f5cd5-8dd0-4eaa-b46e-a351002cdabd/resourceGroups/FNF-RG-Monitoring-Prod/providers/Microsoft.Portal/dashboards/c19faec1-fed6-4ab4-96bf-fbac2f31d2e0"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[variables('OMSworkspaceName')]"
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "workspace"
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsLineChartPart",
+                  "settings": {
+                    "content": {
+                      "dashboardPartTitle": "[concat(variables('ApplicationList')[copyIndex()].AppName,' App Server CPU')]",
+                      "dashboardPartSubTitle": "[variables('OMSworkspaceName')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  }
+                }
+              },
+              "1": {
+                "position": {
+                  "x": 6,
+                  "y": 0,
+                  "rowSpan": 4,
+                  "colSpan": 6
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[subscription().subscriptionId]",
+                        "ResourceGroup": "[variables('rgName-Monitoring')]",
+                        "Name": "[variables('OMSworkspaceName')]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat( 'Perf\n| where TimeGenerated > ago(1h)\n| where ',variables('ApplicationList')[copyIndex()].AppServerQuery,'\n| where ObjectName == @\"Memory\"\nand CounterName == @\"Available MBytes\"\n| summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1m)\n| render timechart' )]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "DateTime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "avg_CounterValue",
+                            "type": "Double"
+                          }
+                        ],
+                        "splitBy": [
+                          {
+                            "name": "Computer",
+                            "type": "String"
+                          }
+                        ],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "DashboardId",
+                      "value": "/subscriptions/c48f5cd5-8dd0-4eaa-b46e-a351002cdabd/resourceGroups/FNF-RG-Monitoring-Prod/providers/Microsoft.Portal/dashboards/c19faec1-fed6-4ab4-96bf-fbac2f31d2e0"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[variables('OMSworkspaceName')]"
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "workspace"
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsLineChartPart",
+                  "settings": {
+                    "content": {
+                      "dashboardPartTitle": "[concat(variables('ApplicationList')[copyIndex()].AppName, ' Available Memory in MB')]",
+                      "dashboardPartSubTitle": "[variables('OMSworkspaceName')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  }
+                }
+              },
+              "2": {
+                "position": {
+                  "x": 0,
+                  "y": 4,
+                  "rowSpan": 4,
+                  "colSpan": 6
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[subscription().subscriptionId]",
+                        "ResourceGroup": "[variables('rgName-Monitoring')]",
+                        "Name": "[variables('OMSworkspaceName')]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat( 'Perf\n| where TimeGenerated > ago(1h)\n| where ',variables('ApplicationList')[copyIndex()].AppServerQuery,'\n and ObjectName == @\"LogicalDisk\"\nand CounterName == @\"Disk Writes/sec\"\nand InstanceName == @\"_Total\"\n| summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1m)\n| render timechart' )]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "DateTime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "avg_CounterValue",
+                            "type": "Double"
+                          }
+                        ],
+                        "splitBy": [
+                          {
+                            "name": "Computer",
+                            "type": "String"
+                          }
+                        ],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "DashboardId",
+                      "value": "/subscriptions/c48f5cd5-8dd0-4eaa-b46e-a351002cdabd/resourceGroups/FNF-RG-Monitoring-Prod/providers/Microsoft.Portal/dashboards/c19faec1-fed6-4ab4-96bf-fbac2f31d2e0"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[variables('OMSworkspaceName')]"
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "workspace"
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsLineChartPart",
+                  "settings": {
+                    "content": {
+                      "dashboardPartTitle": "[concat(variables('ApplicationList')[copyIndex()].AppName, ' Logical Disk I/O Total')]",
+                      "dashboardPartSubTitle": "[variables('OMSworkspaceName')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  }
+                }
+              },
+              "3": {
+                "position": {
+                  "x": 6,
+                  "y": 4,
+                  "rowSpan": 4,
+                  "colSpan": 6
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[subscription().subscriptionId]",
+                        "ResourceGroup": "[variables('rgName-Monitoring')]",
+                        "Name": "[variables('OMSworkspaceName')]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat( 'Perf\n| where TimeGenerated > ago(1h)\n| where ',variables('ApplicationList')[copyIndex()].AppServerQuery,'\n and ObjectName == @\"PhysicalDisk\"\nand CounterName == @\"Avg. Disk Read Queue Length\"\nand InstanceName == @\"_Total\"\n| summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1m)\n| render timechart' )]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "DateTime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "avg_CounterValue",
+                            "type": "Double"
+                          }
+                        ],
+                        "splitBy": [
+                          {
+                            "name": "Computer",
+                            "type": "String"
+                          }
+                        ],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "DashboardId",
+                      "value": "/subscriptions/c48f5cd5-8dd0-4eaa-b46e-a351002cdabd/resourceGroups/FNF-RG-Monitoring-Prod/providers/Microsoft.Portal/dashboards/c19faec1-fed6-4ab4-96bf-fbac2f31d2e0"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[variables('OMSworkspaceName')]"
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "workspace"
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsLineChartPart",
+                  "settings": {
+                    "content": {
+                      "dashboardPartTitle": "[concat(variables('ApplicationList')[copyIndex()].AppName, ' Disk Queue Length')]",
+                      "dashboardPartSubTitle": "[variables('OMSworkspaceName')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  }
+                }
+              },
+              "4": {
+                "position": {
+                  "x": 12,
+                  "y": 4,
+                  "rowSpan": 4,
+                  "colSpan": 6
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[subscription().subscriptionId]",
+                        "ResourceGroup": "[variables('rgName-Monitoring')]",
+                        "Name": "[variables('OMSworkspaceName')]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat( 'Perf| where TimeGenerated > ago(1h)| where ',variables('ApplicationList')[copyIndex()].AppServerQuery,'| where ObjectName == \"Network Adapter\"  and CounterName == @\"Bytes Total/sec\" and CounterValue > 500000| summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1m)| render timechart' )]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "DateTime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "avg_CounterValue",
+                            "type": "Double"
+                          }
+                        ],
+                        "splitBy": [
+                          {
+                            "name": "Computer",
+                            "type": "String"
+                          }
+                        ],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "DashboardId",
+                      "value": "/subscriptions/c48f5cd5-8dd0-4eaa-b46e-a351002cdabd/resourceGroups/FNF-RG-Monitoring-Prod/providers/Microsoft.Portal/dashboards/c19faec1-fed6-4ab4-96bf-fbac2f31d2e0"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[variables('OMSworkspaceName')]"
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "workspace"
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsLineChartPart",
+                  "settings": {
+                    "content": {
+                      "dashboardPartTitle": "[concat(variables('ApplicationList')[copyIndex()].AppName, ' Top Network Utilization Servers')]",
+                      "dashboardPartSubTitle": "[variables('OMSworkspaceName')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  }
+                }
+              },
+              "5": {
+                "position": {
+                  "x": 12,
+                  "y": 0,
+                  "rowSpan": 4,
+                  "colSpan": 6
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[subscription().subscriptionId]",
+                        "ResourceGroup": "[variables('rgName-Monitoring')]",
+                        "Name": "[variables('OMSworkspaceName')]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat( 'Perf| where TimeGenerated > ago(1h)| where ',variables('ApplicationList')[copyIndex()].AppServerQuery,'| where ObjectName == \"Network Adapter\"  and CounterName == @\"Bytes Total/sec\"  and  CounterValue > 200000| sort by CounterValue desc| summarize arg_max(CounterValue, *) by Computer| distinct  Computer, CounterValue| top 10 by CounterValue  desc nulls last| render barchart' )]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "Computer",
+                          "type": "String"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "CounterValue",
+                            "type": "Double"
+                          }
+                        ],
+                        "splitBy": [],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "DashboardId",
+                      "value": "/subscriptions/c48f5cd5-8dd0-4eaa-b46e-a351002cdabd/resourceGroups/FNF-RG-Monitoring-Prod/providers/Microsoft.Portal/dashboards/c19faec1-fed6-4ab4-96bf-fbac2f31d2e0"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[variables('OMSworkspaceName')]"
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "workspace"
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsBarChartPart",
+                  "settings": {
+                    "content": {
+                      "dashboardPartTitle": "[concat(variables('ApplicationList')[copyIndex()].AppName, ' Top Network Utilization Servers')]",
+                      "dashboardPartSubTitle": "[variables('OMSworkspaceName')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  }
+                }
+              },
+              "6": {
+                "position": {
+                  "x": 18,
+                  "y": 5,
+                  "rowSpan": 3,
+                  "colSpan": 4
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension[azure]/HubsExtension/PartType/VideoPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "title": "Testing in Production",
+                        "subtitle": "DevOps",
+                        "src": "https://www.youtube.com/watch?v=jFXTryMp5KY",
+                        "autoplay": false
+                      }
+                    }
+                  }
+                }
+              },
+              "7": {
+                "position": {
+                  "x": 0,
+                  "y": 8,
+                  "rowSpan": 2,
+                  "colSpan": 2
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension[azure]/HubsExtension/PartType/ClockPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "location": "Pacific Time (US & Canada)",
+                        "timeFormat": "h:mmA",
+                        "version": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "8": {
+                "position": {
+                  "x": 2,
+                  "y": 8,
+                  "rowSpan": 2,
+                  "colSpan": 2
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension[azure]/HubsExtension/PartType/ClockPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "location": "Mountain Time (US & Canada)",
+                        "timeFormat": "h:mmA",
+                        "version": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "12": {
+                "position": {
+                  "x": 4,
+                  "y": 8,
+                  "rowSpan": 2,
+                  "colSpan": 2
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension/HubsExtension/PartType/ClockPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "location": "Central Time (US & Canada)",
+                        "timeFormat": "h:mmA",
+                        "version": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "9": {
+                "position": {
+                  "x": 6,
+                  "y": 8,
+                  "rowSpan": 2,
+                  "colSpan": 2
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension[azure]/HubsExtension/PartType/ClockPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "location": "Eastern Time (US & Canada)",
+                        "timeFormat": "h:mmA",
+                        "version": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "10": {
+                "position": {
+                  "x": 8,
+                  "y": 8,
+                  "rowSpan": 2,
+                  "colSpan": 2
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension[azure]/HubsExtension/PartType/ClockPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "location": "UTC",
+                        "timeFormat": "h:mmA",
+                        "version": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "11": {
+                "position": {
+                  "x": 10,
+                  "y": 8,
+                  "rowSpan": 2,
+                  "colSpan": 4
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension[azure]/HubsExtension/PartType/MarkdownPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "content": "__Azure Deployment Framework__\n\n<span style=\"color:green\">No *Testing* in Production</span>.\n\n\n<img width='10' src='https://preview.portal.azure.com/favicon.ico'/> and <a href='https://azure.microsoft.com' target='_blank'>Azure Preview Dashboard - Preview.Portal.Azure.com</a>\n\n",
+                        "title": "Azure Operations Dashboard",
+                        "subtitle": "Operations Management Suite"
+                      }
+                    }
+                  }
+                }
+              },
+              "13": {
+                "position": {
+                  "x": 20,
+                  "y": 0,
+                  "rowSpan": 3,
+                  "colSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "queryInputs",
+                      "value": {
+                        "subscriptions": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+                        "regions": "AustraliaEast;AustraliaSoutheast;CentralUS;EastUS;EastUS2;Global;Multi-Region;NorthCentralUS;SouthCentralUS;WestCentralUS;WestUS;WestUS2",
+                        "services": "",
+                        "resourceGroupId": "all",
+                        "timeSpan": "5",
+                        "startTime": "2018-04-03T03:29:31.043Z",
+                        "endTime": "2018-04-06T03:29:31.043Z",
+                        "queryName": "Service Health",
+                        "queryId": "a5b30ff6-c9ea-4f5a-8f21-3f0ae3eb4c55",
+                        "loadFromCache": false,
+                        "communicationType": "incident",
+                        "statusFilter": "active"
+                      }
+                    }
+                  ],
+                  "type": "Extension/Microsoft_Azure_Health/PartType/ServiceIssuesTilePart"
+                }
+              },
+              "14": {
+                "position": {
+                  "x": 18,
+                  "y": 3,
+                  "rowSpan": 2,
+                  "colSpan": 4
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension[azure]/Microsoft_AAD_IAM/PartType/OrganizationIdentityPart"
+                }
+              }
+            }
+          }
+        },
+        "metadata": {
+          "model": {
+            "timeRange": {
+              "value": {
+                "relative": {
+                  "duration": 24,
+                  "timeUnit": 1
+                }
+              },
+              "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

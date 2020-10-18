@@ -1,0 +1,81 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "AppName": {
+      "type": "string",
+      "defaultValue": "ADF",
+      "allowedValues": [
+        "HUB",
+        "ADF"
+      ]
+    },
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZC1",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "S",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2"
+      ]
+    },
+    "Pet": {
+      "type": "string",
+      "defaultValue" : "cats",
+      "allowedValues": [
+        "cats",
+        "dogs",
+        "rabbits"
+      ]
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Appname'),'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "appConfigStoreName": "[concat(variables('Deployment'),'-acConfig01')]",
+    "appConfigRef": "[resourceId('Microsoft.AppConfiguration/configurationStores', variables('appConfigStoreName'))]",
+    "lookup" :{
+      "key": "abc",
+      "label": "abc"
+    },
+    "myarray": ["SQL01","SQL02"]
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "petName": {
+      "type": "bool",
+      "value": "[contains('SQL01','SQL01')]"
+    },
+    "1": {
+      "type": "bool",
+      "value": "[contains(variables('myarray'),'SQL')]"
+    },
+    "2": {
+      "type": "bool",
+      "value": "[contains(variables('myarray'),'SQL01')]"
+    },
+    "3": {
+      "type": "bool",
+      "value": "[contains('SQL','SQL01')]"
+    }
+  }
+}

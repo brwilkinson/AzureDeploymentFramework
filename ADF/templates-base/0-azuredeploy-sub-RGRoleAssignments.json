@@ -1,0 +1,473 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "Prefix": {
+            "type": "string",
+            "defaultValue": "AZE2",
+            "allowedValues": [
+                "AZE2",
+                "AZC1",
+                "AZW2",
+                "AZE1"
+            ]
+        },
+        "Environment": {
+            "type": "string",
+            "defaultValue": "D",
+            "allowedValues": [
+                "I",
+                "D",
+                "U",
+                "P",
+                "S",
+                "G",
+                "A"
+            ]
+        },
+        "DeploymentID": {
+            "type": "string",
+            "defaultValue": "1",
+            "allowedValues": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
+            ]
+        },
+        "Stage": {
+            "type": "object"
+        },
+        "Extensions": {
+            "type": "object"
+        },
+        "Global": {
+            "type": "object"
+        },
+        "DeploymentInfo": {
+            "type": "object"
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+            }
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Auto-generated token to access artifactsLocation"
+            }
+        },
+        "vmAdminPassword": {
+            "type": "securestring"
+        },
+        "DevOpsAgentPATToken": {
+            "type": "securestring"
+        }
+    },
+    "variables": {
+        "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+        "rolesInfo": "[parameters('DeploymentInfo').rolesInfo]",
+        "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
+        "RGID": "[concat(subscription().Id,'/resourceGroups/',variables('RGName'))]",
+        "Enviro": "[concat(parameters('Environment'),parameters('DeploymentID'))]",
+        "Locationlookup": {
+            "AZE2": "eastus2",
+            "AZC1": "centralus"
+        },
+        "location": "[variables('locationlookup')[parameters('Prefix')]]",
+        "KVName": "[concat(parameters('Prefix'),'-',parameters('Global').AppName,'-P0-kvVault01')]",
+        "HubRG": "[concat(parameters('Prefix'),'-',parameters('Global').AppName,'-RG-P0' )]",
+        "HubRGID": "[concat(subscription().Id,'/resourceGroups/',variables('HubRG'))]",
+        "GlobalRG": "[concat(parameters('Global').PrimaryPrefix,'-',parameters('Global').AppName,'-RG-G1')]",
+        "GlobalRGID": "[concat(subscription().Id,'/resourceGroups/',variables('GlobalRG'))]",
+        "RolesLookup": "[json(parameters('Global').RolesLookup)]",
+        "RolesGroupsLookup": "[json(parameters('Global').RolesGroupsLookup)]",
+        "UAIInfo": "[if(equals(parameters('Stage').UAI,1),parameters('DeploymentInfo').UAIInfo,createArray())]",
+
+        "keyVaultPermissions": {
+            "All": {
+                "keys": [
+                    "Get",
+                    "List",
+                    "Update",
+                    "Create",
+                    "Import",
+                    "Delete",
+                    "Recover",
+                    "Backup",
+                    "Restore"
+                ],
+                "secrets": [
+                    "Get",
+                    "List",
+                    "Set",
+                    "Delete",
+                    "Recover",
+                    "Backup",
+                    "Restore"
+                ],
+                "certificates": [
+                    "Get",
+                    "List",
+                    "Update",
+                    "Create",
+                    "Import",
+                    "Delete",
+                    "Recover",
+                    "Backup",
+                    "Restore",
+                    "ManageContacts",
+                    "ManageIssuers",
+                    "GetIssuers",
+                    "ListIssuers",
+                    "SetIssuers",
+                    "DeleteIssuers"
+                ]
+            },
+            "SecretsGet": {
+                "keys": [
+                ],
+                "secrets": [
+                    "Get"
+                ],
+                "certificates": [
+                ]
+            }
+        }
+    },
+    "resources": [
+        {
+            // subscription level role assignent
+            "condition": "[equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0')]",
+            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopSub-', variables('Enviro'))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "location": "[variables('location')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsSUB.json', parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "Deployment": {
+                        "value": "[concat(parameters('Prefix'),'-',variables('Enviro'),'-', parameters('Global').AppName)]"
+                    },
+                    "rolesInfo": {
+                        "value": "[variables('rolesInfo')]"
+                    },
+                    "RolesLookup": {
+                        "value": "[variables('RolesLookup')]"
+                    },
+                    "RolesGroupsLookup": {
+                        "value": "[variables('RolesGroupsLookup')]"
+                    },
+                    "location": {
+                        "value": "[variables('location')]"
+                    }
+                }
+            }
+        },
+        {
+            //  Subscription
+            // Add the service principal for deployments to "Reader" at Subscription Level, used for reading policy and alert groups etc
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "name": "[guid('Reader',parameters('global').AZDevOpsProject,variables('RGName'),'Subscription')]",
+            "apiVersion": "2018-01-01-preview",
+            "properties": {
+                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Reader'].Id)]",
+                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                "scope": "[subscription().Id]"
+            }
+        },
+        {
+            //  Local RG RBAC for user assigned identity
+            // RG level role assignment - Run once for each param file [Environment] to set RBAC
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsUAI-', variables('Enviro'),'-',copyIndex(1))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "resourceGroup": "[variables('RGName')]",
+            // "subscriptionId": "[subscription().subscriptionId]",
+            "copy": {
+                "name": "UAILoop",
+                "count": "[length( variables('UAIInfo') )]"
+            },
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsUAI.json', parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "Deployment": {
+                        "value": "[variables('Deployment')]"
+                    },
+                    "Prefix": {
+                        "value": "[parameters('Prefix')]"
+                    },
+                    "RGName": {
+                        "value": "[variables('RGName')]"
+                    },
+                    "Enviro": {
+                        "value": "[variables('Enviro')]"
+                    },
+                    "rolesInfo": {
+                        "value": "[variables('rolesInfo')]"
+                    },
+                    "RolesLookup": {
+                        "value": "[variables('RolesLookup')]"
+                    },
+                    "RolesGroupsLookup": {
+                        "value": "[variables('RolesGroupsLookup')]"
+                    },
+                    "uaiInfo": {
+                        "value": "[variables('UAIInfo')[copyIndex(0)]]"
+                    }
+                }
+            }
+        },
+        {
+            //  Local RG
+            // RG level role assignment - Run once for each param file [Environment] to set RBAC
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopRG-', variables('Enviro'))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "resourceGroup": "[variables('RGName')]",
+            // "subscriptionId": "[subscription().subscriptionId]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsRG.json', parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "Deployment": {
+                        "value": "[variables('Deployment')]"
+                    },
+                    "rolesInfo": {
+                        "value": "[variables('rolesInfo')]"
+                    },
+                    "RolesLookup": {
+                        "value": "[variables('RolesLookup')]"
+                    },
+                    "RolesGroupsLookup": {
+                        "value": "[variables('RolesGroupsLookup')]"
+                    }
+                }
+            }
+        },
+        {
+            //  Local RG
+            //  Add the service principal for deployments to "Contributor" for each param file [Environment]
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "name": "[concat('dp', parameters('global').AZDevOpsProject ,'-',variables('RGName'),'-Contributor' )]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "resourceGroup": "[variables('RGName')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                    },
+                    "variables": {
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Contributor',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Contributor'].Id)]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "scope": "[variables('RGID')]"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            //  Global
+            // Add the service principal for deployments to "READER AND DATA ACCESS" and Log Analytics Contributor
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "name": "[concat('dp', variables('Deployment'), '-GlobalRGRBAC' )]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "resourceGroup": "[variables('GlobalRG')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                    },
+                    "variables": {
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Reader and Data Access',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Reader and Data Access'].Id)]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "scope": "[variables('GlobalRGID')]"
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Storage Account Key Operator Service Role',variables('Deployment'),'-uaiStorageAccountOperatorGlobal')]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Storage Account Key Operator Service Role'].Id)]",
+                                "principalId": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperatorGlobal'),'2018-11-30').principalId)]",
+                                "scope": "[variables('GlobalRGID')]"
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Key_Vault_Reader',parameters('global').AZDevOpsProject ,'-G1-',variables('RGName'))]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key_Vault_Reader'].Id)]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "scope": "[variables('GlobalRGID')]"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            //  Hub
+            // Add the service principal for deployments to "Key Vault Reader" and "Network Contributor"
+            //  Read the keyvault and do the peerings
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "name": "[concat('dp', variables('Deployment'), '-HubRGRBAC' )]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "resourceGroup": "[variables('HubRG')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                    },
+                    "variables": {
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Network Contributor',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Network Contributor'].Id)]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "scope": "[variables('HubRGID')]"
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Log Analytics Contributor',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Log Analytics Contributor'].Id)]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "scope": "[variables('HubRGID')]"
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Key_Vault_Reader',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key_Vault_Reader'].Id)]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "scope": "[variables('HubRGID')]"
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Key Vault Reader (preview)',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key Vault Reader (preview)'].Id)]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "scope": "[variables('HubRGID')]"
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "name": "[guid('Key Vault Reader (preview)',variables('Deployment'),'-uaiKeyVaultSecretsGet')]",
+                            "apiVersion": "2018-01-01-preview",
+                            "properties": {
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key Vault Reader (preview)'].Id)]",
+                                "principalId": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiKeyVaultSecretsGet'),'2018-11-30').principalId)]",
+                                "scope": "[variables('HubRGID')]"
+                            }
+                        }
+                        // {
+                        //     "name": "[concat(variables('KVName'),'/add')]",
+                        //     "type": "Microsoft.KeyVault/vaults/accessPolicies",
+                        //     "apiVersion": "2018-02-14",
+                        //     "Dependson": [
+                        //     ],
+                        //     "properties": {
+                        //         "accessPolicies": [
+                        //             {
+                        //                 "tenantId": "[subscription().tenantId]",
+                        //                 "objectId": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiKeyVaultSecretsGet'),'2018-11-30').principalId)]",
+                        //                 "permissions": "[variables('keyVaultPermissions')['SecretsGet']]"
+                        //             },
+                        //             {
+                        //                 "tenantId": "[subscription().tenantId]",
+                        //                 "objectId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                        //                 "permissions": "[variables('keyVaultPermissions')['SecretsGet']]"
+                        //             }
+                        //         ]
+                        //     }
+                        // }
+                        // {
+                        //     "type": "Microsoft.Authorization/roleAssignments",
+                        //     "name": "[guid('Storage Account Key Operator Service Role',variables('Deployment'),'-uaiStorageAccountOperatorGlobal',variables('HubRGID'))]",
+                        //     "apiVersion": "2018-01-01-preview",
+                        //     "properties": {
+                        //         "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Storage Account Key Operator Service Role'].Id)]",
+                        //         "principalId": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperatorGlobal'),'2018-11-30').principalId)]",
+                        //         "scope": "[variables('HubRGID')]"
+                        //     }
+                        // }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
