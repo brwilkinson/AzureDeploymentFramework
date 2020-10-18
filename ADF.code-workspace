@@ -5,10 +5,10 @@
 		}
 	],
 	"settings": {
+		"window.title": "${activeFolderLong}",
 		"azureResourceManagerTools.autoDetectJsonTemplates": true,
 		"azureResourceManagerTools.checkForLatestSchema": true,
 		"powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1"
-
 	},
 	"extensions": {
 		"recommendations": [
