@@ -1,10 +1,9 @@
 
 ## Azure Deployment Framework [ADF] 
     - Declarative Infrastructure
-### *Azure Resource Group Deployment - MultiTier Hub/Spoke Environment*
+### *Azure Resource Group Deployment - MultiTier Hub/Spoke Environments*
 <br/>
 
----
     Common naming standards/conventions:
 
 |Name |Allowed Values |Defintion |
@@ -17,14 +16,15 @@
 |ENV |D03 + T04 + Q06 + U08 + P09 + P00|**The environment only for Pipeline variables**|
 |App|ADF HUB PSO ABC|The App (tenant) name|
 |Deployment | AZC1ADFS1 + AZC1-ADF-S1 | Used for naming resources e.g. part of hostname and Azure Resource names<br/> [Prefix + App + Enviro]|
-|Global|A Global environment G00 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
+|Global|A Global environment G0 represents Azure Subscription Deployments|E.g. RBAC or Policy|
+|Global|A Global environment G1 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
 |HUB|A Hub environment is denoted by the P0 or P00|AZC1-ADF-P0 Central Hub, AZE2-ADF-P0 EastUS2 Hub|
 |DR|Primary Test environment AZC1-ADF-T4 would have a mirror environment<br/>DR Test environment AZR2-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
 <br/>
 
 ---
 
-### Environment Information - Global Resources  
+## Environment Information [Deployment Pipelines]  
 #### TODO update from Azure DevOps Pipelines to GitHub Actions on these links
 <br/>
 
