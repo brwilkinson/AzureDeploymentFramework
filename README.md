@@ -4,7 +4,7 @@
 ### *Azure Resource Group Deployment - MultiTier Hub/Spoke Environments*
 <br/>
 
-    Common naming standards/conventions: foo
+    Common naming standards/conventions: foo2
 
 |Name |Allowed Values |Defintion |
 |---|---|---|
