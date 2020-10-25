@@ -8,7 +8,17 @@
 		"window.title": "${activeFolderLong}",
 		"azureResourceManagerTools.autoDetectJsonTemplates": true,
 		"azureResourceManagerTools.checkForLatestSchema": true,
-		"powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1"
+		"powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+		"powershell.codeFormatting.useCorrectCasing": true,
+		"powershell.codeFormatting.useConstantStrings": true,
+		"powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+		"powershell.codeFormatting.autoCorrectAliases": true,
+		"powershell.codeFormatting.openBraceOnSameLine": false,
+		"powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
+		"powershell.codeFormatting.whitespaceBetweenParameters": true,
+		"powershell.debugging.createTemporaryIntegratedConsole": true,
+		"powershell.notebooks.showToggleButton": true,
+		"powershell.pester.useLegacyCodeLens": false
 	},
 	"extensions": {
 		"recommendations": [
