@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ##
 
-[Documentation - What is ADF](./docs/ADF.md)
+[Documentation - What is ADF](./ADF.md)
 
 ### Deployment Partitions
 
