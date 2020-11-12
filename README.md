@@ -2,7 +2,7 @@
 ## Azure Deployment Framework [ADF] 
     - Declarative Infrastructure
     
-[Documentation - What is ADF](./docs/ARM.md)
+[Documentation - What is ADF, Observations on ARM Templates](./docs/ARM.md)
 
 ### *Azure Resource Group Deployment - MultiTier Hub/Spoke Environments*
 <br/>
