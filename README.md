@@ -1,8 +1,12 @@
 
 ## Azure Deployment Framework [ADF] 
     - Declarative Infrastructure
+    
+[Documentation - What is ADF](./docs/ARM.md)
+
 ### *Azure Resource Group Deployment - MultiTier Hub/Spoke Environments*
 <br/>
+
 
     Common naming standards/conventions: foo23456790
 
