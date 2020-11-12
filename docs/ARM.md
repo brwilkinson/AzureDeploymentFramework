@@ -4,11 +4,10 @@
 
 ### Deployment Partitions
 
-[Deployment Partitions](./azure_deployment_partitions.jpg)
+[azure_deployment_partitions.pdf](./azure_deployment_partitions.pdf)
 
 ![Deployment Partitions](./azure_deployment_partitions.jpg)
 
-:::image type="content" source="./azure_deployment_partitions.jpg" alt-text="":::
 
 ### The 4 most important pieces - Naming standards
     - Location 'Prefix'
