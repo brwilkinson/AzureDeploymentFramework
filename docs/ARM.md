@@ -2,6 +2,17 @@
 
 ## - Azure Deployment Framework ##
 
+### Deployment Partitions
+
+[Deployment Partitions](./azure_deployment_partitions.pdf)
+
+![Deployment Partitions](./azure_deployment_partitions.pdf)
+
+:::image type="content" source="./azure_deployment_partitions.pdf" alt-text="":::
+
+[embed]./azure_deployment_partitions.pdf[/embed]
+
+
 ### The 4 most important pieces - Naming standards
     - Location 'Prefix'
     - 'AppName'
@@ -34,3 +45,4 @@
 ### Moving out Global and Regional settings
 
 ### Orchestrating Deployments
+
