@@ -33,6 +33,7 @@ Each Tenant has it's own dedicated directory, that contains the Environment Meta
     - Samples of deploying to any Environment are in this script
     - You can deploy from scratch with these commands
     - These are the exact same commands that are exectuted within the Pipelines
+    - All deployments from this project are PowerShell based, so you are not tied to any single Deployment Platform
 
 ![App Tenant Metadata](./App_Tenants_Metadata.jpg)
 ---
