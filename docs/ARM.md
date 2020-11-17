@@ -1,7 +1,7 @@
 #  Observations on Arm templates # 
 
 ## - Azure Deployment Framework ## 
-Go Readme [Documentation Home](../README.md)
+Go Readme [README](../README.md)
 
 [Documentation - What is ADF](./ADF.md)
 
