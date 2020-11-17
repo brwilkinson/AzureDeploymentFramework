@@ -13,6 +13,10 @@ Go Readme [README](../README.md)
 
 [Naming Standards](./Naming_Standards.md)
 
+### Tools and Setup
+
+[Tools Setup](./Tools_Setup.md)
+
 ### Using objects with the Copy loop
 
 [Copy Loop](./Copy_Loop.md)
