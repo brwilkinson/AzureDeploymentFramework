@@ -5,17 +5,18 @@ trigger: none
   # tags:
   #   exclude: [ NoBuild ]
 
+
 stages:
-# S1 - Sub Deploy (G0)
-- stage: S1_Sub
+# P0 - Sub Deploy (G0)
+- stage: P0_Sub
   variables:
     APP : ADF
-    ENV: S1
+    ENV: P0
     PREFIX : AZC1
   jobs:
   - job: RG_RBAC
     pool:
-      vmImage: windows-2019
+      vmImage: 'windows-2019'
     steps:
     - task: AzurePowerShell@5
       inputs:
@@ -26,29 +27,20 @@ stages:
         FailOnStandardError: true
         azurePowerShellVersion: 'LatestVersion'
 
-# S1 - RG Deploy
-- stage: S1_RG
+# P0 - RG Deploy
+- stage: P0_RG
   variables:
     APP : ADF
-    ENV: S1
+    ENV: P0
     PREFIX : AZC1
   jobs:
-  - job: Initial_S1
+  - job: Initial_P0
     pool:
       vmImage: 'windows-2019'
     steps:
-
-    # # Update Az modules for zero copy loops to 2.8.0
-    # - task: AzurePowerShell@5
-    #   inputs:
-    #     azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-S1'
-    #     ScriptType: 'InlineScript'
-    #     Inline: 'install-module az -force -verbose -SkipPublisherCheck -AllowClobber; gmo az* | remove-module -force'
-    #     azurePowerShellVersion: 'LatestVersion'
-      
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-S1'
+        azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-P0'
         ScriptType: 'FilePath'
         ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(Prefix) -stage "ALL"'
