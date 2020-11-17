@@ -9,13 +9,17 @@ Go Readme [README](../README.md)
 
 [Deployment Partitions](./Deployment_Partitions.md)
 
-### The 4 most important pieces - Naming standards
+### The most important pieces - Naming standards
 
 [Naming Standards](./Naming_Standards.md)
 
 ### Tools and Setup
 
 [Tools Setup](./Tools_Setup.md)
+
+### Defining your App Tenants
+
+[App Tenants](./App_Tenants.md)
 
 ### Using objects with the Copy loop
 
