@@ -21,6 +21,7 @@ Each Tenant has it's own dedicated directory, that contains the Environment Meta
     - 1 per Environment (Can be a Hub or a Spoke, aligned with a Resource Group)
         - Hub [P0](./Deployment_Partitions.md)
         - Spoke E.g. [S1](./Deployment_Partitions.md)
+            - You can clone a entire environment by Cloning a parameter file and giving it a new name e.g. S2
     - 1 Aligned with the App Tenant - Global [G1](./Deployment_Partitions.md)
     - 1 Aligned with the Subscription - Global [G0](./Deployment_Partitions.md)
 - Global-AZC1 - Global config for that region

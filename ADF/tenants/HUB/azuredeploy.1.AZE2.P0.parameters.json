@@ -3,13 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
-      "value": "AZC1"
+      "value": "AZE2"
     },
     "Environment": {
-      "value": "S"
+      "value": "P"
     },
     "DeploymentID": {
-      "value": "1"
+      "value": "0"
     },
     "vmAdminPassword": {
       "reference": {
@@ -31,27 +31,27 @@
       "value": {
         "RG": 1,
         "RBAC": 1,
-        "KV": 0,
+        "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
         "OMSDataSources": 1,
         "SA": 1,
-        "StorageSync": 1,
-        "RSV": 0,
-        "NSGHUB": 0,
-        "NSGSPOKE": 1,
+        "StorageSync": 0,
+        "RSV" : 0,
+        "NSGHUB": 1,
+        "NSGSPOKE": 0,
         "VNet": 1,
         "VNetPeering": 0,
-        "LinkPrivateDns": 0,
+        "LinkPrivateDns": 1,
         "RT": 1,
         "FW": 0,
-        "DNSPrivateZone": 0,
-        "ADPrimary": 1,
+        "DNSPrivateZone": 1,
+        "ADPrimary": 0,
         "ADSecondary": 0,
         "ILB": 1,
-        "PLB": 0,
+        "PLB": 1,
         "InitialDOP": 0,
-        "VMApp": 1,
+        "VMApp": 0,
         "VMAppLinux": 0,
         "VMSQL": 0,
         "VMFILE": 0,
@@ -71,9 +71,9 @@
         "IaaSDiagnostics": 1,
         "DependencyAgent": 1,
         "BackupWindowsWorkloadSQL": 0,
-        "DSC": 1,
+        "DSC": 0,
         "Scripts": 1,
-        "MSI": 0,
+        "MSI": 1,
         "CertMgmt": 0,
         "DomainJoin": 1,
         "Antimalware": 1,
@@ -95,9 +95,10 @@
         "DC2HostName": "DC02",
         "CommentOLD: SUBNETS": "128 + 64 + 32 + 16 + 16",
         "Comment2:   SUBNETS": "WAF01: 32 (/27) + FE01: 32 (/27) + AD01: 16 (/28) + BE01: 16 (/28) + BE02: 16 (/28) + BE03: 16 (/28) + MT01: 128 (/25) + MT02: 256 (/24)",
-        "DNSInternalInfo": [
+        "DNSPrivateZoneInfo" : [
           "Contoso.com",
-          "Fabrikam.com"
+          "Fabrikam.com",
+          "PSObject.com"
         ],
         "SubnetInfo": [
           {
@@ -109,78 +110,52 @@
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 0,
-            "serviceEndpoints": true,
-            "Route": true
+            "serviceEndpoints2": false,
+            "Route": false
           },
           {
             "name": "snAD01",
             "prefix": "64/28",
             "NSG": 0,
-            "Route": true
+            "Route": false
           },
           {
             "name": "snBE01",
             "prefix": "80/28",
             "NSG": 0,
-            "Route": true
+            "Route": false
           },
           {
             "name": "snBE02",
             "prefix": "96/28",
             "NSG": 0,
-            "Route": true
+            "Route": false
           },
           {
             "name": "snBE03",
             "prefix": "112/28",
             "NSG": 0,
-            "Route": true
+            "Route": false
           },
           {
             "name": "AzureFirewallSubnet",
             "prefix": "128/26",
             "NSG": 0,
-            "serviceEndpoints": true
+            "serviceEndpoints2": false
           },
           {
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 0,
-            "serviceEndpoints": true,
-            "Route": true
+            "serviceEndpoints2": false,
+            "Route": false
           }
         ],
         "saInfo": [
           {
-            "nameSuffix": "nas",
-            "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
-            "largeFileSharesState": "Enabled"
-          },
-          {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
-          },
-          {
-            "nameSuffix": "witness",
-            "skuName": "Standard_ZRS",
-            "allNetworks": "Allow"
-          },
-          {
-            "nameSuffix": "sqlbackup",
-            "skuName": "Standard_ZRS",
-            "allNetworks": "Allow"
-          }
-        ],
-        "StorageSyncInfo": [
-          {
-            "Name": "NAS",
-            "sasuffix": "nas",
-            "ShareQuota": 102400,
-            "SyncGroups": [
-              "NAS"
-            ]
+            "allNetworks" :"Allow"
           }
         ],
         "LinkPrivateDnsInfo": [
@@ -191,6 +166,24 @@
           {
             "zone": "Fabrikam.com",
             "Autoregistration": false
+          },
+          {
+            "zone": "PSObject.com",
+            "Autoregistration": false
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "Vault01",
+            "skuName": "standard",
+            "softDelete": true,
+            "AllNetworks": "Deny",
+            "accessPolicies": [
+              {
+                "objectId": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+                "Permissions": "All"
+              }
+            ]
           }
         ],
         "RTInfo": [
@@ -202,19 +195,6 @@
                 "addressPrefix": "0.0.0.0/0",
                 "nextHopIpAddress": "172.16.142.132",
                 "nextHopType": "VirtualAppliance"
-              }
-            ]
-          }
-        ],
-        "KVInfo": [
-          {
-            "Name": "ADFAppVault",
-            "skuName": "standard",
-            "softDelete": true,
-            "accessPolicies": [
-              {
-                "objectId": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
-                "Permissions": "All"
               }
             ]
           }
@@ -323,7 +303,7 @@
             "rule": {
               "name": "JMP01-RDP-Allow",
               "sourceAddresses": [
-                "75.166.19.36"
+                "73.157.100.227"
               ],
               "destinationPorts": [
                 "3389"
@@ -331,7 +311,7 @@
               "protocols": [
                 "Any"
               ],
-              "translatedAddress": "172.16.134.62"
+              "translatedAddress": "172.16.137.62"
             }
           }
         ],
@@ -670,13 +650,8 @@
         ],
         "CosmosDB": [
           {
-            "dbName": "CDB04",
-            "Kind": "GlobalDocumentDB",
-            "defaultConsistencyLevel": "Strong",
-            "enableMultipleWriteLocations": false,
-            "enableAutomaticFailover": true,
-            "databaseName": "Customers",
-            "containerName": "Info"
+            "dbName": "CDB03",
+            "Kind": "MongoDB"
           }
         ],
         "APIMInfo": [
@@ -733,10 +708,10 @@
         ],
         "ASRInfo": [
           {
-            "SourceRG": "S1",
+            "SourceRG": "P0",
             "SourceRegion": "AZC1",
-            "SourceSasuffix": "cache",
-            "DestinationRG": "S2",
+            "SourceSasuffix" : "cache",
+            "DestinationRG": "P0",
             "DestinationRegion": "AZE2",
             "DestinationRSVName": "ASRRecoveryVault",
             "DestinationLogAnalytics": "LogAnalytics",
@@ -788,11 +763,8 @@
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
-              "OSType": "Server2019small",
+              "OSType": "Server2016small",
               "Zone": 1,
-              "IncludeDevOpsAgent": 0,
-              "ExcludeDomainJoin": 0,
-              "ASR": 1,
               "NICs": [
                 {
                   "Subnet": "FE01",
@@ -930,7 +902,7 @@
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
-              "OSType": "Server2019small",
+              "OSType": "Server2016small",
               "NICs": [
                 {
                   "Subnet": "FE01",
@@ -946,7 +918,7 @@
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
-              "OSType": "Server2019small",
+              "OSType": "Server2016small",
               "NICs": [
                 {
                   "Subnet": "FE01",
@@ -977,44 +949,8 @@
               ]
             }
           ],
-          "SQLServers2": [
-            {
-              "VMName": "SQL01",
-              "OSType": "Server2016",
-              "ASName": "CLS01",
-              "Role": "SQL",
-              "DDRole": "SQL64GB",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "BE02",
-                  "SLB2": "CLS01",
-                  "FastNic": 1,
-                  "Primary": 1,
-                  "StaticIP": "107"
-                }
-              ],
-              "AppInfo": {
-                "ClusterInfo": {
-                  "CLIP": "109",
-                  "CLNAME": "CLS01",
-                  "Primary": "SQL01",
-                  "Secondary": [
-                    "SQL02"
-                  ]
-                },
-                "aoinfo": [
-                  {
-                    "GroupName": "AG01",
-                    "PrimaryAG": "SQL01",
-                    "SecondaryAG": "SQL02",
-                    "AOIP": "110",
-                    "ProbePort": "59999",
-                    "InstanceName": "SKY_1"
-                  }
-                ]
-              }
-            }
+          "SQLServersAS": [
+            "CLS01"
           ],
           "SQLServers": [
             {
@@ -1035,7 +971,7 @@
               ],
               "AppInfo": {
                 "ClusterInfo": {
-                  "CLIP": "106",
+                  "CLIP": "109",
                   "CLNAME": "CLS01",
                   "Primary": "SQL01",
                   "Secondary": [
@@ -1089,57 +1025,20 @@
                   }
                 ]
               }
-            },
-            {
-              "VMName": "SQL03",
-              "OSType": "Server2016",
-              "CLNAME": "CLS01",
-              "ASName": "CLS01",
-              "Role": "SQL",
-              "DDRole": "SQL64GB",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "BE02",
-                  "SLB2": "CLS01",
-                  "FastNic": 1,
-                  "Primary": 1,
-                  "StaticIP": "109"
-                }
-              ],
-              "AppInfo": {
-                "ClusterInfo": {
-                  "CLIP": "109",
-                  "CLNAME": "CLS01",
-                  "Primary": "SQL01",
-                  "Secondary": [
-                    "SQL02"
-                  ]
-                },
-                "aoinfo": [
-                  {
-                    "GroupName": "AG01",
-                    "PrimaryAG": "SQL01",
-                    "SecondaryAG": "SQL02",
-                    "InstanceName": "SKY_1"
-                  }
-                ]
-              }
             }
           ]
         },
         "WAFInfo": [
           {
             "WAFName": "API",
-            "WAFEnabled": true,
-            "WAFMode": "Prevention",
-            "WAFPolicyAttached": true,
-            "WAFSize": "WAF_v2",
-            "WAFTier": "WAF_v2",
+            "WAFEnabled": false,
+            "WAFMode": "Detection",
+            "WAFSize": "Standard_v2",
+            "WAFTier": "Standard_v2",
             "WAFCapacity": 2,
             "PrivateIP": "30",
             "SSLCerts": [
-              "ContosoWildcardMulti"
+              "MultiDomainwildcard"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
             "BEIPs": [
@@ -1159,15 +1058,15 @@
                 "Protocol": "http",
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
-                "Cert": "ContosoWildcardMulti",
-                "hostname": "contoso.io"
+                "Cert": "MultiDomainwildcard",
+                "hostname": "softpro.io"
               },
               {
                 "Port": 8989,
                 "Protocol": "http",
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
-                "Cert": "ContosoWildcardMulti",
+                "Cert": "MultiDomainwildcard",
                 "hostname": "softpro.io"
               },
               {
@@ -1175,7 +1074,7 @@
                 "Protocol": "http",
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
-                "Cert": "ContosoWildcardMulti",
+                "Cert": "MultiDomainwildcard",
                 "hostname": "softpro.io"
               }
             ],
@@ -1184,7 +1083,7 @@
                 "Port": 443,
                 "BackendPort": "8988",
                 "Protocol": "https",
-                "Cert": "ContosoWildcardMulti",
+                "Cert": "MultiDomainwildcard",
                 "Domain": "softpro.io",
                 "Hostname": "yates",
                 "Interface": "Public"
@@ -1193,7 +1092,7 @@
                 "Port": 443,
                 "BackendPort": "8989",
                 "Protocol": "https",
-                "Cert": "ContosoWildcardMulti",
+                "Cert": "MultiDomainwildcard",
                 "Domain": "softpro.io",
                 "Hostname": "select",
                 "Interface": "Public"
@@ -1202,7 +1101,7 @@
                 "Port": 443,
                 "BackendPort": "8990",
                 "Protocol": "https",
-                "Cert": "ContosoWildcardMulti",
+                "Cert": "MultiDomainwildcard",
                 "Domain": "softpro.io",
                 "Hostname": "sentry",
                 "Interface": "Public"
@@ -1211,7 +1110,7 @@
                 "Port": 443,
                 "BackendPort": "8990",
                 "Protocol": "https",
-                "Cert": "ContosoWildcardMulti",
+                "Cert": "MultiDomainwildcard",
                 "Domain": "softpro.io",
                 "Hostname": "",
                 "Interface": "Public"
