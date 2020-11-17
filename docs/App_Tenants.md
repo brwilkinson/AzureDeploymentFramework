@@ -21,8 +21,8 @@ Each Tenant has it's own dedicated directory, that contains the Environment Meta
     - 1 per Environment (Can be a Hub or a Spoke, aligned with a Resource Group)
         - Hub [P0](./Deployment_Partitions.md)
         - Spoke E.g. [S1](./Deployment_Partitions.md)
-    - 1 per Aligned with the App Tenant [G1](./Deployment_Partitions.md)
-    - 1 per Aligned with the Subscription [G0](./Deployment_Partitions.md)
+    - 1 Aligned with the App Tenant - Global [G1](./Deployment_Partitions.md)
+    - 1 Aligned with the Subscription - Global [G0](./Deployment_Partitions.md)
 - Global-AZC1 - Global config for that region
 - Global-Global - Global config for that tenant
 - Global-Config - Global config for that tenant
