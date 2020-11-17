@@ -12,18 +12,18 @@
     - which provide the most value to your customers?
     - which are fundamentally important for running your business?
     
-    Once you identity those service, you need to ensure they are running in the most: 
+    Once you identity those applications/services, you need to ensure they are running in the most: 
         - efficient
         - secure
-        - reliable 
+        - reliable
       manner possible, your business depends on it.
 
     - how do you enhance the lifecycle of those applications and the infrastructure in a Cloud First world?
         - How do you iterate in the Sofware development lifecycle with velocity, while maintaining quality?
 
 Microsoft recommends that you follow the:
-- [Microsoft Azure Well-Architected Framework](https://docs.microsoft.com/en-us/azure/architecture/framework)
 - [Cloud Adoption Framework](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/)
+- [Microsoft Azure Well-Architected Framework](https://docs.microsoft.com/en-us/azure/architecture/framework)
 
 However how do you actually go about taking 1 or more of those Core Apps and moving them to the Cloud using a Fully Declarative Model? 
     
