@@ -9,7 +9,7 @@ Go Home [Documentation Home](./ADF.md)
 <br/>
 
 
-    Common naming standards/conventions: foo23456790
+    Common naming standards/conventions: AZC1-ADF-S1-wafFW01, AZC1ADFS1SQL01, AZC1-ADF-S1-nicSQL01, AZC1-ADF-S1-vn
 
 |Name |Allowed Values |Defintion |
 |---|---|---|
