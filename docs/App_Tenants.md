@@ -30,6 +30,9 @@ Each Tenant has it's own dedicated directory, that contains the Environment Meta
 - Global-AZE2 - Global config for the partner region (Primarily a DR region)
 - Deployment Pipeline Yaml files
 - azure-Deploy.ps1 - This is the main Deployment Script for ALL Manual (Non-Pipeline) Deployments.
+    - Samples of deploying to any Environment are in this script
+    - You can deploy from scratch with these commands
+    - These are the exact same commands that are exectuted within the Pipelines
 
 ![App Tenant Metadata](./App_Tenants_Metadata.jpg)
 ---
