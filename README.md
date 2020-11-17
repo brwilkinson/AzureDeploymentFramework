@@ -29,10 +29,11 @@ Once you have completed those, how do you actually go about taking 1 or more of 
     
     How do you actually implement those design patterns that are in the architectural documentation?
     How do you actually start designing and deploying your application code?
-    How do you prototype out different design models allowing faster testing and validation, while staying within budget?
-    How do you define, deploy and release to as many environments that your application needs for: Dev, Test, QA, UAT, PROD, DR Etc. across regions.
+    How do you prototype out design models allowing faster testing and validation, while staying within budget?
+    How do you define, deploy and release to as many environments that your application needs for: 
+        - Dev, Test, QA, UAT, PROD, DR Etc. across regions.
 
-    If that is something that is of interest to you, then this project can help.
+## If that is something that is of interest to you, then this project can help.
 
 ### Disclaimers: 
 - This project should be implemented by Developers OR DevOps, this is a Declarative and Code first project.
