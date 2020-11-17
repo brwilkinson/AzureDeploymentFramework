@@ -1,6 +1,6 @@
 
 ## Azure Deployment Framework [ADF] 
-    - Declarative Infrastructure
+### - Declarative Infrastructure
     
     If I walk into your organization and look at your App Catalog or CMDB for your core business Applications.
     
