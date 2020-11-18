@@ -55,9 +55,9 @@ Once you familiar with those, how do you actually implement, by taking 1 or more
 - Subsequent application migrations will likley continue to take between 1 and 3 months.
 - If you cut corners on the overall design of this project on naming standards and IP Address allocations Etc, you will fail in using this Framework.
 - This project is a 'Framwework', it doesn't know anything about your application and you need to build and write the code to successfully deploy your application and deployment Pipelines.
-- This project supports 'Lift and Shift' of you application, however you get the most value you should consider re-architecting for the Cloud.
+- This project supports 'Lift and Shift' applications/platforms, however you get the most value you should consider re-architecting for the Cloud.
     - OR consider Lift and Shift (with modernization) as phase 1, for the first 12 months, then re-architect and migrate to PaaS in phase 2, the following 3 to 6 months.
-        - Example of modernization could mean moving to the latest OS versions, or dependency software version, while still running IaaS Etc.
+        - Example of modernization could mean moving to the latest OS versions, or  latest dependency software version, while still running IaaS Etc.
 - If you are Core IT, then this Framework is not for you.
 - If you don't have control over your own subscription/s, with an Owner account, then this Framework is not for you.
 - If you don't have 3 to 12 months to dedicate to deploying out a single Application that is core to your business, then this Framework s not for you.
