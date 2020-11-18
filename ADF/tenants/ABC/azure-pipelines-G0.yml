@@ -21,7 +21,7 @@ stages:
       inputs:
         azureSubscription: 'ADF_AZC1-ABC-RG-G0'
         ScriptType: 'FilePath'
-        ScriptPath: 'ADF/release/AzDeploy.ps1'
+        ScriptPath: 'ADF/release-arm/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload' 
         FailOnStandardError: true
         azurePowerShellVersion: 'LatestVersion'
@@ -40,7 +40,7 @@ stages:
 #       inputs:
 #         azureSubscription: 'ADF_AZC1-ABC-RG-G0'
 #         ScriptType: 'FilePath'
-#         ScriptPath: 'ADF/release/AzDeploy.ps1'
+#         ScriptPath: 'ADF/release-arm/AzDeploy.ps1'
 #         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
 #         FailOnStandardError: true
 #         azurePowerShellVersion: 'LatestVersion'
@@ -59,7 +59,7 @@ stages:
 #       inputs:
 #         azureSubscription: 'ADF_AZC1-ABC-RG-G0'
 #         ScriptType: 'FilePath'
-#         ScriptPath: 'ADF/release/AzDeploy.ps1'
+#         ScriptPath: 'ADF/release-arm/AzDeploy.ps1'
 #         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
 #         FailOnStandardError: true
 #         azurePowerShellVersion: 'LatestVersion'
@@ -78,7 +78,7 @@ stages:
 #       inputs:
 #         azureSubscription: 'ADF_AZC1-ABC-RG-G0'
 #         ScriptType: 'FilePath'
-#         ScriptPath: 'ADF/release/AzDeploy.ps1'
+#         ScriptPath: 'ADF/release-arm/AzDeploy.ps1'
 #         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
 #         FailOnStandardError: true
 #         azurePowerShellVersion: 'LatestVersion'
