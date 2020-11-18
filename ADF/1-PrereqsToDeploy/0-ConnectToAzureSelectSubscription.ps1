@@ -5,13 +5,13 @@ break
 # AZE2-ADF-Contoso01
 
 # These old module should be removed.
-Get-Module -Name Azure,AzureRM* -ListAvailable
+Get-Module -Name Azure, AzureRM* -ListAvailable
 
 # install or upgrade to the latest
 Install-Module -Name Az -Force
 
 # enable context saving to remember your subscription choice between sessions
-Enable-AzContextAutoSave
+Enable-AzContextAutosave
 
 # Login to Azure, watch for auth dialog pop up, all do the same thing.
 Add-AzAccount 
@@ -33,10 +33,10 @@ Get-AzContext
 
 Get-AzResourceGroup
 
-Get-AzResourceGroup | select *Name
+Get-AzResourceGroup | Select-Object *Name
 
-Get-AzVM | select *Name
+Get-AzVM | Select-Object *Name
 
-Get-AzKeyVault | select *name
+Get-AzKeyVault | Select-Object *name
 
-Get-AzStorageAccount | select *name
+Get-AzStorageAccount | Select-Object *name

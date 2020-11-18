@@ -7,18 +7,18 @@
 # The deployment automatically installs this Cert in all required stores for it to be trusted.
 # This step (creating the cert) is required to be run on Windows 10 or Server 2016
 param (
-    [String]$APP = 'PSO'
+	[String]$APP = 'PSO'
 )
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json | Foreach Global
+$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json | ForEach-Object Global
 $DNSNames = $Global.CertURLs
 $LocalAdminUser = $Global.vmAdminUserName
 $DeployPrimary = $true
 $DeploySecondary = $true
 
 $CertPath = 'c:\temp\Certs'
-$CertFile = $DNSNames[0] -replace "\W",""
+$CertFile = $DNSNames[0] -replace '\W', ''
 $CertFilePath = Join-Path -Path $CertPath -ChildPath "$CertFile.pfx"
 $CertExpiry = (Get-Date).AddYears(5) 
 
@@ -29,7 +29,7 @@ $GlobalRGName = $Global.GlobalRGName
 if ($DeployPrimary)
 {
 	$PrimaryPrefix = $Global.PrimaryPrefix
-	$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json | foreach Global
+	$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json | ForEach-Object Global
 	$PrimaryLocation = $Global.PrimaryLocation
 	$primaryKVName = $Primary.KVName
 	$primaryRGName = $Primary.HubRGName
@@ -39,7 +39,7 @@ if ($DeployPrimary)
 if ($DeploySecondary)
 {
 	$SecondaryPrefix = $Global.SecondaryPrefix
-	$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json | foreach Global
+	$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json | ForEach-Object Global
 	$SecondaryLocation = $Global.SecondaryLocation
 	$SecondaryKVName = $Secondary.KVName
 	$SecondaryRGName = $Secondary.HubRGName
@@ -57,7 +57,7 @@ if ($DeployPrimary)
 		}
 		catch
 		{
-			write-warning $_
+			Write-Warning $_
 			break
 		}
 	}
@@ -82,7 +82,7 @@ if ($DeployPrimary)
 		}
 		catch
 		{
-			write-warning $_
+			Write-Warning $_
 			break
 		}
 	}
@@ -92,12 +92,12 @@ if ($DeployPrimary)
 		try
 		{
 			# Set the local admin credential, also used for the certificate export cred
-			$Cred = Get-Credential -UserName $LocalAdminUser -Message "Enter the LocalAdmin Password, also used for Certificate"
+			$Cred = Get-Credential -UserName $LocalAdminUser -Message 'Enter the LocalAdmin Password, also used for Certificate'
 			Set-AzKeyVaultSecret -VaultName $primaryKVName -Name LocalAdmin -SecretValue $Cred.Password -ContentType txt -ErrorAction Stop
 		}
 		catch
 		{
-			write-warning $_
+			Write-Warning $_
 			break
 		}
 	}
@@ -114,7 +114,7 @@ if ($DeploySecondary)
 		}
 		catch
 		{
-			write-warning $_
+			Write-Warning $_
 			break
 		}
 	}
@@ -139,7 +139,7 @@ if ($DeploySecondary)
 		}
 		catch
 		{
-			write-warning $_
+			Write-Warning $_
 			break
 		}
 	}

@@ -5,7 +5,7 @@ param (
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
 #$PrimaryPrefix = 'AZC1'
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json | Foreach Global
+$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json | ForEach-Object Global
 #$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json | foreach Global
 #$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json | foreach Global
 
@@ -22,7 +22,7 @@ if (! (Get-AzResourceGroup -Name $GlobalRGName -EA SilentlyContinue))
     }
     catch
     {
-        write-warning $_
+        Write-Warning $_
         break
     }
 }
@@ -30,7 +30,7 @@ if (! (Get-AzResourceGroup -Name $GlobalRGName -EA SilentlyContinue))
 # Create the global storage acounts
 ## Used for File and Blob Storage for assets/artifacts
 
-New-AzStorageAccount -ResourceGroupName $GlobalRGName -Name $StorageAccountName  -SkuName Standard_RAGRS -Location $PrimaryLocation -Kind StorageV2 -EnableHttpsTrafficOnly $true
+New-AzStorageAccount -ResourceGroupName $GlobalRGName -Name $StorageAccountName -SkuName Standard_RAGRS -Location $PrimaryLocation -Kind StorageV2 -EnableHttpsTrafficOnly $true
 
 # Consider using a separate storage account for Blob uploads of deployment artifacts/templates Etc.
 # $stage = 'stagecus1'
