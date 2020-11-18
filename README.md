@@ -45,9 +45,9 @@ Once you familiar with those, how do you actually implement, by taking 1 or more
 
 ### Disclaimers: 
 - This project should be implemented by Developers OR DevOps, this is a Declarative and Code first project.
-- This project if for Deploying into Azure and Supports Hybrid, however does not work in other Clouds.
+- This project is for Deploying into Azure and Supports Hybrid scenarios, however does not work in other Clouds.
 - This project does not replace: Azure Blueprints, Azure Landing Zones or Azure Front Door other Organizational level concepts.
-- This project allows 1 or more applications to be deployed into Azure using Infrastructure As Code (IaC).
+- This project allows 1 or more applications/platforms to be deployed into Azure using Infrastructure As Code (IaC).
     - Azure Resource Manager (ARM) Templates
     - Desired State Configuration (DSC) Documents
 - I would estimate for new projects, this process will take a minimum of 3, however most likely 6 to 12 months.
