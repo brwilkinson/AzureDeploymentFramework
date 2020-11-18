@@ -19,9 +19,9 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-G0'
+        azureSubscription: 'ADF_AZC1-ADF-RG-G0'
         ScriptType: 'FilePath'
-        ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+        ScriptPath: 'ADF/release/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload'
         FailOnStandardError: true
         azurePowerShellVersion: 'LatestVersion'
@@ -41,16 +41,16 @@ stages:
     # # Update Az modules for zero copy loops to 2.8.0
     # - task: AzurePowerShell@5
     #   inputs:
-    #     azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-S2'
+    #     azureSubscription: 'ADF_AZC1-ADF-RG-S2'
     #     ScriptType: 'InlineScript'
     #     Inline: 'install-module az -force -verbose -SkipPublisherCheck -AllowClobber; gmo az* | remove-module -force'
     #     azurePowerShellVersion: 'LatestVersion'
       
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-S2'
+        azureSubscription: 'ADF_AZC1-ADF-RG-S2'
         ScriptType: 'FilePath'
-        ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+        ScriptPath: 'ADF/release/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(Prefix) -stage "ALL"'
         FailOnStandardError: true
         azurePowerShellVersion: 'LatestVersion'

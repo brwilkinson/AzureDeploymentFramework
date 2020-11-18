@@ -3,7 +3,7 @@
 #Requires -Module AZ.Accounts
 
 param (
-    [String]$AZDevOpsToken = 'hek3vo6bjplf324yfyte53ok5hkxehiwj53rqeau7f2xvqnawlrq',
+    [String]$AZDevOpsToken = 'hek3vo6bjaplf324yfyte53ok5hkxehiwjb53rqeadu7f2xvqnawlrq',
     [String[]]$Environments = ('S1','S2','D3'),
     [String]$Prefix = 'AZC1',
     [String]$App = 'ADF'

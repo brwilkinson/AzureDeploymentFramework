@@ -18,9 +18,9 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-G0'
+        azureSubscription: 'ADF_AZC1-ADF-RG-G0'
         ScriptType: 'FilePath'
-        ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+        ScriptPath: 'ADF/release/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload' 
         FailOnStandardError: true
         azurePowerShellVersion: 'LatestVersion'
@@ -36,9 +36,9 @@ stages:
 #     steps:
 #     - task: AzurePowerShell@5
 #       inputs:
-#         azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-G0'
+#         azureSubscription: 'ADF_AZC1-ADF-RG-G0'
 #         ScriptType: 'FilePath'
-#         ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+#         ScriptPath: 'ADF/release/AzDeploy.ps1'
 #         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
 #         FailOnStandardError: true
 #         azurePowerShellVersion: 'LatestVersion'
@@ -54,9 +54,9 @@ stages:
 #     steps:
 #     - task: AzurePowerShell@5
 #       inputs:
-#         azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-G0'
+#         azureSubscription: 'ADF_AZC1-ADF-RG-G0'
 #         ScriptType: 'FilePath'
-#         ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+#         ScriptPath: 'ADF/release/AzDeploy.ps1'
 #         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
 #         FailOnStandardError: true
 #         azurePowerShellVersion: 'LatestVersion'
@@ -72,9 +72,9 @@ stages:
 #     steps:
 #     - task: AzurePowerShell@5
 #       inputs:
-#         azureSubscription: 'AZC1-ADF-RG-G0-AZC1-ADF-RG-G0'
+#         azureSubscription: 'ADF_AZC1-ADF-RG-G0'
 #         ScriptType: 'FilePath'
-#         ScriptPath: 'AZC1-ADF-RG-P0/release/AzDeploy.ps1'
+#         ScriptPath: 'ADF/release/AzDeploy.ps1'
 #         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy'
 #         FailOnStandardError: true
 #         azurePowerShellVersion: 'LatestVersion'

@@ -59,7 +59,7 @@ Once you have completed those, how do you actually go about taking 1 or more of 
     - OR consider Lift and Shift (with modernization) as phase 1, for the first 12 months, then re-architect and migrate to PaaS in phase 2, the following 3 to 6 months.
         - Example of modernization could mean moving to the latest OS versions, or dependency software version, while still running IaaS Etc.
 - If you are Core IT, then this Framework is not for you.
-- If you don't have control over your own subscription, with an Owner account, then this Framework is not for you.
+- If you don't have control over your own subscription/s, with an Owner account, then this Framework is not for you.
 - If you don't have 3 to 12 months to dedicate to deploying out a single Application that is core to your business, then this Framework s not for you.
 - However if you need to build out Labs or use this for Demo's Etc, then it will work very nicely.
 
