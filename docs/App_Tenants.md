@@ -5,13 +5,15 @@ Go Home [Documentation Home](./ARM.md)
 
 ### App Tenants
 
-The Framework supports deploying Multiple Applications, each application is referred to as a Tenant in the ADF.
+The Framework supports deploying Multiple Applications, each application is referred to as a Tenant within the ADF.
 
 A single DevOps Team owns all of the deployments for all of the tenants in the projects, including all release pipelines.
 
 You may adopt a Shared Services HUB tenant and all other tenants will only have Spoke environments.
 
 If you only have a single Tenant, you can just deploy the HUB from the single tenant.
+
+You can easily deploy all Tenants into the same subscription, however you can also deploy across multiple Subscriptions
 
 ![App Tenants](./App_Tenants.jpg)
 
