@@ -63,6 +63,8 @@ Once you familiar with those, how do you actually implement, by taking 1 or more
 - If you don't have 3 to 12 months to dedicate to deploying out a single Application that is core to your business, then this Framework s not for you.
 - However if you need to build out Labs or use this for Demo's Etc, then the ADF framework will work very nicely.
 
+# Any Feedback on this project is welcome, please feel free to reach out or ask questons open issues
+
 
 
 
