@@ -30,14 +30,9 @@
         "alertRecipients": [
             "alerts@contoso.com"
         ],
-        "chef_server_url": "https://chef-automate-2pgw.centralus.cloudapp.azure.com/organizations/trial",
-        "chef_validation_client_name": "trial-validator",
-        "chef_validation_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAvvHRmXUbMqrrizBva6rm0D1jPN4drtIqOC7FdEfk5sin3h2LKnwTmuB4kBbY3nY1v0G0MLj1TuCiuX67UvgRcD6lFnzWdFAAfF0TDwvVm8SmWb/6CR4Z7XgM3ACkJKLZbymMdhB8LSzpjLZD34jrr0JOhqFM7AOhSEWD8eHJBgnDfrG+BhXZ7iYSfCsRDmi/qxs4nC2vcmGF9jCCfc4p3WYkBIs0fA8rfVWnsg/82ffgsxl4qxkB6h5Ij/VCfGBaZezHQmEOVIW2YiFOOhZpzCSF0wPgqsLvcRd0Wx1/bmFENLdJTCJEUT6fj/R53VoO+hD83N7uavaTAfeIH3u+DwIDAQABAoIBAB1xuLqLPmhvxuatz2Cw9+rArJ7kOXuN2QjU3Yny1C9qXch4kc85VuSZHL5LZ6HWZK9beGfS/bDuHumvyz8eFcJTRq3TDlbdR1XmHFxDnOrqRiSs3+esBp+B1anPR4CGxDTKGWjTXfKxbEpQiOLdgEqEVQuZr/ztCl/UqGYSRSdy8cntDbrtn+TkiVgczTE6ZNg8KPe3KOSGa+1PSe8pwq6CRV2j1kRIuws5S9NNoX1aiJeQrX5TJ1eAzv08LmlQ/jh9u/oJGwA3zKkQcOzXOk8uoDb/9KNdFB5tfjeSoXd4CTnEKl46nXqpEe7bdA4fivSuvmHxXgSCxuYJFYW/vGECgYEA4P14yIjibp/Pl4v1DF1F/+zy4/zTkeZXmlfyqsT8PiZLfPidLUQMoJbNND0oYktGYYWVQ0o/oOg0LU501NmJtQsfx2a89SIJXQT9BOBNNMeIPkNcey8VdfW7pe8BJ9mGA/JhTwpjB4GXUWzUmlohhBLQv/LHeRtc1ldC1ytHS7cCgYEA2UMWnj91g3WKQHTxvgQuzhCClN3D/FHyGOrqHa0S7N+pOKd8PdSVe3MQQHl6Z6q1mhPMU2VkdQ2qG04wPNxBM64Xg0iW81GFmSBrauhl+ti2b9kCcmtfD7XIaVKbExUlzy8zXxDvBSagwTHVEkmgk7aFULTM7xuZpo6jlA4P0GkCgYBcRrlGDhZIZtUeg7Fya8Ls70LDTQt8+GsPi2ikr3wBBXXKgLD+Qr2nE5KADWFFxzfLgZ0xZv9nwDS+LEJwlfQLw8852iI/q8EJXKVlXZVswzVWzAvfHfWAVtOqf7cKoAV+EufkIg9xoa3tIGSmFbdPUuQ5BZrYSeeupUVtuHtaSwKBgQCiyBhXQva6I0QNnVFO7HVhIY+lGC9yirdYohH9YCKw5bc1Yo+9B91kHEcN97aVm5rrMXBC/9Hvveg5AzEzOFeF8CdfzvCCqA7wNxEkjbFy7BJs5OxnbDlSXQImn6Te/FZS0GuuC9L6SgHiHoMla5LrebKTUJPHhydtWqwHDy4cGQKBgQCFaZF+GUrdAmT1GYSKg0kKSrTNTRq1W56MqxXDXhjfLkBz6oE6BmukImBTdESHB6+5SyWcz1GRZgdUdWpO/bH6vc8rmXrl1zns0z67FVoZkEy8Ka+YegBLOUopyenD976CBGJpVuV4iRg+jVgHDr6O0q0M5F+VvF3vmL7WfhaDLA==\n-----END RSA PRIVATE KEY-----",
         "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
         "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
         "sqlCredentialName": "localadmin",
-        "sqlBackupservicePrincipalSecret": "e1k4UnHY+As+6U4+cAstnAzKv3qmyqA2E7ePbkiHyKc:",
-        "sqlBackupservicePrincipalName": "b7743acb-28da-495d-be2f-4177ce0dc917",
         "sqlAutobackupRetentionPeriod": 5,
         "RolesLookup": {
             "Azure-App-203": "e8786166-1f90-4e5a-977c-40fbe495d670",
