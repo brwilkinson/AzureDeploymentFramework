@@ -675,11 +675,11 @@
         },
         "WAFInfoNTE": [
           {
-            "WAFName": "CONNECTS",
+            "WAFName": "FE",
             "WAFEnabled": true,
             "WAFMode": "Prevention",
             "WAFPolicyAttached": true,
-            "WAFPolicyName": "CONNECTS2",
+            "WAFPolicyName": "FE2",
             "WAFPolicyOld": false,
             "WAFSize": "WAF_V2",
             "WAFTier": "WAF_V2",
@@ -720,13 +720,13 @@
                 "Protocol": "https",
                 "Cert": "wildcardcontoso2021",
                 "Domain": "contoso.com",
-                "Hostname": "connects"
+                "Hostname": "FE"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
                 "Domain": "contoso.com",
-                "Hostname": "connects"
+                "Hostname": "FE"
               }
             ]
           }
@@ -737,7 +737,7 @@
             "WAFEnabled": true,
             "WAFMode": "Detection",
             "WAFPolicyAttached": true,
-            "WAFPolicyName": "CONNECTS2",
+            "WAFPolicyName": "FE2",
             "WAFSize": "WAF_v2",
             "WAFTier": "WAF_v2",
             "WAFCapacity": 2,

@@ -113,7 +113,7 @@
     ],
     "WAFPolicyDefaultNTE": [
       {
-        "name": "CONNECTS2",
+        "name": "fe2",
         "state": "enabled",
         "mode": "Prevention",
         "ruleSetVersion": "3.0",
@@ -602,7 +602,7 @@
     // "DNS": {
     //   "type": "object",
     //   "value": {
-    //     "CONNECTS": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-publicipWAFCONNECTS')),'2017-08-01','Full').properties.dnssettings.fqdn]",
+    //     "fe": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-publicipWAFfe')),'2017-08-01','Full').properties.dnssettings.fqdn]",
     //     "MYORDERS": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-publicipWAFMYORDERS')),'2017-08-01','Full').properties.dnssettings.fqdn]",
     //     "XML": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(variables('Deployment'),'-publicipWAFXML')),'2017-08-01','Full').properties.dnssettings.fqdn]"
     //   }

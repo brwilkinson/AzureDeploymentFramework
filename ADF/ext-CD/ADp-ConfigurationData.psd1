@@ -53,7 +53,7 @@
                 @{Name = "lb{2}cls01"; Target = "{0}109"; Type = "ARecord" }
 
                 # sample CNAME
-                #@{Name = "{0}www";Target = "{0}connects.contoso.com"; Type="CName"}
+                #@{Name = "{0}www";Target = "{0}fe.contoso.com"; Type="CName"}
             )
             SoftwarePackagePresent      = @(
                 @{
