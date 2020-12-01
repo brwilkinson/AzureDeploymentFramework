@@ -568,7 +568,7 @@
                     "SecondaryAG": "SQL02",
                     "AOIP": "110",
                     "ProbePort": "59999",
-                    "InstanceName": "SKY_1"
+                    "InstanceName": "CTO_1"
                   }
                 ]
               }
@@ -604,7 +604,7 @@
                     "GroupName": "AG01",
                     "PrimaryAG": "SQL01",
                     "SecondaryAG": "SQL02",
-                    "InstanceName": "SKY_1"
+                    "InstanceName": "CTO_1"
                   }
                 ]
               }

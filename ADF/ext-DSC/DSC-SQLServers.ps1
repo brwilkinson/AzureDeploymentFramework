@@ -1300,8 +1300,8 @@ else
 dir .\SQLServers -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
 
 $aoinfo = @{
-    SQL01 = "[{'InstanceName':'SKY_1','GroupName':'AG01','PrimaryAG':'SQL01','SecondaryAG':'SQL02', 'AOIP':'110','ProbePort':'59999'}]"
-    SQL02 = "[{'InstanceName':'SKY_1','GroupName':'AG01','PrimaryAG':'SQL01','SecondaryAG':'SQL02'}]"
+    SQL01 = "[{'InstanceName':'CTO_1','GroupName':'AG01','PrimaryAG':'SQL01','SecondaryAG':'SQL02', 'AOIP':'110','ProbePort':'59999'}]"
+    SQL02 = "[{'InstanceName':'CTO_1','GroupName':'AG01','PrimaryAG':'SQL01','SecondaryAG':'SQL02'}]"
     # SQL03 = "[{'InstanceName':'ADF_2','GroupName':'AG02','PrimaryAG':'SQL03','SecondaryAG':'SQL04', 'AOIP':'213','ProbePort':'59999'}]"
     # SQL04 = "[{'InstanceName':'ADF_2','GroupName':'AG02','PrimaryAG':'SQL03','SecondaryAG':'SQL04'}]"
 }

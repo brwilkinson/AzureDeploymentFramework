@@ -218,7 +218,7 @@
                   "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/frontendPorts/appGatewayFrontendPort',parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Port )]"
                 },
                 "Protocol": "[parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol]",
-                "hostName": "[concat(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,if( equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,''),'',concat('-',parameters('Environment'),parameters('DeploymentID'),'.')),parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Domain)]", //yates-i6.softpro.io
+                "hostName": "[concat(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,if( equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,''),'',concat('-',parameters('Environment'),parameters('DeploymentID'),'.')),parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Domain)]", //yates-i6.contoso.com
                 "requireServerNameIndication": "[equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol,'https')]",
                 "sslCertificate": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol,'https'),variables('Listeners')[copyIndex('httpListeners')].sslCertificate,json('null'))]"
               }

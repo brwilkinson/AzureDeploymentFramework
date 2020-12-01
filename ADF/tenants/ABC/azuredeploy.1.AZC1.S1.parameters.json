@@ -686,7 +686,7 @@
         "AppServersVMSS": [
           {
             "VMName": "API",
-            "SFName": "Softpro",
+            "SFName": "contoso",
             "Role": "API",
             "ASName": "API",
             "OSType": "Server2016SS",
@@ -703,7 +703,7 @@
           },
           {
             "VMName": "SF",
-            "SFName": "Softpro",
+            "SFName": "contoso",
             "Role": "SF",
             "ASName": "SF",
             "OSType": "Server2016SS",
@@ -721,7 +721,7 @@
         ],
         "AppServersSF": [
           {
-            "SFName": "Softpro",
+            "SFName": "contoso",
             "LBFEIP": "253",
             "Subnet": "MT02",
             "reliabilityLevel": "Bronze"
@@ -1025,7 +1025,7 @@
                     "SecondaryAG": "SQL02",
                     "AOIP": "110",
                     "ProbePort": "59999",
-                    "InstanceName": "SKY_1"
+                    "InstanceName": "CTO_1"
                   }
                 ]
               }
@@ -1064,7 +1064,7 @@
                     "SecondaryAG": "SQL02",
                     "AOIP": "110",
                     "ProbePort": "59999",
-                    "InstanceName": "SKY_1"
+                    "InstanceName": "CTO_1"
                   }
                 ]
               }
@@ -1100,7 +1100,7 @@
                     "GroupName": "AG01",
                     "PrimaryAG": "SQL01",
                     "SecondaryAG": "SQL02",
-                    "InstanceName": "SKY_1"
+                    "InstanceName": "CTO_1"
                   }
                 ]
               }
@@ -1136,7 +1136,7 @@
                     "GroupName": "AG01",
                     "PrimaryAG": "SQL01",
                     "SecondaryAG": "SQL02",
-                    "InstanceName": "SKY_1"
+                    "InstanceName": "CTO_1"
                   }
                 ]
               }
@@ -1183,7 +1183,7 @@
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
                 "Cert": "ContosoWildcardMulti",
-                "hostname": "softpro.io"
+                "hostname": "contoso.com"
               },
               {
                 "Port": 8990,
@@ -1191,7 +1191,7 @@
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
                 "Cert": "ContosoWildcardMulti",
-                "hostname": "softpro.io"
+                "hostname": "contoso.com"
               }
             ],
             "Listeners": [
@@ -1200,7 +1200,7 @@
                 "BackendPort": "8988",
                 "Protocol": "https",
                 "Cert": "ContosoWildcardMulti",
-                "Domain": "softpro.io",
+                "Domain": "contoso.com",
                 "Hostname": "yates",
                 "Interface": "Public"
               },
@@ -1209,7 +1209,7 @@
                 "BackendPort": "8989",
                 "Protocol": "https",
                 "Cert": "ContosoWildcardMulti",
-                "Domain": "softpro.io",
+                "Domain": "contoso.com",
                 "Hostname": "select",
                 "Interface": "Public"
               },
@@ -1218,7 +1218,7 @@
                 "BackendPort": "8990",
                 "Protocol": "https",
                 "Cert": "ContosoWildcardMulti",
-                "Domain": "softpro.io",
+                "Domain": "contoso.com",
                 "Hostname": "sentry",
                 "Interface": "Public"
               },
@@ -1227,35 +1227,35 @@
                 "BackendPort": "8990",
                 "Protocol": "https",
                 "Cert": "ContosoWildcardMulti",
-                "Domain": "softpro.io",
+                "Domain": "contoso.com",
                 "Hostname": "",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "softpro.io",
+                "Domain": "contoso.com",
                 "Hostname": "",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "softpro.io",
+                "Domain": "contoso.com",
                 "Hostname": "select",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "softpro.io",
+                "Domain": "contoso.com",
                 "Hostname": "sentry",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "softpro.io",
+                "Domain": "contoso.com",
                 "Hostname": "yates",
                 "Interface": "Public"
               }

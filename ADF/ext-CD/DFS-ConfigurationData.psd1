@@ -45,7 +45,7 @@
 
             LocalPolicyPresent2         = @(
                 @{KeyValueName = "SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner"; PolicyType = "User"; Data = "1"; Type = "DWord" },
-                @{KeyValueName = "SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\softpro.io\*"; PolicyType = "User"; Data = "2"; Type = "DWord" },
+                @{KeyValueName = "SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*"; PolicyType = "User"; Data = "2"; Type = "DWord" },
                 @{KeyValueName = "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\DontUsePowerShellOnWinX"; PolicyType = "User"; Data = "0"; Type = "DWord" },
                 @{KeyValueName = "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarGlomLevel"; PolicyType = "User"; Data = "1"; Type = "DWord" },
                 @{KeyValueName = "Software\Policies\Microsoft\Internet Explorer\Main\DisableFirstRunCustomize"; PolicyType = "Machine"; Data = "1"; Type = "DWord" }

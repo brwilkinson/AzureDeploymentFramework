@@ -173,7 +173,7 @@
         "runtimeUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.azure-api.net'))]",
         "portalUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.portal.azure-api.net'))]",
         "managementApiUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.management.azure-api.net'))]",
-        //"managementApiUrl": "[tolower(concat('sky',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]",
+        //"managementApiUrl": "[tolower(concat('cto',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]",
         "scmUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.scm.azure-api.net'))]",
         "customProperties": {
           "subnetAddress": "[reference(concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName), '2015-06-15').addressprefix]"
@@ -271,13 +271,13 @@
         //   ],
         //   "properties": {
         //     "description": "commands",
-        //     "url": "fabric:/SoftPro.Commands",
+        //     "url": "fabric:/contoso.Commands",
         //     "protocol": "http",
-        //     "resourceId": "[tolower(concat('https://sky',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]",
+        //     "resourceId": "[tolower(concat('https://cto',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]",
         //     "properties": {
         //       "serviceFabricCluster": {
         //         "managementEndpoints": [
-        //           "[tolower(concat('https://sky',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]"
+        //           "[tolower(concat('https://cto',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]"
         //         ],
         //         "clientCertificatethumbprint": "[parameters('global').certificateThumbprint]",
         //         "serverCertificatethumbprints": [

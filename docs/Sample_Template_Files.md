@@ -535,7 +535,7 @@ Below is a sample of a Web Application Firewall Configuration
           "WAFCapacity": 2,
           "PrivateIP": "252",
           "SSLCerts": [
-            "softproskywildcardBase64"
+            "ContosowildcardBase64"
           ],
           "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
           "FQDNs": [
@@ -551,16 +551,16 @@ Below is a sample of a Web Application Firewall Configuration
               "Protocol": "http",
               "CookieBasedAffinity": "Disabled",
               "RequestTimeout": 600,
-              "Cert": "softproskywildcardBase64",
-              "hostname": "softprosky.local"
+              "Cert": "contosowildcardBase64",
+              "hostname": "contoso.local"
             },
             {
               "Port": 443,
               "Protocol": "https",
               "CookieBasedAffinity": "Disabled",
               "RequestTimeout": 600,
-              "Cert": "softproskywildcardBase64",
-              "hostname": "softprosky.local"
+              "Cert": "contosowildcardBase64",
+              "hostname": "contoso.local"
             }
           ]
         }
@@ -604,7 +604,7 @@ SQL vm's in a cluster example
                   "SecondaryAG": "SQL02",
                   "AOIP": "215",
                   "ProbePort": "59999",
-                  "InstanceName": "SKY_1"
+                  "InstanceName": "CTO_1"
                 }
               ]
             }
@@ -638,7 +638,7 @@ SQL vm's in a cluster example
                   "GroupName": "AG01",
                   "PrimaryAG": "SQL01",
                   "SecondaryAG": "SQL02",
-                  "InstanceName": "SKY_1"
+                  "InstanceName": "CTO_1"
                 }
               ]
             }

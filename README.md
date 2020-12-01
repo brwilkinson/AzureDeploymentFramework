@@ -38,7 +38,7 @@ Once you familiar with those, how do you actually implement, by taking 1 or more
     How do you prototype out design models allowing faster testing and validation, while staying within budget?
     How do you define, deploy and release to as many environments that your application needs for: 
         - Dev, Test, QA, UAT, PROD, DR Etc. across regions.
-    How do you Train your staff on Cloud principles and keep up with the rapid pace of Cloud capabiliites?
+    How do you Train your staff on Cloud principles and keep up with the rapid pace of Cloud capabilites?
     How do you Document what your environments look like and at the same time manage rapid Change?
 
 ## If that is something that is of interest to you, then this project can help.
@@ -60,8 +60,8 @@ Once you familiar with those, how do you actually implement, by taking 1 or more
         - Example of modernization could mean moving to the latest OS versions, or  latest dependency software version, while still running IaaS Etc.
 - If you are Core IT, then this Framework is not for you.
 - If you don't have control over your own subscription/s, with an Owner account, then this Framework is not for you.
-- If you don't have 3 to 12 months to dedicate to deploying out a single Application that is core to your business, then this Framework s not for you.
-- However if you need to build out Labs or use this for Demo's Etc, then the ADF framework will work very nicely.
+- If you don't have 3 to 12 months to dedicate to deploying out a single Application that is core to your business, then this Framework is not for you.
+- However if you need to build out Labs or use this for Demo's Etc, then the ADF will work very nicely.
 
 ## Any Feedback on this project is welcome, please feel free to reach out or ask questions or open issues.
 
