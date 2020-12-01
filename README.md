@@ -1,5 +1,5 @@
 
-## Azure Deployment Framework [ADF] [This Project is currently a DRAFT]
+## Azure Deployment Framework [ADF] [This Project is currently a Preview]
 ### - Declarative Infrastructure
 
 - [Documentation - What is ADF, Observations on ARM Templates Etc.](./docs/ARM.md)
