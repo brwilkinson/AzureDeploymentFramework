@@ -109,7 +109,7 @@
                 "operator": "Contains",
                 "matchValues": [
                   "/admin/maintenance/editor",
-                  "/edge/com/nextace/templatephrases.cfc",
+                  "/edge/com/contoso/templatephrases.cfc",
                   "/edge/includes/ajax/htmlexcelwrapperpopup.cfm",
                   "/edge/tabqa/chaininfo.cfm",
                   "/edge/tabqa/submit.cfm",

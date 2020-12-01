@@ -25,8 +25,6 @@ $container = $StorageAccount.Context.BlobEndPoint + $StorageContainerName
 $sasToken = New-AzStorageContainerSASToken -Container $StorageContainerName -Context $StorageAccount.Context -Permission r -ExpiryTime (Get-Date).AddHours(4)
 
 $ModulePath = "$PSScriptRoot\CustomResources"
-#$ModulePath = "$home\source\repos\NextAce_Infrastructure\AZEUS2-MSFT-MTARM\PrereqsToDeploy\CustomResources"
-
 
 get-childitem -path $modulePath -Directory | foreach {
     $ModuleName = $_.BaseName
