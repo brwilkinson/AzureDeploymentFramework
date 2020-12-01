@@ -109,13 +109,13 @@
                 "operator": "Contains",
                 "matchValues": [
                   "/admin/maintenance/editor",
-                  "/edge/com/contoso/templatephrases.cfc",
-                  "/edge/includes/ajax/htmlexcelwrapperpopup.cfm",
-                  "/edge/tabqa/chaininfo.cfm",
-                  "/edge/tabqa/submit.cfm",
-                  "/edge/tabqa/sidebar/submit.cfm",
-                  "/edge/wkfmgr_editorder.cfm",
-                  "/edge/wkfmgr_neworder.cfm",
+                  "/contoso/com/contoso/templatephrases.cfc",
+                  "/contoso/includes/ajax/htmlexcelwrapperpopup.cfm",
+                  "/contoso/tabqa/chaininfo.cfm",
+                  "/contoso/tabqa/submit.cfm",
+                  "/contoso/tabqa/sidebar/submit.cfm",
+                  "/contoso/wkfmgr_editorder.cfm",
+                  "/contoso/wkfmgr_neworder.cfm",
                   "/jakarta/isapi_redirect.dll"
                 ],
                 "transforms": [

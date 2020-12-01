@@ -72,8 +72,8 @@
                     filesDestinationPath = 'F:\Source\GIT'
                 },
 
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\EDGE'
-                    filesDestinationPath = 'F:\Source\EDGE'
+                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\contoso'
+                    filesDestinationPath = 'F:\Source\contoso'
                 },
 
                 @{filesSourcePath        = '\\{0}.file.core.windows.net\source\PSCore'

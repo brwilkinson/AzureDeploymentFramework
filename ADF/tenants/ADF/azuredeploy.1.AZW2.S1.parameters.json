@@ -413,14 +413,14 @@
                 "Protocol": "https",
                 "paths": [
                   "/admin/maintenance/phraseCheckRTF.cfm",
-                  "/edge/OrderTasks/FinalizeOrder/new_FinalizeOrder.cfm"
+                  "/contoso/OrderTasks/FinalizeOrder/new_FinalizeOrder.cfm"
                 ]
               },
               {
                 "Name": "Policy4",
                 "Protocol": "https",
                 "paths": [
-                  "/edge/tabqa/new_spellCheck.cfm"
+                  "/contoso/tabqa/new_spellCheck.cfm"
                 ]
               }
             ],
