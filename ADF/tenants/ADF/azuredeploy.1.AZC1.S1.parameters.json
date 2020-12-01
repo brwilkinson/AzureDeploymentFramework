@@ -688,7 +688,7 @@
             "Interface": "Private",
             "SSLPolicy": "tls12",
             "SSLCerts": [
-              "wildcardNextAce2021"
+              "wildcardcontoso2021"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
             "FQDNs": [
@@ -709,8 +709,8 @@
                 "Protocol": "https",
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
-                "Cert": "wildcardNextAce2021",
-                "hostname": "titleedge.com"
+                "Cert": "wildcardcontoso2021",
+                "hostname": "contoso.com"
               }
             ],
             "Listeners": [
@@ -718,14 +718,14 @@
                 "Port": 443,
                 "BackendPort": "443",
                 "Protocol": "https",
-                "Cert": "wildcardNextAce2021",
-                "Domain": "titleedge.com",
+                "Cert": "wildcardcontoso2021",
+                "Domain": "contoso.com",
                 "Hostname": "connects"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "titleedge.com",
+                "Domain": "contoso.com",
                 "Hostname": "connects"
               }
             ]
