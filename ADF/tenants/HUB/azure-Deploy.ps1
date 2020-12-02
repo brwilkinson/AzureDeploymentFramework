@@ -4,7 +4,7 @@ $App = 'ADF'
 $Enviro = 'S1'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
-. ASD:\release\Start-AzDeploy.ps1
+. ASD:\release-az\Start-AzDeploy.ps1
 
 Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App]" -verbose
 

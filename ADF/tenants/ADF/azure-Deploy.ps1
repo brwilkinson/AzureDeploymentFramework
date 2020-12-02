@@ -1,10 +1,10 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'ADF'
-$Enviro = 'P0'
+$Enviro = 'S1'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
-. ASD:\release\Start-AzDeploy.ps1
+. ASD:\release-az\Start-AzDeploy.ps1
 Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App] and Enviro is [$Enviro]" -verbose
 
 break
