@@ -1,0 +1,198 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(variables('Deployment'),'-vn'))]",
+    "gatewaySubnet": "gatewaySubnet",
+    "gatewaySubnetRef": "[concat(variables('VNetID'), '/subnets/', variables('gatewaySubnet'))]",
+    "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
+    "VNGWInfo": "[parameters('DeploymentInfo').VNGWInfo]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]"
+  },
+  "resources": [
+    {
+      "name": "[concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-publicip1')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2018-03-01",
+      "sku": {
+        "name": "Standard"
+      },
+      "copy": {
+        "name": "ERGWLoop",
+        "count": "[length( variables('VNGWInfo') )]"
+      },
+      "dependsOn": [],
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "dnsSettings": {
+          "domainNameLabel": "[toLower( concat(variables('Domain'), variables('Deployment'), '-',variables('VNGWInfo')[copyIndex()].Name ) ) ]"
+        }
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-publicip1')]"
+          ],
+          "apiVersion": "2015-07-01",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "DDoSProtectionNotifications",
+                "enabled": true
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "name": "[concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name)]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-publicip1'))]"
+      ],
+      "copy": {
+        "name": "VNGWLoop",
+        "count": "[length( variables('VNGWInfo') )]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "vnetGatewayConfig",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('gatewaySubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-publicip1'))]"
+              }
+            }
+          }
+        ],
+        "sku": {
+          "name": "[variables('VNGWInfo')[copyIndex()].skuname]",
+          "tier": "[variables('VNGWInfo')[copyIndex()].skutier]",
+          "capacity": "[variables('VNGWInfo')[copyIndex()].skucapacity]"
+        },
+        "gatewayType": "[variables('VNGWInfo')[copyIndex()].gatewayType]",
+        "vpnType": "[variables('VNGWInfo')[copyIndex()].vpnType]"
+      }
+    },
+    {
+      "condition": "[variables('VNGWInfo')[copyIndex()].ERConnectionOptions.EREnableConnection]",
+      "apiVersion": "2018-11-01",
+      "type": "Microsoft.Network/connections",
+      "name": "[concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-connection-',variables('VNGWInfo')[copyIndex()].ERConnectionOptions.Name)]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "ERGWLoop",
+        "count": "[length( variables('VNGWInfo') )]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworkGateways/', concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name))]"
+      ],
+      "properties": {
+        "virtualNetworkGateway1": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworkGateways',concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name))]"
+        },
+        "connectionType": "[variables('VNGWInfo')[copyIndex()].ERConnectionOptions.connectionType]",
+        "routingWeight": 0,
+        "enableBgp": false,
+        "usePolicyBasedTrafficSelectors": false,
+        "ipsecPolicies": [],
+        "authorizationKey": "[if(contains(variables('VNGWInfo')[copyIndex()].ERConnectionOptions,'ERAuthKey'),variables('VNGWInfo')[copyIndex()].ERConnectionOptions.ERAuthKey,json('null'))]",
+        "peer": {
+          "id": "[variables('VNGWInfo')[copyIndex()].ERConnectionOptions.peerid]"
+        }
+      }
+    }
+  ]
+}
