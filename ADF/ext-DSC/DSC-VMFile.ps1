@@ -68,7 +68,7 @@ Configuration VMFile
     
     # -------- MSI lookup for storage account keys to download files and set Cloud Witness
     $response = Invoke-WebRequest -UseBasicParsing -Uri 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F' -Method GET -Headers @{Metadata = "true" }
-    $ArmToken = $response.Content | ConvertFrom-Json | foreach access_token
+    $ArmToken = $response.Content | ConvertFrom-Json -Depth 10 | foreach access_token
     $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = "application/json"; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
     # Cloud Witness
@@ -79,7 +79,7 @@ Configuration VMFile
         $SaWitness = ("{0}sawitness" -f $Deployment ).toLower()
         $resource = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Storage/storageAccounts/{2}" -f $SubscriptionGuid, $RGName, $SaWitness
         $Params['Uri'] = "https://management.azure.com{0}/{1}/ api-version=2016-01-01" -f $resource, 'listKeys'
-        $sakwitness = (Invoke-WebRequest @Params).content | ConvertFrom-Json | foreach Keys | select -first 1 | foreach Value
+        $sakwitness = (Invoke-WebRequest @Params).content | ConvertFrom-Json -Depth 10 | foreach Keys | select -first 1 | foreach Value
         Write-Verbose "SAK Witness: $sakwitness" -Verbose
     }
     catch
@@ -92,7 +92,7 @@ Configuration VMFile
     {
         # Global assets to download files
         $Params['Uri'] = "https://management.azure.com{0}/{1}/ api-version=2016-01-01" -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | foreach Keys | select -first 1 | foreach Value
+        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json -Depth 10 | foreach Keys | select -first 1 | foreach Value
         Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
         
         # Create the Cred to access the storage account

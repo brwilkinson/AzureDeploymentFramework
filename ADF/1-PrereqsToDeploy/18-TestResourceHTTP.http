@@ -1,0 +1,3 @@
+
+GET https://management.azure.com/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/myResourceGroupAG/providers/Microsoft.Network/applicationGateways/myAppGateway?api-version=2020-06-01
+Authorization: {{Bearer}}

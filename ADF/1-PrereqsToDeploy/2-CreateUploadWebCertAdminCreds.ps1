@@ -11,7 +11,7 @@ param (
 )
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json | ForEach-Object Global
+$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $DNSNames = $Global.CertURLs
 $LocalAdminUser = $Global.vmAdminUserName
 $DeployPrimary = $true
@@ -29,7 +29,7 @@ $GlobalRGName = $Global.GlobalRGName
 if ($DeployPrimary)
 {
 	$PrimaryPrefix = $Global.PrimaryPrefix
-	$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json | ForEach-Object Global
+	$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 	$PrimaryLocation = $Global.PrimaryLocation
 	$primaryKVName = $Primary.KVName
 	$primaryRGName = $Primary.HubRGName
@@ -39,7 +39,7 @@ if ($DeployPrimary)
 if ($DeploySecondary)
 {
 	$SecondaryPrefix = $Global.SecondaryPrefix
-	$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json | ForEach-Object Global
+	$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 	$SecondaryLocation = $Global.SecondaryLocation
 	$SecondaryKVName = $Secondary.KVName
 	$SecondaryRGName = $Secondary.HubRGName

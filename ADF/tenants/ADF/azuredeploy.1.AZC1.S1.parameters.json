@@ -387,17 +387,30 @@
         ],
         "appServiceplanInfo": [
           {
-            "Name": "WPS01",
-            "kind": "app",
+            "Name": "ASP01",
+            "kind": "elastic",
             "perSiteScaling": false,
             "reserved": false,
-            "skuname": "P1v2",
-            "skutier": "PremiumV2",
-            "skusize": "P1v2",
-            "skufamily": "Pv2",
+            "skuname": "EP1",
+            "skutier": "ElasticPremium",
+            "skusize": "EP1",
+            "skufamily": "EP",
             "skucapacity": 1,
+            "maxWorkerCount": 100,
             "deploy": 1
           }
+          // {
+          //   "Name": "WPS01",
+          //   "kind": "app",
+          //   "perSiteScaling": false,
+          //   "reserved": false,
+          //   "skuname": "P1v2",
+          //   "skutier": "PremiumV2",
+          //   "skusize": "P1v2",
+          //   "skufamily": "Pv2",
+          //   "skucapacity": 1,
+          //   "deploy": 1
+          // }
         ],
         "appServiceplanInfo3": [
           {
@@ -743,7 +756,7 @@
             "WAFCapacity": 2,
             "PrivateIP": "30",
             "probe": "mywebwaftest.psthing.com",
-            "probepath" : "/",
+            "probepath": "/",
             "SSLCerts": [
               "PSThing-WildCard"
             ],

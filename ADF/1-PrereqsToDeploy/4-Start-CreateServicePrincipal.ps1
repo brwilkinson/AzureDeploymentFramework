@@ -17,7 +17,7 @@ $Subscription = $Context.Subscription.Name
 $Account = $context.Account.Id
 
 #region Connect to AZDevOps
-$Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json | Foreach Global
+$Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | Foreach Global
 $AZDevOpsOrg = $Global.AZDevOpsOrg
 $AZDevOpsProject = $Global.AZDevOpsProject
 $SPAdmins = $Global.ServicePrincipalAdmins

@@ -5,9 +5,9 @@ param (
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
 #$PrimaryPrefix = 'AZC1'
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json | ForEach-Object Global
-#$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json | foreach Global
-#$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json | foreach Global
+$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+#$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | foreach Global
+#$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | foreach Global
 
 $GlobalRGName = $Global.GlobalRGName
 $PrimaryLocation = $Global.PrimaryLocation

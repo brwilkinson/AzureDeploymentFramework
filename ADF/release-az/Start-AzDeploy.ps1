@@ -172,7 +172,7 @@ Function Start-AzDeploy
 
     # Take the Global, Config and Regional settings and combine them as an object
     # Then convert them to hashtable to pass in as parameters
-    $GlobalGlobal = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json | ForEach-Object Global
+    $GlobalGlobal = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 
     # Convert any objects back to string so they are not deserialized
     $GlobalGlobal | Get-Member -MemberType NoteProperty | ForEach-Object {
@@ -185,7 +185,7 @@ Function Start-AzDeploy
         }
     }
 
-    $Regional = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$Prefix.json | ConvertFrom-Json | ForEach-Object Global
+    $Regional = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$Prefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 
     # Convert any objects back to string so they are not deserialized
     $Regional | Get-Member -MemberType NoteProperty | ForEach-Object {
@@ -211,29 +211,29 @@ Function Start-AzDeploy
     }
     $Global.Add('CN', $CN)
 
-    $RolesGroupsLookup = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Config.json | ConvertFrom-Json | ForEach-Object RolesGroupsLookup
+    $RolesGroupsLookup = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Config.json | ConvertFrom-Json -Depth 10 | ForEach-Object RolesGroupsLookup
     $Global.Add('RolesGroupsLookup', ($RolesGroupsLookup | ConvertTo-Json -Compress -Depth 5))
 
-    $DataDiskInfo = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json | ForEach-Object DataDiskInfo
+    $DataDiskInfo = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object DataDiskInfo
     $Global.Add('DataDiskInfo', ($DataDiskInfo | ConvertTo-Json -Compress -Depth 5))
 
-    $WadCfg = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json | ForEach-Object WadCfg
+    $WadCfg = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object WadCfg
     $Global.Add('WadCfg', ($WadCfg | ConvertTo-Json -Compress -Depth 5))
 
-    $ladCfg = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json | ForEach-Object ladCfg
+    $ladCfg = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object ladCfg
     $Global.Add('ladCfg', ($ladCfg | ConvertTo-Json -Compress -Depth 5))
 
-    $OSType = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json | ForEach-Object OSType
+    $OSType = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object OSType
     $Global.Add('OSType', ($OSType | ConvertTo-Json -Compress -Depth 5))
 
-    $computeSizeLookupOptions = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json | ForEach-Object computeSizeLookupOptions
+    $computeSizeLookupOptions = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object computeSizeLookupOptions
     $Global.Add('computeSizeLookupOptions', ($computeSizeLookupOptions | ConvertTo-Json -Compress -Depth 5))
 
     $StorageAccountName = $Global.SAName
     Write-Verbose "Storage Account is: $StorageAccountName"
 
     # # Pass in Secrets from the Global Regional
-    # $Secrets = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$Prefix.json | ConvertFrom-Json | Foreach Secrets
+    # $Secrets = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$Prefix.json | ConvertFrom-Json -Depth 10 | Foreach Secrets
     # $Secrets | foreach-object {
     #     $SecretParamName = $_ | Get-Member -MemberType NoteProperty | Foreach Name
     #     $SecretParam = $Secrets | select $SecretParamName
