@@ -37,7 +37,7 @@
         "OMSDataSources": 1,
         "SA": 1,
         "StorageSync": 0,
-        "RSV" : 0,
+        "RSV": 0,
         "NSGHUB": 1,
         "NSGSPOKE": 0,
         "VNet": 1,
@@ -48,8 +48,8 @@
         "DNSPrivateZone": 1,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "ILB": 1,
-        "PLB": 1,
+        "ILB": 0,
+        "PLB": 0,
         "InitialDOP": 0,
         "VMApp": 0,
         "VMAppLinux": 0,
@@ -95,79 +95,145 @@
         "DC2HostName": "DC02",
         "CommentOLD: SUBNETS": "128 + 64 + 32 + 16 + 16",
         "Comment2:   SUBNETS": "WAF01: 32 (/27) + FE01: 32 (/27) + AD01: 16 (/28) + BE01: 16 (/28) + BE02: 16 (/28) + BE03: 16 (/28) + MT01: 128 (/25) + MT02: 256 (/24)",
-        "DNSPrivateZoneInfo" : [
+        "DNSPrivateZoneInfo": [
+          "privatelink.azurewebsites.net",
+          "privatelink.vaultcore.azure.net",
+          "privatelink.blob.core.windows.net",
+          "privatelink.queue.core.windows.net",
+          "privatelink.file.core.windows.net",
+          "privatelink.afs.azure.net",
+          "privatelink.servicebus.windows.net",
+          "privatelink.database.windows.net",
+          "privatelink.azconfig.io",
           "Contoso.com",
           "Fabrikam.com",
-          "PSObject.com"
+          "PSObject.com",
+          "PSThing.com"
         ],
         "SubnetInfo": [
           {
-            "name": "snWAF01",
+            "name": "snMT01",
             "prefix": "0/27",
-            "NSG": 0
-          },
-          {
-            "name": "snFE01",
-            "prefix": "32/27",
+            "Route": true,
             "NSG": 0,
-            "serviceEndpoints2": false,
-            "Route": false
-          },
-          {
-            "name": "snAD01",
-            "prefix": "64/28",
-            "NSG": 0,
-            "Route": false
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE01",
-            "prefix": "80/28",
+            "prefix": "32/28",
+            "Route": true,
             "NSG": 0,
-            "Route": false
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE02",
-            "prefix": "96/28",
+            "prefix": "48/28",
+            "Route": true,
             "NSG": 0,
-            "Route": false
-          },
-          {
-            "name": "snBE03",
-            "prefix": "112/28",
-            "NSG": 0,
-            "Route": false
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureFirewallSubnet",
-            "prefix": "128/26",
-            "NSG": 0,
-            "serviceEndpoints2": false
+            "prefix": "64/26"
           },
           {
-            "name": "snMT02",
-            "prefix": "0/24",
+            "name": "snFE01",
+            "prefix": "128/26",
+            "Route": false,
             "NSG": 0,
-            "serviceEndpoints2": false,
-            "Route": false
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "GatewaySubnet",
+            "prefix": "192/27"
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "224/27",
+            "Route": false,
+            "NSG": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           }
+          // {
+          //   "name": "snMT02",
+          //   "prefix": "0/24",
+          //   "NSG": 0,
+          //   "serviceEndpoints2": false,
+          //   "Route": false,
+          //   "FlowLogEnabled": true,
+          //   "FlowAnalyticsEnabled": true
+          // }
         ],
         "saInfo": [
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks" :"Allow"
+            "allNetworks": "Allow"
           }
         ],
         "LinkPrivateDnsInfo": [
           {
+            "zoneRG": "P00",
+            "zone": "privatelink.vaultcore.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P00",
+            "zone": "privatelink.servicebus.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P00",
+            "zone": "privatelink.database.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P00",
+            "zone": "privatelink.azurewebsites.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P00",
+            "zone": "privatelink.blob.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P00",
+            "zone": "privatelink.queue.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P00",
+            "zone": "privatelink.file.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P00",
+            "zone": "privatelink.afs.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P00",
+            "zone": "privatelink.azconfig.io",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
             "zone": "Contoso.com",
             "Autoregistration": false
           },
           {
+            "zoneRG": "P0",
             "zone": "Fabrikam.com",
             "Autoregistration": false
           },
           {
+            "zoneRG": "P0",
             "zone": "PSObject.com",
             "Autoregistration": false
           }
@@ -197,79 +263,6 @@
                 "nextHopType": "VirtualAppliance"
               }
             ]
-          }
-        ],
-        "PolicyInfo": [
-          {
-            "Name": "Audit-allowed-locations",
-            "Description": "Audit allowed locations",
-            "parameters": {
-              "allowedLocations": {
-                "type": "Array",
-                "metadata": {
-                  "description": "The list of allowed locations for resources.",
-                  "displayName": "Allowed locations",
-                  "strongType": "location"
-                }
-              }
-            },
-            "policyRule": {
-              "if": {
-                "not": {
-                  "field": "location",
-                  "in": "[parameters('allowedLocations')]"
-                }
-              },
-              "then": {
-                "effect": "audit"
-              }
-            }
-          },
-          {
-            "name": "Audit-allowed-role-definitions2",
-            "description": "Audit role definitions that can be used in IAM",
-            "parameters": {
-              "roleDefinitionId": {
-                "type": "string",
-                "metadata": {
-                  "description": "The list of role definition Ids",
-                  "displayName": "Approved Role Definitions"
-                }
-              }
-            },
-            "policyRule": {
-              "if": {
-                "anyOf": [
-                  {
-                    "allof": [
-                      {
-                        "field": "type",
-                        "equals": "Microsoft.Authorization/roleAssignments"
-                      }
-                    ]
-                  },
-                  {
-                    "anyOf": [
-                      {
-                        "not": {
-                          "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
-                          "match": "./058aae05-414d-5198-812b-6f4401cd86bb"
-                        }
-                      },
-                      {
-                        "not": {
-                          "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
-                          "match": "[parameter('roleDefinitionId')]"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              "then": {
-                "effect": "audit"
-              }
-            }
           }
         ],
         "ERGWInfo": [
@@ -710,7 +703,7 @@
           {
             "SourceRG": "P0",
             "SourceRegion": "AZC1",
-            "SourceSasuffix" : "cache",
+            "SourceSasuffix": "cache",
             "DestinationRG": "P0",
             "DestinationRegion": "AZE2",
             "DestinationRSVName": "ASRRecoveryVault",

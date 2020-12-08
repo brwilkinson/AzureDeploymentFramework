@@ -1,13 +1,13 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
-$App = 'ADF'
-$Enviro = 'S1'
+$App = 'PSO'
+$Enviro = 'P0'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
 
 Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App]" -verbose
-
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
 break
 # F8 to run individual steps
 
@@ -37,6 +37,9 @@ AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-deploy\0-azuredep
 # $Enviro RG deploy
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-ALL.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-ALL.json # -FullUpload -VSTS
+
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-OMS.json
+AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-OMS.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-DNSPrivate.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNetPrivateLink.json

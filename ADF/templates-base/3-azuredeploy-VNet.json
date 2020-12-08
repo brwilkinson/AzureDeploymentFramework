@@ -91,24 +91,8 @@
     "DNSnetworkId": "[if(contains(parameters('DeploymentInfo'),'DNSnetworkId'),parameters('DeploymentInfo').DNSnetworkId,variables('networkId'))]",
     "DC1PrivateIPAddress": "[concat(variables('DNSnetworkId'),'.',parameters('DeploymentInfo').DC1PrivateIPAddress)]",
     "DC2PrivateIPAddress": "[concat(variables('DNSnetworkId'),'.',parameters('DeploymentInfo').DC2PrivateIPAddress)]",
-    // "DC1PrivateIPAddress": "172.16.140.75",
-    // "DC2PrivateIPAddress": "172.16.140.76",
+
     "AzureDNS": "168.63.129.16",
-    "serviceEndpoints": [
-      {
-        "service": "Microsoft.AzureCosmosDB",
-        "locations": [
-          "*"
-        ]
-      },
-      {
-        "service": "Microsoft.Storage",
-        "locations": [
-          "eastus2",
-          "centralus"
-        ]
-      }
-    ],
     "RouteTableGlobal": {
       "id": "[resourceid(parameters('Global').HubRGName,'Microsoft.Network/routeTables/',concat(parameters('Prefix'),'-rt',parameters('Global').RTName))]"
     },
