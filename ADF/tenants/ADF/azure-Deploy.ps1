@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'ADF'
-$Enviro = 'S1'
+$Enviro = 'P0'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
@@ -43,10 +43,13 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeplo
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-Storage.json #-FullUpload -VSTS
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-KV.json -TestWhatIf
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json -FullUpload
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-DNSPrivate.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-DNSPrivate.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNetPrivateLink.json
+
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\12-azuredeploy-VNGW.json
+AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\12-azuredeploy-VNGW.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\6-azuredeploy-WAFPolicy.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\6-azuredeploy-WAF.json

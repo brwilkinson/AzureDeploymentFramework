@@ -180,7 +180,7 @@ Function Start-AzDeploy
         if ($_.Definition -match 'PSCustomObject')
         {
             $Object = $_.Name
-            $String = $GlobalGlobal.$Object | ConvertTo-Json -Compress -Depth 5
+            $String = $GlobalGlobal.$Object | ConvertTo-Json -Compress -Depth 10
             $GlobalGlobal.$Object = $String
         }
     }
@@ -193,7 +193,7 @@ Function Start-AzDeploy
         if ($_.Definition -match 'PSCustomObject')
         {
             $Object = $_.Name
-            $String = $Regional.$Object | ConvertTo-Json -Compress -Depth 5
+            $String = $Regional.$Object | ConvertTo-Json -Compress -Depth 10
             $Regional.$Object = $String
         }
     }
@@ -212,22 +212,22 @@ Function Start-AzDeploy
     $Global.Add('CN', $CN)
 
     $RolesGroupsLookup = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Config.json | ConvertFrom-Json -Depth 10 | ForEach-Object RolesGroupsLookup
-    $Global.Add('RolesGroupsLookup', ($RolesGroupsLookup | ConvertTo-Json -Compress -Depth 5))
+    $Global.Add('RolesGroupsLookup', ($RolesGroupsLookup | ConvertTo-Json -Compress -Depth 10))
 
     $DataDiskInfo = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object DataDiskInfo
-    $Global.Add('DataDiskInfo', ($DataDiskInfo | ConvertTo-Json -Compress -Depth 5))
+    $Global.Add('DataDiskInfo', ($DataDiskInfo | ConvertTo-Json -Compress -Depth 10))
 
     $WadCfg = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object WadCfg
-    $Global.Add('WadCfg', ($WadCfg | ConvertTo-Json -Compress -Depth 5))
+    $Global.Add('WadCfg', ($WadCfg | ConvertTo-Json -Compress -Depth 10))
 
     $ladCfg = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object ladCfg
-    $Global.Add('ladCfg', ($ladCfg | ConvertTo-Json -Compress -Depth 5))
+    $Global.Add('ladCfg', ($ladCfg | ConvertTo-Json -Compress -Depth 10))
 
     $OSType = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object OSType
-    $Global.Add('OSType', ($OSType | ConvertTo-Json -Compress -Depth 5))
+    $Global.Add('OSType', ($OSType | ConvertTo-Json -Compress -Depth 10))
 
     $computeSizeLookupOptions = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object computeSizeLookupOptions
-    $Global.Add('computeSizeLookupOptions', ($computeSizeLookupOptions | ConvertTo-Json -Compress -Depth 5))
+    $Global.Add('computeSizeLookupOptions', ($computeSizeLookupOptions | ConvertTo-Json -Compress -Depth 10))
 
     $StorageAccountName = $Global.SAName
     Write-Verbose "Storage Account is: $StorageAccountName"
@@ -289,7 +289,7 @@ Function Start-AzDeploy
         #$DSCSourceFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $DSCSourceFolder))
 
         # Parse the parameter file and update the values of artifacts location and artifacts location SAS token if they are present
-        $JsonParameters = Get-Content $TemplateParametersFile -Raw | ConvertFrom-Json
+        $JsonParameters = Get-Content $TemplateParametersFile -Raw | ConvertFrom-Json -Depth 20
         if ( -not ($JsonParameters | Get-Member -Type NoteProperty 'parameters') )
         {
             $JsonParameters = $JsonParameters.parameters

@@ -1,13 +1,13 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'PSO'
-$Enviro = 'P0'
+$Enviro = 'S1'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
 
 Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App]" -verbose
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
+
 break
 # F8 to run individual steps
 
@@ -53,6 +53,9 @@ AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\2-azuredeplo
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
+
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\12-azuredeploy-VNGW.json
+AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\12-azuredeploy-VNGW.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeploy-NetworkWatcher.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeploy-NetworkFlowLogs.json

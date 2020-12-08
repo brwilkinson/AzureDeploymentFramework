@@ -51,6 +51,8 @@
         "BastionHost": 1,
         "RT": 1,
         "FW": 0,
+        "VNGW" : 0,
+        "ERGW" : 0,
         "ADPrimary": 1,
         "ADSecondary": 0,
         "ILB": 0,
@@ -144,6 +146,11 @@
             "NSG": 0
           },
           {
+            "name": "GatewaySubnet",
+            "prefix": "192/27",
+            "NSG": 0
+          },
+          {
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
@@ -229,6 +236,24 @@
                 "groupID": "vault"
               }
             ]
+          }
+        ],
+        "VNGWInfo": [
+          {
+            "Name": "VNGW01",
+            "skuname": "VpnGw2",
+            "skutier": "VpnGw2",
+            "gatewayType": "VPN",
+            "vpnType": "RouteBased",
+            "vpnGen": "Generation2",
+            "ERConnectionOptions": {
+              "Name": "VNGW-ADF<-->VNGW-PSO",
+              "EREnableConnection": false,
+              "peerid": "/subscriptions/e17fe3b9-caf3-4e15-9437-30089ea78f1e/resourceGroups/PROD_Azure_EUS_Network_RG/providers/Microsoft.Network/expressRouteCircuits/PROD_Azure_ER_EUS",
+              "authorizationKeyold": "[parameters('ERAuthKey')]",
+              "authorizationKey": "abc",
+              "connectionType": "ExpressRoute"
+            }
           }
         ],
         "RTInfo": [

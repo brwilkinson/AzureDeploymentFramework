@@ -45,6 +45,8 @@
         "LinkPrivateDns": 1,
         "RT": 1,
         "FW": 0,
+        "VNGW" : 0,
+        "ERGW" : 0,
         "DNSPrivateZone": 1,
         "ADPrimary": 0,
         "ADSecondary": 0,
@@ -178,47 +180,47 @@
         ],
         "LinkPrivateDnsInfo": [
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.vaultcore.azure.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.servicebus.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.database.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.azurewebsites.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.blob.core.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.queue.core.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.file.core.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.afs.azure.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P00",
+            "zoneRG": "P0",
             "zone": "privatelink.azconfig.io",
             "Autoregistration": false
           },
@@ -235,6 +237,11 @@
           {
             "zoneRG": "P0",
             "zone": "PSObject.com",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "PSThing.com",
             "Autoregistration": false
           }
         ],
@@ -265,15 +272,16 @@
             ]
           }
         ],
-        "ERGWInfo": [
+        "VNGWInfo": [
           {
-            "Name": "ERGW",
-            "skuname": "ErGw2AZ",
-            "skutier": "ErGw2AZ",
-            "skucapacity": 2,
-            "gatewayType": "ExpressRoute",
-            "vpnType": "PolicyBased",
+            "Name": "VNGW01",
+            "skuname": "VpnGw2",
+            "skutier": "VpnGw2",
+            "gatewayType": "VPN",
+            "vpnType": "RouteBased",
+            "vpnGen": "Generation2",
             "ERConnectionOptions": {
+              "Name": "VNGW-PSO<-->VNGW-ADF",
               "EREnableConnection": false,
               "peerid": "/subscriptions/e17fe3b9-caf3-4e15-9437-30089ea78f1e/resourceGroups/PROD_Azure_EUS_Network_RG/providers/Microsoft.Network/expressRouteCircuits/PROD_Azure_ER_EUS",
               "authorizationKeyold": "[parameters('ERAuthKey')]",

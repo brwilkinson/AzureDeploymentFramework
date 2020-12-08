@@ -82,7 +82,7 @@
   },
   "resources": [
     {
-      "name": "[concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-publicip1')]",
+      "name": "[concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name,'-publicip1')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
       "apiVersion": "2018-03-01",
@@ -105,7 +105,7 @@
           "type": "providers/diagnosticSettings",
           "name": "Microsoft.Insights/service",
           "dependsOn": [
-            "[concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-publicip1')]"
+            "[concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name,'-publicip1')]"
           ],
           "apiVersion": "2015-07-01",
           "properties": {
@@ -131,12 +131,12 @@
       ]
     },
     {
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2020-06-01",
       "type": "Microsoft.Network/virtualNetworkGateways",
-      "name": "[concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name)]",
+      "name": "[concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name)]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-publicip1'))]"
+        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name,'-publicip1'))]"
       ],
       "copy": {
         "name": "VNGWLoop",
@@ -152,36 +152,39 @@
                 "id": "[variables('gatewaySubnetRef')]"
               },
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-publicip1'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name,'-publicip1'))]"
               }
             }
           }
         ],
         "sku": {
           "name": "[variables('VNGWInfo')[copyIndex()].skuname]",
-          "tier": "[variables('VNGWInfo')[copyIndex()].skutier]",
-          "capacity": "[variables('VNGWInfo')[copyIndex()].skucapacity]"
+          "tier": "[variables('VNGWInfo')[copyIndex()].skutier]"
         },
         "gatewayType": "[variables('VNGWInfo')[copyIndex()].gatewayType]",
-        "vpnType": "[variables('VNGWInfo')[copyIndex()].vpnType]"
+        "vpnType": "[variables('VNGWInfo')[copyIndex()].vpnType]",
+        "vpnGatewayGeneration": "[variables('VNGWInfo')[copyIndex()].vpnGen]",
+        // "gatewayDefaultSite": {
+        //     "id" : ""
+        // }
       }
     },
     {
       "condition": "[variables('VNGWInfo')[copyIndex()].ERConnectionOptions.EREnableConnection]",
       "apiVersion": "2018-11-01",
       "type": "Microsoft.Network/connections",
-      "name": "[concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name,'-connection-',variables('VNGWInfo')[copyIndex()].ERConnectionOptions.Name)]",
+      "name": "[concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name,'-connection-',variables('VNGWInfo')[copyIndex()].ERConnectionOptions.Name)]",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "ERGWLoop",
         "count": "[length( variables('VNGWInfo') )]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworkGateways/', concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name))]"
+        "[concat('Microsoft.Network/virtualNetworkGateways/', concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name))]"
       ],
       "properties": {
         "virtualNetworkGateway1": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworkGateways',concat(variables('Deployment'),'-vn',variables('VNGWInfo')[copyIndex()].Name))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworkGateways',concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name))]"
         },
         "connectionType": "[variables('VNGWInfo')[copyIndex()].ERConnectionOptions.connectionType]",
         "routingWeight": 0,

@@ -41,10 +41,12 @@
         "NSGHUB": 0,
         "NSGSPOKE": 1,
         "VNet": 1,
-        "VNetPeering": 0,
+        "VNetPeering": 1,
         "LinkPrivateDns": 0,
         "RT": 1,
         "FW": 0,
+        "VNGW" : 0,
+        "ERGW" : 0,
         "DNSPrivateZone": 0,
         "ADPrimary": 1,
         "ADSecondary": 0,
@@ -185,10 +187,12 @@
         ],
         "LinkPrivateDnsInfo": [
           {
+            "zoneRG": "P0",
             "zone": "Contoso.com",
             "Autoregistration": false
           },
           {
+            "zoneRG": "P0",
             "zone": "Fabrikam.com",
             "Autoregistration": false
           }

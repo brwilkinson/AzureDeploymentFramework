@@ -233,7 +233,10 @@
       }
     },
     {
-      "condition": "[if(and(contains(parameters('Stage'),'LinkPrivateDns'),equals(parameters('Stage').LinkPrivateDns,1)),bool('true'),bool('false'))]",
+      "condition": "[and(
+                      contains(parameters('Stage'),'LinkPrivateDns'),
+                      equals(parameters('Stage').LinkPrivateDns,1)
+                      )]",
       "apiVersion": "2019-10-01",
       "name": "[concat('privateDnsZones-vnLink-',copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
