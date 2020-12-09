@@ -131,12 +131,30 @@
       ]
     },
     {
+      "name": "[concat(variables('Deployment'),'-lng',variables('VNGWInfo')[copyIndex()].localNetworkGateway.Name)]",
+      "type": "Microsoft.Network/localNetworkGateways",
+      "apiVersion": "2020-05-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "lngLoop",
+        "count": "[length( variables('VNGWInfo') )]"
+      },
+      "properties": {
+        "localNetworkAddressSpace": {
+          "addressPrefixes": "[variables('VNGWInfo')[copyIndex()].localNetworkGateway.addressPrefixes]"
+        },
+        "gatewayIpAddress": "[variables('VNGWInfo')[copyIndex()].localNetworkGateway.gatewayIpAddress]",
+        "bgpSettings": "[if(and(contains(variables('VNGWInfo')[copyIndex()].localNetworkGateway,'bgpEnabled'),equals(variables('VNGWInfo')[copyIndex()].localNetworkGateway.bgpEnabled,1)),variables('VNGWInfo')[copyIndex()].localNetworkGateway.bgpSettings,json('null'))]"
+      }
+    },
+    {
       "apiVersion": "2020-06-01",
       "type": "Microsoft.Network/virtualNetworkGateways",
       "name": "[concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name)]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name,'-publicip1'))]"
+        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name,'-publicip1'))]",
+        "[concat(variables('Deployment'),'-lng',variables('VNGWInfo')[copyIndex()].localNetworkGateway.Name)]"
       ],
       "copy": {
         "name": "VNGWLoop",
@@ -163,20 +181,17 @@
         },
         "gatewayType": "[variables('VNGWInfo')[copyIndex()].gatewayType]",
         "vpnType": "[variables('VNGWInfo')[copyIndex()].vpnType]",
-        "vpnGatewayGeneration": "[variables('VNGWInfo')[copyIndex()].vpnGen]",
-        // "gatewayDefaultSite": {
-        //     "id" : ""
-        // }
+        "vpnGatewayGeneration": "[variables('VNGWInfo')[copyIndex()].vpnGen]"
       }
     },
     {
-      "condition": "[variables('VNGWInfo')[copyIndex()].ERConnectionOptions.EREnableConnection]",
-      "apiVersion": "2018-11-01",
+      // "condition": "[bool(variables('VNGWInfo')[copyIndex()].ConnectionOptions.EnableConnection)]",
+      "name": "[concat(variables('Deployment'),'-vngc',variables('VNGWInfo')[copyIndex()].Name,'-connection-',variables('VNGWInfo')[copyIndex()].localNetworkGateway.Name)]",
       "type": "Microsoft.Network/connections",
-      "name": "[concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name,'-connection-',variables('VNGWInfo')[copyIndex()].ERConnectionOptions.Name)]",
+      "apiVersion": "2020-05-01",
       "location": "[resourceGroup().location]",
       "copy": {
-        "name": "ERGWLoop",
+        "name": "ConnectionLoop",
         "count": "[length( variables('VNGWInfo') )]"
       },
       "dependsOn": [
@@ -186,15 +201,20 @@
         "virtualNetworkGateway1": {
           "id": "[resourceId('Microsoft.Network/virtualNetworkGateways',concat(variables('Deployment'),'-vng',variables('VNGWInfo')[copyIndex()].Name))]"
         },
-        "connectionType": "[variables('VNGWInfo')[copyIndex()].ERConnectionOptions.connectionType]",
+        "localNetworkGateway2": {
+          "id": "[resourceId('Microsoft.Network/localNetworkGateways',concat(variables('Deployment'),'-lng',variables('VNGWInfo')[copyIndex()].localNetworkGateway.Name))]"
+        },
+        "connectionType": "IPsec",
+        "connectionProtocol": "IKEv2",
         "routingWeight": 0,
-        "enableBgp": false,
+        "sharedKey": "[if(contains(variables('VNGWInfo')[copyIndex()].ConnectionOptions,'sharedKey'),variables('VNGWInfo')[copyIndex()].ConnectionOptions.sharedKey,json('null'))]",
+        "enableBgp": "[if(and(contains(variables('VNGWInfo')[copyIndex()].localNetworkGateway,'bgpEnabled'),equals(variables('VNGWInfo')[copyIndex()].localNetworkGateway.bgpEnabled,1)),bool('true'),bool('false'))]",
+        "useLocalAzureIpAddress": false,
         "usePolicyBasedTrafficSelectors": false,
         "ipsecPolicies": [],
-        "authorizationKey": "[if(contains(variables('VNGWInfo')[copyIndex()].ERConnectionOptions,'ERAuthKey'),variables('VNGWInfo')[copyIndex()].ERConnectionOptions.ERAuthKey,json('null'))]",
-        "peer": {
-          "id": "[variables('VNGWInfo')[copyIndex()].ERConnectionOptions.peerid]"
-        }
+        "trafficSelectorPolicies": [],
+        "expressRouteGatewayBypass": false,
+        "dpdTimeoutSeconds": 45
       }
     }
   ]

@@ -45,8 +45,8 @@
         "LinkPrivateDns": 1,
         "RT": 1,
         "FW": 0,
-        "VNGW" : 0,
-        "ERGW" : 0,
+        "VNGW": 0,
+        "ERGW": 0,
         "DNSPrivateZone": 1,
         "ADPrimary": 0,
         "ADSecondary": 0,
@@ -280,13 +280,22 @@
             "gatewayType": "VPN",
             "vpnType": "RouteBased",
             "vpnGen": "Generation2",
-            "ERConnectionOptions": {
-              "Name": "VNGW-PSO<-->VNGW-ADF",
-              "EREnableConnection": false,
-              "peerid": "/subscriptions/e17fe3b9-caf3-4e15-9437-30089ea78f1e/resourceGroups/PROD_Azure_EUS_Network_RG/providers/Microsoft.Network/expressRouteCircuits/PROD_Azure_ER_EUS",
-              "authorizationKeyold": "[parameters('ERAuthKey')]",
-              "authorizationKey": "abc",
-              "connectionType": "ExpressRoute"
+            "localNetworkGateway": {
+              "name": "ADF",
+              "gatewayIpAddress": "13.89.110.197",
+              "addressPrefixes": [
+                "172.16.128.0/20"
+              ],
+              "bgpEnabled": 1,
+              "bgpSettings": {
+                "asn": 65513,
+                "bgpPeeringAddress": "172.16.142.222",
+                "peerWeight": 0
+              }
+            },
+            "ConnectionOptions": {
+              "EnableConnection": 1,
+              "sharedKey": "ApplesForBreakfast" // you likely want a param for this from KV
             }
           }
         ],

@@ -58,9 +58,11 @@ Once you familiar with those, how do you actually implement, by taking 1 or more
 - This project supports 'Lift and Shift' applications/platforms, however you get the most value you should consider re-architecting for the Cloud.
     - OR consider Lift and Shift (with modernization) as phase 1, for the first 12 months, then re-architect and migrate to PaaS in phase 2, the following 3 to 6 months.
         - Example of modernization could mean moving to the latest OS versions, or  latest dependency software version, while still running IaaS Etc.
-- If you are Core IT, then this Framework is not for you.
+- If you are Core IT, then this Framework may not be for you. . . However if you want to deploy and manage applications, then it could be.
 - If you don't have control over your own subscription/s, with an Owner account, then this Framework is not for you.
 - If you don't have 3 to 12 months to dedicate to deploying out a single Application that is core to your business, then this Framework is not for you.
+- You will need a /20 IP Address range for each Tenant, that will give you 16 * 256 size address spaces or 8 * 512.
+- You will want to Deploy via PowerShell V7 or later, this has the best support for JSON (and json with comments).
 - However if you need to build out Labs or use this for Demo's Etc, then the ADF will work very nicely.
 
 ## Any Feedback on this project is welcome, please feel free to reach out or ask questions or open issues.

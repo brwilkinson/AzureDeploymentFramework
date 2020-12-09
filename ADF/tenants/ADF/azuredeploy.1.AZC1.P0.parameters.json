@@ -38,11 +38,11 @@
         "OMSDataSources": 1,
         "SA": 1,
         "StorageSync": 0,
-        "RSV" : 0,
+        "RSV": 0,
         "NSGHUB": 1,
         "NSGSPOKE": 0,
-        "NetworkWatcher" : 1,
-        "FlowLogs" : 1,
+        "NetworkWatcher": 1,
+        "FlowLogs": 1,
         "VNet": 1,
         "VNetPeering": 0,
         "DNSPrivateZone": 1,
@@ -51,8 +51,8 @@
         "BastionHost": 1,
         "RT": 1,
         "FW": 0,
-        "VNGW" : 0,
-        "ERGW" : 0,
+        "VNGW": 0,
+        "ERGW": 0,
         "ADPrimary": 1,
         "ADSecondary": 0,
         "ILB": 0,
@@ -157,10 +157,10 @@
             "Route": false
           }
         ],
-        "networkWatcherInfo" : {
-          "name":"networkwatcher"
+        "networkWatcherInfo": {
+          "name": "networkwatcher"
         },
-        "DNSPrivateZoneInfo" : [
+        "DNSPrivateZoneInfo": [
           "Contoso.com",
           "Fabrikam.com",
           "PSObject.com",
@@ -219,7 +219,7 @@
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks" :"Allow"
+            "allNetworks": "Allow"
           }
         ],
         "KVInfo": [
@@ -246,13 +246,22 @@
             "gatewayType": "VPN",
             "vpnType": "RouteBased",
             "vpnGen": "Generation2",
-            "ERConnectionOptions": {
-              "Name": "VNGW-ADF<-->VNGW-PSO",
-              "EREnableConnection": false,
-              "peerid": "/subscriptions/e17fe3b9-caf3-4e15-9437-30089ea78f1e/resourceGroups/PROD_Azure_EUS_Network_RG/providers/Microsoft.Network/expressRouteCircuits/PROD_Azure_ER_EUS",
-              "authorizationKeyold": "[parameters('ERAuthKey')]",
-              "authorizationKey": "abc",
-              "connectionType": "ExpressRoute"
+            "localNetworkGateway": {
+              "name": "PSO",
+              "gatewayIpAddress": "52.154.217.25",
+              "addressPrefixes": [
+                "10.0.128.0/20"
+              ],
+              "bgpEnabled" : 1,
+              "bgpSettings": {
+                "asn": 65514,
+                "bgpPeeringAddress": "10.0.144.222",
+                "peerWeight": 0
+              }
+            },
+            "ConnectionOptions": {
+              "EnableConnection": 1,
+              "sharedKey": "ApplesForBreakfast" // you likely want a param for this from KV
             }
           }
         ],
