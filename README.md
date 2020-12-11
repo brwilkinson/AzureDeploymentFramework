@@ -65,7 +65,8 @@ Once you familiar with those, how do you actually implement, by taking 1 or more
 - You will want to Deploy via PowerShell V7 or later, this has the best support for JSON (and json with comments).
 - However if you need to build out Labs or use this for Demo's Etc, then the ADF will work very nicely.
 
-## Any Feedback on this project is welcome, please feel free to reach out or ask questions or open issues.
+## Any Feedback on this project is welcome, please feel free to reach out or ask questions, open a 'Discussions' or 'Issues'.
+### Once I have more scenarios setup and documented for this Template Project I will remove the 'Preview' Note.
 
 
 
