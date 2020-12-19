@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'ADF'
-$Enviro = 'P0'
+$Enviro = 'S1'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
@@ -40,6 +40,7 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-deploy\0-azuredep
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-ALL.json # -FullUpload -VSTS
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-Test.json
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-DeploymentScripts.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-Storage.json #-FullUpload -VSTS
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-KV.json -TestWhatIf
@@ -57,6 +58,8 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\6-azuredeplo
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\6-azuredeploy-WAF.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\4-azuredeploy-ILBalancer.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\12-azuredeploy-FW.json
+
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\20-azuredeploy-RedisCache.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\9-azuredeploy-APIM.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\9-azuredeploy-APIM.json

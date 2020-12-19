@@ -73,7 +73,7 @@
   "variables": {
     // Global  BRWDev101
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "Deploymentsa": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
 
     // subscriptionId
     "subscriptionId": "[subscription().subscriptionId]",
@@ -108,7 +108,7 @@
         "name": "saname",
         "count": "[length( variables('WebSiteInfo') )]",
         "input": {
-          "saName": "[tolower(concat(variables('DeploymentSA'),'sa',variables('WebSiteInfo')[copyIndex('saname')].saname))]"
+          "saName": "[tolower(concat(variables('DeploymentURI'),'sa',variables('WebSiteInfo')[copyIndex('saname')].saname))]"
         }
       }
     ]

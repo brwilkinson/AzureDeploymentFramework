@@ -19,7 +19,7 @@
     // Global AZE2-P00-NTE
     //"Deployment": "[concat(parameters('Prefix'),'-',parameters('Environment'),parameters('DeploymentID'),'-', parameters('Global').AppName)]",
 
-    //"DeploymentSA": "[concat(parameters('Prefix'),parameters('Environment'),parameters('DeploymentID'), parameters('Global').AppName)]",
+    //"DeploymentURI": "[concat(parameters('Prefix'),parameters('Environment'),parameters('DeploymentID'), parameters('Global').AppName)]",
     //"VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('Deployment'),'-vn'))]",
     //"SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
     // "LinkPrivateDnsInfo": "[if(contains(parameters('DeploymentInfo'),'LinkPrivateDnsInfo'),parameters('DeploymentInfo').LinkPrivateDnsInfo,json('null'))]",

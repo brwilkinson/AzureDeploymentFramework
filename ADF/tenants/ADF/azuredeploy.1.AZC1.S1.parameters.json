@@ -481,6 +481,28 @@
             "deploy": 1
           }
         ],
+        "RedisInfo": [
+          {
+            "Name": "APIM01",
+            "sku": "P1"
+          },
+          {
+            "Name": "APIM02",
+            "sku": "C1"
+          },
+          {
+            "Name": "APIM03",
+            "sku": "C0"
+          },
+          {
+            "Name": "APIM04",
+            "sku": "B0"
+          },
+          {
+            "Name": "APIM05",
+            "sku": "B1"
+          }
+        ],
         "APIMInfo": [
           {
             "name": "01",

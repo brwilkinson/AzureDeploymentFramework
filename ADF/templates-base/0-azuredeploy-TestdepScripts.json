@@ -1,0 +1,54 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+    "parameters": {
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
+    }
+  },
+  "variables": {
+    "tables": {
+      "abc": 123,
+      "def": "123"
+    }
+
+  },
+  "resources": [
+    {
+      "name": "testObjectParam",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "properties": {
+        "azPowerShellVersion": "4.3",
+        // Testing object input formats
+        // attempting to avoid this syntax
+        // https://raw.githubusercontent.com/Azure/azure-docs-json-samples/master/deployment-script/deploymentscript-jsonEscape.json
+        // open issue get this fixed.
+        "arguments": "[format(' -Tables \"{0}\"',variables('tables'))]",
+        "scriptContent": "
+                    param (
+                        [string]$Tables
+                    )
+                    
+                    $tablesObject = $Tables | convertfrom-json
+
+                    $DeploymentScriptOutputs = @{}
+                    $DeploymentScriptOutputs['tablesObject'] = $tablesObject
+
+                ",
+        "forceUpdateTag": "[parameters('now')]",
+        "retentionInterval": "P1D",
+        "timeout": "PT5M"
+      }
+    }
+  ],
+  "outputs": {
+    "RolesLookup": {
+      "type": "object",
+      "value": "[reference('testObjectParam').outputs.tablesObject]"
+    }
+  }
+}

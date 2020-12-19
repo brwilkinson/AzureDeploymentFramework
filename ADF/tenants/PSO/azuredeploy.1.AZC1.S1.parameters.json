@@ -687,8 +687,13 @@
           {
             "name": "01",
             "dnsName": "API",
-            "apimSku": "Developer",
+            "apimSku": "Consumption",
             "snName": "BE03"
+          }
+        ],
+        "RedisInfo": [
+          {
+            "Name": "APIM01"
           }
         ],
         "AppServersVMSS": [

@@ -72,7 +72,7 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "DeploymentSA": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "saInfo": "[parameters('DeploymentInfo').saInfo]",
@@ -88,7 +88,7 @@
     {
       // Deploy the storage account for the Cloud Witness [File/SQL clusters]
       // AZE2-D02-NTE aze2d02ntesa dis01
-      "name": "[concat(variables('DeploymentSA'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]",
+      "name": "[toLower(concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix))]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
       "apiVersion": "2019-04-01",
@@ -130,7 +130,7 @@
           "name": "Microsoft.Insights/service",
           "type": "providers/diagnosticSettings",
           "dependsOn": [
-            "[concat(variables('DeploymentSA'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
+            "[concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
           ],
           "apiVersion": "2017-05-01-preview",
           "properties": {
@@ -161,7 +161,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2017-05-01-preview",
           "dependsOn": [
-            "[concat(variables('DeploymentSA'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
+            "[concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
           ],
           "properties": {
             "workspaceId": "[variables('OMSworkspaceID')]",
@@ -217,7 +217,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2017-05-01-preview",
           "dependsOn": [
-            "[concat(variables('DeploymentSA'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
+            "[concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
           ],
           "properties": {
             "workspaceId": "[variables('OMSworkspaceID')]",
@@ -273,7 +273,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2017-05-01-preview",
           "dependsOn": [
-            "[concat(variables('DeploymentSA'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
+            "[concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
           ],
           "properties": {
             "workspaceId": "[variables('OMSworkspaceID')]",
@@ -329,7 +329,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2017-05-01-preview",
           "dependsOn": [
-            "[concat(variables('DeploymentSA'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
+            "[concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
           ],
           "properties": {
             "workspaceId": "[variables('OMSworkspaceID')]",
@@ -411,7 +411,7 @@
             "value": "Microsoft.Storage/storageAccounts"
           },
           "resourceName": {
-            "value": "[concat(variables('DeploymentSA'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
+            "value": "[toLower(concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix))]"
           }
         }
       }
@@ -444,7 +444,7 @@
             "value": ".core.windows.net/"
           },
           "resourceName": {
-            "value": "[concat(variables('DeploymentSA'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
+            "value": "[toLower(concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix))]"
           },
           "Nics": {
             "value": "[if(contains(variables('saInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('saInfo')[copyIndex(0)].nameSuffix)),'2018-05-01').outputs.NICID.value,'')]"

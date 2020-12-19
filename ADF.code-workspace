@@ -27,7 +27,8 @@
 			"GitHub.vscode-pull-request-github",
 			"eamodio.gitlens",
 			"ms-dotnettools.vscode-dotnet-runtime",
-			"oderwat.indent-rainbow"
+			"oderwat.indent-rainbow",
+			"ms-azuretools.vscode-bicep"
 		]
 	}
 }

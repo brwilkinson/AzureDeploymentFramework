@@ -1,0 +1,162 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  BRWDev101
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+
+    // subscriptionId
+    "subscriptionId": "[subscription().subscriptionId]",
+    // rgName
+    //"resourceGroupName": "[resourceGroup().name]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    "snWAF01Name": "snWAF01",
+    "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snWAF01Name'))]",
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
+
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+    "RedisInfo": "[parameters('DeploymentInfo').RedisInfo]",
+    "SKULookup": {
+      "B0": {
+        "name": "Basic",
+        "family": "C",
+        "capacity": 0
+      },
+      "B1": {
+        "name": "Basic",
+        "family": "C",
+        "capacity": 1
+      },
+      "C0": {
+        "name": "Standard",
+        "family": "C",
+        "capacity": 0
+      },
+      "C1": {
+        "name": "Standard",
+        "family": "C",
+        "capacity": 1
+      },
+      "C2": {
+        "name": "Standard",
+        "family": "C",
+        "capacity": 2
+      },
+      "C3": {
+        "name": "Standard",
+        "family": "C",
+        "capacity": 3
+      },
+      "P1": {
+        "name": "Premium",
+        "family": "P",
+        "capacity": 1
+      }
+    },
+    "RedisConfiguration": {
+      "Default" : {
+          "maxclients": "1000",
+          "maxmemory-reserved": 50,
+          "maxfragmentationmemory-reserved": "50",
+          "maxmemory-delta": "50"
+        },
+        "Basic": {}
+    }
+
+  },
+  "resources": [
+    {
+      "name": "[toLower(concat(variables('DeploymentURI'),'rc',variables('RedisInfo')[copyIndex()].name))]",
+      "type": "Microsoft.Cache/Redis",
+      "apiVersion": "2019-07-01",
+      "location": "Central US",
+      "copy": {
+        "name": "RedisCopy",
+        "count": "[length(variables('RedisInfo'))]"
+      },
+      "properties": {
+        "sku": "[variables('SKULookup')[variables('RedisInfo')[copyIndex()].sku]]",
+        "enableNonSslPort": false,
+        "redisConfiguration": "[if(
+                                  equals(variables('SKULookup')[variables('RedisInfo')[copyIndex()].sku].name,'Basic'),
+                                          variables('RedisConfiguration')['Basic'],
+                                          variables('RedisConfiguration')['Default']
+                                    )]"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
