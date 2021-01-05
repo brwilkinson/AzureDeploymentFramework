@@ -19,8 +19,7 @@
             "*.psthing.com"
         ],
         "CertificateThumbprint": "2AE0B0AE3FBA30BB4C95EC0E619CA4CCEA409A33",
-        "AZDevOpsOrg": "AzureDeploymentFramework",
-        "AZDevOpsProject": "ADF",
+        "GitHubProject": "AzureDeploymentFramework",
         "ServicePrincipalAdmins": [
             "benwilk@microsoft.com"
         ],

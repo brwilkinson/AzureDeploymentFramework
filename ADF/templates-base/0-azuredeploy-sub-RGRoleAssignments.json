@@ -183,11 +183,11 @@
             // Add the service principal for deployments to "Reader" at Subscription Level, used for reading policy and alert groups etc
             "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
             "type": "Microsoft.Authorization/roleAssignments",
-            "name": "[guid('Reader',parameters('global').AZDevOpsProject,variables('RGName'),'Subscription')]",
+            "name": "[guid('Reader',parameters('global').GitHubProject,variables('RGName'),'Subscription')]",
             "apiVersion": "2018-01-01-preview",
             "properties": {
                 "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Reader'].Id)]",
-                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                 "scope": "[subscription().Id]"
             }
         },
@@ -277,7 +277,7 @@
             //  Local RG
             //  Add the service principal for deployments to "Contributor" for each param file [Environment]
             "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
-            "name": "[concat('dp', parameters('global').AZDevOpsProject ,'-',variables('RGName'),'-Contributor' )]",
+            "name": "[concat('dp', parameters('global').GitHubProject ,'-',variables('RGName'),'-Contributor' )]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "resourceGroup": "[variables('RGName')]",
@@ -295,11 +295,11 @@
                     "resources": [
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Contributor',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "name": "[guid('Contributor',parameters('global').GitHubProject ,'-',variables('RGName'))]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
                                 "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Contributor'].Id)]",
-                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                                 "scope": "[variables('RGID')]"
                             }
                         }
@@ -329,11 +329,11 @@
                     "resources": [
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Reader and Data Access',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "name": "[guid('Reader and Data Access',parameters('global').GitHubProject ,'-',variables('RGName'))]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
                                 "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Reader and Data Access'].Id)]",
-                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                                 "scope": "[variables('GlobalRGID')]"
                             }
                         },
@@ -349,11 +349,11 @@
                         },
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Key_Vault_Reader',parameters('global').AZDevOpsProject ,'-G1-',variables('RGName'))]",
+                            "name": "[guid('Key_Vault_Reader',parameters('global').GitHubProject ,'-G1-',variables('RGName'))]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
                                 "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key_Vault_Reader'].Id)]",
-                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                                 "scope": "[variables('GlobalRGID')]"
                             }
                         }
@@ -384,41 +384,41 @@
                     "resources": [
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Network Contributor',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "name": "[guid('Network Contributor',parameters('global').GitHubProject ,'-',variables('RGName'))]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
                                 "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Network Contributor'].Id)]",
-                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                                 "scope": "[variables('HubRGID')]"
                             }
                         },
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Log Analytics Contributor',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "name": "[guid('Log Analytics Contributor',parameters('global').GitHubProject ,'-',variables('RGName'))]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
                                 "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Log Analytics Contributor'].Id)]",
-                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                                 "scope": "[variables('HubRGID')]"
                             }
                         },
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Key_Vault_Reader',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "name": "[guid('Key_Vault_Reader',parameters('global').GitHubProject ,'-',variables('RGName'))]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
                                 "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key_Vault_Reader'].Id)]",
-                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                                 "scope": "[variables('HubRGID')]"
                             }
                         },
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Key Vault Reader (preview)',parameters('global').AZDevOpsProject ,'-',variables('RGName'))]",
+                            "name": "[guid('Key Vault Reader (preview)',parameters('global').GitHubProject ,'-',variables('RGName'))]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
                                 "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key Vault Reader (preview)'].Id)]",
-                                "principalId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                                 "scope": "[variables('HubRGID')]"
                             }
                         },
@@ -447,7 +447,7 @@
                         //             },
                         //             {
                         //                 "tenantId": "[subscription().tenantId]",
-                        //                 "objectId": "[variables('RolesLookup')[concat(parameters('global').AZDevOpsProject ,'_',variables('RGName'))]]",
+                        //                 "objectId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                         //                 "permissions": "[variables('keyVaultPermissions')['SecretsGet']]"
                         //             }
                         //         ]

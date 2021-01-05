@@ -706,35 +706,36 @@
             }
           }
         },
-        {
-          "condition": "[and(variables('VM')[copyIndex(0)].matchVM,and(and(contains(variables('AppServers')[copyIndex(0)],'IncludeDevOpsAgent'),equals(variables('AppServers')[copyIndex(0)].IncludeDevOpsAgent,1)),equals(variables('AppServers')[copyIndex(0)].IncludeDevOpsAgent,1)))]",
-          "name": "DevOpsAgent",
-          "type": "extensions",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
-          ],
-          "tags": {
-            "displayName": "AzDevOpsAgent"
-          },
-          "apiVersion": "2019-03-01",
-          "properties": {
-            "publisher": "Microsoft.VisualStudio.Services",
-            "type": "TeamServicesAgent",
-            "typeHandlerVersion": "1.0",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "VSTSAccountName": "[parameters('Global').AZDevOpsOrg]",
-              "TeamProject": "[parameters('Global').AZDevOpsProject]",
-              "DeploymentGroup": "[parameters('Global').AZDevOpsProject]",
-              "AgentName": "[replace(concat(variables('Deployment'), variables('VM')[copyIndex(0)].VMName),'-','')]",
-              "Tags": "[variables('Deployment')]"
-            },
-            "protectedSettings": {
-              "PATToken": "[parameters('DevOpsAgentPATToken')]"
-            }
-          }
-        },
+        //  TODO replace Azure DevOps Agents with Self hosted Runners for GitHub Actions
+        // {
+        //   "condition": "[and(variables('VM')[copyIndex(0)].matchVM,and(and(contains(variables('AppServers')[copyIndex(0)],'IncludeDevOpsAgent'),equals(variables('AppServers')[copyIndex(0)].IncludeDevOpsAgent,1)),equals(variables('AppServers')[copyIndex(0)].IncludeDevOpsAgent,1)))]",
+        //   "name": "DevOpsAgent",
+        //   "type": "extensions",
+        //   "location": "[resourceGroup().location]",
+        //   "dependsOn": [
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+        //   ],
+        //   "tags": {
+        //     "displayName": "AzDevOpsAgent"
+        //   },
+        //   "apiVersion": "2019-03-01",
+        //   "properties": {
+        //     "publisher": "Microsoft.VisualStudio.Services",
+        //     "type": "TeamServicesAgent",
+        //     "typeHandlerVersion": "1.0",
+        //     "autoUpgradeMinorVersion": true,
+        //     "settings": {
+        //       "VSTSAccountName": "[parameters('Global').AZDevOpsOrg]",
+        //       "TeamProject": "[parameters('Global').GitHubProject]",
+        //       "DeploymentGroup": "[parameters('Global').GitHubProject]",
+        //       "AgentName": "[replace(concat(variables('Deployment'), variables('VM')[copyIndex(0)].VMName),'-','')]",
+        //       "Tags": "[variables('Deployment')]"
+        //     },
+        //     "protectedSettings": {
+        //       "PATToken": "[parameters('DevOpsAgentPATToken')]"
+        //     }
+        //   }
+        // },
         {
           "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.MonitoringAgent,1))]",
           "type": "extensions",

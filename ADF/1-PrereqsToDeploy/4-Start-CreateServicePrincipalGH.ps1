@@ -1,10 +1,8 @@
 <#Requires -Module AzureAD#>
-#Requires -Module VSTeam
 #Requires -Module AZ.Accounts
 
 param (
-    [String]$AZDevOpsToken = 'hek3vo6bjaplf324yfyte53ok5hkxehiwjb53rqeadu7f2xvqnawlrq',
-    [String[]]$Environments = ('S1','S2','D3'),
+    [String[]]$Environments = ('P0'),
     [String]$Prefix = 'AZC1',
     [String]$App = 'ADF'
 )
@@ -17,41 +15,40 @@ $Subscription = $Context.Subscription.Name
 $Account = $context.Account.Id
 
 #region Connect to AZDevOps
-$Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | Foreach Global
-$AZDevOpsOrg = $Global.AZDevOpsOrg
-$AZDevOpsProject = $Global.AZDevOpsProject
+$Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$GitHubProject = $Global.GitHubProject
 $SPAdmins = $Global.ServicePrincipalAdmins
 $AppName = $Global.AppName
-
-if (-not (Get-VSTeamProfile -Name $AZDevOpsOrg))
-{
-    Add-VSTeamProfile -Account $AZDevOpsOrg -Name $AZDevOpsOrg -PersonalAccessToken $AZDevOpsToken
-}
-Set-VSTeamAccount -Profile $AZDevOpsOrg -Drive vsts
-
-if (-not (Get-PSDrive -Name vsts -ErrorAction ignore))
-{
-    New-PSDrive -Name vsts -PSProvider SHiPS -Root 'VSTeam#VSTeamAccount'
-}
-
-ls vsts: | ft -AutoSize
-#endregion
-
 
 Foreach ($Environment in $Environments)
 {
     $EnvironmentName = "$($Prefix)-$($AppName)-RG-$Environment"
-    $ServicePrincipalName = "${AZDevOpsProject}_$EnvironmentName"
+    $SecretName = $EnvironmentName -replace '-', '_'
+    $ServicePrincipalName = "${GitHubProject}_$EnvironmentName"
 
     #region Create the Service Principal in Azure AD
     $appID = Get-AzADApplication -IdentifierUri "http://$ServicePrincipalName"
     if (! $appID)
     {
         # Create Service Principal
-        New-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp
+        New-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp -EndDate (Get-Date).AddYears(5) -Role Reader -Scope /
         $pw = [pscredential]::new('user', $sp.secret).GetNetworkCredential().Password
     
         $appID = Get-AzADApplication -DisplayName $ServicePrincipalName
+
+        # Only set the GH Secret the first time
+
+        $secret = [ordered]@{
+            clientId       = $SP.ApplicationId
+            displayName    = $SP.DisplayName
+            name           = $SP.ServicePrincipalNames[1]
+            clientSecret   = [System.Net.NetworkCredential]::new('', $SP.Secret).Password
+            tenantId       = $Tenant
+            subscriptionId = $SubscriptionID
+        } | ConvertTo-Json
+        $secret
+
+        gh secret set $SecretName -b $secret
     }
     else
     {
@@ -82,23 +79,4 @@ Foreach ($Environment in $Environments)
     #     }
     # }
     # #endregion
-
-    #region Create the VSTS endpoint
-    $endpoint = Get-VSTeamServiceEndpoint -ProjectName $AZDevOpsProject | 
-    Where { $_.Type -eq 'azurerm' -and $_.Name -eq $ServicePrincipalName }
-
-    if (! $endpoint)
-    {
-        $params = @{
-            ProjectName          = $AZDevOpsProject
-            endpointName         = $ServicePrincipalName
-            subscriptionName     = $Subscription
-            subscriptionID       = $SubscriptionID
-            serviceprincipalID   = $sp.ApplicationId
-            serviceprincipalkey  = $pw
-            subscriptionTenantID = $Tenant
-        }
-        Add-VSTeamAzureRMServiceEndpoint  @params
-    }
-    #endregion
 }
