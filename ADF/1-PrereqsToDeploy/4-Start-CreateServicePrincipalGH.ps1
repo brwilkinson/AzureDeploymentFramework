@@ -45,7 +45,7 @@ Foreach ($Environment in $Environments)
             clientSecret   = [System.Net.NetworkCredential]::new('', $SP.Secret).Password
             tenantId       = $Tenant
             subscriptionId = $SubscriptionID
-        } | ConvertTo-Json
+        } | ConvertTo-Json -Depth 5 -Compress
         $secret
 
         gh secret set $SecretName -b $secret
