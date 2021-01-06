@@ -1,0 +1,122 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "policyInfo": "[parameters('DeploymentInfo').policyInfo]"
+    // "policyAssignmentInfo": "[parameters('DeploymentInfo').policyAssignmentInfo]"
+  },
+  "resources": [
+    {
+      // https://docs.microsoft.com/en-us/azure/templates/microsoft.authorization/2018-05-01/policydefinitions
+      "name": "[concat(variables('Deployment'), '-policy', variables('policyInfo')[copyIndex(0)].Name)]",
+      "type": "Microsoft.Authorization/policyDefinitions",
+      "apiVersion": "2018-05-01",
+      "copy": {
+        "name": "policyCopy",
+        "count": "[length(variables('policyInfo'))]"
+      },
+      "properties": {
+        "policyType": "Custom",
+        "mode": "All",
+        "displayName": "[variables('policyInfo')[copyIndex(0)].Name]",
+        "description": "[variables('policyInfo')[copyIndex(0)].description]",
+        "policyRule": "[variables('policyInfo')[copyIndex(0)].policyRule]",
+        "parameters": "[variables('policyInfo')[copyIndex(0)].parameters]"
+      }
+    }
+    // {
+    //     // https://docs.microsoft.com/en-us/azure/templates/microsoft.authorization/2018-05-01/policyassignments
+    //     "name": "[concat(variables('Deployment'), '-policyAssignment', variables('policyAssignmentInfo')[copyIndex(0)].Name)]",
+    //     "type": "Microsoft.Authorization/policyAssignments",
+    //     "apiVersion": "2018-05-01",
+    //     "location": "string",
+    //     "copy": {
+    //         "name": "policyAssignmentCopy",
+    //         "count": "[length(variables('policyAssignmentInfo'))]"
+    //     },
+    //     // "identity": {
+    //     //   "type": "string"
+    //     // },
+    //     "properties": {
+    //         "displayName": "string",
+    //         "policyDefinitionId": "string",
+    //         "scope": "string",
+    //         "notScopes": [],
+    //         "parameters": {},
+    //         "description": "string",
+    //         "metadata": {}
+    //     }
+    // }
+  ],
+  "outputs": {}
+}

@@ -32,7 +32,7 @@ Microsoft recommends that you follow the:
 - <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/" target="_blank">Cloud Adoption Framework</a>
 - <a href="https://docs.microsoft.com/en-us/azure/architecture/framework" target="_blank">Microsoft Azure Well-Architected Framework</a>
 
-Once you familiar with those, how do you actually implement, by taking 1 or more of those Core Apps and moving them to the Cloud using a Fully Declarative Model? 
+Once you are familiar with those, how do you actually implement, by taking 1 or more of those Core Apps and moving them to the Cloud using a Fully Declarative Model? 
     
     How do you actually implement those design patterns that are in the architectural documentation?
     How do you actually start designing and deploying your application code?
@@ -45,27 +45,28 @@ Once you familiar with those, how do you actually implement, by taking 1 or more
 ## If that is something that is of interest to you, then this project can help.
 
 ### Disclaimers: 
-- This project should be implemented by Developers OR DevOps, this is a Declarative and Code first project.
+- This project should be implemented by Developers OR DevOps/SRE, this is a Declarative and Code first project.
 - This project is for Deploying into Azure and Supports Hybrid scenarios, however does not work in other Clouds.
 - This project does not replace: Azure Blueprints, Azure Landing Zones or Azure Front Door other Organizational level concepts.
 - This project allows 1 or more applications/platforms to be deployed into Azure using Infrastructure As Code (IaC).
     - Azure Resource Manager (ARM) Templates
     - Desired State Configuration (DSC) Documents
 - I would estimate for new projects, this process will take a minimum of 3, however most likely 6 to 12 months.
-- Since this supports multi-tenant/applications, once you complete the first App migration, you can likley do your second App half the time.
+- Since this supports multi-tenant/multi-application, once you complete the first App migration, you can likley do your second App half the time.
 - Subsequent application migrations will likley continue to take between 1 and 3 months.
 - If you cut corners on the overall design of this project on naming standards and IP Address allocations Etc, you will fail in using this Framework.
 - This project is a 'Framwework', it doesn't know anything about your application and you need to build and write the code to successfully deploy your application and deployment Pipelines.
 - This project supports 'Lift and Shift' applications/platforms, however you get the most value you should consider re-architecting for the Cloud.
     - OR consider Lift and Shift (with modernization) as phase 1, for the first 12 months, then re-architect and migrate to PaaS in phase 2, the following 3 to 6 months.
-        - Example of modernization could mean moving to the latest OS versions, or  latest dependency software version, while still running IaaS Etc.
-- If you are Core IT, then this Framework may not be for you. . . However if you want to deploy and manage applications, then it could be.
+        - Example of modernization could mean moving to the latest OS versions, or latest dependency software version, while still running IaaS Etc.
+- If you are Core IT, then this Framework may not be for you. . . However if you want to deploy and manage applications/services, then it could be.
 - If you don't have control over your own subscription/s, with an Owner account, then this Framework is not for you.
 - If you don't have 3 to 12 months to dedicate to deploying out a single Application that is core to your business, then this Framework is not for you.
-- You will need a /20 IP Address range for each Tenant, that will give you 16 * 256 size address spaces or 8 * 512.
+- You will need a /20 IP Address range for each ADF Tenant, that will give you 16 * 256 size address spaces or 8 * 512.
     - Even if you are running all PaaS, it would be recommended to secure your services via Private Link/Network Integration.
 - You will want to Deploy via PowerShell V7 or later, this has the best support for JSON (and json with comments).
-- However if you need to build out Labs or use this for Demo's Etc, then the ADF will work very nicely.
+- If you are looking to build out Lab environments or use this for Demo's Etc, then the ADF will work very nicely.
+    - Most of the work is deploying specific App Components, so if you are just wanted lab environments, you can get up and running with ADF very fast, hopefully within 7 days .
 
 ## Any Feedback on this project is welcome, please feel free to reach out or ask questions, open a 'Discussions' or 'Issues'.
 ### Once I have more scenarios setup and documented for this Template Project I will remove the 'Preview' Note.
