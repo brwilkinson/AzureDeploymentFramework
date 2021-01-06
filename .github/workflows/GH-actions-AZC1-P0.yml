@@ -37,7 +37,7 @@ jobs:
         run: |
           echo $GITHUB_WORKSPACE
           ls $GITHUB_WORKSPACE
-          ls $GITHUB_WORKSPACE/ADF/release-az/AzDeploy.ps1
+          ls ./ADF/release-az/AzDeploy.ps1
 
       - name: Azure PowerShell Action
         uses: Azure/powershell@v1
