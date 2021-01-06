@@ -3,8 +3,9 @@
 ### - Declarative Infrastructure
 
 - [Documentation - What is ADF, Observations on ARM Templates Etc.](./docs/ARM.md)
-- [Documentation - Deployment Pipelines DevOps](./docs/Deployment_Pipelines_DevOps.md)
 - [Documentation - Sample Environment Definitions/Declarations](./docs/Sample_Template_Files.md)
+- [Status - Deployment Pipelines GitHub](./docs/Deployment_Pipelines_GitHub.md)
+- [Status - Deployment Pipelines DevOps](./docs/Deployment_Pipelines_DevOps.md)
 
 Is this Framework worth considering?
 

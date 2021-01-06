@@ -3,7 +3,7 @@
 name: AzureDeploy_AZC1_ADF_RG_P0
 
 # Controls when the action will run. 
-on:
+on: 
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
@@ -20,14 +20,10 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  "EnvironmentDeploy" :
-    # The type of runner that the job will run on
+  EnvironmentDeploy :
     runs-on: windows-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -36,21 +32,6 @@ jobs:
         with:
           creds: ${{secrets.AZC1_ADF_RG_G0}}
           enable-AzPSSession: true
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo $GITHUB_WORKSPACE
-          ls $GITHUB_WORKSPACE
-          echo ${ENV:GITHUB_WORKSPACE}
-          ls ${ENV:GITHUB_WORKSPACE}
-          ls ./ADF/release-az/AzDeploy.ps1
-
-      - name: Azure PowerShell Action
-        uses: Azure/powershell@v1
-        with:
-          inlineScript: Get-Item -Path ${ENV:GITHUB_WORKSPACE}/ADF/release-az/AzDeploy.ps1
-          azPSVersion: latest
 
       - name: P0_Sub
         uses: Azure/powershell@v1
