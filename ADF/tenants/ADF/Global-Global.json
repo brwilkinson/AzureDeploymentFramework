@@ -45,8 +45,8 @@
             "ADF_AZE2-ADF-RG-P0": "67771415-7a42-4f13-84ed-5cba70799e9a",
             "ADF_AZE2-ADF-RG-S1": "c6bdf41c-1eae-4cba-97a6-fb2938facc1a",
 
-            "AzureDeploymentFramework_AZC1-ADF-RG-G0" : "bd86b02b-6258-4a20-91cb-8a08b64920c4",
-            "AzureDeploymentFramework_AZC1-ADF-RG-P0" : "491e4342-ec61-4209-86a8-34ef6684051a"
+            "AzureDeploymentFramework_AZC1-ADF-RG-G0" : "09ea7cdb-b4de-4713-a01d-6672f08b8a1f",
+            "AzureDeploymentFramework_AZC1-ADF-RG-P0" : "aff160e5-7ac2-4638-b15b-4c51f9cb3ff1"
         }
     }
 }
