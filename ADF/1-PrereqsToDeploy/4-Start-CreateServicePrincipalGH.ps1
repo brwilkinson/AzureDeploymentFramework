@@ -31,7 +31,7 @@ Foreach ($Environment in $Environments)
     if (! $appID)
     {
         # Create Service Principal
-        New-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp -EndDate (Get-Date).AddYears(5) -Role Reader -Scope /
+        New-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp -EndDate (Get-Date).AddYears(5) -Role Contributor -Scope /subscriptions/$SubscriptionID/resourceGroups/$EnvironmentName
         $pw = [pscredential]::new('user', $sp.secret).GetNetworkCredential().Password
     
         $appID = Get-AzADApplication -DisplayName $ServicePrincipalName
@@ -39,16 +39,21 @@ Foreach ($Environment in $Environments)
         # Only set the GH Secret the first time
 
         $secret = [ordered]@{
-            clientId       = $SP.ApplicationId
-            displayName    = $SP.DisplayName
-            name           = $SP.ServicePrincipalNames[1]
-            clientSecret   = [System.Net.NetworkCredential]::new('', $SP.Secret).Password
-            tenantId       = $Tenant
-            subscriptionId = $SubscriptionID
-        } | ConvertTo-Json -Depth 5 -Compress
+            clientId                         = $SP.ApplicationId
+            clientSecret                     = [System.Net.NetworkCredential]::new('', $SP.Secret).Password
+            tenantId                         = $Tenant
+            subscriptionId                   = $SubscriptionID
+            'activeDirectoryEndpointUrl'     = 'https://login.microsoftonline.com'
+            'resourceManagerEndpointUrl'     = 'https://management.azure.com/'
+            'activeDirectoryGraphResourceId' = 'https://graph.windows.net/'
+            'sqlManagementEndpointUrl'       = 'https://management.core.windows.net:8443/'
+            'galleryEndpointUrl'             = 'https://gallery.azure.com/'
+            'managementEndpointUrl'          = 'https://management.core.windows.net/'
+        } | ConvertTo-Json -Compress
         $secret
 
-        gh secret set $SecretName -b $secret
+        #  https://cli.github.com/manual/
+        $Secret | gh secret set $SecretName
     }
     else
     {

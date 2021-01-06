@@ -42,7 +42,7 @@ jobs:
       - name: Azure PowerShell Action
         uses: Azure/powershell@v1
         with:
-          inlineScript: Get-Item -Path $GITHUB_WORKSPACE/ADF/release-az/AzDeploy.ps1
+          inlineScript: Get-Item -Path ${ENV:GITHUB_WORKSPACE}/ADF/release-az/AzDeploy.ps1
           azPSVersion: latest
 
       # - name: Azure PowerShell Action2
