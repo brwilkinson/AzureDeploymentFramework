@@ -2,7 +2,7 @@
 #Requires -Module AZ.Accounts
 
 param (
-    [String[]]$Environments = ('P0'),
+    [String[]]$Environments = ('G0'),
     [String]$Prefix = 'AZC1',
     [String]$App = 'ADF'
 )
@@ -31,7 +31,7 @@ Foreach ($Environment in $Environments)
     if (! $appID)
     {
         # Create Service Principal
-        New-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp -EndDate (Get-Date).AddYears(5) -Role Contributor -Scope /subscriptions/$SubscriptionID/resourceGroups/$EnvironmentName
+        New-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp -EndDate (Get-Date).AddYears(5) -Role Reader -Scope /subscriptions/$SubscriptionID
         $pw = [pscredential]::new('user', $sp.secret).GetNetworkCredential().Password
     
         $appID = Get-AzADApplication -DisplayName $ServicePrincipalName
