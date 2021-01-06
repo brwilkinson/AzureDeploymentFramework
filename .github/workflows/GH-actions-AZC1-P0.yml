@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  APP : ADF
+  ENV: P0
+  PREFIX : AZE2
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -48,11 +53,13 @@ jobs:
 
       - name: Azure PowerShell Action2
         uses: Azure/powershell@v1
-        env:
-          prefix: Mona
-          app: The
-          env: Octocat
         with: 
           inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload
           azPSVersion: latest
 
+
+      - name: Azure PowerShell Action3
+        uses: Azure/powershell@v1
+        with: 
+          inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "Initial"
+          azPSVersion: latest
