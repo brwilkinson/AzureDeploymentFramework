@@ -1,10 +1,37 @@
 <#Requires -Module AzureAD#>
 #Requires -Module AZ.Accounts
 
+<#
+.SYNOPSIS
+    Create Azure AD Service Principal and the GH Secret for the workflow deployment
+.DESCRIPTION
+    Create Azure AD Service Principal and the GH Secret for the workflow deployment
+.EXAMPLE
+    # Open up this script file
+    ADF\tenants\ADF\azure-Deploy.ps1
+    # Load it in memory F5
+    # Call this script to create as many SP's and GH Secrets for each environment in each region
+    . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments T0,M0,P0,S1
+    . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1,P0
+.NOTES
+    You can F5 this script, however I recommend to just call it from a parent helper script azure-deploy.ps1
+
+    You do need to fill out the meta data file for your app first to leverage this tenants\$App\Global-Global.json
+    That file contains your subscription information etc.
+
+    TODO on this script is to add extra owners on the SP that is created, since by default the owner is the individual
+    who ran this script and created the SP, that does not scale well, ideally all members of the DevOps/SRE team should potentially
+    be an owner of these SP's to be able to manage and reset the secrets. For the time being, just delete the old SP and this script 
+    will create a brand new one anyway.
+
+    Default secret expiry in this script is set to 5 years.
+#>
+
 param (
     [String[]]$Environments = ('M0'),
     [String]$Prefix = 'AZC1',
-    [String]$App = 'PSO'
+    [String]$App = 'PSO',
+    [Int]$SecretExpiryYears = 5
 )
 
 # Runs under Service Principal that is owner
@@ -31,7 +58,7 @@ Foreach ($Environment in $Environments)
     if (! $appID)
     {
         # Create Service Principal
-        New-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp -EndDate (Get-Date).AddYears(5) -Role Reader -Scope /subscriptions/$SubscriptionID
+        New-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp -EndDate (Get-Date).AddYears($SecretExpiryYears) -Role Reader -Scope /subscriptions/$SubscriptionID
         $pw = [pscredential]::new('user', $sp.secret).GetNetworkCredential().Password
     
         $appID = Get-AzADApplication -DisplayName $ServicePrincipalName

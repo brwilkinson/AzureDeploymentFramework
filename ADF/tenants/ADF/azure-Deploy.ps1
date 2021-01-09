@@ -18,8 +18,8 @@ break
 . ASD:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
 
 # Create Service principal for Env.
-. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 -APP $App -Prefix AZC1 -Environments A5 #S1,P0,G0,G1,D2
-. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 -APP $App -Prefix AZE2 -Environments S1,P0
+. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments T0,M0,P0,S1
+. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1,P0
 
 # Export all role defintions
 . ASD:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 -APP $App
