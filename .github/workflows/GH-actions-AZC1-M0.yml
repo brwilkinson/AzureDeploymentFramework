@@ -3,11 +3,11 @@
 name: AzureDeploy_AZC1_PSO_RG_M0
 
 # Controls when the action will run. 
-on: 
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+# on: 
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
 
   workflow_dispatch:
 
