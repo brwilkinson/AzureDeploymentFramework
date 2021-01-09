@@ -1,0 +1,49 @@
+# This is a basic workflow to help you get started with Actions
+
+name: AzureDeploy_AZC1_PSO_RG_P0
+
+# Controls when the action will run. 
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+env:
+  APP : PSO
+  ENV: M0
+  PREFIX : AZC1
+
+jobs:
+  EnvironmentDeploy :
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login via Az module
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZC1_PSO_RG_G0}}
+          enable-AzPSSession: true
+
+      - name: P0_Sub
+        uses: Azure/powershell@v1
+        with: 
+          inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload
+          azPSVersion: latest
+
+      - name: Login via Az module
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZC1_PSO_RG_P0}}
+          enable-AzPSSession: true
+
+      - name: P0_RG
+        uses: Azure/powershell@v1
+        with: 
+          inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "Initial"
+          azPSVersion: latest
