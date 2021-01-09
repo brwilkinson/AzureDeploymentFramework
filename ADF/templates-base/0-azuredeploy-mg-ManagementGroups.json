@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
@@ -20,7 +20,8 @@
         "P",
         "S",
         "G",
-        "A"
+        "A",
+        "M"
       ]
     },
     "DeploymentID": {
@@ -72,51 +73,44 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "policyInfo": "[parameters('DeploymentInfo').policyInfo]"
-    // "policyAssignmentInfo": "[parameters('DeploymentInfo').policyAssignmentInfo]"
+    // "mgInfo": "[parameters('DeploymentInfo').managementGroupsInfo]"
   },
   "resources": [
     {
-      // https://docs.microsoft.com/en-us/azure/templates/microsoft.authorization/2018-05-01/policydefinitions
-      "name": "[concat(variables('Deployment'), '-policy', variables('policyInfo')[copyIndex(0)].Name)]",
-      "type": "Microsoft.Authorization/policyDefinitions",
-      "apiVersion": "2018-05-01",
-      "copy": {
-        "name": "policyCopy",
-        "count": "[length(variables('policyInfo'))]"
-      },
+      "name": "nestedDeployment1",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "scope": "/",
+      "location": "[resourceGroup().location]",
       "properties": {
-        "policyType": "Custom",
-        "mode": "All",
-        "displayName": "[variables('policyInfo')[copyIndex(0)].Name]",
-        "description": "[variables('policyInfo')[copyIndex(0)].description]",
-        "policyRule": "[variables('policyInfo')[copyIndex(0)].policyRule]",
-        "parameters": "[variables('policyInfo')[copyIndex(0)].parameters]"
+        "expressionEvaluationOptions": {
+          "scope": "outer"
+        },
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "name": "PSO3",
+              "type": "Microsoft.Management/managementGroups",
+              "apiVersion": "2020-10-01",
+              "properties": {
+                "displayName": "PSO3",
+                "details": {
+                  "parent": {
+                    "id": "/providers/Microsoft.Management/managementGroups/3254f91d-4657-40df-962d-c8e6dad75963"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {}
+        }
       }
     }
-    // {
-    //     // https://docs.microsoft.com/en-us/azure/templates/microsoft.authorization/2018-05-01/policyassignments
-    //     "name": "[concat(variables('Deployment'), '-policyAssignment', variables('policyAssignmentInfo')[copyIndex(0)].Name)]",
-    //     "type": "Microsoft.Authorization/policyAssignments",
-    //     "apiVersion": "2018-05-01",
-    //     "location": "string",
-    //     "copy": {
-    //         "name": "policyAssignmentCopy",
-    //         "count": "[length(variables('policyAssignmentInfo'))]"
-    //     },
-    //     // "identity": {
-    //     //   "type": "string"
-    //     // },
-    //     "properties": {
-    //         "displayName": "string",
-    //         "policyDefinitionId": "string",
-    //         "scope": "string",
-    //         "notScopes": [],
-    //         "parameters": {},
-    //         "description": "string",
-    //         "metadata": {}
-    //     }
-    // }
   ],
   "outputs": {}
 }

@@ -77,7 +77,7 @@ Function Start-AzDeploy
         
         [parameter(mandatory)]
         [alias('DP')]
-        [validateset('A5', 'D2', 'P1', 'P0', 'S1', 'S2', 'S3', 'D3', 'D4', 'D5', 'D6', 'D7', 'U8', 'P9', 'G0', 'G1')]
+        [validateset('A5', 'D2', 'P1', 'P0', 'S1', 'S2', 'S3', 'D3', 'D4', 'D5', 'D6', 'D7', 'U8', 'P9', 'G0', 'G1', 'M0')]
         [string]$Deployment,
 
         [validateset('ADF', 'PSO', 'HUB')]
@@ -399,22 +399,46 @@ Function Start-AzDeploy
             #$OptionalParameters
             #$TemplateArgs
 
-            if ($TestWhatIf)
+            if ($Deployment -eq 'M0')
             {
-                Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
+                $mgName = Get-AzManagementGroup | Where-Object DisplayName -EQ 'Tenant Root Group' | ForEach-Object Name
+                if ($TestWhatIf)
+                {
+                    Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
 
-                Get-AzResourceGroupDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName `
-                    -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
-                return $whatif
+                    Get-AzTenantDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs  `
+                        @OptionalParameters -Location $ResourceGroupLocation `
+                        -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
+                    return $whatif
+                }
+                else 
+                {
+                    Write-Warning "`n`tRunning Deployment !!!!"
+
+                    New-AzTenantDeployment -Name $DeploymentName @TemplateArgs `
+                        -Location $ResourceGroupLocation @OptionalParameters -Verbose -ErrorVariable ErrorMessages
+                }
             }
             else 
             {
-                Write-Warning "`n`tRunning Deployment !!!!"
 
-                New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName `
-                    -Verbose -ErrorVariable ErrorMessages
+                if ($TestWhatIf)
+                {
+                    Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
+
+                    Get-AzResourceGroupDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs @OptionalParameters `
+                        -ResourceGroupName $ResourceGroupName `
+                        -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
+                    return $whatif
+                }
+                else 
+                {
+                    Write-Warning "`n`tRunning Deployment !!!!"
+
+                    New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
+                        -ResourceGroupName $ResourceGroupName `
+                        -Verbose -ErrorVariable ErrorMessages
+                }
             }
         }
         else 
@@ -443,7 +467,6 @@ Function Start-AzDeploy
                     ForEach-Object { $_.Exception.Message.TrimEnd("`r`n") })
         }
     }
-
 }#Start-AzureRMDeploy
 
 New-Alias -Name AzDeploy -Value Start-AzDeploy -Force

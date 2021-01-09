@@ -2,9 +2,9 @@
 #Requires -Module AZ.Accounts
 
 param (
-    [String[]]$Environments = ('G0'),
+    [String[]]$Environments = ('M0'),
     [String]$Prefix = 'AZC1',
-    [String]$App = 'ADF'
+    [String]$App = 'PSO'
 )
 
 # Runs under Service Principal that is owner

@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'PSO'
-$Enviro = 'P0'
+$Enviro = 'S1'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
@@ -29,6 +29,7 @@ break
 . ASD:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
 
 # Deploy Environment
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-mg-ManagementGroups.json
 
 # Global  sub deploy for $Enviro
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy #-FullUpload

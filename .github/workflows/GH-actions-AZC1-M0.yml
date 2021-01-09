@@ -27,7 +27,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_PSO_RG_G0}}
+          creds: ${{secrets.AZC1_PSO_RG_M0}}
           enable-AzPSSession: true
 
       - name: P0_Sub
@@ -39,7 +39,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_PSO_RG_P0}}
+          creds: ${{secrets.AZC1_PSO_RG_M0}}
           enable-AzPSSession: true
 
       - name: P0_RG
