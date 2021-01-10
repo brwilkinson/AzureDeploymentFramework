@@ -1,19 +1,23 @@
-
+$ArtifactStagingDirectory = "$PSScriptRoot\.."
+$AppName = 'PSO'
+$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$AppName\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+# F5 to load.
 break
+
 #
-# InstallTools.ps1
+# BootSTrapTenant.ps1
 #
 # https://docs.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin
 
-$TenantID = '3254f91d-4657-40df-962d-c8e6dad75963'
-$SubscriptionID = '1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5'
-$ManagementGroupName = 'Global'
-$AppName = 'PSO'
+
+$TenantID = $Global.tenantId
+$SubscriptionID = $Global.SubscriptionID
+$ManagementGroupName = $Global.rootManagementGroupName
 
 Get-AzTenant
-Connect-AzAccount -TenantId $TenantID -OutVariable Account
+Connect-AzAccount -TenantId $TenantID -Subscription $SubscriptionID -OutVariable Account
 $ID = Get-AzADUser -Mail $account.context.Account.id | foreach ID
-Write-verbose "User id is $ID" -verbose
+Write-verbose "`nUser id:`t`t $ID, `nSubscription id:`t $SubscriptionID, `nTenant id:`t`t $TenantID" -verbose
 
 # Elevate 'Access' for Global administrator
 # https://docs.microsoft.com/en-us/rest/api/authorization/globaladministrator/elevateaccess
