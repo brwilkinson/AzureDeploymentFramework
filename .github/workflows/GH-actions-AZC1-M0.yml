@@ -2,7 +2,8 @@
 
 name: AzureDeploy_AZC1_PSO_RG_M0
 
-# Controls when the action will run. 
+  # Triggers the workflow on push or pull request events but only for the main branch
+  # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
 on: 
   # push:
   #   branches: [ main ]

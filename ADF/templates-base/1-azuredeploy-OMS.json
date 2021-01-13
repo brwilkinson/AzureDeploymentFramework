@@ -906,7 +906,8 @@
         "retention": "[variables('dataRetention')]",
         "features": {
           "legacy": 0,
-          "searchVersion": 1
+          "searchVersion": 1,
+          "enableLogAccessUsingOnlyResourcePermissions": false
         }
       },
       "resources": [

@@ -17,7 +17,7 @@ Configuration ADSecondary
         [String]$clientIDGlobal
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
     Import-DscResource -ModuleName xPSDesiredStateConfiguration
     Import-DscResource -ModuleName xActiveDirectory 
     Import-DscResource -ModuleName StorageDsc
@@ -40,7 +40,7 @@ Configuration ADSecondary
 
     # -------- MSI lookup for storage account keys to download files and set Cloud Witness
     $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = "true" }
-    $ArmToken = $response.Content | ConvertFrom-Json -Depth 10 | Foreach access_token
+    $ArmToken = $response.Content | convertfrom-json | Foreach access_token
     $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = "application/json"; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
     try
@@ -48,7 +48,7 @@ Configuration ADSecondary
         # Global assets to download files
         $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
         $Params['Uri'] = "https://management.azure.com{0}/{1}/?api-version=2016-01-01" -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json -Depth 10 | Foreach Keys | Select -first 1 | foreach Value
+        $storageAccountKeySource = (Invoke-WebRequest @Params).content | convertfrom-json | Foreach Keys | Select -first 1 | foreach Value
         Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
     
         # Create the Cred to access the storage account

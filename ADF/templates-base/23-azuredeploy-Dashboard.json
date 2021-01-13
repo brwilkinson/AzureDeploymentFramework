@@ -27,7 +27,7 @@
       "type": "string",
       "defaultValue": "1",
       "allowedValues": [
-        "00",
+        "0",
         "1",
         "2",
         "3",
@@ -75,7 +75,7 @@
     //     "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "rgName-Monitoring": "[resourceGroup().name]",
-    "prefix": "azADF",
+    "prefix": "[concat(parameters('Prefix'),parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'))]",
     "ApplicationList": [
       {
         "AppServerQuery": "[concat('Computer startswith \"',variables('Prefix'),'\"')]",
@@ -707,7 +707,7 @@
               },
               "13": {
                 "position": {
-                  "x": 20,
+                  "x": 18,
                   "y": 0,
                   "rowSpan": 3,
                   "colSpan": 4

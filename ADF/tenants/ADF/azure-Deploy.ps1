@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'ADF'
-$Enviro = 'M0'
+$Enviro = 'P0'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
@@ -92,6 +92,9 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\19-azuredepl
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\19-azuredeploy-AppServiceFunction.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\24-azuredeploy-ServiceBus.json
+
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-OMS.json
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\23-azuredeploy-Dashboard.json
 
 # ASR deploy
 AzDeploy -DP $Enviro -App ADF -TF ASD:\templates-base\21-azuredeploy-ASRSetup.json -SubscriptionDeploy -FullUpload
