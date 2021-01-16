@@ -31,6 +31,7 @@
       "value": {
         "RG": 1,
         "RBAC": 1,
+        "UAI": 1,
         "KV": 0,
         "OMS": 1,
         "OMSSolutions": 1,
@@ -45,8 +46,8 @@
         "LinkPrivateDns": 0,
         "RT": 1,
         "FW": 0,
-        "VNGW" : 0,
-        "ERGW" : 0,
+        "VNGW": 0,
+        "ERGW": 0,
         "DNSPrivateZone": 0,
         "ADPrimary": 1,
         "ADSecondary": 0,
@@ -87,6 +88,62 @@
     },
     "DeploymentInfo": {
       "value": {
+        "uaiInfo": [
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperator",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Blob Data Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              }
+            ]
+          },
+          {
+            "name": "AzureServiceBusDataOwner",
+            "RBAC": [
+              {
+                "Name": "Azure Service Bus Data Owner"
+              },
+              {
+                "Name": "Azure Service Bus Data Sender"
+              },
+              {
+                "Name": "Azure Service Bus Data Receiver"
+              }
+            ]
+          },
+          {
+            "name": "VMOperator",
+            "RBAC": [
+              {
+                "Name": "Virtual Machine Contributor",
+                "RG": "S1"
+              },
+              {
+                "Name": "Virtual Machine Contributor",
+                "RG": "P0"
+              }
+            ]
+          }
+        ],
         "rolesInfo": [
           {
             "Name": "Contributor",

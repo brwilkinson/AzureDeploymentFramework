@@ -42,6 +42,8 @@ AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-deploy\0-azuredep
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-OMS.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-OMS.json
 
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\23-azuredeploy-Dashboard.json
+
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-DNSPrivate.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNetPrivateLink.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\6-azuredeploy-WAF.json

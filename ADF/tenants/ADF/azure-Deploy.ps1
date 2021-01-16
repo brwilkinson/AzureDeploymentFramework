@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'ADF'
-$Enviro = 'P0'
+$Enviro = 'S1'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
@@ -80,7 +80,7 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeplo
 # $Enviro AppServers Deploy
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADPrimary
 
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP -CN JMP01,SQL01   #JMP01
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP -CN JMP01   #JMP01
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP -CN .
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName SQLServers
@@ -94,7 +94,6 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\19-azuredepl
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\24-azuredeploy-ServiceBus.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-OMS.json
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-Monitor.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\23-azuredeploy-Dashboard.json
 
 # ASR deploy

@@ -37,7 +37,9 @@
     "RolesLookup": {
       "benwilk@Microsoft.com": "b8214ecb-d982-402b-8185-ca909b853eec",
       "ADF_AZC1-PSO-RG-P0": "04ae85ef-f1d2-45fe-88ca-5dd117af3102",
-      "ADF_AZC1-PSO-RG-S1": "a9a66686-b439-487e-878d-d96707ac5fbf"
+      "ADF_AZC1-PSO-RG-S1": "a9a66686-b439-487e-878d-d96707ac5fbf",
+      "AzureDeploymentFramework_AZC1-PSO-RG-S1": "117aff79-3e00-4d8b-ae74-83b2b388b02d",
+      "AzureDeploymentFramework_AZC1-PSO-RG-P0": "bdc6c2d1-ccae-4b67-a2aa-65db164d741b"
     }
   }
 }

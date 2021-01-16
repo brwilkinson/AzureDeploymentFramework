@@ -191,7 +191,7 @@
         },
         "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
         },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiAzureServiceBusDataOwner'))]": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
         }
       },
       "DefaultKeyVault": {

@@ -9,6 +9,8 @@ param (
     [String]$App = 'ADF'
 )
 
+# This file is used for Azure DevOps
+
 # Runs under Service Principal that is owner
 $context = Get-AzContext
 $Tenant = $Context.Tenant.Id

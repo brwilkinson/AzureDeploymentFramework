@@ -98,6 +98,14 @@
       "value": {
         "uaiInfo": [
           {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor"
+              }
+            ]
+          },
+          {
             "name": "StorageAccountOperator",
             "RBAC": [
               {
