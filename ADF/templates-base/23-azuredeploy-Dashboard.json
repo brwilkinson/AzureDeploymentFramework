@@ -74,6 +74,8 @@
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     //     "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+
     "rgName-Monitoring": "[resourceGroup().name]",
     "prefix": "[concat(parameters('Prefix'),parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'))]",
     "ApplicationList": [
@@ -686,7 +688,7 @@
               },
               "11": {
                 "position": {
-                  "x": 10,
+                  "x": 14,
                   "y": 8,
                   "rowSpan": 2,
                   "colSpan": 4
@@ -745,6 +747,27 @@
                 "metadata": {
                   "inputs": [],
                   "type": "Extension[azure]/Microsoft_AAD_IAM/PartType/OrganizationIdentityPart"
+                }
+              },
+              "15": {
+                "position": {
+                  "x": 10,
+                  "y": 8,
+                  "rowSpan": 2,
+                  "colSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "id",
+                      "value": "[concat(variables('OMSworkspaceID'),'/views/Updates(',variables('OMSworkspaceName'),')')]"
+                    },
+                    {
+                      "name": "solutionId",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/ViewTileIFramePart"
                 }
               }
             }

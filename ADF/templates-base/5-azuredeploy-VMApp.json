@@ -126,7 +126,7 @@
         "count": "[length(parameters('DeploymentInfo').AppServers[deployment().name])]",
         "input": {
           "name": "[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName]",
-          "matchVM" : "[if(or(equals(parameters('Global').CN,'.'),contains(parameters('Global').CN,parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName)),bool('true'),bool('false'))]",
+          "matchVM": "[if(or(equals(parameters('Global').CN,'.'),contains(parameters('Global').CN,parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName)),bool('true'),bool('false'))]",
           "Extensions": "[if(contains(variables('OSType')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].OSType],'RoleExtensions'),union(parameters('Extensions'),variables('OSType')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].OSType].RoleExtensions),parameters('Extensions'))]",
           "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].DDRole],json('null'))]",
           "vmName": "[concat('AZE2-',parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName)]",
@@ -150,11 +150,11 @@
 
     "DeploymentName": "[if(contains (tolower(deployment().name), 'vmapp'),'AppServers',replace(deployment().name, concat('dp',variables('Deployment'),'-'), ''))]",
     "AppServers": "[parameters('DeploymentInfo').AppServers[variables('DeploymentName')]]",
-    "DSCConfigLookup" : {
-      "AppServers" : "AppServers",
-      "InitialDOP" : "AppServers"
+    "DSCConfigLookup": {
+      "AppServers": "AppServers",
+      "InitialDOP": "AppServers"
     },
-    
+
     // Network, used for Cluster/AG/DNS IP's
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     // Settings for Log Analytics
@@ -209,7 +209,6 @@
         }
       }
     }
-
   },
   "resources": [
     // {
@@ -763,7 +762,7 @@
           //"condition": "[equals(parameters('Extensions').IaaSDiagnostics,1)]",
           "type": "extensions",
           "name": "VMDiagnostics",
-          "apiVersion": "2019-03-01",
+          "apiVersion": "2019-07-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
@@ -800,6 +799,39 @@
             "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'DependencyAgentWindows','DependencyAgentLinux')]",
             "typeHandlerVersion": "9.5",
             "autoUpgradeMinorVersion": true
+          }
+        },
+        // https://docs.microsoft.com/en-us/azure/azure-monitor/insights/vminsights-health-enable?tabs=powershell
+        {
+          "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.AzureMonitorAgent,1))]",
+          "name": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'AzureMonitorWindowsAgent','AzureMonitorLinuxAgent')]",
+          "type": "extensions",
+          "apiVersion": "2020-12-01",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+          ],
+          "properties": {
+            "autoUpgradeMinorVersion": true,
+            "publisher": "Microsoft.Azure.Monitor",
+            "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'AzureMonitorWindowsAgent','AzureMonitorLinuxAgent')]",
+            "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.5')]"
+          }
+        },
+        {
+          "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.GuestHealthAgent,1))]",
+          "name": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'GuestHealthWindowsAgent','GuestHealthLinuxAgent')]",
+          "type": "extensions",
+          "apiVersion": "2020-12-01",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+          ],
+          "properties": {
+            "autoUpgradeMinorVersion": true,
+            "publisher": "Microsoft.Azure.Monitor.VirtualMachines.GuestHealth",
+            "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'GuestHealthWindowsAgent','GuestHealthLinuxAgent')]",
+            "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.0')]"
           }
         },
         // https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/chef

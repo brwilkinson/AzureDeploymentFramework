@@ -70,6 +70,8 @@
         "MonitoringAgent": 1,
         "IaaSDiagnostics": 1,
         "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 0,
         "Scripts": 1,
