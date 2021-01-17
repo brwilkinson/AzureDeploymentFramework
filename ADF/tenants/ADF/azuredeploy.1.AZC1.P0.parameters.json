@@ -96,7 +96,15 @@
     },
     "DeploymentInfo": {
       "value": {
-                "uaiInfo": [
+        "uaiInfo": [
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor"
+              }
+            ]
+          },
           {
             "name": "StorageAccountOperator",
             "RBAC": [
@@ -133,10 +141,6 @@
           {
             "name": "VMOperator",
             "RBAC": [
-              {
-                "Name": "Virtual Machine Contributor",
-                "RG": "S1"
-              },
               {
                 "Name": "Virtual Machine Contributor",
                 "RG": "P0"
@@ -302,7 +306,7 @@
               "addressPrefixes": [
                 "10.0.128.0/20"
               ],
-              "bgpEnabled" : 1,
+              "bgpEnabled": 1,
               "bgpSettings": {
                 "asn": 65514,
                 "bgpPeeringAddress": "10.0.144.222",
@@ -652,28 +656,6 @@
                 }
               ]
             }
-          ],
-          "AppServersLinux": [
-            {
-              "VMName": "LIN01",
-              "Role": "LIN",
-              "ASName": "LIN",
-              "DDRole": "64GB",
-              "OSType": "CentOS75",
-              "AdminUser": "localadmin",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "59",
-                  "PublicIP": "Static"
-                }
-              ]
-            }
-          ],
-          "SQLServersAS": [
-            "CLS01"
           ],
           "SQLServers": [
             {

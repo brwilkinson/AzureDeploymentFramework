@@ -715,6 +715,24 @@
                   "PublicIP": "Static"
                 }
               ]
+            },
+            {
+              "VMName": "LIN02",
+              "Role": "LIN",
+              "ASName": "LIN",
+              "DDRole": "0GB",
+              "OSType": "CentOS75",
+              "Zone": 1,
+              "AdminUser": "localadmin",
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "StaticIP": "58",
+                  "PublicIP": "Static"
+                }
+              ]
             }
           ]
         },
