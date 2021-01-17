@@ -34,7 +34,7 @@ jobs:
           creds: ${{secrets.AZC1_ADF_RG_G0}}
           enable-AzPSSession: true
 
-      - name: P0_Sub
+      - name: G0_Sub
         uses: Azure/powershell@v1
         with: 
           inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload
@@ -46,7 +46,7 @@ jobs:
           creds: ${{secrets.AZC1_ADF_RG_S1}}
           enable-AzPSSession: true
 
-      - name: P0_RG
+      - name: S1_RG
         uses: Azure/powershell@v1
         with: 
           inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "Initial"

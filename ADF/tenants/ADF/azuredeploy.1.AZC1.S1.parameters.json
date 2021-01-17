@@ -202,7 +202,8 @@
             "name": "snMT01",
             "prefix": "0/25",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "delegations" : "Microsoft.Web/serverfarms"
           },
           {
             "name": "snMT02",
