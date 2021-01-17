@@ -144,10 +144,6 @@
               {
                 "Name": "Virtual Machine Contributor",
                 "RG": "S1"
-              },
-              {
-                "Name": "Virtual Machine Contributor",
-                "RG": "P0"
               }
             ]
           }

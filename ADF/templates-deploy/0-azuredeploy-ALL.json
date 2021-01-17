@@ -353,8 +353,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), 'VNET')]",
-        "[concat('dp', variables('Deployment'), 'OMS')]"
+        "[concat('dp', variables('Deployment'), '-VNET')]",
+        "[concat('dp', variables('Deployment'), '-OMS')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -824,13 +824,13 @@
     },
     {
       "condition": "[equals(parameters('Stage').Function,1)]",
-      "name": "[concat('dp', variables('Deployment'), 'Function')]",
+      "name": "[concat('dp', variables('Deployment'), '-Function')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-06-01",
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), 'VNET')]",
-        "[concat('dp', variables('Deployment'), 'OMS')]",
-        "[concat('dp', variables('Deployment'), 'ServerFarm')]"
+        "[concat('dp', variables('Deployment'), '-VNET')]",
+        "[concat('dp', variables('Deployment'), '-OMS')]",
+        "[concat('dp', variables('Deployment'), '-ServerFarm')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -862,12 +862,12 @@
     },
     {
       "condition": "[equals(parameters('Stage').SB,1)]",
-      "name": "[concat('dp', variables('Deployment'), 'SB')]",
+      "name": "[concat('dp', variables('Deployment'), '-SB')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-06-01",
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), 'VNET')]",
-        "[concat('dp', variables('Deployment'), 'OMS')]"
+        "[concat('dp', variables('Deployment'), '-VNET')]",
+        "[concat('dp', variables('Deployment'), '-OMS')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -886,7 +886,7 @@
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]",
         "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), 'OMS')]"
+        "[concat('dp', variables('Deployment'), '-OMS')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -899,12 +899,12 @@
     },
     {
       "condition": "[equals(parameters('Stage').AzureSQL,1)]",
-      "name": "[concat('dp', variables('Deployment'), 'AzureSQL')]",
+      "name": "[concat('dp', variables('Deployment'), '-AzureSQL')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-06-01",
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), 'VNET')]",
-        "[concat('dp', variables('Deployment'), 'OMS')]"
+        "[concat('dp', variables('Deployment'), '-VNET')]",
+        "[concat('dp', variables('Deployment'), '-OMS')]"
       ],
       "properties": {
         "mode": "Incremental",
