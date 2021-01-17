@@ -75,7 +75,7 @@ Once you are familiar with those, how do you actually implement, by taking 1 or 
 <br/>
 
 ![How](./docs/ADF/Slide5.SVG)
-[Documentation - What is ADF](./ADF.md)
+[Documentation - What is ADF](../docs/ADF.md)
 
 
 
