@@ -5,11 +5,11 @@
 @{
     AllNodes = @(
         @{
-            NodeName                       = "LocalHost"
+            NodeName                       = 'LocalHost'
             PSDscAllowPlainTextPassword    = $true
             PSDscAllowDomainUser           = $true
 
-            DisksPresent                   = @{DriveLetter = "F"; DiskID = "2" }
+            DisksPresent                   = @{DriveLetter = 'F'; DiskID = '2' }
 
             ServiceSetStopped              = 'ShellHWDetection'
 
@@ -23,31 +23,31 @@
             PowerShellModulesPresentCustom = 'Az'
 
             # Single set of features
-            WindowsFeatureSetPresent       = 'GPMC', "NET-Framework-Core"
+            WindowsFeatureSetPresent       = 'GPMC', 'NET-Framework-Core'
 
             DirectoryPresent               = 'F:\Source'
 
             EnvironmentPathPresent         = 'F:\Source\Tools\'
 
-            DevOpsAgentPresent2             = @(
+            DevOpsAgentPresent2            = @(
                 @{ 
-                    orgUrl       = "https://dev.azure.com/AzureDeploymentFramework/"
+                    orgUrl       = 'https://dev.azure.com/AzureDeploymentFramework/'
                     AgentVersion = '2.165.0'
-                    AgentBase    = "F:\Source\vsts-agent"
+                    AgentBase    = 'F:\Source\vsts-agent'
                     Agents       = @(
-                        @{pool = "{0}-{1}-Apps1"; name = "{0}-{1}-Apps101"; Ensure = 'Absent'; Credlookup = 'DomainCreds' },
-                        @{pool = "{0}-{1}-Apps1"; name = "{0}-{1}-Apps102"; Ensure = 'Absent'; Credlookup = 'DomainCreds' },
-                        @{pool = "{0}-{1}-Infra01"; name = "{0}-{1}-Infra01"; Ensure = 'Absent'; Credlookup = 'DomainCreds' }
+                        @{pool = '{0}-{1}-Apps1'; name = '{0}-{1}-Apps101'; Ensure = 'Absent'; Credlookup = 'DomainCreds' },
+                        @{pool = '{0}-{1}-Apps1'; name = '{0}-{1}-Apps102'; Ensure = 'Absent'; Credlookup = 'DomainCreds' },
+                        @{pool = '{0}-{1}-Infra01'; name = '{0}-{1}-Infra01'; Ensure = 'Absent'; Credlookup = 'DomainCreds' }
                     )
                 }
             )
 
             LocalPolicyPresent             = @(
-                @{ KeyValueName = "SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner"; PolicyType = "User"; Data = "1"; Type = "DWord" },
-                @{KeyValueName = "SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*"; PolicyType = "User"; Data = "2"; Type = "DWord" },
-                @{KeyValueName = "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\DontUsePowerShellOnWinX"; PolicyType = "User"; Data = "0"; Type = "DWord" },
-                @{KeyValueName = "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarGlomLevel"; PolicyType = "User"; Data = "1"; Type = "DWord" },
-                @{KeyValueName = "Software\Policies\Microsoft\Internet Explorer\Main\DisableFirstRunCustomize"; PolicyType = "Machine"; Data = "1"; Type = "DWord" }
+                @{ KeyValueName = 'SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
+                @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*'; PolicyType = 'User'; Data = '2'; Type = 'DWord' },
+                @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\DontUsePowerShellOnWinX'; PolicyType = 'User'; Data = '0'; Type = 'DWord' },
+                @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarGlomLevel'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
+                @{KeyValueName = 'Software\Policies\Microsoft\Internet Explorer\Main\DisableFirstRunCustomize'; PolicyType = 'Machine'; Data = '1'; Type = 'DWord' }
             )
 
             DirectoryPresentSource         = @(
@@ -72,9 +72,9 @@
                     filesDestinationPath = 'F:\Source\GIT'
                 },
 
-                # @{filesSourcePath        = '\\{0}.file.core.windows.net\source\contoso'
-                #     filesDestinationPath = 'F:\Source\contoso'
-                # },
+                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\EDGE'
+                    filesDestinationPath = 'F:\Source\EDGE'
+                },
 
                 @{filesSourcePath        = '\\{0}.file.core.windows.net\source\PSCore'
                     filesDestinationPath = 'F:\Source\PSCore'

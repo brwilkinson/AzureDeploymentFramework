@@ -16,13 +16,13 @@
             "type": "string",
             "defaultValue": "D",
             "allowedValues": [
-        "I",
-        "D",
-        "U",
-        "P",
-        "S",
-        "G",
-        "A"
+                "I",
+                "D",
+                "U",
+                "P",
+                "S",
+                "G",
+                "A"
             ]
         },
         "DeploymentID": {
@@ -78,6 +78,7 @@
         //  Moved to tenants/<tenantname>/Global-ConfigVM.json
         "OSType": "[json(parameters('Global').OSType)]",
         "WadCfg": "[json(parameters('Global').WadCfg)]",
+        "ladCfg": "[json(parameters('Global').ladCfg)]",
         "DataDiskInfo": "[json(parameters('Global').DataDiskInfo)]",
         "computeSizeLookupOptions": "[json(parameters('Global').computeSizeLookupOptions)]",
 
@@ -389,60 +390,19 @@
                                 "name": "[concat(variables('AppServers')[copyIndex(0)].VMName,'-VMDiagnosticsVmSS')]",
                                 "properties": {
                                     "publisher": "Microsoft.Azure.Diagnostics",
-                                    "type": "IaaSDiagnostics",
-                                    "typeHandlerVersion": "1.5",
+                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'IaaSDiagnostics','LinuxDiagnostic')]",
+                                    "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.9','3.0')]",
                                     "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                        "WadCfg": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),variables('WadCfg'),json('null'))]",
+                                        "ladCfg": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),json('null'),variables('ladCfg'))]",
+                                        "StorageAccount": "[variables('saaccountiddiag')]",
+                                        "StorageType": "TableAndBlob"
+                                    },
                                     "protectedSettings": {
                                         "storageAccountName": "[variables('SADiagName')]",
                                         "storageAccountKey": "[listKeys(variables('saaccountiddiag'), '2016-01-01').keys[0].value]",
                                         "storageAccountEndPoint": "https://core.windows.net/"
-                                    },
-                                    "settings": {
-                                        "storageAccount": "[variables('SADiagName')]",
-                                        "WadCfg": {
-                                            "DiagnosticMonitorConfiguration": {
-                                                "overallQuotaInMB": "50000",
-                                                "sinks": "applicationInsights",
-                                                "SinksConfig": {
-                                                    "Sink": [
-                                                        {
-                                                            "name": "applicationInsights",
-                                                            "ApplicationInsights": "[reference(variables('AppInsightsID'), '2015-05-01').InstrumentationKey]"
-                                                        }
-                                                    ]
-                                                },
-                                                "EtwProviders": {
-                                                    "EtwEventSourceProviderConfiguration": [
-                                                        {
-                                                            "provider": "Microsoft-ServiceFabric-Actors",
-                                                            "scheduledTransferKeywordFilter": "1",
-                                                            "scheduledTransferPeriod": "PT5M",
-                                                            "DefaultEvents": {
-                                                                "eventDestination": "ServiceFabricReliableActorEventTable"
-                                                            }
-                                                        },
-                                                        {
-                                                            "provider": "Microsoft-ServiceFabric-Services",
-                                                            "scheduledTransferPeriod": "PT5M",
-                                                            "DefaultEvents": {
-                                                                "eventDestination": "ServiceFabricReliableServiceEventTable"
-                                                            }
-                                                        }
-                                                    ],
-                                                    "EtwManifestProviderConfiguration": [
-                                                        {
-                                                            "provider": "cbd93bc2-71e5-4566-b3a7-595d8eeca6e8",
-                                                            "scheduledTransferLogLevelFilter": "Information",
-                                                            "scheduledTransferKeywordFilter": "4611686018427387904",
-                                                            "scheduledTransferPeriod": "PT5M",
-                                                            "DefaultEvents": {
-                                                                "eventDestination": "ServiceFabricSystemEventTable"
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        }
                                     }
                                 }
                             }
@@ -470,7 +430,7 @@
                 "type": "DSC",
                 "typeHandlerVersion": "2.24",
                 "autoUpgradeMinorVersion": true,
-                "forceUpdateTag": "[parameters('DSCUpdateTagVersion')]",
+                // "forceUpdateTag": "[parameters('DSCUpdateTagVersion')]",
                 "settings": {
                     "wmfVersion": "latest",
                     "configuration": {
@@ -519,7 +479,8 @@
                 "reliabilityLevel": "[variables('AppServersSF')[copyIndex(0)].reliabilitylevel]",
                 "upgradeMode": "Automatic",
                 "addonFeatures": [
-                    "DnsService"
+                    "DnsService",
+                    "RepairManager"
                 ],
                 "managementEndpoint": "[toLower( concat('https://',if(equals(variables('AppServersSF')[copyIndex(0)].Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',variables('AppServersSF')[copyIndex(0)].LBFEIP,':19080'))]",
                 "certificate": {
@@ -549,9 +510,6 @@
                             }
                         ]
                     }
-                ],
-                "addonFeatures": [
-                    "RepairManager"
                 ],
                 "diagnosticsStorageAccountConfig": {
                     "storageAccountName": "[variables('SADiagName')]",

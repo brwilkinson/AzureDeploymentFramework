@@ -747,7 +747,7 @@
           "properties": {
             "publisher": "Microsoft.EnterpriseCloud.Monitoring",
             "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'MicrosoftMonitoringAgent','OmsAgentForLinux')]",
-            "typeHandlerVersion": "1.0",
+            "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.4')]",
             "autoUpgradeMinorVersion": true,
             "settings": {
               "workspaceId": "[reference(variables('OMSworkspaceID'), '2017-04-26-preview').CustomerId]"
