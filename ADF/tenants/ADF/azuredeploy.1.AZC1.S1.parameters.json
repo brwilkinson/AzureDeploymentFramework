@@ -56,7 +56,7 @@
         "ADSecondary": 0,
         "InitialDOP": 1,
         "VMApp": 0,
-        "VMAppLinux": 1,
+        "VMAppLinux": 0,
         "VMSQL": 0,
         "VMFILE": 0,
         "VMSS": 0,
