@@ -29,7 +29,7 @@
 
             EnvironmentPathPresent         = 'F:\Source\Tools\'
 
-            DevOpsAgentPresent             = @(
+            DevOpsAgentPresent2             = @(
                 @{ 
                     orgUrl       = "https://dev.azure.com/AzureDeploymentFramework/"
                     AgentVersion = '2.165.0'
@@ -72,9 +72,9 @@
                     filesDestinationPath = 'F:\Source\GIT'
                 },
 
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\contoso'
-                    filesDestinationPath = 'F:\Source\contoso'
-                },
+                # @{filesSourcePath        = '\\{0}.file.core.windows.net\source\contoso'
+                #     filesDestinationPath = 'F:\Source\contoso'
+                # },
 
                 @{filesSourcePath        = '\\{0}.file.core.windows.net\source\PSCore'
                     filesDestinationPath = 'F:\Source\PSCore'

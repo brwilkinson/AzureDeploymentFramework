@@ -17,7 +17,6 @@ Configuration ADPrimary
         [String]$clientIDGlobal
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
     Import-DscResource -ModuleName xPSDesiredStateConfiguration
     Import-DscResource -ModuleName xActiveDirectory 
     Import-DscResource -ModuleName StorageDsc
@@ -111,7 +110,7 @@ Configuration ADPrimary
         #-------------------------------------------------------------------
         if ($Node.WindowsFeatureSetAbsent)
         {
-            WindowsFeatureSet WindowsFeatureSetAbsent
+            xWindowsFeatureSet WindowsFeatureSetAbsent
             {
                 Ensure = 'Absent'
                 Name   = $Node.WindowsFeatureSetAbsent

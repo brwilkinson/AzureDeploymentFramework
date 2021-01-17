@@ -20,7 +20,6 @@ Configuration SQLServers
         [String]$clientIDGlobal
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
     Import-DscResource -ModuleName xPSDesiredStateConfiguration
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName xActiveDirectory
@@ -354,7 +353,7 @@ Configuration SQLServers
             #-------------------------------------------------------------
             if ($Node.WindowsFeatureSetPresent)
             {
-                WindowsFeatureSet WindowsFeatureSetPresent
+                xWindowsFeatureSet WindowsFeatureSetPresent
                 {
                     Ensure = 'Present'
                     Name   = $Node.WindowsFeatureSetPresent
@@ -390,7 +389,7 @@ Configuration SQLServers
             # Stop the default instance of SQLServer
             # if (Test-Path -Path C:\SQLServerFull\)
             # {
-            #     ServiceSet defaultInstance
+            #     xServiceSet defaultInstance
             #     {
             #         Name        = 'MSSQLSERVER','MSSQLServerOLAPService','SQLSERVERAGENT','SQLTELEMETRY','MSSQLFDLauncher','SSASTELEMETRY'
             #         State       = 'Stopped'

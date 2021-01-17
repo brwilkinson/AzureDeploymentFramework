@@ -17,7 +17,6 @@ Configuration AppServers
         [String]$clientIDGlobal
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName xActiveDirectory
     Import-DscResource -ModuleName StorageDsc
@@ -163,12 +162,12 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
-        if ($Node.WindowsFeatureSetPresent)
+        if ($Node.Present)
         {
-            WindowsFeatureSet WindowsFeatureSetPresent
+            xWindowsFeatureSet WindowsFeatureSetPresent
             {
                 Ensure = 'Present'
-                Name   = $Node.WindowsFeatureSetPresent
+                Name   = $Node.Present
                 #Source = $Node.SXSPath
             }
         }
@@ -187,9 +186,9 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
-        if ($Node.WindowsFeatureSetAbsent)
+        if ($Node.Absent)
         {
-            WindowsFeatureSet WindowsFeatureSetAbsent
+            xWindowsFeatureSet WindowsFeatureSetAbsent
             {
                 Ensure = 'Absent'
                 Name   = $Node.WindowsFeatureSetAbsent
@@ -199,7 +198,7 @@ Configuration AppServers
         #-------------------------------------------------------------------
         if ($Node.ServiceSetStopped)
         {
-            ServiceSet ServiceSetStopped
+            xServiceSet ServiceSetStopped
             {
                 Name  = $Node.ServiceSetStopped
                 State = 'Stopped'
@@ -511,7 +510,7 @@ Configuration AppServers
                 Name                  = $AppPool.Name
                 State                 = 'Started'
                 autoStart             = $true
-                DependsOn             = '[ServiceSet]ServiceSetStarted'
+                DependsOn             = '[xServiceSet]ServiceSetStarted'
                 managedRuntimeVersion = $AppPool.Version
                 identityType          = 'SpecificUser'
                 Credential            = $credlookup["DomainCreds"]
@@ -704,7 +703,7 @@ Configuration AppServers
         #-------------------------------------------------------------------
         if ($Node.ServiceSetStarted)
         {
-            ServiceSet ServiceSetStarted
+            xServiceSet ServiceSetStarted
             {
                 Name        = $Node.ServiceSetStarted
                 State       = 'Running'

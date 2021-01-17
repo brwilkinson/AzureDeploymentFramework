@@ -17,7 +17,6 @@ Configuration ADSecondary
         [String]$clientIDGlobal
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
     Import-DscResource -ModuleName xPSDesiredStateConfiguration
     Import-DscResource -ModuleName xActiveDirectory 
     Import-DscResource -ModuleName StorageDsc
@@ -80,7 +79,7 @@ Configuration ADSecondary
             TimeZone         = iif $Node.TimeZone $Node.TimeZone "Eastern Standard Time" 
         }
 
-        WindowsFeatureSet AD-Domain-Services
+        xWindowsFeatureSet AD-Domain-Services
         {            
             Ensure               = 'Present'
             Name                 = 'AD-Domain-Services'
@@ -120,7 +119,7 @@ Configuration ADSecondary
         #-------------------------------------------------------------------
         if ($Node.WindowsFeatureSetAbsent)
         {
-            WindowsFeatureSet WindowsFeatureSetAbsent
+            xWindowsFeatureSet WindowsFeatureSetAbsent
             {
                 Ensure = 'Absent'
                 Name   = $Node.WindowsFeatureSetAbsent

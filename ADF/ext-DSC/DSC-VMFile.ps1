@@ -18,8 +18,6 @@ Configuration VMFile
         [String]$clientIDGlobal
     )
 
-
-    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName xActiveDirectory
     Import-DscResource -ModuleName StorageDsc
@@ -306,7 +304,7 @@ Configuration VMFile
             #-------------------------------------------------------------------
             if ($Node.WindowsFeatureSetPresent)
             {
-                WindowsFeatureSet WindowsFeatureSetPresent
+                xWindowsFeatureSet WindowsFeatureSetPresent
                 {
                     Ensure = 'Present'
                     Name   = $Node.WindowsFeatureSetPresent
@@ -317,7 +315,7 @@ Configuration VMFile
             #-------------------------------------------------------------------
             if ($Node.WindowsFeatureSetAbsent)
             {
-                WindowsFeatureSet WindowsFeatureSetAbsent
+                xWindowsFeatureSet WindowsFeatureSetAbsent
                 {
                     Ensure = 'Absent'
                     Name   = $Node.WindowsFeatureSetAbsent
@@ -327,7 +325,7 @@ Configuration VMFile
             #-------------------------------------------------------------------
             if ($Node.ServiceSetStopped)
             {
-                ServiceSet ServiceSetStopped
+                xServiceSet ServiceSetStopped
                 {
                     Name  = $Node.ServiceSetStopped
                     State = 'Stopped'
@@ -606,7 +604,7 @@ Configuration VMFile
                     Name                  = $AppPool.Name
                     State                 = 'Started'
                     autoStart             = $true
-                    DependsOn             = '[ServiceSet]ServiceSetStarted'
+                    DependsOn             = '[xServiceSet]ServiceSetStarted'
                     managedRuntimeVersion = $AppPool.Version
                     identityType          = 'SpecificUser'
                     Credential            = $credlookup["DomainCreds"]
@@ -885,7 +883,7 @@ Configuration VMFile
             #-------------------------------------------------------------------
             if ($Node.ServiceSetStarted)
             {
-                ServiceSet ServiceSetStarted
+                xServiceSet ServiceSetStarted
                 {
                     Name        = $Node.ServiceSetStarted
                     State       = 'Running'

@@ -16,8 +16,6 @@ Configuration VMSS
         [String]$clientIDGlobal
     )
 
-
-    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName xActiveDirectory
     Import-DscResource -ModuleName StorageDsc
@@ -157,7 +155,7 @@ Configuration VMSS
         #-------------------------------------------------------------------
         if ($Node.WindowsFeatureSetPresent)
         {
-            WindowsFeatureSet WindowsFeatureSetPresent
+            xWindowsFeatureSet WindowsFeatureSetPresent
             {
                 Ensure = 'Present'
                 Name   = $Node.WindowsFeatureSetPresent
@@ -168,7 +166,7 @@ Configuration VMSS
         #-------------------------------------------------------------------
         if ($Node.WindowsFeatureSetAbsent)
         {
-            WindowsFeatureSet WindowsFeatureSetAbsent
+            xWindowsFeatureSet WindowsFeatureSetAbsent
             {
                 Ensure = 'Absent'
                 Name   = $Node.WindowsFeatureSetAbsent
@@ -178,7 +176,7 @@ Configuration VMSS
         #-------------------------------------------------------------------
         if ($Node.ServiceSetStopped)
         {
-            ServiceSet ServiceSetStopped
+            xServiceSet ServiceSetStopped
             {
                 Name  = $Node.ServiceSetStopped
                 State = 'Stopped'
@@ -439,7 +437,7 @@ Configuration VMSS
                 Name                  = $AppPool.Name
                 State                 = 'Started'
                 autoStart             = $true
-                DependsOn             = '[ServiceSet]ServiceSetStarted'
+                DependsOn             = '[xServiceSet]ServiceSetStarted'
                 managedRuntimeVersion = $AppPool.Version
                 identityType          = 'SpecificUser'
                 Credential            = $credlookup["DomainCreds"]
@@ -617,7 +615,7 @@ Configuration VMSS
         #-------------------------------------------------------------------
         if ($Node.ServiceSetStarted)
         {
-            ServiceSet ServiceSetStarted
+            xServiceSet ServiceSetStarted
             {
                 Name        = $Node.ServiceSetStarted
                 State       = 'Running'
