@@ -689,7 +689,7 @@
                   "Primary": 1,
                   "FastNic": 1,
                   "PublicIP": "Static",
-                  "StaticIP": "63"
+                  "StaticIP": "61"
                 }
               ]
             }

@@ -421,20 +421,20 @@
                         },
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Key Vault Reader (preview)',parameters('global').GitHubProject ,'-',variables('RGName'))]",
+                            "name": "[guid('Key Vault Secrets User (preview)',parameters('global').GitHubProject ,'-',variables('RGName'))]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
-                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key Vault Reader (preview)'].Id)]",
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key Vault Secrets User (preview)'].Id)]",
                                 "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
                                 "scope": "[variables('HubRGID')]"
                             }
                         },
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid('Key Vault Reader (preview)',variables('Deployment'),'-uaiKeyVaultSecretsGet')]",
+                            "name": "[guid('Key Vault Secrets User (preview)',variables('Deployment'),'-uaiKeyVaultSecretsGet')]",
                             "apiVersion": "2018-01-01-preview",
                             "properties": {
-                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key Vault Reader (preview)'].Id)]",
+                                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Key Vault Secrets User (preview)'].Id)]",
                                 "principalId": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiKeyVaultSecretsGet'),'2018-11-30').principalId)]",
                                 "scope": "[variables('HubRGID')]"
                             }

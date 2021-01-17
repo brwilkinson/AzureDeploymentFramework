@@ -145,7 +145,7 @@
             "input": {
               "name": "[parameters('WAFInfo').SSLCerts[copyIndex('sslCertificates')]]",
               "properties": {
-                "keyVaultSecretId": "[concat(reference(resourceId(parameters('global').HubRGName,'Microsoft.KeyVault/vaults', parameters('global').KVNAME),'2018-02-14').vaultUri, 'secrets/', parameters('WAFInfo').SSLCerts[copyIndex('sslCertificates')])]"
+                "keyVaultSecretId": "[concat(reference(resourceId(parameters('global').HubRGName,'Microsoft.KeyVault/vaults', parameters('global').KVNAME),'2019-09-01').vaultUri, 'secrets/', parameters('WAFInfo').SSLCerts[copyIndex('sslCertificates')])]"
               }
             }
           },
