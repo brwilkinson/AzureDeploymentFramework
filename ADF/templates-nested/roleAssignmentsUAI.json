@@ -5,14 +5,20 @@
     "Deployment": {
       "type": "string"
     },
-    "RGName": {
+    "Prefix": {
       "type": "string"
     },
-    "Prefix": {
+    "RGName": {
       "type": "string"
     },
     "Enviro": {
       "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "Global": {
+      "type": "object"
     },
     "rolesInfo": {
       "type": "array"
@@ -35,7 +41,16 @@
       "name": "[concat('dpRoleAssignment-UAI-', parameters('uaiInfo').Name,'-',copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-05-01",
-      "resourceGroup": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'RG'),replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG),resourceGroup().name)]",
+      // "resourceGroup": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'RG'),replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG),resourceGroup().name)]",
+      "resourceGroup": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'RG'),
+                            if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'Tenant'),replace(
+                                  if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'Prefix'),
+                                    replace(replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG),parameters('Prefix'),parameters('uaiInfo').RBAC[CopyIndex(0)].Prefix),
+                                    replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG)),parameters('Global').AppName,parameters('uaiInfo').RBAC[CopyIndex(0)].Tenant),
+                                  if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'Prefix'),
+                                    replace(replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG),parameters('Prefix'),parameters('uaiInfo').RBAC[CopyIndex(0)].Prefix),
+                                    replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG))),resourceGroup().name)]",
+
       "dependsOn": [
       ],
       "copy": {
@@ -61,7 +76,16 @@
               "properties": {
                 "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/',parameters('RolesGroupsLookup')[parameters('uaiInfo').RBAC[CopyIndex(0)].Name].Id)]",
                 "principalId": "[if(equals(parameters('Enviro'),'G0'),'',reference(concat(subscription().Id,'/resourceGroups/',resourceGroup().name, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('Deployment'),'-uai',parameters('uaiInfo').Name),'2018-11-30').principalId)]",
-                "scope": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'RG'),concat(subscription().Id,'/resourceGroups/',replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG)),resourceGroup().id)]"
+                // "scope": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'RG'),concat(subscription().Id,'/resourceGroups/',replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG)),resourceGroup().id)]"
+                "scope": "[concat(subscription().Id,'/resourceGroups/',if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'RG'),
+                     if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'Tenant'),replace(
+                         if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'Prefix'),
+                            replace(replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG),parameters('Prefix'),parameters('uaiInfo').RBAC[CopyIndex(0)].Prefix),
+                            replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG)),parameters('Global').AppName,parameters('uaiInfo').RBAC[CopyIndex(0)].Tenant),
+                         if(contains(parameters('uaiInfo').RBAC[CopyIndex(0)],'Prefix'),
+                            replace(replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG),parameters('Prefix'),parameters('uaiInfo').RBAC[CopyIndex(0)].Prefix),
+                            replace(parameters('RGName'),parameters('Enviro'),parameters('uaiInfo').RBAC[CopyIndex(0)].RG))),resourceGroup().name))]"
+
               }
             }
             // {
@@ -81,7 +105,7 @@
       }
     }
   ],
-  "outputs" : {
+  "outputs": {
     // "output1": {
     //   "type": "string",
     //   // "value": "[if(contains(parameters('uaiInfo').RBAC[0],'RG'),parameters('Enviro'),resourceGroup().id)]"

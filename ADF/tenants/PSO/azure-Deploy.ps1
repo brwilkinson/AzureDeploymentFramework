@@ -15,15 +15,15 @@ break
 # Create Global Storage Account
 . ASD:\1-PrereqsToDeploy\1-CreateStorageAccountGlobal.ps1 -APP $App
 
+# Export all role defintions
+. ASD:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 -APP $App
+
 # Create Global Web Create
 . ASD:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
 
 # Create Service principal for Env.
 . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 -APP $App -Prefix AZC1 -Environments S1,P0,G0,G1,D2
 . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 -APP $App -Prefix AZE2 -Environments S1,P0
-
-# Export all role defintions
-. ASD:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 -APP $App
 
 # Sync the keyvault from CentralUS to EastUS2
 . ASD:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1

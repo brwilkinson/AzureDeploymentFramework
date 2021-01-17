@@ -18,6 +18,7 @@ Go Home [Documentation Home](./ARM.md)
 |Environment|S + D + T + Q + U + P |The specific environment type [Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
 |etype|PreProd + Prod|The general environment type |
 |Enviro |D03 + T04 + Q06 + U08 + P09 + P00 <br/>S1 + D2 + D3 + T4 + U5 + P6 |The environment name (16 environments)<br/>The environment name (8 environments)|
+|OrgName|FAB or ADW or WTP or BRW|Your 3 letter Organization (company) name. This ensures public Azure Resources have a unique name|
 |App|ADF, HUB, PSO, ABC|The App (tenant) name|
 |Deployment | AZC1ADFS1 + AZC1-ADF-S1 + azc1sdfs1 | Used for naming resources e.g. part of hostname and Azure Resource names, lower for storage Etc.<br/> [Prefix + App + Enviro]|
 |Global|A Global environment G0 represents Azure Subscription Deployments|E.g. RBAC or Policy|

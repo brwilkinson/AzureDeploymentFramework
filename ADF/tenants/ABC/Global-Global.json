@@ -2,7 +2,8 @@
   "Global": {
     "tenantId": "3254f91d-4657-40df-962d-c8e6dad75963",
     "SubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
-    "hubSubscriptionName": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
+    "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
+    "OrgName": "BRW",
     "AppName": "ABC",
     "SAName": "azc1abcg1saglobal",
     "GlobalRGName": "AZC1-ABC-RG-G1",

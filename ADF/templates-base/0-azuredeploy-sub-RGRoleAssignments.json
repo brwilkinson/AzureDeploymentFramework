@@ -178,19 +178,20 @@
                 }
             }
         },
-        {
-            //  Subscription
-            // Add the service principal for deployments to "Reader" at Subscription Level, used for reading policy and alert groups etc
-            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "name": "[guid('Reader',parameters('global').GitHubProject,variables('RGName'),'Subscription')]",
-            "apiVersion": "2018-01-01-preview",
-            "properties": {
-                "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Reader'].Id)]",
-                "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
-                "scope": "[subscription().Id]"
-            }
-        },
+        //  This is currently being handled by the creation of the SP 
+        // {
+        //     //  Subscription
+        //     // Add the service principal for deployments to "Reader" at Subscription Level, used for reading policy and alert groups etc
+        //     "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+        //     "type": "Microsoft.Authorization/roleAssignments",
+        //     "name": "[guid('Reader',parameters('global').GitHubProject,variables('RGName'),'Subscription')]",
+        //     "apiVersion": "2018-01-01-preview",
+        //     "properties": {
+        //         "roleDefinitionId": "[concat(subscription().Id,'/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Reader'].Id)]",
+        //         "principalId": "[variables('RolesLookup')[concat(parameters('global').GitHubProject ,'_',variables('RGName'))]]",
+        //         "scope": "[subscription().Id]"
+        //     }
+        // },
         {
             //  Local RG RBAC for user assigned identity
             // RG level role assignment - Run once for each param file [Environment] to set RBAC
@@ -224,6 +225,12 @@
                     },
                     "Enviro": {
                         "value": "[variables('Enviro')]"
+                    },
+                    "DeploymentID": {
+                        "value": "[parameters('DeploymentID')]"
+                    },
+                    "Global": {
+                        "value": "[parameters('Global')]"
                     },
                     "rolesInfo": {
                         "value": "[variables('rolesInfo')]"

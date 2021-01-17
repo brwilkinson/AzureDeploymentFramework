@@ -1,5 +1,5 @@
 param (
-    [String]$APP = 'PSO'
+    [String]$APP = 'HUB'
 )
 
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
@@ -30,7 +30,7 @@ if (! (Get-AzResourceGroup -Name $GlobalRGName -EA SilentlyContinue))
 # Create the global storage acounts
 ## Used for File and Blob Storage for assets/artifacts
 
-New-AzStorageAccount -ResourceGroupName $GlobalRGName -Name $StorageAccountName -SkuName Standard_RAGRS -Location $PrimaryLocation -Kind StorageV2 -EnableHttpsTrafficOnly $true
+New-AzStorageAccount -ResourceGroupName $GlobalRGName -Name ($StorageAccountName).tolower() -SkuName Standard_RAGRS -Location $PrimaryLocation -Kind StorageV2 -EnableHttpsTrafficOnly $true
 
 # Consider using a separate storage account for Blob uploads of deployment artifacts/templates Etc.
 # $stage = 'stagecus1'

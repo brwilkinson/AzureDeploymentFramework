@@ -2,7 +2,8 @@
     "Global": {
         "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
         "SubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
-        "hubSubscriptionName": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+        "hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+        "OrgName": "BRW",
         "AppName": "ADF",
         "GlobalRGName": "AZC1-ADF-RG-G1",
         "PrimaryLocation": "CentralUS",
@@ -41,14 +42,12 @@
             "ADF_AZC1-ADF-RG-D2": "ea8be8c0-299f-4e0f-9853-e1d48245989b",
             "ADF_AZC1-ADF-RG-P0": "d19d3fce-7d69-40a6-ba58-0442148333a3",
             "ADF_AZC1-ADF-RG-S1": "19d4b03c-88d0-41a9-b42a-0abcc75ecc03",
-
             "ADF_AZE2-ADF-RG-P0": "67771415-7a42-4f13-84ed-5cba70799e9a",
             "ADF_AZE2-ADF-RG-S1": "c6bdf41c-1eae-4cba-97a6-fb2938facc1a",
-
-            "AzureDeploymentFramework_AZC1-ADF-RG-G0" : "09ea7cdb-b4de-4713-a01d-6672f08b8a1f",
-            "AzureDeploymentFramework_AZC1-ADF-RG-P0" : "aff160e5-7ac2-4638-b15b-4c51f9cb3ff1",
-            "AzureDeploymentFramework_AZC1-ADF-RG-S1" : "b9f68aee-0f6e-433a-baba-33ac926047f2",
-            "AzureDeploymentFramework_AZC1-ADF-RG-G1" : "3095c86f-3d72-42d5-9ae0-7dbe13a98b54"
+            "AzureDeploymentFramework_AZC1-ADF-RG-G0": "09ea7cdb-b4de-4713-a01d-6672f08b8a1f",
+            "AzureDeploymentFramework_AZC1-ADF-RG-P0": "aff160e5-7ac2-4638-b15b-4c51f9cb3ff1",
+            "AzureDeploymentFramework_AZC1-ADF-RG-S1": "b9f68aee-0f6e-433a-baba-33ac926047f2",
+            "AzureDeploymentFramework_AZC1-ADF-RG-G1": "3095c86f-3d72-42d5-9ae0-7dbe13a98b54"
         }
     }
 }

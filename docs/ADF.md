@@ -24,6 +24,8 @@ Go Home [Documentation Home](./ARM.md)
 
 ![How5](./ADF/Slide9.SVG)
 
-![Project Parts](./ADF/Slide10.SVG)
+![How6](./ADF/Slide10.SVG)
 
-![Links](./ADF/Slide11.SVG)
+![Project Parts](./ADF/Slide11.SVG)
+
+![Links](./ADF/Slide12.SVG)

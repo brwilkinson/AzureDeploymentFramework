@@ -101,7 +101,7 @@
     // First Hub
     "hubVnetName": "[parameters('Global').hubVnetName]",
     "hubVnetResourceGroupName": "[parameters('Global').hubRGName]",
-    "hubVnetResourceSubscriptionName": "[parameters('Global').hubSubscriptionName]",
+    "hubVnetResourceSubscriptionID": "[parameters('Global').hubSubscriptionID]",
     "Deploymentnsg": "[concat(parameters('Prefix'),'-', parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),if(equals( concat(parameters('Environment'),parameters('DeploymentID')),'P0') ,'-Hub','-Spoke'))]",
     "delegations": {
       "default": [
@@ -169,7 +169,7 @@
             "allowGatewayTransit": false,
             "useRemoteGateways": false,
             "remoteVirtualNetwork": {
-              "id": "[resourceId(variables('hubVnetResourceSubscriptionName'),variables('hubVnetResourceGroupName'),'Microsoft.Network/virtualNetworks',variables('hubVnetName'))]"
+              "id": "[resourceId(variables('hubVnetResourceSubscriptionID'),variables('hubVnetResourceGroupName'),'Microsoft.Network/virtualNetworks',variables('hubVnetName'))]"
             }
           }
         },
@@ -198,7 +198,7 @@
       "name": "nestedTemplate_Peering",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('hubVnetResourceGroupName')]",
-      "subscriptionId": "[variables('hubVnetResourceSubscriptionName')]",
+      "subscriptionId": "[variables('hubVnetResourceSubscriptionID')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks',concat(Variables('Deployment'),'-vn'))]"
       ],
@@ -241,7 +241,7 @@
       "name": "[concat('privateDnsZones-vnLink-',copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[replace(variables('resourceGroupName'),concat(parameters('Environment'),parameters('DeploymentID')),if(contains(parameters('DeploymentInfo'),'LinkPrivateDnsInfo'),parameters('DeploymentInfo').LinkPrivateDnsInfo[copyIndex(0)].ZoneRG,''))]",
-      "subscriptionId": "[variables('hubVnetResourceSubscriptionName')]",
+      "subscriptionId": "[variables('hubVnetResourceSubscriptionID')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks',concat(Variables('Deployment'),'-vn'))]"
       ],

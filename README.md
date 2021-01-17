@@ -3,6 +3,7 @@
 ### - Declarative Infrastructure
 
 - [Documentation - What is ADF, Observations on ARM Templates Etc.](./docs/ARM.md)
+- [Documentation - Ready to Deploy? Getting Started Steps](./docs/Getting_Started.md)
 - [Documentation - Sample Environment Definitions/Declarations](./docs/Sample_Template_Files.md)
 - [Status - Deployment Pipelines GitHub](./docs/Deployment_Pipelines_GitHub.md)
 - [Status - Deployment Pipelines DevOps](./docs/Deployment_Pipelines_DevOps.md)
@@ -70,6 +71,11 @@ Once you are familiar with those, how do you actually implement, by taking 1 or 
 
 ## Any Feedback on this project is welcome, please feel free to reach out or ask questions, open a 'Discussions' or 'Issues'.
 ### Once I have more scenarios setup and documented for this Template Project I will remove the 'Preview' Note.
+
+<br/>
+
+![How](./docs/ADF/Slide5.SVG)
+[Documentation - What is ADF](./ADF.md)
 
 
 

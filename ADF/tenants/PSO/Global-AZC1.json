@@ -1,29 +1,23 @@
 {
   "Global": {
-    "HubRGName": "AZC1-PSO-RG-P0",
-    "hubVnetName": "AZC1-PSO-P0-vn",
-    "KVName": "AZC1-PSO-P0-kvVault01",
-    "KVUrl": "https://AZC1-PSO-P0-kvVault01.vault.azure.net/",
-    "certificateUrl": "https://azc1-pso-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/e0066997eae945529c84fbf815f7759f",
-    "networkId": [
-      "10.0.",
-      144
-    ],
-    "networkId2": [
-      "172.16.",
-      142
-    ],
-    "nsgRGName": "AZC1-PSO-RG-P0",
-    "RTRGName": "AZC1-PSO-RG-P0",
+    "HubRGName": "AZC1-HUB-RG-P0",
+    "hubVnetName": "AZC1-HUB-P0-vn",
+    "KVName": "AZC1-HUB-P0-kvVault01",
+    "KVUrl": "https://AZC1-HUB-P0-kvVault01.vault.azure.net/",
+    "certificateUrl": "https://azc1-hub-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/e0066997eae945529c84fbf815f7759f",
+    "networkId": ["10.0.",144],
+    "networkId2": ["172.16.",142],
+    "nsgRGName": "AZC1-HUB-RG-P0",
+    "RTRGName": "AZC1-HUB-RG-P0",
     "RTName": "rtContoso-Hub",
-    "dnsZoneRGName": "AZC1-PSO-RG-P0"
+    "dnsZoneRGName": "AZC1-HUB-RG-P0"
   },
   "Secrets": [
     {
         "vmAdminPassword": {
             "reference": {
                 "keyVault": {
-                    "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PSO-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-PSO-P0-kvVault01"
+                    "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-HUB-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-HUB-P0-kvVault01"
                 },
                 "secretName": "localadmin"
             }
@@ -33,7 +27,7 @@
         "DevOpsAgentPATToken": {
             "reference": {
                 "keyVault": {
-                    "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PSO-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-PSO-P0-kvVault01"
+                    "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-HUB-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-HUB-P0-kvVault01"
                 },
                 "secretName": "DevOpsAgentPATToken"
             }
