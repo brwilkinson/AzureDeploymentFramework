@@ -28,7 +28,7 @@
 #>
 
 param (
-    [String[]]$Environments = ('G1'),
+    [String[]]$Environments = ('P0'),
     [String]$Prefix = 'AZC1',
     [String]$App = 'ADF',
     [Int]$SecretExpiryYears = 5
@@ -42,10 +42,12 @@ $Subscription = $Context.Subscription.Name
 $Account = $context.Account.Id
 
 #region Connect to AZDevOps
-$Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$GitHubProject = $Global.GitHubProject
-$SPAdmins = $Global.ServicePrincipalAdmins
-$AppName = $Global.AppName
+$Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10
+$GitHubProject = $Global.Global.GitHubProject
+$SPAdmins = $Global.Global.ServicePrincipalAdmins
+$AppName = $Global.Global.AppName
+$RolesLookup = $Global.Global.RolesLookup
+$StartLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
 
 Foreach ($Environment in $Environments)
 {
@@ -86,6 +88,16 @@ Foreach ($Environment in $Environments)
     {
         Get-AzADServicePrincipal -DisplayName $ServicePrincipalName -OutVariable sp
     }
+
+    if ($RolesLookup | Where-Object $ServicePrincipalName -EQ $SP.Id)
+    {
+        Write-Verbose "Service Principal [$ServicePrincipalName] already set in Global-Global.json" -Verbose
+    }
+    else 
+    {
+        Write-Verbose "Ading Service Principal [$ServicePrincipalName] to Global-Global.json" -Verbose
+        $RolesLookup | Add-Member -MemberType NoteProperty -Name $ServicePrincipalName -Value $SP.Id -Force -PassThru
+    }
     #endregion
 
     # #region  Add extra owners on the Service principal
@@ -111,4 +123,11 @@ Foreach ($Environment in $Environments)
     #     }
     # }
     # #endregion
+}
+$EndLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
+# Write back the SP to global-Global if new.
+if ($StartLength -ne $EndLength)
+{
+    $Global.Global.RolesLookup = $RolesLookup
+    $Global | ConvertTo-Json -Depth 5 | Set-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json
 }

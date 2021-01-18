@@ -134,4 +134,40 @@ Go Home [Documentation Home](./ARM.md)
                     ...
                 ````
             1. If you add custom Role definitions in the future, then you should re-run this command to re-export them over the top
-    1. 
+    1. Create your Service Principals (Scripts are provided for GitHub and Azure DevOps), this document assumes GitHub
+        1. This will create 1 Principal per Resource Group, Per Application
+        1. You can go ahead and create all of them ahead of time, if you like
+        1. You can always come back add more or also re-run this, it will check if they exist
+        1. Execute this following line/s (One for each region)
+        ````powershell
+        # Create Service principal for Env.
+        . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments P0,G0,G1,D2,S1
+        . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
+        ````
+        1. Sample Output, this does several things
+            1. Create the Application/Service Principal in Azure ActiveDirectory
+            1. Creates the Secret in GitHub, this is used for Deployments (GitHub Workflows/Actions)
+            1. Updates the Global-Global.json file to do friendly name lookups for the ServicePrincipal to the objectid
+        ````powershell
+        Secret                : System.Security.SecureString
+        ServicePrincipalNames : {55ec7612-2d3a-43b8-a5b7-4a53fd905655, http://AzureDeploymentFramework_AZC1-HUB-RG-P0}
+        ApplicationId         : 55ec7612-2d3a-43b8-a5b7-4a53fd905655
+        ObjectType            : ServicePrincipal
+        DisplayName           : AzureDeploymentFramework_AZC1-HUB-RG-P0
+        Id                    : 9b537c42-3cfc-423b-955d-a83dbbfa0ac3
+        Type                  :
+        
+        WARNING: Assigning role 'Reader' over scope '/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5' to the new service principal.
+
+        {"clientId":"55ec7612-2d3a-43b8-a5b7-4a53fd905655","clientSecret":"6b72ed30-80e9-4ca5-8178-5b4755f84b27","tenantId":"3254f91d-4657-40df-962d-c8e6dad75963","subscriptionId":"1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5","activeDirectoryEndpointUrl":"https://login.microsoftonline.com","resourceManagerEndpointUrl":"https://management.azure.com/","activeDirectoryGraphResourceId":"https://graph.windows.net/","sqlManagementEndpointUrl":"https://management.core.windows.net:8443/","galleryEndpointUrl":"https://gallery.azure.com/","managementEndpointUrl":"https://management.core.windows.net/"}
+        
+        ✓ Set secret AZC1_HUB_RG_P0 for brwilkinson/AzureDeploymentFramework
+        
+        VERBOSE: Ading Service Principal [AzureDeploymentFramework_AZC1-HUB-RG-P0] to Global-Global.json
+        
+        AzureDeploymentFramework_AZC1-HUB-RG-P0 : 9b537c42-3cfc-423b-955d-a83dbbfa0ac3
+        AzureDeploymentFramework_AZC1-HUB-RG-G0 : c4acb09d-7fe0-4e50-8988-b11b67711841
+        AzureDeploymentFramework_AZC1-HUB-RG-G1 : a744f350-9757-4943-b42e-f96e88b42f96
+        AzureDeploymentFramework_AZC1-HUB-RG-D2 : 8c1101e5-d23e-4f15-bb4d-9b2156898d8f
+        AzureDeploymentFramework_AZC1-HUB-RG-S1 : 1509358e-331b-44d3-83e1-3a880832328f
+        ````
