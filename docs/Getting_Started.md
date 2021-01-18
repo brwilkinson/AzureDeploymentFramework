@@ -184,10 +184,10 @@ Go Home [Documentation Home](./ARM.md)
         ````
     1. You should see the following output
         ````powershell
-        VERBOSE: Primary HUB RGName: AZC1-BRW-BRW-HUB-RG-P0
-        VERBOSE: Primary KV Name: AZC1-BRW-BRW-HUB-P0-kvVLT01
-        VERBOSE: Secondary HUB RGName: AZE2-BRW-BRW-HUB-RG-P0
-        VERBOSE: Secondary KV Name: AZE2-BRW-BRW-HUB-P0-kvVLT01
+        VERBOSE: Primary HUB RGName: AZC1-BRW-HUB-RG-P0
+        VERBOSE: Primary KV Name: AZC1-BRW-HUB-P0-kvVLT01
+        VERBOSE: Secondary HUB RGName: AZE2-BRW-HUB-RG-P0
+        VERBOSE: Secondary KV Name: AZE2-BRW-HUB-P0-kvVLT01
         ````
     1. Following this you can manually create the following 2 Secrets
         1. localadmin, then provide the local admin password for your Virtual Machines
