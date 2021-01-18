@@ -45,9 +45,9 @@
         "FlowLogs": 1,
         "VNet": 1,
         "VNetPeering": 0,
-        "DNSPrivateZone": 0,
-        "LinkPrivateDns": 0,
-        "PrivateLink": 0,
+        "DNSPrivateZone": 1,
+        "LinkPrivateDns": 1,
+        "PrivateLink": 1,
         "BastionHost": 0,
         "RT": 0,
         "FW": 0,
@@ -137,16 +137,18 @@
                 "Name": "Azure Service Bus Data Receiver"
               }
             ]
+          },
+          {
+            "name": "VMOperator",
+            "RBAC": [
+              {
+                "Name": "Virtual Machine Contributor",
+                "RG": "P0",
+                "Prefix" : "AZE2",
+                "Tenant" : "PSO"
+              }
+            ]
           }
-          // {
-          //   "name": "VMOperator",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Virtual Machine Contributor",
-          //       "RG": "P0"
-          //     }
-          //   ]
-          // }
         ],
         "rolesInfo": [
           {

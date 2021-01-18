@@ -775,60 +775,6 @@
     ]
   },
   "resources": [
-        {
-      "type": "Microsoft.Insights/dataCollectionRules",
-      "apiVersion": "2019-11-01-preview",
-      "name": "[replace(concat(variables('Deployment'),'VMInsights'),'-','')]",
-      "location": "centralus",
-      "properties": {
-        "description": "Data collection rule for VM Insights health.",
-        "dataSources": {
-          "performanceCounters": [
-            {
-              "streams": [
-                "Microsoft-Perf"
-              ],
-              "scheduledTransferPeriod": "PT1M",
-              "samplingFrequencyInSeconds": 60,
-              "counterSpecifiers": [
-                "\\LogicalDisk(*)\\% Free Space",
-                "\\Memory\\Available Bytes",
-                "\\Processor(_Total)\\% Processor Time"
-              ],
-              "name": "VMHealthPerfCounters"
-            }
-          ],
-          "extensions": [
-            {
-              "streams": [
-                "Microsoft-HealthStateChange"
-              ],
-              "extensionName": "HealthExtension",
-              "extensionSettings": {},
-              "name": "Microsoft-VMInsights-Health"
-            }
-          ]
-        },
-        "destinations": {
-          "logAnalytics": [
-            {
-              "workspaceResourceId": "[variables('OMSworkspaceID')]",
-              "name": "Microsoft-HealthStateChange-Dest"
-            }
-          ]
-        },
-        "dataFlows": [
-          {
-            "streams": [
-              "Microsoft-HealthStateChange"
-            ],
-            "destinations": [
-              "Microsoft-HealthStateChange-Dest"
-            ]
-          }
-        ]
-      }
-    },
     {
       "name": "[variables('AAName')]",
       "type": "Microsoft.Automation/automationAccounts",
@@ -945,11 +891,71 @@
       ]
     },
     {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2019-11-01-preview",
+      "name": "[replace(concat(variables('Deployment'),'VMInsights'),'-','')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.OperationalInsights/workspaces/', variables('OMSworkspaceName'))]"
+      ],
+      "properties": {
+        "description": "Data collection rule for VM Insights health.",
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "streams": [
+                "Microsoft-Perf"
+              ],
+              "scheduledTransferPeriod": "PT1M",
+              "samplingFrequencyInSeconds": 60,
+              "counterSpecifiers": [
+                "\\LogicalDisk(*)\\% Free Space",
+                "\\Memory\\Available Bytes",
+                "\\Processor(_Total)\\% Processor Time"
+              ],
+              "name": "VMHealthPerfCounters"
+            }
+          ],
+          "extensions": [
+            {
+              "streams": [
+                "Microsoft-HealthStateChange"
+              ],
+              "extensionName": "HealthExtension",
+              "extensionSettings": {},
+              "name": "Microsoft-VMInsights-Health"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('OMSworkspaceID')]",
+              "name": "Microsoft-HealthStateChange-Dest"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-HealthStateChange"
+            ],
+            "destinations": [
+              "Microsoft-HealthStateChange-Dest"
+            ]
+          }
+        ]
+      }
+    },
+    {
       "name": "[variables('AppInsightsName')]",
       "type": "microsoft.insights/components",
       "apiVersion": "2015-05-01",
       "location": "[resourceGroup().location]",
       "kind": "other",
+      "dependsOn": [
+        "[concat('Microsoft.OperationalInsights/workspaces/', variables('OMSworkspaceName'))]"
+      ],
       "properties": {
         "Application_Type": "web",
         "Flow_Type": null,
