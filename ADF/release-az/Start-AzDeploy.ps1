@@ -173,7 +173,7 @@ Function Start-AzDeploy
     # AZC1-ADF-RG-P0
     $ResourceGroupName = $prefix + '-' + $GlobalGlobal.OrgName + '-' + $App + '-RG-' + $Deployment
 
-    Write-Warning -Message "Using Resource Group:  $ResourceGroupName"
+    Write-Warning -Message "Using Resource Group: $ResourceGroupName"
 
     # Convert any objects back to string so they are not deserialized
     $GlobalGlobal | Get-Member -MemberType NoteProperty | ForEach-Object {

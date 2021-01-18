@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: AzureDeploy_AZC1_ADF_RG_G1
+name: Deploy_AZC1_ADF_RG_G1
 
 # Controls when the action will run. 
 on: 

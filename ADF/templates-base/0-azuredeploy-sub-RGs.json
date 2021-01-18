@@ -72,7 +72,7 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
+    "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
     "Locationlookup": {
       "AZE2": "eastus2",
       "AZC1": "centralus"
