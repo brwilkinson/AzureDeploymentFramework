@@ -161,7 +161,7 @@
                 },
                 "parameters": {
                     "Deployment": {
-                        "value": "[concat(parameters('Prefix'),'-',variables('Enviro'),'-', parameters('Global').AppName)]"
+                        "value": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',variables('Enviro'),'-', parameters('Global').AppName)]"
                     },
                     "rolesInfo": {
                         "value": "[variables('rolesInfo')]"
