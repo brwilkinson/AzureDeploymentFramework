@@ -65,6 +65,10 @@
                 "description": "Auto-generated token to access artifactsLocation"
             }
         },
+        "deploymentTime": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
+        },
         "vmAdminPassword": {
             "type": "securestring"
         },
@@ -73,7 +77,7 @@
         }
     },
     "variables": {
-        "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+        "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
 
         //  Moved to tenants/<tenantname>/Global-ConfigVM.json
         "OSType": "[json(parameters('Global').OSType)]",
@@ -274,7 +278,7 @@
                     "osProfile": {
                         "computerNamePrefix": "[variables('VM')[copyIndex(0)].vmHostName]",
                         "adminUsername": "[parameters('Global').vmAdminUserName]",
-                        "adminPassword": "[concat(reference(resourceId(parameters('global').HubRGName,'Microsoft.KeyVault/vaults', parameters('global').KVNAME),'2018-02-14').vaultUri, 'secrets/localadmin')]",
+                        "adminPassword": "[parameters('vmAdminPassword')]",
                         "windowsConfiguration": {
                             "provisionVMAgent": true,
                             "enableAutomaticUpdates": true
@@ -430,7 +434,7 @@
                 "type": "DSC",
                 "typeHandlerVersion": "2.24",
                 "autoUpgradeMinorVersion": true,
-                // "forceUpdateTag": "[parameters('DSCUpdateTagVersion')]",
+                "forceUpdateTag": "[parameters('deploymentTime')]",
                 "settings": {
                     "wmfVersion": "latest",
                     "configuration": {

@@ -18,13 +18,15 @@ break
 # Export all role defintions
 . ASD:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 -APP $App
 
-# Create Global Web Create
-. ASD:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
-
 # Create Service principal for Env.
 . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments P0,G0,G1,D2,S1
 . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
 
+# Bootstrap Hub RGs and Keyvaults
+. ASD:\1-PrereqsToDeploy\1-CreateHUBKeyVaults.ps1 -APP $App
+
+# Create Global Web Create
+. ASD:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
 
 # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
 . ASD:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1

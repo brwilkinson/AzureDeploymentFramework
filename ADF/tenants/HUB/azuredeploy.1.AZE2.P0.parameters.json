@@ -14,7 +14,7 @@
     "vmAdminPassword": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PSO-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-PSO-P0-kvVault01"
+          "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-HUB-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-HUB-P0-kvVLT01"
         },
         "secretName": "localadmin"
       }
@@ -22,7 +22,7 @@
     "DevOpsAgentPATToken": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PSO-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-PSO-P0-kvVault01"
+          "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-HUB-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-HUB-P0-kvVLT01"
         },
         "secretName": "DevOpsAgentPATToken"
       }
@@ -37,7 +37,7 @@
         "OMSDataSources": 1,
         "SA": 1,
         "StorageSync": 0,
-        "RSV" : 0,
+        "RSV": 0,
         "NSGHUB": 1,
         "NSGSPOKE": 0,
         "VNet": 1,
@@ -85,9 +85,65 @@
     },
     "DeploymentInfo": {
       "value": {
+        "uaiInfo": [
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperator",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Blob Data Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              }
+            ]
+          },
+          {
+            "name": "AzureServiceBusDataOwner",
+            "RBAC": [
+              {
+                "Name": "Azure Service Bus Data Owner"
+              },
+              {
+                "Name": "Azure Service Bus Data Sender"
+              },
+              {
+                "Name": "Azure Service Bus Data Receiver"
+              }
+            ]
+          },
+          {
+            "name": "VMOperator",
+            "RBAC": [
+              {
+                "Name": "Virtual Machine Contributor",
+                "RG": "P0"
+              }
+            ]
+          }
+        ],
         "rolesInfo": [
           {
             "Name": "Contributor",
+            "Member": "benwilk@Microsoft.com"
+          },
+          {
+            "Name": "Key Vault Administrator (preview)",
             "Member": "benwilk@Microsoft.com"
           }
         ],
@@ -97,11 +153,6 @@
         "DC2HostName": "DC02",
         "CommentOLD: SUBNETS": "128 + 64 + 32 + 16 + 16",
         "Comment2:   SUBNETS": "WAF01: 32 (/27) + FE01: 32 (/27) + AD01: 16 (/28) + BE01: 16 (/28) + BE02: 16 (/28) + BE03: 16 (/28) + MT01: 128 (/25) + MT02: 256 (/24)",
-        "DNSPrivateZoneInfo" : [
-          "Contoso.com",
-          "Fabrikam.com",
-          "PSObject.com"
-        ],
         "SubnetInfo": [
           {
             "name": "snWAF01",
@@ -153,39 +204,112 @@
             "Route": false
           }
         ],
-        "saInfo": [
-          {
-            "nameSuffix": "diag",
-            "skuName": "Standard_LRS",
-            "allNetworks" :"Allow"
-          }
+        "networkWatcherInfo": {
+          "name": "networkwatcher"
+        },
+        "DNSPrivateZoneInfo": [
+          "Contoso.com",
+          "Fabrikam.com",
+          "PSThing.com",
+          "privatelink.azurewebsites.net",
+          "privatelink.vaultcore.azure.net",
+          "privatelink.blob.core.windows.net",
+          "privatelink.queue.core.windows.net",
+          "privatelink.afs.azure.net",
+          "privatelink.servicebus.windows.net",
+          "privatelink.database.windows.net",
+          "privatelink.azconfig.io"
         ],
         "LinkPrivateDnsInfo": [
           {
+            "zoneRG": "P0",
+            "zone": "privatelink.vaultcore.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.azurewebsites.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.blob.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.queue.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.afs.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
             "zone": "Contoso.com",
             "Autoregistration": false
           },
           {
+            "zoneRG": "P0",
             "zone": "Fabrikam.com",
             "Autoregistration": false
           },
           {
-            "zone": "PSObject.com",
+            "zoneRG": "P0",
+            "zone": "PSThing.com",
             "Autoregistration": false
+          }
+        ],
+        "saInfo": [
+          {
+            "nameSuffix": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow"
           }
         ],
         "KVInfo": [
           {
-            "Name": "Vault01",
+            "Name": "VLT01",
             "skuName": "standard",
             "softDelete": true,
-            "AllNetworks": "Deny",
-            "accessPolicies": [
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "allNetworks": "Allow",
+            "PrivateLinkInfo": [
               {
-                "objectId": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
-                "Permissions": "All"
+                "Subnet": "snMT02",
+                "groupID": "vault"
               }
             ]
+          }
+        ],
+        "VNGWInfo": [
+          {
+            "Name": "VNGW01",
+            "skuname": "VpnGw2",
+            "skutier": "VpnGw2",
+            "gatewayType": "VPN",
+            "vpnType": "RouteBased",
+            "vpnGen": "Generation2",
+            "localNetworkGateway": {
+              "name": "PSO",
+              "gatewayIpAddress": "52.154.217.25",
+              "addressPrefixes": [
+                "10.0.128.0/20"
+              ],
+              "bgpEnabled": 1,
+              "bgpSettings": {
+                "asn": 65514,
+                "bgpPeeringAddress": "10.0.144.222",
+                "peerWeight": 0
+              }
+            },
+            "ConnectionOptions": {
+              "EnableConnection": 1,
+              "sharedKey": "ApplesForBreakfast" // you likely want a param for this from KV
+            }
           }
         ],
         "RTInfo": [
@@ -199,79 +323,6 @@
                 "nextHopType": "VirtualAppliance"
               }
             ]
-          }
-        ],
-        "PolicyInfo": [
-          {
-            "Name": "Audit-allowed-locations",
-            "Description": "Audit allowed locations",
-            "parameters": {
-              "allowedLocations": {
-                "type": "Array",
-                "metadata": {
-                  "description": "The list of allowed locations for resources.",
-                  "displayName": "Allowed locations",
-                  "strongType": "location"
-                }
-              }
-            },
-            "policyRule": {
-              "if": {
-                "not": {
-                  "field": "location",
-                  "in": "[parameters('allowedLocations')]"
-                }
-              },
-              "then": {
-                "effect": "audit"
-              }
-            }
-          },
-          {
-            "name": "Audit-allowed-role-definitions2",
-            "description": "Audit role definitions that can be used in IAM",
-            "parameters": {
-              "roleDefinitionId": {
-                "type": "string",
-                "metadata": {
-                  "description": "The list of role definition Ids",
-                  "displayName": "Approved Role Definitions"
-                }
-              }
-            },
-            "policyRule": {
-              "if": {
-                "anyOf": [
-                  {
-                    "allof": [
-                      {
-                        "field": "type",
-                        "equals": "Microsoft.Authorization/roleAssignments"
-                      }
-                    ]
-                  },
-                  {
-                    "anyOf": [
-                      {
-                        "not": {
-                          "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
-                          "match": "./058aae05-414d-5198-812b-6f4401cd86bb"
-                        }
-                      },
-                      {
-                        "not": {
-                          "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
-                          "match": "[parameter('roleDefinitionId')]"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              "then": {
-                "effect": "audit"
-              }
-            }
           }
         ],
         "ERGWInfo": [
@@ -712,7 +763,7 @@
           {
             "SourceRG": "P0",
             "SourceRegion": "AZC1",
-            "SourceSasuffix" : "cache",
+            "SourceSasuffix": "cache",
             "DestinationRG": "P0",
             "DestinationRegion": "AZE2",
             "DestinationRSVName": "ASRRecoveryVault",

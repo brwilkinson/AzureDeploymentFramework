@@ -71,7 +71,7 @@
     }
   },
   "variables": {
-    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(variables('Deployment'),'-vn'))]",
     "gatewaySubnet": "gatewaySubnet",
     "gatewaySubnetRef": "[concat(variables('VNetID'), '/subnets/', variables('gatewaySubnet'))]",

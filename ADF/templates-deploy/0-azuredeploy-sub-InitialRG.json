@@ -71,7 +71,7 @@
     }
   },
   "variables": {
-    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DeploymentInfoObject": {
       "RG": "templates-base\\0-azuredeploy-sub-RGs.json",
       "RBAC": "templates-base\\0-azuredeploy-sub-RGRoleAssignments.json",

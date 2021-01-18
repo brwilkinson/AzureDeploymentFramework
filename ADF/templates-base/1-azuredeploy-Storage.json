@@ -71,8 +71,8 @@
     }
   },
   "variables": {
-    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "saInfo": "[parameters('DeploymentInfo').saInfo]",

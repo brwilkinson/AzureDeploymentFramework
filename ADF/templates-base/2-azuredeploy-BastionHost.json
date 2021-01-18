@@ -71,7 +71,7 @@
     }
   },
   "variables": {
-    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "SubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(variables('Deployment'),'-vn'),variables('snAzureBastionSubnet'))]",

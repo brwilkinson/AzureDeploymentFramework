@@ -1,17 +1,17 @@
 {
   "Global": {
-    "HubRGName": "AZE2-PSO-RG-P0",
-    "hubVnetName": "AZE2-PSO-P0-vn",
-    "KVName": "AZE2-PSO-P0-kvVault01",
-    "KVUrl": "https://AZE2-PSO-P0-kvVault01.vault.azure.net/",
-    "certificateUrl": "https://aze2-pso-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/8a07ec09aa17428ca6e0f927f1dec803",
+    "HubRGName": "AZE2-BRW-HUB-RG-P0",
+    "hubVnetName": "AZE2-BRW-HUB-P0-vn",
+    "KVName": "AZE2-BRW-HUB-P0-kvVLT01",
+    "KVUrl": "https://AZE2-BRW-HUB-P0-kvVault01.vault.azure.net/",
+    "certificateUrl": "https://aze2-brw-hub-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/8a07ec09aa17428ca6e0f927f1dec803",
     "networkId": [
       "172.18.",
       142
     ],
-    "nsgRGName": "AZE2-PSO-RG-P0",
-    "RTRGName": "AZE2-PSO-RG-P0",
+    "nsgRGName": "AZE2-BRW-HUB-RG-P0",
+    "RTRGName": "AZE2-BRW-HUB-RG-P0",
     "RTName": "rtContoso-Hub",
-    "dnsZoneRGName": "AZE2-PSO-RG-P0"
+    "dnsZoneRGName": "AZE2-BRW-HUB-RG-P0"
   }
 }

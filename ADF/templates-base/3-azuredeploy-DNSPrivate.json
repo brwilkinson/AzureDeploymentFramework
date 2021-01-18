@@ -72,7 +72,7 @@
   },
   "variables": {
     // Global  This Deployment variable is used to name EVERY resource.
-    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DNSPrivateZoneInfo": "[parameters('DeploymentInfo').DNSPrivateZoneInfo]"
 
       //"[if(contains(parameters('DeploymentInfo'),'DNSPrivateZoneInfo'),parameters('DeploymentInfo').DNSPrivateZoneInfo,json('null'))]"

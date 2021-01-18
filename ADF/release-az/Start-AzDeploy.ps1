@@ -127,8 +127,6 @@ Function Start-AzDeploy
         return @($ValidationOutput | Where-Object { $_ -ne $null } | ForEach-Object { @('  ' * $Depth + ': ' + $_.Message) + @(Format-ValidationOutput @($_.Details) ($Depth + 1)) })
     }
 
-    # AZC1-ADF-RG-P0
-    $ResourceGroupName = $prefix + '-' + $App + '-RG-' + $Deployment
     if (-not ($DeploymentName))
     {
         $DeploymentName = ((Get-ChildItem $TemplateFile).BaseName)
@@ -163,8 +161,6 @@ Function Start-AzDeploy
         $Subscription = $false
     }
 
-    Write-Warning -Message "Using Resource Group:  $ResourceGroupName"
-
     [string] $StorageContainerName = "$Prefix-$App-stageartifacts-$env:USERNAME".ToLowerInvariant()
 
     $OptionalParameters = @{ }
@@ -173,6 +169,11 @@ Function Start-AzDeploy
     # Take the Global, Config and Regional settings and combine them as an object
     # Then convert them to hashtable to pass in as parameters
     $GlobalGlobal = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+
+    # AZC1-ADF-RG-P0
+    $ResourceGroupName = $prefix + '-' + $GlobalGlobal.OrgName + '-' + $App + '-RG-' + $Deployment
+
+    Write-Warning -Message "Using Resource Group:  $ResourceGroupName"
 
     # Convert any objects back to string so they are not deserialized
     $GlobalGlobal | Get-Member -MemberType NoteProperty | ForEach-Object {

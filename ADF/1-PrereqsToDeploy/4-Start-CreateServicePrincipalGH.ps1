@@ -46,12 +46,13 @@ $Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | C
 $GitHubProject = $Global.Global.GitHubProject
 $SPAdmins = $Global.Global.ServicePrincipalAdmins
 $AppName = $Global.Global.AppName
+$OrgName = $Global.Global.OrgName
 $RolesLookup = $Global.Global.RolesLookup
 $StartLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
 
 Foreach ($Environment in $Environments)
 {
-    $EnvironmentName = "$($Prefix)-$($AppName)-RG-$Environment"
+    $EnvironmentName = "$($Prefix)-$($OrgName)-$($AppName)-RG-$Environment"
     $SecretName = $EnvironmentName -replace '-', '_'
     $ServicePrincipalName = "${GitHubProject}_$EnvironmentName"
 
@@ -95,7 +96,7 @@ Foreach ($Environment in $Environments)
     }
     else 
     {
-        Write-Verbose "Ading Service Principal [$ServicePrincipalName] to Global-Global.json" -Verbose
+        Write-Verbose "Adding Service Principal [$ServicePrincipalName] to Global-Global.json" -Verbose
         $RolesLookup | Add-Member -MemberType NoteProperty -Name $ServicePrincipalName -Value $SP.Id -Force -PassThru
     }
     #endregion

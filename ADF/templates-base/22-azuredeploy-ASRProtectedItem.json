@@ -71,7 +71,7 @@
     }
   },
   "variables": {
-    "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
     "dataRetention": 31,
     "serviceTier": "pernode",
 
