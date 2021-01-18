@@ -137,16 +137,16 @@
                 "Name": "Azure Service Bus Data Receiver"
               }
             ]
-          },
-          {
-            "name": "VMOperator",
-            "RBAC": [
-              {
-                "Name": "Virtual Machine Contributor",
-                "RG": "P0"
-              }
-            ]
           }
+          // {
+          //   "name": "VMOperator",
+          //   "RBAC": [
+          //     {
+          //       "Name": "Virtual Machine Contributor",
+          //       "RG": "P0"
+          //     }
+          //   ]
+          // }
         ],
         "rolesInfo": [
           {

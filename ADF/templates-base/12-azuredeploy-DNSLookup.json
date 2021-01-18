@@ -72,7 +72,7 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "DeploymentDev": "[concat(parameters('Prefix'),'-',parameters('Global').Appname,'-D7')]",
+    "DeploymentDev": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-D7')]",
     "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
     "subscriptionId": "[subscription().subscriptionId]",
     "resourceGroupName": "[resourceGroup().name]",

@@ -83,10 +83,10 @@
             "AZC1": "centralus"
         },
         "location": "[variables('locationlookup')[parameters('Prefix')]]",
-        "KVName": "[concat(parameters('Prefix'),'-',parameters('Global').AppName,'-P0-kvVault01')]",
-        "HubRG": "[concat(parameters('Prefix'),'-',parameters('Global').AppName,'-RG-P0' )]",
+        "KVName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-P0-kvVault01')]",
+        "HubRG": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-P0' )]",
         "HubRGID": "[concat(subscription().Id,'/resourceGroups/',variables('HubRG'))]",
-        "GlobalRG": "[concat(parameters('Global').PrimaryPrefix,'-',parameters('Global').AppName,'-RG-G1')]",
+        "GlobalRG": "[concat(parameters('Global').PrimaryPrefix,'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-G1')]",
         "GlobalRGID": "[concat(subscription().Id,'/resourceGroups/',variables('GlobalRG'))]",
         "RolesLookup": "[json(parameters('Global').RolesLookup)]",
         "RolesGroupsLookup": "[json(parameters('Global').RolesGroupsLookup)]",
