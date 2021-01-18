@@ -200,10 +200,28 @@ Go Home [Documentation Home](./ARM.md)
             1. As a reminder, G0 stands for Subscription Level.
             1. This principal will do the following:
                 1. Upload files to the storage account, so inherits access via owner to the storage account keys
-                1. Deploy a Template by reading from the Keyvault (Which we have not yet created, we will create 1 in each regional hub)
+                1. Deploy a Template by reading from the Keyvault (1 in each regional hub)
                 1. Then it will run the intial template deployment to Create RG's and perform RBAC Assignments on those RG's
         1. Assign the [G0] Principal E.g. E.g. "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0" as "Key Vault Secrets User (preview)"
-            1. You will want to do this on both Hubs i.e. P0 Resource Groups.
-        1. If you are going to manually deploy while you are setting this up, you should also assign the above RBAC Role Assignments on your own account
+            1. You will want to do this on both Hubs i.e. both P0 Resource Groups.
+        1. While you are setting this up, you should also assign the below RBAC Role Assignments on your own account
             1. "Owner" on Subscription
-            1. "Key Vault Secrets User (preview)" on the Hub RG's i.e. P0
+            1. "Key Vault Secrets Officer (preview)" on the Hub RG's i.e. P0
+                1. We will need to create 2 secrets in order to deploy in the next step, so this will enable you to create these
+            1. You can easily remove these later, once the Workflows have all been setup.
+
+1. Go into the Keyvault in your primary Hub.
+    1. Create 2 Secrets (These are the default securestring parameters on all templates, you can add more later)
+        1. *localadmin* (choose your domain or local admin password here)
+        1. *DevOpsAgentPATToken* (any value here, Update this later), consider moving, now this is on GitHub, not azureDevops
+
+1. Once you have Created the Secrets in the Primary Regional Hub Keyvault, you can sync the secrets to the Secondary Regional Hub Keyvaul
+    1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.
+    1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
+    1. Then execute the following
+        ````powershell
+        # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
+        . ASD:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
+        ````
+    1. The Primary and Secondary KV Name and Region Etc. comes from the Global meta data file that you updated earlier.
+        1. i.e. [ADF\tenants\HUB\Global-Global.json]
