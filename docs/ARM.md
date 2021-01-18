@@ -69,3 +69,5 @@ Go Readme [README](../README.md)
 
 [Orchestrating Deployments](./Orchestrating_Deployments.md)
 
+
+- [Documentation - Ready to Deploy? Getting Started Steps](./Getting_Started.md)

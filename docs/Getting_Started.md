@@ -43,7 +43,7 @@ Go Home [Documentation Home](./ARM.md)
         "AppName": "HUB",                       // "3-Letter-App-Name" e.g. in this project, we call this the tenant name.
         "SAName": "azc1brwhubg1saglobal",       // "{Primary-Azure-Region-azxx-lower-case}{orgname-3-char-max-lower-case}{appname-3-char-max-lower-case}g1saglobal" 
                                                     // max length of storage account is 24 chars and requires lowercase
-        "GlobalRGName": "AZC1-HUB-RG-G1",       // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-G1"  G1 is Global
+        "GlobalRGName": "AZC1-BRW-HUB-RG-G1",       // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-G1"  G1 is Global
         "PrimaryLocation": "CentralUS",         // "CentralUS" e.g. partner region to East US 2
         "PrimaryPrefix": "AZC1",                // "AZ{2-character-letters-for-the-Azure-Region}" e.g. C1 Central US 1, E2 East US 2 Etc
         "SecondaryLocation": "EastUS2",         // "EastUS2" e.g. partner region to Central US
@@ -57,17 +57,17 @@ Go Home [Documentation Home](./ARM.md)
     1. The file name should match your Primary Azure Region that you will deploy into
     ````
       "Global": {
-        "HubRGName": "AZC1-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
-        "hubVnetName": "AZC1-HUB-P0-vn",        // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-P0-vn" P0 is a Hub
-        "KVName": "AZC1-HUB-P0-kvVault01",      // "{Primary-Azure-Region-AZXX}-{orgname-3-char-max-upper-case}-{appname-3-characters-max-upper-case}-P0-kvVault01" P0 is a Hub
+        "HubRGName": "AZC1-BRW-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+        "hubVnetName": "AZC1-BRW-HUB-P0-vn",        // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-P0-vn" P0 is a Hub
+        "KVName": "AZC1-BRW-HUB-P0-kvVault01",      // "{Primary-Azure-Region-AZXX}-{orgname-3-char-max-upper-case}-{appname-3-characters-max-upper-case}-P0-kvVault01" P0 is a Hub
                                                 // max length of keyvault name is 24 chars
         "KVUrl": "https://AZC1-BRW-HUB-P0-kvVault01.vault.azure.net/",       // Given we haven't deployed this as yet, you will have to update the CertURL later.
         "certificateUrl": "https://azc1-brw-hub-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/e0066997eae945529c84fbf815f7759f",
         "networkId": ["10.0.",144],             // The is the /20 Network Address Space that will be divided up in this region
-        "nsgRGName": "AZC1-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
-        "RTRGName": "AZC1-HUB-RG-P0",           // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+        "nsgRGName": "AZC1-BRW-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+        "RTRGName": "AZC1-BRW-HUB-RG-P0",           // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
         "RTName": "rtContoso-Hub",
-        "dnsZoneRGName": "AZC1-HUB-RG-P0"      // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+        "dnsZoneRGName": "AZC1-BRW-HUB-RG-P0"      // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
     ````
 1. Open the following File and fill out all of the information ADF\tenants\HUB\AZE2-Global.json
     1. The file name should match your Secondary Azure Region that you will deploy into
@@ -94,18 +94,18 @@ Go Home [Documentation Home](./ARM.md)
         1. You wil see an output similar to below once the RG and Storage are created.
         1. This storage account is used for uploading Assets (for IaaS/VM Deployments) that you may need, such as software installs and also used for your Template Deployments.
         ````powershell
-        VERBOSE: Global RGName: AZC1-HUB-RG-G1
+        VERBOSE: Global RGName: AZC1-BRW-HUB-RG-G1
         
-        ResourceGroupName : AZC1-HUB-RG-G1
+        ResourceGroupName : AZC1-BRW-HUB-RG-G1
         Location          : centralus
         ProvisioningState : Succeeded
         Tags              :
-        ResourceId        : /subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-HUB-RG-G1
+        ResourceId        : /subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-HUB-RG-G1
         
         
-        ResourceGroupName           : AZC1-HUB-RG-G1
+        ResourceGroupName           : AZC1-BRW-HUB-RG-G1
         StorageAccountName          : azc1brwhubg1saglobal
-        Id                          : /subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-HUB-RG-G1/providers/Microsoft.Storage/storageAccounts/azc1brwhubg1saglobal
+        Id                          : /subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-HUB-RG-G1/providers/Microsoft.Storage/storageAccounts/azc1brwhubg1saglobal
         Location                    : centralus
         Sku                         : Microsoft.Azure.Commands.Management.Storage.Models.PSSku
         Kind                        : StorageV2
@@ -152,10 +152,10 @@ Go Home [Documentation Home](./ARM.md)
             1. Updates the Global-Global.json file to do friendly name lookups for the ServicePrincipal to the objectid
             ````powershell
             Secret                : System.Security.SecureString
-            ServicePrincipalNames : {55ec7612-2d3a-43b8-a5b7-4a53fd905655, http://AzureDeploymentFramework_AZC1-HUB-RG-P0}
+            ServicePrincipalNames : {55ec7612-2d3a-43b8-a5b7-4a53fd905655, http://AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0}
             ApplicationId         : 55ec7612-2d3a-43b8-a5b7-4a53fd905655
             ObjectType            : ServicePrincipal
-            DisplayName           : AzureDeploymentFramework_AZC1-HUB-RG-P0
+            DisplayName           : AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0
             Id                    : 9b537c42-3cfc-423b-955d-a83dbbfa0ac3
             Type                  :
             
@@ -165,27 +165,45 @@ Go Home [Documentation Home](./ARM.md)
             
             ✓ Set secret AZC1_HUB_RG_P0 for brwilkinson/AzureDeploymentFramework
             
-            VERBOSE: Adding Service Principal [AzureDeploymentFramework_AZC1-HUB-RG-P0] to Global-Global.json
+            VERBOSE: Adding Service Principal [AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0] to Global-Global.json
             
-            AzureDeploymentFramework_AZC1-HUB-RG-P0 : 9b537c42-3cfc-423b-955d-a83dbbfa0ac3
-            AzureDeploymentFramework_AZC1-HUB-RG-G0 : c4acb09d-7fe0-4e50-8988-b11b67711841
-            AzureDeploymentFramework_AZC1-HUB-RG-G1 : a744f350-9757-4943-b42e-f96e88b42f96
-            AzureDeploymentFramework_AZC1-HUB-RG-D2 : 8c1101e5-d23e-4f15-bb4d-9b2156898d8f
-            AzureDeploymentFramework_AZC1-HUB-RG-S1 : 1509358e-331b-44d3-83e1-3a880832328f
+            AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0 : 9b537c42-3cfc-423b-955d-a83dbbfa0ac3
+            AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0 : c4acb09d-7fe0-4e50-8988-b11b67711841
+            AzureDeploymentFramework_AZC1-BRW-HUB-RG-G1 : a744f350-9757-4943-b42e-f96e88b42f96
+            AzureDeploymentFramework_AZC1-BRW-HUB-RG-D2 : 8c1101e5-d23e-4f15-bb4d-9b2156898d8f
+            AzureDeploymentFramework_AZC1-BRW-HUB-RG-S1 : 1509358e-331b-44d3-83e1-3a880832328f
             ````
+
+1. BootStrap the Hub Resource Group Creation and also the Keyvaults in the Primary and Secondary Region
+    1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.
+    1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
+    1. Then execute the following
+        ````powershell
+        # Bootstrap Hub RGs and Keyvaults
+        . ASD:\1-PrereqsToDeploy\1-CreateHUBKeyVaults.ps1 -APP $App
+        ````
+    1. You should see the following output
+        ````powershell
+        VERBOSE: Primary HUB RGName: AZC1-BRW-BRW-HUB-RG-P0
+        VERBOSE: Primary KV Name: AZC1-BRW-BRW-HUB-P0-kvVLT01
+        VERBOSE: Secondary HUB RGName: AZE2-BRW-BRW-HUB-RG-P0
+        VERBOSE: Secondary KV Name: AZE2-BRW-BRW-HUB-P0-kvVLT01
+        ````
+    1. Following this you can manually create the following 2 Secrets
+        1. localadmin, then provide the local admin password for your Virtual Machines
+
 1. In order to deploy from these Service Principals, they need to be delegated access over certain scopes in Azure
     1. These Role Assignments are handled within the Deployment Scripts, however there is a chicken or egg problem
-    1. I would recommend 1 or 2 Manual Role assignements to get things started
-        1. Assign the [GO] Principal E.g. "AzureDeploymentFramework_AZC1-HUB-RG-G0" as Owner on the Subscription.
+    1. I would recommend 2 Manual Role assignements to get things started
+        1. Assign the [GO] Principal E.g. "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0" as Owner on the Subscription.
             1. This is the principal that executes all role assignments and also creates RG's.
             1. As a reminder, G0 stands for Subscription Level.
             1. This principal will do the following:
                 1. Upload files to the storage account, so inherits access via owner to the storage account keys
                 1. Deploy a Template by reading from the Keyvault (Which we have not yet created, we will create 1 in each regional hub)
                 1. Then it will run the intial template deployment to Create RG's and perform RBAC Assignments on those RG's
-        1. Ensure your own account has Owner on the subscription to complete this bootstrap process
-            1. If this is a Lab, you can also leave Owner assigned on the Subscription and then you can manually run any deployment.
-            1. If this is not a Lab, I would recommend to scope your account as a Contributor on just Dev/Sandbox Resource Groups, this can be managed later
-
-1. BootStrap the Hub Resource Group Creation and also the Keyvaults in the Primary and Secondary Region
-    1. 
+        1. Assign the [G0] Principal E.g. E.g. "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0" as "Key Vault Secrets User (preview)"
+            1. You will want to do this on both Hubs i.e. P0 Resource Groups.
+        1. If you are going to manually deploy while you are setting this up, you should also assign the above RBAC Role Assignments on your own account
+            1. "Owner" on Subscription
+            1. "Key Vault Secrets User (preview)" on the Hub RG's i.e. P0

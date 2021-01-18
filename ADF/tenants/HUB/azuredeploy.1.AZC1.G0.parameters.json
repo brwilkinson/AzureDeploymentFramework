@@ -29,16 +29,16 @@
     },
     "Stage": {
       "value": {
-        "RG" : 0,
+        "RG": 0,
         "RBAC": 1,
-        "RoleDefinition" : 1,
+        "RoleDefinition": 1,
         "KV": 0,
         "OMS": 1,
         "SA": 0,
         "StorageSync": 0,
         "OMSSolutions": 1,
         "OMSDataSources": 1,
-        "RSV" : 1,
+        "RSV": 1,
         "NSGHUB": 0,
         "NSGSPOKE": 0,
         "VNet": 1,
@@ -95,8 +95,7 @@
           {
             "RoleName": "Key_Vault_Reader",
             "description": "Lets you read secrets from the vaults but not change them.",
-            "notActions": [
-            ],
+            "notActions": [],
             "actions": [
               "MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION"
             ]

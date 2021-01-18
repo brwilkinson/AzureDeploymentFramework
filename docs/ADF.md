@@ -29,3 +29,5 @@ Go Home [Documentation Home](./ARM.md)
 ![Project Parts](./ADF/Slide11.SVG)
 
 ![Links](./ADF/Slide12.SVG)
+
+- [Documentation - What is ADF, Observations on ARM Templates Etc.](./ARM.md)
