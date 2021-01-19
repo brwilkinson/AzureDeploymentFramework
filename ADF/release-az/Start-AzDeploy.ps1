@@ -80,7 +80,7 @@ Function Start-AzDeploy
         [validateset('A5', 'D2', 'P1', 'P0', 'S1', 'S2', 'S3', 'D3', 'D4', 'D5', 'D6', 'D7', 'U8', 'P9', 'G0', 'G1', 'M0')]
         [string]$Deployment,
 
-        [validateset('ADF', 'PSO', 'HUB')]
+        [validateset('ADF', 'PSO', 'HUB', 'ABC')]
         [alias('AppName')]
         [string] $App = 'ADF',
 
