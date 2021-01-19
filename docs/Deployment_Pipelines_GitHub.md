@@ -11,11 +11,11 @@ Go Home [Documentation Home](./ARM.md)
     Global - Azure Environment
 #### G0 - Subscription 
 
-![Deploy_AZC1_BRW_ADF_RG_G0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_ADF_RG_G0/badge.svg?branch=main)
+![Deploy_AZC1_BRW_HUB_RG_G0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_G0/badge.svg?branch=main)
 
 #### G1 - Global Resources
 
-![Deploy_AZC1_BRW_ADF_RG_G1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_ADF_RG_G1/badge.svg?branch=main)
+![Deploy_AZC1_BRW_HUB_RG_G1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_G1/badge.svg?branch=main)
 
 ---
 
@@ -25,15 +25,15 @@ Go Home [Documentation Home](./ARM.md)
 
 #### P0 - Hub Environment - Hub Central
 
-![Deploy_AZC1_BRW_ADF_RG_P0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_ADF_RG_P0/badge.svg?branch=main)
+![Deploy_AZC1_BRW_HUB_RG_P0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_P0/badge.svg?branch=main)
 
 #### S1 - Sandbox Environment - Spoke Central 
 
-![Deploy_AZC1_BRW_ADF_RG_S1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_ADF_RG_S1/badge.svg?branch=main)
+![Deploy_AZC1_BRW_PSO_RG_S1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_PSO_RG_S1/badge.svg?branch=main)
 
 #### S3 - Sandbox Environment - K8s - Spoke Central 
 
-![Deploy_AZC1_BRW_ADF_RG_S3](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_ADF_RG_S3/badge.svg?branch=main)
+![Deploy_AZC1_BRW_PSO_RG_S3](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_PSO_RG_S3/badge.svg?branch=main)
 
 ---
 
@@ -43,11 +43,11 @@ Go Home [Documentation Home](./ARM.md)
 
 #### P0 - Hub Environment DR - Hub EastUS2
 
-![Deploy_AZE2_BRW_ADF_RG_P0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZE2_BRW_ADF_RG_P0/badge.svg?branch=main)
+![Deploy_AZE2_BRW_HUB_RG_P0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZE2_BRW_HUB_RG_P0/badge.svg?branch=main)
 
 #### S1 - Sandbox Environment DR - Spoke EastUS2
 
-![Deploy_AZE2_BRW_ADF_RG_S1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZE2_BRW_ADF_RG_S1/badge.svg?branch=main)
+![Deploy_AZE2_BRW_PSO_RG_S1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZE2_BRW_PSO_RG_S1/badge.svg?branch=main)
 
 <br/>
 

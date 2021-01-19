@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy_AZC1_BRW_ADF_RG_P0
+name: Deploy_AZC1_BRW_PSO_RG_S1
 
 # Controls when the action will run. 
 on: 
@@ -16,7 +16,7 @@ on:
 
 env:
   APP : ADF
-  ENV: P0
+  ENV: S1
   PREFIX : AZC1
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -31,7 +31,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_ADF_RG_G0}}
+          creds: ${{secrets.AZC1_BRW_PSO_RG_G0}}
           enable-AzPSSession: true
 
       - name: G0_Sub
@@ -43,10 +43,10 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_ADF_RG_P0}}
+          creds: ${{secrets.AZC1_BRW_PSO_RG_S1}}
           enable-AzPSSession: true
 
-      - name: P0_RG
+      - name: S1_RG
         uses: Azure/powershell@v1
         with: 
           inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "ALL"
