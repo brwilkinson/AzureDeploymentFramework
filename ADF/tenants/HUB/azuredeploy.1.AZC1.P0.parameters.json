@@ -54,7 +54,7 @@
         "FW": 0,
         "VNGW": 0,
         "ERGW": 0,
-        "ADPrimary": 1,
+        "ADPrimary": 0,
         "ADSecondary": 0,
         "ILB": 0,
         "PLB": 0,
@@ -148,8 +148,8 @@
               {
                 "Name": "Virtual Machine Contributor",
                 "RG": "P0", // optionally deploy to other RG e.g. Hub
-                "Prefix": "AZE2", // optionally deploy to other region e.g. DR
-                "Tenant": "PSO" // optionally deploy to other tenant/app
+                "Prefix": "AZC1", // optionally deploy to other region e.g. DR
+                "Tenant": "HUB" // optionally deploy to other tenant/app
               }
             ]
           }
