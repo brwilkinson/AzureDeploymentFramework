@@ -12,13 +12,9 @@ $type = 'Microsoft.Portal/dashboards'
 
 # View log analytics json
 $rgName = 'AZC1-ADF-RG-P0'
-$Name = 'azc1adfp0LogAnalytics'
-$type = 'Microsoft.OperationalInsights/workspaces'
-
-# View log analytics json
-$rgName = 'AZC1-ADF-RG-P0'
 $Name = 'AZC1-ADF-P0-vmDC01'
 $type = 'Microsoft.Compute/virtualMachines'
+
 
 # Method 1 -----------------------------------------------------
 
@@ -45,6 +41,16 @@ $type = 'Microsoft.Compute/virtualMachines/extensions'
 $rgName = 'AZC1-ADF-RG-P0'
 $Name = 'AZC1-ADF-P0-vmDC01/GuestHealthWindowsAgent'
 $type = 'Microsoft.Compute/virtualMachines/extensions'
+
+# View Azure Monitor json
+$rgName = 'AZC1-BRW-HUB-RG-P0'
+$Name = 'azc1brwhubp0VMInsights'
+$type = 'Microsoft.Insights/dataCollectionRules'
+
+# View log analytics json
+$rgName = 'AZC1-BRW-HUB-RG-P0'
+$Name = 'azc1brwhubp0LogAnalytics'
+$type = 'Microsoft.OperationalInsights/workspaces'
 
 $resource = Get-AzResource -ResourceGroupName $rgName -Name $Name -ResourceType $type
 $API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | select -first 1

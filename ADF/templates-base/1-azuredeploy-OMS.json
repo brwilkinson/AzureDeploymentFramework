@@ -891,6 +891,7 @@
       ]
     },
     {
+      // https://docs.microsoft.com/en-us/azure/azure-monitor/insights/vminsights-health-configure-dcr
       "type": "Microsoft.Insights/dataCollectionRules",
       "apiVersion": "2019-11-01-preview",
       "name": "[replace(concat(variables('Deployment'),'VMInsights'),'-','')]",
@@ -901,29 +902,112 @@
       "properties": {
         "description": "Data collection rule for VM Insights health.",
         "dataSources": {
+          "windowsEventLogs": [
+            {
+              "name": "cloudSecurityTeamEvents",
+              "streams": [
+                "Microsoft-WindowsEvent"
+              ],
+              "scheduledTransferPeriod": "PT1M",
+              "xPathQueries": [
+                "Security!"
+              ]
+            },
+            {
+              "name": "appTeam1AppEvents",
+              "streams": [
+                "Microsoft-WindowsEvent"
+              ],
+              "scheduledTransferPeriod": "PT5M",
+              "xPathQueries": [
+                "System![System[(Level = 1 or Level = 2 or Level = 3)]]",
+                "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
+              ]
+            }
+          ],
+          "syslog": [
+            {
+              "name": "cronSyslog",
+              "streams": [
+                "Microsoft-Syslog"
+              ],
+              "facilityNames": [
+                "cron"
+              ],
+              "logLevels": [
+                "Debug",
+                "Critical",
+                "Emergency"
+              ]
+            },
+            {
+              "name": "syslogBase",
+              "streams": [
+                "Microsoft-Syslog"
+              ],
+              "facilityNames": [
+                "syslog"
+              ],
+              "logLevels": [
+                "Alert",
+                "Critical",
+                "Emergency"
+              ]
+            }
+          ],
           "performanceCounters": [
             {
+              "name": "VMHealthPerfCounters",
+              "scheduledTransferPeriod": "PT1M",
+              "samplingFrequencyInSeconds": 30,
+              "counterSpecifiers": [
+                "\\Memory\\Available Bytes",
+                "\\Memory\\Committed Bytes",
+                "\\Processor(_Total)\\% Processor Time",
+                "\\LogicalDisk(*)\\% Free Space",
+                "\\LogicalDisk(_Total)\\Free Megabytes",
+                "\\PhysicalDisk(_Total)\\Avg. Disk Queue Length"
+              ],
+              "streams": [
+                "Microsoft-Perf"
+              ]
+            },
+            {
+              "name": "appTeamExtraCounters",
               "streams": [
                 "Microsoft-Perf"
               ],
-              "scheduledTransferPeriod": "PT1M",
-              "samplingFrequencyInSeconds": 60,
+              "scheduledTransferPeriod": "PT5M",
+              "samplingFrequencyInSeconds": 30,
               "counterSpecifiers": [
-                "\\LogicalDisk(*)\\% Free Space",
-                "\\Memory\\Available Bytes",
-                "\\Processor(_Total)\\% Processor Time"
-              ],
-              "name": "VMHealthPerfCounters"
+                "\\Process(_Total)\\Thread Count"
+              ]
             }
           ],
           "extensions": [
             {
+              "name": "Microsoft-VMInsights-Health",
               "streams": [
                 "Microsoft-HealthStateChange"
               ],
               "extensionName": "HealthExtension",
-              "extensionSettings": {},
-              "name": "Microsoft-VMInsights-Health"
+              "extensionSettings": {
+                "schemaVersion": "1.0",
+                "contentVersion": "",
+                "healthRuleOverrides": [
+                  {
+                    "scopes": [ "*" ],
+                    "monitors": [ "root" ],
+                    "monitorConfiguration": { },
+                    "alertConfiguration": {
+                      "isEnabled": true
+                    }
+                  }
+                ]
+              },
+              "inputDataSources": [
+                "VMHealthPerfCounters"
+              ]
             }
           ]
         },
@@ -931,17 +1015,20 @@
           "logAnalytics": [
             {
               "workspaceResourceId": "[variables('OMSworkspaceID')]",
-              "name": "Microsoft-HealthStateChange-Dest"
+              "name": "LogAnalyticsWorkspace"
             }
           ]
         },
         "dataFlows": [
           {
             "streams": [
-              "Microsoft-HealthStateChange"
+              "Microsoft-HealthStateChange",
+              "Microsoft-Perf",
+              "Microsoft-Syslog",
+              "Microsoft-WindowsEvent"
             ],
             "destinations": [
-              "Microsoft-HealthStateChange-Dest"
+              "LogAnalyticsWorkspace"
             ]
           }
         ]

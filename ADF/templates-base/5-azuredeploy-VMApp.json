@@ -834,6 +834,18 @@
             "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.0')]"
           }
         },
+        {
+          "type": "providers/dataCollectionRuleAssociations",
+          "name": "[concat('Microsoft.Insights/',replace(concat(variables('Deployment'),'VMInsights'),'-',''))]",
+          "apiVersion": "2019-11-01-preview",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+          ],
+          "properties": {
+            "description": "Association of data collection rule for VM Insights Health.",
+            "dataCollectionRuleId": "[resourceId('Microsoft.Insights/dataCollectionRules',replace(concat(variables('Deployment'),'VMInsights'),'-',''))]"
+          }
+        },
         // https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/chef
         {
           "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.chefClient,1))]",
