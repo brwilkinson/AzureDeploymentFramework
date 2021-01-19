@@ -49,5 +49,5 @@ jobs:
       - name: G1_RG
         uses: Azure/powershell@v1
         with: 
-          inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "Initial"
+          inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "ALL"
           azPSVersion: latest
