@@ -38,12 +38,12 @@
       "ADF_AZC1-PSO-RG-P0": "04ae85ef-f1d2-45fe-88ca-5dd117af3102",
       "ADF_AZC1-PSO-RG-S1": "a9a66686-b439-487e-878d-d96707ac5fbf",
       "AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0": "4ec53643-12a7-4f96-8597-af1b1faf9020",
-      "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0": "86d2bacb-3064-46fc-be6e-88bda6aaee6f",
       "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G1": "78ef3c2e-c2a3-4a18-a486-fd7b4d362d68",
       "AzureDeploymentFramework_AZC1-BRW-HUB-RG-D2": "d13ce50e-bc18-460e-95be-49363dd20be5",
       "AzureDeploymentFramework_AZC1-BRW-HUB-RG-S1": "a8038a37-5ff3-49fe-ae52-0255f2b39262",
       "AzureDeploymentFramework_AZE2-BRW-HUB-RG-P0": "a26e8fa5-48a6-4ada-88f9-d148f0a4eca3",
-      "AzureDeploymentFramework_AZE2-BRW-HUB-RG-S1": "8d97df5b-6fca-42be-a12e-0b39270da321"
+      "AzureDeploymentFramework_AZE2-BRW-HUB-RG-S1": "8d97df5b-6fca-42be-a12e-0b39270da321",
+      "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0": "891b3425-2c8e-4756-9111-c50d1244e6e5"
     }
   }
 }
