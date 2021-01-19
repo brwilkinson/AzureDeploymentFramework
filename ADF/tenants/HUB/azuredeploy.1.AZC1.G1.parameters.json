@@ -155,7 +155,9 @@
               "d": 1
             }
           }
-        ]
+        ],
+        "DC1PrivateIPAddress": "75",
+        "DC2PrivateIPAddress": "76"
       }
     }
   }

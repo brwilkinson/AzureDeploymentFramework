@@ -27,7 +27,7 @@
         "secretName": "DevOpsAgentPATToken"
       }
     },
-   "Stage": {
+    "Stage": {
       "value": {
         "RG": 1,
         "RBAC": 1,
@@ -162,7 +162,7 @@
             "Member": "benwilk@Microsoft.com"
           }
         ],
-                "SPInfo": [
+        "SPInfo": [
           {
             "Name": "AzureDeploymentFramework_AZE2-BRW-HUB-RG-P0",
             "RBAC": [
