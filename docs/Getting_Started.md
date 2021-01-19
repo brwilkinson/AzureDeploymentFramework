@@ -3,7 +3,8 @@
 ## - Azure Deployment Framework ## 
 Go Home [Documentation Home](./ARM.md)
 
-### Getting Started
+### Getting Started - Deploy your First App
+- [Documentation - Getting Started - Deploy your Second App](./Getting_Started2.md)
 
 #### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
@@ -32,43 +33,43 @@ Go Home [Documentation Home](./ARM.md)
 1. Open the following File and fill out all of the information ADF\tenants\HUB\Global-Global.json
     1. All of the info below should be filled out ahead of time
     1. Replace the 3 Characters that map to the Name of your App, in this case HUB, you can leave HUB
-    ````
-    "Global": {
-        "tenantId": "3254f91d-4657-40df-962d-c8e6dad75963",               // Your Azure AD TenantID
-        "SubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",        // The Subscription ID where your Resource Groups will be deployed
-        "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",     // The Subscription ID where your Hub VNET will be deployed
-        "OrgName": "BRW",                       // "3-Letter-Company-Name"  e.g. This is required to ensure all public resources deployed have a unique name
-                                                    // This should stay the same across ALL Tenants, only the AppName will change
-                                                    // Be sure to keep this consistent
-        "AppName": "HUB",                       // "3-Letter-App-Name" e.g. in this project, we call this the tenant name.
-        "SAName": "azc1brwhubg1saglobal",       // "{Primary-Azure-Region-azxx-lower-case}{orgname-3-char-max-lower-case}{appname-3-char-max-lower-case}g1saglobal" 
-                                                    // max length of storage account is 24 chars and requires lowercase
-        "GlobalRGName": "AZC1-BRW-HUB-RG-G1",       // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-G1"  G1 is Global
-        "PrimaryLocation": "CentralUS",         // "CentralUS" e.g. partner region to East US 2
-        "PrimaryPrefix": "AZC1",                // "AZ{2-character-letters-for-the-Azure-Region}" e.g. C1 Central US 1, E2 East US 2 Etc
-        "SecondaryLocation": "EastUS2",         // "EastUS2" e.g. partner region to Central US
-        "SecondaryPrefix": "AZE2",              // "AZ{2-character-letters-for-the-Azure-Region}" e.g. C1 Central US 1, E2 East US 2 Etc
-        "PublicIPAddressforRemoteAccess": "73.157.100.227/32",      // This IP will be used on NSG's if you have a Public IP
-        "vmAdminUserName": "brw",               // "Local-Admin-UserName-for-Virtual-Machines"
-        "DomainName": "psthing.com",            // "Interntal Active Directory Domain"
-        "DomainNameExt": "psthing.com",         // "External Public DNS Name"
-    ````
+        ````
+        "Global": {
+            "tenantId": "3254f91d-4657-40df-962d-c8e6dad75963",               // Your Azure AD TenantID
+            "SubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",        // The Subscription ID where your Resource Groups will be deployed
+            "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",     // The Subscription ID where your Hub VNET will be deployed
+            "OrgName": "BRW",                       // "3-Letter-Company-Name"  e.g. This is required to ensure all public resources deployed have a unique name
+                                                        // This should stay the same across ALL Tenants, only the AppName will change
+                                                        // Be sure to keep this consistent
+            "AppName": "HUB",                       // "3-Letter-App-Name" e.g. in this project, we call this the tenant name.
+            "SAName": "azc1brwhubg1saglobal",       // "{Primary-Azure-Region-azxx-lower-case}{orgname-3-char-max-lower-case}{appname-3-char-max-lower-case}g1saglobal" 
+                                                        // max length of storage account is 24 chars and requires lowercase
+            "GlobalRGName": "AZC1-BRW-HUB-RG-G1",       // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-G1"  G1 is Global
+            "PrimaryLocation": "CentralUS",         // "CentralUS" e.g. partner region to East US 2
+            "PrimaryPrefix": "AZC1",                // "AZ{2-character-letters-for-the-Azure-Region}" e.g. C1 Central US 1, E2 East US 2 Etc
+            "SecondaryLocation": "EastUS2",         // "EastUS2" e.g. partner region to Central US
+            "SecondaryPrefix": "AZE2",              // "AZ{2-character-letters-for-the-Azure-Region}" e.g. C1 Central US 1, E2 East US 2 Etc
+            "PublicIPAddressforRemoteAccess": "73.157.100.227/32",      // This IP will be used on NSG's if you have a Public IP
+            "vmAdminUserName": "brw",               // "Local-Admin-UserName-for-Virtual-Machines"
+            "DomainName": "psthing.com",            // "Interntal Active Directory Domain"
+            "DomainNameExt": "psthing.com",         // "External Public DNS Name"
+        ````
 1. Open the following File and fill out all of the information ADF\tenants\HUB\AZC1-Global.json
     1. The file name should match your Primary Azure Region that you will deploy into
-    ````
-      "Global": {
-        "HubRGName": "AZC1-BRW-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
-        "hubVnetName": "AZC1-BRW-HUB-P0-vn",        // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-P0-vn" P0 is a Hub
-        "KVName": "AZC1-BRW-HUB-P0-kvVault01",      // "{Primary-Azure-Region-AZXX}-{orgname-3-char-max-upper-case}-{appname-3-characters-max-upper-case}-P0-kvVault01" P0 is a Hub
-                                                // max length of keyvault name is 24 chars
-        "KVUrl": "https://AZC1-BRW-HUB-P0-kvVault01.vault.azure.net/",       // Given we haven't deployed this as yet, you will have to update the CertURL later.
-        "certificateUrl": "https://azc1-brw-hub-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/e0066997eae945529c84fbf815f7759f",
-        "networkId": ["10.0.",144],             // The is the /20 Network Address Space that will be divided up in this region
-        "nsgRGName": "AZC1-BRW-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
-        "RTRGName": "AZC1-BRW-HUB-RG-P0",           // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
-        "RTName": "rtContoso-Hub",
-        "dnsZoneRGName": "AZC1-BRW-HUB-RG-P0"      // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
-    ````
+        ````
+          "Global": {
+            "HubRGName": "AZC1-BRW-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+            "hubVnetName": "AZC1-BRW-HUB-P0-vn",        // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-P0-vn" P0 is a Hub
+            "KVName": "AZC1-BRW-HUB-P0-kvVault01",      // "{Primary-Azure-Region-AZXX}-{orgname-3-char-max-upper-case}-{appname-3-characters-max-upper-case}-P0-kvVault01" P0 is a Hub
+                                                    // max length of keyvault name is 24 chars
+            "KVUrl": "https://AZC1-BRW-HUB-P0-kvVault01.vault.azure.net/",       // Given we haven't deployed this as yet, you will have to update the CertURL later.
+            "certificateUrl": "https://azc1-brw-hub-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/e0066997eae945529c84fbf815f7759f",
+            "networkId": ["10.0.",144],             // The is the /20 Network Address Space that will be divided up in this region
+            "nsgRGName": "AZC1-BRW-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+            "RTRGName": "AZC1-BRW-HUB-RG-P0",           // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+            "RTName": "rtContoso-Hub",
+            "dnsZoneRGName": "AZC1-BRW-HUB-RG-P0"      // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+        ````
 1. Open the following File and fill out all of the information ADF\tenants\HUB\AZE2-Global.json
     1. The file name should match your Secondary Azure Region that you will deploy into
     1. This will have a different network range etc, this is for DR

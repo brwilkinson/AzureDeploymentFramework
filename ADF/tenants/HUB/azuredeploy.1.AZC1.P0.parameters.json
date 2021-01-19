@@ -221,50 +221,46 @@
           {
             "name": "snWAF01",
             "prefix": "0/27",
-            "NSG": 0
+            "NSG": 1
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
-            "NSG": 0,
-            "serviceEndpoints2": false,
+            "NSG": 1,
             "Route": false
           },
           {
             "name": "snAD01",
             "prefix": "64/28",
-            "NSG": 0,
+            "NSG": 1,
             "Route": false
           },
           {
             "name": "snBE01",
             "prefix": "80/28",
-            "NSG": 0,
+            "NSG": 1,
             "Route": false
           },
           {
-            "name": "snBE02",
-            "prefix": "96/28",
-            "NSG": 0,
-            "Route": false
-          },
-          {
-            "name": "snBE03",
-            "prefix": "112/28",
-            "NSG": 0,
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
             "Route": false
           },
           {
             "name": "AzureFirewallSubnet",
             "prefix": "128/26",
-            "NSG": 0,
-            "serviceEndpoints2": false
+            "NSG": 0
+          },
+          {
+            "name": "GatewaySubnet",
+            "prefix": "192/27",
+            "NSG": 0
           },
           {
             "name": "snMT02",
             "prefix": "0/24",
-            "NSG": 0,
-            "serviceEndpoints2": false,
+            "NSG": 1,
             "Route": false
           }
         ],

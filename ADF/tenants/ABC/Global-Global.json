@@ -5,22 +5,21 @@
     "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
     "OrgName": "BRW",
     "AppName": "ABC",
-    "SAName": "azc1abcg1saglobal",
-    "GlobalRGName": "AZC1-ABC-RG-G1",
+    "SAName": "azc1brwhubg1saglobal",
+    "GlobalRGName": "AZC1-BRW-HUB-RG-G1",
     "PrimaryLocation": "CentralUS",
     "PrimaryPrefix": "AZC1",
     "SecondaryLocation": "EastUS2",
     "SecondaryPrefix": "AZE2",
     "PublicIPAddressforRemoteAccess": "73.157.100.227/32",
     "vmAdminUserName": "brw",
-    "DomainName": "psobject.com",
-    "DomainNameExt": "psobject.com",
+    "DomainName": "psthing.com",
+    "DomainNameExt": "psthing.com",
     "CertURLs": [
       "*.contoso.com",
-      "*.psobject.com",
       "*.psthing.com"
     ],
-    "CertificateThumbprint": "945C31E33E24EA30FE3423A045AA885CE6A95B74",
+    "CertificateThumbprint": "215B3BBC1ABF37BF8D79541383374857A30F86F7",
     "GitHubProject": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [
       "benwilk@microsoft.com"
@@ -36,8 +35,10 @@
     "sqlAutobackupRetentionPeriod": 5,
     "RolesLookup": {
       "benwilk@Microsoft.com": "b8214ecb-d982-402b-8185-ca909b853eec",
-      "ADF_AZC1-ABC-RG-P0": "04ae85ef-f1d2-45fe-88ca-5dd117af3102",
-      "ADF_AZC1-ABC-RG-S1": "a9a66686-b439-487e-878d-d96707ac5fbf"
+      "AzureDeploymentFramework_AZC1-BRW-ABC-RG-S1": "39420256-6589-4a68-a777-994809dc824b",
+      "AzureDeploymentFramework_AZC1-BRW-ABC-RG-D2": "494b32a2-888f-42c5-8f44-688c18f7ab04",
+      "AzureDeploymentFramework_AZC1-BRW-ABC-RG-T3": "5cf9039b-2c80-4e83-86cf-c3a383e067de",
+      "AzureDeploymentFramework_AZE2-BRW-ABC-RG-S1": "29ff09fe-c261-46e9-9566-d4c834d1521f"
     }
   }
 }
