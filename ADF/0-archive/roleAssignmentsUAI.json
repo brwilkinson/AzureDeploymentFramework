@@ -1,0 +1,150 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "Prefix": {
+      "type": "string"
+    },
+    "RGName": {
+      "type": "string"
+    },
+    "Enviro": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "rolesInfo": {
+      "type": "array"
+    },
+    "RolesLookup": {
+      "type": "object"
+    },
+    "RolesGroupsLookup": {
+      "type": "object"
+    },
+    "uaiInfo": {
+      "type": "object"
+    }
+  },
+  "variables": {
+
+    // Role Assignments can be very difficult to troubleshoot, once a role assignment exists, it can only be redeployed if it has the same GUID for the name
+    // This code and outputs will ensure it's easy to troubleshoot and also that you have consistency in deployments
+
+    // GUID will always have the following format concatenated together
+    // source Subscription ID
+    // source RGName where the UAI is created
+    // Name of the Role
+    // destination Subscription ID
+    // Destination RG, which is actually the Enviro e.g. G0
+    // The Destination Prefix or region e.g. AZE2
+    // The Destination Tenant or App e.g. PSO 
+    // Note if the destination info is not provides, assume it's local info
+
+    "copy": [
+      {
+        "name": "RoleAssignment",
+        "count": "[length( parameters('uaiInfo').RBAC )]",
+        "input": {
+          "SourceSubscriptionID": "[subscription().subscriptionId]",
+          "SourceRG": "[parameters('RGName')]",
+          "RoleName": "[parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Name]",
+          "RoleID": "[parameters('RolesGroupsLookup')[parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Name].Id]",
+          "DestSubscriptionID": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'SubscriptionID'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].SubScriptionID,subscription().subscriptionId)]",
+          "DestSubscription": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'SubscriptionID'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].SubScriptionID,subscription().Id)]",
+          "DestRG": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'RG'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].RG,parameters('Enviro'))]",
+          "DestPrefix": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'Prefix'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Prefix,parameters('Prefix'))]",
+          "DestApp": "[if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'Tenant'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Tenant,parameters('Global').AppName)]",
+          "GUID": "[
+                    guid(
+                      subscription().subscriptionId,
+                      parameters('RGName'),
+                      parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Name,
+                      if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'SubscriptionID'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].SubScriptionID,subscription().subscriptionId),
+                      if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'RG'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].RG,parameters('Enviro')),
+                      if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'Prefix'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Prefix,parameters('Prefix')),
+                      if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'Tenant'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Tenant,parameters('Global').AppName)
+                    )
+              ]",
+          "FriendlyName": "[
+                    Concat(
+                      'source: ',
+                      parameters('RGName'),
+                      ' --> ',
+                      parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Name,
+                      ' --> destination: ',
+                      if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'Prefix'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Prefix,parameters('Prefix')),
+                      '-',
+                      if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'RG'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].RG,parameters('Enviro')),
+                      '-',
+                      if(contains(parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')],'Tenant'),parameters('uaiInfo').RBAC[CopyIndex('RoleAssignment')].Tenant,parameters('Global').AppName)
+                    )
+              ]"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "[concat('dpRoleAssignment-UAI-', parameters('uaiInfo').Name,'-',copyIndex(1))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-05-01",
+      "subscriptionId": "[variables('RoleAssignment')[CopyIndex(0)].DestSubscriptionID]",
+      "resourceGroup": "[concat(variables('RoleAssignment')[CopyIndex(0)].DestPrefix,'-',parameters('Global').OrgName,'-',variables('RoleAssignment')[CopyIndex(0)].DestApp,'-RG-',variables('RoleAssignment')[CopyIndex(0)].DestRG)]",
+      "dependsOn": [
+      ],
+      "copy": {
+        "name": "uaiRGRoleAssignmentLoop",
+        "count": "[length( parameters('uaiInfo').RBAC )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+          },
+          "variables": {
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "name": "[variables('RoleAssignment')[CopyIndex(0)].GUID]",
+              "apiVersion": "2018-01-01-preview",
+              "properties": {
+                "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/',variables('RoleAssignment')[CopyIndex(0)].RoleID)]",
+                "principalId": "[if(equals(parameters('Enviro'),'G0'),'',reference(concat(subscription().Id,'/resourceGroups/',resourceGroup().name, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('Deployment'),'-uai',parameters('uaiInfo').Name),'2018-11-30').principalId)]",
+                "scope": "[concat(variables('RoleAssignment')[CopyIndex(0)].DestSubscription,'/resourceGroups/',variables('RoleAssignment')[CopyIndex(0)].DestPrefix,'-',parameters('Global').OrgName,'-',variables('RoleAssignment')[CopyIndex(0)].DestApp,'-RG-',variables('RoleAssignment')[CopyIndex(0)].DestRG)]"
+              }
+            }
+            // {
+            //   // setup the Managed service user identity with storage account key operator on the Local Storage
+            //   // 81a9662b-bebf-436f-a333-f67b29880f12 <-- Storage Account Key Operator Service Role
+            //   "type": "Microsoft.Authorization/roleAssignments",
+            //   "name": "[guid('Storage Account Key Operator Service Role',parameters('Prefix'),'-',variables('Enviro'),'-uaiStorageAccountOperator')]",
+            //   "apiVersion": "2018-01-01-preview",
+            //   "properties": {
+            //     "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/',variables('RolesGroupsLookup')['Storage Account Key Operator Service Role'].Id)]",
+            //     "principalId": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'),'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperator'),'2018-11-30').principalId)]",
+            //     "scope": "[variables('RGID')]"
+            //   }
+            // }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "RoleAssignments": {
+      "type": "array",
+      "value": "[variables('RoleAssignment')]"
+    }
+  }
+}
