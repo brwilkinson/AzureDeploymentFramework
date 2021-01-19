@@ -10,7 +10,7 @@
             PSDscAllowDomainUser        = $true
             
             # IncludesAllSubfeatures
-            WindowsFeaturePresent       = 'RSAT-ADDS'
+            WindowsFeaturePresent       = 'RSAT','DNS','FS-DFS-Namespace' #'RSAT-ADDS'
 
             DirectoryPresent            = 'F:\Source'
 
@@ -48,6 +48,8 @@
                 @{Name = "fabrikam.com"; MasterServers = "168.63.129.16" },
                 @{Name = "contoso.com"; MasterServers = "168.63.129.16" }
             )
+
+            
             DNSRecords2                 = @(
                 # Internal IP's Sample A record
                 @{Name = "lb{2}cls01"; Target = "{0}109"; Type = "ARecord" }
@@ -58,7 +60,7 @@
             SoftwarePackagePresent      = @(
                 @{
                     Name      = 'PowerShell 7-x64'
-                    Path      = 'F:\Source\PSCore\PowerShell-7.0.0-win-x64.msi'
+                    Path      = 'F:\Source\PSCore\PowerShell-7.0.3-win-x64.msi'
                     ProductId = '{B324E508-9AAE-446A-BC4C-BB446E8C2A18}'
                     Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1'
                 }
