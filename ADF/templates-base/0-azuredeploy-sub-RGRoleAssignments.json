@@ -123,6 +123,38 @@
             }
         },
         {
+            //  Local RG
+            // RG level role assignment - Run once for each param file [Environment] to set RBAC
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopRG-', variables('Enviro'))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "resourceGroup": "[variables('RGName')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsRG.json', parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "Deployment": {
+                        "value": "[variables('Deployment')]"
+                    },
+                    "rolesInfo": {
+                        "value": "[variables('rolesInfo')]"
+                    },
+                    "RolesLookup": {
+                        "value": "[variables('RolesLookup')]"
+                    },
+                    "RolesGroupsLookup": {
+                        "value": "[variables('RolesGroupsLookup')]"
+                    }
+                }
+            }
+        },
+        {
             //  Assign User Assigned Identity RBAC
             "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
             "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsUAI-', variables('Enviro'),'-',copyIndex(1))]",
@@ -242,38 +274,6 @@
                     },
                     "providerAPI" : {
                         "value": ""
-                    }
-                }
-            }
-        },
-        {
-            //  Local RG
-            // RG level role assignment - Run once for each param file [Environment] to set RBAC
-            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
-            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopRG-', variables('Enviro'))]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "resourceGroup": "[variables('RGName')]",
-            "dependsOn": [
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsRG.json', parameters('_artifactsLocationSasToken'))]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "Deployment": {
-                        "value": "[variables('Deployment')]"
-                    },
-                    "rolesInfo": {
-                        "value": "[variables('rolesInfo')]"
-                    },
-                    "RolesLookup": {
-                        "value": "[variables('RolesLookup')]"
-                    },
-                    "RolesGroupsLookup": {
-                        "value": "[variables('RolesGroupsLookup')]"
                     }
                 }
             }
