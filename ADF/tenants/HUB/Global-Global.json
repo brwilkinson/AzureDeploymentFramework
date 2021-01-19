@@ -19,7 +19,7 @@
       "*.contoso.com",
       "*.psthing.com"
     ],
-    "CertificateThumbprint": "945C31E33E24EA30FE3423A045AA885CE6A95B74",
+    "CertificateThumbprint": "215B3BBC1ABF37BF8D79541383374857A30F86F7",
     "GitHubProject": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [
       "benwilk@microsoft.com"

@@ -215,7 +215,21 @@ Go Home [Documentation Home](./ARM.md)
         1. *localadmin* (choose your domain or local admin password here)
         1. *DevOpsAgentPATToken* (any value here, Update this later), consider moving, now this is on GitHub, not azureDevops
 
-1. Once you have Created the Secrets in the Primary Regional Hub Keyvault, you can sync the secrets to the Secondary Regional Hub Keyvaul
+1. In order to deploy WebSites, you should create some Web Certs, you can also do this from a Public Provider, however we will use self signed here.
+    1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.
+    1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
+    1. Then execute the following
+        ````powershell
+        # Create Global Web Create
+        . ASD:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
+        ````
+    1. The cert will be created using the password from your keyvault localadmin secret that you set earlier
+    1. The DNS names used on the cert are from the Global-Global.json [CertURLs] property.
+    1. This certificate will be deploy to all VM's in the Root/Trusted/My root stores
+    1. When you execute the above script it will also update the [CertificateThumbprint] value in the Global-Global.json file
+    1. When you deploy websites, this cert will be bound to SSL sites in IIS.
+
+1. Once you have Created the Secrets in the Primary Regional Hub Keyvault, you can sync the secrets to the Secondary Regional Hub Keyvault
     1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. Then execute the following

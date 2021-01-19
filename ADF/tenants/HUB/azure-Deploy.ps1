@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'HUB'
-$Enviro = 'G1'
+$Enviro = 'P0'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
@@ -25,11 +25,11 @@ break
 # Bootstrap Hub RGs and Keyvaults
 . ASD:\1-PrereqsToDeploy\1-CreateHUBKeyVaults.ps1 -APP $App
 
-# Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
-. ASD:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
-
 # Create Global Web Create
 . ASD:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
+
+# Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
+. ASD:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
 
 # Deploy Environment
 
