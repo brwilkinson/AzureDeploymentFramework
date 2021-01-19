@@ -130,7 +130,12 @@
         {
             //  Local RG
             // RG level role assignment - Run once for each param file [Environment] to set RBAC
-            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "condition": "[
+                            and(
+                                not(equals(length(variables('rolesInfo')),0)),
+                                not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))
+                            )
+                        ]",
             "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopRG-', variables('Enviro'))]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
