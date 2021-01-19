@@ -6,10 +6,10 @@
       "value": "AZC1"
     },
     "Environment": {
-      "value": "P"
+      "value": "S"
     },
     "DeploymentID": {
-      "value": "0"
+      "value": "1"
     },
     "vmAdminPassword": {
       "reference": {
@@ -41,21 +41,21 @@
         "StorageSync": 0,
         "RSV": 0,
         "NSGHUB": 1,
-        "NSGSPOKE": 0,
-        "NetworkWatcher": 1,
+        "NSGSPOKE": 1,
+        "NetworkWatcher": 0,
         "FlowLogs": 1,
         "VNet": 1,
-        "VNetPeering": 0,
-        "DNSPrivateZone": 1,
-        "LinkPrivateDns": 1,
+        "VNetPeering": 1,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
         "PrivateLink": 1,
         "BastionHost": 0,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
         "ERGW": 0,
-        "ADPrimary": 1,
-        "ADSecondary": 1,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
         "ILB": 0,
         "PLB": 0,
         "InitialDOP": 0,
@@ -166,46 +166,55 @@
         ],
         "SPInfo": [
           {
-            "Name": "AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0",
+            "Name": "AzureDeploymentFramework_AZC1-BRW-ABC-RG-S1",
             "RBAC": [
               {
                 "Name": "Contributor"
               },
               {
                 "Name": "Reader and Data Access",
-                "RG": "G1"
+                "RG": "G1",
+                "Tenant": "HUB"
               },
               {
                 "Name": "Storage Account Key Operator Service Role",
-                "RG": "G1"
+                "RG": "G1",
+                "Tenant": "HUB"
               },
               {
                 "Name": "Log Analytics Contributor",
-                "RG": "G1"
+                "RG": "G1",
+                "Tenant": "HUB"
               },
               {
                 "Name": "Log Analytics Contributor",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "HUB"
               },
               {
                 "Name": "Key_Vault_Reader",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "HUB"
               },
               {
                 "Name": "Key Vault Secrets User (preview)",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "HUB"
               },
               {
                 "Name": "Network Contributor",
-                "RG": "P0"
-              },
-              {
-                "Name": "DNS Zone Contributor",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "HUB"
               },
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
                 "PREFIX": "AZE2"
               }
             ]
@@ -213,117 +222,51 @@
         ],
         "DC1PrivateIPAddress": "75",
         "DC2PrivateIPAddress": "76",
-        "DC1HostName": "DC01",
-        "DC2HostName": "DC02",
-        "CommentOLD: SUBNETS": "128 + 64 + 32 + 16 + 16",
-        "Comment2:   SUBNETS": "WAF01: 32 (/27) + FE01: 32 (/27) + AD01: 16 (/28) + BE01: 16 (/28) + BE02: 16 (/28) + BE03: 16 (/28) + MT01: 128 (/25) + MT02: 256 (/24)",
         "SubnetInfo": [
           {
             "name": "snWAF01",
             "prefix": "0/27",
-            "NSG": 0
+            "NSG": 1
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
-            "NSG": 0,
-            "serviceEndpoints2": false,
+            "NSG": 1,
             "Route": false
           },
           {
             "name": "snAD01",
             "prefix": "64/28",
-            "NSG": 0,
+            "NSG": 1,
             "Route": false
           },
           {
             "name": "snBE01",
             "prefix": "80/28",
-            "NSG": 0,
+            "NSG": 1,
             "Route": false
           },
           {
-            "name": "snBE02",
-            "prefix": "96/28",
-            "NSG": 0,
-            "Route": false
-          },
-          {
-            "name": "snBE03",
-            "prefix": "112/28",
-            "NSG": 0,
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
             "Route": false
           },
           {
             "name": "AzureFirewallSubnet",
             "prefix": "128/26",
-            "NSG": 0,
-            "serviceEndpoints2": false
+            "NSG": 0
+          },
+          {
+            "name": "GatewaySubnet",
+            "prefix": "192/27",
+            "NSG": 0
           },
           {
             "name": "snMT02",
             "prefix": "0/24",
-            "NSG": 0,
-            "serviceEndpoints2": false,
+            "NSG": 1,
             "Route": false
-          }
-        ],
-        "networkWatcherInfo": {
-          "name": "networkwatcher"
-        },
-        "DNSPrivateZoneInfo": [
-          "Contoso.com",
-          "Fabrikam.com",
-          "PSThing.com",
-          "privatelink.azurewebsites.net",
-          "privatelink.vaultcore.azure.net",
-          "privatelink.blob.core.windows.net",
-          "privatelink.queue.core.windows.net",
-          "privatelink.afs.azure.net",
-          "privatelink.servicebus.windows.net",
-          "privatelink.database.windows.net",
-          "privatelink.azconfig.io"
-        ],
-        "LinkPrivateDnsInfo": [
-          {
-            "zoneRG": "P0",
-            "zone": "privatelink.vaultcore.azure.net",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "privatelink.azurewebsites.net",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "privatelink.blob.core.windows.net",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "privatelink.queue.core.windows.net",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "privatelink.afs.azure.net",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "Contoso.com",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "Fabrikam.com",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "PSThing.com",
-            "Autoregistration": false
           }
         ],
         "saInfo": [
@@ -335,12 +278,16 @@
         ],
         "KVInfo": [
           {
-            "Name": "VLT01",
+            "Name": "App01",
             "skuName": "standard",
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Allow",
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": "Deny",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
@@ -349,31 +296,11 @@
             ]
           }
         ],
-        "VNGWInfo": [
+        "appConfigurationInfo": [
           {
-            "Name": "VNGW01",
-            "skuname": "VpnGw2",
-            "skutier": "VpnGw2",
-            "gatewayType": "VPN",
-            "vpnType": "RouteBased",
-            "vpnGen": "Generation2",
-            "localNetworkGateway": {
-              "name": "PSO",
-              "gatewayIpAddress": "52.154.217.25",
-              "addressPrefixes": [
-                "10.0.128.0/20"
-              ],
-              "bgpEnabled": 1,
-              "bgpSettings": {
-                "asn": 65514,
-                "bgpPeeringAddress": "10.0.144.222",
-                "peerWeight": 0
-              }
-            },
-            "ConnectionOptions": {
-              "EnableConnection": 1,
-              "sharedKey": "ApplesForBreakfast" // you likely want a param for this from KV
-            }
+            "name": "Config01",
+            "sku": "standard",
+            "publicNetworkAccess": "Enabled"
           }
         ],
         "RTInfo": [
@@ -387,49 +314,6 @@
                 "nextHopType": "VirtualAppliance"
               }
             ]
-          }
-        ],
-        "ERGWInfo": [
-          {
-            "Name": "ERGW",
-            "skuname": "ErGw2AZ",
-            "skutier": "ErGw2AZ",
-            "skucapacity": 2,
-            "gatewayType": "ExpressRoute",
-            "vpnType": "PolicyBased",
-            "ERConnectionOptions": {
-              "EREnableConnection": false,
-              "peerid": "/subscriptions/e17fe3b9-caf3-4e15-9437-30089ea78f1e/resourceGroups/PROD_Azure_EUS_Network_RG/providers/Microsoft.Network/expressRouteCircuits/PROD_Azure_ER_EUS",
-              "authorizationKeyold": "[parameters('ERAuthKey')]",
-              "authorizationKey": "abc",
-              "connectionType": "ExpressRoute"
-            }
-          }
-        ],
-        "FWInfo": [
-          {
-            "Name": "FW01",
-            "threatIntelMode": "Alert"
-          }
-        ],
-        "natRulesInfo": [
-          {
-            "Name": "JMP01",
-            "priority": "20000",
-            "actionType": "DNAT",
-            "rule": {
-              "name": "JMP01-RDP-Allow",
-              "sourceAddresses": [
-                "73.157.100.227"
-              ],
-              "destinationPorts": [
-                "3389"
-              ],
-              "protocols": [
-                "Any"
-              ],
-              "translatedAddress": "172.16.137.62"
-            }
           }
         ],
         "LBInfo2": [
@@ -839,44 +723,6 @@
           }
         ],
         "Appservers": {
-          "ADPrimary": [
-            {
-              "VMName": "DC01",
-              "Role": "ADp",
-              "ASName": "AD",
-              "DDRole": "32GB",
-              "OSType": "Server2016Coresmall",
-              "ExcludeDomainJoin": 1,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "AD01",
-                  "Primary": 1,
-                  "StaticIP": "75"
-                }
-              ]
-            }
-          ],
-          "ADSecondary": [
-            {
-              "VMName": "DC02",
-              "Role": "ADs",
-              "ASName": "AD",
-              "DDRole": "32GB",
-              "OSType": "Server2016Coresmall",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "AD01",
-                  "Primary": 1,
-                  "StaticIP": "76"
-                }
-              ],
-              "AppInfo" : {
-                "SiteName": "Default-First-Site-Name"
-              }
-            }
-          ],
           "AppServers": [
             {
               "VMName": "JMP01",

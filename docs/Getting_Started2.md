@@ -169,4 +169,72 @@ Go Home [Documentation Home](./ARM.md)
     1. however we can now work on ensuring the correct Workflows are present
     1. we can ensure that the correct resources are setup in each Parameter file for the new environments.
 1. Some differences that you should know about in the Spokes or Secondary application Environment
-    1. Lets start by looking at the sample Environment Parameter file []
+    1. Lets start by looking at the sample Environment Parameter file [ADF\tenants\ABC\azuredeploy.1.AZC1.S1.parameters.json]
+        1. Notice below now, we have to add the Tenant Property on the "SPInfo"
+        1. This setup up the RBAC/Role Assignments, since it's across tenants, you just add the HUB tenant in.
+        1. Notice Contributor doesn't need that change, since it's going to assign this SP as Contributor on the current Resource Group Scope.
+        ````json
+        "SPInfo": [
+                  {
+                    "Name": "AzureDeploymentFramework_AZC1-BRW-ABC-RG-S1",
+                    "RBAC": [
+                      {
+                        "Name": "Contributor"
+                      },
+                      {
+                        "Name": "Reader and Data Access",
+                        "RG": "G1",
+                        "Tenant": "HUB"
+                      },
+                      {
+                        "Name": "Storage Account Key Operator Service Role",
+                        "RG": "G1",
+                        "Tenant": "HUB"
+                      },
+                      {
+                        "Name": "Log Analytics Contributor",
+                        "RG": "G1",
+                        "Tenant": "HUB"
+                      },
+                      {
+                        "Name": "Log Analytics Contributor",
+                        "RG": "P0",
+                        "Tenant": "HUB"
+                      },
+                      {
+                        "Name": "Key_Vault_Reader",
+                        "RG": "P0",
+                        "Tenant": "HUB"
+                      },
+                      {
+                        "Name": "Key Vault Secrets User (preview)",
+                        "RG": "P0",
+                        "Tenant": "HUB"
+                      },
+                      {
+                        "Name": "Network Contributor",
+                        "RG": "P0",
+                        "Tenant": "HUB"
+                      },
+                      {
+                        "Name": "DNS Zone Contributor",
+                        "RG": "P0",
+                        "Tenant": "HUB"
+                      },
+                      {
+                        "Name": "DNS Zone Contributor",
+                        "RG": "P0",
+                        "Tenant": "HUB",
+                        "PREFIX": "AZE2"
+                      }
+                    ]
+                  }
+                ]
+        ````
+1. There are some other differences, such as we only have a network watcher in the Hub so that is removed
+    This will not appear in this S1 Environment File, however it does in a P0 File.
+    ````json
+    "networkWatcherInfo": {
+          "name": "networkwatcher"
+        }
+    ````
