@@ -43,7 +43,7 @@ Go Home [Documentation Home](./ARM.md)
 
 #### P0 - Hub Environment DR - Hub EastUS2
 
-![Deploy_AZE2_BRW_HUB_RG_P0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZE2_BRW_HUB_RG_P0/badge.svg?branch=main)
+![Deploy_AZE2_BRW_HUB_RG_P0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZE2_BRW_HUB_RG_P0/badge.svg?branch=dev)
 
 #### S1 - Sandbox Environment DR - Spoke EastUS2
 
