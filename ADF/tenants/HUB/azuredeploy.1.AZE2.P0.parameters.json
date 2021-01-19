@@ -189,6 +189,10 @@
                 "RG": "P0"
               },
               {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0"
+              },
+              {
                 "Name": "Key Vault Secrets User (preview)",
                 "RG": "P0"
               },

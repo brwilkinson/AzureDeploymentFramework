@@ -103,8 +103,7 @@
             "Member": "benwilk@Microsoft.com"
           }
         ],
-        // no longer need this with RBAC for KV
-        "RoleDefinitionsInfo2": [
+        "RoleDefinitionsInfo": [
           {
             "RoleName": "Key_Vault_Reader",
             "description": "Lets you read secrets from the vaults but not change them.",
