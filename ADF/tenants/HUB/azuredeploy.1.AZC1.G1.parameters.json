@@ -32,7 +32,7 @@
         "RG": 1,
         "RBAC": 0,
         "UAI": 0,
-        "SP": 0,
+        "SP": 1,
         "KV": 0,
         "OMS": 1,
         "OMSSolutions": 1,
@@ -100,6 +100,49 @@
     },
     "DeploymentInfo": {
       "value": {
+        "SPInfo": [
+          {
+            "Name": "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G1",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "Key Vault Secrets User (preview)",
+                "RG": "P0"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "PREFIX": "AZE2"
+              }
+            ]
+          }
+        ],
         "saInfo": [
           {
             "nameSuffix": "global",
