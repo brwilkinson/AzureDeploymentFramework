@@ -30,6 +30,7 @@
     "Stage": {
       "value": {
         "RG": 1,
+        "RoleDefinition": 1,
         "RBAC": 1,
         "UAI": 0,
         "SP": 1,

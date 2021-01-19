@@ -106,7 +106,7 @@
         "RoleDefinitionsInfo": [
           {
             "RoleName": "Key_Vault_Reader",
-            "description": "Lets you read secrets from the vaults but not change them.",
+            "description": "Lets you run deployments from the KeyVault",
             "notActions": [],
             "actions": [
               "MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION"
