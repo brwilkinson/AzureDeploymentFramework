@@ -74,7 +74,6 @@
     },
     "variables": {
         "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-        "rolesInfo": "[parameters('DeploymentInfo').rolesInfo]",
         "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
         "Enviro": "[concat(parameters('Environment'),parameters('DeploymentID'))]",
         "Locationlookup": {
@@ -84,6 +83,12 @@
         "location": "[variables('locationlookup')[parameters('Prefix')]]",
         "RolesLookup": "[json(parameters('Global').RolesLookup)]",
         "RolesGroupsLookup": "[json(parameters('Global').RolesGroupsLookup)]",
+        "rolesInfo": "[
+            if(
+                contains(parameters('DeploymentInfo'),'rolesInfo'),
+                parameters('DeploymentInfo').rolesInfo,
+                json('[]')
+            )]",
         "UAIInfo": "[if(equals(parameters('Stage').UAI,1),parameters('DeploymentInfo').UAIInfo,createArray())]",
         "SPInfo": "[if(equals(parameters('Stage').SP,1),parameters('DeploymentInfo').SPInfo,createArray())]"
     },
@@ -210,7 +215,7 @@
                     "namePrefix": {
                         "value": "-uai"
                     },
-                    "providerAPI" : {
+                    "providerAPI": {
                         "value": "2018-11-30"
                     }
                 }
@@ -272,7 +277,7 @@
                     "namePrefix": {
                         "value": ""
                     },
-                    "providerAPI" : {
+                    "providerAPI": {
                         "value": ""
                     }
                 }
