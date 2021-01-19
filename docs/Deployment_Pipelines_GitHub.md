@@ -11,11 +11,11 @@ Go Home [Documentation Home](./ARM.md)
     Global - Azure Environment
 #### G0 - Subscription 
 
-![Deploy_AZC1_BRW_HUB_RG_G0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_G0/badge.svg?branch=main)
+![Deploy_AZC1_BRW_HUB_RG_G0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_G0/badge.svg?branch=dev)
 
 #### G1 - Global Resources
 
-![Deploy_AZC1_BRW_HUB_RG_G1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_G1/badge.svg?branch=main)
+![Deploy_AZC1_BRW_HUB_RG_G1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_G1/badge.svg?branch=dev)
 
 ---
 
@@ -25,7 +25,7 @@ Go Home [Documentation Home](./ARM.md)
 
 #### P0 - Hub Environment - Hub Central
 
-![Deploy_AZC1_BRW_HUB_RG_P0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_P0/badge.svg?branch=main)
+![Deploy_AZC1_BRW_HUB_RG_P0](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_HUB_RG_P0/badge.svg?branch=dev)
 
 #### S1 - Sandbox Environment - Spoke Central 
 
