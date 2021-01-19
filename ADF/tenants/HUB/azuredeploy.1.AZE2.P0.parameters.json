@@ -164,7 +164,7 @@
         ],
                 "SPInfo": [
           {
-            "Name": "AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0",
+            "Name": "AzureDeploymentFramework_AZE2-BRW-HUB-RG-P0",
             "RBAC": [
               {
                 "Name": "Contributor"
