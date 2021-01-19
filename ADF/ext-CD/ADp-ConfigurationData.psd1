@@ -61,7 +61,7 @@
                 @{
                     Name      = 'PowerShell 7-x64'
                     Path      = 'F:\Source\PSCore\PowerShell-7.0.3-win-x64.msi'
-                    ProductId = '{B324E508-9AAE-446A-BC4C-BB446E8C2A18}'
+                    ProductId = '{05321FDB-BBA2-497D-99C6-C440E184C043}'
                     Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1'
                 }
             )
