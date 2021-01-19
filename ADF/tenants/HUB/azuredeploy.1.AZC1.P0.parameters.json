@@ -871,7 +871,10 @@
                   "Primary": 1,
                   "StaticIP": "76"
                 }
-              ]
+              ],
+              "AppInfo" : {
+                "SiteName": "Default-First-Site-Name"
+              }
             }
           ],
           "AppServers": [

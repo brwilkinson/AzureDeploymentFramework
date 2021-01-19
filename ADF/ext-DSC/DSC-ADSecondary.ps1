@@ -23,33 +23,32 @@ Configuration ADSecondary
     Import-DscResource -ModuleName xPendingReboot 
     Import-DscResource -ModuleName xTimeZone 
     Import-DscResource -ModuleName xDnsServer
-    Import-DscResource -ModuleName PSDscResources
 
     Function IIf
     {
         param($If, $IfTrue, $IfFalse)
-    
-        If ($If -IsNot "Boolean") { $_ = $If }
-        If ($If) { If ($IfTrue -is "ScriptBlock") { &$IfTrue } Else { $IfTrue } }
-        Else { If ($IfFalse -is "ScriptBlock") { &$IfFalse } Else { $IfFalse } }
+
+        If ($If -IsNot 'Boolean') { $_ = $If }
+        If ($If) { If ($IfTrue -is 'ScriptBlock') { &$IfTrue } Else { $IfTrue } }
+        Else { If ($IfFalse -is 'ScriptBlock') { &$IfFalse } Else { $IfFalse } }
     }
 
     $AppInfo = ConvertFrom-Json $AppInfo
     $SiteName = $AppInfo.SiteName
 
     # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = "true" }
-    $ArmToken = $response.Content | convertfrom-json | Foreach access_token
-    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = "application/json"; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
+    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
+    $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
+    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
     try
     {
         # Global assets to download files
         $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-        $Params['Uri'] = "https://management.azure.com{0}/{1}/?api-version=2016-01-01" -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | convertfrom-json | Foreach Keys | Select -first 1 | foreach Value
+        $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
+        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
         Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
-    
+
         # Create the Cred to access the storage account
         Write-Verbose -Message "User is: [$StorageAccountName]"
         $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force -ErrorAction stop)) 
@@ -59,11 +58,24 @@ Configuration ADSecondary
         Write-Warning $_
     } 
 
-    [PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("$DomainName\$(($AdminCreds.UserName -split '\\')[-1])", $AdminCreds.Password)
+    $NetBios = $(($DomainName -split '\.')[0])
+    [PSCredential]$DomainCreds = [PSCredential]::New($NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password)
+
+    $credlookup = @{
+        'localadmin'  = $AdminCreds
+        'DomainCreds' = $DomainCreds
+        'DomainJoin'  = $DomainCreds
+        'SQLService'  = $DomainCreds
+        'UserCreds'   = $AdminCreds
+        'StorageCred' = $StorageCred
+        'DevOpsPat'   = $DevOpsAgentPATToken
+    }
 
     Node $AllNodes.NodeName
     {
         Write-Verbose -Message $Nodename -Verbose
+
+        $StringFilter = '\W', ''
 
         LocalConfigurationManager
         {
@@ -76,34 +88,16 @@ Configuration ADSecondary
         xTimeZone EasternStandardTime
         { 
             IsSingleInstance = 'Yes'
-            TimeZone         = iif $Node.TimeZone $Node.TimeZone "Eastern Standard Time" 
+            TimeZone         = iif $Node.TimeZone $Node.TimeZone 'Eastern Standard Time' 
         }
 
-        xWindowsFeatureSet AD-Domain-Services
+        WindowsFeature InstallADDS
         {            
-            Ensure               = 'Present'
-            Name                 = 'AD-Domain-Services'
-            IncludeAllSubFeature = $true
+            Ensure = 'Present'
+            Name   = 'AD-Domain-Services'
         }
 
-        #-------------------------------------------------------------------     
-        foreach ($File in $Node.DirectoryPresentSource)
-        {
-            $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter 
-            File $Name
-            {
-                SourcePath      = ($File.filesSourcePath -f $StorageAccountName)
-                DestinationPath = $File.filesDestinationPath
-                Ensure          = 'Present'
-                Recurse         = $true
-                Credential      = $StorageCred
-                MatchSource     = IIF $File.MatchSource $File.MatchSource $False   
-            }
-            $dependsonDirectory += @("[File]$Name")
-        }
-
-
-
+        #-------------------------------------------------------------------
         foreach ($Feature in $Node.WindowsFeaturePresent)
         {
             WindowsFeature $Feature
@@ -128,43 +122,19 @@ Configuration ADSecondary
 
         Disk FDrive
         {
-            DiskID      = "2"
+            DiskID      = '2'
             DriveLetter = 'F'
         }
 
-        # xWaitForADDomain $DomainName
-        # {
-        #     DependsOn  = '[WindowsFeatureSet]AD-Domain-Services'
-        #     DomainName = $DomainName
-        #     RetryCount = $RetryCount
-        # 	RetryIntervalSec = $RetryIntervalSec
-        #     DomainUserCredential = $AdminCreds
-        # }
-
-        # Computer DomainJoin
-        # {
-        # 	Name       = $Env:COMPUTERNAME
-        # 	DependsOn  = "[xWaitForADDomain]$DomainName"
-        # 	DomainName = $DomainName
-        # 	Credential = $DomainCreds
-        # }
-
-        # # reboots after DJoin
-        # xPendingReboot RebootForDJoin
-        # {
-        #     Name      = 'RebootForDJoin'
-        #     DependsOn = '[xComputer]DomainJoin'
-        # }
-
         xADDomainController DC2
-        {
-            DependsOn                     = '[Disk]FDrive'
+        {   
             DomainName                    = $DomainName
+            DomainAdministratorCredential = $DomainCreds
+            SafemodeAdministratorPassword = $DomainCreds
             DatabasePath                  = 'F:\NTDS'
             LogPath                       = 'F:\NTDS'
             SysvolPath                    = 'F:\SYSVOL'
-            DomainAdministratorCredential = $DomainCreds
-            SafemodeAdministratorPassword = $DomainCreds
+            DependsOn                     = '[Disk]FDrive'
             PsDscRunAsCredential          = $DomainCreds
             SiteName                      = $SiteName
         }
@@ -173,10 +143,39 @@ Configuration ADSecondary
         Script ResetDNS
         {
             DependsOn  = '[xADDomainController]DC2'
-            GetScript  = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | foreach ServerAddresses } } }
+            GetScript  = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | ForEach-Object ServerAddresses } } }
             SetScript  = { Set-DnsClientServerAddress -InterfaceAlias Ethernet* -ResetServerAddresses -Verbose }
             TestScript = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* -AddressFamily IPV4 | 
-                    Foreach { ! ($_.ServerAddresses -contains '127.0.0.1') } }
+                    ForEach-Object { ! ($_.ServerAddresses -contains '127.0.0.1') } }
+        }
+
+        #-------------------------------------------------------------------
+        foreach ($Dir in $Node.DirectoryPresent)
+        {
+            $Name = $Dir -replace $StringFilter
+            File $Name
+            {
+                DestinationPath      = $Dir
+                Type                 = 'Directory'
+                PsDscRunAsCredential = $credlookup['DomainCreds']
+            }
+            $dependsonDir += @("[File]$Name")
+        }
+
+        #-------------------------------------------------------------------     
+        foreach ($File in $Node.DirectoryPresentSource)
+        {
+            $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter 
+            File $Name
+            {
+                SourcePath      = ($File.filesSourcePath -f $StorageAccountName)
+                DestinationPath = $File.filesDestinationPath
+                Ensure          = 'Present'
+                Recurse         = $true
+                Credential      = $StorageCred
+                MatchSource     = IIF $File.MatchSource $File.MatchSource $False
+            }
+            $dependsonDirectory += @("[File]$Name")
         }
 
         #-------------------------------------------------------------------
@@ -190,11 +189,10 @@ Configuration ADSecondary
                 Path                 = $Package.Path
                 Ensure               = 'Present'
                 ProductId            = $Package.ProductId
-                PsDscRunAsCredential = $credlookup["DomainCreds"]
+                PsDscRunAsCredential = $credlookup['DomainCreds']
                 DependsOn            = $dependsonDirectory
                 Arguments            = $Package.Arguments
             }
-
             $dependsonPackage += @("[xPackage]$($Name)")
         }
 
@@ -210,15 +208,15 @@ Configuration ADSecondary
         {
             PsDscRunAsCredential = $DomainCreds
             DependsOn            = '[xPendingReboot]RebootForPromo'
-            GetScript            = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | foreach ServerAddresses } } }
+            GetScript            = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | ForEach-Object ServerAddresses } } }
             SetScript            = {
-                $t = New-JobTrigger -Once -At (Get-Date).AddMinutes(8)
+                $t = New-JobTrigger -Once -At (Get-Date).AddMinutes(5)
                 $o = New-ScheduledJobOption -RunElevated
                 Get-ScheduledJob -Name DNSUpdate -ErrorAction SilentlyContinue | Unregister-ScheduledJob
                 Register-ScheduledJob -ScriptBlock { Restart-Computer -Force } -Trigger $t -Name DNSUpdate -ScheduledJobOption $o
             }
             TestScript           = {
-                $Count = Get-DnsClientServerAddress -InterfaceAlias Ethernet* -AddressFamily IPV4 | Foreach ServerAddresses | Measure | Foreach Count
+                $Count = Get-DnsClientServerAddress -InterfaceAlias Ethernet* -AddressFamily IPV4 | ForEach-Object ServerAddresses | Measure-Object | ForEach-Object Count
                 if ($Count -eq 1)
                 {
                     $False
@@ -232,27 +230,21 @@ Configuration ADSecondary
     }
 }#ADSecondary
 
-
 break
 
 # used for troubleshooting
-
-#$Cred = get-credential localadmin
-
 $AppInfo = "{'SiteName': 'Default-First-Site-Name'}"
-
-ADSecondary -AdminCreds $cred -ConfigurationData .\ADs-ConfigurationData.psd1 -AppInfo $AppInfo
+$cred = Get-Credential localadmin
+$Dep = $env:COMPUTERNAME.substring(0, 9)
+$Depid = $env:COMPUTERNAME.substring(8, 1)
+$network = 30 - ([Int]$Depid * 2)
+$Net = "172.16.${network}."
+ADSecondary -AdminCreds $cred -ConfigurationData .\*-ConfigurationData.psd1 -networkid $Net -AppInfo $AppInfo
 
 Set-DscLocalConfigurationManager -Path .\ADSecondary -Verbose
 
 Start-DscConfiguration -Path .\ADSecondary -Wait -Verbose -Force
 
 Get-DscLocalConfigurationManager
-
 Start-DscConfiguration -UseExisting -Wait -Verbose -Force
-
 Get-DscConfigurationStatus -All
-
-
-
-

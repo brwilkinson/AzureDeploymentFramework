@@ -28,22 +28,25 @@ Configuration ADPrimary
     {
         param($If, $IfTrue, $IfFalse)
         
-        If ($If -IsNot "Boolean") { $_ = $If }
-        If ($If) { If ($IfTrue -is "ScriptBlock") { &$IfTrue } Else { $IfTrue } }
-        Else { If ($IfFalse -is "ScriptBlock") { &$IfFalse } Else { $IfFalse } }
+        If ($If -IsNot 'Boolean') { $_ = $If }
+        If ($If) { If ($IfTrue -is 'ScriptBlock') { &$IfTrue } Else { $IfTrue } }
+        Else { If ($IfFalse -is 'ScriptBlock') { &$IfFalse } Else { $IfFalse } }
     }
 
+    $AppInfo = ConvertFrom-Json $AppInfo
+    $SiteName = $AppInfo.SiteName
+
     # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = "true" }
-    $ArmToken = $response.Content | ConvertFrom-Json | Foreach access_token
-    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = "application/json"; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
+    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
+    $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
+    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
     try
     {
         # Global assets to download files
         $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-        $Params['Uri'] = "https://management.azure.com{0}/{1}/?api-version=2016-01-01" -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | Foreach Keys | Select -first 1 | foreach Value
+        $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
+        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
         Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
         
         # Create the Cred to access the storage account
@@ -59,20 +62,20 @@ Configuration ADPrimary
     [PSCredential]$DomainCreds = [PSCredential]::New($NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password)
 
     $credlookup = @{
-        "localadmin"  = $AdminCreds
-        "DomainCreds" = $DomainCreds
-        "DomainJoin"  = $DomainCreds
-        "SQLService"  = $DomainCreds
-        "UserCreds"   = $AdminCreds
-        "StorageCred" = $StorageCred
-        "DevOpsPat"   = $DevOpsAgentPATToken
+        'localadmin'  = $AdminCreds
+        'DomainCreds' = $DomainCreds
+        'DomainJoin'  = $DomainCreds
+        'SQLService'  = $DomainCreds
+        'UserCreds'   = $AdminCreds
+        'StorageCred' = $StorageCred
+        'DevOpsPat'   = $DevOpsAgentPATToken
     }
     
     Node $AllNodes.NodeName
     {
         Write-Verbose -Message $Nodename -Verbose
 
-        $StringFilter = "\W", ""
+        $StringFilter = '\W', ''
 
         LocalConfigurationManager
         {
@@ -85,13 +88,13 @@ Configuration ADPrimary
         xTimeZone EasternStandardTime
         { 
             IsSingleInstance = 'Yes'
-            TimeZone         = iif $Node.TimeZone $Node.TimeZone "Eastern Standard Time" 
+            TimeZone         = iif $Node.TimeZone $Node.TimeZone 'Eastern Standard Time' 
         }
 
         WindowsFeature InstallADDS
         {            
-            Ensure = "Present"
-            Name   = "AD-Domain-Services"
+            Ensure = 'Present'
+            Name   = 'AD-Domain-Services'
         }
 
         #-------------------------------------------------------------------
@@ -119,8 +122,8 @@ Configuration ADPrimary
 
         Disk FDrive
         {
-            DiskID      = "2"
-            DriveLetter = 'F' 
+            DiskID      = '2'
+            DriveLetter = 'F'
         }
 
         xADDomain DC1
@@ -131,7 +134,7 @@ Configuration ADPrimary
             DatabasePath                  = 'F:\NTDS'
             LogPath                       = 'F:\NTDS'
             SysvolPath                    = 'F:\SYSVOL'
-            DependsOn                     = "[WindowsFeature]InstallADDS", "[Disk]FDrive"
+            DependsOn                     = '[WindowsFeature]InstallADDS', '[Disk]FDrive'
         }
 
         xWaitForADDomain DC1Forest
@@ -140,7 +143,7 @@ Configuration ADPrimary
             DomainUserCredential = $DomainCreds
             RetryCount           = $RetryCount
             RetryIntervalSec     = $RetryIntervalSec
-            DependsOn            = "[xADDomain]DC1"
+            DependsOn            = '[xADDomain]DC1'
         } 
 
         xADRecycleBin RecycleBin
@@ -155,10 +158,10 @@ Configuration ADPrimary
         Script ResetDNS
         {
             DependsOn  = '[xADRecycleBin]RecycleBin'
-            GetScript  = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | foreach ServerAddresses } } }
+            GetScript  = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | ForEach-Object ServerAddresses } } }
             SetScript  = { Set-DnsClientServerAddress -InterfaceAlias Ethernet* -ResetServerAddresses -Verbose }
             TestScript = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* -AddressFamily IPV4 | 
-                    Foreach { ! ($_.ServerAddresses -contains '127.0.0.1') } }
+                    ForEach-Object { ! ($_.ServerAddresses -contains '127.0.0.1') } }
         }
 
         #-------------------
@@ -211,7 +214,7 @@ Configuration ADPrimary
                     $scope = $g.groupscope
                     $sam = $g.samaccountname
                     $descrip = $g.description
-                    New-ADGroup -Name $groupname -groupscope $scope -samAccountName $sam -description $descrip
+                    New-ADGroup -Name $groupname -GroupScope $scope -SamAccountName $sam -Description $descrip
                 }
             }
         }
@@ -233,14 +236,14 @@ Configuration ADPrimary
         Foreach ($DNSRecord in $Node.AddDnsRecordPresent)
         {
             # Prepend Arecord Target with networkID (10.144.143)
-            if ($DnsRecord.RecordType -eq "ARecord")
+            if ($DnsRecord.RecordType -eq 'ARecord')
             {
                 $Target = $DnsRecord.DNSTargetIP -f $networkID 
             }
 
             xDnsRecord $DNSRecord.DnsRecordName
             {
-                Ensure = "present"
+                Ensure = 'present'
                 Name   = $DNSRecord.DnsRecordName
                 Target = $Target
                 Type   = $DNSRecord.RecordType
@@ -248,24 +251,24 @@ Configuration ADPrimary
             }
         } 
 
-        write-warning "netID: $networkID"
+        Write-Warning "netID: $networkID"
         # DNS Records -------------------------------------------------------------------
         foreach ($DnsRecord in $Node.DnsRecords)
         {
             $DeploymentID = $deployment.Substring($deployment.length - 2, 2)
             $Prefix = 'AZ'
-            $App = $deployment.Substring(5) -replace $DeploymentID, ""
+            $App = $deployment.Substring(5) -replace $DeploymentID, ''
 
             $recordname = $DnsRecord.Name
 
             $Zone = $DnsRecord.Zone -replace $StringFilter 
         
             # Prepend Arecord Target with networkID (10.144.143)
-            if ($DnsRecord.Type -eq "ARecord")
+            if ($DnsRecord.Type -eq 'ARecord')
             {
                 if ($DNSRecord.Network -eq 'upper')
                 {
-                    $first, $Second, $Third, $null = $networkID -split "\."
+                    $first, $Second, $Third, $null = $networkID -split '\.'
                     $NetworkIDUpper = $First + '.' + $Second + '.' + ([Int]$Third + 1) + '.'
                     $Target = $DnsRecord.Target -f $NetworkIDUpper
                 }
@@ -274,7 +277,7 @@ Configuration ADPrimary
                     $Target = $DnsRecord.Target -f $networkID 
                 }
             }
-            elseif ($DnsRecord.Target.contains("{"))
+            elseif ($DnsRecord.Target.contains('{'))
             {
                 # Not an Arecord, prepend target with DeploymentID (D03)
                 $Target = $DnsRecord.Target -f $DeploymentID
@@ -285,7 +288,7 @@ Configuration ADPrimary
                 $Target = $DnsRecord.Target -f $Environment, $DeploymentID, $DomainName
             }
         
-            if ($DnsRecord.Name.contains("{"))
+            if ($DnsRecord.Name.contains('{'))
             {
                 # If name record starts with { we will prepend name record with prefix (D03)
                 $recordname = $recordname -f $prefix, $App, $DeploymentID
@@ -316,7 +319,7 @@ Configuration ADPrimary
             {
                 DestinationPath      = $Dir
                 Type                 = 'Directory'
-                PsDscRunAsCredential = $credlookup["DomainCreds"]
+                PsDscRunAsCredential = $credlookup['DomainCreds']
             }
             $dependsonDir += @("[File]$Name")
         }
@@ -348,14 +351,13 @@ Configuration ADPrimary
                 Path                 = $Package.Path
                 Ensure               = 'Present'
                 ProductId            = $Package.ProductId
-                PsDscRunAsCredential = $credlookup["DomainCreds"]
+                PsDscRunAsCredential = $credlookup['DomainCreds']
                 DependsOn            = $dependsonDirectory
                 Arguments            = $Package.Arguments
             }
             $dependsonPackage += @("[xPackage]$($Name)")
         }
 
-	
         # Need to make sure the DC reboots after it is promoted.
         xPendingReboot RebootForPromo
         {
@@ -368,7 +370,7 @@ Configuration ADPrimary
         {
             PsDscRunAsCredential = $DomainCreds
             DependsOn            = '[xPendingReboot]RebootForPromo'
-            GetScript            = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | foreach ServerAddresses } } }
+            GetScript            = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | ForEach-Object ServerAddresses } } }
             SetScript            = {
                 $t = New-JobTrigger -Once -At (Get-Date).AddMinutes(5)
                 $o = New-ScheduledJobOption -RunElevated
@@ -377,15 +379,15 @@ Configuration ADPrimary
             }
             TestScript           = { 
                 Get-DnsClientServerAddress -InterfaceAlias Ethernet* -AddressFamily IPV4 | 
-                    Foreach { ! ($_.ServerAddresses -contains '8.8.8.8') }
+                    ForEach-Object { ! ($_.ServerAddresses -contains '8.8.8.8') }
             }
         }
     }
-}#Main
-
-
+}#ADPrimary
 
 break
+
+# used for troubleshooting
 $cred = Get-Credential localadmin
 $Dep = $env:COMPUTERNAME.substring(0, 9)
 $Depid = $env:COMPUTERNAME.substring(8, 1)
@@ -393,11 +395,10 @@ $network = 30 - ([Int]$Depid * 2)
 $Net = "172.16.${network}."
 ADPrimary -AdminCreds $cred -Deployment $Dep -ConfigurationData *-configurationdata.psd1 -networkid $Net
 
-Start-DscConfiguration -path .\ADPrimary -wait -verbose -Force
+Set-DscLocalConfigurationManager -Path .\ADPrimary -Verbose
 
+Start-DscConfiguration -Path .\ADPrimary -Wait -Verbose -Force
 
-
-
-
-
-
+Get-DscLocalConfigurationManager
+Start-DscConfiguration -UseExisting -Wait -Verbose -Force
+Get-DscConfigurationStatus -All
