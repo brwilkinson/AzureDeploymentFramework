@@ -9,7 +9,12 @@ Go Home [Documentation Home](./ARM.md)
 <br/>
 
 
-    Common naming standards/conventions: AZC1-FAB-ADF-S1-wafFW01, AZC1ADFS1SQL01, AZC1-FAB-ADF-S1-nicSQL01, AZC1-FAB-ADF-S1-vn, AZC1-FAB-ADF-RG-S1
+    Common naming standards/conventions/examples: 
+        - AZC1-FAB-ADF-S1-wafFW01
+        - AZC1ADFS1SQL01
+        - AZC1-FAB-ADF-S1-nicSQL01
+        - AZC1-FAB-ADF-S1-vn
+        - AZC1-FAB-ADF-RG-S1
 
 |Name |Allowed Values |Defintion |
 |---|---|---|
