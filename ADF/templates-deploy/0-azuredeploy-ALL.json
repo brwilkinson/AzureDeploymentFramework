@@ -126,22 +126,6 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('Stage').KV,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-KV')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
-      "dependsOn": [
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').KV, parameters('_artifactsLocationSasToken'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
       "condition": "[equals(parameters('Stage').OMS,1)]",
       "name": "[concat('dp', variables('Deployment'), '-OMS')]",
       "type": "Microsoft.Resources/deployments",
@@ -292,6 +276,23 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VNET, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[equals(parameters('Stage').KV,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-KV')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-VNET')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').KV, parameters('_artifactsLocationSasToken'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

@@ -231,10 +231,8 @@ Go Home [Documentation Home](./ARM.md)
                   }
                 ]
         ````
-1. There are some other differences, such as we only have a network watcher in the Hub so that is removed
-    This will not appear in this S1 Environment File, however it does in a P0 File.
-    ````json
-    "networkWatcherInfo": {
-          "name": "networkwatcher"
-        }
-    ````
+    1. There are some other differences, such as less Network Resources deployed e.g. Gateway/Firewall/Network watcher
+    1. Also there are no Private DNS zones deployed in spokes
+    1. There will be a KeyVault Deployed, for the individual Application
+        1. The Keyvault in each HUB is used for template deployments and is not on the Private Link
+        1. The Keyvault in each Spoke is used for the Application is connected to the VNET via Private Link
