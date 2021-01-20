@@ -101,12 +101,12 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
-                    {
+          {
             "name": "StorageAccountFileContributor",
             "RBAC": [
               {
                 "Name": "Storage File Data SMB Share Contributor",
-                "RG": "P0",
+                "RG": "G1",
                 "Prefix": "AZC1",
                 "Tenant": "HUB"
               }
@@ -117,8 +117,18 @@
             "RBAC": [
               {
                 "Name": "Storage Account Key Operator Service Role",
-                "RG": "P0",
+                "RG": "G1",
                 "Prefix": "AZC1",
+                "Tenant": "HUB"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User (preview)",
+                "RG": "P0",
                 "Tenant": "HUB"
               }
             ]

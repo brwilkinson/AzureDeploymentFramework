@@ -124,6 +124,16 @@
             ]
           },
           {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User (preview)",
+                "RG": "P0",
+                "Tenant": "HUB"
+              }
+            ]
+          },
+          {
             "name": "StorageAccountOperator",
             "RBAC": [
               {
@@ -865,7 +875,7 @@
                   "StaticIP": "76"
                 }
               ],
-              "AppInfo" : {
+              "AppInfo": {
                 "SiteName": "Default-First-Site-Name"
               }
             }
