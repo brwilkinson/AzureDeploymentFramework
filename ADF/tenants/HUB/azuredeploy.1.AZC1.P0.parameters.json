@@ -105,7 +105,21 @@
             "name": "StorageAccountFileContributor",
             "RBAC": [
               {
-                "Name": "Storage File Data SMB Share Contributor"
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "P0",
+                "Prefix": "AZC1",
+                "Tenant": "HUB"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "P0",
+                "Prefix": "AZC1",
+                "Tenant": "HUB"
               }
             ]
           },
@@ -139,17 +153,6 @@
               },
               {
                 "Name": "Azure Service Bus Data Receiver"
-              }
-            ]
-          },
-          {
-            "name": "VMOperator",
-            "RBAC": [
-              {
-                "Name": "Virtual Machine Contributor",
-                "RG": "P0", // optionally deploy to other RG e.g. Hub
-                "Prefix": "AZC1", // optionally deploy to other region e.g. DR
-                "Tenant": "HUB" // optionally deploy to other tenant/app
               }
             ]
           }
