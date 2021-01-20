@@ -117,7 +117,7 @@
             "RBAC": [
               {
                 "Name": "Storage Account Key Operator Service Role",
-                "RG": "P0",
+                "RG": "G1",
                 "Prefix": "AZC1",
                 "Tenant": "HUB"
               }
