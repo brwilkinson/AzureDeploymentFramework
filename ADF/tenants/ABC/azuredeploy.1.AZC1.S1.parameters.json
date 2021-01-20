@@ -59,7 +59,7 @@
         "ILB": 0,
         "PLB": 0,
         "InitialDOP": 0,
-        "VMApp": 0,
+        "VMApp": 1,
         "VMAppLinux": 0,
         "VMSQL": 0,
         "VMFILE": 0,
@@ -727,7 +727,7 @@
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
-              "OSType": "Server2016small",
+              "OSType": "Server2019small",
               "Zone": 1,
               "NICs": [
                 {
