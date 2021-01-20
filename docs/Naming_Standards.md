@@ -9,7 +9,7 @@ Go Home [Documentation Home](./ARM.md)
 <br/>
 
 
-    Common naming standards/conventions: AZC1-ADF-S1-wafFW01, AZC1ADFS1SQL01, AZC1-ADF-S1-nicSQL01, AZC1-ADF-S1-vn, AZC1-ADF-RG-S1
+    Common naming standards/conventions: AZC1-FAB-ADF-S1-wafFW01, AZC1ADFS1SQL01, AZC1-FAB-ADF-S1-nicSQL01, AZC1-FAB-ADF-S1-vn, AZC1-FAB-ADF-RG-S1
 
 |Name |Allowed Values |Defintion |
 |---|---|---|
@@ -20,11 +20,11 @@ Go Home [Documentation Home](./ARM.md)
 |Enviro |D03 + T04 + Q06 + U08 + P09 + P00 <br/>S1 + D2 + D3 + T4 + U5 + P6 |The environment name (16 environments)<br/>The environment name (8 environments)|
 |OrgName|FAB or ADW or WTP or BRW|Your 3 letter Organization (company) name. This ensures public Azure Resources have a unique name|
 |App|ADF, HUB, PSO, ABC|The App (tenant) name|
-|Deployment | AZC1ADFS1 + AZC1-ADF-S1 + azc1sdfs1 | Used for naming resources e.g. part of hostname and Azure Resource names, lower for storage Etc.<br/> [Prefix + App + Enviro]|
+|Deployment | AZC1ADFS1 + AZC1-FAB-ADF-S1 + azc1sdfs1 | Used for naming resources e.g. part of hostname and Azure Resource names, lower for storage Etc.<br/> [Prefix + App + Enviro]|
 |Global|A Global environment G0 represents Azure Subscription Deployments|E.g. RBAC or Policy|
 |Global|A Global environment G1 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
-|HUB|A Hub environment is denoted by the P0 or P00|AZC1-ADF-P0 Central Hub, AZE2-ADF-P0 EastUS2 Hub|
-|DR|Primary Test environment AZC1-ADF-T4 would have a mirror environment<br/>DR Test environment AZR2-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
+|HUB|A Hub environment is denoted by the P0 or P00|AZC1-FAB-ADF-P0 Central Hub, AZE2-FAB-ADF-P0 EastUS2 Hub|
+|DR|Primary Test environment AZC1-FAB-ADF-T4 would have a mirror environment<br/>DR Test environment AZE2-FAB-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
 <br/>
 
 ---
