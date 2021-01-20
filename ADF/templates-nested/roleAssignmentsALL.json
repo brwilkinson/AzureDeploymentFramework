@@ -75,6 +75,7 @@
                     guid(
                       subscription().subscriptionId,
                       parameters('RGName'),
+                      parameters('roleInfo').Name,
                       parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].Name,
                       if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'SubscriptionID'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].SubScriptionID,subscription().subscriptionId),
                       if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'RG'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].RG,parameters('Enviro')),
@@ -86,6 +87,8 @@
                     Concat(
                       'source: ',
                       parameters('RGName'),
+                      ' --> ',
+                      parameters('roleInfo').Name,
                       ' --> ',
                       parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].Name,
                       ' --> destination: ',
