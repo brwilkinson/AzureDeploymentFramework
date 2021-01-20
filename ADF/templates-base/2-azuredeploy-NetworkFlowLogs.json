@@ -75,7 +75,7 @@
     "subscriptionId": "[subscription().subscriptionId]",
     "resourceGroupName": "[resourceGroup().name]",
 
-    "hubDeployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-P0')]",
+    "hubDeployment": "[replace(parameters('Global').hubRGName,'-RG','')]",
     "hubRG": "[parameters('Global').hubRGName]",
     "SADiagName": "[concat(variables('Deployment'),'sadiag')]",
     "retentionPolicydays": 29,
