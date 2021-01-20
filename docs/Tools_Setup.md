@@ -19,7 +19,9 @@ Go Home [Documentation Home](./ARM.md)
 
 - Configure VSCode, Import the workspace and install the suggested extensions
 - Review the Scripts in the [1-PrereqsToDeploy](../ADF/1-PrereqsToDeploy)
+    - [ADF\1-PrereqsToDeploy\0-InstallTools.ps1]
 - Before running any of the Scripts Discuss
     - [Naming Standards](./Naming_Standards.md)
     - [App Tenants](./App_Tenants.md)
+- Once you are ready to deploy you can view the steps: [Getting_Started](./Getting_Started.md)
 ---
