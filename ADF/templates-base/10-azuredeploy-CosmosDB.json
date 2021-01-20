@@ -79,8 +79,6 @@
     "addressPrefixes": [
       "[concat(variables('networkId'),'.0/23')]"
     ],
-    "DC1PrivateIPAddress": "[concat(variables('networkId'),'.',parameters('DeploymentInfo').DC1PrivateIPAddress)]",
-    "DC2PrivateIPAddress": "[concat(variables('networkId'),'.',parameters('DeploymentInfo').DC2PrivateIPAddress)]",
     "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
     "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
     "CosmosDB": "[parameters('DeploymentInfo').CosmosDB]",

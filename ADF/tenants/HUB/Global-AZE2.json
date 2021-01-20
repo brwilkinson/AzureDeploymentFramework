@@ -9,6 +9,10 @@
       "172.18.",
       142
     ],
+    "DNSServers": [
+      "172.18.142.75",
+      "172.18.142.76"
+    ],
     "nsgRGName": "AZE2-BRW-HUB-RG-P0",
     "RTRGName": "AZE2-BRW-HUB-RG-P0",
     "RTName": "rtContoso-Hub",

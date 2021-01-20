@@ -93,12 +93,6 @@
             "Member": "benwilk@Microsoft.com"
           }
         ],
-        "DC1PrivateIPAddress": "75",
-        "DC2PrivateIPAddress": "76",
-        "DC1HostName": "DC01",
-        "DC2HostName": "DC02",
-        "CommentOLD: SUBNETS": "128 + 64 + 32 + 16 + 16",
-        "Comment2:   SUBNETS": "WAF01: 32 (/27) + FE01: 32 (/27) + AD01: 16 (/28) + BE01: 16 (/28) + BE02: 16 (/28) + BE03: 16 (/28) + MT01: 128 (/25) + MT02: 256 (/24)",
         "DNSPrivateZoneInfo": [
           "privatelink.azurewebsites.net",
           "privatelink.vaultcore.azure.net",

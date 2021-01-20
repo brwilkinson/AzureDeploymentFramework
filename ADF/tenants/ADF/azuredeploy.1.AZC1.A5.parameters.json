@@ -99,11 +99,6 @@
             "Member": "benwilk@Microsoft.com"
           }
         ],
-        "DNSnetworkId": "172.16.142",
-        "DC1PrivateIPAddress": "75",
-        "DC2PrivateIPAddress": "76",
-        "DC1HostName": "DC01",
-        "DC2HostName": "DC02",
         "SubnetInfo": [
           {
             "name": "snS1-ASP01",

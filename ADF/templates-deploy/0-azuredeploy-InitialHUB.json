@@ -83,8 +83,8 @@
       "ERGW": "templates-base\\15-azuredeploy-ERGW.json",
       "InitialJMP": "templates-base\\5-azuredeploy-VMApp.json"
     },
-    "DC1PrivateIPAddress": "10.144.143.4",
-    "DC2PrivateIPAddress": "10.144.143.5",
+    "DC1PrivateIPAddress": "[parameters('Global').DNSServers[0]]",
+    "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]",
     "RebootScriptFolder": "CustomScripts",
     "RebootScriptFileName": "Reboot.ps1"
   },

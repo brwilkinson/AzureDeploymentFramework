@@ -220,8 +220,6 @@
             ]
           }
         ],
-        "DC1PrivateIPAddress": "75",
-        "DC2PrivateIPAddress": "76",
         "SubnetInfo": [
           {
             "name": "snWAF01",

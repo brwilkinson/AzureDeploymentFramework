@@ -85,10 +85,6 @@
     },
     "DeploymentInfo": {
       "value": {
-        "DC1PrivateIPAddress": "75",
-        "DC2PrivateIPAddress": "76",
-        "DC1HostName": "DC01",
-        "DC2HostName": "DC02",
         "rolesInfo": [
           {
             "Name": "Contributor",

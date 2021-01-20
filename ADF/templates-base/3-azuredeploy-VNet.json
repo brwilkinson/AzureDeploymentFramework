@@ -88,9 +88,9 @@
     "addressPrefixes": [
       "[concat(variables('networkId'),'.0/23')]"
     ],
-    "DNSnetworkId": "[if(contains(parameters('DeploymentInfo'),'DNSnetworkId'),parameters('DeploymentInfo').DNSnetworkId,variables('networkId'))]",
-    "DC1PrivateIPAddress": "[concat(variables('DNSnetworkId'),'.',parameters('DeploymentInfo').DC1PrivateIPAddress)]",
-    "DC2PrivateIPAddress": "[concat(variables('DNSnetworkId'),'.',parameters('DeploymentInfo').DC2PrivateIPAddress)]",
+
+    "DC1PrivateIPAddress": "[parameters('Global').DNSServers[0]]",
+    "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]",
 
     "AzureDNS": "168.63.129.16",
     "RouteTableGlobal": {

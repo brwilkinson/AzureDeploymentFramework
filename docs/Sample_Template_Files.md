@@ -66,10 +66,6 @@ The Domain Controller and DNS Server Settings:
 ``` json
   "DeploymentInfo": {
     "value": {
-      "DC1PrivateIPAddress": "230",
-      "DC2PrivateIPAddress": "231",
-      "DC1HostName": "AD01",
-      "DC2HostName": "AD02",
 ```
 
 The Network information including subnets and diffferent address spaces
