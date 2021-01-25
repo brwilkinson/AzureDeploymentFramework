@@ -61,21 +61,25 @@
   "resources": [
   ],
   "outputs": {
-    "petName": {
-      "type": "bool",
-      "value": "[contains('SQL01','SQL01')]"
-    },
-    "1": {
-      "type": "bool",
-      "value": "[contains(variables('myarray'),'SQL')]"
-    },
-    "2": {
-      "type": "bool",
-      "value": "[contains(variables('myarray'),'SQL01')]"
-    },
-    "3": {
-      "type": "bool",
-      "value": "[contains('SQL','SQL01')]"
+    // "petName": {
+    //   "type": "bool",
+    //   "value": "[contains('SQL01','SQL01')]"
+    // },
+    // "1": {
+    //   "type": "bool",
+    //   "value": "[contains(variables('myarray'),'SQL')]"
+    // },
+    // "2": {
+    //   "type": "bool",
+    //   "value": "[contains(variables('myarray'),'SQL01')]"
+    // },
+    // "3": {
+    //   "type": "bool",
+    //   "value": "[contains('SQL','SQL01')]"
+    // }
+    "TempSpec": {
+      "type": "object",
+      "value": "[resourceId('Microsoft.Resources/templateSpecs','1-azuredeploy-OMS')]"
     }
   }
 }

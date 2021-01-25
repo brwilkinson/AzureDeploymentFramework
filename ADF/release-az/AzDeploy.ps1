@@ -8,7 +8,8 @@ param (
     [String]$APP = 'ADF',
     [switch]$SubscriptionDeploy,
     [switch]$FullUpload,
-    [switch]$LogAzDebug
+    [switch]$LogAzDebug,
+    [switch]$TemplateSpec
 )
 
 . $PSScriptRoot\Start-AzDeploy.ps1
@@ -23,6 +24,7 @@ $Params = @{
     ArtifactStagingDirectory = $ArtifactStagingDirectory
     TemplateFile             = $templatefile
     #TemplateParametersFile   = "$PSScriptRoot\..\azuredeploy.1.$Prefix.$Env.parameters.json"
+    TemplateSpec             = $TemplateSpec
 }
 
 Start-AzDeploy @Params -FullUpload:$FullUpload -VSTS -SubscriptionDeploy:$SubscriptionDeploy # -LogAzDebug:$LogAzDebug

@@ -179,22 +179,22 @@ Function Start-AzDeploy
 
     $GlobalGlobal | Add-Member NoteProperty -Name TemplateSpec -Value $TemplateSpec.IsPresent
     $GlobalGlobal | Add-Member NoteProperty -Name TemplateSpecVersion -Value $TemplateSpecVersion
-    # # TemplatSpecs
-    # if ($TemplateSpec)
-    # {
-    #     $T = Get-Item -Path $TemplateFile
-    #     $BaseName = $t.BaseName
-    #     $FullName = $t.FullName
-    #     $SpecVersion = '1.0a'
+    # TemplatSpecs
+    if ($TemplateSpec)
+    {
+        $T = Get-Item -Path $TemplateFile
+        $BaseName = $t.BaseName
+        $FullName = $t.FullName
+        $SpecVersion = '1.0a'
 
-    #     $Spec = Get-AzTemplateSpec -ResourceGroupName $GlobalGlobal.GlobalRGName -Name $BaseName -EA SilentlyContinue -Version $SpecVersion
+        $Spec = Get-AzTemplateSpec -ResourceGroupName $GlobalGlobal.GlobalRGName -Name $BaseName -EA SilentlyContinue -Version $SpecVersion
 
-    #     if (! ($Spec))
-    #     {
-    #         New-AzTemplateSpec -Name $BaseName -Version $SpecVersion -ResourceGroupName $GlobalGlobal.GlobalRGName -Location $GlobalGlobal.PrimaryLocation -TemplateFile $FullName -OV Spec
-    #     }
-    #     $TemplateSpecID = ($Spec.Id + '/versions/' + $SpecVersion)
-    # }
+        if (! ($Spec))
+        {
+            New-AzTemplateSpec -Name $BaseName -Version $SpecVersion -ResourceGroupName $GlobalGlobal.GlobalRGName -Location $GlobalGlobal.PrimaryLocation -TemplateFile $FullName -OV Spec
+        }
+        $TemplateSpecID = ($Spec.Id + '/versions/' + $SpecVersion)
+    }
 
     # Convert any objects back to string so they are not deserialized
     $GlobalGlobal | Get-Member -MemberType NoteProperty | ForEach-Object {
@@ -283,16 +283,12 @@ Function Start-AzDeploy
 
     $StorageAccount = Get-AzureRmStorageAccount | Where-Object { $_.StorageAccountName -eq $StorageAccountName }
 
-    # Generate the value for artifacts location if it is not provided in the parameter file
-    if ( -not $OptionalParameters['_artifactsLocation'] )
-    {
-        $OptionalParameters['_artifactsLocation'] = $StorageAccount.Context.BlobEndPoint + $StorageContainerName
-    }
-
     # Generate a 4 hour SAS token for the artifacts location if one was not provided in the parameters file
-    if ( -not $OptionalParameters['_artifactsLocationSasToken'] )
+    if ( -not $TemplateArgs['queryString'] )
     {
-        $OptionalParameters['_artifactsLocationSasToken'] = New-AzureStorageContainerSASToken -Container $StorageContainerName -Context $StorageAccount.Context -Permission r -ExpiryTime (Get-Date).AddHours(4)
+        # strip off the ? on the SAS
+        $SAS = New-AzureStorageContainerSASToken -Container $StorageContainerName -Context $StorageAccount.Context -Permission r -ExpiryTime (Get-Date).AddHours(4)
+        $TemplateArgs['queryString'] = ($SAS).substring(1)
     }
 
     $TemplateParametersFile = "$ArtifactStagingDirectory\tenants\$App\azuredeploy.1.$Prefix.$Deployment.parameters.json"
@@ -371,19 +367,24 @@ Function Start-AzDeploy
         }
     }
 
-    $OptionalParameters['_artifactsLocationSasToken'] = ConvertTo-SecureString $OptionalParameters['_artifactsLocationSasToken'] -AsPlainText -Force
+    # $OptionalParameters['_artifactsLocationSasToken'] = ConvertTo-SecureString $OptionalParameters['_artifactsLocationSasToken'] -AsPlainText -Force
 
-    # if ($TemplateSpec)
-    # {
-    #     $TemplateArgs.Add('TemplateSpecId', $TemplateSpecID)
-    # }
-    # else 
-    # {
-    #     $TemplateArgs.Add('TemplateFile', $TemplateFile)   
-    # }
 
-    $TemplateArgs.Add('TemplateFile', $TemplateFile)
-    $TemplateArgs.Add('TemplateParameterFile', $TemplateParametersFile)
+    if ($TemplateSpec)
+    {
+        $TemplateArgs.Add('TemplateSpecId', $TemplateSpecID)
+    }
+    else 
+    {
+        # Generate the value for artifacts location if it is not provided in the parameter file
+        if ( -not $TemplateArgs['templateUri '] )
+        {
+            $TemplateArgs['templateUri '] = $StorageAccount.Context.BlobEndPoint + $StorageContainerName + '/' + $TemplateFile
+        }
+    }
+    
+
+    # $TemplateArgs.Add('TemplateParameterFile', $TemplateParametersFile)
 
     # Create the resource group only when it doesn't already exist
     if (-not $Subscription)
@@ -489,7 +490,6 @@ Function Start-AzDeploy
                 New-AzDeployment -Name $DeploymentName @TemplateArgs -Location $ResourceGroupLocation `
                     @OptionalParameters -Verbose -ErrorVariable ErrorMessages 
             }
-        
         }
 
         if ($ErrorMessages)
@@ -498,6 +498,6 @@ Function Start-AzDeploy
                     ForEach-Object { $_.Exception.Message.TrimEnd("`r`n") })
         }
     }
-}#Start-AzureRMDeploy
+}#Start-Azeploy
 
 New-Alias -Name AzDeploy -Value Start-AzDeploy -Force

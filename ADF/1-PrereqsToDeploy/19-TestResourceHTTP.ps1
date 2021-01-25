@@ -52,6 +52,13 @@ $rgName = 'AZC1-BRW-HUB-RG-P0'
 $Name = 'azc1brwhubp0LogAnalytics'
 $type = 'Microsoft.OperationalInsights/workspaces'
 
+# View host pools
+$rgName = 'AZC1-BRW-ABC-RG-S1'
+$Name = 'AZC1-BRW-ABC-hp01'
+$type = 'Microsoft.DesktopVirtualization/hostpools'
+
+$n = $type -split '/' | select -First 1
+$t = ($type -split '/' | select -Skip 1) -join '/'
 $resource = Get-AzResource -ResourceGroupName $rgName -Name $Name -ResourceType $type
 $API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | select -first 1
 

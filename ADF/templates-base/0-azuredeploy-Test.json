@@ -95,9 +95,13 @@
       "type": "string",
       "value": "[string(variables('RolesGroupsLookup'))]"
     },
-    "foo2": {
+    // "foo2": {
+    //   "type": "string",
+    //   "value": "[reference(resourceId('AZC1-ADF-RG-P0','Microsoft.KeyVault/vaults/secrets','AZC1-ADF-P0-kvVault01','psthing7e7f14c0-92fc-4167-bb5d-d5d6e4b82b68'),'2019-09-01').secretUriWithVersion]"
+    // },
+    "TempSpec": {
       "type": "string",
-      "value": "[reference(resourceId('AZC1-ADF-RG-P0','Microsoft.KeyVault/vaults/secrets','AZC1-ADF-P0-kvVault01','psthing7e7f14c0-92fc-4167-bb5d-d5d6e4b82b68'),'2019-09-01').secretUriWithVersion]"
+      "value": "[resourceId('Microsoft.Resources/templateSpecs/versions','1-azuredeploy-OMS','1.0a')]"
     }
   }
 }
