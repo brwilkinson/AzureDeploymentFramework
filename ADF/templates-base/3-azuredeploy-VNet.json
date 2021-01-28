@@ -88,11 +88,9 @@
     "addressPrefixes": [
       "[concat(variables('networkId'),'.0/23')]"
     ],
-
-    "DC1PrivateIPAddress": "[parameters('Global').DNSServers[0]]",
-    "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]",
-
+    "DNSServers": "[parameters('Global').DNSServers]",
     "AzureDNS": "168.63.129.16",
+
     "RouteTableGlobal": {
       "id": "[resourceid(parameters('Global').HubRGName,'Microsoft.Network/routeTables/',concat(parameters('Prefix'),'-rt',parameters('Global').RTName))]"
     },
@@ -129,11 +127,7 @@
           "addressPrefixes": "[variables('addressPrefixes')]"
         },
         "dhcpOptions": {
-          "dnsServers": [
-            "[variables('DC1PrivateIPAddress')]",
-            "[variables('DC2PrivateIPAddress')]"
-            // "[variables('AzureDNS')]"
-          ]
+          "dnsServers": "[array(variables('DNSServers'))]"
         },
         "copy": [
           {

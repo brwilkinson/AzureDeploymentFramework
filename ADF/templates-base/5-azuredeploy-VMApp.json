@@ -152,7 +152,8 @@
     "AppServers": "[parameters('DeploymentInfo').AppServers[variables('DeploymentName')]]",
     "DSCConfigLookup": {
       "AppServers": "AppServers",
-      "InitialDOP": "AppServers"
+      "InitialDOP": "AppServers",
+      "WVDServers": "WVDServers"
     },
 
     // Network, used for Cluster/AG/DNS IP's

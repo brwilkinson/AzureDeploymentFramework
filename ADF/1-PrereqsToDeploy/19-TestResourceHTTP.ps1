@@ -57,10 +57,16 @@ $rgName = 'AZC1-BRW-ABC-RG-S1'
 $Name = 'AZC1-BRW-ABC-hp01'
 $type = 'Microsoft.DesktopVirtualization/hostpools'
 
+# View dashboards json
+$rgName = 'AZC1-BRW-ABC-RG-S1'
+$Name = 'ABC-S1-Default-Dashboard'
+$type = 'Microsoft.Portal/dashboards'
+
 $n = $type -split '/' | select -First 1
 $t = ($type -split '/' | select -Skip 1) -join '/'
 $resource = Get-AzResource -ResourceGroupName $rgName -Name $Name -ResourceType $type
-$API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | select -first 1
+# $API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | select -first 1
+$API = '2020-09-01-preview'
 
 # standard view
 Write-Verbose "Default view of resource" -Verbose

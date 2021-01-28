@@ -81,7 +81,8 @@
       "[concat(variables('networkId'),'.0/23')]"
     ],
     "DC1PrivateIPAddress": "[parameters('Global').DNSServers[0]]",
-    "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]",
+    "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]", 
+    // "DNSServers": "[parameters('Global').DNSServers]",
     "AzureDNS": "168.63.129.16",
     "DeploymentInfoObject": {
       "KV": "templates-base\\0-azuredeploy-KV.json",

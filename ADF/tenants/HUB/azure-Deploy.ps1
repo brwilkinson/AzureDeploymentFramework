@@ -6,7 +6,7 @@ $Enviro = 'P0'
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
 
-Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App]" -verbose
+Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App] and Enviro is [$Enviro]" -verbose
 
 break
 # F8 to run individual steps

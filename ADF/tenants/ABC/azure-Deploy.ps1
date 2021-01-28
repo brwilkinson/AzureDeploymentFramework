@@ -62,12 +62,15 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeplo
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeploy-NetworkFlowLogs.json
 
 
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\27-azuredeploy-WVD.json
+
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\9-azuredeploy-APIM.json -FullUpload
 
 # $Enviro AppServers Deploy
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADPrimary
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADSecondary
 # $Enviro AppServers Deploy
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName WVDServers
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP
 

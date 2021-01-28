@@ -2,17 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "AppName": {
-      "type": "string",
-      "defaultValue": "ADF",
-      "allowedValues": [
-        "HUB",
-        "ADF"
-      ]
-    },
     "Prefix": {
       "type": "string",
-      "defaultValue": "AZC1",
+      "defaultValue": "AZE2",
       "allowedValues": [
         "AZE2",
         "AZC1"
@@ -20,13 +12,15 @@
     },
     "Environment": {
       "type": "string",
-      "defaultValue": "S",
+      "defaultValue": "D",
       "allowedValues": [
         "I",
         "D",
         "U",
         "P",
-        "S"
+        "S",
+        "G",
+        "A"
       ]
     },
     "DeploymentID": {
@@ -35,28 +29,60 @@
       "allowedValues": [
         "0",
         "1",
-        "2"
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
       ]
     },
-    "Pet": {
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
       "type": "string",
-      "defaultValue" : "cats",
-      "allowedValues": [
-        "cats",
-        "dogs",
-        "rabbits"
-      ]
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "deploymentTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]"
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
     }
   },
   "variables": {
-    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Appname'),'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "appConfigStoreName": "[concat(variables('Deployment'),'-acConfig01')]",
     "appConfigRef": "[resourceId('Microsoft.AppConfiguration/configurationStores', variables('appConfigStoreName'))]",
-    "lookup" :{
+    "lookup": {
       "key": "abc",
       "label": "abc"
     },
-    "myarray": ["SQL01","SQL02"]
+    "myarray": [ "SQL01", "SQL02" ]
   },
   "resources": [
   ],
@@ -77,9 +103,17 @@
     //   "type": "bool",
     //   "value": "[contains('SQL','SQL01')]"
     // }
-    "TempSpec": {
-      "type": "object",
-      "value": "[resourceId('Microsoft.Resources/templateSpecs','1-azuredeploy-OMS')]"
+    // "TempSpec": {
+    //   "type": "object",
+    //   "value": "[resourceId('Microsoft.Resources/templateSpecs','1-azuredeploy-OMS')]"
+    // },
+    "time": {
+      "type": "string",
+      "value": "2021-01-31T14:01:54.9571247Z"
+    },
+    "time2": {
+      "type": "string",
+      "value": "[dateTimeAdd(parameters('deploymentTime'),'PT1H')]"
     }
   }
 }
