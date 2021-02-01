@@ -176,7 +176,8 @@
       "SQL": "Cluster",
       "UTL": "DefaultKeyVault",
       "FIL": "Cluster",
-      "OCR": "Storage"
+      "OCR": "Storage",
+      "WVD": "WVD"
     },
     "userAssignedIdentities": {
       "Cluster": {
@@ -203,11 +204,21 @@
         "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiAzureServiceBusDataOwner'))]": {
         }
       },
+      "WVD": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-WVDRegKeyReader'))]": {
+        }
+      },
       "Storage": {
         "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountContributor'))]": {
         },
         "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
         }
+      },
+      "None": {
       }
     }
   },
@@ -521,6 +532,41 @@
                   "[parameters('Global').certificateUrl]"
                 ]
               }
+            }
+          }
+        },
+        {
+          "condition": "[and(parameters('aadJoin'),not(parameters('intune')))]",
+          "name": "AADLoginForWindows",
+          "type": "extensions",
+          "apiVersion": "2018-10-01",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Azure.ActiveDirectory",
+            "type": "AADLoginForWindows",
+            "typeHandlerVersion": "1.0",
+            "autoUpgradeMinorVersion": true
+          }
+        },
+        {
+          "condition": "[and(parameters('aadJoin'),parameters('intune'))]",
+          "name": "AADLoginForWindowsWithIntune",
+          "type": "extensions",
+          "apiVersion": "2018-10-01",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Azure.ActiveDirectory",
+            "type": "AADLoginForWindows",
+            "typeHandlerVersion": "1.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "mdmId": "0000000a-0000-0000-c000-000000000000"
             }
           }
         },

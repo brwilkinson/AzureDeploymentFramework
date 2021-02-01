@@ -469,7 +469,7 @@ Configuration WVDServers
             $dependsonDir += @("[File]$Name")
         }
 
-        #-------------------------------------------------------------------
+        #-------------------------------------------------------------------     
         foreach ($File in $Node.DirectoryPresentSource)
         {
             $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter 
@@ -480,7 +480,7 @@ Configuration WVDServers
                 Ensure          = 'Present'
                 Recurse         = $true
                 Credential      = $StorageCred
-                MatchSource     = IIF $File.MatchSource $File.MatchSource $False
+                MatchSource     = IIF $File.MatchSource $File.MatchSource $False   
             }
             $dependsonDirectory += @("[File]$Name")
         }
@@ -982,12 +982,13 @@ Configuration WVDServers
                 }
             }
         }#end jmp
+
     }
 }#Main
 
 # used for troubleshooting
 # F5 loads the configuration and starts the push
-break
+
 #region The following is used for manually running the script, breaks when running as system
 if ((whoami) -notmatch 'system')
 {
@@ -1013,7 +1014,7 @@ if ((whoami) -notmatch 'system')
 
     # Set the location to the DSC extension directory
     $DSCdir = ($psISE.CurrentFile.FullPath | split-Path)
-    $DSCdir = $psscrriptroot
+    #$DSCdir = $psscrriptroot
     if (Test-Path -Path $DSCdir -ErrorAction SilentlyContinue)
     {
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
@@ -1031,26 +1032,27 @@ Get-ChildItem -Path .\WVDServers -Filter *.mof -ea 0 | Remove-Item
 # AZC1 ADF D 1
 
 # D2    (1 chars)
-if ($env:computername -match 'ADF')
+if ($env:computername -match 'ABC')
 {
     $depname = $env:computername.substring(7, 2)  # D1
-    $SAID = '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-G1/providers/Microsoft.Storage/storageAccounts/stagecus1'
-    $App = 'ADF'
-    $Domain = 'contoso.com'
+    $SAID = '/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-HUB-RG-G1/providers/Microsoft.Storage/storageAccounts/azc1brwhubg1saglobal'
+    $App = 'ABC'
+    $Domain = 'psthing.com'
     $prefix = $env:computername.substring(0, 4)  # AZC1
+    $org = 'BRW'
 }
 
 $depid = $depname.substring(1, 1)
 
 # Network
-$network = 30 - ([Int]$Depid * 2)
-$Net = "172.16.${network}."
+$network = 144 - ([Int]$Depid * 2)
+$Net = "10.1.${network}."
 
 # Azure resource names (for storage account) E.g. AZE2ADFd2
-$dep = "{0}{1}{2}" -f $prefix, $app, $depname
+$dep = "{0}{1}{2}{3}" -f $prefix,$org, $app, $depname
 
 $ClientId = @{
-    S1 = 'd6d048a5-517c-496b-bb5e-d95e2a6525f1'
+    S1 = '5b0142be-f48a-4e30-b754-f1c3a37e023b'
 }
 
 $Params = @{

@@ -134,6 +134,14 @@
             ]
           },
           {
+            "name": "WVDRegKeyReader",
+            "RBAC": [
+              {
+                "Name": "Desktop Virtualization Workspace Reader"
+              }
+            ]
+          },
+          {
             "name": "StorageAccountOperator",
             "RBAC": [
               {
@@ -285,6 +293,18 @@
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow"
+          },
+          {
+            "nameSuffix": "adds",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "ADDS": 0,
+            "largeFileSharesState": "Disabled",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            }
           }
         ],
         "WVDInfo": [
@@ -296,6 +316,11 @@
             "VMtemplate": "office-365"
           }
         ],
+        "LogicInfo": [
+          {
+            "Name": "SMTP-TEST-01"
+          }
+        ],
         "Appservers": {
           "WVDServers": [
             {
@@ -304,6 +329,9 @@
               "ASName": "WVD",
               "DDRole": "64GB",
               "OSType": "Server2019",
+              "AADUserGroup": [
+                // Add to app group and host pool
+              ],
               "NICs": [
                 {
                   "Subnet": "FE01",

@@ -82,7 +82,18 @@
       "fileServices",
       "queueServices",
       "tableService"
-    ]
+    ],
+    "azureFilesIdentityBasedAuthentication": {
+      "directoryServiceOptions": "AD",
+      "activeDirectoryProperties": {
+        "domainName": "[parameters('Global').DomainName]",
+        "netBiosDomainName": "[first(split(parameters('Global').DomainName,'.'))]",
+        "forestName": "[parameters('Global').DomainName]",
+        "domainGuid": "99cbe596-b191-4853-aca3-4e19d44f67e0",
+        "domainSid": "S-1-5-21-4089952384-727918856-4151886579",
+        "azureStorageSid": "string"
+      }
+    }
   },
   "resources": [
     {
@@ -103,6 +114,7 @@
       ],
       "kind": "StorageV2",
       "properties": {
+        "azureFilesIdentityBasedAuthentication":"[if(and(contains(variables('saInfo')[copyIndex()],'ADDS'),equals(variables('saInfo')[copyIndex()].ADDS,1)),variables('azureFilesIdentityBasedAuthentication'),json('null'))]",
         "largeFileSharesState": "[if(contains(variables('saInfo')[copyIndex()],'largeFileSharesState'),variables('saInfo')[copyIndex()].largeFileSharesState,json('null'))]",
         "networkAcls": {
           "bypass": "AzureServices",

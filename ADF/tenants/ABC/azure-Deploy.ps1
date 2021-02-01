@@ -6,7 +6,7 @@ $Enviro = 'S1'
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
 
-Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App]" -verbose
+Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App] and Enviro is [$Enviro]" -verbose
 
 break
 # F8 to run individual steps
@@ -58,11 +58,14 @@ AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\2-azuredeplo
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
 
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-Storage.json
+
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeploy-NetworkWatcher.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeploy-NetworkFlowLogs.json
 
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\27-azuredeploy-WVD.json
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\28-azuredeploy-LogicApp.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\9-azuredeploy-APIM.json -FullUpload
 
