@@ -19,7 +19,7 @@ Go Home [Documentation Home](./ARM.md)
         - azc1fabhubg1saglobal       [Central US Deployment for FAB organization, for HUB App team, deploying a storage account (lower case 24 char limit) in the Global (G1) Resource Group]
         -
         - AZC1-FAB-HUB-P0-kvVLT01    [Central US Deployment for FAB organization, for HUB App team, deploying a keyvault in the HUB (P0) Resource Group]
-        - AZC1-FAB-HUB-P0-kvVLT01-pl-vault-snMT02.nic.50a08879-44ce-4a16-a9e9-8595ce9734ca    [A private link connection on the above Keyvault]
+        - AZC1-FAB-HUB-P0-kvVLT01-pl-vault-snMT02.nic.50a08879-44ce-4a16-a9e9-8595ce9734ca    [A private link connection on the above Keyvault to subnet MT02]
         - AZC1-FAB-HUB-P0-networkwatcher                                                      [Network watcher on above HUB]
         - AZC1-FAB-HUB-P0-networkwatcher/AZC1-FAB-ABC-S1-fl-AzureBastionSubnet                [A Subnet from S1 Spoke Bastion Subnet connecting back to the Hub Network watcher]
 
