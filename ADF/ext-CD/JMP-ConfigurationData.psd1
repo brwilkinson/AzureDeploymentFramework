@@ -113,18 +113,18 @@
                 },
 
                 @{
-                    Name      = 'Microsoft Edge Update'
-                    Path      = 'F:\Source\EDGE\MicrosoftEdgeSetupBeta.exe'
-                    ProductId = ''
+                    Name      = 'Microsoft Edge'
+                    Path      = 'F:\Source\EDGE\MicrosoftEdgeEnterpriseX64.msi'
+                    ProductId = '{1BAA23D8-D46C-3014-8E86-DF6C0762F71A}'
                     Arguments = ''
                 },
 
-                # @{Name        = 'Windows Admin Center'
-                #     Path      = 'F:\Source\Tools\WindowsAdminCenter1904.1.msi'
-                #     ProductId = '{738640D5-FED5-4232-91C3-176903ADFF94}'
-                #     Arguments = 'RESTART_WINRM=0 SME_PORT=443 SME_THUMBPRINT=78F957B6738273FA67C9756944E52FA0C1AAF307 SSL_CERTIFICATE_OPTION=installed /L*v F:\adminCenterlog.txt'
-                # }
-            
+                @{Name        = 'Windows Admin Center'
+                    Path      = 'F:\Source\Tools\WindowsAdminCenter1904.1.msi'
+                    ProductId = '{65E83844-8B8A-42ED-B78D-BA021BE4AE83}'
+                    Arguments = 'RESTART_WINRM=0 SME_PORT=443 SME_THUMBPRINT=215B3BBC1ABF37BF8D79541383374857A30F86F7 SSL_CERTIFICATE_OPTION=installed /L*v F:\adminCenterlog.txt'
+                },
+
                 @{
                     Name      = 'Git version 2.23.0.windows.1'
                     Path      = 'F:\Source\GIT\Git-2.23.0-64-bit.exe'
@@ -145,12 +145,14 @@
                     ProductId = ''
                     Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install312.txt"'
                 },
+
                 @{
                     Name      = 'Microsoft .NET Runtime - 5.0.0 Preview 8 (x64)'
                     Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.100-preview.8.20417.9-win-x64.exe'
                     ProductId = ''
                     Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install50100.txt"'
                 },
+
                 @{  
                     Name      = 'Visual Studio Enterprise 2019'
                     Path      = 'F:\Source\VisualStudio\vs_enterprise__2032842161.1584647755.exe'

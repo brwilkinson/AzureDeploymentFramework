@@ -87,6 +87,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
         "Scripts": 1,
@@ -137,7 +138,7 @@
             "name": "WVDRegKeyReader",
             "RBAC": [
               {
-                "Name": "Desktop Virtualization Workspace Reader"
+                "Name": "Desktop Virtualization Host Pool Reader"
               }
             ]
           },
@@ -318,7 +319,7 @@
         ],
         "LogicInfo": [
           {
-            "Name": "SMTP-TEST-01"
+            "Name": "SMTPTEST02"
           }
         ],
         "Appservers": {
@@ -329,9 +330,12 @@
               "ASName": "WVD",
               "DDRole": "64GB",
               "OSType": "Server2019",
-              "AADUserGroup": [
-                // Add to app group and host pool
-              ],
+              "AppInfo": {
+                "clientID": "63f32ebc-cd2d-4d84-90ff-cd91946c6443",
+                "AADUserGroup": [
+                  // Add to app group and host pool
+                ]
+              },
               "NICs": [
                 {
                   "Subnet": "FE01",
@@ -350,6 +354,7 @@
               "ASName": "JMP",
               "DDRole": "64GB",
               "OSType": "Server2019small",
+              "ExcludeAdminCenter": 1,
               "Zone": 1,
               "NICs": [
                 {
@@ -358,6 +363,23 @@
                   "FastNic": 1,
                   "PublicIP": "Static",
                   "StaticIP": "62"
+                }
+              ]
+            },
+            {
+              "VMName": "ADC01",
+              "Role": "ADC",
+              "ASName": "ADC",
+              "DDRole": "64GB",
+              "OSType": "Server2019small",
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "60"
                 }
               ]
             }

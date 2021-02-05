@@ -100,61 +100,23 @@
       },
       "properties": {
         "state": "Enabled",
-        "definition": {},
-        // "definition": {
-        //   "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-        //   "contentVersion": "1.0.0.0",
-        //   "parameters": {
-        //     "$connections": {
-        //       "defaultValue": {},
-        //       "type": "Object"
-        //     }
-        //   },
-        //   "triggers": {
-        //     "manual": {
-        //       "type": "Request",
-        //       "kind": "Http",
-        //       "inputs": {
-        //         "schema": {
-        //           "properties": {
-        //             "First_Name": {
-        //               "type": "string"
-        //             },
-        //             "Last_Name": {
-        //               "type": "string"
-        //             },
-        //             "To": {
-        //               "type": "string"
-        //             }
-        //           },
-        //           "type": "object"
-        //         }
-        //       },
-        //       "operationOptions": "IncludeAuthorizationHeadersInOutputs"
-        //     }
-        //   },
-        //   "actions": {
-        //     "Send_an_email_(V2)": {
-        //       "runAfter": {},
-        //       "type": "ApiConnection",
-        //       "inputs": {
-        //         "body": {
-        //           "Body": "<p>This is a log message to:  @{triggerBody()?['First_Name']} @{triggerBody()?['Last_Name']}<br>\n</p>",
-        //           "Subject": "bearer token to send email",
-        //           "To": "@triggerBody()?['To']"
-        //         },
-        //         "host": {
-        //           "connection": {
-        //             "name": "@parameters('$connections')['office365']['connectionId']"
-        //           }
-        //         },
-        //         "method": "post",
-        //         "path": "/v2/Mail"
-        //       }
-        //     }
-        //   },
-        //   "outputs": {}
-        // },
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            // "$connections": {
+            //   "defaultValue": {},
+            //   "type": "Object"
+            // }
+          },
+          "triggers": {
+
+          },
+          "actions": {
+            
+          },
+          "outputs": {}
+        },
         "parameters": {
           // "$connections": {
           //   "value": {

@@ -209,7 +209,7 @@
         },
         "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
         },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-WVDRegKeyReader'))]": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiWVDRegKeyReader'))]": {
         }
       },
       "Storage": {
@@ -535,38 +535,76 @@
             }
           }
         },
+        // {
+        //   "condition": "[and(parameters('aadJoin'),not(parameters('intune')))]",
+        //   "name": "AADLoginForWindows",
+        //   "type": "extensions",
+        //   "apiVersion": "2018-10-01",
+        //   "location": "[resourceGroup().location]",
+        //   "dependsOn": [
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+        //   ],
+        //   "properties": {
+        //     "publisher": "Microsoft.Azure.ActiveDirectory",
+        //     "type": "AADLoginForWindows",
+        //     "typeHandlerVersion": "1.0",
+        //     "autoUpgradeMinorVersion": true
+        //   }
+        // },
+        // {
+        //   "condition": "[and(parameters('aadJoin'),parameters('intune'))]",
+        //   "name": "AADLoginForWindowsWithIntune",
+        //   "type": "extensions",
+        //   "apiVersion": "2018-10-01",
+        //   "location": "[resourceGroup().location]",
+        //   "dependsOn": [
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+        //   ],
+        //   "properties": {
+        //     "publisher": "Microsoft.Azure.ActiveDirectory",
+        //     "type": "AADLoginForWindows",
+        //     "typeHandlerVersion": "1.0",
+        //     "autoUpgradeMinorVersion": true,
+        //     "settings": {
+        //       "mdmId": "0000000a-0000-0000-c000-000000000000"
+        //     }
+        //   }
+        // },
         {
-          "condition": "[and(parameters('aadJoin'),not(parameters('intune')))]",
-          "name": "AADLoginForWindows",
+          "condition": "[and(
+                            variables('VM')[copyIndex(0)].matchVM,
+                            and(
+                              not(
+                                and(contains(variables('AppServers')[copyIndex(0)],'ExcludeAdminCenter'),
+                                    equals(variables('AppServers')[copyIndex(0)].ExcludeAdminCenter,1)
+                                )
+                              ),
+                            equals(variables('VM')[copyIndex(0)].Extensions.AdminCenter,1)
+                            )
+                          )]",
+          "name": "AdminCenter",
+          "apiVersion": "2019-03-01",
           "type": "extensions",
-          "apiVersion": "2018-10-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
           ],
           "properties": {
-            "publisher": "Microsoft.Azure.ActiveDirectory",
-            "type": "AADLoginForWindows",
-            "typeHandlerVersion": "1.0",
-            "autoUpgradeMinorVersion": true
-          }
-        },
-        {
-          "condition": "[and(parameters('aadJoin'),parameters('intune'))]",
-          "name": "AADLoginForWindowsWithIntune",
-          "type": "extensions",
-          "apiVersion": "2018-10-01",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Azure.ActiveDirectory",
-            "type": "AADLoginForWindows",
-            "typeHandlerVersion": "1.0",
             "autoUpgradeMinorVersion": true,
+            "publisher": "Microsoft.AdminCenter",
+            "type": "AdminCenter",
+            "typeHandlerVersion": "0.0",
             "settings": {
-              "mdmId": "0000000a-0000-0000-c000-000000000000"
+              "port": "6516",
+              "cspFrameAncestors": [
+                "https://portal.azure.com",
+                "https://*.hosting.portal.azure.net",
+                "https://localhost:1340"
+              ],
+              "corsOrigins": [
+                "https://portal.azure.com",
+                "https://waconazure.com"
+              ]
             }
           }
         },

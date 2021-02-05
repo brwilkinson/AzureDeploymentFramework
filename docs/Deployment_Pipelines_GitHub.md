@@ -29,11 +29,11 @@ Go Home [Documentation Home](./ARM.md)
 
 #### S1 - Sandbox Environment - Spoke Central 
 
-![Deploy_AZC1_BRW_PSO_RG_S1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_PSO_RG_S1/badge.svg?branch=main)
+![Deploy_AZC1_BRW_ABC_RG_S1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_ABC_RG_S1/badge.svg?branch=main)
 
 #### S3 - Sandbox Environment - K8s - Spoke Central 
 
-![Deploy_AZC1_BRW_PSO_RG_S3](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_PSO_RG_S3/badge.svg?branch=main)
+![Deploy_AZC1_BRW_ABC_RG_S3](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZC1_BRW_ABC_RG_S3/badge.svg?branch=main)
 
 ---
 
@@ -47,7 +47,7 @@ Go Home [Documentation Home](./ARM.md)
 
 #### S1 - Sandbox Environment DR - Spoke EastUS2
 
-![Deploy_AZE2_BRW_PSO_RG_S1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZE2_BRW_PSO_RG_S1/badge.svg?branch=main)
+![Deploy_AZE2_BRW_ABC_RG_S1](https://github.com/brwilkinson/AzureDeploymentFramework/workflows/Deploy_AZE2_BRW_ABC_RG_S1/badge.svg?branch=main)
 
 <br/>
 

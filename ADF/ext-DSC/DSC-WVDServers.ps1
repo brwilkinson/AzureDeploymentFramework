@@ -35,9 +35,10 @@ Configuration WVDServers
     Import-DscResource -ModuleName PolicyFileEditor
     Import-DscResource -ModuleName xSystemSecurity
     Import-DscResource -ModuleName xDNSServer
+    Import-DSCResource -ModuleName WVDDSC
 
     # Azure VM Metadata service
-    $VMMeta = Invoke-RestMethod -Headers @{"Metadata" = "true" } -URI http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
+    $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
     $Compute = $VMMeta.compute
     $NetworkInt = $VMMeta.network.interface
 
@@ -52,22 +53,22 @@ Configuration WVDServers
     {
         param($If, $IfTrue, $IfFalse)
         
-        If ($If -IsNot "Boolean") { $_ = $If }
-        If ($If) { If ($IfTrue -is "ScriptBlock") { &$IfTrue } Else { $IfTrue } }
-        Else { If ($IfFalse -is "ScriptBlock") { &$IfFalse } Else { $IfFalse } }
+        If ($If -IsNot 'Boolean') { $_ = $If }
+        If ($If) { If ($IfTrue -is 'ScriptBlock') { &$IfTrue } Else { $IfTrue } }
+        Else { If ($IfFalse -is 'ScriptBlock') { &$IfFalse } Else { $IfFalse } }
     }
     
     # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = "true" }
-    $ArmToken = $response.Content | convertfrom-json | Foreach access_token
-    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = "application/json"; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
+    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
+    $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
+    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
     try
     {
         # Global assets to download files
         $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-        $Params['Uri'] = "https://management.azure.com{0}/{1}/?api-version=2016-01-01" -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | convertfrom-json | Foreach Keys | Select -first 1 | foreach Value
+        $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
+        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
         Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
         
         # Create the Cred to access the storage account
@@ -86,28 +87,24 @@ Configuration WVDServers
 
 
     $credlookup = @{
-        "localadmin"  = $AdminCreds
-        "DomainCreds" = $DomainCreds
-        "DomainJoin"  = $DomainCreds
-        "SQLService"  = $DomainCreds
-        "usercreds"   = $AdminCreds
-        "DevOpsPat"   = $DevOpsAgentPATToken
+        'localadmin'  = $AdminCreds
+        'DomainCreds' = $DomainCreds
+        'DomainJoin'  = $DomainCreds
+        'SQLService'  = $DomainCreds
+        'usercreds'   = $AdminCreds
+        'DevOpsPat'   = $DevOpsAgentPATToken
     }
     
-    If ($DNSInfo)
+    If ($AppInfo)
     {
-        $DNSInfo = ConvertFrom-Json $DNSInfo
-        write-warning $DNSInfo.APIMDev
-        write-warning $DNSInfo.APIM
-        write-warning $DNSInfo.WAF
-        write-warning $DNSInfo.WAFDev
+        $AppInfo = ConvertFrom-Json $AppInfo
     }
     
 
 
     node $AllNodes.NodeName
     {
-        if ($NodeName -eq "localhost")
+        if ($NodeName -eq 'localhost')
         {
             [string]$computername = $env:COMPUTERNAME
         }
@@ -136,13 +133,13 @@ Configuration WVDServers
         xTimeZone EasternStandardTime
         { 
             IsSingleInstance = 'Yes'
-            TimeZone         = "Eastern Standard Time" 
+            TimeZone         = 'Eastern Standard Time' 
         }
 
         #-------------------------------------------------------------------
         xIEEsc DisableIEESC
         {
-            UserRole  = "Administrators"
+            UserRole  = 'Administrators'
             IsEnabled = IIF $Node.DisableIEESC (-Not $Node.DisableIEESC) $True
         }
 
@@ -262,9 +259,9 @@ Configuration WVDServers
 
         Service WindowsFirewall
         {
-            Name        = "MPSSvc"
-            StartupType = "Automatic"
-            State       = "Running"
+            Name        = 'MPSSvc'
+            StartupType = 'Automatic'
+            State       = 'Running'
         }
 
         foreach ($FWRule in $Node.FWRules)
@@ -309,7 +306,7 @@ Configuration WVDServers
                 Enabled                       = $True
                 Password                      = $UserCreds
                 #DomainController = $User.DomainController
-                DomainAdministratorCredential = $credlookup["DomainJoin"]
+                DomainAdministratorCredential = $credlookup['DomainJoin']
             }
             $dependsonUser += @("[xADUser]$($User.Username)")
         }
@@ -327,7 +324,7 @@ Configuration WVDServers
 
         #-------------------------------------------------------------------
         #To clean up resource names use a regular expression to remove spaces, slashes an colons Etc.
-        $StringFilter = "\W", ""
+        $StringFilter = '\W', ''
 
         foreach ($Group in $Node.GroupMemberPresent)
         {
@@ -361,11 +358,11 @@ Configuration WVDServers
             Script $PowerShellModuleCustom
             {
                 GetScript  = {
-                    $mod = Get-Module -ListAvailable -Name "Az.Accounts"
+                    $mod = Get-Module -ListAvailable -Name 'Az.Accounts'
                     @{module = $mod }
                 }
                 TestScript = {
-                    $mod = Get-Module -ListAvailable -Name "Az.Accounts"
+                    $mod = Get-Module -ListAvailable -Name 'Az.Accounts'
                     if ($mod)
                     {
                         $true 
@@ -376,7 +373,7 @@ Configuration WVDServers
                     }
                 }
                 Setscript  = {
-                    Install-Module -Name "Az" -Force -AllowClobber
+                    Install-Module -Name 'Az' -Force -AllowClobber
                 }
             }
         }
@@ -437,7 +434,7 @@ Configuration WVDServers
             $Name = $EnvironmentPath -replace $StringFilter
             Environment $Name
             {
-                Name  = "Path"
+                Name  = 'Path'
                 Value = $EnvironmentPath
                 Path  = $true
             }
@@ -464,7 +461,7 @@ Configuration WVDServers
             {
                 DestinationPath      = $Dir
                 Type                 = 'Directory'
-                PsDscRunAsCredential = $credlookup["DomainCreds"]
+                PsDscRunAsCredential = $credlookup['DomainCreds']
             }
             $dependsonDir += @("[File]$Name")
         }
@@ -513,7 +510,7 @@ Configuration WVDServers
                 DependsOn             = '[xServiceSet]ServiceSetStarted'
                 managedRuntimeVersion = $AppPool.Version
                 identityType          = 'SpecificUser'
-                Credential            = $credlookup["DomainCreds"]
+                Credential            = $credlookup['DomainCreds']
                 enable32BitAppOnWin64 = $AppPool.enable32BitAppOnWin64
             }
             $dependsonWebAppPool += @("[xWebAppPool]$Name")
@@ -540,7 +537,7 @@ Configuration WVDServers
                         IPAddress             = $binding.IpAddress
                         HostName              = $binding.HostHeader
                         CertificateThumbprint = $ThumbPrint
-                        CertificateStoreName  = "MY"   
+                        CertificateStoreName  = 'MY'   
                     }
                 }
             }
@@ -556,7 +553,7 @@ Configuration WVDServers
                 PhysicalPath         = $WebVirtualDirectory.PhysicalPath
                 WebApplication       = $WebVirtualDirectory.WebApplication
                 Website              = $WebVirtualDirectory.Website
-                PsDscRunAsCredential = $credlookup["DomainCreds"]
+                PsDscRunAsCredential = $credlookup['DomainCreds']
                 Ensure               = 'Present'
                 DependsOn            = $dependsonWebSites
             }
@@ -568,16 +565,16 @@ Configuration WVDServers
         {
             $vdname	= $WebVirtualDirectory.Name
             $wsname	= $WebVirtualDirectory.Website
-            $pw = $credlookup["DomainCreds"].GetNetworkCredential().Password
-            $Domain	= $credlookup["DomainCreds"].GetNetworkCredential().Domain
-            $UserName = $credlookup["DomainCreds"].GetNetworkCredential().UserName
+            $pw = $credlookup['DomainCreds'].GetNetworkCredential().Password
+            $Domain	= $credlookup['DomainCreds'].GetNetworkCredential().Domain
+            $UserName = $credlookup['DomainCreds'].GetNetworkCredential().UserName
 
             script $vdname
             {
                 DependsOn  = $dependsonWebVirtualDirectory 
                 
                 GetScript  = {
-                    Import-Module -Name "webadministration"
+                    Import-Module -Name 'webadministration'
                     $vd = Get-WebVirtualDirectory -site $using:wsname -Name $vdname
                     @{
                         path         = $vd.path
@@ -586,13 +583,13 @@ Configuration WVDServers
                     }
                 }#Get
                 SetScript  = {
-                    Import-Module -Name "webadministration"
+                    Import-Module -Name 'webadministration'
                     Set-ItemProperty -Path "IIS:\Sites\$using:wsname\$using:vdname" -Name userName -Value "$using:domain\$using:UserName"
                     Set-ItemProperty -Path "IIS:\Sites\$using:wsname\$using:vdname" -Name password -Value $using:pw
                 }#Set 
                 TestScript = {
-                    Import-Module -Name "webadministration"
-                    Write-warning $using:vdname
+                    Import-Module -Name 'webadministration'
+                    Write-Warning $using:vdname
                     $vd = Get-WebVirtualDirectory -site $using:wsname -Name $using:vdname
                     if ($vd.userName -eq "$using:domain\$using:UserName")
                     {
@@ -633,7 +630,7 @@ Configuration WVDServers
                 SetFilePath          = $Script.SetFilePath
                 GetFilePath          = $Script.GetFilePath
                 TestFilePath         = $Script.TestFilePath
-                PsDscRunAsCredential = $credlookup["SQLService"]   
+                PsDscRunAsCredential = $credlookup['SQLService']   
             }
 
             $dependsonSQLServerScripts += @("[xSQLServerScript]$($Name)")
@@ -650,7 +647,7 @@ Configuration WVDServers
                 Path                 = $Package.Path
                 Ensure               = 'Present'
                 ProductId            = $Package.ProductId
-                PsDscRunAsCredential = $credlookup["DomainCreds"]
+                PsDscRunAsCredential = $credlookup['DomainCreds']
                 DependsOn            = $dependsonDirectory
                 Arguments            = $Package.Arguments
             }
@@ -669,9 +666,9 @@ Configuration WVDServers
                 Path                       = $Package.Path
                 Ensure                     = 'Present'
                 ProductId                  = $Package.ProductId
-                DependsOn = $dependsonDirectory + $dependsonArchive
+                DependsOn                  = $dependsonDirectory + $dependsonArchive
                 Arguments                  = $Package.Arguments
-                RunAsCredential            = $credlookup["DomainCreds"] 
+                RunAsCredential            = $credlookup['DomainCreds'] 
                 CreateCheckRegValue        = $true 
                 InstalledCheckRegHive      = $Package.RegHive
                 InstalledCheckRegKey       = $Package.RegKey
@@ -679,6 +676,16 @@ Configuration WVDServers
                 InstalledCheckRegValueData = $Package.RegValueData
             }
             $dependsonPackageRegKey += @("[xPackage]$($Name)")
+        }
+
+        if ($Node.WVDInstall)
+        {
+            WVDDSC RDInfraAgent
+            {
+                PoolNameSuffix          = $Node.WVDInstall.PoolNameSuffix
+                PackagePath             = $Node.WVDInstall.PackagePath
+                ManagedIdentityClientID = $AppInfo.ClientID
+            }
         }
 
         #-------------------------------------------------------------------
@@ -728,7 +735,7 @@ Configuration WVDServers
         Foreach ($DevOpsAgent in $node.DevOpsAgentPresent)
         {
             # Variables
-            $DevOpsOrganization = $DevOpsAgent.orgUrl | split-Path -Leaf
+            $DevOpsOrganization = $DevOpsAgent.orgUrl | Split-Path -Leaf
             $AgentFile = "vsts-agent-win-x64-$($DevOpsAgent.agentVersion).zip"
             $AgentFilePath = "$($DevOpsAgent.AgentBase)\$AgentFile"
             $URI = "https://vstsagentpackage.azureedge.net/agent/$($DevOpsAgent.agentVersion)/$AgentFile"
@@ -746,11 +753,11 @@ Configuration WVDServers
                 SetScript  = {
                     $Agent = $Using:DevOpsAgent
                     mkdir -Path $Agent.AgentBase -Force -EA ignore
-                    Invoke-WebRequest -uri $Using:URI -OutFile $Using:AgentFilePath -verbose
+                    Invoke-WebRequest -Uri $Using:URI -OutFile $Using:AgentFilePath -Verbose
                 }
             }
 
-            $Pools = $DevOpsAgent.Agents.pool | select -unique
+            $Pools = $DevOpsAgent.Agents.pool | Select-Object -Unique
             $mypatp = $credlookup['DevOpsPat'].GetNetworkCredential().password
             $s = [System.Text.ASCIIEncoding]::new()
             $PatBasic = [System.Convert]::ToBase64String($s.GetBytes(":$mypatp"))
@@ -759,7 +766,7 @@ Configuration WVDServers
             {
                 $myPool = ($pool -f $Prefix, $environment)
                 
-                Script ("Pool_" + $myPool)
+                Script ('Pool_' + $myPool)
                 {
                     GetScript  = {
                         $PoolName = $using:myPool
@@ -773,8 +780,8 @@ Configuration WVDServers
                             Headers         = $headers
                             UseBasicParsing = $true 
                             ErrorAction     = 'Stop' 
-                            ContentType     = "application/json" 
-                            OutVariable     = "result" 
+                            ContentType     = 'application/json' 
+                            OutVariable     = 'result' 
                         }
 
                         $URI = 'https://dev.azure.com/{0}/_apis/distributedtask/pools' -f $Using:DevOpsOrganization
@@ -782,13 +789,13 @@ Configuration WVDServers
                         $URI += '?api-version=6.0-preview.1'
                         $Params['Uri'] = $URI
                         $r = Invoke-WebRequest @Params -Verbose
-                        $agentPools = $result[0].Content | convertfrom-json
+                        $agentPools = $result[0].Content | ConvertFrom-Json
                         
                         if ($agentPools.count -gt 0)
                         {
-                            $Selfhosted = $agentpools.value | where -Property isHosted -eq $false
+                            $Selfhosted = $agentpools.value | Where-Object -Property isHosted -EQ $false
                             $out = $Selfhosted | 
-                                select name, id, createdOn, isHosted, poolType | ft -autosize | out-String
+                                Select-Object name, id, createdOn, isHosted, poolType | Format-Table -AutoSize | Out-String
                             @{pool = $out }
                         }
                         else
@@ -809,8 +816,8 @@ Configuration WVDServers
                             Headers         = $headers
                             UseBasicParsing = $true 
                             ErrorAction     = 'Stop' 
-                            ContentType     = "application/json" 
-                            OutVariable     = "result" 
+                            ContentType     = 'application/json' 
+                            OutVariable     = 'result' 
                         }
 
                         $URI = 'https://dev.azure.com/{0}/_apis/distributedtask/pools' -f $Using:DevOpsOrganization
@@ -818,19 +825,19 @@ Configuration WVDServers
                         $URI += '?api-version=6.0-preview.1'
                         $Params['Uri'] = $URI
                         $r = Invoke-WebRequest @Params -Verbose
-                        $agentPools = $result[0].Content | convertfrom-json
+                        $agentPools = $result[0].Content | ConvertFrom-Json
                         
                         if ($agentPools.count -gt 0)
                         {
-                            $Selfhosted = $agentpools.value | where -Property isHosted -eq $false
+                            $Selfhosted = $agentpools.value | Where-Object -Property isHosted -EQ $false
                             $out = $Selfhosted | 
-                                select name, id, createdOn, isHosted, poolType | ft -autosize | out-String
-                            Write-Verbose $out -verbose
+                                Select-Object name, id, createdOn, isHosted, poolType | Format-Table -AutoSize | Out-String
+                            Write-Verbose $out -Verbose
                             $true
                         }
                         else
                         {
-                            Write-Verbose "PoolName $PoolName not found" -verbose
+                            Write-Verbose "PoolName $PoolName not found" -Verbose
                             $false
                         }
                     }
@@ -846,8 +853,8 @@ Configuration WVDServers
                             Headers         = $headers
                             UseBasicParsing = $true 
                             ErrorAction     = 'Stop' 
-                            ContentType     = "application/json" 
-                            OutVariable     = "result" 
+                            ContentType     = 'application/json' 
+                            OutVariable     = 'result' 
                         }
 
                         $URI = 'https://dev.azure.com/{0}/_apis/distributedtask/pools' -f $Using:DevOpsOrganization
@@ -860,9 +867,9 @@ Configuration WVDServers
                         $Params['Body'] = $Body
                         $Params['Uri'] = $URI
                         $r = Invoke-WebRequest @Params -Verbose
-                        $out = $result[0].Content | convertfrom-json | 
-                            select name, id, createdOn, isHosted, poolType | ft -autosize | out-String
-                        Write-Verbose $out -verbose
+                        $out = $result[0].Content | ConvertFrom-Json | 
+                            Select-Object name, id, createdOn, isHosted, poolType | Format-Table -AutoSize | Out-String
+                        Write-Verbose $out -Verbose
                     }
                 }
             }
@@ -879,7 +886,7 @@ Configuration WVDServers
 
                 #$log = get-childitem -path .\_diag\ -ErrorAction Ignore | sort LastWriteTime | select -last 1
 
-                Script ("Agent_" + $agentName)
+                Script ('Agent_' + $agentName)
                 {
                     GetScript  = {
                         @{result = Get-Service -Name $using:ServiceName -ErrorAction Ignore -Verbose }
@@ -906,7 +913,7 @@ Configuration WVDServers
                         $AgentPath = "F:\vsagents\$($using:agentName)"
                         # PAT Token
                         $mypatp = $credlookup['DevOpsPat'].GetNetworkCredential().password
-                        push-location
+                        Push-Location
                         mkdir -Path $AgentPath -EA ignore
                         Set-Location -Path $AgentPath
 
@@ -928,7 +935,7 @@ Configuration WVDServers
                             Write-Verbose -Message "Removing service [$using:ServiceName] setting as [$($agent.Ensure)]" -Verbose 
                             .\config.cmd remove --unattended --auth pat --token $mypatp
                             Pop-Location
-                            Remove-Item -path $AgentPath -force -recurse
+                            Remove-Item -Path $AgentPath -Force -Recurse
                         }
                     }
                 }
@@ -939,7 +946,7 @@ Configuration WVDServers
         {
             $mycredp = $credlookup["$($Node.VSTSAgent)"].GetNetworkCredential().password
             $mycredu = $credlookup["$($Node.VSTSAgent)"].username
-            write-warning "Mycred: $mycredu"
+            Write-Warning "Mycred: $mycredu"
             # setup the vsts service to run as the domain account
             
             UserRightsAssignment $mycredu
@@ -972,7 +979,7 @@ Configuration WVDServers
                 }
                 Setscript  = {
                     $services = Get-CimInstance -ClassName win32_service -Filter "Name LIKE 'vstsagent.azuredeploymentframework%'"
-                    $services | where startname -ne $using:mycredu | foreach {                     
+                    $services | Where-Object startname -NE $using:mycredu | ForEach-Object {                     
                         $arguments = @{StartName = $using:mycredu ; StartPassword = $using:mycredp }
                         Invoke-CimMethod -MethodName Change -InputObject $_ -Arguments $arguments
                         Invoke-CimMethod -MethodName StopService -InputObject $_
@@ -992,14 +999,14 @@ Configuration WVDServers
 #region The following is used for manually running the script, breaks when running as system
 if ((whoami) -notmatch 'system')
 {
-    Write-Warning -Message "no testing in prod !!!"
+    Write-Warning -Message 'no testing in prod !!!'
     if ($cred)
     {
-        Write-Warning -Message "Cred is good"
+        Write-Warning -Message 'Cred is good'
     }
     else
     {
-        $Cred = get-credential localadmin
+        $Cred = Get-Credential localadmin
     }
 
     # Moved to use MSI to pull SAK
@@ -1013,7 +1020,7 @@ if ((whoami) -notmatch 'system')
     # }
 
     # Set the location to the DSC extension directory
-    $DSCdir = ($psISE.CurrentFile.FullPath | split-Path)
+    $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path)
     #$DSCdir = $psscrriptroot
     if (Test-Path -Path $DSCdir -ErrorAction SilentlyContinue)
     {
@@ -1022,7 +1029,7 @@ if ((whoami) -notmatch 'system')
 }
 else
 {
-    Write-Warning -Message "running as system"
+    Write-Warning -Message 'running as system'
     break
 }
 #endregion
@@ -1049,7 +1056,7 @@ $network = 144 - ([Int]$Depid * 2)
 $Net = "10.1.${network}."
 
 # Azure resource names (for storage account) E.g. AZE2ADFd2
-$dep = "{0}{1}{2}{3}" -f $prefix,$org, $app, $depname
+$dep = '{0}{1}{2}{3}' -f $prefix, $org, $app, $depname
 
 $ClientId = @{
     S1 = '5b0142be-f48a-4e30-b754-f1c3a37e023b'
@@ -1060,7 +1067,7 @@ $Params = @{
     StorageAccountId  = $SAID
     DomainName        = $Domain
     networkID         = $Net
-    ConfigurationData = ".\*-ConfigurationData.psd1" 
+    ConfigurationData = '.\*-ConfigurationData.psd1' 
     AdminCreds        = $cred 
     Deployment        = $dep  #AZE2ADFD5 (AZE2ADFD5JMP01)
     Verbose           = $true
@@ -1089,21 +1096,21 @@ Get-DscConfigurationStatus -All
 Test-DscConfiguration
 Test-DscConfiguration -ReferenceConfiguration .\main\LocalHost.mof
 
-$r = Test-DscConfiguration -detailed
+$r = Test-DscConfiguration -Detailed
 $r.ResourcesNotInDesiredState
 $r.ResourcesInDesiredState
 
 
-Install-Module -name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC -Force
+Install-Module -Name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC -Force
 
 $ComputerName = $env:computerName
 
-icm $ComputerName {
-    Get-Module -ListAvailable -Name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC | foreach {
+Invoke-Command $ComputerName {
+    Get-Module -ListAvailable -Name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC | ForEach-Object {
         $_.ModuleBase | Remove-Item -Recurse -Force
     }
     Find-Package -ForceBootstrap -Name xComputerManagement
-    Install-Module -name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC -Force -Verbose
+    Install-Module -Name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC -Force -Verbose
 }
 
 

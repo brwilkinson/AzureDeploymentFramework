@@ -5,7 +5,7 @@
 @{ 
     AllNodes = @( 
         @{ 
-            NodeName                    = "LocalHost" 
+            NodeName                    = 'LocalHost' 
             PSDscAllowPlainTextPassword = $true
             PSDscAllowDomainUser        = $true
         
@@ -14,7 +14,7 @@
             )
 
             DisksPresent                = @(
-                @{DriveLetter = "F"; DiskID = "2" }
+                @{DriveLetter = 'F'; DiskID = '2' }
             )
 
             DirectoryPresentSource      = @(
@@ -24,11 +24,11 @@
                 }
             )
 
-            SoftwarePackagePresent2     = @(
+            SoftwarePackagePresent      = @(
                 @{
                     Name      = 'Microsoft Azure AD Connect'
                     Path      = 'F:\Source\ADConnect\AzureADConnect.msi'
-                    ProductId = '{783B0BE9-FBD2-4963-9738-7637672DA697}'
+                    ProductId = '{1454BE23-6C31-46DE-ABCB-A3FD413F98C9}'
                     Arguments = '/qb'
                 }
             )
