@@ -25,7 +25,7 @@ Go Home [Documentation Home](./ARM.md)
         - AZC1-FAB-HUB-P0-networkwatcher                                                      [Network watcher on above HUB]
         - AZC1-FAB-HUB-P0-networkwatcher/AZC1-FAB-ABC-S1-fl-AzureBastionSubnet                [A Subnet from S1 Spoke Bastion Subnet connecting back to the Hub Network watcher]
 
-|Name |_________________________________ Example ________________________________|Allowed Values |Defintion |
+|Name |Example|Allowed Values |Defintion |
 |---|---|---|---|
 |Prefix |{Prefix}-FAB-HUB-P0-kvVLT01|AZE2 + AZC1|Location - Azure Region (Using Azure Partner Regions) |
 |DeploymentID |AZC1-FAB-HUB-P{DeploymentID}-kvVLT01|0 + 1 --> 8 <br/> 00 + 01 --> 15|The deployment iterations (configured to 8 environments) <br/>The deployment iterations (configured to 16 environments)<br/>- Network ranges in Hub/Spoke are dynamically assigned based on this [DeploymentID] |
@@ -41,6 +41,7 @@ Go Home [Documentation Home](./ARM.md)
 |Global|G1|A Global environment G1 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
 |HUB|P0|A Hub environment is denoted by the P0 or P00|AZC1-FAB-ADF-P0 Central Hub, AZE2-FAB-ADF-P0 EastUS2 Hub|
 |DR|P0 or any other mirrored environment e.g. T4|Primary Test environment AZC1-FAB-ADF-T4 would have a mirror environment<br/>DR Test environment AZE2-FAB-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
+|_________|______________________________________________|_________|_________|
 <br/>
 
 ---
