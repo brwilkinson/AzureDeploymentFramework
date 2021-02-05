@@ -28,6 +28,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      # Add wait on concurrent workflows executing via https://github.com/marketplace/actions/action-turnstyle
+      - name: Turnstyle
+        uses: softprops/turnstyle@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Login via Az module
         uses: azure/login@v1
         with:
