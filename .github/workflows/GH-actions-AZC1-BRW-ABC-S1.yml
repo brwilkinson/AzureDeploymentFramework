@@ -2,26 +2,26 @@
 
 name: Deploy_AZC1_BRW_ABC_RG_S1
 
-# Controls when the action will run. 
-on: 
+# Controls when the action will run.
+on:
   # Triggers the workflow on push or pull request events but only for the main branch
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 env:
-  APP : ABC
+  APP: ABC
   ENV: S1
-  PREFIX : AZC1
+  PREFIX: AZC1
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  EnvironmentDeploy :
+  EnvironmentDeploy:
     runs-on: windows-latest
 
     steps:
@@ -42,7 +42,7 @@ jobs:
 
       - name: G0_Sub
         uses: Azure/powershell@v1
-        with: 
+        with:
           inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload
           azPSVersion: latest
 
@@ -54,6 +54,6 @@ jobs:
 
       - name: S1_RG
         uses: Azure/powershell@v1
-        with: 
+        with:
           inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "ALL"
           azPSVersion: latest
