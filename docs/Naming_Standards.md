@@ -9,7 +9,9 @@ Go Home [Documentation Home](./ARM.md)
 <br/>
 
 
-    Common naming standards/conventions/examples: 
+    Common naming standards/conventions/examples:
+
+        - AZC1-FAB-ADF-RG-S1         [Central US Deployment for Fabrikam organization, for ADF App team Resource Group]
         - AZC1-FAB-ADF-S1-wafFW01    [Central US Deployment for Fabrikam organization, for ADF App team, deploying a Web App. Firewall in the Sandbox 1 Resource Group]
         - AZC1ADFS1SQL01             [Central US Deployment (VM on internal Domain [15 char limit]) for ADF App team, deploying SQL01 VM in the Sandbox 1 Resource Group]
         - AZC1-FAB-ADF-S1-nicSQL01   [A Network interface on the above Virtual Machine]
