@@ -1,10 +1,10 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy_AZC1_BRW_PSO_RG_M0
-
+name:
+  Deploy_AZC1_BRW_PSO_RG_M0
   # Triggers the workflow on push or pull request events but only for the main branch
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
-on: 
+on:
   # push:
   #   branches: [ main ]
   # pull_request:
@@ -13,17 +13,23 @@ on:
   workflow_dispatch:
 
 env:
-  APP : PSO
+  APP: PSO
   ENV: M0
-  PREFIX : AZC1
+  PREFIX: AZC1
 
 jobs:
-  EnvironmentDeploy :
+  EnvironmentDeploy:
     runs-on: windows-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      # Add wait on concurrent workflows executing via https://github.com/marketplace/actions/action-turnstyle
+      - name: Turnstyle
+        uses: softprops/turnstyle@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login via Az module
         uses: azure/login@v1
@@ -33,7 +39,7 @@ jobs:
 
       - name: G0_Sub
         uses: Azure/powershell@v1
-        with: 
+        with:
           inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload
           azPSVersion: latest
 
@@ -45,6 +51,6 @@ jobs:
 
       - name: M0_RG
         uses: Azure/powershell@v1
-        with: 
+        with:
           inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "ALL"
           azPSVersion: latest
