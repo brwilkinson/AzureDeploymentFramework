@@ -33,6 +33,7 @@ Go Home [Documentation Home](./ARM.md)
 |OrgName|AZC1-{OrgName}-HUB-P0-kvVLT01|FAB or ADW or WTP or FAB|Your 3 letter Organization (company) name. This ensures public Azure Resources have a unique name|
 |App|AZC1-FAB-{App}-P0-kvVLT01|ADF, HUB, PSO, ABC|The App (tenant) name|
 |ResourcePrefix|AZC1-FAB-HUB-P0-{ResourcePrefix}VLT01|kv,sa,vm,vmss,fw,waf,nsg|The resource type prefix e.g. kv|
+|Name|AZC1-FAB-HUB-P0-kv{Name}|short name e.g. VLT01|The resource name, this is the part that you define in the parameter file|
 |Deployment |{Deployment}-kvVLT01| AZC1ADFS1 + AZC1-FAB-ADF-S1 + azc1sdfs1 | Used for naming resources e.g. part of hostname and Azure Resource names, lower for storage Etc.<br/> [Prefix + App + Enviro]|
 |Global||A Global environment G0 represents Azure Subscription Deployments|E.g. RBAC or Policy|
 |Global||A Global environment G1 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
