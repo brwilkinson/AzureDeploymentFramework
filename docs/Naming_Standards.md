@@ -25,7 +25,7 @@ Go Home [Documentation Home](./ARM.md)
         - AZC1-FAB-HUB-P0-networkwatcher                                                      [Network watcher on above HUB]
         - AZC1-FAB-HUB-P0-networkwatcher/AZC1-FAB-ABC-S1-fl-AzureBastionSubnet                [A Subnet from S1 Spoke Bastion Subnet connecting back to the Hub Network watcher]
 
-|Name |Example|Allowed Values |Defintion |
+|Name |_________________________________ Example ________________________________|Allowed Values |Defintion |
 |---|---|---|---|
 |Prefix |{Prefix}-FAB-HUB-P0-kvVLT01|AZE2 + AZC1|Location - Azure Region (Using Azure Partner Regions) |
 |DeploymentID |AZC1-FAB-HUB-P{DeploymentID}-kvVLT01|0 + 1 --> 8 <br/> 00 + 01 --> 15|The deployment iterations (configured to 8 environments) <br/>The deployment iterations (configured to 16 environments)<br/>- Network ranges in Hub/Spoke are dynamically assigned based on this [DeploymentID] |
