@@ -78,6 +78,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
         "Scripts": 1,
