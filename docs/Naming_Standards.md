@@ -35,10 +35,10 @@ Go Home [Documentation Home](./ARM.md)
 |ResourcePrefix|AZC1-FAB-HUB-P0-{ResourcePrefix}VLT01|kv,sa,vm,vmss,fw,waf,nsg|The resource type prefix e.g. kv|
 |Name|AZC1-FAB-HUB-P0-kv{Name}|short name e.g. VLT01|The resource name, this is the part that you define in the parameter file|
 |Deployment |{Deployment}-kvVLT01| AZC1ADFS1 + AZC1-FAB-ADF-S1 + azc1sdfs1 | Used for naming resources e.g. part of hostname and Azure Resource names, lower for storage Etc.<br/> [Prefix + App + Enviro]|
-|Global||A Global environment G0 represents Azure Subscription Deployments|E.g. RBAC or Policy|
-|Global||A Global environment G1 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
-|HUB||A Hub environment is denoted by the P0 or P00|AZC1-FAB-ADF-P0 Central Hub, AZE2-FAB-ADF-P0 EastUS2 Hub|
-|DR||Primary Test environment AZC1-FAB-ADF-T4 would have a mirror environment<br/>DR Test environment AZE2-FAB-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
+|Subscription|G0|Azure Subscription Deployments G0|E.g. RBAC or Policy|
+|Global|G1|A Global environment G1 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
+|HUB|P0|A Hub environment is denoted by the P0 or P00|AZC1-FAB-ADF-P0 Central Hub, AZE2-FAB-ADF-P0 EastUS2 Hub|
+|DR|P0 or any other mirrored environment e.g. P5|Primary Test environment AZC1-FAB-ADF-T4 would have a mirror environment<br/>DR Test environment AZE2-FAB-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
 <br/>
 
 ---
