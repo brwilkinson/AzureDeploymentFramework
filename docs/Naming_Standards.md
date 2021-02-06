@@ -100,7 +100,7 @@ The name of any resource is determined via the following method.
                 },
             ```
 
-- [Each template reads these values e.g. Storage Template](../ADF/tenants/templates-base/1-azuredeploy-Storage.json)
+- [Each template reads these values e.g. Storage Template](../ADF/templates-base/1-azuredeploy-Storage.json)
     - The template combines the parts to create a **Deployment** Variable.
     - Where appropriate the template also combines the parts to create a **DeploymentURI** Variable.
         - This URI will be lower case  a exclude any dashes Etc.
