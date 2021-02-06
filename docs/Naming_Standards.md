@@ -11,7 +11,7 @@ Go Home [Documentation Home](./ARM.md)
 
     Common naming standards/conventions/examples:
 
-        - AZC1-FAB-ADF-RG-S1
+        - +(AZC1-FAB-ADF-RG-S1)+
             - [Central US Deployment for Fabrikam organization, for ADF App team Resource Group]
             
         - AZC1-FAB-ADF-S1-wafFW01
