@@ -188,7 +188,7 @@ The name of any resource is determined via the following method.
 #### ResourceGroups
 ![ResourceGroups](./ResourceGroups.jpg)
 #### Global **G1** Resource Group Resources
-![GlobalResources](./GlobalResources.jpg)
+![Global-G1-Resources](./Global-G1-Resources.jpg)
 #### Spoke **S1** Resource Group Resources
 ![Spoke-S1-Resources](./Spoke-S1-Resources.jpg)
 
