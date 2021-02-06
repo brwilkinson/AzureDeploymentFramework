@@ -146,7 +146,7 @@ The name of any resource is determined via the following method.
           }
         }
         ```
-- [There is additional Global Metadata for each tenant](../ADF/tenants/HUB/Global-Global.json)
+- [There is additional Global Metadata for each tenant (App Group)](../ADF/tenants/HUB/Global-Global.json)
     - This is kept in the global file, so that it doesn't have to be included in each individual parameter file
     - This information will be static per App Group/Tenant.
     ```json
