@@ -13,7 +13,8 @@ Go Home [Documentation Home](./ARM.md)
 
 ```diff
 +       - AZC1-FAB-ADF-RG-S1
-             - [Central US Deployment for Fabrikam organization, for ADF App team Resource Group]
+             - [Central US Deployment for Fabrikam organization, for ADF App team Resource Group
+                 Sandbox 1 RG]
             
 +       - AZC1-FAB-ADF-S1-wafFW01
             - [Central US Deployment for Fabrikam organization, for ADF App team, deploying a Web App. 
