@@ -74,4 +74,111 @@ Go Home [Documentation Home](./ARM.md)
 |_________|________________________________________________|_________|_________|
 <br/>
 
+
+#### *How are the standard implemented?*
+
+The name of any resource is determined via the following method.
+    - Example the Hub tenant, Central US Global Parameter File
+
+- [The Paremter File that you are deploying](./ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
+    - The parameter file defines a Resource Group
+    - This contains, the 3 parameters that automatically build the resource names.
+        - Prefix
+        - Environment
+        - DeploymentID
+
+            ```jsonc
+              "parameters": {
+                "Prefix": {
+                  "value": "AZC1"
+                },
+                "Environment": {
+                  "value": "G"
+                },
+                "DeploymentID": {
+                  "value": "1"
+                },
+            ```
+
+- [Each template reads these values e.g. Storage Template](./ADF/tenants/templates-base/1-azuredeploy-Storage.json)
+    - The template combines the parts to create a **Deployment** Variable.
+    - Where appropriate the template also combines the parts to create a **DeploymentURI** Variable.
+        - This URI will be lower case  a exclude any dashes Etc.
+        - This is used for URI's and also things such as storage account names.
+        ```jsonc
+        "variables": {
+                        // example: AZC1-FAB-HUB-G1
+        "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+                        // example: azc1fabhubg1
+        "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+        }
+        ```
+    - Within the resources section any resource that is created uses the Deployment/DeploymentURI variable.
+        - The Deployment + the resource type prefix + the Resource short name.
+            - The Resource short name comes from the parameteter file for each enironment e.g. global
+        ```jsonc
+        "resources": [
+            {
+                      // aze2d02nte sa global
+              "name": "[toLower(concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix))]",
+              "type": "Microsoft.Storage/storageAccounts",
+              "location": "[resourceGroup().location]",
+        ```
+- [The Paremter File that you are deploying](./ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
+    - The parameter also contains individual resource definitions for that Resource Group
+    - Notice the nameSuffix value above for 'global' comes from the parameter file as below.
+        ```json
+        "DeploymentInfo": {
+          "value": {
+            "saInfo": [
+              {
+                "nameSuffix": "global",
+                "skuName": "Standard_RAGRS",
+                "allNetworks": "Allow",
+                "largeFileSharesState": "Disabled",
+                "logging": {
+                  "r": 0,
+                  "w": 0,
+                  "d": 1
+                }
+              }
+            ]
+          }
+        }
+        ```
+- [There is additional Global Metadata for each tenant](./ADF/tenants/HUB/Global-Global.json)
+    - This is kept in the global file, so that it doesn't have to be included in each individual parameter file
+    - This information will be static per App Group/Tenant.
+    ```json
+    "Global": {
+        "tenantId": "3254f91d-4657-40df-962d-c8e6dad75963",
+        "SubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
+        "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
+        "OrgName": "FAB",
+        "AppName": "HUB",
+    ```
+    - The references to these can be seen above on the Deployment variable
+        - parameters('Global').OrgName
+        - parameters('Global').Appname
+    ```jsonc
+        "variables": {
+                        // example: AZC1-FAB-HUB-G1
+        "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    ```
+### End user is **not responsible** for managing naming standards conventions, **they are baked in**, end users only provide the short resource name.
+#### Short Name examples:
+    - global     e.g. storage namesuffix
+    - SQL01      e.g. Virtual Machine Name
+    - App01      e.g. Keyvault Name
+    - FW00       e.g. Web Application Firewall Name
+
+### Sample portal images based on this naming convention.
+
+#### ResourceGroups
+![ResourceGroups](./ResourceGroups.jpg)
+#### Global **G1** Resource Group Resources
+![GlobalResources](./GlobalResources.jpg)
+#### Spoke **S1** Resource Group Resources
+![Spoke-S1-Resources](./Spoke-S1-Resources.jpg)
+
 ---
