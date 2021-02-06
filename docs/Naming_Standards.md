@@ -185,11 +185,11 @@ The name of any resource is determined via the following method.
 
 ### Sample portal images based on this naming convention.
 
-#### ResourceGroups
+#### Sample - ResourceGroups
 ![ResourceGroups](./ResourceGroups.jpg)
-#### Global **G1** Resource Group Resources
+#### Sample - Global **G1** Resource Group Resources
 ![Global-G1-Resources](./Global-G1-Resources.jpg)
-#### Spoke **S1** Resource Group Resources
+#### Sample - Spoke **S1** Resource Group Resources
 ![Spoke-S1-Resources](./Spoke-S1-Resources.jpg)
 
 ---
