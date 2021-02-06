@@ -21,19 +21,30 @@ Go Home [Documentation Home](./ARM.md)
                 Firewall in Sandbox 1 Resource Group]
 !                   - The name that you provide: FW01
             
++       - AZC1-FAB-ADF-S1-vmSQL01
+            - [Central US Deployment for ADF App team, 
+                deploying vmSQL01 Azure Virtual Machine in Sandbox 1 Resource Group]
+!                   - The name that you provide: SQL01
+            
 +       - AZC1ADFS1SQL01
-            - [Central US Deployment (VM on internal Domain [15 char limit]) for ADF App team, 
+            - [Central US Deployment (VM hostname on internal Domain [15 char limit]) for ADF App team, 
                 deploying SQL01 VM in Sandbox 1 Resource Group]
 !                   - The name that you provide: SQL01
+                    - OrgName [FAB] is not included, since on internal domain and limit is 15 chars.
             
 +       - AZC1-FAB-ADF-S1-nicSQL01
             - [A Network interface on the above Virtual Machine]
+            - Generated from VM Name e.g. SQL01
             
 +       - AZC1-FAB-ADF-S1-vn
             - [A Virtual Network in the Sandbox 1 Resource Group - a Spoke Environment]
+            - Always 1 VNET per RG/Environment, also per Parameter file definition.
             
 +       - AZC1-FAB-ADF-RG-S1
-            - [The Spoke Resource Group for Above]
+            - [The Spoke Resource Group for Above (ADF App)]
+            
++       - AZC1-FAB-HUB-RG-P0
+            - [The HUB Resource Group for HUB App]
             
 +       - azc1fabhubg1saglobal
             - [Central US Deployment for FAB organization, for HUB App team, deploying a storage account 
