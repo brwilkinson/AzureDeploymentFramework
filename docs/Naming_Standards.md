@@ -80,7 +80,7 @@ Go Home [Documentation Home](./ARM.md)
 The name of any resource is determined via the following method.
     - Example the Hub tenant, Central US Global Parameter File
 
-- [The Paremter File that you are deploying](./ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
+- [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
     - The parameter file defines a Resource Group
     - This contains, the 3 parameters that automatically build the resource names.
         - Prefix
@@ -100,7 +100,7 @@ The name of any resource is determined via the following method.
                 },
             ```
 
-- [Each template reads these values e.g. Storage Template](./ADF/tenants/templates-base/1-azuredeploy-Storage.json)
+- [Each template reads these values e.g. Storage Template](../ADF/tenants/templates-base/1-azuredeploy-Storage.json)
     - The template combines the parts to create a **Deployment** Variable.
     - Where appropriate the template also combines the parts to create a **DeploymentURI** Variable.
         - This URI will be lower case  a exclude any dashes Etc.
@@ -124,7 +124,7 @@ The name of any resource is determined via the following method.
               "type": "Microsoft.Storage/storageAccounts",
               "location": "[resourceGroup().location]",
         ```
-- [The Paremter File that you are deploying](./ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
+- [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
     - The parameter also contains individual resource definitions for that Resource Group
     - Notice the nameSuffix value above for 'global' comes from the parameter file as below.
         ```json
@@ -146,7 +146,7 @@ The name of any resource is determined via the following method.
           }
         }
         ```
-- [There is additional Global Metadata for each tenant](./ADF/tenants/HUB/Global-Global.json)
+- [There is additional Global Metadata for each tenant](../ADF/tenants/HUB/Global-Global.json)
     - This is kept in the global file, so that it doesn't have to be included in each individual parameter file
     - This information will be static per App Group/Tenant.
     ```json
