@@ -11,38 +11,40 @@ Go Home [Documentation Home](./ARM.md)
 
     Common naming standards/conventions/examples:
 
-        - +(AZC1-FAB-ADF-RG-S1)+
-            - [Central US Deployment for Fabrikam organization, for ADF App team Resource Group]
+```diff
++       - AZC1-FAB-ADF-RG-S1
+!            - [Central US Deployment for Fabrikam organization, for ADF App team Resource Group]
             
-        - AZC1-FAB-ADF-S1-wafFW01
++       - AZC1-FAB-ADF-S1-wafFW01
             - [Central US Deployment for Fabrikam organization, for ADF App team, deploying a Web App. Firewall in Sandbox 1 Resource Group]
             
-        - AZC1ADFS1SQL01
++       - AZC1ADFS1SQL01
             - [Central US Deployment (VM on internal Domain [15 char limit]) for ADF App team, deploying SQL01 VM in Sandbox 1 Resource Group]
             
-        - AZC1-FAB-ADF-S1-nicSQL01
++       - AZC1-FAB-ADF-S1-nicSQL01
             - [A Network interface on the above Virtual Machine]
             
-        - AZC1-FAB-ADF-S1-vn
++       - AZC1-FAB-ADF-S1-vn
             - [A Virtual Network in the Sandbox 1 Resource Group - a Spoke Environment]
             
-        - AZC1-FAB-ADF-RG-S1
++       - AZC1-FAB-ADF-RG-S1
             - [The Spoke Resource Group for Above]
         
-        - azc1fabhubg1saglobal
++       - azc1fabhubg1saglobal
             - [Central US Deployment for FAB organization, for HUB App team, deploying a storage account (lower case 24 char limit) in Global (G1) Resource Group]
         
-        - AZC1-FAB-HUB-P0-kvVLT01
++       - AZC1-FAB-HUB-P0-kvVLT01
             - [Central US Deployment for FAB organization, for HUB App team, deploying a keyvault in the HUB (P0) Resource Group]
             
-        - AZC1-FAB-HUB-P0-kvVLT01-pl-vault-snMT02.nic.50a08879-44ce-4a16-a9e9-8595ce9734ca
++       - AZC1-FAB-HUB-P0-kvVLT01-pl-vault-snMT02.nic.50a08879-44ce-4a16-a9e9-8595ce9734ca
             - [A private link connection on the above Keyvault to subnet MT02]
             
-        - AZC1-FAB-HUB-P0-networkwatcher
++       - AZC1-FAB-HUB-P0-networkwatcher
             - [Network watcher on above HUB]
             
-        - AZC1-FAB-HUB-P0-networkwatcher/AZC1-FAB-ABC-S1-fl-AzureBastionSubnet
++       - AZC1-FAB-HUB-P0-networkwatcher/AZC1-FAB-ABC-S1-fl-AzureBastionSubnet
             - [A Subnet from S1 Spoke Bastion Subnet connecting back to the Hub Network watcher]
+```
 
 |Name |Example|Allowed Values |Defintion |
 |---|---|---|---|
