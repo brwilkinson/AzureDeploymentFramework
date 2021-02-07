@@ -184,7 +184,6 @@ The name of any resource is determined via the following method.
     - FW00       e.g. Web Application Firewall Name
 
 ### Sample portal images based on this naming convention.
-
 #### Sample - ResourceGroups
 ![ResourceGroups](./ResourceGroups.jpg)
 #### Sample - Global **G1** Resource Group Resources
