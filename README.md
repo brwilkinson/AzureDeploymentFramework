@@ -8,7 +8,7 @@
     - [Status - Deployment Workflows GitHub](./docs/Deployment_Pipelines_GitHub.md)
     - [Status - Deployment Pipelines Azure DevOps](./docs/Deployment_Pipelines_DevOps.md)
 
-- [Project Source Code](https://brwilkinson.github.io/AzureDeploymentFramework/)
+- [Project Source Code](https://github.com/brwilkinson/AzureDeploymentFramework/)
 
 Is this Framework worth considering?
 
@@ -35,7 +35,7 @@ Microsoft recommends that you follow the:
 - <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/" target="_blank">Cloud Adoption Framework</a>
 - <a href="https://docs.microsoft.com/en-us/azure/architecture/framework" target="_blank">Microsoft Azure Well-Architected Framework</a>
 
-Once you are familiar with those, how do you actually implement, by taking 1 or more of those Core Apps and moving them to the Cloud using a Fully Declarative Model? 
+Once you are familiar with those, how do you actually implement, by taking 1 or more of those Core App Platforms and move them to the Cloud using a Fully Declarative Model? 
     
     How do you actually implement those design patterns that are in the architectural documentation?
     How do you actually start designing and deploying your application code?
