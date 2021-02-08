@@ -48,9 +48,9 @@ Once you are familiar with those, how do you actually implement, by taking 1 or 
     How do you Train your staff on Cloud principles and keep up with the rapid pace of Cloud capabilites?
     How do you Document what your environments look like and at the same time manage rapid Change?
 
-## If that is something that is of interest to you, then this project can help.
+### If that is something that is of interest to you, then this project can help.
 
-### Disclaimers: 
+#### Disclaimers: 
 - This project should be implemented by Developers OR DevOps/SRE, this is a Declarative and Code first project.
 - This project is for Deploying into Azure and Supports Hybrid scenarios, however does not work in other Clouds.
 - This project does not replace: Azure Blueprints, Azure Landing Zones or Azure Front Door other Organizational level concepts.
@@ -74,8 +74,8 @@ Once you are familiar with those, how do you actually implement, by taking 1 or 
 - If you are looking to build out Lab environments or use this for Demo's Etc, then the ADF will work very nicely.
     - Most of the work is deploying specific App Components, so if you are just wanted lab environments, you can get up and running with ADF very fast, hopefully within 7 days .
 
-## Any Feedback on this project is welcome, please feel free to reach out or ask questions, open a 'Discussions' or 'Issues'.
-### Once I have more scenarios setup and documented for this Template Project I will remove the 'Preview' Note.
+### Any Feedback on this project is welcome, please feel free to reach out or ask questions, open a 'Discussions' or 'Issues'.
+#### Once I have more scenarios setup and documented for this Template Project I will remove the 'Preview' Note.
 
 <br/>
 
