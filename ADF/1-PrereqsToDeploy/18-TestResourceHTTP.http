@@ -1,3 +1,3 @@
 
-GET https://management.azure.com/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/myResourceGroupAG/providers/Microsoft.Network/applicationGateways/myAppGateway?api-version=2020-06-01
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/providers/Microsoft.Storage/storageAccounts/azc1brwabcs1sadiag/blobservices?api-version=2020-08-01-preview
 Authorization: {{Bearer}}

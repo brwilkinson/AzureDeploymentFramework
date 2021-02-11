@@ -102,7 +102,7 @@
       "name": "[toLower(concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix))]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2019-04-01",
+      "apiVersion": "2020-08-01-preview",
       "copy": {
         "name": "SALoop",
         "count": "[length( variables('saInfo') )]"
@@ -114,7 +114,8 @@
       ],
       "kind": "StorageV2",
       "properties": {
-        "azureFilesIdentityBasedAuthentication":"[if(and(contains(variables('saInfo')[copyIndex()],'ADDS'),equals(variables('saInfo')[copyIndex()].ADDS,1)),variables('azureFilesIdentityBasedAuthentication'),json('null'))]",
+        "supportsBlobContainerRetention": true,
+        "azureFilesIdentityBasedAuthentication": "[if(and(contains(variables('saInfo')[copyIndex()],'ADDS'),equals(variables('saInfo')[copyIndex()].ADDS,1)),variables('azureFilesIdentityBasedAuthentication'),json('null'))]",
         "largeFileSharesState": "[if(contains(variables('saInfo')[copyIndex()],'largeFileSharesState'),variables('saInfo')[copyIndex()].largeFileSharesState,json('null'))]",
         "networkAcls": {
           "bypass": "AzureServices",
@@ -125,6 +126,7 @@
           // ]
         },
         "supportsHttpsTrafficOnly": true,
+        "minimumTlsVersion": "TLS1_2",
         "encryption": {
           "keySource": "Microsoft.Storage",
           "services": {
@@ -138,6 +140,21 @@
         }
       },
       "resources": [
+        {
+          "name": "default",
+          "type": "blobServices",
+          "apiVersion": "2020-08-01-preview",
+          "dependsOn": [
+            "[concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix)]"
+          ],
+          "properties": {
+            "isVersioningEnabled": "[if(contains(variables('saInfo')[copyIndex(0)],'blobVersioning'),variables('saInfo')[copyIndex(0)].blobVersioning,bool('false'))]",
+            "changeFeed": {
+              "enabled": "[if(contains(variables('saInfo')[copyIndex(0)],'changeFeed'),variables('saInfo')[copyIndex(0)].changeFeed,bool('false'))]"
+            },
+            "deleteRetentionPolicy": "[if(contains(variables('saInfo')[copyIndex(0)],'softDeletePolicy'),variables('saInfo')[copyIndex(0)].softDeletePolicy,json('null'))]"
+          }
+        },
         {
           "name": "Microsoft.Insights/service",
           "type": "providers/diagnosticSettings",

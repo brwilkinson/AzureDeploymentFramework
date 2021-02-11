@@ -1,3 +1,6 @@
+# moved this code to custom Class based DSC Resource
+# https://github.com/brwilkinson/WVDDSC
+
 # Azure VM Metadata service
 $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
 $Compute = $VMMeta.compute
@@ -31,3 +34,4 @@ $WebRequest['Headers'] = @{ Authorization = "Bearer $ArmToken" }
 
 $Pool = (Invoke-WebRequest @WebRequest).content | ConvertFrom-Json
 $WVDConnection = $Pool | ForEach-Object properties | ForEach-Object RegistrationInfo | ForEach-Object token
+

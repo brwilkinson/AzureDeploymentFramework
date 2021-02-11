@@ -62,12 +62,12 @@ if (!(Test-Path -Path $CertFilePath))
         KeyUsageProperty  = 'All'
     }
 
-    $cert = New-SelfSignedCertificate @CertParams
+    $cert = New-SelfSignedCertificate @CertParams -KeyProtection None
     $cert
     # Read the keyvault secret, from the Keyvault
     $PW = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name LocalAdmin
 
-    Export-PfxCertificate -Password $PW.SecretValue -FilePath $CertFilePath -Cert $cert
+    Export-PfxCertificate -FilePath $CertFilePath -Cert $cert -Password $PW.SecretValue
 
     # Write the Cert and the thumbprint back to the json data  Global-Global.json 
     $Temp = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json

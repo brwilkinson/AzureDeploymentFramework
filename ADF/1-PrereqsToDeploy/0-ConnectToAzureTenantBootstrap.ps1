@@ -1,5 +1,5 @@
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
-$AppName = 'PSO'
+$AppName = 'HUB'
 $Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$AppName\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 # F5 to load.
 break
@@ -14,9 +14,11 @@ $TenantID = $Global.tenantId
 $SubscriptionID = $Global.SubscriptionID
 $ManagementGroupName = $Global.rootManagementGroupName
 
-Get-AzTenant
-Connect-AzAccount -TenantId $TenantID -Subscription $SubscriptionID -OutVariable Account
-$ID = Get-AzADUser -Mail $account.context.Account.id | foreach ID
+# $TenantID = '0e0abd96-99d8-4f48-99a1-ecc1f107a01c'
+
+Get-AzTenant -TenantId $TenantId
+Connect-AzAccount -TenantId $TenantID -OutVariable Account -Subscription $SubscriptionID
+$ID = Get-AzADUser -DisplayName $account.context.Account.id | foreach ID
 Write-verbose "`nUser id:`t`t $ID, `nSubscription id:`t $SubscriptionID, `nTenant id:`t`t $TenantID" -verbose
 
 # Elevate 'Access' for Global administrator
@@ -37,8 +39,9 @@ Get-AzRoleAssignment | where Scope -eq /
 
 # This will allow you to create Management Groups and assign future Role assignments if needed
 # consider delegating these to other Global Admins
-New-AzRoleAssignment -Scope / -RoleDefinitionName 'User Access Administrator' -ObjectId $ID
+New-AzRoleAssignment -Scope / -RoleDefinitionName 'User Access Administrator' -ObjectId $ID -Debug
 New-AzRoleAssignment -Scope / -RoleDefinitionName 'Management Group Contributor' -ObjectId $ID
+New-AzRoleAssignment -Scope / -RoleDefinitionName "Blueprint contributor" -ObjectId $ID
 
 # This avoids owner permissions on the Tenant, forces other assignments down to Management Groups/Subscriptions/RG's/Resources
 

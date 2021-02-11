@@ -73,6 +73,22 @@ $rgName = 'AZC1-BRW-ABC-RG-S1'
 $Name = 'AZC1-BRW-ABC-S1-wvdhp01'
 $type = 'Microsoft.DesktopVirtualization/hostPools'
 
+# View host pool json
+$rgName = 'AZC1-ADF-RG-S1'
+$Name = 'Benwilk_microsoft.com'
+$type = 'Microsoft.Web/connections'
+
+# View the storage account
+$rgName = 'AZC1-BRW-ABC-RG-S1'
+$Name = 'azc1brwabcs1sadiag'
+$type = 'Microsoft.Storage/storageAccounts'
+
+# View the storage account
+$rgName = 'AZC1-BRW-ABC-RG-S1'
+$Name = 'azc1brwabcs1sadiag'
+$type = 'Microsoft.Storage/storageAccounts/blobServices'
+
+
 $n = $type -split '/' | select -First 1
 $t = ($type -split '/' | select -Skip 1) -join '/'
 $resource = Get-AzResource -ResourceGroupName $rgName -Name $Name -ResourceType $type

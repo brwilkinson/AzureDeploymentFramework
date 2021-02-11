@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
@@ -21,7 +21,8 @@
         "S",
         "G",
         "A",
-        "M"
+        "M",
+        "T"
       ]
     },
     "DeploymentID": {
@@ -73,15 +74,21 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    // "mgInfo": "[parameters('DeploymentInfo').managementGroupsInfo]"
+    "mgInfo": "[parameters('DeploymentInfo').mgInfo]",
+    "primaryLocation": "[parameters('Global').primaryLocation]",
+    "TenantID": "[parameters('Global').TenantID]"
   },
   "resources": [
     {
-      "name": "nestedDeployment1",
+      "name": "[replace(concat(variables('mgInfo')[copyIndex()].displayName),' ','_')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "scope": "/",
-      "location": "[resourceGroup().location]",
+      "location": "[variables('primaryLocation')]",
+      "copy": {
+        "name": "policyAssignmentCopy",
+        "count": "[length(variables('mgInfo'))]"
+      },
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "outer"
@@ -94,14 +101,14 @@
           "variables": {},
           "resources": [
             {
-              "name": "PSO3",
+              "name": "[variables('TenantID')]",
               "type": "Microsoft.Management/managementGroups",
               "apiVersion": "2020-10-01",
               "properties": {
-                "displayName": "PSO3",
+                "displayName": "[concat(variables('mgInfo')[copyIndex()].displayName)]",
                 "details": {
                   "parent": {
-                    "id": "/providers/Microsoft.Management/managementGroups/3254f91d-4657-40df-962d-c8e6dad75963"
+                    // "id": "/providers/Microsoft.Management/managementGroups/3254f91d-4657-40df-962d-c8e6dad75963"
                   }
                 }
               }
