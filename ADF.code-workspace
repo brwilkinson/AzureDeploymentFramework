@@ -1,34 +1,45 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"window.title": "${activeFolderLong}",
-		"azureResourceManagerTools.autoDetectJsonTemplates": true,
-		"azureResourceManagerTools.checkForLatestSchema": true,
-		"powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
-		"powershell.codeFormatting.useCorrectCasing": true,
-		"powershell.codeFormatting.useConstantStrings": true,
-		"powershell.codeFormatting.trimWhitespaceAroundPipe": true,
-		"powershell.codeFormatting.autoCorrectAliases": true,
-		"powershell.codeFormatting.openBraceOnSameLine": false,
-		"powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
-		"powershell.codeFormatting.whitespaceBetweenParameters": true,
-		"powershell.notebooks.showToggleButton": true,
-		"powershell.pester.useLegacyCodeLens": false
-	},
-	"extensions": {
-		"recommendations": [
-			"ms-vscode.azure-account",
-			"ms-vscode.powershell-preview",
-			"msazurermtools.azurerm-vscode-tools",
-			"GitHub.vscode-pull-request-github",
-			"eamodio.gitlens",
-			"ms-dotnettools.vscode-dotnet-runtime",
-			"oderwat.indent-rainbow",
-			"ms-azuretools.vscode-bicep"
-		]
-	}
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "window.title": "${activeFolderLong}",
+        "azureResourceManagerTools.autoDetectJsonTemplates": true,
+        "azureResourceManagerTools.checkForLatestSchema": true,
+        "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+        "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+        "powershell.codeFormatting.alignPropertyValuePairs": true,
+        "powershell.codeFormatting.autoCorrectAliases": true,
+        "powershell.codeFormatting.ignoreOneLineBlock": true,
+        "powershell.codeFormatting.newLineAfterCloseBrace": true,
+        "powershell.codeFormatting.newLineAfterOpenBrace": true,
+        "powershell.codeFormatting.openBraceOnSameLine": false,
+        "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
+        "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+        "powershell.codeFormatting.useConstantStrings": true,
+        "powershell.codeFormatting.useCorrectCasing": true,
+        "powershell.codeFormatting.whitespaceAfterSeparator": true,
+        "powershell.codeFormatting.whitespaceAroundOperator": true,
+        "powershell.codeFormatting.whitespaceAroundPipe": true,
+        "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
+        "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
+        "powershell.codeFormatting.whitespaceBetweenParameters": true,
+        "powershell.codeFormatting.whitespaceInsideBrace": true,
+        "powershell.notebooks.showToggleButton": true,
+        "powershell.pester.useLegacyCodeLens": false
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-vscode.azure-account",
+            "ms-vscode.powershell-preview",
+            "msazurermtools.azurerm-vscode-tools",
+            "GitHub.vscode-pull-request-github",
+            "eamodio.gitlens",
+            "ms-dotnettools.vscode-dotnet-runtime",
+            "oderwat.indent-rainbow",
+            "ms-azuretools.vscode-bicep"
+        ]
+    }
 }
