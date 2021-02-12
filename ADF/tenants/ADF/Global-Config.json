@@ -516,7 +516,7 @@
             "Id": "03a6d094-3444-4b3d-88af-7477090a9e5e",
             "Description": "Lets you manage Intelligent Systems accounts, but not access to them."
         },
-        "Key Vault Administrator (preview)": {
+        "Key Vault Administrator": {
             "Id": "00482a5a-887f-4fb3-b363-3b7fe8e74483",
             "Description": "Perform all data plane operations on a key vault and all objects in it, including certificates, keys, and secrets. Cannot manage key vault resources or manage role assignments. Only works for key vaults that use the 'Azure role-based access control' permission model."
         },

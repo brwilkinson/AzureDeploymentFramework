@@ -1,5 +1,5 @@
 param (
-    [String]$APP = 'HUB'
+    [String]$APP = 'AOA'
 )
 
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
@@ -9,18 +9,19 @@ $PrimaryPrefix = $Global.PrimaryPrefix
 $SecondaryPrefix = $Global.SecondaryPrefix
 
 # Primary Region (Hub) Info
-$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | foreach Global
+$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $PrimaryRGName = $Primary.HubRGName
 $PrimaryLocation = $Global.PrimaryLocation
 $PrimaryKvName = $Primary.KVName
 
 # Secondary Region (Hub) Info
-$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | foreach Global
+$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $SecondaryRGName = $Secondary.HubRGName
 $SecondaryLocation = $Global.SecondaryLocation
 $SecondaryKvName = $Secondary.KVName
+$ServicePrincipalAdmins = $Global.ServicePrincipalAdmins
 
- # Primary RG
+# Primary RG
 Write-Verbose -Message "Primary HUB RGName: $PrimaryRGName" -Verbose
 if (! (Get-AzResourceGroup -Name $PrimaryRGName -EA SilentlyContinue))
 {
@@ -43,6 +44,26 @@ if (! (Get-AzKeyVault -Name $PrimaryKvName -EA SilentlyContinue))
     {
         New-AzKeyVault -Name $PrimaryKvName -ResourceGroupName $PrimaryRGName -Location $PrimaryLocation `
             -EnabledForDeployment -EnabledForTemplateDeployment -EnablePurgeProtection -EnableRbacAuthorization -Sku Standard -ErrorAction Stop
+    }
+    catch
+    {
+        Write-Warning $_
+        break
+    }
+}
+
+# Primary KV RBAC
+Write-Verbose -Message "Primary KV Name: $PrimaryKvName RBAC for KV Contributor" -Verbose
+if (Get-AzKeyVault -Name $PrimaryKvName -EA SilentlyContinue)
+{
+    try
+    {
+        $ServicePrincipalAdmins | ForEach-Object {
+            if (! (Get-AzRoleAssignment -ResourceGroupName $PrimaryRGName -SignInName $_ -RoleDefinitionName 'Key Vault Administrator'))
+            {
+                New-AzRoleAssignment -ResourceGroupName $PrimaryRGName -SignInName $_ -RoleDefinitionName 'Key Vault Administrator' -Verbose
+            }
+        }
     }
     catch
     {
@@ -74,6 +95,26 @@ if (! (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue))
     {
         New-AzKeyVault -Name $SecondaryKvName -ResourceGroupName $SecondaryRGName -Location $SecondaryLocation `
             -EnabledForDeployment -EnabledForTemplateDeployment -EnablePurgeProtection -EnableRbacAuthorization -Sku Standard -ErrorAction Stop
+    }
+    catch
+    {
+        Write-Warning $_
+        break
+    }
+}
+
+# Primary KV RBAC
+Write-Verbose -Message "Secondary KV Name: $PrimaryKvName RBAC for KV Contributor" -Verbose
+if (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue)
+{
+    try
+    {
+        $ServicePrincipalAdmins | ForEach-Object {
+            if (! (Get-AzRoleAssignment -ResourceGroupName $SecondaryRGName -SignInName $_ -RoleDefinitionName 'Key Vault Administrator'))
+            {
+                New-AzRoleAssignment -ResourceGroupName $SecondaryRGName -SignInName $_ -RoleDefinitionName 'Key Vault Administrator' -Verbose
+            }
+        }
     }
     catch
     {

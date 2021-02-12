@@ -100,6 +100,14 @@
       "Id": "d63b75f7-47ea-4f27-92ac-e0d173aaf093",
       "Description": "Grants read access to Autonomous Development Platform data."
     },
+    "Avere Cluster Create": {
+      "Id": "a7b1b19a-0e83-4fe5-935c-faaefbfd18c3",
+      "Description": "Avere cluster create role used by the Avere controller to create a vFXT cluster."
+    },
+    "Avere Cluster Runtime Operator": {
+      "Id": "e078ab98-ef3a-4c9a-aba7-12f5172b45d0",
+      "Description": "Avere cluster runtime role used by Avere clusters running in subscriptions, for the purpose of failing over IP addresses, accessing BLOB storage, etc"
+    },
     "Avere Contributor": {
       "Id": "4f8fab4f-1852-4a58-a46a-8eaf358af14a",
       "Description": "Can create and manage an Avere vFXT cluster."
@@ -192,6 +200,10 @@
       "Id": "423170ca-a8f6-4b0f-8487-9e4eb8f49bfa",
       "Description": "Grants access to read map related data from an Azure maps account."
     },
+    "Azure Sentinel Automation Contributor": {
+      "Id": "f4c81013-99ee-4d62-a7ee-b3f1f648599a",
+      "Description": "Azure Sentinel Automation Contributor"
+    },
     "Azure Sentinel Contributor": {
       "Id": "ab8e14d6-4a74-4a29-9ba8-549422addade",
       "Description": "Azure Sentinel Contributor"
@@ -215,6 +227,10 @@
     "Azure Service Bus Data Sender": {
       "Id": "69a216fc-b8fb-44d8-bc22-1f3c2cd27a39",
       "Description": "Allows for send access to Azure Service Bus resources."
+    },
+    "Azure Service Deploy Release Management Contributor": {
+      "Id": "21d96096-b162-414a-8302-d8354f9d91b2",
+      "Description": "Contributor role for services deploying through Azure Service Deploy."
     },
     "Azure Stack Registration Owner": {
       "Id": "6f12a6df-dd06-4f3e-bcb1-ce8be600526a",
@@ -255,6 +271,10 @@
     "Blueprint Operator": {
       "Id": "437d2ced-4a38-4302-8479-ed2bcb43d090",
       "Description": "Can assign existing published blueprints, but cannot create new blueprints. NOTE: this only works if the assignment is done with a user-assigned managed identity."
+    },
+    "CAL-Custom-Role": {
+      "Id": "7b266cd7-0bba-4ae2-8423-90ede5e1e898",
+      "Description": "Lets SAP Cloud Appliance Library application manage Network and Compute services, manage Resource Groups and Management locks."
     },
     "CDN Endpoint Contributor": {
       "Id": "426e0c7f-0c7e-4658-b36f-ff54d6c29b45",
@@ -344,6 +364,10 @@
       "Id": "daa9e50b-21df-454c-94a6-a8050adab352",
       "Description": "Can manage data packages of a collaborative."
     },
+    "Collaborative Runtime Operator": {
+      "Id": "7a6f0e70-c033-4fb1-828c-08514e5f4102",
+      "Description": "Can manage resources created by AICS at runtime"
+    },
     "Contributor": {
       "Id": "b24988ac-6180-42a0-ab88-20f7382dd24c",
       "Description": "Grants full access to manage all resources, but does not allow you to assign roles in Azure RBAC, manage assignments in Azure Blueprints, or share image galleries."
@@ -359,6 +383,10 @@
     "CosmosBackupOperator": {
       "Id": "db7b14f2-5adf-42da-9f96-f2ee17bab5cb",
       "Description": "Can submit restore request for a Cosmos DB database or a container for an account"
+    },
+    "CosmosRestoreOperator": {
+      "Id": "5432c526-bc82-444a-b7ba-57c5b0b5b34f",
+      "Description": "Can perform restore action for Cosmos DB database account with continuous backup mode"
     },
     "Cost Management Contributor": {
       "Id": "434105ed-43f6-45c7-a02f-909b2ba83430",
@@ -480,6 +508,18 @@
       "Id": "5bd9cd88-fe45-4216-938b-f97437e15450",
       "Description": "Lets you manage DocumentDB accounts, but not access to them."
     },
+    "Dsms Role (deprecated)": {
+      "Id": "b91f4c0b-46e3-47bb-a242-eecfe23b3b5b",
+      "Description": "Custom role used by Dsms to perform operations. Can list and regnerate storage account keys."
+    },
+    "Dsms Role (do not use)": {
+      "Id": "7aff565e-6c55-448d-83db-ccf482c6da2f",
+      "Description": "Custom role used by Dsms to perform operations. Can list and regnerate storage account keys."
+    },
+    "EventGrid Contributor": {
+      "Id": "1e241071-0855-49ea-94dc-649edcd759de",
+      "Description": "Lets you manage EventGrid operations."
+    },
     "EventGrid EventSubscription Contributor": {
       "Id": "428e0ff0-5e57-4d9c-a221-2c70d0e0a443",
       "Description": "Lets you manage EventGrid event subscription operations."
@@ -500,9 +540,17 @@
       "Id": "49632ef5-d9ac-41f4-b8e7-bbe587fa74a1",
       "Description": "Experimentation Reader"
     },
+    "ExpressRoute Administrator": {
+      "Id": "a48d7896-14b4-4889-afef-fbb65a96e5a2",
+      "Description": "Can create, delete and manage ExpressRoutes"
+    },
     "FHIR Data Contributor": {
       "Id": "5a1fc7df-4bf1-4951-a576-89034ee01acd",
       "Description": "Role allows user or principal full access to FHIR Data"
+    },
+    "FHIR Data Converter": {
+      "Id": "a1705bd2-3a8f-45a5-8683-466fcfd5cc24",
+      "Description": "Role allows user or principal to convert data from legacy format to FHIR"
     },
     "FHIR Data Exporter": {
       "Id": "3db33094-8700-4567-8da5-1501d4e7e843",
@@ -515,6 +563,14 @@
     "FHIR Data Writer": {
       "Id": "3f88fce4-5892-4214-ae73-ba5294559913",
       "Description": "Role allows user or principal to read and write FHIR Data"
+    },
+    "GenevaWarmPathResourceContributor": {
+      "Id": "9f15f5f5-77bd-413a-aa88-4b9c68b1e7bc",
+      "Description": "Can manage service bus and storage accounts."
+    },
+    "GenevaWarmPathStorageBlobContributor": {
+      "Id": "a16c43ca-2d67-4dcd-9ded-6412f5edc51a",
+      "Description": "Geneva Warm Path Storage Blob Contributor"
     },
     "Graph Owner": {
       "Id": "b60367af-1334-4454-b71e-769d9a4f83d9",
@@ -556,7 +612,7 @@
       "Id": "00482a5a-887f-4fb3-b363-3b7fe8e74483",
       "Description": "Perform all data plane operations on a key vault and all objects in it, including certificates, keys, and secrets. Cannot manage key vault resources or manage role assignments. Only works for key vaults that use the 'Azure role-based access control' permission model."
     },
-    "Key Vault Certificates Officer (preview)": {
+    "Key Vault Certificates Officer": {
       "Id": "a4417e6f-fecd-4de8-b567-7b0420556985",
       "Description": "Perform any action on the certificates of a key vault, except manage permissions. Only works for key vaults that use the 'Azure role-based access control' permission model."
     },
@@ -564,33 +620,33 @@
       "Id": "f25e0fa2-a7c8-4377-a976-54943a77a395",
       "Description": "Lets you manage key vaults, but not access to them."
     },
-    "Key Vault Crypto Officer (preview)": {
+    "Key Vault Crypto Officer": {
       "Id": "14b46e9e-c2b7-41b4-b07b-48a6ebf60603",
       "Description": "Perform any action on the keys of a key vault, except manage permissions. Only works for key vaults that use the 'Azure role-based access control' permission model."
     },
-    "Key Vault Crypto Service Encryption User (preview)": {
+    "Key Vault Crypto Service Encryption User": {
       "Id": "e147488a-f6f5-4113-8e2d-b22465e65bf6",
       "Description": "Read metadata of keys and perform wrap/unwrap operations. Only works for key vaults that use the 'Azure role-based access control' permission model."
     },
-    "Key Vault Crypto User (preview)": {
+    "Key Vault Crypto User": {
       "Id": "12338af0-0e69-4776-bea7-57ae8d297424",
       "Description": "Perform cryptographic operations using keys. Only works for key vaults that use the 'Azure role-based access control' permission model."
     },
-    "Key Vault Reader (preview)": {
+    "Key Vault Reader": {
       "Id": "21090545-7ca7-4776-b22c-e363652d74d2",
       "Description": "Read metadata of key vaults and its certificates, keys, and secrets. Cannot read sensitive values such as secret contents or key material. Only works for key vaults that use the 'Azure role-based access control' permission model."
     },
-    "Key Vault Secrets Officer (preview)": {
+    "Key Vault Secrets Officer": {
       "Id": "b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
       "Description": "Perform any action on the secrets of a key vault, except manage permissions. Only works for key vaults that use the 'Azure role-based access control' permission model."
     },
-    "Key Vault Secrets User (preview)": {
+    "Key Vault Secrets User": {
       "Id": "4633458b-17de-408a-b874-0445c86b69e6",
       "Description": "Read secret contents. Only works for key vaults that use the 'Azure role-based access control' permission model."
     },
     "Key_Vault_Reader": {
-      "Id": "52801403-3d8d-57d6-8dd5-7254cb1f4711",
-      "Description": "Lets you read secrets from the vaults but not change them."
+      "Id": "49bbb43e-45b6-55ca-8372-e093b67a8d8c",
+      "Description": "Lets you read keys from the vaults but not change them."
     },
     "Knowledge Consumer": {
       "Id": "ee361c5d-f7b5-4119-b4b6-892157c8f64c",
@@ -656,9 +712,17 @@
       "Id": "ac63b705-f282-497d-ac71-919bf39d939d",
       "Description": "Management Group Reader Role"
     },
+    "masterreader": {
+      "Id": "a48d7796-14b4-4889-afef-fbb65a93e5a2",
+      "Description": "Lets you view everything, but not make any changes."
+    },
     "Metric Contributor": {
       "Id": "6188b7c9-7d01-4f99-a59f-c88b630326c0",
       "Description": "Allows for creation, writes and reads to the metric set via the metrics service APIs."
+    },
+    "Microsoft OneAsset Reader": {
+      "Id": "fd1bb084-1503-4bd2-99c0-630220046786",
+      "Description": "This role is for Microsoft OneAsset team (CSEO) to track internal security compliance and resource utilization."
     },
     "Microsoft.Kubernetes connected cluster role": {
       "Id": "5548b2cf-c94c-4228-90ba-30851930a12f",
@@ -691,6 +755,10 @@
     "Object Understanding Account Reader": {
       "Id": "d18777c0-1514-4662-8490-608db7d334b6",
       "Description": "Lets you read ingestion jobs for an object understanding account."
+    },
+    "Office DevOps": {
+      "Id": "7fd64851-3279-459b-b614-e2b2ba760f5b",
+      "Description": "Custom access for developers to operations but not secrets."
     },
     "Owner": {
       "Id": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
@@ -727,6 +795,10 @@
     "Purview Data Source Administrator": {
       "Id": "200bba9e-f0c8-430f-892b-6f0794863803",
       "Description": "The Microsoft.Purview data source administrator can manage data sources and data scans. This role is in preview and subject to change."
+    },
+    "Quota Request Operator Role": {
+      "Id": "0e5f05e5-9ab9-446b-b98d-1e2157c94125",
+      "Description": "Role to read and create Quota Requests and get Quota Request Status."
     },
     "Reader": {
       "Id": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
@@ -779,6 +851,14 @@
     "Security Assessment Contributor": {
       "Id": "612c2aa1-cb24-443b-ac28-3ab7272de6f5",
       "Description": "Lets you push assessments to Security Center"
+    },
+    "Security Detonation Chamber Publisher": {
+      "Id": "352470b3-6a9c-4686-b503-35deb827e500",
+      "Description": "Allowed to publish and modify platforms, workflows and toolsets to Security Detonation Chamber"
+    },
+    "Security Detonation Chamber Submission Manager": {
+      "Id": "a37b566d-3efa-4beb-a2f2-698963fa42ce",
+      "Description": "Allowed to create and manage submissions to Security Detonation Chamber"
     },
     "Security Detonation Chamber Submitter": {
       "Id": "0b555d9b-b4a7-4f43-b330-627f0e5be8f0",

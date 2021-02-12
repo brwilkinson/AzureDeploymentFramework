@@ -1,44 +1,22 @@
 {
     "Global": {
-        "HubRGName": "AZC1-ADF-RG-P0",
-        "hubVnetName": "AZC1-ADF-P0-vn",
-        "KVName": "AZC1-ADF-P0-kvVault01",
-        "KVUrl": "https://AZC1-ADF-P0-kvVault01.vault.azure.net/",
+        "HubRGName": "AZC1-BRW-ADF-RG-P0",
+        "hubVnetName": "AZC1-BRW-ADF-P0-vn",
+        "KVName": "AZC1-BRW-ADF-P0-kvVault01",
+        "KVUrl": "https://AZC1-BRW-ADF-P0-kvVault01.vault.azure.net/",
         "SAName": "stagecus1",
-        "certificateUrl": "https://azc1-adf-p0-kvvault01.vault.azure.net/secrets/WildcardCert/3574f8397579476594c96edb9fc058d1",
-        "networkId2": [
-            "10.0.",
+        "certificateUrl": "https://azc1-brw-adf-p0-kvvault01.vault.azure.net/secrets/WildcardCert/3574f8397579476594c96edb9fc058d1",
+        "networkId": [
+            "10.2.",
             144
         ],
-        "networkId": [
-            "172.16.",
-            142 
+        "DNSServers": [
+            "10.2.144.75",
+            "10.2.144.76"
         ],
-        "nsgRGName": "AZC1-ADF-RG-P0",
-        "RTRGName": "AZC1-ADF-RG-P0",
+        "nsgRGName": "AZC1-BRW-ADF-RG-P0",
+        "RTRGName": "AZC1-BRW-ADF-RG-P0",
         "RTName": "rtContoso-Hub",
-        "dnsZoneRGName": "AZC1-ADF-RG-P0"
-    },
-    "Secrets": [
-        {
-            "vmAdminPassword": {
-                "reference": {
-                    "keyVault": {
-                        "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-ADF-P0-kvVault01"
-                    },
-                    "secretName": "localadmin"
-                }
-            }
-        },
-        {
-            "DevOpsAgentPATToken": {
-                "reference": {
-                    "keyVault": {
-                        "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-ADF-P0-kvVault01"
-                    },
-                    "secretName": "DevOpsAgentPATToken"
-                }
-            }
-        }
-    ]
+        "dnsZoneRGName": "AZC1-BRW-ADF-RG-P0"
+    }
 }

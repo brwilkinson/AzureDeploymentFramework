@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
-$App = 'ABC'
-$Enviro = 'S1'
+$App = 'AOA'
+$Enviro = 'P0'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
@@ -19,8 +19,8 @@ break
 . ASD:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 -APP $App
 
 # Create Service principal for Env.
-. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
-. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
+. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments P0,G0,G1,D2,S1,T3,P4
+. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1,T3,P4
 
 # Bootstrap Hub RGs and Keyvaults
 . ASD:\1-PrereqsToDeploy\1-CreateHUBKeyVaults.ps1 -APP $App
@@ -28,7 +28,7 @@ break
 # Create Global Web Create
 . ASD:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
 
-# Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
+# Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region [auto detected])
 . ASD:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
 
 # Deploy Environment
@@ -37,6 +37,7 @@ break
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy #-FullUpload -VSTS
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy #-FullUpload
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-sub-RGRoleAssignments.json -SubscriptionDeploy
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-mg-ManagementGroups.json
 
 # $Enviro RG deploy
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-ALL.json
@@ -58,15 +59,12 @@ AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\2-azuredeplo
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\3-azuredeploy-VNet.json
 
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-Storage.json
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-KV.json
-
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeploy-NetworkWatcher.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\2-azuredeploy-NetworkFlowLogs.json
 
-
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\27-azuredeploy-WVD.json
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\28-azuredeploy-LogicApp.json
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\1-azuredeploy-Storage.json
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-KV.json
+AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-KV.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\9-azuredeploy-APIM.json -FullUpload
 
@@ -74,9 +72,10 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\9-azuredeplo
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADPrimary
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADSecondary
 # $Enviro AppServers Deploy
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName WVDServers
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP
+AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP
+
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServers
-AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServers
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServersLinux
 
 # ASR deploy

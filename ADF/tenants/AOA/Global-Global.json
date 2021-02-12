@@ -1,0 +1,51 @@
+{
+  "Global": {
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "SubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "OrgName": "BRW",
+    "AppName": "AOA",
+    "SAName": "azc1brwaoag1saglobal",
+    "GlobalRGName": "AZC1-BRW-AOA-RG-G1",
+    "PrimaryLocation": "CentralUS",
+    "PrimaryPrefix": "AZC1",
+    "SecondaryLocation": "EastUS2",
+    "SecondaryPrefix": "AZE2",
+    "PublicIPAddressforRemoteAccess": "73.157.100.227/32",
+    "vmAdminUserName": "brw",
+    "DomainName": "psthing.com",
+    "DomainNameExt": "psthing.com",
+    "CertURLs": [
+      "*.psthing.com",
+      "*.contoso.com"
+    ],
+    "CertificateThumbprint": "2217CD10E365F1F005B8B726D762FCDBDCBB2621",
+    "GitHubProject": "AzureDeploymentFramework",
+    "ServicePrincipalAdmins": [
+      "benwilk@microsoft.com"
+    ],
+    "defaultWAFsslpolicyName": "AppGwSslPolicy20170401S",
+    "apimPublisherEmail": "alerts@contoso.com",
+    "alertRecipients": [
+      "alerts@contoso.com"
+    ],
+    "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
+    "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
+    "sqlCredentialName": "localadmin",
+    "sqlAutobackupRetentionPeriod": 5,
+    "RolesLookup": {
+      "benwilk@Microsoft.com": "b8214ecb-d982-402b-8185-ca909b853eec",
+      "AzureDeploymentFramework_AZC1-BRW-AOA-RG-P0": "5c2c55dc-b5ea-4669-84c1-b43152aabb36",
+      "AzureDeploymentFramework_AZC1-BRW-AOA-RG-G0": "7f1b9dac-a112-4215-b81e-757970625279",
+      "AzureDeploymentFramework_AZC1-BRW-AOA-RG-G1": "570cdf81-6735-4f6b-a3dc-148e4179fbad",
+      "AzureDeploymentFramework_AZC1-BRW-AOA-RG-D2": "f93d71f4-dafc-4e6c-acb4-871ba1083003",
+      "AzureDeploymentFramework_AZC1-BRW-AOA-RG-S1": "41580765-bb4c-4c78-8152-cdc868b1b74b",
+      "AzureDeploymentFramework_AZC1-BRW-AOA-RG-T3": "e4bde10a-3976-421e-9fed-59de1cccd1a5",
+      "AzureDeploymentFramework_AZC1-BRW-AOA-RG-P4": "86e8342b-e0bd-4909-92ff-f571f3570c64",
+      "AzureDeploymentFramework_AZE2-BRW-AOA-RG-P0": "5cb4d68e-b41e-4a90-ad92-cb72569ee939",
+      "AzureDeploymentFramework_AZE2-BRW-AOA-RG-S1": "893d31ef-ca2b-4351-96b7-2c3e0012f9cc",
+      "AzureDeploymentFramework_AZE2-BRW-AOA-RG-T3": "a934e333-4341-4255-bc85-8f15f08eb2f0",
+      "AzureDeploymentFramework_AZE2-BRW-AOA-RG-P4": "5a6ed27e-07c0-4f4a-ab69-aea61a7a559c"
+    }
+  }
+}

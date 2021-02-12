@@ -20,7 +20,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'ADF_AZC1-ADF-RG-D2'
+        azureSubscription: 'ADF_AZC1-BRW-ADF-RG-D2'
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(Prefix) -FullUpload'

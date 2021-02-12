@@ -19,7 +19,7 @@ stages:
 #     steps:
 #     - task: AzurePowerShell@5
 #       inputs:
-#         azureSubscription: 'ADF_AZC1-ADF-RG-G0'
+#         azureSubscription: 'ADF_AZC1-BRW-ADF-RG-G0'
 #         ScriptType: 'FilePath'
 #         ScriptPath: 'ADF/release-az/AzDeploy.ps1'
 #         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload'
@@ -39,7 +39,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'ADF_AZC1-ADF-RG-S3'
+        azureSubscription: 'ADF_AZC1-BRW-ADF-RG-S3'
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(Prefix) -stage "ALL"'

@@ -1,0 +1,244 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+    "SubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(variables('Deployment'),'-vn'),variables('snAzureBastionSubnet'))]",
+    "snAzureBastionSubnet": "AzureBastionSubnet",
+    // "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snAzureBastionSubnet'))]",
+    "frontDoorInfo": {
+      "name": "AOA01"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2019-11-01",
+      "name": "[concat(variables('Deployment'),'-publicip',variables('BastionInfo').name)]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "name": "[concat(variables('Deployment'),'-bst',variables('BastionInfo').name)]",
+      "type": "Microsoft.Network/bastionHosts",
+      "apiVersion": "2019-11-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat(variables('Deployment'),'-publicip',variables('BastionInfo').name)]"
+      ],
+      "properties": {
+        // "dnsName": "bst-fb7c1034-4815-4e38-9696-3b1d38d46a7d.bastion.azure.com",
+        "ipConfigurations": [
+          {
+            "name": "IpConf",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                // "id": "/subscriptions/29f50f59-74bc-446a-939e-6e8ee092bf91/resourceGroups/AZE2-P00-FNFTE/providers/Microsoft.Network/publicIPAddresses/AZE2-P00-NTE-publicipBST01"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-publicip',variables('BastionInfo').name))]"
+              },
+              "subnet": {
+                "id": "[variables('SubnetID')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[concat(variables('Deployment'),'-afd',variables('frontDoorInfo').name)]",
+      "type": "Microsoft.Network/frontDoors",
+      "apiVersion": "2020-05-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "friendlyName": "string",
+        "routingRules": [
+          {
+            "id": "string",
+            "properties": {
+              "frontendEndpoints": [
+                {
+                  "id": "string"
+                }
+              ],
+              "acceptedProtocols": [
+                "string"
+              ],
+              "patternsToMatch": [
+                "string"
+              ],
+              "enabledState": "string",
+              "routeConfiguration": {
+                "@odata.type": "string"
+              },
+              "rulesEngine": {
+                "id": "string"
+              },
+              "webApplicationFirewallPolicyLink": {
+                "id": "string"
+              },
+              "resourceState": "string"
+            },
+            "name": "string"
+          }
+        ],
+        "loadBalancingSettings": [
+          {
+            "id": "string",
+            "properties": {
+              "sampleSize": "integer",
+              "successfulSamplesRequired": "integer",
+              "additionalLatencyMilliseconds": "integer",
+              "resourceState": "string"
+            },
+            "name": "string"
+          }
+        ],
+        "healthProbeSettings": [
+          {
+            "id": "string",
+            "properties": {
+              "path": "string",
+              "protocol": "string",
+              "intervalInSeconds": "integer",
+              "healthProbeMethod": "string",
+              "enabledState": "string",
+              "resourceState": "string"
+            },
+            "name": "string"
+          }
+        ],
+        "backendPools": [
+          {
+            "id": "string",
+            "properties": {
+              "backends": [
+                {
+                  "address": "string",
+                  "privateLinkAlias": "string",
+                  "privateLinkResourceId": "string",
+                  "privateLinkLocation": "string",
+                  "privateLinkApprovalMessage": "string",
+                  "httpPort": "integer",
+                  "httpsPort": "integer",
+                  "enabledState": "string",
+                  "priority": "integer",
+                  "weight": "integer",
+                  "backendHostHeader": "string"
+                }
+              ],
+              "loadBalancingSettings": {
+                "id": "string"
+              },
+              "healthProbeSettings": {
+                "id": "string"
+              },
+              "resourceState": "string"
+            },
+            "name": "string"
+          }
+        ],
+        "frontendEndpoints": [
+          {
+            "id": "string",
+            "properties": {
+              "hostName": "string",
+              "sessionAffinityEnabledState": "string",
+              "sessionAffinityTtlSeconds": "integer",
+              "webApplicationFirewallPolicyLink": {
+                "id": "string"
+              },
+              "resourceState": "string"
+            },
+            "name": "string"
+          }
+        ],
+        "backendPoolsSettings": {
+          "enforceCertificateNameCheck": "string",
+          "sendRecvTimeoutSeconds": "integer"
+        },
+        "enabledState": "string",
+        "resourceState": "string"
+      },
+      "resources": []
+    }
+  ],
+  "outputs": {
+  }
+}

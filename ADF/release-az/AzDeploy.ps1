@@ -4,7 +4,7 @@ param (
     [String]$Env,
     [string]$Prefix = 'AZC1',
     [String]$stage = 'ALL',
-    [ValidateSet('ADF', 'PSO', 'ABC', 'HUB')]
+    [ValidateSet('ADF', 'PSO', 'ABC', 'HUB', 'AOA')]
     [String]$APP = 'ADF',
     [switch]$SubscriptionDeploy,
     [switch]$FullUpload,

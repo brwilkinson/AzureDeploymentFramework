@@ -174,7 +174,7 @@
             "Member": "benwilk@Microsoft.com"
           },
           {
-            "Name": "Key Vault Administrator (preview)",
+            "Name": "Key Vault Administrator",
             "Member": "benwilk@Microsoft.com"
           }
         ],
@@ -344,7 +344,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Allow",
+            "allNetworks": "Deny",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

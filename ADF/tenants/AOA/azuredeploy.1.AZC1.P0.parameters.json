@@ -6,15 +6,15 @@
       "value": "AZC1"
     },
     "Environment": {
-      "value": "D"
+      "value": "P"
     },
     "DeploymentID": {
-      "value": "2"
+      "value": "0"
     },
     "vmAdminPassword": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-ADF-P0-kvVault01"
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-AOA-P0-kvVLT01"
         },
         "secretName": "localadmin"
       }
@@ -22,38 +22,43 @@
     "DevOpsAgentPATToken": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-ADF-P0-kvVault01"
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-AOA-P0-kvVLT01"
         },
         "secretName": "DevOpsAgentPATToken"
       }
     },
     "Stage": {
       "value": {
-        "RG" : 1,
+        "RG": 1,
         "RBAC": 1,
-        "KV": 0,
+        "UAI": 1,
+        "SP": 1,
+        "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
         "OMSDataSources": 1,
         "SA": 1,
         "StorageSync": 0,
-        "RSV" : 1,
-        "NSGHUB": 0,
-        "NSGSPOKE": 1,
-        "NetworkWatcher" : 0,
-        "FlowLogs" : 1,
+        "RSV": 0,
+        "NSGHUB": 1,
+        "NSGSPOKE": 0,
+        "NetworkWatcher": 1,
+        "FlowLogs": 1,
         "VNet": 1,
-        "VNetPeering": 1,
-        "RT": 1,
+        "VNetPeering": 0,
+        "DNSPrivateZone": 1,
+        "LinkPrivateDns": 1,
+        "PrivateLink": 1,
+        "BastionHost": 0,
+        "RT": 0,
         "FW": 0,
-        "LinkPrivateDns": 0,
-        "DNSPrivateZone": 0,
-        "PrivateLink": 0,
-        "ADPrimary": 0,
-        "ADSecondary": 0,
+        "VNGW": 0,
+        "ERGW": 0,
+        "ADPrimary": 1,
+        "ADSecondary": 1,
         "ILB": 0,
         "PLB": 0,
-        "InitialDOP": 1,
+        "InitialDOP": 0,
         "VMApp": 0,
         "VMAppLinux": 0,
         "VMSQL": 0,
@@ -65,11 +70,14 @@
         "APIM": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
-        "DASHBOARD": 0,
+        "DASHBOARD": 1,
         "DNSLookup": 0,
         "ServerFarm": 0,
         "WebSite": 0,
-        "MySQLDB": 0
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "AzureSQL": 0
       }
     },
     "Extensions": {
@@ -83,7 +91,7 @@
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
         "Scripts": 1,
-        "MSI": 0,
+        "MSI": 1,
         "CertMgmt": 0,
         "DomainJoin": 1,
         "Antimalware": 1,
@@ -93,10 +101,128 @@
     },
     "DeploymentInfo": {
       "value": {
+        "uaiInfo": [
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "P0",
+                "Prefix": "AZC1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "AZC1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User (preview)",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperator",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Blob Data Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              }
+            ]
+          },
+          {
+            "name": "AzureServiceBusDataOwner",
+            "RBAC": [
+              {
+                "Name": "Azure Service Bus Data Owner"
+              },
+              {
+                "Name": "Azure Service Bus Data Sender"
+              },
+              {
+                "Name": "Azure Service Bus Data Receiver"
+              }
+            ]
+          }
+        ],
         "rolesInfo": [
           {
             "Name": "Contributor",
             "Member": "benwilk@Microsoft.com"
+          },
+          {
+            "Name": "Key Vault Administrator",
+            "Member": "benwilk@Microsoft.com"
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "AzureDeploymentFramework_AZC1-BRW-AOA-RG-P0",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0"
+              },
+              {
+                "Name": "Key Vault Secrets User (preview)",
+                "RG": "P0"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "PREFIX": "AZE2"
+              }
+            ]
           }
         ],
         "SubnetInfo": [
@@ -135,35 +261,123 @@
             "NSG": 0
           },
           {
+            "name": "GatewaySubnet",
+            "prefix": "192/27",
+            "NSG": 0
+          },
+          {
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
             "Route": false
           }
         ],
+        "networkWatcherInfo": {
+          "name": "networkwatcher"
+        },
+        "DNSPrivateZoneInfo": [
+          "Contoso.com",
+          "Fabrikam.com",
+          "PSThing.com",
+          "privatelink.azurewebsites.net",
+          "privatelink.vaultcore.azure.net",
+          "privatelink.blob.core.windows.net",
+          "privatelink.queue.core.windows.net",
+          "privatelink.afs.azure.net",
+          "privatelink.servicebus.windows.net",
+          "privatelink.database.windows.net",
+          "privatelink.azconfig.io"
+        ],
+        "LinkPrivateDnsInfo": [
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.vaultcore.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.azurewebsites.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.blob.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.queue.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.afs.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "Contoso.com",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "Fabrikam.com",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "PSThing.com",
+            "Autoregistration": false
+          }
+        ],
         "saInfo": [
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks" :"Allow"
-          },
-          {
-            "nameSuffix": "witness",
-            "skuName": "Standard_ZRS",
-            "allNetworks" :"Allow"
+            "allNetworks": "Allow"
           }
         ],
         "KVInfo": [
           {
-            "Name": "ADFAppVault",
+            "Name": "VLT01",
             "skuName": "standard",
             "softDelete": true,
-            "accessPolicies": [
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "allNetworks": "Deny",
+            "PrivateLinkInfo": [
               {
-                "objectId": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
-                "Permissions": "All"
+                "Subnet": "snMT02",
+                "groupID": "vault"
               }
             ]
+          }
+        ],
+        "VNGWInfo": [
+          {
+            "Name": "VNGW01",
+            "skuname": "VpnGw2",
+            "skutier": "VpnGw2",
+            "gatewayType": "VPN",
+            "vpnType": "RouteBased",
+            "vpnGen": "Generation2",
+            "localNetworkGateway": {
+              "name": "PSO",
+              "gatewayIpAddress": "52.154.217.25",
+              "addressPrefixes": [
+                "10.0.128.0/20"
+              ],
+              "bgpEnabled": 1,
+              "bgpSettings": {
+                "asn": 65514,
+                "bgpPeeringAddress": "10.0.144.222",
+                "peerWeight": 0
+              }
+            },
+            "ConnectionOptions": {
+              "EnableConnection": 1,
+              "sharedKey": "ApplesForBreakfast" // you likely want a param for this from KV
+            }
           }
         ],
         "RTInfo": [
@@ -171,85 +385,12 @@
             "Name": "Contoso-Hub",
             "Routes": [
               {
-                "Name": "Default-Palo-Egress",
+                "Name": "Default-Azure-FW",
                 "addressPrefix": "0.0.0.0/0",
-                "nextHopIpAddress": "172.16.134.132",
+                "nextHopIpAddress": "172.16.142.132",
                 "nextHopType": "VirtualAppliance"
               }
             ]
-          }
-        ],
-        "PolicyInfo": [
-          {
-            "Name": "Audit-allowed-locations",
-            "Description": "Audit allowed locations",
-            "parameters": {
-              "allowedLocations": {
-                "type": "Array",
-                "metadata": {
-                  "description": "The list of allowed locations for resources.",
-                  "displayName": "Allowed locations",
-                  "strongType": "location"
-                }
-              }
-            },
-            "policyRule": {
-              "if": {
-                "not": {
-                  "field": "location",
-                  "in": "[parameters('allowedLocations')]"
-                }
-              },
-              "then": {
-                "effect": "audit"
-              }
-            }
-          },
-          {
-            "name": "Audit-allowed-role-definitions2",
-            "description": "Audit role definitions that can be used in IAM",
-            "parameters": {
-              "roleDefinitionId": {
-                "type": "string",
-                "metadata": {
-                  "description": "The list of role definition Ids",
-                  "displayName": "Approved Role Definitions"
-                }
-              }
-            },
-            "policyRule": {
-              "if": {
-                "anyOf": [
-                  {
-                    "allof": [
-                      {
-                        "field": "type",
-                        "equals": "Microsoft.Authorization/roleAssignments"
-                      }
-                    ]
-                  },
-                  {
-                    "anyOf": [
-                      {
-                        "not": {
-                          "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
-                          "match": "./058aae05-414d-5198-812b-6f4401cd86bb"
-                        }
-                      },
-                      {
-                        "not": {
-                          "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
-                          "match": "[parameter('roleDefinitionId')]"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              "then": {
-                "effect": "audit"
-              }
-            }
           }
         ],
         "ERGWInfo": [
@@ -283,7 +424,7 @@
             "rule": {
               "name": "JMP01-RDP-Allow",
               "sourceAddresses": [
-                "75.166.19.36"
+                "73.157.100.227"
               ],
               "destinationPorts": [
                 "3389"
@@ -291,7 +432,7 @@
               "protocols": [
                 "Any"
               ],
-              "translatedAddress": "172.16.134.62"
+              "translatedAddress": "172.16.137.62"
             }
           }
         ],
@@ -686,6 +827,21 @@
             "reliabilityLevel": "Bronze"
           }
         ],
+        "ASRInfo": [
+          {
+            "SourceRG": "P0",
+            "SourceRegion": "AZC1",
+            "SourceSasuffix": "cache",
+            "DestinationRG": "P0",
+            "DestinationRegion": "AZE2",
+            "DestinationRSVName": "ASRRecoveryVault",
+            "DestinationLogAnalytics": "LogAnalytics",
+            "RSVSkuName": "RS0",
+            "RSVSkuTier": "Standard",
+            "ReplicationPolicyName": "24-hour-retention-policy",
+            "RecoveryPlanName": "Failover"
+          }
+        ],
         "Appservers": {
           "ADPrimary": [
             {
@@ -719,10 +875,13 @@
                   "Primary": 1,
                   "StaticIP": "76"
                 }
-              ]
+              ],
+              "AppInfo": {
+                "SiteName": "Default-First-Site-Name"
+              }
             }
           ],
-          "InitialDOP": [
+          "AppServers": [
             {
               "VMName": "JMP01",
               "Role": "JMP",
@@ -1024,7 +1183,7 @@
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
                 "Cert": "MultiDomainwildcard",
-                "hostname": "contoso.io"
+                "hostname": "contoso.com"
               },
               {
                 "Port": 8989,

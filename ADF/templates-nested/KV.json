@@ -113,14 +113,14 @@
                     "family": "A",
                     "name": "[parameters('KVInfo').skuName]"
                 },
-                // "networkAcls": {
-                //     "bypass": "AzureServices",
-                //     "defaultAction": "[parameters('KVInfo').allNetworks]"
-                //     // "ipRules": [
-                //     // ],
-                //     // "virtualNetworkRules": [
-                //     // ]
-                // },
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "defaultAction": "[parameters('KVInfo').allNetworks]"
+                    // "ipRules": [
+                    // ],
+                    // "virtualNetworkRules": [
+                    // ]
+                },
                 "enabledForDeployment": "[variables('Defaults').enabledForDeployment]",
                 "enabledForDiskEncryption": "[variables('Defaults').enabledForDiskEncryption]",
                 "enabledForTemplateDeployment": "[variables('Defaults').enabledForTemplateDeployment]",

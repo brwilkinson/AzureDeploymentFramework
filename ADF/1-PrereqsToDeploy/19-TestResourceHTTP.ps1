@@ -1,32 +1,6 @@
 # Query Resources JSON raw format.
 
-# View website json
-$rgName = 'AZC1-ADF-RG-S1'
-$Name = 'AZC1-ADF-S1-fnPS01'
-$type = 'Microsoft.Web/sites'
-
-# View dashboards json
-$rgName = 'AZC1-ADF-RG-S1'
-$Name = 'ADF-S1-Default-Dashboard'
-$type = 'Microsoft.Portal/dashboards'
-
-
 # Method 1 -----------------------------------------------------
-
-$n = $type -split '/' | select -First 1
-$t = ($type -split '/' | select -Skip 1) -join '/'
-$resource = Get-AzResource -ResourceGroupName $rgName -Name $Name -ResourceType $type
-$API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | select -first 1
-
-# standard view
-Write-Verbose "Default view of resource" -Verbose
-$resource
-
-# full view and format output via json converersion
-Invoke-AzRestMethod -Method GET -ApiVersion $API -ResourceGroupName $rgName -ResourceType $t -ResourceProviderName $n -Name $Name | 
-    foreach Content | ConvertFrom-Json -Depth 20 | foreach value | convertto-json -Depth 20
-
-# Method 2 -----------------------------------------------------
 
 # View log analytics json
 $rgName = 'AZC1-ADF-RG-P0'
@@ -85,21 +59,22 @@ $type = 'Microsoft.Storage/storageAccounts'
 
 # View the storage account
 $rgName = 'AZC1-BRW-ABC-RG-S1'
-$Name = 'azc1brwabcs1sadiag'
+$Name = 'AZC1-BRW-ABC-S1-vmADC01/AdminCenter'
+$type = 'Microsoft.Compute/virtualMachines/extensions'
+
+# View the storage account
+$rgName = 'AZC1-BRW-ABC-RG-S1'
+$Name = 'azc1brwabcs1sadiag/default'
 $type = 'Microsoft.Storage/storageAccounts/blobServices'
 
+$ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 
-$n = $type -split '/' | select -First 1
-$t = ($type -split '/' | select -Skip 1) -join '/'
-$resource = Get-AzResource -ResourceGroupName $rgName -Name $Name -ResourceType $type
-$API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | select -first 1
-
-
-# standard view
-Write-Verbose "Default view of resource" -Verbose
-$resource
+$n = $type -split '/' | Select-Object -First 1
+$t = ($type -split '/' | Select-Object -Skip 1) -join '/'
+$API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | Select-Object -First 1
 
 # full view and format output via json converersion
-Write-Verbose "Full view of resource" -Verbose
-Invoke-AzRestMethod -Method GET -Path ($resource.Id + "?api-version=$API") | 
-    foreach Content | ConvertFrom-Json -Depth 20 | convertto-json -Depth 20
+Write-Verbose 'Full view of resource' -Verbose
+Invoke-AzRestMethod -Method GET -Path ($ID + "?api-version=$API") | 
+    ForEach-Object Content | ConvertFrom-Json -Depth 20 | ConvertTo-Json -Depth 20
+

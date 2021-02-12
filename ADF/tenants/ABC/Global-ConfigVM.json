@@ -1,141 +1,29 @@
 {
   "DataDiskInfo": {
-    "0GB": {},
-    "32GB": {
-      "DATA": {
-        "DriveLetter": "F",
-        "caching": "ReadOnly",
-        "LUNS": [
-          [
-            0,
-            32
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
-      }
-    },
-    "64GB": {
-      "DATA": {
-        "DriveLetter": "F",
-        "caching": "ReadOnly",
-        "LUNS": [
-          [
-            0,
-            64
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
-      }
-    },
-    "64GB-2": {
-      "DATA": {
-        "DriveLetter": "F",
-        "caching": "ReadOnly",
-        "LUNS": [
-          [
-            0,
-            64
-          ],
-          [
-            1,
-            64
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
-      }
-    },
-    "128GB": {
-      "DATA": {
-        "DriveLetter": "F",
-        "caching": "ReadOnly",
-        "LUNS": [
-          [
-            0,
-            128
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
-      }
-    },
-    "FIL64GB": {
-      "DATA": {
-        "DriveLetter": "F",
-        "caching": "ReadOnly",
-        "LUNS": [
-          [
-            0,
-            64
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
+    "0GB" : {},
+    "32GB" : {
+        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,32] ], "saType" : "StandardSSD_LRS" }
       },
-      "SOFS": {
-        "caching": "ReadOnly",
-        "LUNS": [
-          [
-            1,
-            32
-          ],
-          [
-            2,
-            32
-          ],
-          [
-            3,
-            32
-          ]
-        ],
-        "FileSystem": "ReFS",
-        "saType": "StandardSSD_LRS"
+    "64GB" : {
+        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" }
+      },
+    "64GB-2" : {
+        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64],[1,64] ], "saType" : "StandardSSD_LRS" }
+      },
+      "128GB" : {
+        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,128] ], "saType" : "StandardSSD_LRS"}
+      },
+    "FIL64GB" : {
+        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" },
+        "SOFS" : { "caching": "ReadOnly",  "LUNS" : [ [1,32],[2,32],[3,32]],"FileSystem" : "ReFS", "saType" : "StandardSSD_LRS" }
+      },        
+    "SQL64GB" : {
+        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64]], "saType" : "StandardSSD_LRS" },
+        "LOGS" :  { "DriveLetter" : "G", "caching": "None",     "LUNS" : [ [8,64] ], "saType" : "StandardSSD_LRS" },
+        "TEMPDB" : { "DriveLetter" : "H", "caching": "ReadOnly","LUNS" : [ [12,64] ], "saType" : "StandardSSD_LRS" },
+        "BACKUP" : { "DriveLetter" : "I", "caching": "None",    "LUNS" : [ [15,64] ], "saType" : "StandardSSD_LRS" }
       }
-    },
-    "SQL64GB": {
-      "DATA": {
-        "DriveLetter": "F",
-        "caching": "ReadOnly",
-        "LUNS": [
-          [
-            0,
-            64
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
-      },
-      "LOGS": {
-        "DriveLetter": "G",
-        "caching": "None",
-        "LUNS": [
-          [
-            8,
-            64
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
-      },
-      "TEMPDB": {
-        "DriveLetter": "H",
-        "caching": "ReadOnly",
-        "LUNS": [
-          [
-            12,
-            64
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
-      },
-      "BACKUP": {
-        "DriveLetter": "I",
-        "caching": "None",
-        "LUNS": [
-          [
-            15,
-            64
-          ]
-        ],
-        "saType": "StandardSSD_LRS"
-      }
-    }
-  },
+},
   "ladCfg": {
     "diagnosticMonitorConfiguration": {
       "eventVolume": "Medium",

@@ -19,7 +19,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'ADF_AZC1-ADF-RG-G0'
+        azureSubscription: 'ADF_AZC1-BRW-ADF-RG-G0'
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload'
@@ -41,14 +41,14 @@ stages:
     # # Update Az modules for zero copy loops to 2.8.0
     # - task: AzurePowerShell@5
     #   inputs:
-    #     azureSubscription: 'ADF_AZC1-ADF-RG-S2'
+    #     azureSubscription: 'ADF_AZC1-BRW-ADF-RG-S2'
     #     ScriptType: 'InlineScript'
     #     Inline: 'install-module az -force -verbose -SkipPublisherCheck -AllowClobber; gmo az* | remove-module -force'
     #     azurePowerShellVersion: 'LatestVersion'
       
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'ADF_AZC1-ADF-RG-S2'
+        azureSubscription: 'ADF_AZC1-BRW-ADF-RG-S2'
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/AzDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(Prefix) -stage "ALL"'

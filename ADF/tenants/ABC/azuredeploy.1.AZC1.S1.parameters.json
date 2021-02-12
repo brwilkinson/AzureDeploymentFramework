@@ -182,7 +182,7 @@
             "Member": "benwilk@Microsoft.com"
           },
           {
-            "Name": "Key Vault Administrator (preview)",
+            "Name": "Key Vault Administrator",
             "Member": "benwilk@Microsoft.com"
           }
         ],
@@ -293,7 +293,13 @@
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": "Allow",
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy":{
+              "enabled" : 1,
+              "days": 7
+            }
           },
           {
             "nameSuffix": "adds",

@@ -14,7 +14,7 @@
     "vmAdminPassword": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-ADF-P0-kvVault01"
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-ADF-P0-kvVault01"
         },
         "secretName": "localadmin"
       }
@@ -22,7 +22,7 @@
     "DevOpsAgentPATToken": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-ADF-P0-kvVault01"
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-ADF-P0-kvVault01"
         },
         "secretName": "DevOpsAgentPATToken"
       }
@@ -156,7 +156,7 @@
             "Member": "benwilk@Microsoft.com"
           },
           {
-            "Name": "Key Vault Administrator (preview)",
+            "Name": "Key Vault Administrator",
             "Member": "benwilk@Microsoft.com"
           }
         ],

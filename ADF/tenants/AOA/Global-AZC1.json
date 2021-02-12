@@ -1,0 +1,21 @@
+{
+  "Global": {
+    "HubRGName": "AZC1-BRW-AOA-RG-P0",
+    "hubVnetName": "AZC1-BRW-AOA-P0-vn",
+    "KVName": "AZC1-BRW-AOA-P0-kvVLT01",
+    "KVUrl": "https://AZC1-BRW-AOA-P0-kvVault01.vault.azure.net/",
+    "certificateUrl": "https://azc1-brw-aoa-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/296f1dee3c334d3390262a1f803a493c",
+    "networkId": [
+      "10.10.",
+      144
+    ],
+    "DNSServers": [
+      "10.10.144.75",
+      "10.10.144.76"
+    ],
+    "nsgRGName": "AZC1-BRW-AOA-RG-P0",
+    "RTRGName": "AZC1-BRW-AOA-RG-P0",
+    "RTName": "rtContoso-Hub",
+    "dnsZoneRGName": "AZC1-BRW-AOA-RG-P0"
+  }
+}
