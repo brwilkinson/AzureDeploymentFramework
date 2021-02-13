@@ -6,6 +6,7 @@
 
 - [Documentation - What is ADF, Observations on ARM Templates Etc.](./docs/ARM.md)
 - [Documentation - Ready to Deploy? Getting Started Steps](./docs/Getting_Started.md)
+
     - [Status - Deployment Workflows GitHub](./docs/Deployment_Pipelines_GitHub.md)
     - [Status - Deployment Pipelines Azure DevOps](./docs/Deployment_Pipelines_DevOps.md)
 
