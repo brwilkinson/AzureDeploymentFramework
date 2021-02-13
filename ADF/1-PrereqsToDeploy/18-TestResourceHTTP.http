@@ -26,3 +26,16 @@ Authorization: {{Bearer}}
 ### filter doesn't work, not sure why as yet?
 GET https://management.azure.com/providers/Microsoft.Resources/operations?$filter=name EQ 'Microsoft.Resources/providers/read'&api-version=2015-01-01
 Authorization: {{Bearer}}
+
+
+###
+GET https://management.azure.com/providers/Microsoft.Billing/billingAccounts/8608480/providers/Microsoft.Consumption/usageDetails?api-version=2019-10-01
+Authorization: {{Bearer2}}
+
+### 
+GET https://management.azure.com/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/providers/Microsoft.CostManagement/exports/test?api-version=2020-06-01
+Authorization: {{Bearer}}
+
+### 
+GET https://management.azure.com/subscriptions/bad9413a-7721-4788-9790-dc0ca05917dc/providers/Microsoft.CostManagement/exports/coeslalomtest?api-version=2020-06-01
+Authorization: {{Bearer2}}

@@ -129,7 +129,7 @@
                 "RG": "P0"
               },
               {
-                "Name": "Key Vault Secrets User (preview)",
+                "Name": "Key Vault Secrets User",
                 "RG": "P0"
               },
               {

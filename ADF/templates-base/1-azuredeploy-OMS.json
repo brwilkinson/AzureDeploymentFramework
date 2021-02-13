@@ -998,7 +998,7 @@
                   {
                     "scopes": [ "*" ],
                     "monitors": [ "root" ],
-                    "monitorConfiguration": { },
+                    "monitorConfiguration": {},
                     "alertConfiguration": {
                       "isEnabled": true
                     }
@@ -1049,7 +1049,76 @@
         "Request_Source": "AzureTfsExtensionAzureProject",
         "HockeyAppId": "",
         "SamplingPercentage": null
-      }
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "apiVersion": "2015-07-01",
+          "dependsOn": [
+            "[variables('AppInsightsName')]"
+          ],
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "enabled": true,
+                "Category": "AppAvailabilityResults"
+              },
+              {
+                "enabled": true,
+                "Category": "AppBrowserTimings"
+              },
+              {
+                "enabled": true,
+                "Category": "AppEvents"
+              },
+              {
+                "enabled": true,
+                "Category": "AppMetrics"
+              },
+              {
+                "enabled": true,
+                "Category": "AppDependencies"
+              },
+              {
+                "enabled": true,
+                "Category": "AppExceptions"
+              },
+              {
+                "enabled": true,
+                "Category": "AppPageViews"
+              },
+              {
+                "enabled": true,
+                "Category": "AppPerformanceCounters"
+              },
+              {
+                "enabled": true,
+                "Category": "AppRequests"
+              },
+              {
+                "enabled": true,
+                "Category": "AppSystemEvents"
+              },
+              {
+                "enabled": true,
+                "Category": "AppTraces"
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "condition": "[equals(parameters('Stage').OMSDataSources,1)]",

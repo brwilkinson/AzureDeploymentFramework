@@ -34,7 +34,7 @@
     "sqlCredentialName": "localadmin",
     "sqlAutobackupRetentionPeriod": 5,
     "RolesLookup": {
-      "benwilk@Microsoft.com": "b8214ecb-d982-402b-8185-ca909b853eec",
+      "benwilk@Microsoft.com": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
       "AzureDeploymentFramework_AZC1-BRW-AOA-RG-P0": "5c2c55dc-b5ea-4669-84c1-b43152aabb36",
       "AzureDeploymentFramework_AZC1-BRW-AOA-RG-G0": "7f1b9dac-a112-4215-b81e-757970625279",
       "AzureDeploymentFramework_AZC1-BRW-AOA-RG-G1": "570cdf81-6735-4f6b-a3dc-148e4179fbad",
