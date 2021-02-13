@@ -70,7 +70,7 @@ Go Home [Documentation Home](./ARM.md)
 |---|---|---|---|
 |Prefix |**{Prefix}**-FAB-HUB-P0-kvVLT01|AZE2 + AZC1|Location - Azure Region (Using Azure Partner Regions) |
 |DeploymentID |AZC1-FAB-HUB-P**{DeploymentID}**-kvVLT01|0 + 1 --> 8 <br/> 00 + 01 --> 15|The deployment iterations (configured to 8 environments) <br/>The deployment iterations (configured to 16 environments)<br/>- Network ranges in Hub/Spoke are dynamically assigned based on this [DeploymentID] |
-|Environment|AZC1-FAB-HUB-**{Environment}**0-kvVLT01|S + D + T + Q + U + P |The specific environment type<br/>[Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
+|Environment|AZC1-FAB-HUB-**{Environment}**0-kvVLT01|S + D + T + Q + U + P |The specific environment type:<br/>[Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
 |etype|Prod|PreProd + Prod|The general environment type |
 |Enviro |AZC1-FAB-HUB-**{Enviro}**-kvVLT01|D03 + T04 + Q06 + U08 + P09 + P00 <br/>S1 + D2 + D3 + T4 + U5 + P6 |The environment name (16 environments)<br/>The environment name (8 environments)|
 |OrgName|AZC1-**{OrgName}**-HUB-P0-kvVLT01|FAB or ADW or WTP or FAB|Your 3 letter Organization (company) name.<br/>This ensures public Azure Resources have a unique name|
