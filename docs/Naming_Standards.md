@@ -66,7 +66,7 @@ Go Home [Documentation Home](./ARM.md)
             - [A Subnet from S1 Spoke Bastion Subnet connecting back to the Hub Network watcher]
 ```
 
-|Name |Example|Allowed Values |Defintion |
+|Name |Example|Allowed/Sample Values |Defintion |
 |---|---|---|---|
 |Prefix |**{Prefix}**-FAB-HUB-P0-kvVLT01|AZE2 + AZC1|Location - Azure Region (Using Azure Partner Regions) |
 |DeploymentID |AZC1-FAB-HUB-P**{DeploymentID}**-kvVLT01|0 + 1 --> 8 <br/> 00 + 01 --> 15|The deployment iterations (configured to 8 environments) <br/>The deployment iterations (configured to 16 environments)<br/>- Network ranges in Hub/Spoke are dynamically assigned based on this [DeploymentID] |
