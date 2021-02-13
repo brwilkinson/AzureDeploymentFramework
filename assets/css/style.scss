@@ -1,0 +1,9 @@
+---
+---
+@import "{{ site.theme }}";
+/* "{{ site.theme }}" = Your theme name */
+/* Eg: @import 'jekyll-theme-cayman'; */
+
+/* Your css rules goes after this */
+.main-content table { font-size: small; }
+.main-content { max-width: 90rem }
