@@ -8,7 +8,7 @@
         "window.title": "${activeFolderLong}",
         "azureResourceManagerTools.autoDetectJsonTemplates": true,
         "azureResourceManagerTools.checkForLatestSchema": true,
-        "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
+        "powershell.scriptAnalysis.settingsPath": "./.vscode/PSScriptAnalyzerSettings.psd1",
         "powershell.codeFormatting.addWhitespaceAroundPipe": true,
         "powershell.codeFormatting.alignPropertyValuePairs": true,
         "powershell.codeFormatting.autoCorrectAliases": true,
