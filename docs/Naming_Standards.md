@@ -178,12 +178,13 @@ The name of any resource is determined via the following method.
                         // example: AZC1-FAB-HUB-G1
         "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     ```
-### End user is **not responsible** for managing naming standards conventions, **they are baked in**, end users only provide the short resource name.
-#### Short Name examples:
+
+#### An end user is **not responsible** for managing naming standards/conventions, **standards are baked in**, end users only provide the short resource name. **It is possible to change the default naming convention to meet your organizational needs**, I wouldn't recommend it, however you would simply update the **"Deployment"** variable (shown above in json code) to your new format.
+##### Short Resource Name examples:
     - global     e.g. storage namesuffix
     - SQL01      e.g. Virtual Machine Name
     - App01      e.g. Keyvault Name
-    - FW00       e.g. Web Application Firewall Name
+    - FW01       e.g. Web Application Firewall Name
 
 ### Sample portal images based on this naming convention.
 #### Sample - ResourceGroups
