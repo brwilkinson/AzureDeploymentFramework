@@ -39,9 +39,9 @@ Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name
 **Overrides for duplictes in BOLD**
 
     - 3 Name overrides are currently in place
-        - Brazil Southeast    BSE
-        - North Europe        NEU
-        - West Europe         WEU
+        - Brazil Southeast    BS1 --> BSE
+        - North Europe        NE1 --> NEU
+        - West Europe         WE1 --> WEU
 
 |displayname|first|second|third|Name|NameOverRide|FinalName (PREFIX)|
 |:--|:--|:--|:--|:--|:--|:--|
