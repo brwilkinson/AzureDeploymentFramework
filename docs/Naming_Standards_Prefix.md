@@ -13,20 +13,26 @@ Go Home [Naming Standards](./Naming_Standards.md)
     Common naming standards/conventions/examples for PREFIX:
 
 ```powershell
+
 Install-Module FormatMarkdownTable -Force
 
 Get-AzLocation | ForEach-Object {
     $parts = $_.displayname -split '\s' ;
+    
+    # Build the Naming Standard based on the name parts
+    $NameFormat = $($Parts[0][0] + $Parts[1][0] ) + $(if ($parts[2]) { $parts[2][0] }else { 1 })
+    
     [pscustomobject]@{
         displayname          = $_.displayname; 
         first                = $Parts[0]; 
         second               = $parts[1]; 
         third                = $parts[2]; 
-        Name                 = $($Parts[0][0] + $Parts[1][0] ) + $(if ($parts[2]) { $parts[2][0] }else { 1 })
-        NameOverRide         = $($Parts[0][0] + $Parts[1][0] ) + $(if ($parts[2]) { $parts[2][0] }else { 1 })
-        'FinalName (PREFIX)' = 'A' + $($Parts[0][0] + $Parts[1][0] ) + $(if ($parts[2]) { $parts[2][0] }else { 1 })
+        Name                 = $NameFormat
+        NameOverRide         = $NameFormat       # Column for any name collisions to create override
+        'FinalName (PREFIX)' = 'A' + $NameFormat # Add the 'A' for Azure to the front of the Name
     } 
-} | Sort-Object name | Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name, Name, NameOverRide, 'FinalName (PREFIX)'
+} | Sort-Object name | 
+Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name, Name, NameOverRide, 'FinalName (PREFIX)'
 
 ```
 
