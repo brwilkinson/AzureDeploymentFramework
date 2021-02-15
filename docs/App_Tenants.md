@@ -9,12 +9,22 @@ The Framework supports deploying Multiple Applications, each application is refe
 
 A single DevOps Team owns all of the deployments for all of the tenants in the projects, including all release pipelines.
 
+If you only have a single Tenant, you can just deploy the HUB/Spoke from a single tenant.
+
+####  App (Tenant) "ADF"
+![App Tenants](./App_Tenants_Single.jpg)
+
 You may adopt a Shared Services HUB tenant and all other tenants will only have Spoke environments.
 
-If you only have a single Tenant, you can just deploy the HUB from the single tenant.
+#### Shared Services Hub - Supporting App (Tenant) "ADF"
+![App Tenants](./App_Tenants_Shared_Hub_Single.jpg)
 
-You can easily deploy all Tenants into the same subscription, however you can also deploy across multiple Subscriptions
+#### Shared Services Hub - Supporting Apps (Tenants) "ADF" & "PSO"
+![App Tenants](./App_Tenants_Shared_Hub_Multi.jpg)
 
+You can easily deploy all Tenants (Apps) into the same subscription, however you can also deploy across or into multiple Subscriptions.
+
+####  Apps shown in project files (tenants directory, with each tenant/App)
 ![App Tenants](./App_Tenants.jpg)
 
 Each Tenant has it's own dedicated directory, that contains the Environment Meta Data for that Application.
@@ -47,5 +57,8 @@ Each Tenant has it's own dedicated directory, that contains the Environment Meta
         - You can deploy using Azure Template Specs (Preview)
             - You can build Azure BluePrints from those Template Specs (Preview)
 
+####  Apps shown in project (tenants directory, with each tenant/App) and associated Meta Data Files
 ![App Tenant Metadata](./App_Tenants_Metadata.jpg)
+
+![GitHub Workflow Files for Tenants/Environments](./App_Tenants_Workflows.jpg)
 ---
