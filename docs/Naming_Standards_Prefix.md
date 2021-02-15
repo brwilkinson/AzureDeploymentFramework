@@ -36,7 +36,7 @@ Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name
 
 ```
 
-**Overrides for duplictes in BOLD**
+**Overrides for duplicates in BOLD**
 
     - 3 Name overrides are currently in place
         - Brazil Southeast    BS1 --> BSE
