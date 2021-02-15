@@ -28,7 +28,7 @@ Get-AzLocation | ForEach-Object {
         second               = $parts[1]; 
         third                = $parts[2]; 
         Name                 = $NameFormat
-        NameOverRide         = $NameFormat       # Column for any name collisions to create override
+        NameOverRide         = $NameFormat       # Column for any name collisions to create "manual" override
         'FinalName (PREFIX)' = 'A' + $NameFormat # Add the 'A' for Azure to the front of the Name
     } 
 } | Sort-Object name | 
