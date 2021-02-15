@@ -26,17 +26,26 @@ Each Tenant has it's own dedicated directory, that contains the Environment Meta
             - You can clone a entire environment by Cloning a parameter file and giving it a new name e.g. S2
     - 1 Aligned with the App Tenant - Global [G1](./Deployment_Partitions.md)
     - 1 Aligned with the Subscription - Global [G0](./Deployment_Partitions.md)
-- Global-AZC1 - Global config for that region
-- Global-Global - Global config for that tenant
-- Global-Config - Global config for that tenant
+- Global-Global - Global config for that tenant/App
+- Global-Config - Global config for that tenant/App
+- Global-ConfigVM - Global config for that tenant/App
 - Global-AZC1 - Global config for that region
 - Global-AZE2 - Global config for the partner region (Primarily a DR region)
-- Deployment Pipeline Yaml files
+- Deployment Pipeline Yaml files (as shown for Azure DevOps, GitHub Workflows are in a separate .github directory)
 - azure-Deploy.ps1 - This is the main Deployment Script for ALL Manual (Non-Pipeline) Deployments.
     - Samples of deploying to any Environment are in this script
     - You can deploy from scratch with these commands
+        - Bootstrap commands are included in this file
     - These are the exact same commands that are exectuted within the Pipelines
+        - Often you need to only execute a more granular deployment e.g. testing/dev
     - All deployments from this project are PowerShell based, so you are not tied to any single Deployment Platform
+        - You can deploy from Azure Cloud shell
+        - You can deploy from PowerShell on your local machine
+        - You can deploy from GitHub workflow using the 'azure/login@v1' and 'Azure/powershell@v1' Actions
+        - You can deploy from Azure DevOps using the 'AzurePowerShell@5' task
+        - You can deploy from other tools e.g. Jenkins Etc.
+        - You can deploy using Azure Template Specs (Preview)
+            - You can build Azure BluePrints from those Template Specs (Preview)
 
 ![App Tenant Metadata](./App_Tenants_Metadata.jpg)
 ---
