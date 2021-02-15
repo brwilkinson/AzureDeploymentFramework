@@ -43,23 +43,6 @@ Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name
         - North Europe        NE1 --> NEU
         - West Europe         WE1 --> WEU
 
-**Get-AzLocation \| ForEach-Object {
-    \$parts = \$\_.displayname -split '\\s' ;
-    
-    # Build the Naming Standard based on the name parts
-    \$NameFormat = \$(\$Parts[0][0] + \$Parts[1][0] ) + \$(if (\$parts[2]) { \$parts[2][0] }else { 1 })
-    
-    [pscustomobject]@{
-        displayname          = \$\_.displayname; 
-        first                = \$Parts[0]; 
-        second               = \$parts[1]; 
-        third                = \$parts[2]; 
-        Name                 = \$NameFormat
-        NameOverRide         = ""       # Column for any name collisions to create "manual" override
-        'FinalName (PREFIX)' = 'A' + \$NameFormat # Add the 'A' for Azure to the front of the Name
-    } 
-} \| Sort-Object name \| 
-Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name, Name, NameOverRide, 'FinalName (PREFIX)'**
 
 |displayname|first|second|third|Name|NameOverRide|FinalName (PREFIX)|
 |:--|:--|:--|:--|:--|:--|:--|
