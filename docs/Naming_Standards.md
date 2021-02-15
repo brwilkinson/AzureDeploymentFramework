@@ -69,7 +69,7 @@ Go Home [Documentation Home](./ARM.md)
 |Name |Example|Allowed/Sample Values |Defintion |
 |---|---|---|---|
 |Example_Resource |**AZC1-FAB-HUB-P0-kvVLT01**|AZC1-FAB-HUB-P0-kvVLT01|A sample resource name used in this table<br/> Sample of a keyvault name |
-|Prefix |**{Prefix}**-FAB-HUB-P0-kvVLT01|AZE2 + AZC1|Location - Azure Region (Using Azure Partner Regions) |
+|[Prefix](./Naming_Standards_Prefix.md) |**{Prefix}**-FAB-HUB-P0-kvVLT01|AZE2 + AZC1|Location - Azure Region (Using Azure Partner Regions) |
 |DeploymentID |AZC1-FAB-HUB-P**{DeploymentID}**-kvVLT01|0 + 1 --> 8 <br/> 00 + 01 --> 15|The deployment iterations (configured to 8 environments) <br/>The deployment iterations (configured to 16 environments)<br/>- Network ranges in Hub/Spoke are dynamically assigned based on this [DeploymentID] |
 |Environment|AZC1-FAB-HUB-**{Environment}**0-kvVLT01|S + D + T + Q + U + P |The specific environment type:<br/>[Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
 |etype|Prod|PreProd + Prod|The general environment type |
@@ -96,7 +96,7 @@ The name of any resource is determined via the following method.
 - [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
     - The parameter file defines a Resource Group
     - This contains, the 3 parameters that automatically build the resource names.
-        - Prefix
+        - [Prefix](./Naming_Standards_Prefix.md)
         - Environment
         - DeploymentID
 

@@ -32,7 +32,7 @@ Get-AzLocation | ForEach-Object {
         'FinalName (PREFIX)' = 'A' + $NameFormat # Add the 'A' for Azure to the front of the Name
     } 
 } | Sort-Object name | 
-Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name, Name, NameOverRide, 'FinalName (PREFIX)'
+Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name, Name, NameOverRide, 'FinalName (Prefix)'
 
 ```
 
@@ -44,7 +44,7 @@ Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name
         - West Europe         WE1 --> WEU
 
 
-|displayname|first|second|third|Name|NameOverRide|FinalName (PREFIX)|
+|displayname|first|second|third|Name|NameOverRide|FinalName (Prefix)|
 |:--|:--|:--|:--|:--|:--|:--|
 |Australia Central|Australia|Central||AC1||AAC1|
 |Australia Central 2|Australia|Central|2|AC2||AAC2|
