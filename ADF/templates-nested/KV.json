@@ -156,7 +156,6 @@
                             }
                         ]
                     }
-
                 }
                 // {
                 //     "condition": "[and(not(parameters('KVInfo').RbacAuthorization),contains(parameters('KVInfo'),'UserAssignedIdentity'))]",
