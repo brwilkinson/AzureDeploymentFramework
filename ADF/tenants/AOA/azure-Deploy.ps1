@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'AOA'
-$Enviro = 'P0'
+$Enviro = 'G1'
 # import deployment script
 if(!(test-path ASD:\)){new-psdrive -PSProvider FileSystem -Root $ASD -Name ASD}
 . ASD:\release-az\Start-AzDeploy.ps1
@@ -67,6 +67,7 @@ AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\1-azuredeplo
 AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-KV.json
 AzDeploy -App $App -Prefix AEU2 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-KV.json
 
+AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\2-azuredeploy-FrontDoor.json
 AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\9-azuredeploy-APIM.json -FullUpload
 
 # $Enviro AppServers Deploy

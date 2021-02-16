@@ -83,7 +83,7 @@
       "[concat(variables('networkId'),'.0/23')]"
     ],
     "DC1PrivateIPAddress": "[parameters('Global').DNSServers[0]]",
-    "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]", 
+    "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]",
     // "DNSServers": "[parameters('Global').DNSServers]",
     "AzureDNS": "168.63.129.16",
     "DeploymentInfoObject": {
@@ -112,6 +112,7 @@
       "VMSQL": "templates-base\\5-azuredeploy-VMApp.json",
       "VMFILE": "templates-base\\5-azuredeploy-VMApp.json",
       "WAF": "templates-base\\6-azuredeploy-WAF.json",
+      "FRONTDOOR": "templates-base\\2-azuredeploy-FrontDoor.json",
       "WAFPOLICY": "templates-base\\6-azuredeploy-WAFPolicy.json",
       "APIM": "templates-base\\9-azuredeploy-APIM.json",
       "ServerFarm": "templates-base\\18-azuredeploy-AppServiceplan.json",
@@ -767,6 +768,24 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').DNSLookup, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[equals(parameters('Stage').FRONTDOOR,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-FRONTDOOR')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-WAF')]",
+        "[concat('dp', variables('Deployment'), '-APIM')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').FRONTDOOR, parameters('_artifactsLocationSasToken'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

@@ -878,6 +878,33 @@
       },
       "resources": [
         {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[variables('OMSworkspaceName')]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "Audit",
+                "enabled": true
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        },
+        {
           "apiVersion": "2015-11-01-preview",
           "type": "linkedServices",
           "name": "Automation",

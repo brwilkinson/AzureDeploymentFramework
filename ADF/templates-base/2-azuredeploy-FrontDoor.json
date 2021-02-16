@@ -76,170 +76,295 @@
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
-    "SubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(variables('Deployment'),'-vn'),variables('snAzureBastionSubnet'))]",
-    "snAzureBastionSubnet": "AzureBastionSubnet",
-    // "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snAzureBastionSubnet'))]",
-    "frontDoorInfo": {
-      "name": "AOA01"
-    }
+
+    "frontDoorInfo": "[if(contains(parameters('DeploymentInfo'),'frontDoorInfo'),parameters('DeploymentInfo').frontDoorInfo,createArray())]",
+    "copy": [
+      {
+        "name": "frontDoor",
+        "count": "[length(variables('frontDoorInfo'))]",
+        "input": {
+          "match": "[if(
+                        or(
+                            equals(parameters('Global').CN,'.'),
+                            contains(parameters('Global').CN,parameters('DeploymentInfo').frontDoorInfo[copyIndex('frontDoor')].Name)
+                          ),
+                        bool('true'),
+                        bool('false')
+                    )]"
+        }
+      }
+    ]
   },
   "resources": [
     {
-      "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-11-01",
-      "name": "[concat(variables('Deployment'),'-publicip',variables('BastionInfo').name)]",
-      "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "Standard"
+      "condition": "[variables('frontDoor')[copyIndex(0)].match]",
+      "name": "[concat(variables('Deployment'),'-afd',if(equals(length(variables('frontDoor')),0),'',variables('frontDoorInfo')[copyIndex()].name))]",
+      "apiVersion": "2020-05-01",
+      "type": "Microsoft.Network/frontdoors",
+      "location": "global",
+      "copy": {
+        "name": "frontDoorLoop",
+        "count": "[length( variables('frontDoor') )]"
       },
       "properties": {
-        "publicIPAllocationMethod": "Static"
-      }
-    },
-    {
-      "name": "[concat(variables('Deployment'),'-bst',variables('BastionInfo').name)]",
-      "type": "Microsoft.Network/bastionHosts",
-      "apiVersion": "2019-11-01",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat(variables('Deployment'),'-publicip',variables('BastionInfo').name)]"
-      ],
-      "properties": {
-        // "dnsName": "bst-fb7c1034-4815-4e38-9696-3b1d38d46a7d.bastion.azure.com",
-        "ipConfigurations": [
+        // "frontdoorId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01",
+        "friendlyName": "[variables('frontDoorInfo')[copyIndex(0)].name]",
+        "enabledState": "Enabled",
+        "frontendEndpoints": [
           {
-            "name": "IpConf",
+            "name": "[concat(variables('frontDoorInfo')[copyIndex(0)].name,'-azurefd-net')]",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                // "id": "/subscriptions/29f50f59-74bc-446a-939e-6e8ee092bf91/resourceGroups/AZE2-P00-FNFTE/providers/Microsoft.Network/publicIPAddresses/AZE2-P00-NTE-publicipBST01"
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-publicip',variables('BastionInfo').name))]"
-              },
-              "subnet": {
-                "id": "[variables('SubnetID')]"
-              }
+              "hostName": "[concat(variables('Deployment'),'-afd',variables('frontDoorInfo')[copyIndex(0)].name,'.azurefd.net')]",
+              "sessionAffinityEnabledState": "Enabled",
+              "sessionAffinityTtlSeconds": 0,
+              "customHttpsConfiguration": null
+              // "webApplicationFirewallPolicyLink": {
+              //   "id": "string"
+              // }
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "[concat(variables('Deployment'),'-afd',variables('frontDoorInfo').name)]",
-      "type": "Microsoft.Network/frontDoors",
-      "apiVersion": "2020-05-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "friendlyName": "string",
-        "routingRules": [
-          {
-            "id": "string",
-            "properties": {
-              "frontendEndpoints": [
-                {
-                  "id": "string"
-                }
-              ],
-              "acceptedProtocols": [
-                "string"
-              ],
-              "patternsToMatch": [
-                "string"
-              ],
-              "enabledState": "string",
-              "routeConfiguration": {
-                "@odata.type": "string"
-              },
-              "rulesEngine": {
-                "id": "string"
-              },
-              "webApplicationFirewallPolicyLink": {
-                "id": "string"
-              },
-              "resourceState": "string"
-            },
-            "name": "string"
-          }
-        ],
-        "loadBalancingSettings": [
-          {
-            "id": "string",
-            "properties": {
-              "sampleSize": "integer",
-              "successfulSamplesRequired": "integer",
-              "additionalLatencyMilliseconds": "integer",
-              "resourceState": "string"
-            },
-            "name": "string"
+            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/frontendEndpoints/aoa01-azurefd-net"
           }
         ],
         "healthProbeSettings": [
           {
-            "id": "string",
+            "name": "probe01",
             "properties": {
-              "path": "string",
-              "protocol": "string",
-              "intervalInSeconds": "integer",
-              "healthProbeMethod": "string",
-              "enabledState": "string",
-              "resourceState": "string"
-            },
-            "name": "string"
+              "path": "/",
+              "protocol": "Https",
+              "intervalInSeconds": 30,
+              "healthProbeMethod": "Head",
+              "enabledState": "Enabled"
+            }
+            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/healthProbeSettings/probe01"
+          }
+        ],
+        "loadBalancingSettings": [
+          {
+            "name": "loadbalance01",
+            "properties": {
+              "sampleSize": 4,
+              "successfulSamplesRequired": 2,
+              "additionalLatencyMilliseconds": 0
+            }
+            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/loadBalancingSettings/loadbalance01"
           }
         ],
         "backendPools": [
           {
-            "id": "string",
+            "name": "bepool01",
             "properties": {
               "backends": [
                 {
-                  "address": "string",
-                  "privateLinkAlias": "string",
-                  "privateLinkResourceId": "string",
-                  "privateLinkLocation": "string",
-                  "privateLinkApprovalMessage": "string",
-                  "httpPort": "integer",
-                  "httpsPort": "integer",
-                  "enabledState": "string",
-                  "priority": "integer",
-                  "weight": "integer",
-                  "backendHostHeader": "string"
+                  "address": "azc1-adf-s1-apim01.azure-api.net",
+                  "privateLinkResourceId": null,
+                  "privateLinkLocation": null,
+                  "privateEndpointStatus": null,
+                  "privateLinkApprovalMessage": null,
+                  "enabledState": "Enabled",
+                  "httpPort": 80,
+                  "httpsPort": 443,
+                  "priority": 1,
+                  "weight": 50,
+                  "backendHostHeader": "azc1-adf-s1-apim01.azure-api.net"
                 }
               ],
               "loadBalancingSettings": {
-                "id": "string"
+                "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/loadBalancingSettings/loadbalance01"
               },
               "healthProbeSettings": {
-                "id": "string"
-              },
-              "resourceState": "string"
+                "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/healthProbeSettings/probe01"
+              }
             },
-            "name": "string"
+            "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/backendPools/bepool01"
           }
         ],
-        "frontendEndpoints": [
+        "routingRules": [
           {
-            "id": "string",
+            "name": "rr01",
             "properties": {
-              "hostName": "string",
-              "sessionAffinityEnabledState": "string",
-              "sessionAffinityTtlSeconds": "integer",
-              "webApplicationFirewallPolicyLink": {
-                "id": "string"
-              },
-              "resourceState": "string"
-            },
-            "name": "string"
+              "frontendEndpoints": [
+                {
+                  "id": "[concat('/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/frontendEndpoints/',variables('frontDoorInfo')[copyIndex(0)].name,'-azurefd-net')]"
+                }
+              ],
+              "acceptedProtocols": [
+                "Http",
+                "Https"
+              ],
+              "patternsToMatch": [
+                "/*"
+              ],
+              "enabledState": "Enabled",
+              "routeConfiguration": {
+                "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+                "customForwardingPath": null,
+                "forwardingProtocol": "HttpsOnly",
+                "backendPool": {
+                  "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/backendPools/bepool01"
+                },
+                "cacheConfiguration": null
+              }
+            }
+            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/routingRules/rr01"
           }
         ],
         "backendPoolsSettings": {
-          "enforceCertificateNameCheck": "string",
-          "sendRecvTimeoutSeconds": "integer"
-        },
-        "enabledState": "string",
-        "resourceState": "string"
+          "enforceCertificateNameCheck": "Enabled",
+          "sendRecvTimeoutSeconds": 30
+        }
       },
-      "resources": []
+      "resources": [
+        {
+          "condition": "[variables('frontDoor')[copyIndex(0)].match]",
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[concat(variables('Deployment'),'-afd',if(equals(length(variables('frontDoor')),0),'',variables('frontDoorInfo')[copyIndex()].name))]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "FrontdoorAccessLog",
+                "enabled": true
+              },
+              {
+                "category": "FrontdoorWebApplicationFirewallLog",
+                "enabled": true
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
+    // {
+    //   "name": "[concat(variables('Deployment'),'-afd',variables('frontDoorInfo')[copyIndex(0)].name)]",
+    //   "type": "Microsoft.Network/frontDoors",
+    //   "apiVersion": "2020-05-01",
+    //   "location": "global",
+    //   "properties": {
+    //     "friendlyName": "string",
+    //     "enabledState": "string",
+    //     // "resourceState": "string"
+    //     "frontendEndpoints": [
+    //       {
+    //         "name": "string",
+    //         // "id": "string",
+    //         "properties": {
+    //           "hostName": "string",
+    //           "sessionAffinityEnabledState": "string",
+    //           "sessionAffinityTtlSeconds": "integer",
+    //           "webApplicationFirewallPolicyLink": {
+    //             "id": "string"
+    //           }
+    //           // "resourceState": "string"
+    //         }
+    //       }
+    //     ],
+    //     "routingRules": [
+    //       {
+    //         "id": "string",
+    //         "properties": {
+    //           "frontendEndpoints": [
+    //             {
+    //               "id": "string"
+    //             }
+    //           ],
+    //           "acceptedProtocols": [
+    //             "string"
+    //           ],
+    //           "patternsToMatch": [
+    //             "string"
+    //           ],
+    //           "enabledState": "string",
+    //           "routeConfiguration": {
+    //             "@odata.type": "string"
+    //           },
+    //           "rulesEngine": {
+    //             "id": "string"
+    //           },
+    //           "webApplicationFirewallPolicyLink": {
+    //             "id": "string"
+    //           },
+    //           "resourceState": "string"
+    //         },
+    //         "name": "string"
+    //       }
+    //     ],
+    //     "loadBalancingSettings": [
+    //       {
+    //         "id": "string",
+    //         "properties": {
+    //           "sampleSize": "integer",
+    //           "successfulSamplesRequired": "integer",
+    //           "additionalLatencyMilliseconds": "integer",
+    //           "resourceState": "string"
+    //         },
+    //         "name": "string"
+    //       }
+    //     ],
+    //     "healthProbeSettings": [
+    //       {
+    //         "id": "string",
+    //         "properties": {
+    //           "path": "string",
+    //           "protocol": "string",
+    //           "intervalInSeconds": "integer",
+    //           "healthProbeMethod": "string",
+    //           "enabledState": "string",
+    //           "resourceState": "string"
+    //         },
+    //         "name": "string"
+    //       }
+    //     ],
+    //     "backendPools": [
+    //       {
+    //         "id": "string",
+    //         "properties": {
+    //           "backends": [
+    //             {
+    //               "address": "string",
+    //               "privateLinkAlias": "string",
+    //               "privateLinkResourceId": "string",
+    //               "privateLinkLocation": "string",
+    //               "privateLinkApprovalMessage": "string",
+    //               "httpPort": "integer",
+    //               "httpsPort": "integer",
+    //               "enabledState": "string",
+    //               "priority": "integer",
+    //               "weight": "integer",
+    //               "backendHostHeader": "string"
+    //             }
+    //           ],
+    //           "loadBalancingSettings": {
+    //             "id": "string"
+    //           },
+    //           "healthProbeSettings": {
+    //             "id": "string"
+    //           },
+    //           "resourceState": "string"
+    //         },
+    //         "name": "string"
+    //       }
+    //     ],
+    //     "backendPoolsSettings": {
+    //       "enforceCertificateNameCheck": "string",
+    //       "sendRecvTimeoutSeconds": "integer"
+    //     }
+    //   },
+    //   "resources": []
+    // }
   ],
   "outputs": {
   }

@@ -35,8 +35,8 @@
         "SP": 1,
         "KV": 0,
         "OMS": 1,
-        "OMSSolutions": 1,
-        "OMSDataSources": 1,
+        "OMSSolutions": 0,
+        "OMSDataSources": 0,
         "SA": 1,
         "StorageSync": 0,
         "RSV": 0,
@@ -65,6 +65,7 @@
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 0,
+        "FRONTDOOR": 1,
         "WAF": 0,
         "SetWAFDNS": 0,
         "APIM": 0,
@@ -161,10 +162,15 @@
             },
             "blobVersioning": 1,
             "changeFeed": 1,
-            "softDeletePolicy":{
-              "enabled" : 1,
+            "softDeletePolicy": {
+              "enabled": 1,
               "days": 7
             }
+          }
+        ],
+        "frontDoorInfo": [
+          {
+            "name": "AOA01"
           }
         ],
         "DC1PrivateIPAddress": "75",
