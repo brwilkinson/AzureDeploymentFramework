@@ -68,6 +68,7 @@
         "FRONTDOOR": 1,
         "WAF": 0,
         "SetWAFDNS": 0,
+        "SetFRONTDOORDNS": 1,
         "APIM": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
@@ -171,8 +172,38 @@
         "frontDoorInfo": [
           {
             "name": "01",
-            "services" : [
-              
+            "services": [
+              // {
+              //   "Name": "APIM",
+              //   "FriendlyName": "01",
+              //   "ProbeName": "probe01",
+              //   "BEAddress": "azc1-adf-s1-apim01.azure-api.net",
+              //   "LBSettings": "balance01",
+              //   "sessionAffinityEnabledState": "Enabled"
+              // }
+              {
+                "Name": "APIM-DEVELOPER",
+                "FriendlyName": "01",
+                "ProbeName": "probe01",
+                "BEAddress": "azc1-adf-s1-apim01.portal.azure-api.net",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Enabled",
+                "patternsToMatch": ["/*"]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
             ]
           }
         ],

@@ -1,0 +1,477 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "S"
+    },
+    "DeploymentID": {
+      "value": "1"
+    },
+    "vmAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "localadmin"
+      }
+    },
+    "DevOpsAgentPATToken": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "DevOpsAgentPATToken"
+      }
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "UAI": 1,
+        "SP": 1,
+        "KV": 1,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "SA": 1,
+        "StorageSync": 0,
+        "RSV": 0,
+        "NSGHUB": 1,
+        "NSGSPOKE": 1,
+        "NetworkWatcher": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetPeering": 1,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 1,
+        "BastionHost": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "ERGW": 0,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "ILB": 0,
+        "PLB": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0,
+        "VMSS": 0,
+        "WAFPOLICY": 0,
+        "FRONTDOOR": 0,
+        "WAF": 0,
+        "SetWAFDNS": 0,
+        "APIM": 1,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 1,
+        "DNSLookup": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "AzureSQL": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "AdminCenter": 0,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 1,
+        "SqlIaasExtension": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HUB"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperator",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Blob Data Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "Contributor",
+            "Member": "benwilk@Microsoft.com"
+          },
+          {
+            "Name": "Key Vault Administrator",
+            "Member": "benwilk@Microsoft.com"
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-S1",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "PREFIX": "AZE2"
+              }
+            ]
+          }
+        ],
+        "SubnetInfo": [
+          {
+            "name": "snWAF01",
+            "prefix": "0/27",
+            "NSG": 1
+          },
+          {
+            "name": "snFE01",
+            "prefix": "32/27",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "snAD01",
+            "prefix": "64/28",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "snBE01",
+            "prefix": "80/28",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "AzureFirewallSubnet",
+            "prefix": "128/26",
+            "NSG": 0
+          },
+          {
+            "name": "GatewaySubnet",
+            "prefix": "192/27",
+            "NSG": 0
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": false
+          }
+        ],
+        "saInfo": [
+          {
+            "nameSuffix": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy":{
+              "enabled" : 1,
+              "days": 7
+            }
+          }
+          // {
+          //   "nameSuffix": "adds",
+          //   "skuName": "Standard_LRS",
+          //   "allNetworks": "Allow",
+          //   "ADDS": 0,
+          //   "largeFileSharesState": "Disabled",
+          //   "logging": {
+          //     "r": 0,
+          //     "w": 0,
+          //     "d": 1
+          //   },
+          //   "blobVersioning": 1,
+          //   "changeFeed": 1,
+          //   "softDeletePolicy":{
+          //     "enabled" : 1,
+          //     "days": 7
+          //   }
+          // }
+        ],
+        "LogicInfo": [
+          {
+            "Name": "SMTPTEST02"
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "App01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": "Deny",
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "vault"
+              }
+            ]
+          }
+        ],
+        "appConfigurationInfo": [
+          {
+            "name": "01",
+            "sku": "standard",
+            "publicNetworkAccess": "Enabled"
+          }
+        ],
+        "ContainerRegistry": [
+          {
+            "Name": "CTN01",
+            "SKU": "Standard",
+            "adminUserEnabled": true
+          }
+        ],
+        "AKS": [
+          {
+            "Name": "AKS01",
+            "Version": "1.11.5",
+            "AgentPools": [
+              {
+                "name": "NodePool1",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 110,
+                "storageProfile": "ManagedDisks",
+                "vmSize": "Standard_D1_v2"
+              }
+            ]
+          }
+        ],
+        "CosmosDB": [
+          {
+            "dbName": "CDB03",
+            "Kind": "MongoDB"
+          }
+        ],
+        "APIMInfo": [
+          {
+            "name": "01",
+            "dnsName": "API",
+            "apimSku": "Developer",
+            "snName": "BE03"
+          }
+        ],
+        "WAFInfo": [
+          {
+            "WAFName": "API",
+            "WAFEnabled": false,
+            "WAFMode": "Detection",
+            "WAFSize": "WAF_v2",
+            "WAFTier": "WAF_v2",
+            "WAFCapacity": 2,
+            "PrivateIP": "30",
+            "SSLCerts": [
+              "WildcardCert"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "BEIPs": [
+              "254"
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 8988,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "Cert": "MultiDomainwildcard",
+                "hostname": "contoso.com"
+              },
+              {
+                "Port": 8989,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "Cert": "MultiDomainwildcard",
+                "hostname": "contoso.com"
+              },
+              {
+                "Port": 8990,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "Cert": "MultiDomainwildcard",
+                "hostname": "contoso.com"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "8988",
+                "Protocol": "https",
+                "Cert": "MultiDomainwildcard",
+                "Domain": "contoso.com",
+                "Hostname": "yates",
+                "Interface": "Public"
+              },
+              {
+                "Port": 443,
+                "BackendPort": "8989",
+                "Protocol": "https",
+                "Cert": "MultiDomainwildcard",
+                "Domain": "contoso.com",
+                "Hostname": "select",
+                "Interface": "Public"
+              },
+              {
+                "Port": 443,
+                "BackendPort": "8990",
+                "Protocol": "https",
+                "Cert": "MultiDomainwildcard",
+                "Domain": "contoso.com",
+                "Hostname": "sentry",
+                "Interface": "Public"
+              },
+              {
+                "Port": 443,
+                "BackendPort": "8990",
+                "Protocol": "https",
+                "Cert": "MultiDomainwildcard",
+                "Domain": "contoso.com",
+                "Hostname": "",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "contoso.com",
+                "Hostname": "",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "contoso.com",
+                "Hostname": "select",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "contoso.com",
+                "Hostname": "sentry",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "contoso.com",
+                "Hostname": "yates",
+                "Interface": "Public"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -29,30 +29,111 @@
     "copy": [
       {
         "name": "frontendEndpoints",
-        "count": "[length(parameters('frontDoorInfo').frontendEndpoints)]",
+        "count": "[length(parameters('frontDoorInfo').services)]",
         "input": {
-
+          "name": "[concat(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].name,'-azurefd-net')]",
+          "properties": {
+            "hostName": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].FriendlyName,'.azurefd.net')]",
+            "sessionAffinityEnabledState": "[parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].sessionAffinityEnabledState]",
+            "sessionAffinityTtlSeconds": 0,
+            "customHttpsConfiguration": null
+            // "webApplicationFirewallPolicyLink": {
+            //   "id": "string"
+            // }
+          }
         }
       },
       {
         "name": "healthProbeSettings",
-        "count": "[length(parameters('frontDoorInfo').healthProbeSettings)]",
+        "count": "[length(parameters('frontDoorInfo').probes)]",
         "input": {
-
+          "name": "[parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')].name]",
+          "properties": {
+            "path": "[parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')].ProbePath]",
+            "protocol": "Https",
+            "intervalInSeconds": 30,
+            "healthProbeMethod": "Head",
+            "enabledState": "Enabled"
+          }
+        }
+      },
+      {
+        "name": "loadBalancingSettings",
+        "count": "[length(parameters('frontDoorInfo').LBSettings)]",
+        "input": {
+          "name": "[parameters('frontDoorInfo').LBSettings[copyIndex('loadBalancingSettings')].name]",
+          "properties": {
+            "sampleSize": "[parameters('frontDoorInfo').LBSettings[copyIndex('loadBalancingSettings')].sampleSize]",
+            "successfulSamplesRequired": "[parameters('frontDoorInfo').LBSettings[copyIndex('loadBalancingSettings')].successfulSamplesRequired]",
+            "additionalLatencyMilliseconds": "[parameters('frontDoorInfo').LBSettings[copyIndex('loadBalancingSettings')].additionalLatencyMilliseconds]"
+          }
         }
       },
       {
         "name": "backendPools",
-        "count": "[length(parameters('frontDoorInfo').backendPools)]",
+        "count": "[length(parameters('frontDoorInfo').services)]",
         "input": {
-
+          "name": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].Name]",
+          "properties": {
+            "backends": [
+              {
+                "address": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress]",
+                "privateLinkResourceId": null,
+                "privateLinkLocation": null,
+                "privateEndpointStatus": null,
+                "privateLinkApprovalMessage": null,
+                "enabledState": "Enabled",
+                "httpPort": 80,
+                "httpsPort": 443,
+                "priority": 1,
+                "weight": 50,
+                "backendHostHeader": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress]"
+              }
+            ],
+            "loadBalancingSettings": {
+              "id": "[resourceId('Microsoft.Network/frontdoors/loadBalancingSettings',
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name),
+                                      parameters('frontDoorInfo').services[copyIndex('backendPools')].LBSettings)]"
+            },
+            "healthProbeSettings": {
+              "id": "[resourceId('Microsoft.Network/frontdoors/healthProbeSettings',
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name),
+                                      parameters('frontDoorInfo').services[copyIndex('backendPools')].ProbeName)]"
+            }
+          }
         }
       },
       {
         "name": "routingRules",
-        "count": "[length(parameters('frontDoorInfo').routingRules)]",
+        "count": "[length(parameters('frontDoorInfo').services)]",
         "input": {
-
+          "name": "[parameters('frontDoorInfo').services[copyIndex('routingRules')].Name]",
+          "properties": {
+            "frontendEndpoints": [
+              {
+                "id": "[resourceId('Microsoft.Network/frontdoors/frontendEndpoints',
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('routingRules')].Name),
+                                      concat(parameters('frontDoorInfo').services[copyIndex('routingRules')].Name,'-azurefd-net'))]"
+              }
+            ],
+            "acceptedProtocols": [
+              "Http",
+              "Https"
+            ],
+            "patternsToMatch": "[parameters('frontDoorInfo').services[copyIndex('routingRules')].patternsToMatch]",
+            "enabledState": "Enabled",
+            "routeConfiguration": {
+              "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+              "customForwardingPath": null,
+              "forwardingProtocol": "HttpsOnly",
+              "backendPool": {
+                "id": "[resourceId('Microsoft.Network/frontdoors/backendPools',
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('routingRules')].Name),
+                                      parameters('frontDoorInfo').services[copyIndex('routingRules')].Name)]"
+              },
+              "cacheConfiguration": null
+            }
+          }
         }
       }
     ]
@@ -64,170 +145,13 @@
       "type": "Microsoft.Network/frontdoors",
       "location": "global",
       "properties": {
-        // "frontdoorId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01",
         "friendlyName": "[parameters('frontDoorInfo').name]",
         "enabledState": "Enabled",
-        "frontendEndpoints": [
-          {
-            "name": "[concat(parameters('frontDoorInfo').name,'-azurefd-net')]",
-            "properties": {
-              "hostName": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'.azurefd.net')]",
-              "sessionAffinityEnabledState": "Enabled",
-              "sessionAffinityTtlSeconds": 0,
-              "customHttpsConfiguration": null
-              // "webApplicationFirewallPolicyLink": {
-              //   "id": "string"
-              // }
-            }
-            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/frontendEndpoints/aoa01-azurefd-net"
-          }
-        ],
-        "healthProbeSettings": [
-          {
-            "name": "probe01",
-            "properties": {
-              "path": "/",
-              "protocol": "Https",
-              "intervalInSeconds": 30,
-              "healthProbeMethod": "Head",
-              "enabledState": "Enabled"
-            }
-            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/healthProbeSettings/probe01"
-          }
-        ],
-        "loadBalancingSettings": [
-          {
-            "name": "loadbalance01",
-            "properties": {
-              "sampleSize": 4,
-              "successfulSamplesRequired": 2,
-              "additionalLatencyMilliseconds": 0
-            }
-            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/loadBalancingSettings/loadbalance01"
-          }
-        ],
-        "backendPools": [
-          {
-            "name": "apim-portal",
-            "properties": {
-              "backends": [
-                {
-                  "address": "azc1-adf-s1-apim01.azure-api.net",
-                  "privateLinkResourceId": null,
-                  "privateLinkLocation": null,
-                  "privateEndpointStatus": null,
-                  "privateLinkApprovalMessage": null,
-                  "enabledState": "Enabled",
-                  "httpPort": 80,
-                  "httpsPort": 443,
-                  "priority": 1,
-                  "weight": 50,
-                  "backendHostHeader": "azc1-adf-s1-apim01.azure-api.net"
-                }
-              ],
-              "loadBalancingSettings": {
-                "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/loadBalancingSettings/loadbalance01"
-              },
-              "healthProbeSettings": {
-                "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/healthProbeSettings/probe01"
-              }
-            }
-            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/backendPools/bepool01"
-          },
-          {
-            "name": "apim-developer-portal",
-            "properties": {
-              "backends": [
-                {
-                  "address": "azc1-adf-s1-apim01.developer.azure-api.net",
-                  "privateLinkResourceId": null,
-                  "privateLinkLocation": null,
-                  "privateEndpointStatus": null,
-                  "privateLinkApprovalMessage": null,
-                  "enabledState": "Enabled",
-                  "httpPort": 80,
-                  "httpsPort": 443,
-                  "priority": 1,
-                  "weight": 50,
-                  "backendHostHeader": "azc1-adf-s1-apim01.developer.azure-api.net"
-                }
-              ],
-              "loadBalancingSettings": {
-                "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/loadBalancingSettings/loadbalance01"
-              },
-              "healthProbeSettings": {
-                "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/healthProbeSettings/probe01"
-              }
-            }
-            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/backendPools/bepool01"
-          }
-        ],
-        "routingRules": [
-          {
-            "name": "apim-portal",
-            "properties": {
-              "frontendEndpoints": [
-                {
-                  "id": "[resourceId('Microsoft.Network/frontdoors/frontendEndpoints',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name),
-                                      concat(parameters('frontDoorInfo').name,'-azurefd-net'))]"
-                }
-              ],
-              "acceptedProtocols": [
-                "Http",
-                "Https"
-              ],
-              "patternsToMatch": [
-                "/apim-portal/*"
-              ],
-              "enabledState": "Enabled",
-              "routeConfiguration": {
-                "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
-                "customForwardingPath": null,
-                "forwardingProtocol": "HttpsOnly",
-                "backendPool": {
-                  "id": "[resourceId('Microsoft.Network/frontdoors/backendPools',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name),
-                                      'apim-portal')]"
-                },
-                "cacheConfiguration": null
-              }
-            }
-            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/routingRules/rr01"
-          },
-          {
-            "name": "apim-developer-portal",
-            "properties": {
-              "frontendEndpoints": [
-                {
-                  "id": "[resourceId('Microsoft.Network/frontdoors/frontendEndpoints',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name),
-                                      concat(parameters('frontDoorInfo').name,'-azurefd-net'))]"
-                }
-              ],
-              "acceptedProtocols": [
-                "Http",
-                "Https"
-              ],
-              "patternsToMatch": [
-                "/apim-developer-portal/*"
-              ],
-              "enabledState": "Enabled",
-              "routeConfiguration": {
-                "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
-                "customForwardingPath": null,
-                "forwardingProtocol": "HttpsOnly",
-                "backendPool": {
-                  "id": "[resourceId('Microsoft.Network/frontdoors/backendPools',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name),
-                                      'apim-developer-portal')]"
-                },
-                "cacheConfiguration": null
-              }
-            }
-            // "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Network/frontdoors/aoa01/routingRules/rr01"
-          }
-        ],
+        "frontendEndpoints": "[variables('frontendEndpoints')]",
+        "healthProbeSettings": "[variables('healthProbeSettings')]",
+        "loadBalancingSettings": "[variables('loadBalancingSettings')]",
+        "backendPools": "[variables('backendPools')]",
+        "routingRules": "[variables('routingRules')]",
         "backendPoolsSettings": {
           "enforceCertificateNameCheck": "Enabled",
           "sendRecvTimeoutSeconds": 30
@@ -275,8 +199,8 @@
       "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
       "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
       "copy": {
-        "name": "WAFDNSLoop",
-        "count": "[length( variables('frontendEndpoints') )]"
+        "name": "FDDNSLoop",
+        "count": "[length( parameters('frontDoorInfo').services )]"
       },
       "dependsOn": [
         "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name)]"
@@ -291,13 +215,13 @@
           "resources": [
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
-              "name": "[toLower(concat(parameters('global').DomainNameExt,variables('frontendEndpoints')[copyIndex(0)].friendlyname))]",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('frontDoorInfo').services[copyIndex(0)].Name))]",
               "apiVersion": "2017-09-01",
               "properties": {
                 "metadata": {},
                 "TTL": 3600,
                 "CNAMERecord": {
-                  "cname": "[variables('frontendEndpoints')[copyIndex(0)].name]"
+                  "cname": "[parameters('frontDoorInfo').services[copyIndex(0)].BEAddress]"
                 }
               }
             }
