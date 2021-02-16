@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
-      "value": "AZC1"
+      "value": "ACU1"
     },
     "Environment": {
       "value": "P"
@@ -14,7 +14,7 @@
     "vmAdminPassword": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-AOA-P0-kvVLT01"
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
         },
         "secretName": "localadmin"
       }
@@ -22,7 +22,7 @@
     "DevOpsAgentPATToken": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-AOA-P0-kvVLT01"
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
         },
         "secretName": "DevOpsAgentPATToken"
       }
@@ -108,7 +108,7 @@
               {
                 "Name": "Storage File Data SMB Share Contributor",
                 "RG": "P0",
-                "Prefix": "AZC1",
+                "Prefix": "ACU1",
                 "Tenant": "AOA"
               }
             ]
@@ -119,7 +119,7 @@
               {
                 "Name": "Storage Account Key Operator Service Role",
                 "RG": "G1",
-                "Prefix": "AZC1",
+                "Prefix": "ACU1",
                 "Tenant": "AOA"
               }
             ]
@@ -180,7 +180,7 @@
         ],
         "SPInfo": [
           {
-            "Name": "AzureDeploymentFramework_AZC1-BRW-AOA-RG-P0",
+            "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-P0",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -220,7 +220,7 @@
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "P0",
-                "PREFIX": "AZE2"
+                "PREFIX": "AEU2"
               }
             ]
           }
@@ -830,10 +830,10 @@
         "ASRInfo": [
           {
             "SourceRG": "P0",
-            "SourceRegion": "AZC1",
+            "SourceRegion": "ACU1",
             "SourceSasuffix": "cache",
             "DestinationRG": "P0",
-            "DestinationRegion": "AZE2",
+            "DestinationRegion": "AEU2",
             "DestinationRSVName": "ASRRecoveryVault",
             "DestinationLogAnalytics": "LogAnalytics",
             "RSVSkuName": "RS0",

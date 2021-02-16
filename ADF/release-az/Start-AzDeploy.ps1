@@ -87,7 +87,7 @@ Function Start-AzDeploy
         [alias('ComputerName')]
         [string] $CN = '.',
 
-        [validateset('AZE2', 'AZC1', 'AZW2', 'AZE1')] 
+        [validateset('AEU2', 'ACU1', 'AZE2', 'AZC1', 'AZW2', 'AZE1')] 
         [String] $Prefix = 'AZC1',
 
         # When deploying VM's, this is a subset of AppServers e.g. AppServers, SQLServers, ADPrimary
@@ -136,6 +136,14 @@ Function Start-AzDeploy
 
     switch ($Prefix)
     {
+        'AEU2'
+        {
+            $ResourceGroupLocation = 'eastus2'
+        }
+        'ACU1'
+        {
+            $ResourceGroupLocation = 'centralus'
+        }
         'AZE2'
         {
             $ResourceGroupLocation = 'eastus2'

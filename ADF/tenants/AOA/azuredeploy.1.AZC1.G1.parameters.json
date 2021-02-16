@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
-      "value": "AZC1"
+      "value": "ACU1"
     },
     "Environment": {
       "value": "G"
@@ -14,7 +14,7 @@
     "vmAdminPassword": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-AOA-P0-kvVLT01"
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
         },
         "secretName": "localadmin"
       }
@@ -22,7 +22,7 @@
     "DevOpsAgentPATToken": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-AOA-P0-kvVLT01"
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
         },
         "secretName": "DevOpsAgentPATToken"
       }
@@ -103,7 +103,7 @@
       "value": {
         "SPInfo": [
           {
-            "Name": "AzureDeploymentFramework_AZC1-BRW-AOA-RG-G1",
+            "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-G1",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -143,7 +143,7 @@
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "P0",
-                "PREFIX": "AZE2"
+                "PREFIX": "AEU2"
               }
             ]
           }

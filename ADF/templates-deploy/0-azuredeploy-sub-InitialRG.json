@@ -7,7 +7,9 @@
       "defaultValue": "AZE2",
       "allowedValues": [
         "AZE2",
-        "AZC1"
+        "AZC1",
+        "AEU2",
+        "ACU1"
       ]
     },
     "Environment": {
@@ -80,7 +82,9 @@
     },
     "Locationlookup": {
       "AZE2": "eastus2",
-      "AZC1": "centralus"
+      "AZC1": "centralus",
+      "AEU2": "eastus2",
+      "ACU1": "centralus"
     },
     "location": "[variables('locationlookup')[parameters('Prefix')]]",
   },
