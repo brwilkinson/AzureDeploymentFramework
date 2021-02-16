@@ -3,8 +3,8 @@
     "HubRGName": "AEU2-BRW-AOA-RG-P0",
     "hubVnetName": "AEU2-BRW-AOA-P0-vn",
     "KVName": "AEU2-BRW-AOA-P0-kvVLT01",
-    "KVUrl": "https://AEU2-BRW-AOA-P0-kvVault01.vault.azure.net/",
-    "certificateUrl": "https://AEU2-brw-aoa-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/6b298b65cc8d4ceb9e068ceef53811f2",
+    "KVUrl": "https://aeu2-BRW-AOA-P0-kvVault01.vault.azure.net/",
+    "certificateUrl": "https://aeu2-brw-aoa-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/41b759ccea1d49a0a68000b6a744660e",
     "networkId": [
       "172.16.",
       144

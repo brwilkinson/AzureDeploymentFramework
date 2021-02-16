@@ -34,8 +34,9 @@ break
 # Deploy Environment
 
 # Global  sub deploy for $Enviro
-AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy #-FullUpload -VSTS
-AzDeploy -App $App -Prefix AEU2 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy #-FullUpload
+AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy -FullUpload -VSTS
+AzDeploy -App $App -Prefix AEU2 -DP $Enviro -TF ASD:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy -FullUpload -VSTS
+
 AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-sub-RGRoleAssignments.json -SubscriptionDeploy
 AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\0-azuredeploy-mg-ManagementGroups.json
 
@@ -79,4 +80,4 @@ AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\5-azuredeplo
 AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServersLinux
 
 # ASR deploy
-AzDeploy -DP $Enviro -App ADF -TF ASD:\templates-base\21-azuredeploy-ASRSetup.json -SubscriptionDeploy -FullUpload
+AzDeploy -App $App -Prefix ACU1 -DP $Enviro -TF ASD:\templates-base\21-azuredeploy-ASRSetup.json -SubscriptionDeploy -FullUpload

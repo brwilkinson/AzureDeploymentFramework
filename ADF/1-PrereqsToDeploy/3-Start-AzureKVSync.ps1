@@ -1,8 +1,8 @@
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
-$PrimaryPrefix = 'AZC1'
-$SecondaryPrefix = 'AZE2'
-$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+
+$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$($Global.PrimaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$($Global.SecondaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 
 $primaryKVName = $Primary.KVName
 $primaryRGName = $Primary.HubRGName

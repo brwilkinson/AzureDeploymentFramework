@@ -36,6 +36,9 @@ Format-MarkdownTableTableStyle -Property DisplayName, First, Second, Third, Name
 
 ```
 
+    - Some references in the project templates/docs may still refer to the OLD naming AZE2 and AZC1 (now replaced by AEU2 and ACU1)
+        - These will be removed over time.
+
 **Overrides for duplicates in BOLD**
 
     - 3 Name overrides are currently in place
