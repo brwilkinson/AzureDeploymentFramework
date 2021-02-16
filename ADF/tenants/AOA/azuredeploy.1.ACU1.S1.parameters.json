@@ -200,7 +200,7 @@
                 "Name": "DNS Zone Contributor",
                 "RG": "P0",
                 "Tenant": "AOA",
-                "PREFIX": "AZE2"
+                "PREFIX": "AEU2"
               }
             ]
           }
