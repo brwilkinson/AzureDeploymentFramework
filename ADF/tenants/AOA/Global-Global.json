@@ -13,12 +13,14 @@
     "SecondaryPrefix": "AEU2",
     "PublicIPAddressforRemoteAccess": "73.157.100.227/32",
     "vmAdminUserName": "brw",
-    "DomainName": "psthing.com",
-    "DomainNameExt": "psthing.com",
     "CertURLs": [
       "*.psthing.com",
       "*.contoso.com"
     ],
+    "DomainName": "psthing.com",
+    "DomainNameExt": "psthing.com",
+    "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtRG": "ACU1-BRW-AOA-RG-G1",
     "CertificateThumbprint": "2217CD10E365F1F005B8B726D762FCDBDCBB2621",
     "GitHubProject": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [

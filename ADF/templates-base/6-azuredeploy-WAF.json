@@ -85,10 +85,10 @@
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
     "WAFInfo": "[parameters('DeploymentInfo').WAFInfo]",
-    
+
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
-    
+
     "WAFPolicyInfo": [
       {
         "name": "API",
@@ -180,7 +180,7 @@
         }
       ]
     },
-        {
+    {
       "name": "[concat(variables('Deployment'),'-wafPolicy',variables('WAFPolicyInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
       "apiVersion": "2019-09-01",

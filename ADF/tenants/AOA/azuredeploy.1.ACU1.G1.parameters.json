@@ -170,7 +170,10 @@
         ],
         "frontDoorInfo": [
           {
-            "name": "AOA01"
+            "name": "01",
+            "services" : [
+              
+            ]
           }
         ],
         "DC1PrivateIPAddress": "75",
