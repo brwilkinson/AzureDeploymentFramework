@@ -110,7 +110,7 @@
                 "Name": "Storage Account Key Operator Service Role",
                 "RG": "G1",
                 "Prefix": "ACU1",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               }
             ]
           },
@@ -120,7 +120,7 @@
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               }
             ]
           },
@@ -164,42 +164,42 @@
               {
                 "Name": "Reader and Data Access",
                 "RG": "G1",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               },
               {
                 "Name": "Storage Account Key Operator Service Role",
                 "RG": "G1",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               },
               {
                 "Name": "Log Analytics Contributor",
                 "RG": "G1",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               },
               {
                 "Name": "Log Analytics Contributor",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               },
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               },
               {
                 "Name": "Network Contributor",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               },
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "AOA"
               },
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "P0",
-                "Tenant": "HUB",
+                "Tenant": "AOA",
                 "PREFIX": "AZE2"
               }
             ]
