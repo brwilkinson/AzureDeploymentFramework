@@ -115,9 +115,14 @@
                 },
                 "networkAcls": {
                     "bypass": "AzureServices",
-                    "defaultAction": "[parameters('KVInfo').allNetworks]"
-                    // "ipRules": [
-                    // ],
+                    "defaultAction": "[parameters('KVInfo').allNetworks]",
+                    //  modify to pass in objects instead of string if multiple remote IP's required.
+                    "ipRules": [
+                        {
+                            "value": "[parameters('Global').PublicIPAddressforRemoteAccess]"
+                        }
+                        
+                    ]
                     // "virtualNetworkRules": [
                     // ]
                 },

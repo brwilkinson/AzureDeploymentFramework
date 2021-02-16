@@ -93,50 +93,11 @@
     "userAssignedIdentities": {
       "Default": {
         "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
         }
       }
     }
   },
   "resources": [
-    // {
-    //   "apiVersion": "2019-05-01",
-    //   "type": "Microsoft.Resources/deployments",
-    //   "name": "[concat('nested-roleAssignmentsGlobal',variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)]",
-    //   "resourceGroup": "[parameters('Global').HubRGName]",
-    //   "subscriptionId": "[variables('SubscriptionID')]",
-    //   "dependsOn": [ ],
-    //   "properties": {
-    //     "mode": "Incremental",
-    //     "template": {
-    //       "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    //       "contentVersion": "1.0.0.0",
-    //       "parameters": {},
-    //       "variables": {},
-    //       "resources": [
-    //         {
-    //           "type": "Microsoft.KeyVault/vaults/accessPolicies",
-    //           "name": "[concat(parameters('Global').KVName, '/add')]",
-    //           "apiVersion": "2015-06-01",
-    //         "dependsOn": [
-    //           "[resourceId('Microsoft.ApiManagement/service', variables('apiManagementServiceName'))]"
-    //         ],
-    //           "properties": {
-    //               "accessPolicies": [{
-    //                   "tenantId": "[reference(variables('apimServiceIdentityResourceId'), '2015-08-31-PREVIEW').tenantId]",
-    //                   "objectId": "[reference(variables('apimServiceIdentityResourceId'), '2015-08-31-PREVIEW').principalId]",
-    //                   "permissions": {
-    //                       "secrets": ["get"]
-    //                   }
-    //               }]
-    //           }
-    //       },
-    //       ]
-    //     },
-    //     "parameters": {}
-    //   }
-    // },
     {
       "type": "Microsoft.ApiManagement/service",
       "sku": {
@@ -144,10 +105,10 @@
         "capacity": 1
       },
       "name": "[concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)]",
-      "apiVersion": "2019-12-01",
+      "apiVersion": "2020-06-01-preview",
       "location": "[resourceGroup().location]",
       "identity": {
-        "type": "SystemAssigned, UserAssigned",
+        "type": "UserAssigned",
         "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
       },
       "copy": {
@@ -156,9 +117,9 @@
       },
       "properties": {
         "publisherEmail": "[parameters('global').apimPublisherEmail]",
-        "publisherName": "[parameters('global').apimpublisherName]",
+        "publisherName": "[parameters('global').apimPublisherEmail]",
         "hostnameConfigurations": [
-              //  user assigned identity not supported for cert access to keyvault
+          //  user assigned identity not supported for cert access to keyvault
           // {
           //   "type": "Proxy",
           //   "hostName": "[tolower(concat('api-',parameters('Environment'),parameters('DeploymentID'),'.',parameters('Global').DomainNameExt))]",
@@ -191,14 +152,14 @@
       "resources": [
         {
           "type": "loggers",
-          "apiVersion": "2019-12-01",
+          "apiVersion": "2020-06-01-preview",
           "name": "[variables('AppInsightsName')]",
           "dependsOn": [
             "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "loggerType": "applicationInsights",
-            "description": "Application Insights logger", 
+            "description": "Application Insights logger",
             "credentials": {
               "instrumentationKey": "{{logAnalyticsKey}}"
 
@@ -208,17 +169,17 @@
           }
         },
         {
-            "type": "namedValues",
-            "apiVersion": "2019-12-01",
-            "name": "logAnalyticsKey",
-            "dependsOn": [
+          "type": "namedValues",
+          "apiVersion": "2020-06-01-preview",
+          "name": "logAnalyticsKey",
+          "dependsOn": [
             "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
-            ],
-            "properties": {
-                "displayName": "logAnalyticsKey",
-                "secret": true,
-                "value": "[reference(resourceId('Microsoft.Insights/components', variables('AppInsightsName')), '2014-04-01').InstrumentationKey]"
-            }
+          ],
+          "properties": {
+            "displayName": "logAnalyticsKey",
+            "secret": true,
+            "value": "[reference(resourceId('Microsoft.Insights/components', variables('AppInsightsName')), '2014-04-01').InstrumentationKey]"
+          }
         },
         {
           "type": "providers/diagnosticSettings",
@@ -251,18 +212,22 @@
             ]
           }
         },
-        // {
-        //   "apiVersion": "2017-03-01",
-        //   "type": "certificates",
-        //   "name": "multidomaincert",
-        //   "dependsOn": [
-        //     "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
-        //   ],
-        //   "properties": {
-        //     "data": "[parameters('WildcardCertBase64')]",
-        //     "password": "[parameters('')]"
-        //   }
-        // },
+        {
+          "name": "WildcardCert",
+          "type": "certificates",
+          "apiVersion": "2020-06-01-preview",
+          "dependsOn": [
+            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+          ],
+          "properties": {
+            "data": "string",
+            "password": "string",
+            "keyVault": {
+              "secretIdentifier": "[parameters('Global').certificateUrl]",
+              "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]"
+            }
+          }
+        },
         // {
         //   "apiVersion": "2017-03-01",
         //   "type": "backends",
@@ -293,7 +258,7 @@
         {
           "name": "Public",
           "type": "products",
-          "apiVersion": "2017-03-01",
+          "apiVersion": "2020-06-01-preview",
           "properties": {
             "subscriptionRequired": false,
             "state": "published",

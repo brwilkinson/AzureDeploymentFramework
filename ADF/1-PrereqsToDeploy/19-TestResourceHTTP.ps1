@@ -67,6 +67,12 @@ $rgName = 'AZC1-BRW-ABC-RG-S1'
 $Name = 'azc1brwabcs1sadiag/default'
 $type = 'Microsoft.Storage/storageAccounts/blobServices'
 
+# View the keyvault
+$rgName = 'ACU1-BRW-AOA-RG-P0'
+$Name = 'ACU1-BRW-AOA-P0-kvVLT01'
+$type = 'Microsoft.KeyVault/vaults'
+
+
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 
 $n = $type -split '/' | Select-Object -First 1
@@ -74,7 +80,7 @@ $t = ($type -split '/' | Select-Object -Skip 1) -join '/'
 $API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | Select-Object -First 1
 
 # full view and format output via json converersion
-Write-Verbose 'Full view of resource' -Verbose
+Write-Verbose "Full view of resource, with latest API Version [$API]" -Verbose
 Invoke-AzRestMethod -Method GET -Path ($ID + "?api-version=$API") | 
     ForEach-Object Content | ConvertFrom-Json -Depth 20 | ConvertTo-Json -Depth 20
 

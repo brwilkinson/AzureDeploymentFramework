@@ -248,15 +248,6 @@
           "OMSworkspaceID": {
             "value": "[variables('OMSworkspaceID')]"
           }
-          // "WildcardCertBase64": {
-          //   "value": "[parameters('WildcardCertBase64')]"
-          // },
-          // "WildcardCertBase64Public": {
-          //   "value": "[parameters('WildcardCertBase64Public')]"
-          // },
-          // "WildcardCertBase64Password": {
-          //   "value": "[parameters('WildcardCertBase64Password')]"
-          // }
         }
       }
     },

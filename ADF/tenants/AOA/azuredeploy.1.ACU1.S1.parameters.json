@@ -350,7 +350,7 @@
             "name": "01",
             "dnsName": "API",
             "apimSku": "Developer",
-            "snName": "BE03"
+            "snName": "BE01"
           }
         ],
         "WAFInfo": [
@@ -363,7 +363,7 @@
             "WAFCapacity": 2,
             "PrivateIP": "30",
             "SSLCerts": [
-              "WildcardCert"
+              "PSTHING-WildCard"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
             "BEIPs": [
@@ -383,7 +383,7 @@
                 "Protocol": "http",
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
-                "Cert": "MultiDomainwildcard",
+                "Cert": "PSTHING-WildCard",
                 "hostname": "contoso.com"
               },
               {
@@ -391,7 +391,7 @@
                 "Protocol": "http",
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
-                "Cert": "MultiDomainwildcard",
+                "Cert": "PSTHING-WildCard",
                 "hostname": "contoso.com"
               },
               {
@@ -399,7 +399,7 @@
                 "Protocol": "http",
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
-                "Cert": "MultiDomainwildcard",
+                "Cert": "PSTHING-WildCard",
                 "hostname": "contoso.com"
               }
             ],
@@ -408,7 +408,7 @@
                 "Port": 443,
                 "BackendPort": "8988",
                 "Protocol": "https",
-                "Cert": "MultiDomainwildcard",
+                "Cert": "PSTHING-WildCard",
                 "Domain": "contoso.com",
                 "Hostname": "yates",
                 "Interface": "Public"
@@ -417,7 +417,7 @@
                 "Port": 443,
                 "BackendPort": "8989",
                 "Protocol": "https",
-                "Cert": "MultiDomainwildcard",
+                "Cert": "PSTHING-WildCard",
                 "Domain": "contoso.com",
                 "Hostname": "select",
                 "Interface": "Public"
@@ -426,7 +426,7 @@
                 "Port": 443,
                 "BackendPort": "8990",
                 "Protocol": "https",
-                "Cert": "MultiDomainwildcard",
+                "Cert": "PSTHING-WildCard",
                 "Domain": "contoso.com",
                 "Hostname": "sentry",
                 "Interface": "Public"
@@ -435,7 +435,7 @@
                 "Port": 443,
                 "BackendPort": "8990",
                 "Protocol": "https",
-                "Cert": "MultiDomainwildcard",
+                "Cert": "PSTHING-WildCard",
                 "Domain": "contoso.com",
                 "Hostname": "",
                 "Interface": "Public"

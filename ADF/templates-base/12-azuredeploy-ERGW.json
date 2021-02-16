@@ -2,35 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Global
-    "DeploymentID": {
-      "type": "string",
-      "defaultValue": "01",
-      "maxLength": 2,
-      "allowedValues": [
-        "00",
-        "01",
-        "02",
-        "03",
-        "04",
-        "05",
-        "06",
-        "07",
-        "08",
-        "09",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "99"
-      ]
-    },
     "Prefix": {
       "type": "string",
       "defaultValue": "AZE2",
@@ -45,68 +16,42 @@
       "type": "string",
       "defaultValue": "D",
       "allowedValues": [
+        "I",
         "D",
-        "Q",
-        "T",
         "U",
-        "A",
-        "P"
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
       ]
     },
     "Stage": {
       "type": "object"
     },
-    // Used for all VM's, local and Domain Admin Password
-    "vmAdminPassword": {
-      "type": "securestring"
+    "Extensions": {
+      "type": "object"
     },
-    "DevOpsAgentPATToken": {
-      "type": "securestring"
+    "Global": {
+      "type": "object"
     },
-    "vmDomainJoinPassword": {
-      "type": "securestring"
-    },
-    "vmDomainAppPasswordProd": {
-      "type": "securestring"
-    },
-    "vmDomainAppPasswordPre": {
-      "type": "securestring"
-    },
-    "vmDomainSQLPasswordProd": {
-      "type": "securestring"
-    },
-    "vmDomainSQLPasswordPre": {
-      "type": "securestring"
-    },
-    "vmUserPassword": {
-      "type": "securestring"
-    },
-    "vmDomainSRVPassword": {
-      "type": "securestring"
-    },
-    "vmDomainFormcomSQLPasswordProd": {
-      "type": "securestring"
-    },
-    "vmDomainFormcomAppSrvPasswordPre": {
-      "type": "securestring"
-    },
-    "vmFormcomSQLPasswordProd": {
-      "type": "securestring"
-    },
-    "vmDomainFormcomSQLPasswordPre": {
-      "type": "securestring"
-    },
-    "vmDomainFormcomAppSrvPasswordProd": {
-      "type": "securestring"
-    },
-    "vmFormcomSQLPasswordPre": {
-      "type": "securestring"
-    },
-    "ERAuthKey": {
-      "type": "securestring"
-    },
-    "OMSWorkspaceKey": {
-      "type": "securestring"
+    "DeploymentInfo": {
+      "type": "object"
     },
     "_artifactsLocation": {
       "type": "string",
@@ -120,36 +65,15 @@
         "description": "Auto-generated token to access artifactsLocation"
       }
     },
-    "WildcardCertBase64": {
-      "type": "securestring"
-    },
-    "WildcardCertBase64Public": {
-      "type": "securestring"
-    },
-    "DSCUpdateTagVersion": {
+    "deploymentTime": {
       "type": "string",
-      "defaultValue": "1.0",
-      "metadata": {
-        "description": "This value must be changed from a previous deployment to ensure the DSC extensions will re-run"
-      }
+      "defaultValue": "[utcNow()]"
     },
-    "StorageAccountKey": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Used for copying source files to DSC from Azure Files storage"
-      }
+    "vmAdminPassword": {
+      "type": "securestring"
     },
-    "Extensions": {
-      "type": "object"
-    },
-    "DeploymentInfo": {
-      "type": "object",
-      "metadata": {
-        "description": "Can be used to input LB/VM Etc objects from Parameters file"
-      }
-    },
-    "Global": {
-      "type": "object"
+    "DevOpsAgentPATToken": {
+      "type": "securestring"
     }
   },
   "variables": {
