@@ -220,8 +220,6 @@
             "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
           ],
           "properties": {
-            "data": "string",
-            "password": "string",
             "keyVault": {
               "secretIdentifier": "[parameters('Global').certificateUrl]",
               "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]"
