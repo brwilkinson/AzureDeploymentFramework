@@ -141,13 +141,13 @@
         "customProperties": {
           "subnetAddress": "[reference(concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName), '2015-06-15').addressprefix]"
         },
-        "VirtualNetworkType": "External"
-        // "virtualNetworkConfiguration": {
-        //   "subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]",
-        //   //"location": "[resourceGroup().location]"
-        //   //"vnetid": "[variables('VNetID')]",
-        //   //"subnetname": "[concat('sn', variables('APIMInfo')[copyIndex(0)].snName)]"
-        // }
+        "VirtualNetworkType": "Internal",
+        "virtualNetworkConfiguration": {
+          "subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]",
+          //"location": "[resourceGroup().location]"
+          //"vnetid": "[variables('VNetID')]",
+          //"subnetname": "[concat('sn', variables('APIMInfo')[copyIndex(0)].snName)]"
+        }
       },
       "resources": [
         {
@@ -270,11 +270,11 @@
     },
     {
       "condition": "[equals(parameters('Stage').SetWAFDNS,1)]",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-06-01",
       "name": "setdns",
       "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[parameters('global').dnsZoneRGName]",
-      "subscriptionId": "[variables('SubscriptionID')]",
+      "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
+      "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
       "copy": {
         "name": "apimLoop",
         "count": "[length(variables('APIMInfo'))]"
