@@ -72,6 +72,10 @@ $rgName = 'ACU1-BRW-AOA-RG-P0'
 $Name = 'ACU1-BRW-AOA-P0-kvVLT01'
 $type = 'Microsoft.KeyVault/vaults'
 
+# View APIM
+$rgName = 'ACU1-BRW-AOA-RG-S1'
+$Name = 'ACU1-BRW-AOA-S1-apim01'
+$type = 'Microsoft.ApiManagement/service'
 
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 

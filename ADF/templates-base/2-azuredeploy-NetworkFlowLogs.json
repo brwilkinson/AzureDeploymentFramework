@@ -74,12 +74,14 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+
     "subscriptionId": "[subscription().subscriptionId]",
     "resourceGroupName": "[resourceGroup().name]",
 
     "hubDeployment": "[replace(parameters('Global').hubRGName,'-RG','')]",
     "hubRG": "[parameters('Global').hubRGName]",
-    "SADiagName": "[concat(variables('Deployment'),'sadiag')]",
+    "SADiagName": "[concat(variables('DeploymentURI'),'sadiag')]",
     "retentionPolicydays": 29,
     "flowLogversion": 1,
     "AnalyticsInterval": 10,

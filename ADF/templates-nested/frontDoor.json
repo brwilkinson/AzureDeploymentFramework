@@ -26,6 +26,22 @@
   },
   "variables": {
 
+
+    "DefaultFrontEnd": [
+      {
+        "name": "[concat('default',parameters('frontDoorInfo').name,'-azurefd-net')]",
+        "properties": {
+          "hostName": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'.azurefd.net')]",
+          "sessionAffinityEnabledState": "Disabled",
+          "sessionAffinityTtlSeconds": 0,
+          "customHttpsConfiguration": null
+          // "webApplicationFirewallPolicyLink": {
+          //   "id": "string"
+          // }
+        }
+      }
+    ],
+
     "copy": [
       {
         "name": "frontendEndpoints",
@@ -33,7 +49,7 @@
         "input": {
           "name": "[concat(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].name,'-azurefd-net')]",
           "properties": {
-            "hostName": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].FriendlyName,'.azurefd.net')]",
+            "hostName": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'-',parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].Name,'.',parameters('Global').DomainNameExt)]",
             "sessionAffinityEnabledState": "[parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].sessionAffinityEnabledState]",
             "sessionAffinityTtlSeconds": 0,
             "customHttpsConfiguration": null
@@ -140,14 +156,55 @@
   },
   "resources": [
     {
+      "condition": "[equals(parameters('Stage').SetFRONTDOORDNS,1)]",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('setdnsServices',copyIndex(0))]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
+      "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
+      "copy": {
+        "name": "FD-Services-DNSLoop",
+        "count": "[length( parameters('frontDoorInfo').services )]"
+      },
+      "dependsOn": [
+        // "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name)]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/dnsZones/CNAME",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'-',parameters('frontDoorInfo').services[copyIndex(0)].Name))]",
+              "apiVersion": "2017-09-01",
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'.azurefd.net')]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name)]",
       "apiVersion": "2020-05-01",
       "type": "Microsoft.Network/frontdoors",
       "location": "global",
+      "dependsOn": [
+        "FD-Services-DNSLoop"
+      ],
       "properties": {
         "friendlyName": "[parameters('frontDoorInfo').name]",
         "enabledState": "Enabled",
-        "frontendEndpoints": "[variables('frontendEndpoints')]",
+        "frontendEndpoints": "[union(variables('DefaultFrontEnd'),variables('frontendEndpoints'))]",
         "healthProbeSettings": "[variables('healthProbeSettings')]",
         "loadBalancingSettings": "[variables('loadBalancingSettings')]",
         "backendPools": "[variables('backendPools')]",

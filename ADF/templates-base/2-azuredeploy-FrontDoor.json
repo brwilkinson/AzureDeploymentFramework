@@ -94,12 +94,63 @@
     ]
   },
   "resources": [
+    // {
+    //   "condition": "[contains(variables('frontDoorInfo')[copyIndex()],'afdverify')]",
+    //   "apiVersion": "2020-06-01",
+    //   "name": "[concat('setdns',copyIndex(0))]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
+    //   "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
+    //   "copy": {
+    //     "name": "frontDoorDNSLoop",
+    //     "count": "[length( variables('frontDoor') )]"
+    //   },
+    //   "dependsOn": [
+    //     // "[concat('dp', variables('Deployment'), '-frontDoorDeploy',if(equals(length(variables('frontDoor')),0),'',variables('frontDoorInfo')[copyIndex()].name))]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "template": {
+    //       "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    //       "contentVersion": "1.0.0.0",
+    //       "parameters": {},
+    //       "variables": {},
+    //       "resources": [
+    //         {
+    //           "type": "Microsoft.Network/dnsZones/CNAME",
+    //           "name": "[toLower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-afd',variables('frontDoorInfo')[copyIndex()].name))]",
+    //           "apiVersion": "2017-09-01",
+    //           "properties": {
+    //             "metadata": {},
+    //             "TTL": 3600,
+    //             "CNAMERecord": {
+    //               "cname": "[concat(variables('Deployment'),'-afd',variables('frontDoorInfo')[copyIndex()].name,'.azurefd.net')]"
+    //             }
+    //           }
+    //         },
+    //         {
+    //           "type": "Microsoft.Network/dnsZones/CNAME",
+    //           "name": "[toLower(concat(parameters('global').DomainNameExt,'/','afdverify.',variables('frontDoorInfo')[copyIndex(0)].afdverify))]",
+    //           "apiVersion": "2017-09-01",
+    //           "properties": {
+    //             "metadata": {},
+    //             "TTL": 3600,
+    //             "CNAMERecord": {
+    //               "cname": "[concat('afdverify.',variables('frontDoorInfo')[copyIndex()].afdverify,'.azurefd.net')]"
+    //             }
+    //           }
+    //         }
+    //       ]
+    //     }
+    //   }
+    // },
     {
       "condition": "[variables('frontDoor')[copyIndex(0)].match]",
       "name": "[concat('dp', variables('Deployment'), '-frontDoorDeploy',if(equals(length(variables('frontDoor')),0),'',variables('frontDoorInfo')[copyIndex()].name))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-06-01",
       "dependsOn": [
+        // "[concat('setdns',copyIndex(0))]"
       ],
       "copy": {
         "name": "frontDoorLoop",

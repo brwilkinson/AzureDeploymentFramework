@@ -3,7 +3,7 @@
     "HubRGName": "ACU1-BRW-AOA-RG-P0",
     "hubVnetName": "ACU1-BRW-AOA-P0-vn",
     "KVName": "ACU1-BRW-AOA-P0-kvVLT01",
-    "KVUrl": "https://acu1-BRW-AOA-P0-kvVault01.vault.azure.net/",
+    "KVUrl": "https://acu1-brw-aoa-p0-kvvlt01.vault.azure.net/",
     "certificateUrl": "https://acu1-brw-aoa-p0-kvvlt01.vault.azure.net/secrets/PSTHING-WildCard/671f3bfa8e304e8097148f5ca50ebf2f",
     "networkId": [
       "10.10.",

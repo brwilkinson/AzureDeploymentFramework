@@ -88,7 +88,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
-        "AdminCenter": 0,
+        "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
         "Scripts": 1,
@@ -230,31 +230,41 @@
           {
             "name": "snWAF01",
             "prefix": "0/27",
-            "NSG": 1
+            "NSG": 1,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snAD01",
             "prefix": "64/28",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE01",
             "prefix": "80/28",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureBastionSubnet",
             "prefix": "96/27",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureFirewallSubnet",
@@ -267,10 +277,20 @@
             "NSG": 0
           },
           {
+            "name": "snMT01",
+            "prefix": "224/27",
+            "NSG": 1,
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           }
         ],
         "networkWatcherInfo": {
@@ -345,7 +365,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Deny",
+            "allNetworks": "Allow",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
@@ -473,276 +493,6 @@
               ],
               "AppInfo": {
                 "SiteName": "Default-First-Site-Name"
-              }
-            }
-          ],
-          "AppServers": [
-            {
-              "VMName": "JMP01",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2016small",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "62"
-                }
-              ]
-            }
-          ],
-          "VMFile2": [
-            {
-              "VMName": "FIL01",
-              "Role": "FIL",
-              "ASName": "FIL",
-              "DDRole": "FIL64GB",
-              "OSType": "Server2019small",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "MT02",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "253"
-                }
-              ],
-              "AppInfo": {
-                "ClusterInfo": {
-                  "CLIP": "251",
-                  "CLNAME": "CLS01",
-                  "Primary": "FIL01",
-                  "Secondary": [
-                    "FIL02"
-                  ]
-                },
-                "SOFSInfo": [
-                  {
-                    "Name": "SOFS01",
-                    "Volumes": [
-                      {
-                        "Name": "Volume1",
-                        "Size": 16
-                      },
-                      {
-                        "Name": "Volume2",
-                        "Size": 16
-                      }
-                    ]
-                  }
-                ]
-              }
-            },
-            {
-              "VMName": "FIL02",
-              "Role": "FIL",
-              "ASName": "FIL",
-              "DDRole": "FIL64GB",
-              "OSType": "Server2019small",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "MT02",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "252"
-                }
-              ]
-            }
-          ],
-          "VMFile": [
-            {
-              "VMName": "DFS01",
-              "Role": "DFS",
-              "ASName": "DFS",
-              "DDRole": "FIL64GB",
-              "OSType": "Server2019small",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "MT02",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "249",
-                  "SLB": "FIL"
-                }
-              ],
-              "AppInfo2": {
-                "ClusterInfo": {
-                  "CLIP": "247",
-                  "CLNAME": "CLS03",
-                  "Primary": "DFS01",
-                  "Secondary": [
-                    "DFS02"
-                  ]
-                },
-                "SOFSInfo": [
-                  {
-                    "Name": "SOFS02",
-                    "Volumes": [
-                      {
-                        "Name": "Volume1",
-                        "Size": 16
-                      },
-                      {
-                        "Name": "Volume2",
-                        "Size": 16
-                      }
-                    ]
-                  }
-                ]
-              }
-            },
-            {
-              "VMName": "DFS02",
-              "Role": "DFS",
-              "ASName": "DFS",
-              "DDRole": "FIL64GB",
-              "OSType": "Server2019small",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "MT02",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "248",
-                  "SLB": "FIL"
-                }
-              ]
-            }
-          ],
-          "AppServersFoo": [
-            {
-              "VMName": "JMP02",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2016small",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "61"
-                }
-              ]
-            },
-            {
-              "VMName": "JMP03",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2016small",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "60"
-                }
-              ]
-            }
-          ],
-          "AppServersLinux": [
-            {
-              "VMName": "LIN01",
-              "Role": "LIN",
-              "ASName": "LIN",
-              "DDRole": "64GB",
-              "OSType": "CentOS75",
-              "AdminUser": "localadmin",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "59",
-                  "PublicIP": "Static"
-                }
-              ]
-            }
-          ],
-          "SQLServersAS": [
-            "CLS01"
-          ],
-          "SQLServers": [
-            {
-              "VMName": "SQL01",
-              "OSType": "Server2016",
-              "ASName": "CLS01",
-              "Role": "SQL",
-              "DDRole": "SQL64GB",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "BE02",
-                  "SLB2": "CLS01",
-                  "FastNic": 1,
-                  "Primary": 1,
-                  "StaticIP": "107"
-                }
-              ],
-              "AppInfo": {
-                "ClusterInfo": {
-                  "CLIP": "109",
-                  "CLNAME": "CLS01",
-                  "Primary": "SQL01",
-                  "Secondary": [
-                    "SQL02"
-                  ]
-                },
-                "aoinfo": [
-                  {
-                    "GroupName": "AG01",
-                    "PrimaryAG": "SQL01",
-                    "SecondaryAG": "SQL02",
-                    "AOIP": "110",
-                    "ProbePort": "59999",
-                    "InstanceName": "CTO_1"
-                  }
-                ]
-              }
-            },
-            {
-              "VMName": "SQL02",
-              "OSType": "Server2016",
-              "CLNAME": "CLS01",
-              "ASName": "CLS01",
-              "Role": "SQL",
-              "DDRole": "SQL64GB",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "BE02",
-                  "SLB2": "CLS01",
-                  "FastNic": 1,
-                  "Primary": 1,
-                  "StaticIP": "108"
-                }
-              ],
-              "AppInfo": {
-                "ClusterInfo": {
-                  "CLIP": "109",
-                  "CLNAME": "CLS01",
-                  "Primary": "SQL01",
-                  "Secondary": [
-                    "SQL02"
-                  ]
-                },
-                "aoinfo": [
-                  {
-                    "GroupName": "AG01",
-                    "PrimaryAG": "SQL01",
-                    "SecondaryAG": "SQL02",
-                    "InstanceName": "CTO_1"
-                  }
-                ]
               }
             }
           ]

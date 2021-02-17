@@ -104,6 +104,17 @@
       "value": {
         "uaiInfo": [
           {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "P0",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
             "name": "StorageAccountOperatorGlobal",
             "RBAC": [
               {
@@ -209,31 +220,41 @@
           {
             "name": "snWAF01",
             "prefix": "0/27",
-            "NSG": 1
+            "NSG": 1,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snAD01",
             "prefix": "64/28",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE01",
             "prefix": "80/28",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureBastionSubnet",
             "prefix": "96/27",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureFirewallSubnet",
@@ -246,10 +267,20 @@
             "NSG": 0
           },
           {
+            "name": "snMT01",
+            "prefix": "224/27",
+            "NSG": 1,
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
-            "Route": false
+            "Route": false,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
           }
         ],
         "saInfo": [
@@ -259,29 +290,11 @@
             "allNetworks": "Allow",
             "blobVersioning": 1,
             "changeFeed": 1,
-            "softDeletePolicy":{
-              "enabled" : 1,
+            "softDeletePolicy": {
+              "enabled": 1,
               "days": 7
             }
           }
-          // {
-          //   "nameSuffix": "adds",
-          //   "skuName": "Standard_LRS",
-          //   "allNetworks": "Allow",
-          //   "ADDS": 0,
-          //   "largeFileSharesState": "Disabled",
-          //   "logging": {
-          //     "r": 0,
-          //     "w": 0,
-          //     "d": 1
-          //   },
-          //   "blobVersioning": 1,
-          //   "changeFeed": 1,
-          //   "softDeletePolicy":{
-          //     "enabled" : 1,
-          //     "days": 7
-          //   }
-          // }
         ],
         "LogicInfo": [
           {
@@ -299,7 +312,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Deny",
+            "allNetworks": "Allow",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
@@ -350,9 +363,32 @@
             "name": "01",
             "dnsName": "API",
             "apimSku": "Developer",
-            "snName": "BE01"
+            "snName": "BE01",
+            "certName": "PSTHING-WildCard"
           }
         ],
+        "Appservers": {
+          "AppServers": [
+            {
+              "VMName": "JMP01",
+              "Role": "JMP",
+              "ASName": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Server2019small",
+              "ExcludeAdminCenter": 1,
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "62"
+                }
+              ]
+            }
+          ]
+        },
         "WAFInfo": [
           {
             "WAFName": "API",

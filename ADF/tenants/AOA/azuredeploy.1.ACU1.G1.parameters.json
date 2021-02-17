@@ -171,21 +171,21 @@
         ],
         "frontDoorInfo": [
           {
-            "name": "01",
+            "name": "02",
+            "afdverify": "AOA",
             "services": [
-              // {
-              //   "Name": "APIM",
-              //   "FriendlyName": "01",
-              //   "ProbeName": "probe01",
-              //   "BEAddress": "azc1-adf-s1-apim01.azure-api.net",
-              //   "LBSettings": "balance01",
-              //   "sessionAffinityEnabledState": "Enabled"
-              // }
               {
-                "Name": "APIM-DEVELOPER",
-                "FriendlyName": "01",
+                "Name": "APIM-Gateway",
                 "ProbeName": "probe01",
-                "BEAddress": "azc1-adf-s1-apim01.portal.azure-api.net",
+                "BEAddress": "azc1-brw-aoa-s1-apim01.azure-api.net",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Enabled",
+                "patternsToMatch": ["/*"]
+              },
+              {
+                "Name": "APIM-Developer",
+                "ProbeName": "probe01",
+                "BEAddress": "azc1-brw-aoa-s1-apim01.developer.azure-api.net",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Enabled",
                 "patternsToMatch": ["/*"]
