@@ -77,6 +77,15 @@ $rgName = 'ACU1-BRW-AOA-RG-S1'
 $Name = 'ACU1-BRW-AOA-S1-apim01'
 $type = 'Microsoft.ApiManagement/service'
 
+# View APIM
+$rgName = 'ACU1-BRW-AOA-RG-G1'
+$Name = 'ACU1-BRW-AOA-G1-afd03'
+$type = 'Microsoft.Network/frontdoors'
+
+$rgName = 'ACU1-BRW-AOA-RG-G1'
+$Name = 'footest'
+$type = 'Microsoft.Network/frontdoors'
+
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 
 $n = $type -split '/' | Select-Object -First 1
@@ -86,5 +95,5 @@ $API = Find-MYAZAPIVersion -ProviderNamespace $n -ResourceTypeName $t | Select-O
 # full view and format output via json converersion
 Write-Verbose "Full view of resource, with latest API Version [$API]" -Verbose
 Invoke-AzRestMethod -Method GET -Path ($ID + "?api-version=$API") | 
-    ForEach-Object Content | ConvertFrom-Json -Depth 20 | ConvertTo-Json -Depth 20
+    ForEach-Object Content | ConvertFrom-Json -Depth 20 | ConvertTo-Json -Depth 20 | clip
 

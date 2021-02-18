@@ -31,7 +31,7 @@
       {
         "name": "[concat('default',parameters('frontDoorInfo').name,'-azurefd-net')]",
         "properties": {
-          "hostName": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'.azurefd.net')]",
+          "hostName": "[toLower(concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'.azurefd.net'))]",
           "sessionAffinityEnabledState": "Disabled",
           "sessionAffinityTtlSeconds": 0,
           "customHttpsConfiguration": null
@@ -47,12 +47,18 @@
         "name": "frontendEndpoints",
         "count": "[length(parameters('frontDoorInfo').services)]",
         "input": {
-          "name": "[concat(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].name,'-azurefd-net')]",
+          "name": "[concat(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].name)]",
           "properties": {
-            "hostName": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'-',parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].Name,'.',parameters('Global').DomainNameExt)]",
+            "hostName": "[toLower(concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,
+                                        if(
+                                            equals(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].Name,'Default'),
+                                              '.azurefd.net',
+                                              concat('-',parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].Name,'.',parameters('Global').DomainNameExt)
+                                          )
+                                        ))]",
             "sessionAffinityEnabledState": "[parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].sessionAffinityEnabledState]",
-            "sessionAffinityTtlSeconds": 0,
-            "customHttpsConfiguration": null
+            "sessionAffinityTtlSeconds": 0
+            // "customHttpsConfiguration": null
             // "webApplicationFirewallPolicyLink": {
             //   "id": "string"
             // }
@@ -94,16 +100,16 @@
             "backends": [
               {
                 "address": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress]",
-                "privateLinkResourceId": null,
-                "privateLinkLocation": null,
-                "privateEndpointStatus": null,
-                "privateLinkApprovalMessage": null,
+                "backendHostHeader": "[toLower(parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress)]",
+                // "privateLinkResourceId": null,
+                // "privateLinkLocation": null,
+                // "privateEndpointStatus": null,
+                // "privateLinkApprovalMessage": null,
                 "enabledState": "Enabled",
                 "httpPort": 80,
                 "httpsPort": 443,
                 "priority": 1,
-                "weight": 50,
-                "backendHostHeader": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress]"
+                "weight": 50
               }
             ],
             "loadBalancingSettings": {
@@ -129,7 +135,7 @@
               {
                 "id": "[resourceId('Microsoft.Network/frontdoors/frontendEndpoints',
                                       concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('routingRules')].Name),
-                                      concat(parameters('frontDoorInfo').services[copyIndex('routingRules')].Name,'-azurefd-net'))]"
+                                              parameters('frontDoorInfo').services[copyIndex('routingRules')].Name)]"
               }
             ],
             "acceptedProtocols": [
@@ -138,16 +144,17 @@
             ],
             "patternsToMatch": "[parameters('frontDoorInfo').services[copyIndex('routingRules')].patternsToMatch]",
             "enabledState": "Enabled",
+            // "cacheConfiguration": null,
             "routeConfiguration": {
-              "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+              // "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+              "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration",
               "customForwardingPath": null,
-              "forwardingProtocol": "HttpsOnly",
+              "forwardingProtocol": "MatchRequest",
               "backendPool": {
                 "id": "[resourceId('Microsoft.Network/frontdoors/backendPools',
                                       concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('routingRules')].Name),
                                       parameters('frontDoorInfo').services[copyIndex('routingRules')].Name)]"
-              },
-              "cacheConfiguration": null
+              }
             }
           }
         }
@@ -179,7 +186,11 @@
           "resources": [
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
-              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'-',parameters('frontDoorInfo').services[copyIndex(0)].Name))]",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,
+                                        if(
+                                            equals(parameters('frontDoorInfo').services[copyIndex(0)].Name,'Default'),'',
+                                            concat('-',parameters('frontDoorInfo').services[copyIndex(0)].Name))
+                                        ))]",
               "apiVersion": "2017-09-01",
               "properties": {
                 "metadata": {},
@@ -204,7 +215,8 @@
       "properties": {
         "friendlyName": "[parameters('frontDoorInfo').name]",
         "enabledState": "Enabled",
-        "frontendEndpoints": "[union(variables('DefaultFrontEnd'),variables('frontendEndpoints'))]",
+        "frontendEndpoints": "[variables('frontendEndpoints')]",
+        // "frontendEndpoints": "[union(variables('DefaultFrontEnd'),variables('frontendEndpoints'))]",
         "healthProbeSettings": "[variables('healthProbeSettings')]",
         "loadBalancingSettings": "[variables('loadBalancingSettings')]",
         "backendPools": "[variables('backendPools')]",

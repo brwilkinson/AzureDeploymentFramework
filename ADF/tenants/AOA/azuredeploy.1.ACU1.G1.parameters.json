@@ -171,24 +171,39 @@
         ],
         "frontDoorInfo": [
           {
-            "name": "02",
+            "name": "03",
             "afdverify": "AOA",
             "services": [
               {
+                // Default Service is Required
+                "Name": "Default",
+                "ProbeName": "probe01",
+                "BEAddress": "portal.azure.com",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
                 "Name": "APIM-Gateway",
                 "ProbeName": "probe01",
-                "BEAddress": "azc1-brw-aoa-s1-apim01.azure-api.net",
+                "BEAddress": "acu1-brw-aoa-s1-apim01.azure-api.net",
                 "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Enabled",
-                "patternsToMatch": ["/*"]
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
               },
               {
                 "Name": "APIM-Developer",
                 "ProbeName": "probe01",
-                "BEAddress": "azc1-brw-aoa-s1-apim01.developer.azure-api.net",
+                "BEAddress": "acu1-brw-aoa-s1-apim01.portal.azure-api.net",
                 "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Enabled",
-                "patternsToMatch": ["/*"]
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
               }
             ],
             "probes": [
