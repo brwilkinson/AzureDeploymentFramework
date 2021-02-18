@@ -109,6 +109,16 @@
             "RBAC": [
               {
                 "Name": "Network Contributor"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
               }
             ]
           },
@@ -180,6 +190,11 @@
             "RBAC": [
               {
                 "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "AOA"
               }

@@ -22,6 +22,10 @@
     },
     "OMSworkspaceID": {
       "type": "string"
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
     }
   },
   "variables": {
@@ -319,7 +323,7 @@
         "count": "[length( parameters('frontDoorInfo').services )]"
       },
       "properties": {
-        "azPowerShellVersion": "4.3",
+        "azPowerShellVersion": "5.4",
         "arguments": "[format(' -ResourceGroupName {0} -FrontDoorName {1} -Name {2} -VaultID {3} -certificateUrl {4}', 
                                 resourceGroup().name,
                                 concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name),
@@ -348,13 +352,13 @@
                         $SecretVersion = Split-Path -Path $certificateUrl -leaf
                         $Secret = Split-Path -Path $certificateUrl
                         $SecretName = Split-Path -Path $Secret -leaf
-
+                        get-azcontext
                         Enable-AzFrontDoorCustomDomainHttps -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -FrontendEndpointName $Name -VaultId $VaultID -SecretName $SecretName -MinimumTlsVersion 1.2 -SecretVersion $SecretVersion
                     }
                 ",
-        // "forceUpdateTag": "[parameters('now')]",
+        "forceUpdateTag": "[parameters('now')]",
         "retentionInterval": "P1D",
-        "timeout": "PT5M"
+        "timeout": "PT3M"
       }
     }
   ],
