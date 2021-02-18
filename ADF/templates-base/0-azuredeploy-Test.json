@@ -101,9 +101,13 @@
     //   "type": "string",
     //   "value": "[reference(resourceId('AZC1-ADF-RG-P0','Microsoft.KeyVault/vaults/secrets','AZC1-ADF-P0-kvVault01','psthing7e7f14c0-92fc-4167-bb5d-d5d6e4b82b68'),'2019-09-01').secretUriWithVersion]"
     // },
-    "TempSpec": {
+    // "TempSpec": {
+    //   "type": "string",
+    //   "value": "[resourceId('Microsoft.Resources/templateSpecs/versions','1-azuredeploy-OMS','1.0a')]"
+    // },
+        "kvrid": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Resources/templateSpecs/versions','1-azuredeploy-OMS','1.0a')]"
+      "value": "[resourceId(parameters('Global').HubRGName,'Microsoft.Keyvault/vaults',parameters('Global').KVName)]"
     }
   }
 }

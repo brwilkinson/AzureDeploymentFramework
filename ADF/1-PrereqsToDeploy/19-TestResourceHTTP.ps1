@@ -82,8 +82,8 @@ $rgName = 'ACU1-BRW-AOA-RG-G1'
 $Name = 'ACU1-BRW-AOA-G1-afd03'
 $type = 'Microsoft.Network/frontdoors'
 
-$rgName = 'ACU1-BRW-AOA-RG-G1'
-$Name = 'footest'
+$rgName = 'ACU1-BRW-AOA-RG-S1'
+$Name = 'ACU1-BRW-AOA-S1-afd01'
 $type = 'Microsoft.Network/frontdoors'
 
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type

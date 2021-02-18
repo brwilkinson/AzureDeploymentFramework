@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'AOA'
-$env:Enviro = 'G1'
+$env:Enviro = 'S1'
 $Current = @{App = 'AOA'; DP = $env:Enviro }
 # import deployment script
 if (!(Test-Path ASD:\)) { New-PSDrive -PSProvider FileSystem -Root $ASD -Name ASD }
@@ -40,6 +40,8 @@ AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-deploy\0-azuredeploy-sub-Initi
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-sub-RGRoleAssignments.json -SubscriptionDeploy
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-mg-ManagementGroups.json
 
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-Test.json
+
 # $env:Enviro RG deploy
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-deploy\0-azuredeploy-ALL.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-deploy\0-azuredeploy-ALL.json # -FullUpload -VSTS
@@ -71,8 +73,9 @@ AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\1-azuredeploy-Storage.jso
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-KV.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\0-azuredeploy-KV.json
 
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\9-azuredeploy-APIM.json
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\2-azuredeploy-FrontDoor.json
-AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\9-azuredeploy-APIM.json -FullUpload
+AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\2-azuredeploy-FrontDoor.json
 
 # $env:Enviro AppServers Deploy
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADPrimary

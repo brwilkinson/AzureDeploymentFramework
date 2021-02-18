@@ -99,8 +99,8 @@
           "properties": {
             "backends": [
               {
-                "address": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress]",
-                "backendHostHeader": "[toLower(parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress)]",
+                "address": "[toLower(concat(parameters('Deployment'),'-',parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress))]",
+                "backendHostHeader": "[toLower(concat(parameters('Deployment'),'-',parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress))]",
                 // "privateLinkResourceId": null,
                 // "privateLinkLocation": null,
                 // "privateEndpointStatus": null,
@@ -146,10 +146,9 @@
             "enabledState": "Enabled",
             // "cacheConfiguration": null,
             "routeConfiguration": {
-              // "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
-              "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration",
+              "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
               "customForwardingPath": null,
-              "forwardingProtocol": "MatchRequest",
+              "forwardingProtocol": "HttpsOnly",
               "backendPool": {
                 "id": "[resourceId('Microsoft.Network/frontdoors/backendPools',
                                       concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('routingRules')].Name),
@@ -186,6 +185,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
+              // acu1-brw-aoa-s1-afd01-apim01-gateway.psthing.com  APIM behind AFD E.g. apim01-gateway or apim01
               "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,
                                         if(
                                             equals(parameters('frontDoorInfo').services[copyIndex(0)].Name,'Default'),'',
@@ -296,6 +296,65 @@
             }
           ]
         }
+      }
+    },
+    {
+      "condition": "[and(contains(parameters('frontDoorInfo').services[CopyIndex(0)],'EnableSSL'),equals(parameters('frontDoorInfo').services[CopyIndex(0)].EnableSSL,1))]",
+      "name": "[concat('SetServicesCertificates',CopyIndex(1))]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('Deployment'),'-uaiNetworkContributor'))]": {}
+        }
+      },
+      "dependsOn": [
+        "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name)]"
+      ],
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "copy": {
+        "name": "ServicesCertificatesLoop",
+        "count": "[length( parameters('frontDoorInfo').services )]"
+      },
+      "properties": {
+        "azPowerShellVersion": "4.3",
+        "arguments": "[format(' -ResourceGroupName {0} -FrontDoorName {1} -Name {2} -VaultID {3} -certificateUrl {4}', 
+                                resourceGroup().name,
+                                concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name),
+                                variables('frontendEndpoints')[CopyIndex(0)].name,
+                                resourceId(parameters('Global').HubRGName,'Microsoft.Keyvault/vaults',parameters('Global').KVName),
+                                parameters('Global').certificateUrl
+                                )]",
+        "scriptContent": "
+                    param (
+                        [string]$ResourceGroupName,
+                        [string]$FrontDoorName,
+                        [string]$Name,
+                        [string]$VaultID,
+                        [string]$certificateUrl
+                    )
+                    
+                    $EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -Name $Name
+                    if ($EndPoint.Vault)
+                    {
+                        echo 'Provisioning is complete!'
+                    }
+                    else 
+                    {
+                        # /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01
+                        # 
+                        $SecretVersion = Split-Path -Path $certificateUrl -leaf
+                        $Secret = Split-Path -Path $certificateUrl
+                        $SecretName = Split-Path -Path $Secret -leaf
+
+                        Enable-AzFrontDoorCustomDomainHttps -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -FrontendEndpointName $Name -VaultId $VaultID -SecretName $SecretName -MinimumTlsVersion 1.2 -SecretVersion $SecretVersion
+                    }
+                ",
+        // "forceUpdateTag": "[parameters('now')]",
+        "retentionInterval": "P1D",
+        "timeout": "PT5M"
       }
     }
   ],

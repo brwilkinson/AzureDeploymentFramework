@@ -68,6 +68,7 @@
         "FRONTDOOR": 0,
         "WAF": 0,
         "SetWAFDNS": 1,
+        "SetFRONTDOORDNS": 1,
         "APIM": 1,
         "SQLMI": 0,
         "CosmosDB": 0,
@@ -103,6 +104,14 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
+          {
+            "name": "NetworkContributor",
+            "RBAC": [
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          },
           {
             "name": "StorageAccountFileContributor",
             "RBAC": [
@@ -166,6 +175,16 @@
           }
         ],
         "SPInfo": [
+          {
+            "Name": "Microsoft.Azure.Frontdoor",
+            "RBAC": [
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
           {
             "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-S1",
             "RBAC": [
@@ -364,7 +383,63 @@
             "dnsName": "API",
             "apimSku": "Developer",
             "snName": "BE01",
-            "certName": "PSTHING-WildCard"
+            "virtualNetworkType": "External",
+            "certName": "PSTHING-WildCard",
+            "frontDoor": "01"
+          }
+        ],
+        "frontDoorInfo": [
+          {
+            "name": "01",
+            "_afdverify": "AOA",
+            "services": [
+              {
+                "Name": "APIM01-Gateway",
+                "BEAddress": "apim01.azure-api.net",  //acu1-brw-aoa-s1-apim01.azure-api.net
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              // {
+              //   "Name": "APIM01",
+              //   "BEAddress": "apim01.azure-api.net",
+              //   "ProbeName": "probe01",
+              //   "LBSettings": "balance01",
+              //   "sessionAffinityEnabledState": "Disabled",
+              //   "patternsToMatch": [
+              //     "/*"
+              //   ]
+              // },
+              {
+                // Default Service is Required
+                "Name": "Default",
+                "BEAddress": "portal.azure.com",
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
+            ]
           }
         ],
         "Appservers": {
