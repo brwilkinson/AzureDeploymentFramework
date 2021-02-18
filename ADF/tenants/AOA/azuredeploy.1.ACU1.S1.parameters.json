@@ -409,7 +409,7 @@
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "APIM01-Gateway",            // acu1-brw-aoa-s1-afd01- apim01-gateway .psthing.com
+                "Name": "APIM01-Gateway",            // acu1-brw-aoa-s1-afd 01 - apim01-gateway .psthing.com
                 "BEAddress": "apim01.azure-api.net",  //always use the gateway
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
@@ -420,7 +420,7 @@
                 ]
               },
               {
-                "Name": "APIM01",                         // acu1-brw-aoa-s1-afd01- apim01 .psthing.com
+                "Name": "APIM01",                         // acu1-brw-aoa-s1-afd 01 - apim01 .psthing.com
                 "BEAddress": "apim01.azure-api.net",    //always use the gateway
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",

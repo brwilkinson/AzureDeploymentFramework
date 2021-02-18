@@ -103,11 +103,18 @@
           "properties": {
             "backends": [
               {
-                "address": "[toLower(concat(parameters('Deployment'),'-',parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress))]",
-                "backendHostHeader": "[toLower(concat(parameters('Deployment'),
-                                                      '-afd',parameters('frontDoorInfo').Name,
-                                                      '-',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name,
-                                                      '.',parameters('global').DomainNameExt))]",
+                "address": "[toLower(if(equals(parameters('frontDoorInfo').services[copyIndex('backendPools')].Name,'Default'),
+                                                          parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress,
+                                                          concat(parameters('Deployment'),
+                                                                  '-',parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress)
+                                                          ))]",
+                "backendHostHeader": "[toLower(if(equals(parameters('frontDoorInfo').services[copyIndex('backendPools')].Name,'Default'),
+                                                          parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress,
+                                                          concat(parameters('Deployment'),
+                                                                  '-afd',parameters('frontDoorInfo').Name,
+                                                                  '-',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name,
+                                                                  '.',parameters('global').DomainNameExt)
+                                                          ))]",
                 // "privateLinkResourceId": null,
                 // "privateLinkLocation": null,
                 // "privateEndpointStatus": null,
