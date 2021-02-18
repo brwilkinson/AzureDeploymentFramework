@@ -104,7 +104,10 @@
             "backends": [
               {
                 "address": "[toLower(concat(parameters('Deployment'),'-',parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress))]",
-                "backendHostHeader": "[toLower(concat(parameters('Deployment'),'-',parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress))]",
+                "backendHostHeader": "[toLower(concat(parameters('Deployment'),
+                                                      '-afd',parameters('frontDoorInfo').Name,
+                                                      '-',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name,
+                                                      '.',parameters('global').DomainNameExt))]",
                 // "privateLinkResourceId": null,
                 // "privateLinkLocation": null,
                 // "privateEndpointStatus": null,

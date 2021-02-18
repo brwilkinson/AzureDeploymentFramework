@@ -409,26 +409,27 @@
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "APIM01-Gateway",
-                "BEAddress": "apim01.azure-api.net",  //acu1-brw-aoa-s1-apim01.azure-api.net
+                "Name": "APIM01-Gateway",            // acu1-brw-aoa-s1-afd01- apim01-gateway .psthing.com
+                "BEAddress": "apim01.azure-api.net",  //always use the gateway
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1,
+                "_EnableSSL": 1,
                 "patternsToMatch": [
                   "/*"
                 ]
               },
-              // {
-              //   "Name": "APIM01",
-              //   "BEAddress": "apim01.azure-api.net",
-              //   "ProbeName": "probe01",
-              //   "LBSettings": "balance01",
-              //   "sessionAffinityEnabledState": "Disabled",
-              //   "patternsToMatch": [
-              //     "/*"
-              //   ]
-              // },
+              {
+                "Name": "APIM01",                         // acu1-brw-aoa-s1-afd01- apim01 .psthing.com
+                "BEAddress": "apim01.azure-api.net",    //always use the gateway
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "_EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
               {
                 // Default Service is Required
                 "Name": "Default",
