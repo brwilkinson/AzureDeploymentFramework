@@ -17,6 +17,9 @@
     "Global": {
       "type": "object"
     },
+    "Stage": {
+      "type": "object"
+    },
     "OMSworkspaceID": {
       "type": "string"
     }
@@ -218,7 +221,7 @@
                   "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/frontendPorts/appGatewayFrontendPort',parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Port )]"
                 },
                 "Protocol": "[parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol]",
-                "hostName": "[concat(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,if( equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,''),'',concat('-',parameters('Environment'),parameters('DeploymentID'),'.')),parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Domain)]", //yates-i6.contoso.com
+                "hostName": "[concat(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,if( equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,''),'',concat('-',parameters('Environment'),parameters('DeploymentID'),'.')),parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Domain)]",
                 "requireServerNameIndication": "[equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol,'https')]",
                 "sslCertificate": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol,'https'),variables('Listeners')[copyIndex('httpListeners')].sslCertificate,json('null'))]"
               }
@@ -351,6 +354,106 @@
           }
         }
       ]
+    },
+    {
+      "condition": "[and(
+                        equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Interface,'Public'),
+                        and(equals(parameters('Stage').SetExternalDNS,1),
+                            equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Protocol,'https')
+                          )  
+                      )]",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('setdns-public-',parameters('WAFInfo').Listeners[CopyIndex(0)].Protocol,'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname,'-',parameters('global').DomainNameExt)]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
+      "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
+      "copy": {
+        "name": "WAF-listener-ssl-DNSLoopPublic",
+        "count": "[length( variables('Listeners') )]"
+      },
+      "dependsOn": [
+        "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]"
+
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/dnsZones/CNAME",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname))]",
+              "apiVersion": "2018-05-01",
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName,'-publicip1')),'2017-08-01','Full').properties.dnsSettings.fqdn]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "condition": "[
+                        and(equals(parameters('Stage').SetExternalDNS,1),
+                            equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Protocol,'https')
+                            )]",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('setdns-private-',parameters('WAFInfo').Listeners[CopyIndex(0)].Protocol,'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname,'-',parameters('global').DomainNameExt)]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('Global').HubRGName]",
+      "subscriptionId": "[parameters('global').SubscriptionID]",
+      "copy": {
+        "name": "WAF-listener-ssl-DNSLoopPrivate",
+        "count": "[length( variables('Listeners') )]"
+      },
+      "dependsOn": [
+        "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]"
+
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "condition": "[equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Interface,'Public')]",
+              "type": "Microsoft.Network/privateDnsZones/CNAME",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname))]",
+              "apiVersion": "2020-06-01",
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName,'-publicip1')),'2017-08-01','Full').properties.dnsSettings.fqdn]"
+                }
+              }
+            },
+            {
+              "condition": "[equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Interface,'Private')]",
+              "type": "Microsoft.Network/privateDnsZones/A",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname))]",
+              "apiVersion": "2020-06-01",
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[reference(resourceId('Microsoft.Network/applicationGateways',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'2020-06-01').frontendIPConfigurations[1].properties.privateIPAddress]"
+                }
+              }
+            }
+          ]
+        }
+      }
     }
   ]
 }

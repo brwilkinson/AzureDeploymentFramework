@@ -119,7 +119,7 @@
     //         {
     //           "type": "Microsoft.Network/dnsZones/CNAME",
     //           "name": "[toLower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-afd',variables('frontDoorInfo')[copyIndex()].name))]",
-    //           "apiVersion": "2017-09-01",
+    //           "apiVersion": "2018-05-01",
     //           "properties": {
     //             "metadata": {},
     //             "TTL": 3600,
@@ -131,7 +131,7 @@
     //         {
     //           "type": "Microsoft.Network/dnsZones/CNAME",
     //           "name": "[toLower(concat(parameters('global').DomainNameExt,'/','afdverify.',variables('frontDoorInfo')[copyIndex(0)].afdverify))]",
-    //           "apiVersion": "2017-09-01",
+    //           "apiVersion": "2018-05-01",
     //           "properties": {
     //             "metadata": {},
     //             "TTL": 3600,

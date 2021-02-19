@@ -358,7 +358,7 @@
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
               "name": "[toLower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt))]",
-              "apiVersion": "2017-09-01",
+              "apiVersion": "2018-05-01",
               "properties": {
                 "metadata": {},
                 "TTL": 3600,
@@ -370,7 +370,7 @@
             {
               "type": "Microsoft.Network/dnszones/a",
               "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway','.',parameters('Global').DomainNameExt))]",
-              "apiVersion": "2017-09-01",
+              "apiVersion": "2018-05-01",
               "location": "global",
               "dependsOn": [],
               "properties": {

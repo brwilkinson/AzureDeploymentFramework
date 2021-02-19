@@ -205,7 +205,7 @@
                                             equals(parameters('frontDoorInfo').services[copyIndex(0)].Name,'Default'),'',
                                             concat('-',parameters('frontDoorInfo').services[copyIndex(0)].Name))
                                         ))]",
-              "apiVersion": "2017-09-01",
+              "apiVersion": "2018-05-01",
               "properties": {
                 "metadata": {},
                 "TTL": 3600,
@@ -299,7 +299,7 @@
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
               "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('frontDoorInfo').services[copyIndex(0)].Name))]",
-              "apiVersion": "2017-09-01",
+              "apiVersion": "2018-05-01",
               "properties": {
                 "metadata": {},
                 "TTL": 3600,
