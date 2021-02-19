@@ -102,7 +102,7 @@
     "hubVnetName": "[parameters('Global').hubVnetName]",
     "hubVnetResourceGroupName": "[parameters('Global').hubRGName]",
     "hubVnetResourceSubscriptionID": "[parameters('Global').hubSubscriptionID]",
-    "Deploymentnsg": "[concat(parameters('Prefix'),'-', parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),if(equals( concat(parameters('Environment'),parameters('DeploymentID')),'P0') ,'-Hub','-Spoke'))]",
+    "Deploymentnsg": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-', parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),if(equals( concat(parameters('Environment'),parameters('DeploymentID')),'P0') ,'-Hub','-Spoke'))]",
     "delegations": {
       "default": [
       ],

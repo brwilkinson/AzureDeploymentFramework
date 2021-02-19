@@ -75,7 +75,7 @@
   "variables": {
 
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "Deploymentnsg": "[concat(parameters('Prefix'),'-', parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),if(equals( concat(parameters('Environment'),parameters('DeploymentID')),'P0') ,'-Hub','-Spoke'))]",
+    "Deploymentnsg": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-', parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),if(equals( concat(parameters('Environment'),parameters('DeploymentID')),'P0') ,'-Hub','-Spoke'))]",
 
     "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
 

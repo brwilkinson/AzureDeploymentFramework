@@ -88,7 +88,7 @@
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
 
-    "Deploymentnsg": "[concat(parameters('Prefix'),'-', parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),if(equals( concat(parameters('Environment'),parameters('DeploymentID')),'P0') ,'-Hub','-Spoke'))]",
+    "Deploymentnsg": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-', parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),if(equals( concat(parameters('Environment'),parameters('DeploymentID')),'P0') ,'-Hub','-Spoke'))]",
 
     "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]"
 

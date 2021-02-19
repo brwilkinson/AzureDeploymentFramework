@@ -313,6 +313,11 @@
         "LinkPrivateDnsInfo": [
           {
             "zoneRG": "P0",
+            "zone": "privatelink.centralus.azmk8s.io",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
             "zone": "privatelink.vaultcore.azure.net",
             "Autoregistration": false
           },

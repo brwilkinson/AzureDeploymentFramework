@@ -310,9 +310,15 @@
           "privatelink.afs.azure.net",
           "privatelink.servicebus.windows.net",
           "privatelink.database.windows.net",
-          "privatelink.azconfig.io"
+          "privatelink.azconfig.io",
+          "privatelink.eastus2.azmk8s.io"
         ],
         "LinkPrivateDnsInfo": [
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.eastus2.azmk8s.io",
+            "Autoregistration": false
+          },
           {
             "zoneRG": "P0",
             "zone": "privatelink.vaultcore.azure.net",

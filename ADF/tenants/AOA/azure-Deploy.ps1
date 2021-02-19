@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'AOA'
-$env:Enviro = 'S1'
+$env:Enviro = 'P0'
 $Current = @{App = 'AOA'; DP = $env:Enviro }
 # import deployment script
 if (!(Test-Path ASD:\)) { New-PSDrive -PSProvider FileSystem -Root $ASD -Name ASD }
@@ -46,21 +46,24 @@ AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-Test.json
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-deploy\0-azuredeploy-ALL.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-deploy\0-azuredeploy-ALL.json # -FullUpload -VSTS
 
-AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\3-azuredeploy-DNSPrivate.json
-AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\3-azuredeploy-VNetPrivateLink.json
-AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\6-azuredeploy-WAF.json
-
-AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\1-azuredeploy-OMS.json
-AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\23-azuredeploy-Dashboard.json
-    
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\2-azuredeploy-NSG.hub.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\2-azuredeploy-NSG.hub.json
 
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\2-azuredeploy-NSG.spoke.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\2-azuredeploy-NSG.spoke.json
 
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\3-azuredeploy-DNSPrivate.json
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\3-azuredeploy-VNetPrivateLink.json
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\3-azuredeploy-VNet.json
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\6-azuredeploy-WAF.json
+
+AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\3-azuredeploy-DNSPrivate.json
+AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\3-azuredeploy-VNetPrivateLink.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\3-azuredeploy-VNet.json
+AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\6-azuredeploy-WAF.json
+
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\1-azuredeploy-OMS.json
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\23-azuredeploy-Dashboard.json
 
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\2-azuredeploy-NetworkWatcher.json
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\2-azuredeploy-NetworkFlowLogs.json

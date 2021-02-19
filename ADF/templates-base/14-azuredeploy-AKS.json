@@ -100,8 +100,56 @@
     "computeSizeLookupOptions": "[json(parameters('Global').computeSizeLookupOptions)]",
     "WadCfg": "[json(parameters('Global').WadCfg)]",
     "ladCfg": "[json(parameters('Global').ladCfg)]",
-    "DataDiskInfo": "[json(parameters('Global').DataDiskInfo)]"
-
+    "DataDiskInfo": "[json(parameters('Global').DataDiskInfo)]",
+    "MSILookup": {
+      "SQL": "Cluster",
+      "UTL": "DefaultKeyVault",
+      "FIL": "Cluster",
+      "OCR": "Storage",
+      "WVD": "WVD"
+    },
+    "userAssignedIdentities": {
+      "Cluster": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperator'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+        }
+      },
+      "Default": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
+        }
+      },
+      "DefaultKeyVault": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGetApp'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiAzureServiceBusDataOwner'))]": {
+        }
+      },
+      "WVD": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiWVDRegKeyReader'))]": {
+        }
+      },
+      "Storage": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountContributor'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+        }
+      },
+      "None": {
+      }
+    }
   },
   "resources": [
     {
@@ -129,6 +177,7 @@
       },
       "properties": {
         "kubernetesVersion": "[variables('AKS')[copyIndex(0)].Version]",
+        "nodeResourceGroup": "[replace(resourceGroup().name,concat(parameters('Environment'),parameters('DeploymentID')),variables('AKS')[copyIndex(0)].AgentPoolRG)]",
         "enableRBAC": "[variables('AKS')[copyIndex(0)].enableRBAC]",
         "dnsPrefix": "[toLower(concat(variables('Deployment'), '-aks',variables('AKS')[copyIndex(0)].Name))]",
         "copy": [
@@ -178,6 +227,36 @@
           "dnsServiceIP": "10.0.0.0",
           "dockerBridgeCidr": "192.168.0.1/16" //Not used anywhere on network, can be re-used across all clusters.
         },
+        "servicePrincipalProfile": {
+          "clientId": "msi"
+        },
+        "podIdentityProfile": {
+          "enabled": false
+          // "userAssignedIdentities": [
+          //   {
+          //     "name": "string",
+          //     "namespace": "string",
+          //     "identity": {
+          //       "resourceId": "string",
+          //       "clientId": "string",
+          //       "objectId": "string"
+          //     }
+          //   }
+          // ],
+        //   "identity": {
+        //     "type": "SystemAssigned, UserAssigned",
+        //     // "userAssignedIdentities": "[if(contains(variables('AppServers')[copyIndex(0)].ASNAME,'CLS'),variables('userAssignedIdentities')['Cluster'],variables('userAssignedIdentities')['Default'])]"
+        //     "userAssignedIdentities": "[if(contains(variables('MSILookup'),variables('AppServers')[copyIndex(0)].ASNAME),variables('userAssignedIdentities')[variables('MSILookup')[variables('AppServers')[copyIndex(0)].ASNAME]],variables('userAssignedIdentities')['Default'])]"
+
+        //   },
+        //   "userAssignedIdentityExceptions": [
+        //     {
+        //       "name": "string",
+        //       "namespace": "string",
+        //       "podLabels": {}
+        //     }
+        //   ]
+        },
         "apiServerAccessProfile": {
           "enablePrivateCluster": "[variables('AKS')[copyIndex(0)].privateCluster]",
           "privateDNSZone": "[resourceId(parameters('Global').HubRGName,'Microsoft.Network/privateDnsZones','privatelink.centralus.azmk8s.io')]"
@@ -196,12 +275,11 @@
             }
           },
           "aciConnectorLinux": {
-            "enabled": false,
+            "enabled": true,
             "config": {
               "SubnetName": "snMT01"
             }
           }
-
         }
       },
       "resources": [

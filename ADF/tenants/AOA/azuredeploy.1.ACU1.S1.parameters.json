@@ -111,12 +111,12 @@
                 "Name": "Managed Identity Operator"
               },
               {
+                "Name": "Network Contributor"
+              },
+              {
                 "Name": "Private DNS Zone Contributor",
                 "RG": "P0",
                 "Tenant": "AOA"
-              },
-              {
-                "Name": "Network Contributor"
               },
               {
                 "Name": "Key Vault Certificates Officer",
@@ -440,6 +440,7 @@
             "skuTier": "Paid", //Free
             "enableRBAC": true,
             "privateCluster": true,
+            "AgentPoolRG": "S2",
             "AgentPoolsSN": "snMT02",
             "AgentPools": [
               {
