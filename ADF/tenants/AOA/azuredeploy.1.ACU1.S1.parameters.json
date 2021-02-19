@@ -108,6 +108,14 @@
             "name": "NetworkContributor",
             "RBAC": [
               {
+                "Name": "Managed Identity Operator"
+              },
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
                 "Name": "Network Contributor"
               },
               {
@@ -291,18 +299,8 @@
             "FlowAnalyticsEnabled": true
           },
           {
-            "name": "AzureFirewallSubnet",
-            "prefix": "128/26",
-            "NSG": 0
-          },
-          {
-            "name": "GatewaySubnet",
-            "prefix": "192/27",
-            "NSG": 0
-          },
-          {
             "name": "snMT01",
-            "prefix": "224/27",
+            "prefix": "128/25",
             "NSG": 1,
             "Route": false,
             "FlowLogEnabled": true,
@@ -349,47 +347,10 @@
             "allNetworks": "Allow",
             "PrivateLinkInfo": [
               {
-                "Subnet": "snMT02",
+                "Subnet": "snFE01",
                 "groupID": "vault"
               }
             ]
-          }
-        ],
-        "appConfigurationInfo": [
-          {
-            "name": "01",
-            "sku": "standard",
-            "publicNetworkAccess": "Enabled"
-          }
-        ],
-        "ContainerRegistry": [
-          {
-            "Name": "CTN01",
-            "SKU": "Standard",
-            "adminUserEnabled": true
-          }
-        ],
-        "AKS": [
-          {
-            "Name": "AKS01",
-            "Version": "1.11.5",
-            "AgentPools": [
-              {
-                "name": "NodePool1",
-                "count": 2,
-                "osDiskSizeGb": 30,
-                "osType": "Linux",
-                "maxPods": 110,
-                "storageProfile": "ManagedDisks",
-                "vmSize": "Standard_D1_v2"
-              }
-            ]
-          }
-        ],
-        "CosmosDB": [
-          {
-            "dbName": "CDB03",
-            "Kind": "MongoDB"
           }
         ],
         "APIMInfo": [
@@ -409,29 +370,29 @@
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "APIM01-Gateway",            // acu1-brw-aoa-s1-afd 01 - apim01-gateway .psthing.com
-                "BEAddress": "apim01.azure-api.net",  //always use the gateway
+                "Name": "APIM01-Gateway", // acu1-brw-aoa-s1-afd 01 - apim01-gateway .psthing.com
+                "BEAddress": "apim01.azure-api.net", //always use the gateway
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1,
+                "_EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
               },
               {
-                "Name": "APIM01",                         // acu1-brw-aoa-s1-afd 01 - apim01 .psthing.com
-                "BEAddress": "apim01.azure-api.net",    //always use the gateway
+                "Name": "APIM01", // acu1-brw-aoa-s1-afd 01 - apim01 .psthing.com
+                "BEAddress": "apim01.azure-api.net", //always use the gateway
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1,
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
               },
               {
-                // Default Service is Required
+                // Default (front end) Service is Required, add backend as well for ability to test FE.
                 "Name": "Default",
                 "BEAddress": "portal.azure.com",
                 "ProbeName": "probe01",
@@ -456,6 +417,60 @@
                 "additionalLatencyMilliseconds": 0
               }
             ]
+          }
+        ],
+        "appConfigurationInfo": [
+          {
+            "name": "01",
+            "sku": "standard",
+            "publicNetworkAccess": "Enabled"
+          }
+        ],
+        "ContainerRegistry": [
+          {
+            "Name": "CTN01",
+            "SKU": "Standard",
+            "adminUserEnabled": true
+          }
+        ],
+        "AKS": [
+          {
+            "Name": "01",
+            "Version": "1.20.2",
+            "skuTier": "Paid", //Free
+            "enableRBAC": true,
+            "privateCluster": true,
+            "AgentPoolsSN": "snMT02",
+            "AgentPools": [
+              {
+                "name": "linctr",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 16,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "System"
+              },
+              {
+                "name": "winctr",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Windows",
+                "maxPods": 84,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "User"
+              }
+            ]
+          }
+        ],
+        "CosmosDB": [
+          {
+            "dbName": "CDB03",
+            "Kind": "MongoDB"
           }
         ],
         "Appservers": {

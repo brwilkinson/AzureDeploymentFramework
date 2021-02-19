@@ -74,44 +74,84 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "DeploymentDev": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-D7')]",
     "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
-    "subscriptionId": "[subscription().subscriptionId]",
-    "resourceGroupName": "[resourceGroup().name]",
-    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
-    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
-    //"subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]",
-    "subnetResourceId": "[concat(variables('VNetID'), '/subnets/snMT01')]",
-    // "subnetAddress": "[reference(variables('subnetResourceID'), '2015-06-15' )]"
-    "AppInsightsName": "[replace(concat(variables('Deployment'),'AppInsights'),'-','')]",
-    "AppInsightsID": "[resourceid('microsoft.insights/components',variables('AppInsightsName'))]",
-    "AKS": "[parameters('DeploymentInfo').AKS]"
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+    "AKS": "[parameters('DeploymentInfo').AKS]",
+
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
+
+    "Environment": {
+      "D": "Dev",
+      "I": "Int",
+      "U": "UAT",
+      "P": "PROD",
+      "S": "SBX"
+    },
+    "VMSizeLookup": {
+      "D": "D",
+      "I": "D",
+      "U": "D",
+      "P": "P",
+      "S": "D"
+    },
+    "OSType": "[json(parameters('Global').OSType)]",
+    "computeSizeLookupOptions": "[json(parameters('Global').computeSizeLookupOptions)]",
+    "WadCfg": "[json(parameters('Global').WadCfg)]",
+    "ladCfg": "[json(parameters('Global').ladCfg)]",
+    "DataDiskInfo": "[json(parameters('Global').DataDiskInfo)]"
+
   },
   "resources": [
     {
-      "name": "[concat(variables('Deployment'), '-vm', variables('AKS')[copyIndex(0)].Name)]",
+      "name": "[concat(variables('Deployment'), '-aks', variables('AKS')[copyIndex(0)].Name)]",
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2018-03-31",
+      "apiVersion": "2020-12-01",
       "location": "[resourceGroup().location]",
+      "identity": {
+        // "type": "SystemAssigned"
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor'))]": {}
+        }
+      },
+      "sku": {
+        "name": "Basic",
+        "tier": "[variables('AKS')[copyIndex(0)].skuTier]"
+      },
       "copy": {
         "name": "AKSLoop",
         "count": "[length(variables('AKS'))]"
       },
+      "tags": {
+        "Environment": "[variables('Environment')[parameters('Environment')]]"
+      },
       "properties": {
         "kubernetesVersion": "[variables('AKS')[copyIndex(0)].Version]",
-        "dnsPrefix": "[toLower( concat(variables('Domain'), variables('Deployment'), '-aks', variables('AKS')[copyIndex(0)].Name,'-',copyIndex(1) ) ) ]",
+        "enableRBAC": "[variables('AKS')[copyIndex(0)].enableRBAC]",
+        "dnsPrefix": "[toLower(concat(variables('Deployment'), '-aks',variables('AKS')[copyIndex(0)].Name))]",
         "copy": [
           {
             "name": "agentPoolProfiles",
-            "count": 1,
+            "count": "[length(variables('AKS')[copyIndex(0)].agentPools)]",
             "Input": {
-              "name": "NodePool1",
-              "count": 2,
-              "osDiskSizeGb": 30,
-              "osType": "Linux",
-              "maxPods": 110,
-              "storageProfile": "ManagedDisks",
-              "vmSize": "Standard_D1_v2"
+              "name": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].name]",
+              "mode": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].mode]",
+              "count": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].count]",
+              "osDiskSizeGb": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].osDiskSizeGb]",
+              "osType": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].osType]",
+              "maxPods": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].maxPods]",
+              // "storageProfile": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].storageProfile]",
+              // "vmSize": "[variables('computeSizeLookupOptions')[concat(variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].ASNAME,'-',variables('vmsizelookup')[parameters('Environment')])]]",
+              "vmSize": "Standard_DS2_v2",
+              "vnetSubnetID": "[if(
+                                  contains(variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')],'Subnet'),
+                                  resourceId('Microsoft.Network/virtualNetworks/subnets',variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].Subnet),
+                                  resourceId('Microsoft.Network/virtualNetworks/subnets', concat(Variables('Deployment'),'-vn'),variables('AKS')[copyIndex(0)].AgentPoolsSN))]",
+              "type": "VirtualMachineScaleSets",
+              "availabilityZones": [ "1", "2", "3" ],
+              "storageProfile": "ManagedDisks"
             }
           }
         ],
@@ -125,27 +165,98 @@
             ]
           }
         },
-        "servicePrincipalProfile": {
-          "clientId": "77fa0d1b-b756-48b2-a8ca-87ac087c37e1",
-          "secret": "[if(contains(variables('AKS')[copyIndex(0)],'AdminUser'),variables('AKS')[copyIndex(0)].AdminUser,parameters('Global').vmAdminUserName)]"
+        "windowsProfile": {
+          "adminUsername": "[if(contains(variables('AKS')[copyIndex(0)],'AdminUser'),variables('AKS')[copyIndex(0)].AdminUser,parameters('Global').vmAdminUserName)]",
+          "adminPassword": "[parameters('vmAdminPassword')]",
+          "licenseType": "Windows_Server"
         },
-        "addonProfiles": {},
-        "enableRBAC": false
-        // "networkProfile": {
-        //   "networkPlugin": "string",
-        //   "networkPolicy": "calico",
-        //   "podCidr": "string",
-        //   "serviceCidr": "string",
-        //   "dnsServiceIP": "string",
-        //   "dockerBridgeCidr": "string"
-        // },
-        // "aadProfile": {
-        //   "clientAppID": "string",
-        //   "serverAppID": "string",
-        //   "serverAppSecret": "string",
-        //   "tenantID": "string"
-        // }
-      }
+        "networkProfile": {
+          "loadBalancerSku": "standard",
+          "networkPlugin": "azure",
+          "networkPolicy": "azure",
+          "serviceCidr": "10.0.0.0/16", //Not used anywhere on network, can be re-used across all clusters.
+          "dnsServiceIP": "10.0.0.0",
+          "dockerBridgeCidr": "192.168.0.1/16" //Not used anywhere on network, can be re-used across all clusters.
+        },
+        "apiServerAccessProfile": {
+          "enablePrivateCluster": "[variables('AKS')[copyIndex(0)].privateCluster]",
+          "privateDNSZone": "[resourceId(parameters('Global').HubRGName,'Microsoft.Network/privateDnsZones','privatelink.centralus.azmk8s.io')]"
+        },
+        "addonProfiles": {
+          "httpApplicationRouting": {
+            "enabled": true
+          },
+          "azurePolicy": {
+            "enabled": false
+          },
+          "omsAgent": {
+            "enabled": true,
+            "config": {
+              "logAnalyticsWorkspaceResourceID": "[variables('OMSworkspaceID')]"
+            }
+          },
+          "aciConnectorLinux": {
+            "enabled": false,
+            "config": {
+              "SubnetName": "snMT01"
+            }
+          }
+
+        }
+      },
+      "resources": [
+        {
+          "name": "Microsoft.Insights/service",
+          "type": "providers/diagnosticSettings",
+          "dependsOn": [
+            "[concat(variables('Deployment'), '-aks', variables('AKS')[copyIndex(0)].Name)]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "kube-apiserver",
+                "enabled": true
+              },
+              {
+                "category": "kube-audit",
+                "enabled": true
+              },
+              {
+                "category": "kube-audit-admin",
+                "enabled": true
+              },
+              {
+                "category": "kube-controller-manager",
+                "enabled": true
+              },
+              {
+                "category": "kube-scheduler",
+                "enabled": true
+              },
+              {
+                "category": "cluster-autoscaler",
+                "enabled": true
+              },
+              {
+                "category": "guard",
+                "enabled": true
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "outputs": {}

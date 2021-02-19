@@ -307,7 +307,8 @@
           "privatelink.afs.azure.net",
           "privatelink.servicebus.windows.net",
           "privatelink.database.windows.net",
-          "privatelink.azconfig.io"
+          "privatelink.azconfig.io",
+          "privatelink.centralus.azmk8s.io"
         ],
         "LinkPrivateDnsInfo": [
           {

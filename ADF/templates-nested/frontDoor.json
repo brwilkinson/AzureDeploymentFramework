@@ -350,23 +350,44 @@
                         [string]$certificateUrl
                     )
                     
-                    $EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -Name $Name
-                    if ($EndPoint.Vault)
+                    try
                     {
-                        echo 'Provisioning is complete!'
+                        $c = Get-AzContext -ErrorAction stop
+                        if ($c)
+                        {
+                            Write-Output 'Context is:'
+                            $c | select Account,Subscription,Tenant,Environment | fl | out-string
+                            
+                            $EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -Name $Name -ErrorAction stop
+                            #$EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName ACU1-BRW-AOA-RG-S1 -FrontDoorName ACU1-BRW-AOA-S1-afd01 -Name APIM01-Gateway
+                            if ($EndPoint.Vault)
+                            {
+                                Write-Output 'Provisioning is complete!'
+                            }
+                            else 
+                            {
+                                # /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01
+                                # 
+                                $SecretVersion = Split-Path -Path $certificateUrl -Leaf
+                                $Secret = Split-Path -Path $certificateUrl
+                                $SecretName = Split-Path -Path $Secret -Leaf
+                                
+                                Enable-AzFrontDoorCustomDomainHttps -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -FrontendEndpointName $Name -VaultId $VaultID -SecretName $SecretName -MinimumTlsVersion 1.2 -SecretVersion $SecretVersion
+                            }
+                        }
+                        else 
+                        {
+                            throw 'Cannot get a context'
+                        }
                     }
-                    else 
+                    catch
                     {
-                        # /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01
-                        # 
-                        $SecretVersion = Split-Path -Path $certificateUrl -leaf
-                        $Secret = Split-Path -Path $certificateUrl
-                        $SecretName = Split-Path -Path $Secret -leaf
-                        get-azcontext
-                        Enable-AzFrontDoorCustomDomainHttps -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -FrontendEndpointName $Name -VaultId $VaultID -SecretName $SecretName -MinimumTlsVersion 1.2 -SecretVersion $SecretVersion
+                        Write-Warning $_
+                        Write-Warning $_.exception
                     }
                 ",
         "forceUpdateTag": "[parameters('now')]",
+        "cleanupPreference": "OnExpiration",
         "retentionInterval": "P1D",
         "timeout": "PT3M"
       }
