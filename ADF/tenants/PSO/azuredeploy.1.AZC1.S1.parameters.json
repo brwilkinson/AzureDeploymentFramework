@@ -60,7 +60,7 @@
         "VMFILE": 0,
         "VMSS": 0,
         "WAF": 0,
-        "SetWAFDNS": 0,
+        "SetExternalDNS": 0,
         "APIM": 0,
         "SQLMI": 0,
         "CosmosDB": 0,

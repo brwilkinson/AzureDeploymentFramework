@@ -325,16 +325,23 @@ Function Start-AzDeploy
             $JsonParameters = $JsonParameters.parameters
         }
 
-        # Create the storage account if it doesn't already exist
+        # Create the storage account only if it doesn't already exist
         if ( -not $StorageAccount )
         {
             $StorageResourceGroupName = 'ARM_Deploy_Staging'
-            New-AzureRmResourceGroup -Location $ResourceGroupLocation -Name $StorageResourceGroupName -Force
+            if ( -not (Get-AzureRmresourcegroup -Name $StorageResourceGroupName -Verbose -ErrorAction SilentlyContinue))
+            {
+                New-AzureRmResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
+            }
             $StorageAccount = New-AzureRmStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
         }
 
-        # Copy files from the local storage staging location to the storage account container
-        New-AzureStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
+        # Create the storage container only if it doesn't already exist
+        if ( -not (Get-AzureStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -Verbose -ErrorAction SilentlyContinue))
+        {
+            # Copy files from the local storage staging location to the storage account container
+            New-AzureStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
+        }
 
         if ( -not $FullUpload )
         {
@@ -480,7 +487,7 @@ Function Start-AzDeploy
             if ($Deployment -eq 'M0')
             {
                 # When doing 
-                $ResourceGroupName = $ResourceGroupName -replace 'M0','G1'
+                $ResourceGroupName = $ResourceGroupName -replace 'M0', 'G1'
                 if ($TestWhatIf)
                 {
                     Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"

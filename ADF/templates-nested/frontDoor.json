@@ -176,7 +176,7 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('Stage').SetFRONTDOORDNS,1)]",
+      "condition": "[equals(parameters('Stage').SetExternalDNS,1)]",
       "apiVersion": "2020-06-01",
       "name": "[concat('setdnsServices',copyIndex(0))]",
       "type": "Microsoft.Resources/deployments",
@@ -275,7 +275,7 @@
       ]
     },
     {
-      "condition": "[equals(parameters('Stage').SetFRONTDOORDNS,1)]",
+      "condition": "[equals(parameters('Stage').SetExternalDNS,1)]",
       "apiVersion": "2020-06-01",
       "name": "[concat('setdns',copyIndex(0))]",
       "type": "Microsoft.Resources/deployments",
@@ -352,17 +352,19 @@
                     
                     try
                     {
+                        Write-Output \"`nUTC is: \"
+                        Get-Date
                         $c = Get-AzContext -ErrorAction stop
                         if ($c)
                         {
-                            Write-Output 'Context is:'
+                            Write-Output \"`nContext is: \"
                             $c | select Account,Subscription,Tenant,Environment | fl | out-string
                             
                             $EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -Name $Name -ErrorAction stop
                             #$EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName ACU1-BRW-AOA-RG-S1 -FrontDoorName ACU1-BRW-AOA-S1-afd01 -Name APIM01-Gateway
                             if ($EndPoint.Vault)
                             {
-                                Write-Output 'Provisioning is complete!'
+                                Write-Output 'Provisioning CustomDomainHttp is complete!'
                             }
                             else 
                             {
@@ -387,7 +389,7 @@
                     }
                 ",
         "forceUpdateTag": "[parameters('now')]",
-        "cleanupPreference": "OnExpiration",
+        "cleanupPreference": "OnSuccess",
         "retentionInterval": "P1D",
         "timeout": "PT3M"
       }

@@ -64,7 +64,7 @@
         "WAFPOLICY": 0,
         "FRONTDOOR": 0,
         "WAF": 1,
-        "SetWAFDNS": 0,
+        "SetExternalDNS": 0,
         "APIM": 1,
         "SQLMI": 0,
         "CosmosDB": 0,

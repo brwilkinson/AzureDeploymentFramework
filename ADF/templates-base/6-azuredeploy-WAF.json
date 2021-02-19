@@ -252,7 +252,7 @@
       }
     },
     {
-      "condition": "[equals(parameters('Stage').SetWAFDNS,1)]",
+      "condition": "[equals(parameters('Stage').SetExternalDNS,1)]",
       "apiVersion": "2020-06-01",
       "name": "[concat('setdns',copyIndex(0))]",
       "type": "Microsoft.Resources/deployments",

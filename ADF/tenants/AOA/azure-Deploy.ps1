@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'AOA'
-$env:Enviro = 'P0'
+$env:Enviro = 'S1'
 $Current = @{App = 'AOA'; DP = $env:Enviro }
 # import deployment script
 if (!(Test-Path ASD:\)) { New-PSDrive -PSProvider FileSystem -Root $ASD -Name ASD }
