@@ -54,12 +54,12 @@
         "FW": 0,
         "VNGW": 0,
         "ERGW": 0,
-        "ADPrimary": 0,
-        "ADSecondary": 0,
+        "ADPrimary": 1,
+        "ADSecondary": 1,
         "ILB": 0,
         "PLB": 0,
         "InitialDOP": 0,
-        "VMApp": 1,
+        "VMApp": 0,
         "VMAppLinux": 0,
         "VMSQL": 0,
         "VMFILE": 0,
@@ -460,47 +460,10 @@
         "Appservers": {
           "ADPrimary": [
             {
-              "VMName": "DC01",
-              "Role": "ADp",
-              "ASName": "AD",
-              "DDRole": "32GB",
-              "OSType": "Server2016Coresmall",
-              "ExcludeDomainJoin": 1,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "AD01",
-                  "Primary": 1,
-                  "StaticIP": "75"
-                }
-              ]
-            }
-          ],
-          "ADSecondary": [
-            {
-              "VMName": "DC02",
-              "Role": "ADs",
-              "ASName": "AD",
-              "DDRole": "32GB",
-              "OSType": "Server2016Coresmall",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "AD01",
-                  "Primary": 1,
-                  "StaticIP": "76"
-                }
-              ],
-              "AppInfo": {
-                "SiteName": "Default-First-Site-Name"
-              }
-            }
-          ],
-          "AppServers": [
-            {
               "VMName": "DNS01",
               "Role": "DNS",
               "ASName": "DNS",
+              "DSConfig": "AppServers",
               "DDRole": "32GB",
               "OSType": "Server2019CoreContainerssmall",
               "Zone": 1,
@@ -511,11 +474,31 @@
                   "StaticIP": "75"
                 }
               ]
-            },
+            }
+            // Using non AD Domain Controllers in AOA
+            // {
+            //   "VMName": "DC01",
+            //   "Role": "ADp",
+            //   "ASName": "AD",
+            //   "DDRole": "32GB",
+            //   "OSType": "Server2016Coresmall",
+            //   "ExcludeDomainJoin": 1,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "AD01",
+            //       "Primary": 1,
+            //       "StaticIP": "75"
+            //     }
+            //   ]
+            // }
+          ],
+          "ADSecondary": [
             {
               "VMName": "DNS02",
               "Role": "DNS",
               "ASName": "DNS",
+              "DSConfig": "AppServers",
               "DDRole": "32GB",
               "OSType": "Server2019CoreContainerssmall",
               "Zone": 2,
@@ -527,6 +510,25 @@
                 }
               ]
             }
+            //  Using non AD Domain Controllers in AOA
+            // {
+            //   "VMName": "DC02",
+            //   "Role": "ADs",
+            //   "ASName": "AD",
+            //   "DDRole": "32GB",
+            //   "OSType": "Server2016Coresmall",
+            //   "Zone": 2,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "AD01",
+            //       "Primary": 1,
+            //       "StaticIP": "76"
+            //     }
+            //   ],
+            //   "AppInfo": {
+            //     "SiteName": "Default-First-Site-Name"
+            //   }
+            // }
           ]
         },
         "WAFInfo": [

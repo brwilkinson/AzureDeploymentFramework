@@ -1050,7 +1050,7 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "datacenter-core-20h2-with-containers-smalldisk-gs",
+        "sku": "2019-datacenter-core-with-containers-smalldisk-g2",
         "version": "latest"
       },
       "licenseType": "Windows_Server",

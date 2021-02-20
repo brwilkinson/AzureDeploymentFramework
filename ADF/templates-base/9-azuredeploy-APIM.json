@@ -99,6 +99,7 @@
   },
   "resources": [
     {
+      "condition": false,
       "type": "Microsoft.ApiManagement/service",
       "sku": {
         "name": "[variables('APIMInfo')[copyIndex(0)].apimSku]",
@@ -120,6 +121,17 @@
         "publisherName": "[parameters('global').apimPublisherEmail]",
         "hostnameConfigurations": [
           {
+            "type": "DeveloperPortal",
+            "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+                          tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt)),
+                          tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt))
+                          )]",
+            "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
+            "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
+            // acu1-brw-aoa-s1-afd01-apim01.psthing.com  behind AFD
+            // acu1-brw-aoa-s1-apim01.psthing.com       not behind AFD
+          },
+          {
             "type": "Proxy",
             "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
                           tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway','.',parameters('Global').DomainNameExt)),
@@ -131,16 +143,16 @@
             // acu1-brw-aoa-s1-apim01-gateway.psthing.com       not behind AFD
           },
           {
-            "type": "DeveloperPortal",
+            "type": "Management",
             "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
-                          tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt)),
-                          tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt))
+                          tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management','.',parameters('Global').DomainNameExt)),
+                          tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management','.',parameters('Global').DomainNameExt))
                           )]",
             "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
             "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
-            // acu1-brw-aoa-s1-afd01-apim01.psthing.com  behind AFD
-            // acu1-brw-aoa-s1-apim01.psthing.com       not behind AFD
-          }
+            // acu1-brw-aoa-s1-afd01-apim01-gateway.psthing.com  behind AFD
+            // acu1-brw-aoa-s1-apim01-gateway.psthing.com       not behind AFD
+          },
         ],
         "runtimeUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.azure-api.net'))]",
         "portalUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.portal.azure-api.net'))]",
@@ -234,33 +246,6 @@
             }
           }
         },
-        // {
-        //   "apiVersion": "2017-03-01",
-        //   "type": "backends",
-        //   "name": "Commands",
-        //   "dependsOn": [
-        //     "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
-        //     // "[resourceId('Microsoft.ApiManagement/service/certificates',concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name),'multidomaincert')]"
-        //   ],
-        //   "properties": {
-        //     "description": "commands",
-        //     "url": "fabric:/contoso.Commands",
-        //     "protocol": "http",
-        //     "resourceId": "[tolower(concat('https://cto',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]",
-        //     "properties": {
-        //       "serviceFabricCluster": {
-        //         "managementEndpoints": [
-        //           "[tolower(concat('https://cto',parameters('Environment'),parameters('DeploymentID'),'sf01.',parameters('Global').DomainName))]"
-        //         ],
-        //         "clientCertificatethumbprint": "[parameters('global').certificateThumbprint]",
-        //         "serverCertificatethumbprints": [
-        //           "[parameters('Global').certificateThumbprint]"
-        //         ],
-        //         "maxPartitionResolutionRetries": 5
-        //       }
-        //     }
-        //   }
-        // },
         {
           "name": "Public",
           "type": "products",
@@ -279,16 +264,16 @@
     {
       "condition": "[equals(parameters('Stage').SetInternalDNS,1)]",
       "apiVersion": "2020-06-01",
-      "name": "[concat('setdns',copyIndex(1))]",
+      "name": "[concat('setdns-private',copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[parameters('Global').HubRGName]",
       "subscriptionId": "[parameters('global').SubscriptionID]",
       "copy": {
-        "name": "apimLoop",
+        "name": "apimLoop-setdns-private",
         "count": "[length(variables('APIMInfo'))]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+        // "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -300,29 +285,59 @@
           "resources": [
             {
               "type": "Microsoft.Network/privateDnsZones/CNAME",
-              "name": "[toLower(concat(parameters('global').DomainName,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt))]",
               "apiVersion": "2020-06-01",
+              "name": "[toLower(concat(
+                                        parameters('global').DomainName,'/',variables('Deployment'),
+                                            if(
+                                              contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+                                              concat('-adf',variables('APIMInfo')[copyIndex(0)].frontDoor),
+                                              ''),
+                                        '-apim',variables('APIMInfo')[copyIndex(0)].name
+                                      ))]",
               "properties": {
                 "metadata": {},
-                "TTL": 3600,
-                "CNAMERecord": {
-                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway','.',parameters('Global').DomainNameExt))]"
+                "ttl": 3600,
+                "cnameRecord": {
+                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
                 }
               }
             },
             {
-              "type": "Microsoft.Network/privateDnsZones/A",
-              "name": "[tolower(concat(parameters('global').DomainName,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway','.',parameters('Global').DomainNameExt))]",
+              "type": "Microsoft.Network/privateDnsZones/CNAME",
               "apiVersion": "2020-06-01",
-              "location": "global",
-              "dependsOn": [],
+              "name": "[tolower(concat(
+                                        parameters('global').DomainName,'/',variables('Deployment'),
+                                            if(
+                                              contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+                                              concat('-adf',variables('APIMInfo')[copyIndex(0)].frontDoor),
+                                              ''),
+                                        '-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway'
+                                      ))]",
               "properties": {
-                "TTL": 3600,
-                "ARecords": [
-                  {
-                    "ipv4Address": "[reference(resourceId(variables('resourceGroupName'),'Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)),'2018-01-01','Full').properties.publicIPAddresses[0]]"
-                  }
-                ]
+                "metadata": {},
+                "ttl": 3600,
+                "cnameRecord": {
+                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/privateDnsZones/CNAME",
+              "apiVersion": "2020-06-01",
+              "name": "[tolower(concat(
+                                        parameters('global').DomainName,'/',variables('Deployment'),
+                                            if(
+                                              contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+                                              concat('-adf',variables('APIMInfo')[copyIndex(0)].frontDoor),
+                                              ''),
+                                        '-apim',variables('APIMInfo')[copyIndex(0)].name,'-management'
+                                      ))]",
+              "properties": {
+                "metadata": {},
+                "ttl": 3600,
+                "cnameRecord": {
+                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                }
               }
             }
           ]
@@ -330,18 +345,21 @@
       }
     },
     {
-      "condition": "[equals(parameters('Stage').SetExternalDNS,1)]",
+      "condition": "[and(
+                        equals(parameters('Stage').SetExternalDNS,1),
+                        not(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'))
+                        )]",
       "apiVersion": "2020-06-01",
-      "name": "[concat('setdns',copyIndex(1))]",
+      "name": "[concat('setdns-external',copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
       "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
       "copy": {
-        "name": "apimLoop",
+        "name": "apimLoop-setdns-external",
         "count": "[length(variables('APIMInfo'))]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+        // "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -353,29 +371,44 @@
           "resources": [
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
-              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt))]",
-              "apiVersion": "2018-05-01",
-              "properties": {
-                "metadata": {},
-                "TTL": 3600,
-                "CNAMERecord": {
-                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway','.',parameters('Global').DomainNameExt))]"
-                }
-              }
-            },
-            {
-              "type": "Microsoft.Network/dnszones/a",
-              "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway','.',parameters('Global').DomainNameExt))]",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name))]",
               "apiVersion": "2018-05-01",
               "location": "global",
               "dependsOn": [],
               "properties": {
+                "metadata": {},
                 "TTL": 3600,
-                "ARecords": [
-                  {
-                    "ipv4Address": "[reference(resourceId(variables('resourceGroupName'),'Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)),'2018-01-01','Full').properties.publicIPAddresses[0]]"
-                  }
-                ]
+                "CNAMERecord": {
+                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/dnsZones/CNAME",
+              "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway'))]",
+              "apiVersion": "2018-05-01",
+              "location": "global",
+              "dependsOn": [],
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/dnsZones/CNAME",
+              "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management'))]",
+              "apiVersion": "2018-05-01",
+              "location": "global",
+              "dependsOn": [],
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                }
               }
             }
           ]

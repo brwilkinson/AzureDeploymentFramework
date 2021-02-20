@@ -1,13 +1,14 @@
+param (
+    [string]$Enviro = 'S1',
+    [string]$App = 'AOA'
+)
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
-$App = 'AOA'
-$env:Enviro = 'S1'
-$Current = @{App = 'AOA'; DP = $env:Enviro }
-# import deployment script
+$Current = @{App = 'AOA'; DP = $Enviro }
 if (!(Test-Path ASD:\)) { New-PSDrive -PSProvider FileSystem -Root $ASD -Name ASD }
 . ASD:\release-az\Start-AzDeploy.ps1
 Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App] and Enviro is [$env:Enviro]" -Verbose
-
+$env:Enviro = $Enviro # add this to track on prompt (oh-my-posh env variable)
 break
 # F8 to run individual steps
 

@@ -432,8 +432,8 @@
               "apiVersion": "2020-06-01",
               "properties": {
                 "metadata": {},
-                "TTL": 3600,
-                "CNAMERecord": {
+                "ttl": 3600,
+                "cnameRecord": {
                   "cname": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName,'-publicip1')),'2017-08-01','Full').properties.dnsSettings.fqdn]"
                 }
               }
@@ -445,15 +445,30 @@
               "apiVersion": "2020-06-01",
               "properties": {
                 "metadata": {},
-                "TTL": 3600,
-                "CNAMERecord": {
-                  "cname": "[reference(resourceId('Microsoft.Network/applicationGateways',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'2020-06-01').frontendIPConfigurations[1].properties.privateIPAddress]"
-                }
+                "ttl": 3600,
+                "aRecords": [
+                  {
+                    "ipv4Address": "[reference(
+                                          resourceId('Microsoft.Network/applicationGateways',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),
+                                          '2020-06-01','Full'
+                                          ).properties.frontendIPConfigurations[1].properties.privateIPAddress]"
+                  }
+                ]
               }
             }
           ]
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "output1": {
+      "type": "array",
+      "value": "[reference(resourceId('Microsoft.Network/applicationGateways',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'2020-06-01','Full').properties.frontendIPConfigurations]"
+    },
+    "output2": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/applicationGateways',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'2020-06-01','Full').properties.frontendIPConfigurations[1].properties.privateIPAddress]"
+    }
+  }
 }

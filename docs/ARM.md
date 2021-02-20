@@ -5,6 +5,14 @@ Go Readme [README](../README.md)
 
 [Documentation - What is ADF](./ADF.md)
 
+### FAQ
+
+- [FAQ](./FAQ.md)
+
+### ADF Features
+
+- [ADF Features](./ADF_Features.md)
+
 ### Deployment Partitions
 
 - [Deployment Partitions](./Deployment_Partitions.md)

@@ -59,7 +59,7 @@
         "ILB": 0,
         "PLB": 0,
         "InitialDOP": 0,
-        "VMApp": 0,
+        "VMApp": 1,
         "VMAppLinux": 0,
         "VMSQL": 0,
         "VMFILE": 0,
@@ -376,12 +376,23 @@
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "APIM01-Gateway", // acu1-brw-aoa-s1-afd 01 - apim01-gateway .psthing.com
+                "Name": "APIM01-Management", // acu1-brw-aoa-s1-afd 01 - apim01-gateway .psthing.com
                 "BEAddress": "apim01.azure-api.net", //always use the gateway
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
                 "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                "Name": "APIM01-Gateway", // acu1-brw-aoa-s1-afd 01 - apim01-gateway .psthing.com
+                "BEAddress": "apim01.azure-api.net", //always use the gateway
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "_EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]

@@ -275,44 +275,6 @@
       ]
     },
     {
-      "condition": "[equals(parameters('Stage').SetExternalDNS,1)]",
-      "apiVersion": "2020-06-01",
-      "name": "[concat('setdns',copyIndex(0))]",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
-      "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
-      "copy": {
-        "name": "FDDNSLoop",
-        "count": "[length( parameters('frontDoorInfo').services )]"
-      },
-      "dependsOn": [
-        "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name)]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "parameters": {},
-          "variables": {},
-          "resources": [
-            {
-              "type": "Microsoft.Network/dnsZones/CNAME",
-              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('frontDoorInfo').services[copyIndex(0)].Name))]",
-              "apiVersion": "2018-05-01",
-              "properties": {
-                "metadata": {},
-                "TTL": 3600,
-                "CNAMERecord": {
-                  "cname": "[parameters('frontDoorInfo').services[copyIndex(0)].BEAddress]"
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "condition": "[and(contains(parameters('frontDoorInfo').services[CopyIndex(0)],'EnableSSL'),equals(parameters('frontDoorInfo').services[CopyIndex(0)].EnableSSL,1))]",
       "name": "[concat('SetServicesCertificates',CopyIndex(1))]",
       "type": "Microsoft.Resources/deploymentScripts",
