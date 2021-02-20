@@ -1,7 +1,7 @@
 # F5 to load
 $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $App = 'AOA'
-$env:Enviro = 'P0'
+$env:Enviro = 'S1'
 $Current = @{App = 'AOA'; DP = $env:Enviro }
 # import deployment script
 if (!(Test-Path ASD:\)) { New-PSDrive -PSProvider FileSystem -Root $ASD -Name ASD }
@@ -77,6 +77,7 @@ AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-KV.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\0-azuredeploy-KV.json
 
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\9-azuredeploy-APIM.json
+
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\2-azuredeploy-FrontDoor.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\2-azuredeploy-FrontDoor.json
 

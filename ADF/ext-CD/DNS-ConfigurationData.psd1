@@ -1,5 +1,5 @@
 #
-# ConfigurationData.psd1
+# DNS ConfigurationData.psd1
 #
 
 @{ 
@@ -16,7 +16,7 @@
                 'F:\Source'
             )
 
-            DirectoryPresentSource      = @(
+            _DirectoryPresentSource     = @(
                 @{
                     filesSourcePath      = '\\{0}.file.core.windows.net\source\WVD\'
                     filesDestinationPath = 'F:\Source\WVD\'
@@ -28,7 +28,7 @@
                 @{DriveLetter = 'F'; DiskID = '2' }
             )
 
-            DNSForwarder                = $True
+            DNSForwarder                = '168.63.129.16'
 
             ConditionalForwarderPresent = @(
                 @{Name = 'psthing.com'; MasterServers = '168.63.129.16' },

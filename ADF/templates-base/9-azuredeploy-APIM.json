@@ -276,12 +276,8 @@
         }
       ]
     },
-    //  Setup DNS if APIM Instance is not a Azure Front Door Instance
     {
-      "condition": "[and(
-                      equals(parameters('Stage').SetExternalDNS,1),
-                      not(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'))
-                    )]",
+      "condition": "[equals(parameters('Stage').SetInternalDNS,1)]",
       "apiVersion": "2020-06-01",
       "name": "[concat('setdns',copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",

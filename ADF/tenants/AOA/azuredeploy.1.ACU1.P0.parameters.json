@@ -502,13 +502,28 @@
               "Role": "DNS",
               "ASName": "DNS",
               "DDRole": "32GB",
-              "OSType": "Server2019Containerssmall",
+              "OSType": "Server2019CoreContainerssmall",
               "Zone": 1,
               "NICs": [
                 {
                   "Subnet": "AD01",
                   "Primary": 1,
                   "StaticIP": "75"
+                }
+              ]
+            },
+            {
+              "VMName": "DNS02",
+              "Role": "DNS",
+              "ASName": "DNS",
+              "DDRole": "32GB",
+              "OSType": "Server2019CoreContainerssmall",
+              "Zone": 2,
+              "NICs": [
+                {
+                  "Subnet": "AD01",
+                  "Primary": 1,
+                  "StaticIP": "76"
                 }
               ]
             }
