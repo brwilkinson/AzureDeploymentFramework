@@ -54,3 +54,12 @@ Go Home [Documentation Home](./ARM.md)
 
 #### What Network Space should I reserve for Azure Deployment Framework
 - to do.
+
+#### We are used to havin a DEV, TEST and PROD environments, why does it show things like: S1, D2, Q3, Q5, P6 Etc.
+- The 'Enviro' e.g. S1 defines an environment, team members can simply say S1 or D2 and recognize the environment that you are referencing.
+- The 'Enviro' also makes it easy to reference and deploy out to an individual environment in your pipelines or in a manual deployment.
+- This project uses dynamic IP Address ranges, so the number that you use determines the network range Address space reservation. This ensure you can always Automatically Peer into the Hub and Spoke Topology.
+- The ability to dynamically deploy any number of environments allows you to develop and test faster. Each environment is isolated, so you can spin up and environment, then totally delete it after.
+- You may have to develop code around a WAF or APIM or Test a scenario with Azure Front Door, this includes code development and the ability to debug and resolve issues in repro environments more easily.
+- You can essentially clone a whole QA environment or PROD environment, then deploy it in part or full.
+- The dynamic number ranges allows you to deploy 8 or 16 environments, depending on your IP Address Requirements. You can also adopt your own Network sizes if you need something different that the default.

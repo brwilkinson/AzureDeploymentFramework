@@ -290,7 +290,7 @@
                                         parameters('global').DomainName,'/',variables('Deployment'),
                                             if(
                                               contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
-                                              concat('-adf',variables('APIMInfo')[copyIndex(0)].frontDoor),
+                                              concat('-afd',variables('APIMInfo')[copyIndex(0)].frontDoor),
                                               ''),
                                         '-apim',variables('APIMInfo')[copyIndex(0)].name
                                       ))]",
@@ -309,7 +309,7 @@
                                         parameters('global').DomainName,'/',variables('Deployment'),
                                             if(
                                               contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
-                                              concat('-adf',variables('APIMInfo')[copyIndex(0)].frontDoor),
+                                              concat('-afd',variables('APIMInfo')[copyIndex(0)].frontDoor),
                                               ''),
                                         '-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway'
                                       ))]",
@@ -328,7 +328,7 @@
                                         parameters('global').DomainName,'/',variables('Deployment'),
                                             if(
                                               contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
-                                              concat('-adf',variables('APIMInfo')[copyIndex(0)].frontDoor),
+                                              concat('-afd',variables('APIMInfo')[copyIndex(0)].frontDoor),
                                               ''),
                                         '-apim',variables('APIMInfo')[copyIndex(0)].name,'-management'
                                       ))]",
