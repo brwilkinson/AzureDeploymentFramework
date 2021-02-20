@@ -54,12 +54,12 @@
         "FW": 0,
         "VNGW": 0,
         "ERGW": 0,
-        "ADPrimary": 1,
-        "ADSecondary": 1,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
         "ILB": 0,
         "PLB": 0,
         "InitialDOP": 0,
-        "VMApp": 0,
+        "VMApp": 1,
         "VMAppLinux": 0,
         "VMSQL": 0,
         "VMFILE": 0,
@@ -95,7 +95,8 @@
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 1,
+        "DomainJoin": 0,
+        "AADLogin": 1,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
         "SqlIaasExtension": 0
@@ -177,6 +178,10 @@
           },
           {
             "Name": "Key Vault Administrator",
+            "Member": "benwilk@Microsoft.com"
+          },
+          {
+            "Name": "Virtual Machine Administrator Login",
             "Member": "benwilk@Microsoft.com"
           }
         ],
@@ -298,8 +303,6 @@
           "name": "networkwatcher"
         },
         "DNSPrivateZoneInfo": [
-          "Contoso.com",
-          "Fabrikam.com",
           "PSThing.com",
           "privatelink.azurewebsites.net",
           "privatelink.vaultcore.azure.net",
@@ -340,16 +343,6 @@
           {
             "zoneRG": "P0",
             "zone": "privatelink.afs.azure.net",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "Contoso.com",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "Fabrikam.com",
             "Autoregistration": false
           },
           {
@@ -501,6 +494,23 @@
               "AppInfo": {
                 "SiteName": "Default-First-Site-Name"
               }
+            }
+          ],
+          "AppServers": [
+            {
+              "VMName": "DNS01",
+              "Role": "DNS",
+              "ASName": "DNS",
+              "DDRole": "32GB",
+              "OSType": "Server2019Containerssmall",
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "AD01",
+                  "Primary": 1,
+                  "StaticIP": "75"
+                }
+              ]
             }
           ]
         },

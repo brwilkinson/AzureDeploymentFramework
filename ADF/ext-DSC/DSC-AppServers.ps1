@@ -77,7 +77,7 @@ Configuration AppServers
     catch
     {
         Write-Warning $_
-    }    
+    }
 	
     $NetBios = $(($DomainName -split '\.')[0])
     [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
@@ -102,8 +102,6 @@ Configuration AppServers
         write-warning $DNSInfo.WAF
         write-warning $DNSInfo.WAFDev
     }
-    
-
 
     node $AllNodes.NodeName
     {
@@ -121,8 +119,6 @@ Configuration AppServers
         Write-Verbose -Message "deployment: $deployment" -Verbose
 
         Write-Verbose -Message "environment: $environment" -Verbose
-
-
 
         LocalConfigurationManager
         {

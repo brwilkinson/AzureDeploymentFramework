@@ -537,27 +537,28 @@
             }
           }
         },
-        // {
-        //   "condition": "[and(parameters('aadJoin'),not(parameters('intune')))]",
-        //   "name": "AADLoginForWindows",
-        //   "type": "extensions",
-        //   "apiVersion": "2018-10-01",
-        //   "location": "[resourceGroup().location]",
-        //   "dependsOn": [
-        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
-        //   ],
-        //   "properties": {
-        //     "publisher": "Microsoft.Azure.ActiveDirectory",
-        //     "type": "AADLoginForWindows",
-        //     "typeHandlerVersion": "1.0",
-        //     "autoUpgradeMinorVersion": true
-        //   }
-        // },
+        {
+          //  https://docs.microsoft.com/en-us/azure/active-directory/devices/howto-vm-sign-in-azure-ad-windows
+          "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.AADLogin,1))]",
+          "name": "AADLoginForWindows",
+          "type": "extensions",
+          "apiVersion": "2019-03-01",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Azure.ActiveDirectory",
+            "type": "AADLoginForWindows",
+            "typeHandlerVersion": "1.0",
+            "autoUpgradeMinorVersion": true
+          }
+        },
         // {
         //   "condition": "[and(parameters('aadJoin'),parameters('intune'))]",
         //   "name": "AADLoginForWindowsWithIntune",
         //   "type": "extensions",
-        //   "apiVersion": "2018-10-01",
+        //   "apiVersion": "2019-03-01",
         //   "location": "[resourceGroup().location]",
         //   "dependsOn": [
         //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"

@@ -93,7 +93,8 @@
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 1,
+        "DomainJoin": 0,
+        "AADLogin": 1,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
         "SqlIaasExtension": 0

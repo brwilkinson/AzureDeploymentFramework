@@ -96,7 +96,8 @@
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 1,
+        "DomainJoin": 0,
+        "AADLogin": 1,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
         "SqlIaasExtension": 0
@@ -190,6 +191,10 @@
           },
           {
             "Name": "Key Vault Administrator",
+            "Member": "benwilk@Microsoft.com"
+          },
+          {
+            "Name": "Virtual Machine Administrator Login",
             "Member": "benwilk@Microsoft.com"
           }
         ],
@@ -376,7 +381,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -387,7 +392,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "_EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -478,7 +483,7 @@
         "Appservers": {
           "AppServers": [
             {
-              "VMName": "JMP01",
+              "VMName": "JMP02",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -491,7 +496,7 @@
                   "Primary": 1,
                   "FastNic": 1,
                   "PublicIP": "Static",
-                  "StaticIP": "62"
+                  "StaticIP": "61"
                 }
               ]
             }

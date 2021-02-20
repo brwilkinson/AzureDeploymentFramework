@@ -893,7 +893,7 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "2019-Datacenter-smalldisk",
+        "sku": "2019-datacenter-smalldisk-g2",
         "version": "latest"
       },
       "licenseType": "Windows_Server",
@@ -1179,6 +1179,8 @@
     "AD-D": "Standard_A2m_v2",
     "AAP-P": "Standard_D2s_v3",
     "AAP-D": "Standard_D2s_v3",
+    "DNS-P": "Standard_D2s_v3",
+    "DNS-D": "Standard_D2s_v3",
     "BUS-P": "Standard_DS2_v2",
     "BUS-D": "Standard_DS2_v2",
     "LIN-P": "Standard_DS2_v2",
