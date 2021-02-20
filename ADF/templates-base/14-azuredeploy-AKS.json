@@ -164,10 +164,10 @@
           "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor'))]": {}
         }
       },
-      "sku": {
-        "name": "Basic",
-        "tier": "[variables('AKS')[copyIndex(0)].skuTier]"
-      },
+      // "sku": {
+      //   "name": "Basic",
+      //   "tier": "[variables('AKS')[copyIndex(0)].skuTier]"
+      // },
       "copy": {
         "name": "AKSLoop",
         "count": "[length(variables('AKS'))]"

@@ -74,7 +74,7 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "Deploymentnsg": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-')]",
+    "Deploymentnsg": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-','-',parameters('Global').AppName,'-')]",
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
@@ -115,6 +115,7 @@
       "FRONTDOOR": "templates-base\\2-azuredeploy-FrontDoor.json",
       "WAFPOLICY": "templates-base\\6-azuredeploy-WAFPolicy.json",
       "APIM": "templates-base\\9-azuredeploy-APIM.json",
+      "AKS": "templates-base\\14-azuredeploy-AKS.json",
       "ServerFarm": "templates-base\\18-azuredeploy-AppServiceplan.json",
       "WebSite": "templates-base\\19-azuredeploy-AppServiceWebSite.json",
       "Function": "templates-base\\19-azuredeploy-AppServiceFunction.json",
@@ -591,6 +592,24 @@
       }
     },
     {
+      "condition": "[equals(parameters('Stage').DNSLookup,1)]",
+      "name": "DNSLookup",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-WAF')]"
+        // "[concat('dp', variables('Deployment'), '-APIM')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').DNSLookup, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
       "condition": "[equals(parameters('Stage').InitialDOP,1)]",
       "name": "InitialDOP",
       "type": "Microsoft.Resources/deployments",
@@ -756,18 +775,19 @@
       }
     },
     {
-      "condition": "[equals(parameters('Stage').DNSLookup,1)]",
-      "name": "DNSLookup",
+      "condition": "[equals(parameters('Stage').APIM,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-APIM')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-06-01",
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-WAF')]",
-        "[concat('dp', variables('Deployment'), '-APIM')]"
+        "[concat('dp', variables('Deployment'), '-VNET')]",
+        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+        "[concat('dp', variables('Deployment'), '-OMS')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').DNSLookup, parameters('_artifactsLocationSasToken'))]",
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').APIM, parameters('_artifactsLocationSasToken'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -786,6 +806,25 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').FRONTDOOR, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[equals(parameters('Stage').AKS,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-AKS')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-WAF')]",
+        "[concat('dp', variables('Deployment'), '-APIM')]",
+        "[concat('dp', variables('Deployment'), '-VNET')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').AKS, parameters('_artifactsLocationSasToken'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -895,25 +934,6 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SB, parameters('_artifactsLocationSasToken'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').APIM,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-APIM')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').APIM, parameters('_artifactsLocationSasToken'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

@@ -66,6 +66,7 @@
         "WAF": 1,
         "SetExternalDNS": 0,
         "APIM": 1,
+        "AKS": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 0,
