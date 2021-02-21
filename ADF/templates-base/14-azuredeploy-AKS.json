@@ -227,9 +227,9 @@
           "dnsServiceIP": "10.0.0.0",
           "dockerBridgeCidr": "192.168.0.1/16" //Not used anywhere on network, can be re-used across all clusters.
         },
-        "servicePrincipalProfile": {
-          "clientId": "msi"
-        },
+        // "servicePrincipalProfile": {
+        //   "clientId": "msi"
+        // },
         "podIdentityProfile": {
           "enabled": false
           // "userAssignedIdentities": [
@@ -243,27 +243,33 @@
           //     }
           //   }
           // ],
-        //   "identity": {
-        //     "type": "SystemAssigned, UserAssigned",
-        //     // "userAssignedIdentities": "[if(contains(variables('AppServers')[copyIndex(0)].ASNAME,'CLS'),variables('userAssignedIdentities')['Cluster'],variables('userAssignedIdentities')['Default'])]"
-        //     "userAssignedIdentities": "[if(contains(variables('MSILookup'),variables('AppServers')[copyIndex(0)].ASNAME),variables('userAssignedIdentities')[variables('MSILookup')[variables('AppServers')[copyIndex(0)].ASNAME]],variables('userAssignedIdentities')['Default'])]"
+          //   "identity": {
+          //     "type": "SystemAssigned, UserAssigned",
+          //     // "userAssignedIdentities": "[if(contains(variables('AppServers')[copyIndex(0)].ASNAME,'CLS'),variables('userAssignedIdentities')['Cluster'],variables('userAssignedIdentities')['Default'])]"
+          //     "userAssignedIdentities": "[if(contains(variables('MSILookup'),variables('AppServers')[copyIndex(0)].ASNAME),variables('userAssignedIdentities')[variables('MSILookup')[variables('AppServers')[copyIndex(0)].ASNAME]],variables('userAssignedIdentities')['Default'])]"
 
-        //   },
-        //   "userAssignedIdentityExceptions": [
-        //     {
-        //       "name": "string",
-        //       "namespace": "string",
-        //       "podLabels": {}
-        //     }
-        //   ]
+          //   },
+          //   "userAssignedIdentityExceptions": [
+          //     {
+          //       "name": "string",
+          //       "namespace": "string",
+          //       "podLabels": {}
+          //     }
+          //   ]
         },
         "apiServerAccessProfile": {
           "enablePrivateCluster": "[variables('AKS')[copyIndex(0)].privateCluster]",
           "privateDNSZone": "[resourceId(parameters('Global').HubRGName,'Microsoft.Network/privateDnsZones','privatelink.centralus.azmk8s.io')]"
         },
         "addonProfiles": {
+          "IngressApplicationGateway": {
+            "enabled": true,
+            "config": {
+              "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]"
+            }
+          },
           "httpApplicationRouting": {
-            "enabled": true
+            "enabled": false
           },
           "azurePolicy": {
             "enabled": false

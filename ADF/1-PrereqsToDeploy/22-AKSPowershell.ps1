@@ -153,3 +153,47 @@ az extension add --name aks-preview
 az extension update --name aks-preview
 
 Get-AzProviderFeature -ProviderNamespace microsoft.containerservice -ListAvailable
+
+Get-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-IngressApplicationGatewayAddon
+
+<#
+FeatureName                        ProviderName               RegistrationState
+-----------                        ------------               -----------------
+AKS-IngressApplicationGatewayAddon Microsoft.ContainerService NotRegistered
+#>
+
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-IngressApplicationGatewayAddon
+
+<# 
+FeatureName                        ProviderName               RegistrationState
+-----------                        ------------               -----------------
+AKS-IngressApplicationGatewayAddon microsoft.containerservice Registering
+#>
+
+Register-AzResourceProvider -ProviderNamespace microsoft.containerservice
+
+<# 
+ProviderNamespace : Microsoft.ContainerService
+RegistrationState : Registered
+ResourceTypes     : {containerServices, managedClusters, openShiftManagedClusters, locations/openShiftClusters…}
+Locations         : {Japan East, Central US, East US 2, Japan West…}
+#>
+
+Get-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-IngressApplicationGatewayAddon
+
+# deploy via ARM template
+# Get-AzAksCluster
+# $appgw = Get-AzApplicationGateway
+# az aks --help
+# az aks enable-addons -n acu1-brw-aoa-s1-aks01 -g ACU1-BRW-AOA-RG-S1 -a ingress-appgw --appgw-id $appgw.Id
+
+<# 
+"IngressApplicationGateway": {
+"enabled": true,
+"config": {
+    "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]"
+}
+},
+#>
+
+help Import-AzAksCredential

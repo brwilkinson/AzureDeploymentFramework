@@ -18,11 +18,15 @@
 
             WindowsCapabilityPresent       = @('OpenSSH.Server~~~~0.0.1.0', 'OpenSSH.Client~~~~0.0.1.0')
 
+            ServiceSetStarted              = @('sshd')
+
             DisableIEESC                   = $True
 
             PowerShellModulesPresent       = 'SQLServer', 'AzureAD'
-			
-            PowerShellModulesPresentCustom = 'Az'
+
+            PowerShellModulesPresentCustom = @( 
+                @{Name = 'Az'; 'RequiredVersion' = '5.3.0' }
+            )
 
             # Single set of features
             WindowsFeatureSetPresent       = 'GPMC', 'NET-Framework-Core'
@@ -53,16 +57,6 @@
             )
 
             DirectoryPresentSource         = @(
-                @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\SQLClient\SSMS-Setup-ENU.exe'
-                    filesDestinationPath = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
-                    MatchSource          = $true
-                },
-
-                # @{
-                # filesSourcePath      = '\\{0}.file.core.windows.net\source\SXS\'
-                # filesDestinationPath = 'F:\Source\SXS\'
-                # MatchSource = $true},
 
                 @{
                     filesSourcePath      = '\\{0}.file.core.windows.net\source\Tools\'
@@ -97,15 +91,21 @@
                     filesDestinationPath = 'F:\Source\RascalPro3'
                     MatchSource          = $true
                 }
+
+                # move to SQL Data Studio
+                # @{
+                #     filesSourcePath      = '\\{0}.file.core.windows.net\source\SQLClient\SSMS-Setup-ENU.exe'
+                #     filesDestinationPath = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
+                #     MatchSource          = $true
+                # },
+
+                # @{
+                # filesSourcePath      = '\\{0}.file.core.windows.net\source\SXS\'
+                # filesDestinationPath = 'F:\Source\SXS\'
+                # MatchSource = $true},
             )
 
             SoftwarePackagePresent         = @(
-                # @{
-                #   Name        = 'Microsoft SQL Server Management Studio - 17.7'
-                # 	Path      = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
-                # 	ProductId = ''
-                # 	Arguments = '/install /quiet /norestart'
-                # },
 
                 @{
                     Name      = 'Microsoft Visual Studio Code'
@@ -161,6 +161,14 @@
                     ProductId = ''
                     Arguments = '--installPath F:\VisualStudio\2019\Enterprise --addProductLang en-US  --includeRecommended --quiet --wait'
                 }
+
+                # move to sql data studio
+                # @{
+                #   Name        = 'Microsoft SQL Server Management Studio - 17.7'
+                # 	Path      = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
+                # 	ProductId = ''
+                # 	Arguments = '/install /quiet /norestart'
+                # },
             )
             #   msiexec.exe /package PowerShell-<version>-win-<os-arch>.msi /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
 

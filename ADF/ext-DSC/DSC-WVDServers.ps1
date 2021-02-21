@@ -373,7 +373,16 @@ Configuration WVDServers
                     }
                 }
                 Setscript  = {
-                    Install-Module -Name 'Az' -Force -AllowClobber
+                    $AzModuleInstall = @{
+                        Name         = $PowerShellModuleCustom.Name
+                        Force        = $true
+                        AllowClobber = $true
+                    }
+                    if ($PowerShellModuleCustom.RequiredVersion) 
+                    { 
+                        $AzModuleInstall['RequiredVesion'] = $PowerShellModuleCustom.RequiredVesion 
+                    }
+                    Install-Module @AzModuleInstall
                 }
             }
         }

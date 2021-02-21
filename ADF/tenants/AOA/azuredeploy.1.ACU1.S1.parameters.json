@@ -283,10 +283,10 @@
           {
             "name": "snBE02",
             "prefix": "64/28",
-            "NSG": 1,
+            "NSG": 0,
             "Route": false,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": false,
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snBE01",  // APIM
@@ -381,7 +381,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "_EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -392,7 +392,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "_EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -403,7 +403,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "_EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -414,7 +414,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "_EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -468,6 +468,7 @@
             "skuTier": "Paid", //Free
             "enableRBAC": true,
             "privateCluster": true,
+            "WAFName": "API",
             "AgentPoolRG": "S2",
             "AgentPoolsSN": "snMT02",
             "AgentPools": [
@@ -505,7 +506,7 @@
         "Appservers": {
           "AppServers": [
             {
-              "VMName": "JMP02",
+              "VMName": "JMP01",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -518,7 +519,7 @@
                   "Primary": 1,
                   "FastNic": 1,
                   "PublicIP": "Static",
-                  "StaticIP": "61"
+                  "StaticIP": "62"
                 }
               ]
             }

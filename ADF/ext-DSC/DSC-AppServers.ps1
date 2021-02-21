@@ -171,16 +171,16 @@ Configuration AppServers
         #-------------------------------------------------------------------
         foreach ($Capability in $Node.WindowsCapabilityPresent)
         {
-            WindowsCapability $Feature
+            WindowsCapability $Capability
             {
                 Name   = $Capability
                 Ensure = 'Present'
             }
-            $dependsonFeatures += @("[WindowsCapability]$Feature")
+            $dependsonFeatures += @("[WindowsCapability]$Capability")
         }
 
         #-------------------------------------------------------------------
-        foreach ($Feature in $Node.WindowsCapabilityPresent)
+        foreach ($Feature in $Node.WindowsFeaturePresent)
         {
             WindowsFeature $Feature
             {
@@ -402,7 +402,16 @@ Configuration AppServers
                     }
                 }
                 Setscript  = {
-                    Install-Module -Name 'Az' -Force -AllowClobber
+                    $AzModuleInstall = @{
+                        Name         = $PowerShellModuleCustom.Name
+                        Force        = $true
+                        AllowClobber = $true
+                    }
+                    if ($PowerShellModuleCustom.RequiredVersion) 
+                    { 
+                        $AzModuleInstall['RequiredVesion'] = $PowerShellModuleCustom.RequiredVesion 
+                    }
+                    Install-Module @AzModuleInstall
                 }
             }
         }
