@@ -77,15 +77,8 @@
     }
   },
   "variables": {
-    // Global  BRWDev101
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "subscriptionId": "[subscription().subscriptionId]",
-    "resourceGroupName": "[resourceGroup().name]",
-    // Network
-    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
-    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
     "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
-    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
     "APIMInfo": "[parameters('DeploymentInfo').APIMInfo]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
@@ -95,7 +88,17 @@
         "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
         }
       }
-    }
+    },
+    "copy": [
+      {
+        "name": "virtualNetworkConfiguration",
+        "count": "[length(variables('APIMInfo'))]",
+        "input": {
+          "subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex('virtualNetworkConfiguration')].snName)]"
+        }
+      }
+    ]
+
   },
   "resources": [
     {
@@ -172,13 +175,11 @@
           "subnetAddress": "[reference(concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName), '2015-06-15').addressprefix]"
         },
         "VirtualNetworkType": "[variables('APIMInfo')[copyIndex(0)].VirtualNetworkType]",
-        "virtualNetworkConfiguration": {
-          "subnetResourceId": "[if(equals(variables('APIMInfo')[copyIndex(0)].VirtualNetworkType,'None'),json('null'),
-                                    concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName))]"
-          //"location": "[resourceGroup().location]"
-          //"vnetid": "[variables('VNetID')]",
-          //"subnetname": "[concat('sn', variables('APIMInfo')[copyIndex(0)].snName)]"
-        }
+        "virtualNetworkConfiguration": "[if(
+                                            equals(variables('APIMInfo')[copyIndex(0)].VirtualNetworkType,'None'),
+                                            json('null'),
+                                            variables('virtualNetworkConfiguration')
+                                            )]"
       },
       "resources": [
         {
