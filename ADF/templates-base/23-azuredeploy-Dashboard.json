@@ -596,8 +596,8 @@
                   "settings": {
                     "content": {
                       "settings": {
-                        "location": "Pacific Time (US & Canada)",
-                        "timeFormat": "h:mmA",
+                        "timezoneId": "China Standard Time",
+                        "timeFormat": "h:mma",
                         "version": 1
                       }
                     }
@@ -616,10 +616,12 @@
                   "type": "Extension[azure]/HubsExtension/PartType/ClockPart",
                   "settings": {
                     "content": {
-                      "settings": {
-                        "location": "Mountain Time (US & Canada)",
-                        "timeFormat": "h:mmA",
-                        "version": 1
+                      "content": {
+                        "settings": {
+                          "timezoneId": "UTC",
+                          "timeFormat": "h:mma",
+                          "version": 1
+                        }
                       }
                     }
                   }
@@ -638,8 +640,8 @@
                   "settings": {
                     "content": {
                       "settings": {
-                        "location": "Central Time (US & Canada)",
-                        "timeFormat": "h:mmA",
+                        "timezoneId": "Eastern Standard Time",
+                        "timeFormat": "h:mma",
                         "version": 1
                       }
                     }
@@ -659,8 +661,8 @@
                   "settings": {
                     "content": {
                       "settings": {
-                        "location": "Eastern Time (US & Canada)",
-                        "timeFormat": "h:mmA",
+                        "timezoneId": "Mountain Standard Time",
+                        "timeFormat": "h:mma",
                         "version": 1
                       }
                     }
@@ -680,8 +682,8 @@
                   "settings": {
                     "content": {
                       "settings": {
-                        "location": "UTC",
-                        "timeFormat": "h:mmA",
+                        "timezoneId": "Pacific Standard Time",
+                        "timeFormat": "h:mma",
                         "version": 1
                       }
                     }
