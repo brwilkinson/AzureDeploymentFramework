@@ -98,169 +98,179 @@
     }
   },
   "resources": [
-    {
-      "condition": false,
-      "type": "Microsoft.ApiManagement/service",
-      "sku": {
-        "name": "[variables('APIMInfo')[copyIndex(0)].apimSku]",
-        "capacity": 1
-      },
-      "name": "[concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)]",
-      "apiVersion": "2020-06-01-preview",
-      "location": "[resourceGroup().location]",
-      "identity": {
-        "type": "UserAssigned",
-        "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
-      },
-      "copy": {
-        "name": "apimLoop",
-        "count": "[length(variables('APIMInfo'))]"
-      },
-      "properties": {
-        "publisherEmail": "[parameters('global').apimPublisherEmail]",
-        "publisherName": "[parameters('global').apimPublisherEmail]",
-        "hostnameConfigurations": [
-          {
-            "type": "DeveloperPortal",
-            "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
-                          tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt)),
-                          tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt))
-                          )]",
-            "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
-            "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
-            // acu1-brw-aoa-s1-afd01-apim01.psthing.com  behind AFD
-            // acu1-brw-aoa-s1-apim01.psthing.com       not behind AFD
-          },
-          {
-            "type": "Proxy",
-            "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
-                          tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway','.',parameters('Global').DomainNameExt)),
-                          tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway','.',parameters('Global').DomainNameExt))
-                          )]",
-            "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
-            "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
-            // acu1-brw-aoa-s1-afd01-apim01-gateway.psthing.com  behind AFD
-            // acu1-brw-aoa-s1-apim01-gateway.psthing.com       not behind AFD
-          },
-          {
-            "type": "Management",
-            "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
-                          tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management','.',parameters('Global').DomainNameExt)),
-                          tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management','.',parameters('Global').DomainNameExt))
-                          )]",
-            "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
-            "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
-            // acu1-brw-aoa-s1-afd01-apim01-gateway.psthing.com  behind AFD
-            // acu1-brw-aoa-s1-apim01-gateway.psthing.com       not behind AFD
-          },
-        ],
-        "runtimeUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.azure-api.net'))]",
-        "portalUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.portal.azure-api.net'))]",
-        "managementApiUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.management.azure-api.net'))]",
-        "scmUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.scm.azure-api.net'))]",
-        "customProperties": {
-          "subnetAddress": "[reference(concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName), '2015-06-15').addressprefix]"
-        },
-        "VirtualNetworkType": "[variables('APIMInfo')[copyIndex(0)].VirtualNetworkType]",
-        "virtualNetworkConfiguration": {
-          "subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]"
-          //"location": "[resourceGroup().location]"
-          //"vnetid": "[variables('VNetID')]",
-          //"subnetname": "[concat('sn', variables('APIMInfo')[copyIndex(0)].snName)]"
-        }
-      },
-      "resources": [
-        {
-          "type": "loggers",
-          "apiVersion": "2020-06-01-preview",
-          "name": "[variables('AppInsightsName')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
-          ],
-          "properties": {
-            "loggerType": "applicationInsights",
-            "description": "Application Insights logger",
-            "credentials": {
-              "instrumentationKey": "{{logAnalyticsKey}}"
+    // {
+    //   "name": "[concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)]",
+    //   "apiVersion": "2020-06-01-preview",
+    //   "location": "[resourceGroup().location]",
+    //   "type": "Microsoft.ApiManagement/service",
+    //   "sku": {
+    //     "name": "[variables('APIMInfo')[copyIndex(0)].apimSku]",
+    //     "capacity": 1
+    //   },
+    //   "identity": {
+    //     "type": "UserAssigned",
+    //     "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
+    //   },
+    //   "copy": {
+    //     "name": "apimLoop",
+    //     "count": "[length(variables('APIMInfo'))]"
+    //   },
+    //   "properties": {
+    //     "publisherEmail": "[parameters('global').apimPublisherEmail]",
+    //     "publisherName": "[parameters('global').apimPublisherEmail]",
+    //     "hostnameConfigurations": [ // Hostname type. - Proxy, DeveloperPortal, Management, Scm, Portal (legacy)
+    //       {
+    //         "type": "Proxy",
+    //         "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+    //                       tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt)),
+    //                       tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'.',parameters('Global').DomainNameExt))
+    //                       )]",
+    //         "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
+    //         "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
+    //         // acu1-brw-aoa-s1-afd01-apim01.psthing.com  behind AFD
+    //         // acu1-brw-aoa-s1-apim01.psthing.com       not behind AFD
+    //       },
+    //       {
+    //         "type": "DeveloperPortal",
+    //         "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+    //                       tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-developer','.',parameters('Global').DomainNameExt)),
+    //                       tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-developer','.',parameters('Global').DomainNameExt))
+    //                       )]",
+    //         "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
+    //         "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
+    //         // acu1-brw-aoa-s1-afd01-apim01-gateway.psthing.com  behind AFD
+    //         // acu1-brw-aoa-s1-apim01-gateway.psthing.com       not behind AFD
+    //       },
+    //       {
+    //         "type": "Management",
+    //         "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+    //                       tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management','.',parameters('Global').DomainNameExt)),
+    //                       tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management','.',parameters('Global').DomainNameExt))
+    //                       )]",
+    //         "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
+    //         "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
+    //         // acu1-brw-aoa-s1-afd01-apim01-gateway.psthing.com  behind AFD
+    //         // acu1-brw-aoa-s1-apim01-gateway.psthing.com       not behind AFD
+    //       },
+    //       {
+    //         "type": "Scm",
+    //         "hostName": "[if(contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+    //                       tolower(concat(variables('Deployment'),'-afd',variables('APIMInfo')[copyIndex(0)].frontDoor,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-scm','.',parameters('Global').DomainNameExt)),
+    //                       tolower(concat(variables('Deployment')                                                     ,'-apim',variables('APIMInfo')[copyIndex(0)].name,'-scm','.',parameters('Global').DomainNameExt))
+    //                       )]",
+    //         "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]",
+    //         "keyVaultId": "[concat(parameters('Global').KVUrl,'secrets/',variables('APIMInfo')[copyIndex(0)].certName)]"
+    //         // acu1-brw-aoa-s1-afd01-apim01-gateway.psthing.com  behind AFD
+    //         // acu1-brw-aoa-s1-apim01-gateway.psthing.com       not behind AFD
+    //       }
+    //     ],
+    //     "runtimeUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.azure-api.net'))]",
+    //     "portalUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.portal.azure-api.net'))]",
+    //     "managementApiUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.management.azure-api.net'))]",
+    //     "scmUrl": "[tolower(concat('https://', variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].Name,'.scm.azure-api.net'))]",
+    //     "customProperties": {
+    //       "subnetAddress": "[reference(concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName), '2015-06-15').addressprefix]"
+    //     },
+    //     "VirtualNetworkType": "[variables('APIMInfo')[copyIndex(0)].VirtualNetworkType]",
+    //     "virtualNetworkConfiguration": {
+    //       "subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex(0)].snName)]"
+    //       //"location": "[resourceGroup().location]"
+    //       //"vnetid": "[variables('VNetID')]",
+    //       //"subnetname": "[concat('sn', variables('APIMInfo')[copyIndex(0)].snName)]"
+    //     }
+    //   },
+    //   "resources": [
+    //     {
+    //       "type": "loggers",
+    //       "apiVersion": "2020-06-01-preview",
+    //       "name": "[variables('AppInsightsName')]",
+    //       "dependsOn": [
+    //         "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+    //       ],
+    //       "properties": {
+    //         "loggerType": "applicationInsights",
+    //         "description": "Application Insights logger",
+    //         "credentials": {
+    //           "instrumentationKey": "{{logAnalyticsKey}}"
 
-            },
-            "isBuffered": true,
-            "resourceId": "[resourceId('microsoft.insights/components',variables('AppInsightsName'))]"
-          }
-        },
-        {
-          "type": "namedValues",
-          "apiVersion": "2020-06-01-preview",
-          "name": "logAnalyticsKey",
-          "dependsOn": [
-            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
-          ],
-          "properties": {
-            "displayName": "logAnalyticsKey",
-            "secret": true,
-            "value": "[reference(resourceId('Microsoft.Insights/components', variables('AppInsightsName')), '2014-04-01').InstrumentationKey]"
-          }
-        },
-        {
-          "type": "providers/diagnosticSettings",
-          "name": "Microsoft.Insights/service",
-          "dependsOn": [
-            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
-          ],
-          "apiVersion": "2015-07-01",
-          "properties": {
-            "workspaceId": "[variables('OMSworkspaceID')]",
-            "logs": [
-              {
-                "category": "GatewayLogs",
-                "enabled": true,
-                "retentionPolicy": {
-                  "days": 30,
-                  "enabled": false
-                }
-              }
-            ],
-            "metrics": [
-              {
-                "timeGrain": "PT5M",
-                "enabled": true,
-                "retentionPolicy": {
-                  "enabled": false,
-                  "days": 0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "name": "WildcardCert",
-          "type": "certificates",
-          "apiVersion": "2020-06-01-preview",
-          "dependsOn": [
-            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
-          ],
-          "properties": {
-            "keyVault": {
-              "secretIdentifier": "[parameters('Global').certificateUrl]",
-              "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]"
-            }
-          }
-        },
-        {
-          "name": "Public",
-          "type": "products",
-          "apiVersion": "2020-06-01-preview",
-          "properties": {
-            "subscriptionRequired": false,
-            "state": "published",
-            "displayName": "Public"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
-          ]
-        }
-      ]
-    },
+    //         },
+    //         "isBuffered": true,
+    //         "resourceId": "[resourceId('microsoft.insights/components',variables('AppInsightsName'))]"
+    //       }
+    //     },
+    //     {
+    //       "type": "namedValues",
+    //       "apiVersion": "2020-06-01-preview",
+    //       "name": "logAnalyticsKey",
+    //       "dependsOn": [
+    //         "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+    //       ],
+    //       "properties": {
+    //         "displayName": "logAnalyticsKey",
+    //         "secret": true,
+    //         "value": "[reference(resourceId('Microsoft.Insights/components', variables('AppInsightsName')), '2014-04-01').InstrumentationKey]"
+    //       }
+    //     },
+    //     {
+    //       "type": "providers/diagnosticSettings",
+    //       "name": "Microsoft.Insights/service",
+    //       "dependsOn": [
+    //         "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+    //       ],
+    //       "apiVersion": "2015-07-01",
+    //       "properties": {
+    //         "workspaceId": "[variables('OMSworkspaceID')]",
+    //         "logs": [
+    //           {
+    //             "category": "GatewayLogs",
+    //             "enabled": true,
+    //             "retentionPolicy": {
+    //               "days": 30,
+    //               "enabled": false
+    //             }
+    //           }
+    //         ],
+    //         "metrics": [
+    //           {
+    //             "timeGrain": "PT5M",
+    //             "enabled": true,
+    //             "retentionPolicy": {
+    //               "enabled": false,
+    //               "days": 0
+    //             }
+    //           }
+    //         ]
+    //       }
+    //     },
+    //     {
+    //       "name": "WildcardCert",
+    //       "type": "certificates",
+    //       "apiVersion": "2020-06-01-preview",
+    //       "dependsOn": [
+    //         "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+    //       ],
+    //       "properties": {
+    //         "keyVault": {
+    //           "secretIdentifier": "[parameters('Global').certificateUrl]",
+    //           "identityClientId": "[reference(resourceid('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet')),'2018-11-30').clientId]"
+    //         }
+    //       }
+    //     },
+    //     {
+    //       "name": "Public",
+    //       "type": "products",
+    //       "apiVersion": "2020-06-01-preview",
+    //       "properties": {
+    //         "subscriptionRequired": false,
+    //         "state": "published",
+    //         "displayName": "Public"
+    //       },
+    //       "dependsOn": [
+    //         "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+    //       ]
+    //     }
+    //   ]
+    // },
     {
       "condition": "[equals(parameters('Stage').SetInternalDNS,1)]",
       "apiVersion": "2020-06-01",
@@ -273,7 +283,7 @@
         "count": "[length(variables('APIMInfo'))]"
       },
       "dependsOn": [
-        // "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
+        "[resourceId('Microsoft.ApiManagement/service', concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -284,6 +294,28 @@
           "variables": {},
           "resources": [
             {
+              "type": "Microsoft.Network/privateDnsZones/A",
+              "apiVersion": "2020-06-01",
+              "name": "[toLower(concat(parameters('global').DomainName,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-proxy'))]",
+              "properties": {
+                "metadata": {},
+                "ttl": 3600,
+                "aRecords": [
+                  {
+                    "ipv4Address": "[string(if(equals(variables('APIMInfo')[copyIndex(0)].virtualNetworkType,'Internal'),
+                                      reference(
+                                                resourceId('Microsoft.ApiManagement/service',concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)
+                                              ),'2020-06-01-preview','Full').properties.privateIPAddresses[0],
+                                      reference(
+                                                resourceId('Microsoft.ApiManagement/service',concat(variables('Deployment'), '-apim', variables('APIMInfo')[copyIndex(0)].Name)
+                                              ),'2020-06-01-preview','Full').properties.publicIPAddresses[0]
+                                        ))]"
+                  }
+                ]
+              }
+            },
+            {
+              //  proxy/gateway
               "type": "Microsoft.Network/privateDnsZones/CNAME",
               "apiVersion": "2020-06-01",
               "name": "[toLower(concat(
@@ -298,11 +330,12 @@
                 "metadata": {},
                 "ttl": 3600,
                 "cnameRecord": {
-                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                  "cname": "[toLower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-proxy.',parameters('global').DomainName))]"
                 }
               }
             },
             {
+              //  developer portal new
               "type": "Microsoft.Network/privateDnsZones/CNAME",
               "apiVersion": "2020-06-01",
               "name": "[tolower(concat(
@@ -311,17 +344,18 @@
                                               contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
                                               concat('-afd',variables('APIMInfo')[copyIndex(0)].frontDoor),
                                               ''),
-                                        '-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway'
+                                        '-apim',variables('APIMInfo')[copyIndex(0)].name,'-developer'
                                       ))]",
               "properties": {
                 "metadata": {},
                 "ttl": 3600,
                 "cnameRecord": {
-                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                  "cname": "[toLower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-proxy.',parameters('global').DomainName))]"
                 }
               }
             },
             {
+              //  management
               "type": "Microsoft.Network/privateDnsZones/CNAME",
               "apiVersion": "2020-06-01",
               "name": "[tolower(concat(
@@ -336,7 +370,27 @@
                 "metadata": {},
                 "ttl": 3600,
                 "cnameRecord": {
-                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                  "cname": "[toLower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-proxy.',parameters('global').DomainName))]"
+                }
+              }
+            },
+            {
+              //  SCM/Git
+              "type": "Microsoft.Network/privateDnsZones/CNAME",
+              "apiVersion": "2020-06-01",
+              "name": "[tolower(concat(
+                                        parameters('global').DomainName,'/',variables('Deployment'),
+                                            if(
+                                              contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+                                              concat('-afd',variables('APIMInfo')[copyIndex(0)].frontDoor),
+                                              ''),
+                                        '-apim',variables('APIMInfo')[copyIndex(0)].name,'-scm'
+                                      ))]",
+              "properties": {
+                "metadata": {},
+                "ttl": 3600,
+                "cnameRecord": {
+                  "cname": "[toLower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-proxy.',parameters('global').DomainName))]"
                 }
               }
             }
@@ -385,7 +439,7 @@
             },
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
-              "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-gateway'))]",
+              "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-developer'))]",
               "apiVersion": "2018-05-01",
               "location": "global",
               "dependsOn": [],
@@ -400,6 +454,20 @@
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
               "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management'))]",
+              "apiVersion": "2018-05-01",
+              "location": "global",
+              "dependsOn": [],
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/dnsZones/CNAME",
+              "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-scm'))]",
               "apiVersion": "2018-05-01",
               "location": "global",
               "dependsOn": [],

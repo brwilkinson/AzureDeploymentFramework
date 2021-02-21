@@ -41,7 +41,7 @@ AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-deploy\0-azuredeploy-sub-Initi
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-sub-RGRoleAssignments.json -SubscriptionDeploy
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-mg-ManagementGroups.json
 
-AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-Test.json
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\0-azuredeploy-Test2.json
 
 # $env:Enviro RG deploy
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-deploy\0-azuredeploy-ALL.json

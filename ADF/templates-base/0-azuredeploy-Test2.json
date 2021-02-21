@@ -116,6 +116,17 @@
     "time2": {
       "type": "string",
       "value": "[dateTimeAdd(parameters('deploymentTime'),'PT1H')]"
-    }
+    },
+        "ipaddress": {
+      "type": "object",
+      "value":  "[if(equals('None','None2'),
+                                      reference(
+                                                resourceId('Microsoft.ApiManagement/service',concat(variables('Deployment'), '-apim01')
+                                              ),'2020-06-01-preview','Full').properties.publicIPAddresses,
+                                      reference(
+                                                resourceId('Microsoft.ApiManagement/service',concat(variables('Deployment'), '-apim01')
+                                              ),'2020-06-01-preview','Full').properties
+                                        )]"
+    },
   }
 }
