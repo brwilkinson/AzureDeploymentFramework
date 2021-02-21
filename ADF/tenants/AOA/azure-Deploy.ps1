@@ -7,8 +7,8 @@ $ASD = Get-Item -Path "$PSScriptRoot\..\.."
 $Current = @{App = 'AOA'; DP = $Enviro }
 if (!(Test-Path ASD:\)) { New-PSDrive -PSProvider FileSystem -Root $ASD -Name ASD }
 . ASD:\release-az\Start-AzDeploy.ps1
-Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App] and Enviro is [$env:Enviro]" -Verbose
 $env:Enviro = $Enviro # add this to track on prompt (oh-my-posh env variable)
+Write-Verbose "ArtifactStagingDirectory is [$ASD] and App is [$App] and Enviro is [$env:Enviro]" -Verbose
 break
 # F8 to run individual steps
 

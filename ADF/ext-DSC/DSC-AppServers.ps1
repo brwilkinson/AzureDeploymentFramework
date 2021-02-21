@@ -169,7 +169,18 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
-        foreach ($Feature in $Node.WindowsFeaturePresent)
+        foreach ($Capability in $Node.WindowsCapabilityPresent)
+        {
+            WindowsCapability $Feature
+            {
+                Name   = $Capability
+                Ensure = 'Present'
+            }
+            $dependsonFeatures += @("[WindowsCapability]$Feature")
+        }
+
+        #-------------------------------------------------------------------
+        foreach ($Feature in $Node.WindowsCapabilityPresent)
         {
             WindowsFeature $Feature
             {

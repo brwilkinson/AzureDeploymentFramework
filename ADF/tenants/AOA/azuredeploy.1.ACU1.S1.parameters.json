@@ -365,7 +365,7 @@
             "dnsName": "API",
             "apimSku": "Developer",
             "snName": "BE01",
-            "virtualNetworkType": "Internal",
+            "virtualNetworkType": "None",
             "certName": "PSTHING-WildCard",
             "frontDoor": "01"
           }
@@ -381,7 +381,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -403,7 +403,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -414,7 +414,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]

@@ -12,6 +12,8 @@
             # IncludesAllSubfeatures
             WindowsFeaturePresent       = @('RSAT', 'DNS', 'FS-DFS-Namespace')
 
+            WindowsCapabilityPresent    = @('OpenSSH.Server~~~~0.0.1.0', 'OpenSSH.Client~~~~0.0.1.0')
+
             DirectoryPresent            = @(
                 'F:\Source'
             )

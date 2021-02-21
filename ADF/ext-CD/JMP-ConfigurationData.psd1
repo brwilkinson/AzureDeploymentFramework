@@ -16,6 +16,8 @@
             # IncludesAllSubfeatures
             WindowsFeaturePresent          = 'RSAT'
 
+            WindowsCapabilityPresent       = @('OpenSSH.Server~~~~0.0.1.0', 'OpenSSH.Client~~~~0.0.1.0')
+
             DisableIEESC                   = $True
 
             PowerShellModulesPresent       = 'SQLServer', 'AzureAD'
