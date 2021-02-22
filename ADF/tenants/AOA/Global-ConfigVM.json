@@ -880,7 +880,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     },
     "Win10O365": {
@@ -1098,7 +1101,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     },
     "MaxLoadBalancer": {
@@ -1124,7 +1130,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     },
     "Fortigate": {
@@ -1150,7 +1159,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     },
     "Fortigatepayg": {
@@ -1176,7 +1188,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     },
     "Fortimngr": {
@@ -1202,7 +1217,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     },
     "UbuntuServer1904": {
@@ -1244,7 +1262,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     },
     "PROXY-UBUNTU": {
@@ -1267,7 +1288,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     },
     "CentOS75": {
@@ -1291,7 +1315,8 @@
         "Antimalware": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0
+        "AdminCenter":0,
+        "WindowsOpenSSH": 0
       }
     }
   },

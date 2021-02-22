@@ -35,6 +35,7 @@ Configuration AppServers
     Import-DscResource -ModuleName PolicyFileEditor
     Import-DscResource -ModuleName xSystemSecurity
     Import-DscResource -ModuleName xDNSServer
+    Import-DscResource -ModuleName DSCR_AppxPackage
 
     # Azure VM Metadata service
     $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
@@ -392,7 +393,7 @@ Configuration AppServers
                 }
                 TestScript = {
                     $mod = Get-Module -ListAvailable -Name $using:PowerShellModuleCustom.Name | 
-                        Where-Object version -GE $using:PowerShellModuleCustom.RequiredVesion
+                        Where-Object version -GE $using:PowerShellModuleCustom.RequiredVersion
                     if ($mod)
                     {
                         $true 
@@ -404,14 +405,14 @@ Configuration AppServers
                 }
                 Setscript  = {
                     $AzModuleInstall = @{
-                        Name            = $using:PowerShellModuleCustom.Name
-                        Force           = $true
-                        AllowClobber    = $true
-                        AllowPrerelease = $true
+                        Name         = $using:PowerShellModuleCustom.Name
+                        Force        = $true
+                        AllowClobber = $true
+                        # AllowPrerelease = $true
                     }
                     if ($using:PowerShellModuleCustom.RequiredVersion) 
                     { 
-                        $AzModuleInstall['RequiredVesion'] = $using:PowerShellModuleCustom.RequiredVesion 
+                        $AzModuleInstall['RequiredVersion'] = $using:PowerShellModuleCustom.RequiredVersion 
                     }
                     Install-Module @AzModuleInstall
                 }
@@ -517,7 +518,8 @@ Configuration AppServers
                 Ensure          = 'Present'
                 Recurse         = $true
                 Credential      = $StorageCred
-                MatchSource     = IIF $File.MatchSource $File.MatchSource $False   
+                MatchSource     = IIF $File.MatchSource $File.MatchSource $False
+                Force           = $true 
             }
             $dependsonDirectory += @("[File]$Name")
         }
@@ -674,6 +676,21 @@ Configuration AppServers
             }
 
             $dependsonSQLServerScripts += @("[xSQLServerScript]$($Name)")
+        }
+
+        #-------------------------------------------------------------------
+        # install any packages without dependencies
+        foreach ($AppxPackage in $Node.AppxPackagePresent)
+        {
+            $Name = $AppxPackage.Name -replace $StringFilter
+            cAppxPackage $Name
+            {
+                Name        = $AppxPackage.Name
+                PackagePath = $AppxPackage.Path
+                Ensure      = 'Present'
+            }
+
+            $dependsonPackage += @("[cAppxPackage]$($Name)")
         }
 
         #-------------------------------------------------------------------

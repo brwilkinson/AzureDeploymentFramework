@@ -16,17 +16,25 @@
             # IncludesAllSubfeatures
             WindowsFeaturePresent          = 'RSAT'
 
-            WindowsCapabilityPresent       = @('OpenSSH.Server~~~~0.0.1.0', 'OpenSSH.Client~~~~0.0.1.0')
+            # Current version too low to support Azure AD auth.
+            WindowsCapabilityPresent2      = @('OpenSSH.Server~~~~0.0.1.0', 'OpenSSH.Client~~~~0.0.1.0')
 
             ServiceSetStarted              = @('sshd')
 
             DisableIEESC                   = $True
 
-            PowerShellModulesPresent       = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons', 'OpenSSHUtils'
+            PowerShellModulesPresent       = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons'
 
             PowerShellModulesPresentCustom = @( 
                 @{Name = 'Az'; RequiredVersion = '5.3.0' }
                 @{Name = 'PSReadline'; RequiredVersion = '2.2.0' }
+            )
+
+            AppxPackagePresent             = @(
+                @{
+                    Name = 'Microsoft.DesktopAppInstaller'
+                    Path = 'F:\Source\Tools\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle' 
+                }
             )
 
             # Single set of features
@@ -76,6 +84,17 @@
 
             DirectoryPresentSource         = @(
 
+                @{
+                    filesSourcePath      = 'F:\Source\PSModules\PackageManagement'
+                    filesDestinationPath = 'c:\program files\WindowsPowershell\Modules\PackageManagement'
+                    MatchSource          = $true
+                },
+
+                @{
+                    filesSourcePath      = 'F:\Source\PSModules\PowerShellGet'
+                    filesDestinationPath = 'c:\program files\WindowsPowershell\Modules\PowerShellGet'
+                    MatchSource          = $true
+                },
 
                 @{
                     filesSourcePath      = 'F:\Source\Tools\profile.ps1'
@@ -86,6 +105,12 @@
                 @{
                     filesSourcePath      = '\\{0}.file.core.windows.net\source\Tools\'
                     filesDestinationPath = 'F:\Source\Tools\'
+                    MatchSource          = $true
+                },
+
+                @{
+                    filesSourcePath      = '\\{0}.file.core.windows.net\source\OpenSSH-Win64\'
+                    filesDestinationPath = 'F:\Source\OpenSSH-Win64\'
                     MatchSource          = $true
                 },
 

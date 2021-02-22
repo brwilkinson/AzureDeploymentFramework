@@ -98,6 +98,7 @@
         "CertMgmt": 0,
         "DomainJoin": 0,
         "AADLogin": 1,
+        "WindowsOpenSSH": 1,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
         "SqlIaasExtension": 0

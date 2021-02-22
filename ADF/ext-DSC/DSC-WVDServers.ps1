@@ -363,7 +363,7 @@ Configuration WVDServers
                 }
                 TestScript = {
                     $mod = Get-Module -ListAvailable -Name $using:PowerShellModuleCustom.Name | 
-                        Where-Object version -GE $using:PowerShellModuleCustom.RequiredVesion
+                        Where-Object version -GE $using:PowerShellModuleCustom.RequiredVersion
                     if ($mod)
                     {
                         $true 
@@ -375,14 +375,14 @@ Configuration WVDServers
                 }
                 Setscript  = {
                     $AzModuleInstall = @{
-                        Name            = $using:PowerShellModuleCustom.Name
-                        Force           = $true
-                        AllowClobber    = $true
-                        AllowPrerelease = $true
+                        Name         = $using:PowerShellModuleCustom.Name
+                        Force        = $true
+                        AllowClobber = $true
+                        # AllowPrerelease = $true
                     }
                     if ($using:PowerShellModuleCustom.RequiredVersion) 
                     { 
-                        $AzModuleInstall['RequiredVesion'] = $using:PowerShellModuleCustom.RequiredVesion 
+                        $AzModuleInstall['RequiredVersion'] = $using:PowerShellModuleCustom.RequiredVersion 
                     }
                     Install-Module @AzModuleInstall
                 }
