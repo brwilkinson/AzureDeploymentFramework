@@ -24,6 +24,9 @@ $pubname = 'MicrosoftSQLServer'
 $pubname = 'Microsoft.Azure.Diagnostics'
 $pubname = 'MicrosoftWindowsDesktop'
 $pubname = 'Microsoft.Powershell'   # Ext
+$pubname = 'Microsoft.Azure.ActiveDirectory.LinuxSSH'  # ext
+$pubname = 'Microsoft.Azure.ActiveDirectory' # ext
+$pubname = 'Microsoft.Azure.OpenSSH' #Ext
 Get-AzVMImageOffer -Location $location -Publisher $pubName | Select-Object Offer
 
 $ExtType = 'DSC'

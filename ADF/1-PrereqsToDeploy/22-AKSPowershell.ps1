@@ -181,11 +181,13 @@ Locations         : {Japan East, Central US, East US 2, Japan West…}
 
 Get-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-IngressApplicationGatewayAddon
 
+<# 
+FeatureName                        ProviderName               RegistrationState
+-----------                        ------------               -----------------
+AKS-IngressApplicationGatewayAddon microsoft.containerservice Registered
+#>
+
 # deploy via ARM template
-# Get-AzAksCluster
-# $appgw = Get-AzApplicationGateway
-# az aks --help
-# az aks enable-addons -n acu1-brw-aoa-s1-aks01 -g ACU1-BRW-AOA-RG-S1 -a ingress-appgw --appgw-id $appgw.Id
 
 <# 
 "IngressApplicationGateway": {

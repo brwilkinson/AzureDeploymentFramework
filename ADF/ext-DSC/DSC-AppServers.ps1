@@ -313,13 +313,13 @@ Configuration AppServers
 			
             Registry $RegistryKey.ValueName
             {
-                Key       = $RegistryKey.Key
-                ValueName = $RegistryKey.ValueName
-                Ensure    = 'Present'
-                ValueData = $RegistryKey.ValueData
-                ValueType = $RegistryKey.ValueType
-                Force     = $true
-                #PsDscRunAsCredential = $AdminCreds
+                Key                  = $RegistryKey.Key
+                ValueName            = $RegistryKey.ValueName
+                Ensure               = 'Present'
+                ValueData            = $RegistryKey.ValueData
+                ValueType            = $RegistryKey.ValueType
+                Force                = $true
+                PsDscRunAsCredential = $AdminCreds
             }
             $dependsonRegistryKey += @("[Registry]$($RegistryKey.ValueName)")
         }
@@ -384,14 +384,15 @@ Configuration AppServers
         #-------------------------------------------------------------------
         foreach ($PowerShellModuleCustom in $Node.PowerShellModulesPresentCustom)
         { 
-            Script $PowerShellModuleCustom
+            Script $PowerShellModuleCustom.Name
             {
                 GetScript  = {
-                    $mod = Get-Module -ListAvailable -Name 'Az.Accounts'
+                    $mod = Get-Module -ListAvailable -Name $using:PowerShellModuleCustom.Name
                     @{module = $mod }
                 }
                 TestScript = {
-                    $mod = Get-Module -ListAvailable -Name 'Az.Accounts'
+                    $mod = Get-Module -ListAvailable -Name $using:PowerShellModuleCustom.Name | 
+                        Where-Object version -GE $using:PowerShellModuleCustom.RequiredVesion
                     if ($mod)
                     {
                         $true 
@@ -403,13 +404,14 @@ Configuration AppServers
                 }
                 Setscript  = {
                     $AzModuleInstall = @{
-                        Name         = $PowerShellModuleCustom.Name
-                        Force        = $true
-                        AllowClobber = $true
+                        Name            = $using:PowerShellModuleCustom.Name
+                        Force           = $true
+                        AllowClobber    = $true
+                        AllowPrerelease = $true
                     }
-                    if ($PowerShellModuleCustom.RequiredVersion) 
+                    if ($using:PowerShellModuleCustom.RequiredVersion) 
                     { 
-                        $AzModuleInstall['RequiredVesion'] = $PowerShellModuleCustom.RequiredVesion 
+                        $AzModuleInstall['RequiredVesion'] = $using:PowerShellModuleCustom.RequiredVesion 
                     }
                     Install-Module @AzModuleInstall
                 }
@@ -743,7 +745,6 @@ Configuration AppServers
                 Name        = $Node.ServiceSetStarted
                 State       = 'Running'
                 StartupType = 'Automatic'
-                #DependsOn   = @('[WindowsFeatureSet]WindowsFeatureSetPresent') + $dependsonRegistryKey
             }
         }
 

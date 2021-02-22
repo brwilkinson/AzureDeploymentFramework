@@ -22,16 +22,17 @@
 
             DisableIEESC                   = $True
 
-            PowerShellModulesPresent       = 'SQLServer', 'AzureAD'
+            PowerShellModulesPresent       = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons', 'OpenSSHUtils'
 
             PowerShellModulesPresentCustom = @( 
-                @{Name = 'Az'; 'RequiredVersion' = '5.3.0' }
+                @{Name = 'Az'; RequiredVersion = '5.3.0' }
+                @{Name = 'PSReadline'; RequiredVersion = '2.2.0' }
             )
 
             # Single set of features
             WindowsFeatureSetPresent       = 'GPMC', 'NET-Framework-Core'
 
-            DirectoryPresent               = 'F:\Source'
+            DirectoryPresent               = @('F:\Source', 'F:\Repos')
 
             EnvironmentPathPresent         = 'F:\Source\Tools\'
 
@@ -48,6 +49,23 @@
                 }
             )
 
+            RegistryKeyPresent             = @(
+                @{ 
+                    Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
+                    ValueName = 'DontUsePowerShellOnWinX';	ValueData = 0 ; ValueType = 'Dword'
+                },
+
+                @{ 
+                    Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
+                    ValueName = 'TaskbarGlomLevel';	ValueData = 1 ; ValueType = 'Dword'
+                },
+
+                @{ 
+                    Key = 'HKEY_LOCAL_MACHINE\Software\OpenSSH'; 
+                    ValueName = 'DefaultShell';	ValueData = 'C:\Program Files\PowerShell\7\pwsh.exe' ; ValueType = 'String'
+                }
+            )
+
             LocalPolicyPresent2            = @(
                 @{KeyValueName = 'SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
                 @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*'; PolicyType = 'User'; Data = '2'; Type = 'DWord' },
@@ -57,6 +75,13 @@
             )
 
             DirectoryPresentSource         = @(
+
+
+                @{
+                    filesSourcePath      = 'F:\Source\Tools\profile.ps1'
+                    filesDestinationPath = 'c:\program files\powershell\7\profile.ps1'
+                    MatchSource          = $true
+                },
 
                 @{
                     filesSourcePath      = '\\{0}.file.core.windows.net\source\Tools\'
@@ -91,18 +116,6 @@
                     filesDestinationPath = 'F:\Source\RascalPro3'
                     MatchSource          = $true
                 }
-
-                # move to SQL Data Studio
-                # @{
-                #     filesSourcePath      = '\\{0}.file.core.windows.net\source\SQLClient\SSMS-Setup-ENU.exe'
-                #     filesDestinationPath = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
-                #     MatchSource          = $true
-                # },
-
-                # @{
-                # filesSourcePath      = '\\{0}.file.core.windows.net\source\SXS\'
-                # filesDestinationPath = 'F:\Source\SXS\'
-                # MatchSource = $true},
             )
 
             SoftwarePackagePresent         = @(
@@ -121,11 +134,12 @@
                     Arguments = ''
                 },
 
-                @{Name        = 'Windows Admin Center'
-                    Path      = 'F:\Source\Tools\WindowsAdminCenter1904.1.msi'
-                    ProductId = '{65E83844-8B8A-42ED-B78D-BA021BE4AE83}'
-                    Arguments = 'RESTART_WINRM=0 SME_PORT=443 SME_THUMBPRINT=215B3BBC1ABF37BF8D79541383374857A30F86F7 SSL_CERTIFICATE_OPTION=installed /L*v F:\adminCenterlog.txt'
-                },
+                # use Azure Admin Center in portal instead, deployed via VM extensions
+                # @{Name        = 'Windows Admin Center'
+                #     Path      = 'F:\Source\Tools\WindowsAdminCenter1904.1.msi'
+                #     ProductId = '{65E83844-8B8A-42ED-B78D-BA021BE4AE83}'
+                #     Arguments = 'RESTART_WINRM=0 SME_PORT=443 SME_THUMBPRINT=215B3BBC1ABF37BF8D79541383374857A30F86F7 SSL_CERTIFICATE_OPTION=installed /L*v F:\adminCenterlog.txt'
+                # },
 
                 @{
                     Name      = 'Git version 2.23.0.windows.1'
@@ -160,27 +174,6 @@
                     Path      = 'F:\Source\VisualStudio\vs_enterprise__2032842161.1584647755.exe'
                     ProductId = ''
                     Arguments = '--installPath F:\VisualStudio\2019\Enterprise --addProductLang en-US  --includeRecommended --quiet --wait'
-                }
-
-                # move to sql data studio
-                # @{
-                #   Name        = 'Microsoft SQL Server Management Studio - 17.7'
-                # 	Path      = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
-                # 	ProductId = ''
-                # 	Arguments = '/install /quiet /norestart'
-                # },
-            )
-            #   msiexec.exe /package PowerShell-<version>-win-<os-arch>.msi /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
-
-            RegistryKeyPresent2            = @(
-                @{ 
-                    Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
-                    ValueName = 'DontUsePowerShellOnWinX';	ValueData = 0 ; ValueType = 'Dword'
-                },
-								
-                @{ 
-                    Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
-                    ValueName = 'TaskbarGlomLevel';	ValueData = 1 ; ValueType = 'Dword'
                 }
             )
         }
