@@ -29,13 +29,13 @@ Configuration AppServers
     Import-DscResource -ModuleName xDSCFirewall
     Import-DscResource -ModuleName NetworkingDSC
     Import-DscResource -ModuleName SQLServerDsc
-    Import-DscResource -ModuleName PackageManagementProviderResource	
     Import-DscResource -ModuleName xRemoteDesktopSessionHost
     Import-DscResource -ModuleName AccessControlDsc
     Import-DscResource -ModuleName PolicyFileEditor
     Import-DscResource -ModuleName xSystemSecurity
     Import-DscResource -ModuleName xDNSServer
-    Import-DscResource -ModuleName DSCR_AppxPackage
+    Import-DscResource -ModuleName PackageManagementProviderResource
+    # Import-DscResource -ModuleName @{ModuleName = 'PowerShellGet';RequiredVersion = '3.0.0'}
 
     # Azure VM Metadata service
     $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
@@ -95,6 +95,11 @@ Configuration AppServers
         'DevOpsPat'   = $DevOpsAgentPATToken
     }
     
+    If ($AppInfo)
+    {
+        $AppInfo = ConvertFrom-Json $AppInfo
+    }
+
     If ($DNSInfo)
     {
         $DNSInfo = ConvertFrom-Json $DNSInfo
@@ -311,7 +316,6 @@ Configuration AppServers
 
         foreach ($RegistryKey in $Node.RegistryKeyPresent)
         {
-			
             Registry $RegistryKey.ValueName
             {
                 Key                  = $RegistryKey.Key
@@ -359,14 +363,42 @@ Configuration AppServers
         foreach ($Group in $Node.GroupMemberPresent)
         {
             $Name = $Group.MemberstoInclude -replace $StringFilter
-
             xGroup $Name
             {
                 GroupName        = $Group.GroupName
                 MemberstoInclude = $Group.MemberstoInclude       
             }
-
             $dependsonGroup += @("[xGroup]$($Group.GroupName)")
+        }
+
+        #-------------------------------------------------------------------
+        foreach ($Dir in $Node.DirectoryPresent)
+        {
+            $Name = $Dir -replace $StringFilter
+            File $Name
+            {
+                DestinationPath      = $Dir
+                Type                 = 'Directory'
+                PsDscRunAsCredential = $credlookup['DomainCreds']
+            }
+            $dependsonDir += @("[File]$Name")
+        }
+
+        #-------------------------------------------------------------------     
+        foreach ($File in $Node.DirectoryPresentSource)
+        {
+            $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter 
+            File $Name
+            {
+                SourcePath      = ($File.filesSourcePath -f $StorageAccountName)
+                DestinationPath = $File.filesDestinationPath
+                Ensure          = 'Present'
+                Recurse         = $true
+                Credential      = $StorageCred
+                MatchSource     = IIF $File.MatchSource $File.MatchSource $False
+                Force           = $true
+            }
+            $dependsonDirectory += @("[File]$Name")
         }
 
         #-------------------------------------------------------------
@@ -380,43 +412,6 @@ Configuration AppServers
                 #AllowClobber         = $true
             }
             $dependsonPowerShellModule += @("[PSModuleResource]$PowerShellModule")
-        }
-
-        #-------------------------------------------------------------------
-        foreach ($PowerShellModuleCustom in $Node.PowerShellModulesPresentCustom)
-        { 
-            Script $PowerShellModuleCustom.Name
-            {
-                GetScript  = {
-                    $mod = Get-Module -ListAvailable -Name $using:PowerShellModuleCustom.Name
-                    @{module = $mod }
-                }
-                TestScript = {
-                    $mod = Get-Module -ListAvailable -Name $using:PowerShellModuleCustom.Name | 
-                        Where-Object version -GE $using:PowerShellModuleCustom.RequiredVersion
-                    if ($mod)
-                    {
-                        $true 
-                    }
-                    else
-                    {
-                        $False
-                    }
-                }
-                Setscript  = {
-                    $AzModuleInstall = @{
-                        Name         = $using:PowerShellModuleCustom.Name
-                        Force        = $true
-                        AllowClobber = $true
-                        # AllowPrerelease = $true
-                    }
-                    if ($using:PowerShellModuleCustom.RequiredVersion) 
-                    { 
-                        $AzModuleInstall['RequiredVersion'] = $using:PowerShellModuleCustom.RequiredVersion 
-                    }
-                    Install-Module @AzModuleInstall
-                }
-            }
         }
 
         #-------------------------------------------------------------------
@@ -492,36 +487,6 @@ Configuration AppServers
                 Value = $EnvironmentVar.Value
             }
             $dependsonEnvironmentPath += @("[Environment]$Name")
-        }
-
-        #-------------------------------------------------------------------
-        foreach ($Dir in $Node.DirectoryPresent)
-        {
-            $Name = $Dir -replace $StringFilter
-            File $Name
-            {
-                DestinationPath      = $Dir
-                Type                 = 'Directory'
-                PsDscRunAsCredential = $credlookup['DomainCreds']
-            }
-            $dependsonDir += @("[File]$Name")
-        }
-
-        #-------------------------------------------------------------------     
-        foreach ($File in $Node.DirectoryPresentSource)
-        {
-            $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter 
-            File $Name
-            {
-                SourcePath      = ($File.filesSourcePath -f $StorageAccountName)
-                DestinationPath = $File.filesDestinationPath
-                Ensure          = 'Present'
-                Recurse         = $true
-                Credential      = $StorageCred
-                MatchSource     = IIF $File.MatchSource $File.MatchSource $False
-                Force           = $true 
-            }
-            $dependsonDirectory += @("[File]$Name")
         }
 
         #-----------------------------------------
@@ -680,21 +645,6 @@ Configuration AppServers
 
         #-------------------------------------------------------------------
         # install any packages without dependencies
-        foreach ($AppxPackage in $Node.AppxPackagePresent)
-        {
-            $Name = $AppxPackage.Name -replace $StringFilter
-            cAppxPackage $Name
-            {
-                Name        = $AppxPackage.Name
-                PackagePath = $AppxPackage.Path
-                Ensure      = 'Present'
-            }
-
-            $dependsonPackage += @("[cAppxPackage]$($Name)")
-        }
-
-        #-------------------------------------------------------------------
-        # install any packages without dependencies
         foreach ($Package in $Node.SoftwarePackagePresent)
         {
             $Name = $Package.Name -replace $StringFilter
@@ -733,6 +683,16 @@ Configuration AppServers
                 InstalledCheckRegValueData = $Package.RegValueData
             }
             $dependsonPackageRegKey += @("[xPackage]$($Name)")
+        }
+
+        if ($Node.WVDInstall)
+        {
+            WVDDSC RDInfraAgent
+            {
+                PoolNameSuffix          = $Node.WVDInstall.PoolNameSuffix
+                PackagePath             = $Node.WVDInstall.PackagePath
+                ManagedIdentityClientID = $AppInfo.ClientID
+            }
         }
 
         #-------------------------------------------------------------------
@@ -1066,7 +1026,7 @@ if ((whoami) -notmatch 'system')
 
     # Set the location to the DSC extension directory
     $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path)
-    $DSCdir = $psscrriptroot
+    #$DSCdir = $psscrriptroot
     if (Test-Path -Path $DSCdir -ErrorAction SilentlyContinue)
     {
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
@@ -1084,26 +1044,36 @@ Get-ChildItem -Path .\AppServers -Filter *.mof -ea 0 | Remove-Item
 # AZC1 ADF D 1
 
 # D2    (1 chars)
-if ($env:computername -match 'ADF')
+if ($env:computername -match 'ABC')
 {
     $depname = $env:computername.substring(7, 2)  # D1
-    $SAID = '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-G1/providers/Microsoft.Storage/storageAccounts/stagecus1'
-    $App = 'ADF'
-    $Domain = 'contoso.com'
+    $SAID = '/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-HUB-RG-G1/providers/Microsoft.Storage/storageAccounts/azc1brwhubg1saglobal'
+    $App = 'ABC'
+    $Domain = 'psthing.com'
     $prefix = $env:computername.substring(0, 4)  # AZC1
+    $org = 'BRW'
+}
+if ($env:computername -match 'AOA')
+{
+    $depname = $env:computername.substring(7, 2)  # D1
+    $SAID = '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Storage/storageAccounts/acu1brwaoag1saglobal'
+    $App = 'AOA'
+    $Domain = 'psthing.com'
+    $prefix = $env:computername.substring(0, 4)  # AZC1
+    $org = 'BRW'
 }
 
 $depid = $depname.substring(1, 1)
 
 # Network
-$network = 30 - ([Int]$Depid * 2)
-$Net = "172.16.${network}."
+$network = 144 - ([Int]$Depid * 2)
+$Net = "10.10.${network}."
 
 # Azure resource names (for storage account) E.g. AZE2ADFd2
-$dep = '{0}{1}{2}' -f $prefix, $app, $depname
+$dep = '{0}{1}{2}{3}' -f $prefix, $org, $app, $depname
 
 $ClientId = @{
-    S1 = 'd6d048a5-517c-496b-bb5e-d95e2a6525f1'
+    S1 = '5438d30f-e71c-4e9c-b0d9-117f5d154d82'
 }
 
 $Params = @{

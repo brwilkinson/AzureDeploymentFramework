@@ -5,46 +5,53 @@
 @{
     AllNodes = @(
         @{
-            NodeName                       = 'LocalHost'
-            PSDscAllowPlainTextPassword    = $true
-            PSDscAllowDomainUser           = $true
+            NodeName                    = 'LocalHost'
+            PSDscAllowPlainTextPassword = $true
+            PSDscAllowDomainUser        = $true
 
-            DisksPresent                   = @{DriveLetter = 'F'; DiskID = '2' }
+            DisksPresent                = @{DriveLetter = 'F'; DiskID = '2' }
 
-            ServiceSetStopped              = 'ShellHWDetection'
+            ServiceSetStopped           = 'ShellHWDetection'
 
             # IncludesAllSubfeatures
-            WindowsFeaturePresent          = 'RSAT'
+            WindowsFeaturePresent       = 'RSAT'
 
             # Current version too low to support Azure AD auth.
-            WindowsCapabilityPresent2      = @('OpenSSH.Server~~~~0.0.1.0', 'OpenSSH.Client~~~~0.0.1.0')
+            WindowsCapabilityPresent    = @('OpenSSH.Server~~~~0.0.1.0', 'OpenSSH.Client~~~~0.0.1.0')
 
-            ServiceSetStarted              = @('sshd')
+            ServiceSetStarted           = @('sshd')
 
-            DisableIEESC                   = $True
+            DisableIEESC                = $True
 
-            PowerShellModulesPresent       = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons'
+            PowerShellModulesPresent    = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons', 'Az.Tools.Predictor'
 
-            PowerShellModulesPresentCustom = @( 
-                @{Name = 'Az'; RequiredVersion = '5.3.0' }
-                @{Name = 'PSReadline'; RequiredVersion = '2.2.0' }
-            )
+            # PowerShellModulesPresentCustom2 = @(
+            #     @{Name = 'Az'; RequiredVersion = '5.3.0' }
+            #     @{Name = 'PSReadline'; RequiredVersion = '2.2.0' }
+            # )
 
-            AppxPackagePresent             = @(
+            # AppxPackagePresent2             = @(
+            #     @{
+            #         Name = 'Microsoft.DesktopAppInstaller'
+            #         Path = 'F:\Source\Tools\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle' 
+            #     }
+            # )
+
+            # Single set of features
+            WindowsFeatureSetPresent    = 'GPMC', 'NET-Framework-Core'
+
+            DirectoryPresent            = @('F:\Source', 'F:\Repos', 'c:\program files\powershell\7')
+
+            EnvironmentPathPresent      = 'F:\Source\Tools\'
+
+            FWRules                     = @(
                 @{
-                    Name = 'Microsoft.DesktopAppInstaller'
-                    Path = 'F:\Source\Tools\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle' 
+                    Name      = 'SSH TCP Inbound'
+                    LocalPort = '22'
                 }
             )
 
-            # Single set of features
-            WindowsFeatureSetPresent       = 'GPMC', 'NET-Framework-Core'
-
-            DirectoryPresent               = @('F:\Source', 'F:\Repos')
-
-            EnvironmentPathPresent         = 'F:\Source\Tools\'
-
-            DevOpsAgentPresent2            = @(
+            DevOpsAgentPresent2         = @(
                 @{ 
                     orgUrl       = 'https://dev.azure.com/AzureDeploymentFramework/'
                     AgentVersion = '2.165.0'
@@ -57,7 +64,7 @@
                 }
             )
 
-            RegistryKeyPresent             = @(
+            RegistryKeyPresent          = @(
                 @{ 
                     Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
                     ValueName = 'DontUsePowerShellOnWinX';	ValueData = 0 ; ValueType = 'Dword'
@@ -74,7 +81,7 @@
                 }
             )
 
-            LocalPolicyPresent2            = @(
+            LocalPolicyPresent2         = @(
                 @{KeyValueName = 'SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
                 @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*'; PolicyType = 'User'; Data = '2'; Type = 'DWord' },
                 @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\DontUsePowerShellOnWinX'; PolicyType = 'User'; Data = '0'; Type = 'DWord' },
@@ -82,17 +89,23 @@
                 @{KeyValueName = 'Software\Policies\Microsoft\Internet Explorer\Main\DisableFirstRunCustomize'; PolicyType = 'Machine'; Data = '1'; Type = 'DWord' }
             )
 
-            DirectoryPresentSource         = @(
+            DirectoryPresentSource      = @(
 
                 @{
-                    filesSourcePath      = 'F:\Source\PSModules\PackageManagement'
-                    filesDestinationPath = 'c:\program files\WindowsPowershell\Modules\PackageManagement'
+                    filesSourcePath      = '\\{0}.file.core.windows.net\Source\PSModules\'
+                    filesDestinationPath = 'F:\Source\PSModules\'
                     MatchSource          = $true
                 },
 
                 @{
-                    filesSourcePath      = 'F:\Source\PSModules\PowerShellGet'
-                    filesDestinationPath = 'c:\program files\WindowsPowershell\Modules\PowerShellGet'
+                    filesSourcePath      = 'F:\Source\PSModules\PackageManagement\'
+                    filesDestinationPath = 'c:\program files\WindowsPowershell\Modules\PackageManagement\'
+                    MatchSource          = $true
+                },
+
+                @{
+                    filesSourcePath      = 'F:\Source\PSModules\PowerShellGet\'
+                    filesDestinationPath = 'c:\program files\WindowsPowershell\Modules\PowerShellGet\'
                     MatchSource          = $true
                 },
 
@@ -143,7 +156,7 @@
                 }
             )
 
-            SoftwarePackagePresent         = @(
+            SoftwarePackagePresent      = @(
 
                 @{
                     Name      = 'Microsoft Visual Studio Code'
@@ -204,42 +217,3 @@
         }
     )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

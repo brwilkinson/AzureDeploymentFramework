@@ -155,7 +155,7 @@
     "DSCConfigLookup": {
       "AppServers": "AppServers",
       "InitialDOP": "AppServers",
-      "WVDServers": "WVDServers"
+      "WVDServers": "AppServers"
     },
 
     // Network, used for Cluster/AG/DNS IP's
