@@ -366,7 +366,7 @@
             "dnsName": "API",
             "apimSku": "Developer",
             "snName": "BE01",
-            "virtualNetworkType": "None",
+            "virtualNetworkType": "Internal",
             "certName": "PSTHING-WildCard",
             "frontDoor": "01"
           }
@@ -382,18 +382,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1, // _ to rename to disable after initial deployment
-                "patternsToMatch": [
-                  "/*"
-                ]
-              },
-              {
-                "Name": "APIM01-Management", // acu1-brw-aoa-s1-afd 01 - apim01-management .psthing.com
-                "BEAddress": "apim01.azure-api.net", //always use the gateway
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -404,7 +393,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -415,7 +404,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "_EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -472,6 +461,7 @@
             "WAFName": "API",
             "AgentPoolRG": "S2",
             "AgentPoolsSN": "snMT02",
+            "aksAADAdminGroups": [],
             "AgentPools": [
               {
                 "name": "linctr",
@@ -562,16 +552,16 @@
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
             "FQDNs": [
-              "JMP01"
+              // "JMP01"
             ],
             "pathRules": [
-              {
-                "Name": "map1",
-                "Protocol": "https",
-                "paths": [
-                  "/map1"
-                ]
-              }
+              // {
+              //   "Name": "map1",
+              //   "Protocol": "https",
+              //   "paths": [
+              //     "/map1"
+              //   ]
+              // }
             ],
             "frontEndPorts": [
               {
@@ -582,14 +572,14 @@
               }
             ],
             "BackendHttp": [
-              {
-                "Port": 443,
-                "Protocol": "https",
-                "CookieBasedAffinity": "Enabled",
-                "RequestTimeout": 600,
-                "Cert": "PSThing-WildCard",
-                "hostname": "psthing.com"
-              }
+              // {
+              //   "Port": 443,
+              //   "Protocol": "https",
+              //   "CookieBasedAffinity": "Enabled",
+              //   "RequestTimeout": 600,
+              //   "Cert": "PSThing-WildCard",
+              //   "hostname": "psthing.com"
+              // }
             ],
             "Listeners": [
               {
@@ -599,16 +589,16 @@
                 "Cert": "PSThing-WildCard",
                 "Domain": "psthing.com",
                 "Hostname": "waf",
-                "Interface": "Private",
-                "pathRules": "map1"
+                "Interface": "Private"
+                // "pathRules": "map1"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
                 "Domain": "psthing.com",
                 "Hostname": "waf",
-                "Interface": "Private",
-                "pathRules": "map1"
+                "Interface": "Private"
+                // "pathRules": "map1"
               }
             ]
           }

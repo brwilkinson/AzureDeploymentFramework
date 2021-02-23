@@ -219,43 +219,46 @@
           "adminPassword": "[parameters('vmAdminPassword')]",
           "licenseType": "Windows_Server"
         },
+        "aadProfile": {
+          "managed": "[variables('AKS')[copyIndex(0)].enableRBAC]",
+          "enableAzureRBAC": "[variables('AKS')[copyIndex(0)].enableRBAC]",
+          "adminGroupObjectIDs": "[variables('AKS')[copyIndex(0)].aksAADAdminGroups]",
+          "tenantID": "[parameters('global').tenantId]"
+        },
         "networkProfile": {
           "loadBalancerSku": "standard",
           "networkPlugin": "azure",
           "networkPolicy": "azure",
           "serviceCidr": "10.0.0.0/16", //Not used anywhere on network, can be re-used across all clusters.
           "dnsServiceIP": "10.0.0.0",
-          "dockerBridgeCidr": "192.168.0.1/16" //Not used anywhere on network, can be re-used across all clusters.
+          "dockerBridgeCidr": "192.168.0.1/16", //Not used anywhere on network, can be re-used across all clusters.
+          "loadBalancerProfile": null,
+          "outboundType": "loadBalancer"
         },
         // "servicePrincipalProfile": {
         //   "clientId": "msi"
         // },
         "podIdentityProfile": {
-          "enabled": false
+          "enabled": true
+          //  not supported on creation.
           // "userAssignedIdentities": [
           //   {
-          //     "name": "string",
-          //     "namespace": "string",
+          //     "name": "Apps1",
+          //     "namespace": "Apps1",
           //     "identity": {
-          //       "resourceId": "string",
-          //       "clientId": "string",
-          //       "objectId": "string"
+          //       "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor'))]",
+          //       "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor')),'2018-11-30').clientId]",
+          //       "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor')),'2018-11-30').principalId]"
           //     }
           //   }
           // ],
-          //   "identity": {
-          //     "type": "SystemAssigned, UserAssigned",
-          //     // "userAssignedIdentities": "[if(contains(variables('AppServers')[copyIndex(0)].ASNAME,'CLS'),variables('userAssignedIdentities')['Cluster'],variables('userAssignedIdentities')['Default'])]"
-          //     "userAssignedIdentities": "[if(contains(variables('MSILookup'),variables('AppServers')[copyIndex(0)].ASNAME),variables('userAssignedIdentities')[variables('MSILookup')[variables('AppServers')[copyIndex(0)].ASNAME]],variables('userAssignedIdentities')['Default'])]"
-
-          //   },
-          //   "userAssignedIdentityExceptions": [
-          //     {
-          //       "name": "string",
-          //       "namespace": "string",
-          //       "podLabels": {}
-          //     }
-          //   ]
+          // "userAssignedIdentityExceptions": [
+          //   {
+          //     "name": "string",
+          //     "namespace": "string",
+          //     "podLabels": {}
+          //   }
+          // ]
         },
         "apiServerAccessProfile": {
           "enablePrivateCluster": "[variables('AKS')[copyIndex(0)].privateCluster]",
@@ -266,6 +269,11 @@
             "enabled": true,
             "config": {
               "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]"
+            },
+            "identity": {
+              "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor'))]",
+              "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor')),'2018-11-30').clientId]",
+              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor')),'2018-11-30').principalId]"
             }
           },
           "httpApplicationRouting": {

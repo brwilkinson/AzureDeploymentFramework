@@ -367,6 +367,51 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
+          {
+            "name": "APIM_Management_Inbound",
+            "properties": {
+              "description": "APIM_Management_Inbound",
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3443",
+              "sourceAddressPrefix": "ApiManagement",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "access": "Allow",
+              "priority": 1120,
+              "direction": "Inbound",
+              "sourcePortRanges": [
+              ],
+              "destinationPortRanges": [
+              ],
+              "sourceAddressPrefixes": [
+              ],
+              "destinationAddressPrefixes": [
+              ]
+            }
+          },
+          {
+            "name": "APIM_Client_Inbound",
+            "properties": {
+              "description": "APIM_Client_Inbound",
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "access": "Allow",
+              "priority": 1130,
+              "direction": "Inbound",
+              "sourcePortRanges": [
+              ],
+              "destinationPortRanges": [
+                "443",
+                "80"
+              ],
+              "sourceAddressPrefixes": [
+              ],
+              "destinationAddressPrefixes": [
+              ]
+            }
+          }
         ]
       },
       "resources": [

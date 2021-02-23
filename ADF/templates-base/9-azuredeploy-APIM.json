@@ -94,7 +94,9 @@
         "name": "virtualNetworkConfiguration",
         "count": "[length(variables('APIMInfo'))]",
         "input": {
-          "subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex('virtualNetworkConfiguration')].snName)]"
+          "virtualNetworkConfiguration": {
+            "subnetResourceId": "[concat(variables('VNetID'), '/subnets/sn', variables('APIMInfo')[copyIndex('virtualNetworkConfiguration')].snName)]"
+          }
         }
       }
     ]
@@ -178,7 +180,7 @@
         "virtualNetworkConfiguration": "[if(
                                             equals(variables('APIMInfo')[copyIndex(0)].VirtualNetworkType,'None'),
                                             json('null'),
-                                            variables('virtualNetworkConfiguration')
+                                            variables('virtualNetworkConfiguration')[copyIndex(0)].virtualNetworkConfiguration
                                             )]"
       },
       "resources": [
@@ -356,26 +358,26 @@
                 }
               }
             },
-            {
-              //  management
-              "type": "Microsoft.Network/privateDnsZones/CNAME",
-              "apiVersion": "2020-06-01",
-              "name": "[tolower(concat(
-                                        parameters('global').DomainName,'/',variables('Deployment'),
-                                            if(
-                                              contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
-                                              concat('-afd',variables('APIMInfo')[copyIndex(0)].frontDoor),
-                                              ''),
-                                        '-apim',variables('APIMInfo')[copyIndex(0)].name,'-management'
-                                      ))]",
-              "properties": {
-                "metadata": {},
-                "ttl": 3600,
-                "cnameRecord": {
-                  "cname": "[toLower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-proxy.',parameters('global').DomainName))]"
-                }
-              }
-            },
+            // {
+            //   //  management
+            //   "type": "Microsoft.Network/privateDnsZones/CNAME",
+            //   "apiVersion": "2020-06-01",
+            //   "name": "[tolower(concat(
+            //                             parameters('global').DomainName,'/',variables('Deployment'),
+            //                                 if(
+            //                                   contains(variables('APIMInfo')[copyIndex(0)],'frontDoor'),
+            //                                   concat('-afd',variables('APIMInfo')[copyIndex(0)].frontDoor),
+            //                                   ''),
+            //                             '-apim',variables('APIMInfo')[copyIndex(0)].name,'-management'
+            //                           ))]",
+            //   "properties": {
+            //     "metadata": {},
+            //     "ttl": 3600,
+            //     "cnameRecord": {
+            //       "cname": "[toLower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-proxy.',parameters('global').DomainName))]"
+            //     }
+            //   }
+            // },
             {
               //  SCM/Git
               "type": "Microsoft.Network/privateDnsZones/CNAME",
@@ -453,20 +455,20 @@
                 }
               }
             },
-            {
-              "type": "Microsoft.Network/dnsZones/CNAME",
-              "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management'))]",
-              "apiVersion": "2018-05-01",
-              "location": "global",
-              "dependsOn": [],
-              "properties": {
-                "metadata": {},
-                "TTL": 3600,
-                "CNAMERecord": {
-                  "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
-                }
-              }
-            },
+            // {
+            //   "type": "Microsoft.Network/dnsZones/CNAME",
+            //   "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-management'))]",
+            //   "apiVersion": "2018-05-01",
+            //   "location": "global",
+            //   "dependsOn": [],
+            //   "properties": {
+            //     "metadata": {},
+            //     "TTL": 3600,
+            //     "CNAMERecord": {
+            //       "cname": "[tolower(concat(variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'.azure-api.net'))]"
+            //     }
+            //   }
+            // },
             {
               "type": "Microsoft.Network/dnsZones/CNAME",
               "name": "[tolower(concat(parameters('global').DomainNameExt,'/',variables('Deployment'),'-apim',variables('APIMInfo')[copyIndex(0)].name,'-scm'))]",
