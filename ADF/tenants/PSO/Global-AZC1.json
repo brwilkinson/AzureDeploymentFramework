@@ -24,12 +24,12 @@
         }
     },
     {
-        "DevOpsAgentPATToken": {
+        "sshPublic": {
             "reference": {
                 "keyVault": {
                     "id": "/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-HUB-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-HUB-P0-kvVault01"
                 },
-                "secretName": "DevOpsAgentPATToken"
+                "secretName": "sshPublic"
             }
         }
     }

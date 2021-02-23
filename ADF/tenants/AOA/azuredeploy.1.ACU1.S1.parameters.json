@@ -19,12 +19,12 @@
         "secretName": "localadmin"
       }
     },
-    "DevOpsAgentPATToken": {
+    "sshPublic": {
       "reference": {
         "keyVault": {
           "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
         },
-        "secretName": "DevOpsAgentPATToken"
+        "secretName": "sshPublic"
       }
     },
     "Stage": {
@@ -107,6 +107,59 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
+          {
+            "name": "IngressApplicationGateway",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
+              },
+              {
+                "Name": "Network Contributor"
+              },
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "Kubeletidentity",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              }
+            ]
+          },
+          {
+            "name": "OmsAgent",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              }
+            ]
+          },
+          {
+            "name": "AciConnectorLinux",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              }
+            ]
+          },
           {
             "name": "NetworkContributor",
             "RBAC": [
@@ -196,6 +249,10 @@
           },
           {
             "Name": "Virtual Machine Administrator Login",
+            "Member": "benwilk@Microsoft.com"
+          },
+          {
+            "Name": "Azure Kubernetes Service RBAC Cluster Admin",
             "Member": "benwilk@Microsoft.com"
           }
         ],
@@ -461,7 +518,9 @@
             "WAFName": "API",
             "AgentPoolRG": "S2",
             "AgentPoolsSN": "snMT02",
-            "aksAADAdminGroups": [],
+            "aksAADAdminGroups": [
+              "528b1170-7a6c-4970-94bb-0eb34e1ae947"
+            ],
             "AgentPools": [
               {
                 "name": "linctr",
@@ -475,10 +534,10 @@
                 "mode": "System"
               },
               {
-                "name": "winctr",
+                "name": "linctr2",
                 "count": 2,
                 "osDiskSizeGb": 30,
-                "osType": "Windows",
+                "osType": "Linux",
                 "maxPods": 84,
                 "storageProfile": "ManagedDisks",
                 "_vmSize": "Standard_D1_v2",
@@ -572,14 +631,14 @@
               }
             ],
             "BackendHttp": [
-              // {
-              //   "Port": 443,
-              //   "Protocol": "https",
-              //   "CookieBasedAffinity": "Enabled",
-              //   "RequestTimeout": 600,
-              //   "Cert": "PSThing-WildCard",
-              //   "hostname": "psthing.com"
-              // }
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Enabled",
+                "RequestTimeout": 600,
+                "Cert": "PSThing-WildCard",
+                "hostname": "psthing.com"
+              }
             ],
             "Listeners": [
               {

@@ -3,7 +3,7 @@ Configuration ADPrimary
     Param ( 
         [String]$DomainName,
         [PSCredential]$AdminCreds,
-        [PSCredential]$DevOpsAgentPATToken,
+        [PSCredential]$sshPublic,
         [Int]$RetryCount = 30,
         [Int]$RetryIntervalSec = 120,
         [String]$ThumbPrint,
@@ -68,7 +68,7 @@ Configuration ADPrimary
         'SQLService'  = $DomainCreds
         'UserCreds'   = $AdminCreds
         'StorageCred' = $StorageCred
-        'DevOpsPat'   = $DevOpsAgentPATToken
+        'DevOpsPat'   = $sshPublic
     }
     
     Node $AllNodes.NodeName

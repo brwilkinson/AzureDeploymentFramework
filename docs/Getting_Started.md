@@ -214,7 +214,7 @@ Go Home [Documentation Home](./ARM.md)
 1. Go into the Keyvault in your primary Hub.
     1. Create 2 Secrets (These are the default securestring parameters on all templates, you can add more later)
         1. *localadmin* (choose your domain or local admin password here)
-        1. *DevOpsAgentPATToken* (any value here, Update this later), consider moving, now this is on GitHub, not azureDevops
+        1. *sshPublic* (any value here, Update this later), consider moving, now this is on GitHub, not azureDevops
 
 1. In order to deploy WebSites, you should create some Web Certs, you can also do this from a Public Provider, however we will use self signed here.
     1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.

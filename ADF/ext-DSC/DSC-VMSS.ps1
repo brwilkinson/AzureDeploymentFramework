@@ -3,7 +3,7 @@ Configuration VMSS
     Param (
         [String]$DomainName,
         [PSCredential]$AdminCreds,
-        [PSCredential]$DevOpsAgentPATToken,
+        [PSCredential]$sshPublic,
         [Int]$RetryCount = 30,
         [Int]$RetryIntervalSec = 120,
         [String]$ThumbPrint,
@@ -75,7 +75,7 @@ Configuration VMSS
         "DomainJoin"  = $DomainCreds
         "SQLService"  = $DomainCreds
         "usercreds"   = $AdminCreds
-        "DevOpsPat"   = $DevOpsAgentPATToken
+        "DevOpsPat"   = $sshPublic
     }
 
     node $AllNodes.NodeName
@@ -347,20 +347,21 @@ Configuration VMSS
             }
             $dependsonPowerShellModule += @("[PSModuleResource]$PowerShellModule")
         }
-        #-------------------------------------------------------------------
+
         #Set environment path variables
         #-------------------------------------------------------------------
         foreach ($EnvironmentPath in $Node.EnvironmentPathPresent)
         {
-            $Name = $EnvironmentPath -replace $StringFilter
-            Environment $Name
-            {
-                Name  = "Path"
-                Value = $EnvironmentPath
-                Path  = $true
-            }
-            $dependsonEnvironmentPath += @("[Environment]$Name")
+            [string]$Path += ";$EnvironmentPath"
         }
+        
+        Environment PATH
+        {
+            Name  = 'Path'
+            Value = $Path
+            Path  = $true
+        }
+        $dependsonEnvironmentPath += @('[Environment]PATH')
 
         #-------------------------------------------------------------------
         foreach ($EnvironmentVar in $Node.EnvironmentVarPresent)

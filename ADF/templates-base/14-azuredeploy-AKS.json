@@ -68,7 +68,7 @@
     "vmAdminPassword": {
       "type": "securestring"
     },
-    "DevOpsAgentPATToken": {
+    "sshPublic": {
       "type": "securestring"
     }
   },
@@ -150,6 +150,15 @@
       "None": {
       }
     }
+    // "copy": [
+    //   {
+    //     "name": "aksAADAdminGroupsLookup",
+    //     "count": "[length(variables('AKS')[copyIndex(0)].aksAADAdminGroups)]",
+    //     "input": {
+    //       "adminGroupObjectIDs": "[parameters('Global').RolesLookup[]]"
+    //     }
+    //   }
+    // ]
   },
   "resources": [
     {
@@ -161,7 +170,7 @@
         // "type": "SystemAssigned"
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor'))]": {}
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway'))]": {}
         }
       },
       // "sku": {
@@ -209,7 +218,7 @@
           "ssh": {
             "publicKeys": [
               {
-                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6DcUsyuHfKUzgx2RfBp8Uw/DstQrkdLKXkxn5R/xz8QWIEFloTlRjiC2aOXYzMm80HXsrJcHLUJ87NmKETvqT1hSmhCaZdQ5b7SFcE/L1G9bQJe1aqPJgEcRFZJUqnJfbE3o+MCTSc1S1VFCzT8Iz6fFVzcizQjM6cIIGEdFRxG28G7tFGL4064a7MI4Qas13gXaocGrQaiIrdtxY9URUSuvNBW4fTb3beMaXFyLl4+wKerqJ5jPFmvqPKx9tbURZ0GOdudRoZpa8No2lxyZ07+2jK2ZxRByWYHxLqXDqe8JtAkkhBHk0GLJ8KpocHd0Lfl7uer02F9EypbcwtSSR"
+                "keyData": "[parameters('sshPublic')]"
               }
             ]
           }
@@ -237,6 +246,15 @@
         },
         // "servicePrincipalProfile": {
         //   "clientId": "msi"
+        // },
+
+        //  from deployed aks
+        // "identityProfile": {
+        //   "kubeletidentity": {
+        //     "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiKubeletidentity'))]",
+        //     "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiKubeletidentity')),'2018-11-30').clientId]",
+        //     "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiKubeletidentity')),'2018-11-30').principalId]"
+        //   }
         // },
         "podIdentityProfile": {
           "enabled": true
@@ -268,13 +286,15 @@
           "IngressApplicationGateway": {
             "enabled": true,
             "config": {
-              "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]"
-            },
-            "identity": {
-              "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor'))]",
-              "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor')),'2018-11-30').clientId]",
-              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor')),'2018-11-30').principalId]"
+              "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]",
+              "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]"
             }
+            // not currently assignable
+            // "identity": {
+            //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway'))]",
+            //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway')),'2018-11-30').clientId]",
+            //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway')),'2018-11-30').principalId]"
+            // }
           },
           "httpApplicationRouting": {
             "enabled": false
@@ -287,11 +307,22 @@
             "config": {
               "logAnalyticsWorkspaceResourceID": "[variables('OMSworkspaceID')]"
             }
+            // not currently assignable
+            // "identity": {
+            //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiOmsAgent'))]",
+            //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiOmsAgent')),'2018-11-30').clientId]",
+            //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiOmsAgent')),'2018-11-30').principalId]"
+            // }
           },
           "aciConnectorLinux": {
             "enabled": true,
             "config": {
               "SubnetName": "snMT01"
+            },
+            "identity": {
+              "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux'))]",
+              "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux')),'2018-11-30').clientId]",
+              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux')),'2018-11-30').principalId]"
             }
           }
         }

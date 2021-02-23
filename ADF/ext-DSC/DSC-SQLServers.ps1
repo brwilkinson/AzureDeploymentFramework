@@ -3,7 +3,7 @@ Configuration SQLServers
     Param ( 
         [String]$DomainName,
         [PSCredential]$AdminCreds,
-        [PSCredential]$DevOpsAgentPATToken,
+        [PSCredential]$sshPublic,
         [PSCredential]$DomainJoinCreds,
         [PSCredential]$DomainSQLCreds,
         [Int]$RetryCount = 30,
@@ -111,7 +111,7 @@ Configuration SQLServers
         "localadmin" = $AdminCreds
         "DomainJoin" = $DomainCreds
         "SQLService" = $DomainCreds
-        "DevOpsPat"  = $DevOpsAgentPATToken
+        "DevOpsPat"  = $sshPublic
     }
 
     $AppInfo = ConvertFrom-Json $AppInfo

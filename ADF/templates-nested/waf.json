@@ -81,7 +81,7 @@
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(parameters('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+          "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(parameters('Deployment'),'-uaiIngressApplicationGateway'))]": {
           }
         }
       },

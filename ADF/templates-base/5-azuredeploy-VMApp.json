@@ -72,7 +72,7 @@
     "vmAdminPassword": {
       "type": "securestring"
     },
-    "DevOpsAgentPATToken": {
+    "sshPublic": {
       "type": "securestring"
     }
   },
@@ -819,9 +819,9 @@
                   "UserName": "[parameters('Global').vmAdminUserName]",
                   "Password": "[parameters('vmAdminPassword')]"
                 },
-                "DevOpsAgentPATToken": {
+                "sshPublic": {
                   "UserName": "pat",
-                  "Password": "[parameters('DevOpsAgentPATToken')]"
+                  "Password": "[parameters('sshPublic')]"
                 }
               },
               "configurationUrlSasToken": "[parameters('_artifactsLocationSasToken')]",
@@ -855,7 +855,7 @@
         //       "Tags": "[variables('Deployment')]"
         //     },
         //     "protectedSettings": {
-        //       "PATToken": "[parameters('DevOpsAgentPATToken')]"
+        //       "PATToken": "[parameters('sshPublic')]"
         //     }
         //   }
         // },

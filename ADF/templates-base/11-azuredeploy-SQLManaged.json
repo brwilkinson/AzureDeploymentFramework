@@ -71,7 +71,7 @@
     "vmAdminPassword": {
       "type": "securestring"
     },
-    "DevOpsAgentPATToken": {
+    "sshPublic": {
       "type": "securestring"
     }
   },

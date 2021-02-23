@@ -3,7 +3,7 @@ Configuration VMFile
     Param ( 
         [String]$DomainName,
         [PSCredential]$AdminCreds,
-        [PSCredential]$DevOpsAgentPATToken,
+        [PSCredential]$sshPublic,
         [Int]$RetryCount = 30,
         [Int]$RetryIntervalSec = 120,
         [String]$ThumbPrint,
@@ -111,7 +111,7 @@ Configuration VMFile
         "SQLService"  = $DomainCreds
         "APPService"  = $DomainCreds
         "usercreds"   = $AdminCreds
-        "DevOpsPat"   = $DevOpsAgentPATToken
+        "DevOpsPat"   = $sshPublic
     }
     
     If ($DNSInfo)
@@ -528,15 +528,16 @@ Configuration VMFile
             #-------------------------------------------------------------------
             foreach ($EnvironmentPath in $Node.EnvironmentPathPresent)
             {
-                $Name = $EnvironmentPath -replace $StringFilter
-                Environment $Name
-                {
-                    Name  = "Path"
-                    Value = $EnvironmentPath
-                    Path  = $true
-                }
-                $dependsonEnvironmentPath += @("[Environment]$Name")
+                [string]$Path += ";$EnvironmentPath"
             }
+            
+            Environment PATH
+            {
+                Name  = 'Path'
+                Value = $Path
+                Path  = $true
+            }
+            $dependsonEnvironmentPath += @('[Environment]PATH')
 
             #-------------------------------------------------------------------
             foreach ($EnvironmentVar in $Node.EnvironmentVarPresent)

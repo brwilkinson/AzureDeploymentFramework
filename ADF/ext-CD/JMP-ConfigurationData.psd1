@@ -42,7 +42,12 @@
 
             DirectoryPresent            = @('F:\Source', 'F:\Repos', 'c:\program files\powershell\7')
 
-            EnvironmentPathPresent      = 'F:\Source\Tools\'
+            EnvironmentPathPresent      = @(
+                'F:\Source\Tools\', 
+                '%userprofile%\.vs-kubernetes\tools\helm\windows-amd64',
+                '%userprofile%\.vs-kubernetes\tools\kubectl',
+                '%userprofile%\.vs-kubernetes\tools\minikube\windows-amd64'
+            )
 
             FWRules                     = @(
                 @{
@@ -65,6 +70,12 @@
             )
 
             RegistryKeyPresent          = @(
+                @{ 
+                    # enable developer mode to sideload appx packages, including winget
+                    Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock'; 
+                    ValueName = 'AllowDevelopmentWithoutDevLicense';	ValueData = 1 ; ValueType = 'Dword'
+                },
+
                 @{ 
                     Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
                     ValueName = 'DontUsePowerShellOnWinX';	ValueData = 0 ; ValueType = 'Dword'
