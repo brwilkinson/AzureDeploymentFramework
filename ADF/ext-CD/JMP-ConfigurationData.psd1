@@ -44,9 +44,10 @@
 
             EnvironmentPathPresent      = @(
                 'F:\Source\Tools\', 
-                '%userprofile%\.vs-kubernetes\tools\helm\windows-amd64',
-                '%userprofile%\.vs-kubernetes\tools\kubectl',
-                '%userprofile%\.vs-kubernetes\tools\minikube\windows-amd64'
+                'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\helm\windows-amd64',
+                'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\kubectl',
+                'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\minikube\windows-amd64',
+                'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\draft\windows-amd64'
             )
 
             FWRules                     = @(
@@ -129,6 +130,12 @@
                 @{
                     filesSourcePath      = '\\{0}.file.core.windows.net\source\Tools\'
                     filesDestinationPath = 'F:\Source\Tools\'
+                    MatchSource          = $true
+                },
+
+                @{
+                    filesSourcePath      = 'F:\Source\Tools\.vs-kubernetes\tools'
+                    filesDestinationPath = 'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\'
                     MatchSource          = $true
                 },
 

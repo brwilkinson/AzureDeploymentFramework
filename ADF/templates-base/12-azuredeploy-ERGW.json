@@ -209,7 +209,7 @@
         "usePolicyBasedTrafficSelectors": false,
         "ipsecPolicies": [],
         "authorizationKey": "[if(contains(variables('ERGWInfo')[copyIndex()].ERConnectionOptions,'ERAuthKey'),variables('ERGWInfo')[copyIndex()].ERConnectionOptions.ERAuthKey,json('null'))]",
-        // "authorizationKey": "[parameters('ERAuthKey')]",        
+        // "authorizationKey": "[parameters('ERAuthKey')]",
         "peer": {
           "id": "[variables('ERGWInfo')[copyIndex()].ERConnectionOptions.peerid]"
         }

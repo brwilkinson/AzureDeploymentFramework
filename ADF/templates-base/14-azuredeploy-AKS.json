@@ -173,10 +173,10 @@
           "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway'))]": {}
         }
       },
-      // "sku": {
-      //   "name": "Basic",
-      //   "tier": "[variables('AKS')[copyIndex(0)].skuTier]"
-      // },
+      "sku": {
+        "name": "Basic",
+        "tier": "[variables('AKS')[copyIndex(0)].skuTier]"
+      },
       "copy": {
         "name": "AKSLoop",
         "count": "[length(variables('AKS'))]"
@@ -318,12 +318,13 @@
             "enabled": true,
             "config": {
               "SubnetName": "snMT01"
-            },
-            "identity": {
-              "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux'))]",
-              "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux')),'2018-11-30').clientId]",
-              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux')),'2018-11-30').principalId]"
             }
+            // not currently assignable
+            // "identity": {
+            //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux'))]",
+            //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux')),'2018-11-30').clientId]",
+            //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux')),'2018-11-30').principalId]"
+            // }
           }
         }
       },

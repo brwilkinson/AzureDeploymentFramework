@@ -111,58 +111,8 @@
             "name": "IngressApplicationGateway",
             "RBAC": [
               {
-                "Name": "Contributor"
+                "Name": "Virtual Machine Contributor"
               },
-              {
-                "Name": "Managed Identity Operator"
-              },
-              {
-                "Name": "Network Contributor"
-              },
-              {
-                "Name": "Private DNS Zone Contributor",
-                "RG": "P0",
-                "Tenant": "AOA"
-              },
-              {
-                "Name": "Key Vault Certificates Officer",
-                "RG": "P0",
-                "Tenant": "AOA"
-              },
-              {
-                "Name": "Key Vault Secrets User",
-                "RG": "P0",
-                "Tenant": "AOA"
-              }
-            ]
-          },
-          {
-            "name": "Kubeletidentity",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              }
-            ]
-          },
-          {
-            "name": "OmsAgent",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              }
-            ]
-          },
-          {
-            "name": "AciConnectorLinux",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              }
-            ]
-          },
-          {
-            "name": "NetworkContributor",
-            "RBAC": [
               {
                 "Name": "Managed Identity Operator"
               },
