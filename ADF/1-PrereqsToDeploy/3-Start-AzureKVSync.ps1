@@ -1,3 +1,6 @@
+param(
+    [string]$TempCertPath = ('c:\temp\Certs')
+)
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
 
 $Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
@@ -18,9 +21,13 @@ Get-AzKeyVaultCertificate -VaultName $primaryKVName | ForEach-Object {
     $DestinationCert = Get-AzKeyVaultCertificate -VaultName $SecondaryKVName -Name $CertName
     if (!($DestinationCert) -or ($DestinationCert.Updated -lt $SourceCert.Updated))
     {
-        $SourceCert | Backup-AzKeyVaultCertificate -OutputFile D:\$($CertName).blob -Force
-        Restore-AzKeyVaultCertificate -VaultName $SecondaryKVName -InputFile D:\$($CertName).blob
-        Remove-Item -Path D:\$($CertName).blob
+        if (! (Test-Path -Path $TempCertPath))
+        {
+            mkdir $TempCertPath
+        }
+        $SourceCert | Backup-AzKeyVaultCertificate -OutputFile $($TempCertPath)\$($CertName).blob -Force
+        Restore-AzKeyVaultCertificate -VaultName $SecondaryKVName -InputFile $($TempCertPath)\$($CertName).blob
+        Remove-Item -Path $($TempCertPath)\$($CertName).blob
     }
     else
     {

@@ -7,7 +7,8 @@
 # The deployment automatically installs this Cert in all required stores for it to be trusted.
 # This step (creating the cert) is required to be run on Windows 10 or Server 2016
 param (
-    [String]$APP = 'PSO'
+    [string]$APP = 'PSO',
+    [string]$TempCertPath = ('c:\temp\Certs')
 )
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
 
@@ -17,9 +18,8 @@ $LocalAdminUser = $Global.vmAdminUserName
 $DeployPrimary = $true
 $DeploySecondary = $true
 
-$CertPath = 'c:\temp\Certs'
 $CertFile = $DNSNames[0] -replace '\W', ''
-$CertFilePath = Join-Path -Path $CertPath -ChildPath "$CertFile.pfx"
+$CertFilePath = Join-Path -Path $TempCertPath -ChildPath "$CertFile.pfx"
 $CertExpiry = (Get-Date).AddYears(5) 
 
 #--------------------------------------------------------
@@ -46,9 +46,9 @@ if ($DeploySecondary)
     Write-Verbose -Message "Secondary Keyvault: $SecondaryKVName in RG: $SecondaryRGName in region: $SecondaryLocation" -Verbose
 }
 
-if (! (Test-Path -Path $CertPath))
+if (! (Test-Path -Path $TempCertPath))
 {
-    mkdir $CertPath
+    mkdir $TempCertPath
 }
 
 if (!(Test-Path -Path $CertFilePath))

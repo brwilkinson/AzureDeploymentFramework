@@ -103,7 +103,7 @@ if (! (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue))
     }
 }
 
-# Primary KV RBAC
+# Secondary KV RBAC
 Write-Verbose -Message "Secondary KV Name: $PrimaryKvName RBAC for KV Contributor" -Verbose
 if (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue)
 {

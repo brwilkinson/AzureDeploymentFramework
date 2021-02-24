@@ -24,10 +24,12 @@
       "type": "array"
     },
     "RolesLookup": {
-      "type": "object"
+      "type": "object",
+      "defaultValue": {}
     },
     "RolesGroupsLookup": {
-      "type": "object"
+      "type": "object",
+      "defaultValue": {}
     },
     "roleInfo": {
       "type": "object"
@@ -49,13 +51,14 @@
 
     // GUID will always have the following format concatenated together
     // source Subscription ID
-    // source RGName where the UAI is created
+    // source RGName where the UAI/Identity is created
     // Name of the Role
     // destination Subscription ID
     // Destination RG, which is actually the Enviro e.g. G0
     // The Destination Prefix or region e.g. AZE2
     // The Destination Tenant or App e.g. PSO 
     // Note if the destination info is not provides, assume it's local info
+    // Only the Name is required if local
 
     "copy": [
       {
@@ -71,6 +74,7 @@
           "DestRG": "[if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'RG'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].RG,parameters('Enviro'))]",
           "DestPrefix": "[if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'Prefix'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].Prefix,parameters('Prefix'))]",
           "DestApp": "[if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'Tenant'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].Tenant,parameters('Global').AppName)]",
+          "principalType": "[if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'principalType'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].principalType,json('null'))]",
           "GUID": "[
                     guid(
                       subscription().subscriptionId,
@@ -105,6 +109,7 @@
   },
   "resources": [
     {
+      "condition": true,
       "name": "[concat('dpRoleAssignment-', parameters('roleInfo').Name,'-',copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-05-01",
@@ -133,12 +138,15 @@
               "properties": {
                 "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/',variables('RoleAssignment')[CopyIndex(0)].RoleID)]",
                 //  If it's a resource lookup the Principalid otherwise if it's a service principal of user, then just retrieve from RolesLookup
+                //  If it's a guid, just use the (roleinfo name) guid, no lookup
                 "principalId": "[if(equals(parameters('Enviro'),'G0'),'',
+                                    if(equals(parameters('providerPath'),'guid'),parameters('roleInfo').Name,
                                       if(equals(length(parameters('providerPath')),0),
                                           parameters('RolesLookup')[parameters('roleInfo').Name],
                                           reference(concat(subscription().Id,'/resourceGroups/',resourceGroup().name, '/providers/',parameters('providerPath'),'/',parameters('Deployment'),parameters('namePrefix'),parameters('roleInfo').Name),parameters('providerAPI')).principalId
-                                      )
+                                      ))
                                 )]",
+                "principalType": "[variables('RoleAssignment')[CopyIndex(0)].principalType]",
                 "scope": "[concat(variables('RoleAssignment')[CopyIndex(0)].DestSubscription,'/resourceGroups/',variables('RoleAssignment')[CopyIndex(0)].DestPrefix,'-',parameters('Global').OrgName,'-',variables('RoleAssignment')[CopyIndex(0)].DestApp,'-RG-',variables('RoleAssignment')[CopyIndex(0)].DestRG)]"
               }
             }

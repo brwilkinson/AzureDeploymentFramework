@@ -84,7 +84,18 @@
       "key": "abc",
       "label": "abc"
     },
-    "myarray": [ "SQL01", "SQL02" ]
+    "myarray": [ "SQL01", "SQL02" ],
+    "mask": "23",
+    "Addressspace": "10.214.126.0",
+    "name": "ORG-E2-TEST-VPNHUB-VNet-10.214.126.0_23",
+    "newvalue": "[
+                  replace(
+                          replace (
+                                replace(variables('name'),variables('Addressspace'),''),
+                                variables('mask'),''),
+                          '-_','')
+                  ]"
+
   },
   "resources": [
   ],
@@ -113,13 +124,17 @@
       "type": "string",
       "value": "2021-01-31T14:01:54.9571247Z"
     },
+    "newvalue": {
+      "type": "string",
+      "value": "[variables('newvalue')]"
+    },
     "time2": {
       "type": "string",
       "value": "[dateTimeAdd(parameters('deploymentTime'),'PT1H')]"
     },
-        "ipaddress": {
+    "ipaddress": {
       "type": "object",
-      "value":  "[if(equals('None','None2'),
+      "value": "[if(equals('None','None2'),
                                       reference(
                                                 resourceId('Microsoft.ApiManagement/service',concat(variables('Deployment'), '-apim01')
                                               ),'2020-06-01-preview','Full').properties.publicIPAddresses,

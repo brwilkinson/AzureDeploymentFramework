@@ -395,12 +395,12 @@
                 ]
               },
               {
-                "Name": "APIM01-Developer", // acu1-brw-aoa-s1-afd 01 - apim01-developer .psthing.com
-                "BEAddress": "apim01.azure-api.net", //always use the gateway
+                "Name": "APIM01-Developer",
+                "BEAddress": "apim01.azure-api.net",
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1,
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -411,7 +411,7 @@
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "EnableSSL": 1,
                 "patternsToMatch": [
                   "/*"
                 ]
@@ -458,10 +458,10 @@
             "adminUserEnabled": true
           }
         ],
-        "AKS": [
+        "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.20.2",
+            "Version": "1.18.14", // "1.20.2",
             "skuTier": "Paid", //Free
             "enableRBAC": true,
             "privateCluster": true,
@@ -469,7 +469,7 @@
             "AgentPoolRG": "S2",
             "AgentPoolsSN": "snMT02",
             "aksAADAdminGroups": [
-              "528b1170-7a6c-4970-94bb-0eb34e1ae947"
+              "45d0f920-aff1-4972-8b54-b218bb5b657e"
             ],
             "AgentPools": [
               {

@@ -74,314 +74,91 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
-    "AKS": "[parameters('DeploymentInfo').AKS]",
-
-    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
-    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
-
-    "Environment": {
-      "D": "Dev",
-      "I": "Int",
-      "U": "UAT",
-      "P": "PROD",
-      "S": "SBX"
-    },
-    "VMSizeLookup": {
-      "D": "D",
-      "I": "D",
-      "U": "D",
-      "P": "P",
-      "S": "D"
-    },
-    "OSType": "[json(parameters('Global').OSType)]",
-    "computeSizeLookupOptions": "[json(parameters('Global').computeSizeLookupOptions)]",
-    "WadCfg": "[json(parameters('Global').WadCfg)]",
-    "ladCfg": "[json(parameters('Global').ladCfg)]",
-    "DataDiskInfo": "[json(parameters('Global').DataDiskInfo)]",
-    "MSILookup": {
-      "SQL": "Cluster",
-      "UTL": "DefaultKeyVault",
-      "FIL": "Cluster",
-      "OCR": "Storage",
-      "WVD": "WVD"
-    },
-    "userAssignedIdentities": {
-      "Cluster": {
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperator'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+    "AKSInfo": "[if(contains(parameters('DeploymentInfo'),'frontDoorInfo'),parameters('DeploymentInfo').AKSInfo,createArray())]",
+    "copy": [
+      {
+        "name": "AKS",
+        "count": "[length(variables('AKSInfo'))]",
+        "input": {
+          "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').AKSInfo[copyIndex('AKS')].Name)
+                        )]"
         }
-      },
-      "Default": {
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
-        }
-      },
-      "DefaultKeyVault": {
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGetApp'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiAzureServiceBusDataOwner'))]": {
-        }
-      },
-      "WVD": {
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiWVDRegKeyReader'))]": {
-        }
-      },
-      "Storage": {
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountContributor'))]": {
-        },
-        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
-        }
-      },
-      "None": {
       }
-    }
-    // "copy": [
-    //   {
-    //     "name": "aksAADAdminGroupsLookup",
-    //     "count": "[length(variables('AKS')[copyIndex(0)].aksAADAdminGroups)]",
-    //     "input": {
-    //       "adminGroupObjectIDs": "[parameters('Global').RolesLookup[]]"
-    //     }
-    //   }
-    // ]
+    ]
   },
   "resources": [
     {
-      "name": "[concat(variables('Deployment'), '-aks', variables('AKS')[copyIndex(0)].Name)]",
-      "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2020-12-01",
-      "location": "[resourceGroup().location]",
-      "identity": {
-        // "type": "SystemAssigned"
-        "type": "UserAssigned",
-        "userAssignedIdentities": {
-          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway'))]": {}
-        }
-      },
-      "sku": {
-        "name": "Basic",
-        "tier": "[variables('AKS')[copyIndex(0)].skuTier]"
-      },
+      "condition": "[variables('AKS')[copyIndex(0)].match]",
+      "name": "[concat('dp', variables('Deployment'),'-AKSDeploy',if(equals(length(variables('AKS')),0),'',variables('AKSInfo')[copyIndex(0)].name))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+      ],
       "copy": {
         "name": "AKSLoop",
-        "count": "[length(variables('AKS'))]"
-      },
-      "tags": {
-        "Environment": "[variables('Environment')[parameters('Environment')]]"
+        "count": "[length( variables('AKS') )]"
       },
       "properties": {
-        "kubernetesVersion": "[variables('AKS')[copyIndex(0)].Version]",
-        "nodeResourceGroup": "[replace(resourceGroup().name,concat(parameters('Environment'),parameters('DeploymentID')),variables('AKS')[copyIndex(0)].AgentPoolRG)]",
-        "enableRBAC": "[variables('AKS')[copyIndex(0)].enableRBAC]",
-        "dnsPrefix": "[toLower(concat(variables('Deployment'), '-aks',variables('AKS')[copyIndex(0)].Name))]",
-        "copy": [
-          {
-            "name": "agentPoolProfiles",
-            "count": "[length(variables('AKS')[copyIndex(0)].agentPools)]",
-            "Input": {
-              "name": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].name]",
-              "mode": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].mode]",
-              "count": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].count]",
-              "osDiskSizeGb": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].osDiskSizeGb]",
-              "osType": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].osType]",
-              "maxPods": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].maxPods]",
-              // "storageProfile": "[variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].storageProfile]",
-              // "vmSize": "[variables('computeSizeLookupOptions')[concat(variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].ASNAME,'-',variables('vmsizelookup')[parameters('Environment')])]]",
-              "vmSize": "Standard_DS2_v2",
-              "vnetSubnetID": "[if(
-                                  contains(variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')],'Subnet'),
-                                  resourceId('Microsoft.Network/virtualNetworks/subnets',variables('AKS')[copyIndex(0)].agentPools[CopyIndex('agentPoolProfiles')].Subnet),
-                                  resourceId('Microsoft.Network/virtualNetworks/subnets', concat(Variables('Deployment'),'-vn'),variables('AKS')[copyIndex(0)].AgentPoolsSN))]",
-              "type": "VirtualMachineScaleSets",
-              "availabilityZones": [ "1", "2", "3" ],
-              "storageProfile": "ManagedDisks"
-            }
-          }
-        ],
-        "linuxProfile": {
-          "adminUsername": "[if(contains(variables('AKS')[copyIndex(0)],'AdminUser'),variables('AKS')[copyIndex(0)].AdminUser,parameters('Global').vmAdminUserName)]",
-          "ssh": {
-            "publicKeys": [
-              {
-                "keyData": "[parameters('sshPublic')]"
-              }
-            ]
-          }
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'),'/','templates-nested/AKS.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
         },
-        "windowsProfile": {
-          "adminUsername": "[if(contains(variables('AKS')[copyIndex(0)],'AdminUser'),variables('AKS')[copyIndex(0)].AdminUser,parameters('Global').vmAdminUserName)]",
-          "adminPassword": "[parameters('vmAdminPassword')]",
-          "licenseType": "Windows_Server"
-        },
-        "aadProfile": {
-          "managed": "[variables('AKS')[copyIndex(0)].enableRBAC]",
-          "enableAzureRBAC": "[variables('AKS')[copyIndex(0)].enableRBAC]",
-          "adminGroupObjectIDs": "[variables('AKS')[copyIndex(0)].aksAADAdminGroups]",
-          "tenantID": "[parameters('global').tenantId]"
-        },
-        "networkProfile": {
-          "loadBalancerSku": "standard",
-          "networkPlugin": "azure",
-          "networkPolicy": "azure",
-          "serviceCidr": "10.0.0.0/16", //Not used anywhere on network, can be re-used across all clusters.
-          "dnsServiceIP": "10.0.0.0",
-          "dockerBridgeCidr": "192.168.0.1/16", //Not used anywhere on network, can be re-used across all clusters.
-          "loadBalancerProfile": null,
-          "outboundType": "loadBalancer"
-        },
-        // "servicePrincipalProfile": {
-        //   "clientId": "msi"
-        // },
-
-        //  from deployed aks
-        // "identityProfile": {
-        //   "kubeletidentity": {
-        //     "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiKubeletidentity'))]",
-        //     "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiKubeletidentity')),'2018-11-30').clientId]",
-        //     "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiKubeletidentity')),'2018-11-30').principalId]"
-        //   }
-        // },
-        "podIdentityProfile": {
-          "enabled": true
-          //  not supported on creation.
-          // "userAssignedIdentities": [
-          //   {
-          //     "name": "Apps1",
-          //     "namespace": "Apps1",
-          //     "identity": {
-          //       "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor'))]",
-          //       "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor')),'2018-11-30').clientId]",
-          //       "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiNetworkContributor')),'2018-11-30').principalId]"
-          //     }
-          //   }
-          // ],
-          // "userAssignedIdentityExceptions": [
-          //   {
-          //     "name": "string",
-          //     "namespace": "string",
-          //     "podLabels": {}
-          //   }
-          // ]
-        },
-        "apiServerAccessProfile": {
-          "enablePrivateCluster": "[variables('AKS')[copyIndex(0)].privateCluster]",
-          "privateDNSZone": "[resourceId(parameters('Global').HubRGName,'Microsoft.Network/privateDnsZones','privatelink.centralus.azmk8s.io')]"
-        },
-        "addonProfiles": {
-          "IngressApplicationGateway": {
-            "enabled": true,
-            "config": {
-              "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]",
-              "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]"
-            }
-            // not currently assignable
-            // "identity": {
-            //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway'))]",
-            //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway')),'2018-11-30').clientId]",
-            //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiIngressApplicationGateway')),'2018-11-30').principalId]"
-            // }
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
           },
-          "httpApplicationRouting": {
-            "enabled": false
+          "Prefix": {
+            "value": "[parameters('Prefix')]"
           },
-          "azurePolicy": {
-            "enabled": false
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
           },
-          "omsAgent": {
-            "enabled": true,
-            "config": {
-              "logAnalyticsWorkspaceResourceID": "[variables('OMSworkspaceID')]"
-            }
-            // not currently assignable
-            // "identity": {
-            //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiOmsAgent'))]",
-            //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiOmsAgent')),'2018-11-30').clientId]",
-            //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiOmsAgent')),'2018-11-30').principalId]"
-            // }
+          "Environment": {
+            "value": "[parameters('Environment')]"
           },
-          "aciConnectorLinux": {
-            "enabled": true,
-            "config": {
-              "SubnetName": "snMT01"
-            }
-            // not currently assignable
-            // "identity": {
-            //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux'))]",
-            //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux')),'2018-11-30').clientId]",
-            //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiAciConnectorLinux')),'2018-11-30').principalId]"
-            // }
+          "AKSInfo": {
+            "value": "[variables('AKSInfo')[copyIndex(0)]]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "Stage": {
+            "value": "[parameters('Stage')]"
+          },
+          "OMSworkspaceID": {
+            "value": "[variables('OMSworkspaceID')]"
+          },
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
+          "vmAdminPassword": {
+            "value": "[parameters('vmAdminPassword')]"
+          },
+          "sshPublic": {
+            "value": "[parameters('sshPublic')]"
           }
         }
-      },
-      "resources": [
-        {
-          "name": "Microsoft.Insights/service",
-          "type": "providers/diagnosticSettings",
-          "dependsOn": [
-            "[concat(variables('Deployment'), '-aks', variables('AKS')[copyIndex(0)].Name)]"
-          ],
-          "apiVersion": "2017-05-01-preview",
-          "properties": {
-            "workspaceId": "[variables('OMSworkspaceID')]",
-            "logs": [
-              {
-                "category": "kube-apiserver",
-                "enabled": true
-              },
-              {
-                "category": "kube-audit",
-                "enabled": true
-              },
-              {
-                "category": "kube-audit-admin",
-                "enabled": true
-              },
-              {
-                "category": "kube-controller-manager",
-                "enabled": true
-              },
-              {
-                "category": "kube-scheduler",
-                "enabled": true
-              },
-              {
-                "category": "cluster-autoscaler",
-                "enabled": true
-              },
-              {
-                "category": "guard",
-                "enabled": true
-              }
-            ],
-            "metrics": [
-              {
-                "timeGrain": "PT5M",
-                "enabled": true,
-                "retentionPolicy": {
-                  "enabled": false,
-                  "days": 0
-                }
-              }
-            ]
-          }
-        }
-      ]
+      }
     }
   ],
-  "outputs": {}
+  "outputs": {
+    // "controlPlaneFQDN": {
+    //   "type": "array",
+    //   "copy": {
+    //     "count": "[length(variables('AKSInfo'))]",
+    //     "input": "[reference(
+    //                     concat('Microsoft.ContainerService/managedClusters/',
+    //                             concat(variables('deployment'),'-aks',variables('AKSInfo')[copyIndex()].Name)),
+    //                       '2020-12-01').privateFQDN]"
+    //   }
+    // }
+  }
 }
