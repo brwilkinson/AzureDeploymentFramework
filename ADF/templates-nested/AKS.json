@@ -56,6 +56,15 @@
     "OMSworkspaceName": "[replace(concat(parameters('deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "RolesGroupsLookup": "[json(parameters('Global').RolesGroupsLookup)]",
+    "RolesLookup": "[json(parameters('Global').RolesLookup)]",
+    "copy": [
+      {
+        "name": "aksAADAdminLookup",
+        "count": "[if(not(contains(parameters('AKSInfo'),'aksAADAdminGroups')),0,length(parameters('AKSInfo').aksAADAdminGroups))]",
+        "input": "[variables('RolesLookup')[parameters('AKSInfo').aksAADAdminGroups[copyIndex('aksAADAdminLookup')]]]"
+      }
+    ],
+
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
 
@@ -153,7 +162,7 @@
         "aadProfile": {
           "managed": "[parameters('AKSInfo').enableRBAC]",
           "enableAzureRBAC": "[parameters('AKSInfo').enableRBAC]",
-          "adminGroupObjectIDs": "[parameters('AKSInfo').aksAADAdminGroups]",
+          "adminGroupObjectIDs": "[variables('aksAADAdminLookup')]",
           "tenantID": "[parameters('global').tenantId]"
         },
         "networkProfile": {
@@ -208,8 +217,8 @@
           "IngressApplicationGateway": {
             "enabled": true,
             "config": {
-              "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'), '-waf', parameters('AKSInfo').WAFName))]",
-              "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'), '-waf', parameters('AKSInfo').WAFName))]"
+              "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]",
+              "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
             }
             // not currently assignable
             // "identity": {
@@ -354,6 +363,17 @@
                       "Name": "Network Contributor"
                     }
                   ]
+                },
+                {
+                  "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.IngressApplicationGateway.identity.objectId]",
+                  "RBAC": [
+                    {
+                      "Name": "Network Contributor"
+                    },
+                    {
+                      "Name": "Managed Identity Operator"
+                    }
+                  ]
                 }
               ]
             }
@@ -361,7 +381,7 @@
         }
       }
     },
-        //  Scoped Role Assignments, use RG assignments instead, also better for cleaning up resources and other rbac assignment limitations. 
+    //  Scoped Role Assignments, use RG assignments instead, also better for cleaning up resources and other rbac assignment limitations. 
     // {
     //   "apiVersion": "2018-09-01-preview",
     //   "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
@@ -400,7 +420,7 @@
       "apiVersion": "2020-06-01",
       "copy": {
         "name": "UAILoop",
-        "count": 3
+        "count": 4
       },
       "dependsOn": [
         "[concat('dp-identities-',parameters('deployment'),'-aks',parameters('AKSInfo').Name)]"

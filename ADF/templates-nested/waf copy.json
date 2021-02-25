@@ -71,7 +71,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-11-01",
       "name": "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]",
       "type": "Microsoft.Network/applicationGateways",
       "location": "[resourceGroup().location]",
@@ -80,7 +80,7 @@
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(parameters('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+          "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(parameters('Deployment'),'-uaiIngressApplicationGateway'))]": {
           }
         }
       },
@@ -130,25 +130,16 @@
             }
           }
         ],
-        "backendAddressPools": [
-          {
-            "name": "appGatewayBackendPool",
-            "properties": {
-              "copy": [
-                {
-                  "name": "BackendAddresses",
-                  "count": "[length(if(contains(parameters('WAFInfo'),'FQDNs'),parameters('WAFInfo').FQDNs,parameters('WAFInfo').BEIPs))]",
-                  "input": {
-                    "fqdn": "[if(contains(parameters('WAFInfo'),'FQDNs'),concat(replace(parameters('Deployment'),'-',''),parameters('wafInfo').FQDNs[copyIndex('BackendAddresses')],'.',parameters('Global').DomainName),json('null'))]",
-                    "ipAddress": "[if(contains(parameters('WAFInfo'),'BEIPs'),concat(variables('networkIdUpper'),'.',parameters('WAFInfo').BEIPs[copyIndex('BackendAddresses')]),json('null'))]"
-
-                  }
-                }
-              ]
-            }
-          }
-        ],
         "copy": [
+          {
+            "name": "backendAddressPools",
+            "count": "[length(parameters('WAFInfo').backEnds)]",
+            "input": {
+              "fqdn":  "",    //"[if(contains(parameters('WAFInfo').backEnds[copyIndex('backendAddressPools')],'FQDNs'),concat(replace(parameters('Deployment'),'-',''),parameters('wafInfo').FQDNs[copyIndex('BackendAddresses')],'.',parameters('Global').DomainName),json('null'))]",
+              "ipAddress": "" //"[if(contains(parameters('WAFInfo').backEnds[copyIndex('backendAddressPools')],'BEIPs'),concat(variables('networkIdUpper'),'.',parameters('WAFInfo').BEIPs[copyIndex('BackendAddresses')]),json('null'))]"
+
+            }
+          },
           {
             "name": "sslCertificates",
             "count": "[length(parameters('WAFInfo').SSLCerts)]",
@@ -197,7 +188,6 @@
                     }
                   }
                 ]
-
               }
             }
           },
@@ -228,7 +218,7 @@
                   "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/frontendPorts/appGatewayFrontendPort',parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Port )]"
                 },
                 "Protocol": "[parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol]",
-                "hostName": "[tolower(concat(parameters('Deployment'),'-',parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,'.',parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Domain))]",
+                "hostName": "[concat(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,if( equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,''),'',concat('-',parameters('Environment'),parameters('DeploymentID'),'.')),parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Domain)]",
                 "requireServerNameIndication": "[equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol,'https')]",
                 "sslCertificate": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol,'https'),variables('Listeners')[copyIndex('httpListeners')].sslCertificate,json('null'))]"
               }
@@ -251,89 +241,43 @@
               }
             }
           },
-          // {
-          //   "name": "requestRoutingRules",
-          //   "count": "[length(parameters('WAFInfo').Listeners)]",
-          //   "input": {
-          //     "name": "[concat('requestRoutingRule-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Hostname,parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Port)]",
-          //     "properties": {
-          //       "RuleType": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic')]",
-          //       "httpListener": {
-          //         "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/httpListeners/','httpListener-',
-          //                           if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic'),'-',
-          //                           parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Hostname,'-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Port )]"
-          //       },
-          //       "backendAddressPool": "[if(
-          //                                   and(
-          //                                       contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
-          //                                       equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
-          //                                     ),
-          //                                     json('null'),
-          //                                     variables('Listeners')[copyIndex('requestRoutingRules')].backendAddressPool
-          //                                   )]",
-          //       "backendHttpSettings": "[if(
-          //                                   and(
-          //                                       contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
-          //                                       equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
-          //                                     ),
-          //                                     json('null'),
-          //                                     variables('Listeners')[copyIndex('requestRoutingRules')].backendHttpSettings
-          //                                   )]",
-          //       "redirectConfiguration": "[if(
-          //                                   and(
-          //                                       contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
-          //                                       equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
-          //                                     ),
-          //                                     variables('Listeners')[copyIndex('requestRoutingRules')].redirectConfiguration,
-          //                                     json('null')
-          //                                   )]",
-          //       "urlPathMap": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),
-          //                           variables('Listeners')[copyIndex('requestRoutingRules')].urlPathMap,
-          //                           json('null')
-          //                       )]"
-          //     }
-          //   }
-          // },
-          {
-            "condition": "[equals(parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Protocol,'http')]",
-            "name": "redirectConfigurations",
-            "count": "[length(parameters('WAFInfo').Listeners)]",
-            "input": {
-              "name": "[concat('redirectConfiguration-',parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Hostname,'-',parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Port)]",
-              "properties": {
-                "redirectType": "Permanent",
-                "targetListener": {
-                  //"id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-D8/providers/Microsoft.Network/applicationGateways/AZC1-ADF-D8-wafVPX/httpListeners/httpListener-contoso.com-443"
-                  // "id": "[resourceid('Microsoft.Network/applicationGateways/httpListeners',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName),concat('httpListener-',parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Hostname,'-443'))]"
-                  "id": "[concat(resourceId('Microsoft.Network/applicationGateways/',      concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/httpListeners/','httpListener-',if(contains(parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')],'pathRules'),'PathBasedRouting-','Basic-'),parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Hostname,'-443' )]"
-                },
-                "includePath": true,
-                "includeQueryString": true
-              }
-            }
-          },
           {
             "name": "probes",
-            "count": "[length(parameters('WAFInfo').BackendHttp)]",
+            "count": "[length(parameters('WAFInfo').probes)]",
             "input": {
-              "name": "[concat('default',parameters('WAFInfo').BackendHttp[copyIndex('probes')].protocol,'Probe')]",
-              "properties": {
-                "protocol": "[parameters('WAFInfo').BackendHttp[copyIndex('probes')].protocol]",
-                "path": "[parameters('WAFInfo').BackendHttp[copyIndex('probes')].probePath]",
-                "interval": 30,
-                "timeout": 30,
-                "unhealthyThreshold": 3,
-                "pickHostNameFromBackendHttpSettings": true,
-                "minServers": 0,
-                "match": {
-                  "body": "",
-                  "statusCodes": [
-                    "200-399"
-                  ]
-                }
+              "protocol": "[parameters('WAFInfo').probe[copyIndex('probes')].protocol]",
+              "path": "[parameters('WAFInfo').probe[copyIndex('probes')].path]",
+              "interval": 30,
+              "timeout": 30,
+              "unhealthyThreshold": 3,
+              "pickHostNameFromBackendHttpSettings": true,
+              "minServers": 0,
+              "match": {
+                "body": "",
+                "statusCodes": [
+                  "200-399"
+                ]
               }
             }
           }
+          // {
+          //   "condition": "[equals(parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Protocol,'http')]",
+          //   "name": "redirectConfigurations",
+          //   "count": "[length(parameters('WAFInfo').Listeners)]",
+          //   "input": {
+          //     "name": "[concat('redirectConfiguration-',parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Hostname,'-',parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Port)]",
+          //     "properties": {
+          //       "redirectType": "Permanent",
+          //       "targetListener": {
+          //         //"id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-ADF-RG-D8/providers/Microsoft.Network/applicationGateways/AZC1-ADF-D8-wafVPX/httpListeners/httpListener-contoso.com-443"
+          //         // "id": "[resourceid('Microsoft.Network/applicationGateways/httpListeners',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName),concat('httpListener-',parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Hostname,'-443'))]"
+          //         "id": "[concat(resourceId('Microsoft.Network/applicationGateways/',      concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/httpListeners/','httpListener-',if(contains(parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')],'pathRules'),'PathBasedRouting-','Basic-'),parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Hostname,'-443' )]"
+          //       },
+          //       "includePath": true,
+          //       "includeQueryString": true
+          //     }
+          //   }
+          // }
         ]
       },
       "resources": [
@@ -403,7 +347,7 @@
         "count": "[length( variables('Listeners') )]"
       },
       "dependsOn": [
-        // "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]"
+        "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]"
 
       ],
       "properties": {
@@ -445,7 +389,7 @@
         "count": "[length( variables('Listeners') )]"
       },
       "dependsOn": [
-        // "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]"
+        "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]"
 
       ],
       "properties": {
@@ -457,6 +401,20 @@
           "variables": {},
           "resources": [
             {
+              "condition": "[equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Interface,'Public')]",
+              "type": "Microsoft.Network/privateDnsZones/CNAME",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname))]",
+              "apiVersion": "2020-06-01",
+              "properties": {
+                "metadata": {},
+                "ttl": 3600,
+                "cnameRecord": {
+                  "cname": "[reference(resourceId('Microsoft.network/publicipaddresses',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName,'-publicip1')),'2017-08-01','Full').properties.dnsSettings.fqdn]"
+                }
+              }
+            },
+            {
+              "condition": "[equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Interface,'Private')]",
               "type": "Microsoft.Network/privateDnsZones/A",
               "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname))]",
               "apiVersion": "2020-06-01",
@@ -465,15 +423,10 @@
                 "ttl": 3600,
                 "aRecords": [
                   {
-                    "ipv4Address": "[if(equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Interface,'Private'),
-                                                reference(resourceId('Microsoft.Network/applicationGateways',
-                                                                    concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),
-                                                          '2020-06-01','Full').properties.frontendIPConfigurations[1].properties.privateIPAddress,
-
-                                                reference(resourceId('Microsoft.network/publicipaddresses',
-                                                                    concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName,'-publicip1')),
-                                                          '2017-08-01','Full').properties.ipAddress
-                                        )]"
+                    "ipv4Address": "[reference(
+                                          resourceId('Microsoft.Network/applicationGateways',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),
+                                          '2020-06-01','Full'
+                                          ).properties.frontendIPConfigurations[1].properties.privateIPAddress]"
                   }
                 ]
               }

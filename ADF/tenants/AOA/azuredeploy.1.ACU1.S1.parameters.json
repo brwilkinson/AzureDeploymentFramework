@@ -469,7 +469,7 @@
             "AgentPoolRG": "S2",
             "AgentPoolsSN": "snMT02",
             "aksAADAdminGroups": [
-              "45d0f920-aff1-4972-8b54-b218bb5b657e"
+              "Logic_Runner_4@microsoft.onmicrosoft.com"
             ],
             "AgentPools": [
               {
@@ -554,15 +554,11 @@
             "WAFTier": "WAF_v2",
             "WAFCapacity": 2,
             "PrivateIP": "30",
-            "probe": "mywebwaftest.psthing.com",
-            "probepath": "/",
             "SSLCerts": [
               "PSThing-WildCard"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "FQDNs": [
-              // "JMP01"
-            ],
+            "BEIPs": ["160"],
             "pathRules": [
               // {
               //   "Name": "map1",
@@ -582,23 +578,29 @@
             ],
             "BackendHttp": [
               {
+                "Port": 80,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Enabled",
+                "RequestTimeout": 600,
+                "probePath": "/"
+              },
+              {
                 "Port": 443,
                 "Protocol": "https",
                 "CookieBasedAffinity": "Enabled",
                 "RequestTimeout": 600,
-                "Cert": "PSThing-WildCard",
-                "hostname": "psthing.com"
+                "probePath": "/"
               }
             ],
             "Listeners": [
               {
                 "Port": 443,
-                "BackendPort": "443",
+                "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSThing-WildCard",
                 "Domain": "psthing.com",
                 "Hostname": "waf",
-                "Interface": "Private"
+                "Interface": "Public"
                 // "pathRules": "map1"
               },
               {
@@ -606,7 +608,8 @@
                 "Protocol": "http",
                 "Domain": "psthing.com",
                 "Hostname": "waf",
-                "Interface": "Private"
+                "Interface": "Public",
+                "httpsRedirect": 0
                 // "pathRules": "map1"
               }
             ]

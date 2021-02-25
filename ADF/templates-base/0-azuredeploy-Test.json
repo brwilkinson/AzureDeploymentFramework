@@ -75,7 +75,47 @@
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "RolesGroupsLookup": "[json(parameters('Global').RolesGroupsLookup)]",
-    "RolesLookup": "[json(parameters('Global').RolesLookup)]"
+    "RolesLookup": "[json(parameters('Global').RolesLookup)]",
+    "AKSInfo": {
+      "aksAADAdminGroups": [
+        "benwilk@microsoft.com"
+      ]
+    },
+    "copy": [
+      {
+        "name": "aksAADAdminLookup",
+        "count": "[if(not(contains(variables('AKSInfo'),'aksAADAdminGroups')),0,length(variables('AKSInfo').aksAADAdminGroups))]",
+        "input": "[variables('RolesLookup')[variables('AKSInfo').aksAADAdminGroups[copyIndex('aksAADAdminLookup')]]]"
+      }
+    ],
+    // "copy": [
+    //   {
+    //     "name": "aksAADAdminLookup",
+    //     "count": "[if(not(contains(variables('AKSInfo'),'aksAADAdminGroups')),0,length(variables('AKSInfo').aksAADAdminGroups))]",
+    //     "input": {
+    //       "Group": "[variables('AKSInfo').aksAADAdminGroups[copyIndex('aksAADAdminLookup')]]",
+    //       "roleGroups": "[variables('RolesLookup')]",
+    //       "roleGroupsl": "[variables('RolesLookup')['benwilk@microsoft.com']]",
+    //       "Lookup": "[variables('RolesLookup')[variables('AKSInfo').aksAADAdminGroups[copyIndex('aksAADAdminLookup')]]]"
+    //     }
+    //   }
+    // ],
+    "RolesLookup2": {
+      "benwilk@Microsoft.com": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
+      "Logic_Runner_4@microsoft.onmicrosoft.com": "fdd71a51-494b-456a-a3dc-a9ae9e0889a6",
+      "AzureDeploymentFramework_ACU1-BRW-AOA-RG-P0": "6682cb28-fe25-45f6-9943-951cd0ac1b97",
+      "AzureDeploymentFramework_ACU1-BRW-AOA-RG-G0": "22137800-c04d-4ce1-91f3-f10202a9a141",
+      "AzureDeploymentFramework_ACU1-BRW-AOA-RG-G1": "3e200986-c1a5-4584-8ee5-404ee7237a06",
+      "AzureDeploymentFramework_ACU1-BRW-AOA-RG-D2": "fef98df5-61d5-4395-996d-51be261ea9ee",
+      "AzureDeploymentFramework_ACU1-BRW-AOA-RG-S1": "288ef8f9-9f8e-471d-8397-3239a6b15d03",
+      "AzureDeploymentFramework_ACU1-BRW-AOA-RG-T3": "2b068bbd-d74f-47af-b8de-9144c99aec30",
+      "AzureDeploymentFramework_ACU1-BRW-AOA-RG-P4": "2e652ca3-a5a6-49b0-a4bb-7e3d643a7b02",
+      "AzureDeploymentFramework_AEU2-BRW-AOA-RG-P0": "14e8aeda-3bd2-4f6b-b4de-d4349730d629",
+      "AzureDeploymentFramework_AEU2-BRW-AOA-RG-S1": "5ea390f8-af30-4078-b33b-71db769604f3",
+      "AzureDeploymentFramework_AEU2-BRW-AOA-RG-T3": "192b9afc-f5eb-4f6c-95ce-eb6946fa62dc",
+      "AzureDeploymentFramework_AEU2-BRW-AOA-RG-P4": "876a9dfa-0cb6-472d-9601-c075bfbe7292"
+    }
 
   },
   "resources": [
@@ -90,22 +130,19 @@
     //   "value": "[reference('Microsoft.KeyVault/vaults/AZC1-ADF-P0-kvVault01/secrets/localadmin/f5c73d416ffa4631b188082c0ae60a99','2018-02-14','Full')]"
     // }
     "foo": {
-      "type": "object",
-      "value": "[variables('RolesGroupsLookup')]"
+      "type": "array",
+      "value": "[variables('aksAADAdminLookup')]"
     },
     "foo3": {
       "type": "string",
       "value": "[string(variables('RolesGroupsLookup'))]"
     },
-    // "foo2": {
-    //   "type": "string",
-    //   "value": "[reference(resourceId('AZC1-ADF-RG-P0','Microsoft.KeyVault/vaults/secrets','AZC1-ADF-P0-kvVault01','psthing7e7f14c0-92fc-4167-bb5d-d5d6e4b82b68'),'2019-09-01').secretUriWithVersion]"
-    // },
+
     // "TempSpec": {
     //   "type": "string",
     //   "value": "[resourceId('Microsoft.Resources/templateSpecs/versions','1-azuredeploy-OMS','1.0a')]"
     // },
-        "kvrid": {
+    "kvrid": {
       "type": "string",
       "value": "[resourceId(parameters('Global').HubRGName,'Microsoft.Keyvault/vaults',parameters('Global').KVName)]"
     }
