@@ -42,7 +42,7 @@ $Subscription = $Context.Subscription.Name
 $Account = $context.Account.Id
 
 #region Connect to AZDevOps
-$Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10
+$Global = Get-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10
 $GitHubProject = $Global.Global.GitHubProject
 $SPAdmins = $Global.Global.ServicePrincipalAdmins
 $AppName = $Global.Global.AppName

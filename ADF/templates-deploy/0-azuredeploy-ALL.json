@@ -389,25 +389,6 @@
       }
     },
     {
-      "condition": "[equals(parameters('Stage').SQLMI,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-SQLMI')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SQLMI, parameters('_artifactsLocationSasToken'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
       "condition": "[equals(parameters('Stage').ILB,1)]",
       "name": "[concat('dp', variables('Deployment'), '-ILB')]",
       "type": "Microsoft.Resources/deployments",
@@ -590,6 +571,25 @@
             "value": "[parameters('Global')]"
           }
         }
+      }
+    },
+    {
+      "condition": "[equals(parameters('Stage').SQLMI,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-SQLMI')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-VNET')]",
+        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SQLMI, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
       }
     },
     {
@@ -819,7 +819,7 @@
       "apiVersion": "2020-06-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-WAF')]",
-        "[concat('dp', variables('Deployment'), '-APIM')]",
+        // "[concat('dp', variables('Deployment'), '-APIM')]",
         "[concat('dp', variables('Deployment'), '-VNET')]"
       ],
       "properties": {

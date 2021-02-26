@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'S2',
+    [string]$Enviro = 'S1',
     [string]$App = 'AOA'
 )
 # F5 to load
@@ -20,8 +20,8 @@ break
 . ASD:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 @Current
 
 # Create Service principal for Env.
-. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments P0, G0, G1, D2, S1, T3, P4
-. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincip @Current -Prefix AEU2 -Environments P0, S1, T3, P4
+. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments P0, G0, G1, S1, D2 , T3, P4
+. ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix AEU2 -Environments P0, S1, T3, P4
 
 # Bootstrap Hub RGs and Keyvaults
 . ASD:\1-PrereqsToDeploy\1-CreateHUBKeyVaults.ps1 @Current

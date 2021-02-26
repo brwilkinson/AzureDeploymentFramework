@@ -6,7 +6,7 @@
       "value": "ACU1"
     },
     "Environment": {
-      "value": "S"
+      "value": "D"
     },
     "DeploymentID": {
       "value": "2"
@@ -32,7 +32,7 @@
         "RG": 1,
         "RBAC": 1,
         "UAI": 1,
-        "SP": 1,
+        "SP": 0,
         "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
@@ -66,7 +66,7 @@
         "VMSS": 0,
         "WAFPOLICY": 0,
         "FRONTDOOR": 0,
-        "WAF": 1,
+        "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
         "APIM": 1,
@@ -214,7 +214,7 @@
             ]
           },
           {
-            "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-S1",
+            "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-D2",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -458,6 +458,7 @@
             "privateCluster": true,
             "WAFName": "API",
             "AgentPoolsSN": "snMT02",
+            "GreenFields": 1,
             "aksAADAdminGroups": [
               "Logic_Runner_4@microsoft.onmicrosoft.com"
             ],

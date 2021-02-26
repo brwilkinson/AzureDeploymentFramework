@@ -52,7 +52,6 @@
   "variables": {
     "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
     "BuddyRGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-B',parameters('DeploymentID') )]",
-
     "Enviro": "[concat(parameters('Environment'),parameters('DeploymentID'))]",
 
     "OMSworkspaceName": "[replace(concat(parameters('deployment'),'LogAnalytics'),'-','')]",
@@ -66,6 +65,14 @@
         "input": "[variables('RolesLookup')[parameters('AKSInfo').aksAADAdminGroups[copyIndex('aksAADAdminLookup')]]]"
       }
     ],
+    "IngressGreenfields": {
+      "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
+      // "effectiveApplicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
+    },
+    "IngressBrownfields": {
+      "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
+      // "effectiveApplicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
+    },
 
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
@@ -119,6 +126,7 @@
       },
       "properties": {
         "kubernetesVersion": "[parameters('AKSInfo').Version]",
+        // "nodeResourceGroup": "[replace(resourceGroup().name,concat(parameters('Environment'),parameters('DeploymentID')),parameters('AKSInfo').AgentPoolRG)]",
         "nodeResourceGroup": "[variables('BuddyRGName')]",
         "enableRBAC": "[parameters('AKSInfo').enableRBAC]",
         "dnsPrefix": "[toLower(concat(parameters('deployment'),'-aks',parameters('AKSInfo').Name))]",
@@ -218,11 +226,11 @@
         "addonProfiles": {
           "IngressApplicationGateway": {
             "enabled": true,
-            "config": {
-            
-              // "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]",
-              // "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
-            }
+            "config": "[if(equals(parameters('AKSInfo').GreenFields,1),variables('IngressGreenfields'),variables('IngressBrownfields'))]"
+            // "config": {
+            //   "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]",
+            //   "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
+            // }
             // not currently assignable
             // "identity": {
             //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiIngressApplicationGateway'))]",

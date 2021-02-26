@@ -458,6 +458,8 @@
             "privateCluster": true,
             "WAFName": "API",
             "AgentPoolsSN": "snMT02",
+            "GreenFields": 0,
+            "AgentPoolRG": "S2",
             "aksAADAdminGroups": [
               "Logic_Runner_4@microsoft.onmicrosoft.com"
             ],
