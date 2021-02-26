@@ -239,7 +239,8 @@
         "[concat('dp', variables('Deployment'), '-OMS')]",
         "[concat('dp', variables('Deployment'), '-NetworkWatcher')]",
         "[concat('dp', variables('Deployment'), '-NSGSPOKE')]",
-        "[concat('dp', variables('Deployment'), '-NSGHUB')]"
+        "[concat('dp', variables('Deployment'), '-NSGHUB')]",
+        "[concat('dp', variables('Deployment'), '-SA')]"
       ],
       "properties": {
         "mode": "Incremental",

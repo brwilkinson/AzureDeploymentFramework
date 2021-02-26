@@ -34,7 +34,7 @@
     "firewallPolicy": {
       "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/', parameters('Deployment'), '-wafPolicy', parameters('WAFInfo').WAFname)]"
     },
-    "copy": [ 
+    "copy": [
       {
         "name": "Listeners",
         "count": "[length(parameters('wafInfo').Listeners)]",
@@ -58,6 +58,22 @@
             // "id": "[concat(resourceId('Microsoft.Network/applicationGateways', 'AZE2-ADF-P0-wafAPI'), '/urlPathMaps/multi')]"
           }
         }
+      },
+      {
+        "name": "BackendAddresses",
+        "count": "[length(if(contains(parameters('WAFInfo'),'FQDNs'),parameters('WAFInfo').FQDNs,parameters('WAFInfo').BEIPs))]",
+        "input": {
+          "properties": {
+            "fqdn": "[if(contains(parameters('WAFInfo'),'FQDNs'),concat(replace(parameters('Deployment'),'-',''),parameters('wafInfo').FQDNs[copyIndex('BackendAddresses')],'.',parameters('Global').DomainName),json('null'))]",
+            "ipAddress": "[if(contains(parameters('WAFInfo'),'BEIPs'),concat(variables('networkIdUpper'),'.',parameters('WAFInfo').BEIPs[copyIndex('BackendAddresses')]),json('null'))]"
+          }
+        }
+      }
+    ],
+    "DefaultBackEnd": [
+      {
+        "name": "appGatewayBackendPool",
+        "properties": "[variables('BackendAddresses')]"
       }
     ],
     "SSLpolicyLookup": {
@@ -70,6 +86,33 @@
     }
   },
   "resources": [
+    {
+      "condition": "[and(
+                          and(
+                              contains(parameters('WAFInfo'),'BEIPs'),
+                              equals(length(parameters('WAFInfo').BEIPs),1)
+                              ),
+                          equals(parameters('WAFInfo').BEIPs[0],'lookup')
+                      )]",
+      "name": "backEndLookup",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "variables": {},
+          "resources": [],
+          "outputs": {
+            "backEnd": {
+              "type": "array",
+              "value": "[array(reference(concat('Microsoft.Network/applicationGateways/',parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)).BackendAddressPools)]"
+            }
+          }
+        }
+      }
+    },
     {
       "apiVersion": "2020-06-01",
       "name": "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]",
@@ -130,24 +173,17 @@
             }
           }
         ],
-        "backendAddressPools": [
-          {
-            "name": "appGatewayBackendPool",
-            "properties": {
-              "copy": [
-                {
-                  "name": "BackendAddresses",
-                  "count": "[length(if(contains(parameters('WAFInfo'),'FQDNs'),parameters('WAFInfo').FQDNs,parameters('WAFInfo').BEIPs))]",
-                  "input": {
-                    "fqdn": "[if(contains(parameters('WAFInfo'),'FQDNs'),concat(replace(parameters('Deployment'),'-',''),parameters('wafInfo').FQDNs[copyIndex('BackendAddresses')],'.',parameters('Global').DomainName),json('null'))]",
-                    "ipAddress": "[if(contains(parameters('WAFInfo'),'BEIPs'),concat(variables('networkIdUpper'),'.',parameters('WAFInfo').BEIPs[copyIndex('BackendAddresses')]),json('null'))]"
-
-                  }
-                }
-              ]
-            }
-          }
-        ],
+        "backendAddressPools":"[if(
+                                    not(and(
+                                        and(
+                                            contains(parameters('WAFInfo'),'BEIPs'),
+                                            equals(length(parameters('WAFInfo').BEIPs),1)
+                                            ),
+                                        equals(parameters('WAFInfo').BEIPs[0],'lookup')
+                                    )),
+                                  variables('DefaultBackEnd'),
+                                  reference('backEndLookup').outputs.backEnd.value
+                                  )]",
         "copy": [
           {
             "name": "sslCertificates",

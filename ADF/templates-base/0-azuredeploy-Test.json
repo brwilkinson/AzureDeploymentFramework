@@ -137,11 +137,10 @@
       "type": "string",
       "value": "[string(variables('RolesGroupsLookup'))]"
     },
-
-    // "TempSpec": {
-    //   "type": "string",
-    //   "value": "[resourceId('Microsoft.Resources/templateSpecs/versions','1-azuredeploy-OMS','1.0a')]"
-    // },
+    "backEnd": {
+      "type": "array",
+      "value": "[array(reference(resourceid('Microsoft.Network/applicationGateways','ACU1-BRW-AOA-S1-wafAPI'),'2020-06-01').BackendAddressPools)]"
+    },
     "kvrid": {
       "type": "string",
       "value": "[resourceId(parameters('Global').HubRGName,'Microsoft.Keyvault/vaults',parameters('Global').KVName)]"

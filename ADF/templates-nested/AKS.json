@@ -51,6 +51,8 @@
   },
   "variables": {
     "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
+    "BuddyRGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-B',parameters('DeploymentID') )]",
+
     "Enviro": "[concat(parameters('Environment'),parameters('DeploymentID'))]",
 
     "OMSworkspaceName": "[replace(concat(parameters('deployment'),'LogAnalytics'),'-','')]",
@@ -117,7 +119,7 @@
       },
       "properties": {
         "kubernetesVersion": "[parameters('AKSInfo').Version]",
-        "nodeResourceGroup": "[replace(resourceGroup().name,concat(parameters('Environment'),parameters('DeploymentID')),parameters('AKSInfo').AgentPoolRG)]",
+        "nodeResourceGroup": "[variables('BuddyRGName')]",
         "enableRBAC": "[parameters('AKSInfo').enableRBAC]",
         "dnsPrefix": "[toLower(concat(parameters('deployment'),'-aks',parameters('AKSInfo').Name))]",
         "copy": [
@@ -217,8 +219,9 @@
           "IngressApplicationGateway": {
             "enabled": true,
             "config": {
-              "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]",
-              "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
+            
+              // "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]",
+              // "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
             }
             // not currently assignable
             // "identity": {
@@ -372,6 +375,9 @@
                     },
                     {
                       "Name": "Managed Identity Operator"
+                    },
+                    {
+                      "Name": "Virtual Machine Contributor"
                     }
                   ]
                 }
