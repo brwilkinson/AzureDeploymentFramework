@@ -82,7 +82,7 @@ AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\9-azuredeploy-APIM.json
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\2-azuredeploy-FrontDoor.json
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\2-azuredeploy-FrontDoor.json
 
-AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\14-azuredeploy-AKS.json
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\14-azuredeploy-AKS.json -FullUpload -vsts
 
 # $env:Enviro AppServers Deploy
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADPrimary

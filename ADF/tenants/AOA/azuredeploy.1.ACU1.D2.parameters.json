@@ -64,8 +64,8 @@
         "VMSQL": 0,
         "VMFILE": 0,
         "VMSS": 0,
-        "WAFPOLICY": 0,
-        "FRONTDOOR": 0,
+        "WAFPOLICY": 1,
+        "FRONTDOOR": 1,
         "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
@@ -456,9 +456,9 @@
             "skuTier": "Paid", //Free
             "enableRBAC": true,
             "privateCluster": true,
-            "WAFName": "API",
             "AgentPoolsSN": "snMT02",
-            "GreenFields": 1,
+            "WAFName": "API",
+            "BrownFields": 0,
             "aksAADAdminGroups": [
               "Logic_Runner_4@microsoft.onmicrosoft.com"
             ],

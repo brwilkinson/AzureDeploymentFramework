@@ -66,12 +66,15 @@
       }
     ],
     "IngressGreenfields": {
-      "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
-      // "effectiveApplicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
+      //     "applicationGatewayName": "myApplicationGateway",
+      //     "effectiveApplicationGatewayId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/MC_myResourceGroup_myCluster_centralus/providers/Microsoft.Network/applicationGateways/myApplicationGateway",
+      //     "subnetCIDR": "10.2.0.0/16"
+      "effectiveApplicationGatewayId": "[concat('/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-D2-b/providers/Microsoft.Network/applicationGateways/',parameters('deployment'),'-waf', parameters('AKSInfo').WAFName)]",
+      "applicationGatewayName": "[concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName)]",
+      "subnetCIDR": "10.2.0.0/16" // "[concat(variables('networkId'),'.0/27')]"
     },
     "IngressBrownfields": {
       "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
-      // "effectiveApplicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
     },
 
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
@@ -126,10 +129,48 @@
       },
       "properties": {
         "kubernetesVersion": "[parameters('AKSInfo').Version]",
-        // "nodeResourceGroup": "[replace(resourceGroup().name,concat(parameters('Environment'),parameters('DeploymentID')),parameters('AKSInfo').AgentPoolRG)]",
-        "nodeResourceGroup": "[variables('BuddyRGName')]",
+        "nodeResourceGroup": "[concat(resourceGroup().name,'-b')]",
         "enableRBAC": "[parameters('AKSInfo').enableRBAC]",
         "dnsPrefix": "[toLower(concat(parameters('deployment'),'-aks',parameters('AKSInfo').Name))]",
+
+        // "agentPoolProfiles": [
+        //   {
+        //     "availabilityZones": null,
+        //     "count": 3,
+        //     "enableAutoScaling": null,
+        //     "enableEncryptionAtHost": false,
+        //     "enableNodePublicIp": false,
+        //     "kubeletConfig": null,
+        //     "kubeletDiskType": "OS",
+        //     "linuxOsConfig": null,
+        //     "maxCount": null,
+        //     "maxPods": 30,
+        //     "minCount": null,
+        //     "mode": "System",
+        //     "name": "nodepool1",
+        //     "nodeImageVersion": "AKSUbuntu-1804gen2-2021.02.10",
+        //     "nodeLabels": {},
+        //     "nodeTaints": null,
+        //     "orchestratorVersion": "1.18.14",
+        //     "osDiskSizeGb": 128,
+        //     "osDiskType": "Managed",
+        //     "osType": "Linux",
+        //     "podSubnetId": null,
+        //     "powerState": {
+        //       "code": "Running"
+        //     },
+        //     "provisioningState": "Succeeded",
+        //     "proximityPlacementGroupId": null,
+        //     "scaleSetEvictionPolicy": null,
+        //     "scaleSetPriority": null,
+        //     "spotMaxPrice": null,
+        //     "tags": null,
+        //     "type": "VirtualMachineScaleSets",
+        //     "upgradeSettings": null,
+        //     "vmSize": "Standard_DS2_v2",
+        //     "vnetSubnetId": null
+        //   }
+        // ]
         "copy": [
           {
             "name": "agentPoolProfiles",
@@ -168,6 +209,7 @@
           "adminUsername": "[if(contains(parameters('AKSInfo'),'AdminUser'),parameters('AKSInfo').AdminUser,parameters('Global').vmAdminUserName)]",
           "adminPassword": "[parameters('vmAdminPassword')]",
           "licenseType": "Windows_Server"
+          // "enableCSIProxy": true
         },
         "aadProfile": {
           "managed": "[parameters('AKSInfo').enableRBAC]",
@@ -175,6 +217,32 @@
           "adminGroupObjectIDs": "[variables('aksAADAdminLookup')]",
           "tenantID": "[parameters('global').tenantId]"
         },
+        // "networkProfile": {
+        //   "dnsServiceIp": "10.0.0.10",
+        //   "dockerBridgeCidr": "172.17.0.1/16",
+        //   "loadBalancerProfile": {
+        //     "allocatedOutboundPorts": null,
+        //     "effectiveOutboundIps": [
+        //       {
+        //         "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/MC_myResourceGroup_myCluster_centralus/providers/Microsoft.Network/publicIPAddresses/a0627620-4f38-43e6-99a6-a725214ff579",
+        //         "resourceGroup": "MC_myResourceGroup_myCluster_centralus"
+        //       }
+        //     ],
+        //     "idleTimeoutInMinutes": null,
+        //     "managedOutboundIps": {
+        //       "count": 1
+        //     },
+        //     "outboundIpPrefixes": null,
+        //     "outboundIps": null
+        //   },
+        //   "loadBalancerSku": "Standard",
+        //   "networkMode": null,
+        //   "networkPlugin": "azure",
+        //   "networkPolicy": null,
+        //   "outboundType": "loadBalancer",
+        //   "podCidr": null,
+        //   "serviceCidr": "10.0.0.0/16"
+        // }
         "networkProfile": {
           "loadBalancerSku": "standard",
           "networkPlugin": "azure",
@@ -224,9 +292,27 @@
           "privateDNSZone": "[resourceId(parameters('Global').HubRGName,'Microsoft.Network/privateDnsZones','privatelink.centralus.azmk8s.io')]"
         },
         "addonProfiles": {
+          // "KubeDashboard": {
+          //   "config": null,
+          //   "enabled": false,
+          //   "identity": null
+          // },
+          // "ingressApplicationGateway": {
+          //   "config": {
+          //     "applicationGatewayName": "myApplicationGateway",
+          //     "effectiveApplicationGatewayId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/MC_myResourceGroup_myCluster_centralus/providers/Microsoft.Network/applicationGateways/myApplicationGateway",
+          //     "subnetCIDR": "10.2.0.0/16"
+          //   },
+          //   "enabled": true,
+          //   "identity": {
+          //     "clientId": "38ff1db0-b50f-41c9-9df5-93cbac4f9346",
+          //     "objectId": "0b3a2d43-8514-42f2-9c22-3aaf259f82cf",
+          //     "resourceId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourcegroups/MC_myResourceGroup_myCluster_centralus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ingressapplicationgateway-mycluster"
+          //   }
+          // }
           "IngressApplicationGateway": {
             "enabled": true,
-            "config": "[if(equals(parameters('AKSInfo').GreenFields,1),variables('IngressGreenfields'),variables('IngressBrownfields'))]"
+            "config": "[if(equals(parameters('AKSInfo').BrownFields,1),variables('IngressBrownfields'),variables('IngressGreenfields'))]"
             // "config": {
             //   "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]",
             //   "effectiveApplicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
