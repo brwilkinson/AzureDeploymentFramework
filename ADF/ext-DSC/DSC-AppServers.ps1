@@ -390,13 +390,13 @@ Configuration AppServers
             $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter 
             File $Name
             {
-                SourcePath      = ($File.filesSourcePath -f $StorageAccountName)
-                DestinationPath = $File.filesDestinationPath
-                Ensure          = 'Present'
-                Recurse         = $true
-                Credential      = $StorageCred
-                MatchSource     = IIF $File.MatchSource $File.MatchSource $False
-                Force           = $true
+                SourcePath           = ($File.filesSourcePath -f $StorageAccountName)
+                DestinationPath      = $File.filesDestinationPath
+                Ensure               = 'Present'
+                Recurse              = $true
+                PsDscRunAsCredential = $StorageCred
+                MatchSource          = IIF $File.MatchSource $File.MatchSource $False
+                Force                = $true
             }
             $dependsonDirectory += @("[File]$Name")
         }

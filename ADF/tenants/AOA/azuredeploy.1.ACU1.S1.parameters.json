@@ -452,7 +452,7 @@
         "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.18.14", // "1.20.2",
+            "Version": "1.20.2", // "1.20.2","1.19.7","1.19.6", "1.18.14"
             "skuTier": "Paid", //Free
             "enableRBAC": true,
             "privateCluster": true,
@@ -479,7 +479,7 @@
                 "count": 2,
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
-                "maxPods": 84,
+                "maxPods": 50,
                 "storageProfile": "ManagedDisks",
                 "_vmSize": "Standard_D1_v2",
                 "ASName": "JMP",

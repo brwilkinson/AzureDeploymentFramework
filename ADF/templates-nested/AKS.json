@@ -66,6 +66,7 @@
       }
     ],
     "IngressGreenfields": {
+      //      not sure if this is supported at all.. have not deployed greenfields
       //     "applicationGatewayName": "myApplicationGateway",
       //     "effectiveApplicationGatewayId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/MC_myResourceGroup_myCluster_centralus/providers/Microsoft.Network/applicationGateways/myApplicationGateway",
       //     "subnetCIDR": "10.2.0.0/16"
@@ -292,11 +293,13 @@
           "privateDNSZone": "[resourceId(parameters('Global').HubRGName,'Microsoft.Network/privateDnsZones','privatelink.centralus.azmk8s.io')]"
         },
         "addonProfiles": {
-          // "KubeDashboard": {
-          //   "config": null,
-          //   "enabled": false,
-          //   "identity": null
-          // },
+          "KubeDashboard": {
+            "enabled": true
+            // "config": {
+
+            // }
+            // "identity": null
+          },
           // "ingressApplicationGateway": {
           //   "config": {
           //     "applicationGatewayName": "myApplicationGateway",
