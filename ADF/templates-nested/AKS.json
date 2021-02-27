@@ -209,8 +209,8 @@
         "windowsProfile": {
           "adminUsername": "[if(contains(parameters('AKSInfo'),'AdminUser'),parameters('AKSInfo').AdminUser,parameters('Global').vmAdminUserName)]",
           "adminPassword": "[parameters('vmAdminPassword')]",
-          "licenseType": "Windows_Server"
-          // "enableCSIProxy": true
+          "licenseType": "Windows_Server",
+          "enableCSIProxy": true
         },
         "aadProfile": {
           "managed": "[parameters('AKSInfo').enableRBAC]",

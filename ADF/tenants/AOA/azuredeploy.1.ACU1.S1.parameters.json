@@ -475,7 +475,7 @@
                 "mode": "System"
               },
               {
-                "name": "linctr2",
+                "name": "winctr",
                 "count": 2,
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
@@ -485,6 +485,17 @@
                 "ASName": "JMP",
                 "mode": "User"
               }
+              // {
+              //   "name": "linctr2",
+              //   "count": 2,
+              //   "osDiskSizeGb": 30,
+              //   "osType": "Linux",
+              //   "maxPods": 50,
+              //   "storageProfile": "ManagedDisks",
+              //   "_vmSize": "Standard_D1_v2",
+              //   "ASName": "JMP",
+              //   "mode": "User"
+              // }
             ]
           }
         ],
@@ -591,7 +602,7 @@
                 "Cert": "PSThing-WildCard",
                 "Domain": "psthing.com",
                 "Hostname": "waf",
-                "Interface": "Public"
+                "Interface": "Private"  // "Public","Private"
                 // "pathRules": "map1"
               },
               {
@@ -599,7 +610,7 @@
                 "Protocol": "http",
                 "Domain": "psthing.com",
                 "Hostname": "waf",
-                "Interface": "Public",
+                "Interface": "Private",
                 "httpsRedirect": 0
                 // "pathRules": "map1"
               }
