@@ -50,7 +50,7 @@ Configuration AppServers
     $Zone = $Compute.zone
     $prefix = $ResourceGroupName.split('-')[0]
     $App = $ResourceGroupName.split('-')[1]
-
+    $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
 
     Function IIf
     {
@@ -393,32 +393,32 @@ Configuration AppServers
         #-------------------------------------------------------------------     
         foreach ($AZCOPYDSCDir in $Node.AZCOPYDSCDirPresentSource)
         {
-            $Name = ($AZCOPYDSCDir.SourcePath -f $StorageAccountName + $AZCOPYDSCDir.DestinationPath) -replace $StringFilter 
+            $Name = ($AZCOPYDSCDir.SourcePath + '_' + $AZCOPYDSCDir.DestinationPath) -replace $StringFilter 
             AZCOPYDSCDir $Name
             {
-                SourcePath              = ($AZCOPYDSCDir.filesSourcePath -f $StorageAccountName)
-                DestinationPath         = $AZCOPYDSCDir.filesDestinationPath
+                SourcePath              = ($AZCOPYDSCDir.SourcePath -f $StorageAccountName)
+                DestinationPath         = $AZCOPYDSCDir.DestinationPath
                 Ensure                  = 'Present'
                 ManagedIdentityClientID = $clientIDGlobal
                 LogDir                  = 'F:\azcopy_logs'
             }
-            $dependsonDirectory += @("[AZCOPYDSCDir]$Name")
+            $dependsonAZCopyDSCDir += @("[AZCOPYDSCDir]$Name")
         }
 
-        # Now using Oauth2, instead of keys assing "Storage Blob Data Contributor" instead of Storag account key operator
-        # Removed credential from below
-        #-------------------------------------------------------------------     
+        # Now using Oauth2, instead of SA keys assign "Storage Blob Data Contributor" instead of Storag account key operator
+        # Removed credential from below, since only using it for local file copies
+        #-------------------------------------------------------------------
         foreach ($File in $Node.DirectoryPresentSource)
         {
-            $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter 
+            $Name = ($File.SourcePath -f $StorageAccountName + $File.DestinationPath) -replace $StringFilter 
             File $Name
             {
-                SourcePath           = ($File.filesSourcePath -f $StorageAccountName)
-                DestinationPath      = $File.filesDestinationPath
-                Ensure               = 'Present'
-                Recurse              = $true
-                MatchSource          = IIF $File.MatchSource $File.MatchSource $False
-                Force                = $true
+                SourcePath      = ($File.SourcePath -f $StorageAccountName)
+                DestinationPath = $File.DestinationPath
+                Ensure          = 'Present'
+                Recurse         = $true
+                MatchSource     = IIF $File.MatchSource $File.MatchSource $False
+                Force           = $true
                 # PsDscRunAsCredential = $StorageCred
             }
             $dependsonDirectory += @("[File]$Name")

@@ -19,8 +19,8 @@
 
             DirectoryPresentSource      = @(
                 @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\ADConnect\AzureADConnect.msi'
-                    filesDestinationPath = 'F:\Source\ADConnect\AzureADConnect.msi'
+                    SourcePath      = '\\{0}.file.core.windows.net\source\ADConnect\AzureADConnect.msi'
+                    DestinationPath = 'F:\Source\ADConnect\AzureADConnect.msi'
                 }
             )
 

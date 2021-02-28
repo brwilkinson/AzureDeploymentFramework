@@ -53,20 +53,20 @@
 
             DirectoryPresentSource2     = @(
                 @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\SXS\'
-                    filesDestinationPath = 'F:\Source\SXS\'
+                    SourcePath      = '\\{0}.file.core.windows.net\source\SXS\'
+                    DestinationPath = 'F:\Source\SXS\'
                     MatchSource          = $true
                 },
 
                 @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\Tools\'
-                    filesDestinationPath = 'F:\Source\Tools\'
+                    SourcePath      = '\\{0}.file.core.windows.net\source\Tools\'
+                    DestinationPath = 'F:\Source\Tools\'
                     MatchSource          = $true
                 },
 
                 @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\AZFileSync\'
-                    filesDestinationPath = 'F:\Source\AZFileSync\'
+                    SourcePath      = '\\{0}.file.core.windows.net\source\AZFileSync\'
+                    DestinationPath = 'F:\Source\AZFileSync\'
                     MatchSource          = $true
                 }
             )

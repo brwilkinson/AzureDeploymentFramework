@@ -18,8 +18,8 @@
             )
 
             DirectoryPresentSource      = @(
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\AADAppProxy\AADApplicationProxyConnectorInstaller.exe'
-                    filesDestinationPath = 'F:\Source\AADAppProxy\AADApplicationProxyConnectorInstaller.exe'
+                @{SourcePath        = '\\{0}.file.core.windows.net\source\AADAppProxy\AADApplicationProxyConnectorInstaller.exe'
+                    DestinationPath = 'F:\Source\AADAppProxy\AADApplicationProxyConnectorInstaller.exe'
                 }
             )     
 

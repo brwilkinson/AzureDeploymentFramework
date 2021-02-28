@@ -337,12 +337,12 @@ Configuration SQLServers
             #-------------------------------------------------------------------     
             foreach ($File in $Node.DirectoryPresentSource)
             {
-                $Name = ($File.filesSourcePath -f $StorageAccountName) -replace $StringFilter
+                $Name = ($File.SourcePath -f $StorageAccountName) -replace $StringFilter
 
                 File $Name
                 {
-                    SourcePath      = ($File.filesSourcePath -f $StorageAccountName)
-                    DestinationPath = $File.filesDestinationPath
+                    SourcePath      = ($File.SourcePath -f $StorageAccountName)
+                    DestinationPath = $File.DestinationPath
                     Ensure          = 'Present'
                     Recurse         = $true
                     Credential      = $StorageCred 

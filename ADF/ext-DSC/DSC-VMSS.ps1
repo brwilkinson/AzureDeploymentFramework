@@ -378,13 +378,13 @@ Configuration VMSS
         #-------------------------------------------------------------------
         foreach ($File in $Node.DirectoryPresentSource)
         {
-            # $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter
-            $Name = ($File.filesSourcePath -f $COMPUTERNAME.Substring(3, 2), ".$DomainName") + $File.filesDestinationPath -replace $StringFilter
+            # $Name = ($File.SourcePath -f $StorageAccountName + $File.DestinationPath) -replace $StringFilter
+            $Name = ($File.SourcePath -f $COMPUTERNAME.Substring(3, 2), ".$DomainName") + $File.DestinationPath -replace $StringFilter
 
             File $Name
             {
-                SourcePath      = $File.filesSourcePath -f $COMPUTERNAME.Substring(3, 2), ".$DomainName"
-                DestinationPath = $File.filesDestinationPath
+                SourcePath      = $File.SourcePath -f $COMPUTERNAME.Substring(3, 2), ".$DomainName"
+                DestinationPath = $File.DestinationPath
                 Ensure          = 'Present'
                 Recurse         = $true
                 Credential      = $credlookup["DomainCreds"]

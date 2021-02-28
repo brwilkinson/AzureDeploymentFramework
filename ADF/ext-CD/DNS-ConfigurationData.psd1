@@ -20,8 +20,8 @@
 
             _DirectoryPresentSource     = @(
                 @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\WVD\'
-                    filesDestinationPath = 'F:\Source\WVD\'
+                    SourcePath      = '\\{0}.file.core.windows.net\source\WVD\'
+                    DestinationPath = 'F:\Source\WVD\'
                     MatchSource          = $true
                 }
             )

@@ -105,48 +105,48 @@
             AZCOPYDSCDirPresentSource   = @(
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/PSModules/'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/PSModules/'
                     DestinationPath = 'F:\Source\PSModules\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/Tools/'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/Tools/'
                     DestinationPath = 'F:\Source\Tools\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/OpenSSH-Win64/'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/OpenSSH-Win64/'
                     DestinationPath = 'F:\Source\OpenSSH-Win64\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/GIT/'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/GIT/'
                     DestinationPath = 'F:\Source\GIT\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/EDGE/'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/EDGE/'
                     DestinationPath = 'F:\Source\EDGE\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/PSCore/'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/PSCore/'
                     DestinationPath = 'F:\Source\PSCore\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/DotNetCore/'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/DotNetCore/'
                     DestinationPath = 'F:\Source\DotNetCore\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/VisualStudio/'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/VisualStudio/'
                     DestinationPath = 'F:\Source\VisualStudio\'
                 },
 
                 @{
-                    SourcePath           = 'https://{0}.blob.core.windows.net/RascalPro3/'
-                    filesDestinationPath = 'F:\Source\RascalPro3\'
+                    SourcePath      = 'https://{0}.blob.core.windows.net/source/RascalPro3/'
+                    DestinationPath = 'F:\Source\RascalPro3\'
                 }
             )
 

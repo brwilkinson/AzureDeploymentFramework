@@ -14,8 +14,8 @@
 
             DirectoryPresentSource      = @(
                 @{ 
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\PSCore'
-                    filesDestinationPath = 'F:\Source\PSCore'
+                    SourcePath      = '\\{0}.file.core.windows.net\source\PSCore'
+                    DestinationPath = 'F:\Source\PSCore'
                 }
             )
 

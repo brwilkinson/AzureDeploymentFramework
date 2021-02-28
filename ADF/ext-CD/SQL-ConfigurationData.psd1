@@ -87,20 +87,20 @@
             DirectoryPresent            = @('F:\Source')
 
             DirectoryPresentSource      = @(
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\SQLClient\SSMS-Setup-ENU.exe'
-                    filesDestinationPath = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
+                @{SourcePath        = '\\{0}.file.core.windows.net\source\SQLClient\SSMS-Setup-ENU.exe'
+                    DestinationPath = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
                 },
 
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\SQL2017\'
-                    filesDestinationPath = 'F:\Source\SQL2017\'
+                @{SourcePath        = '\\{0}.file.core.windows.net\source\SQL2017\'
+                    DestinationPath = 'F:\Source\SQL2017\'
                 },
 
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\SXS\'
-                    filesDestinationPath = 'F:\Source\SXS\'
+                @{SourcePath        = '\\{0}.file.core.windows.net\source\SXS\'
+                    DestinationPath = 'F:\Source\SXS\'
                 },
 
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\PSCore'
-                    filesDestinationPath = 'F:\Source\PSCore'
+                @{SourcePath        = '\\{0}.file.core.windows.net\source\PSCore'
+                    DestinationPath = 'F:\Source\PSCore'
                 }
             )
 
