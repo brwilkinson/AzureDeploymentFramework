@@ -101,76 +101,75 @@
                 @{KeyValueName = 'Software\Policies\Microsoft\Internet Explorer\Main\DisableFirstRunCustomize'; PolicyType = 'Machine'; Data = '1'; Type = 'DWord' }
             )
 
+            # Blob copy with Managed Identity - Oauth2
+            AZCOPYDSCDirPresentSource   = @(
+
+                @{
+                    SourcePath      = 'https://{0}.blob.core.windows.net/PSModules/'
+                    DestinationPath = 'F:\Source\PSModules\'
+                },
+
+                @{
+                    SourcePath      = 'https://{0}.blob.core.windows.net/Tools/'
+                    DestinationPath = 'F:\Source\Tools\'
+                },
+
+                @{
+                    SourcePath      = 'https://{0}.blob.core.windows.net/OpenSSH-Win64/'
+                    DestinationPath = 'F:\Source\OpenSSH-Win64\'
+                },
+
+                @{
+                    SourcePath      = 'https://{0}.blob.core.windows.net/GIT/'
+                    DestinationPath = 'F:\Source\GIT\'
+                },
+
+                @{
+                    SourcePath      = 'https://{0}.blob.core.windows.net/EDGE/'
+                    DestinationPath = 'F:\Source\EDGE\'
+                },
+
+                @{
+                    SourcePath      = 'https://{0}.blob.core.windows.net/PSCore/'
+                    DestinationPath = 'F:\Source\PSCore\'
+                },
+
+                @{
+                    SourcePath      = 'https://{0}.blob.core.windows.net/DotNetCore/'
+                    DestinationPath = 'F:\Source\DotNetCore\'
+                },
+
+                @{
+                    SourcePath      = 'https://{0}.blob.core.windows.net/VisualStudio/'
+                    DestinationPath = 'F:\Source\VisualStudio\'
+                },
+
+                @{
+                    SourcePath           = 'https://{0}.blob.core.windows.net/RascalPro3/'
+                    filesDestinationPath = 'F:\Source\RascalPro3\'
+                }
+            )
+
             DirectoryPresentSource      = @(
 
                 @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\Source\PSModules\'
-                    filesDestinationPath = 'F:\Source\PSModules\'
-                    MatchSource          = $true
+                    SourcePath      = 'F:\Source\Tools\.vs-kubernetes\tools\'
+                    DestinationPath = 'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\'
                 },
 
                 @{
-                    filesSourcePath      = 'F:\Source\PSModules\PackageManagement\'
-                    filesDestinationPath = 'c:\program files\WindowsPowershell\Modules\PackageManagement\'
-                    MatchSource          = $true
+                    SourcePath      = 'F:\Source\PSModules\PackageManagement\'
+                    DestinationPath = 'c:\program files\WindowsPowershell\Modules\PackageManagement\'
                 },
 
                 @{
-                    filesSourcePath      = 'F:\Source\PSModules\PowerShellGet\'
-                    filesDestinationPath = 'c:\program files\WindowsPowershell\Modules\PowerShellGet\'
-                    MatchSource          = $true
+                    SourcePath      = 'F:\Source\PSModules\PowerShellGet\'
+                    DestinationPath = 'c:\program files\WindowsPowershell\Modules\PowerShellGet\'
                 },
 
                 @{
-                    filesSourcePath      = 'F:\Source\Tools\profile.ps1'
-                    filesDestinationPath = 'c:\program files\powershell\7\profile.ps1'
-                    MatchSource          = $true
-                },
-
-                @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\Tools\'
-                    filesDestinationPath = 'F:\Source\Tools\'
-                    MatchSource          = $true
-                },
-
-                @{
-                    filesSourcePath      = 'F:\Source\Tools\.vs-kubernetes\tools'
-                    filesDestinationPath = 'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\'
-                    MatchSource          = $true
-                },
-
-                @{
-                    filesSourcePath      = '\\{0}.file.core.windows.net\source\OpenSSH-Win64\'
-                    filesDestinationPath = 'F:\Source\OpenSSH-Win64\'
-                    MatchSource          = $true
-                },
-
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\GIT'
-                    filesDestinationPath = 'F:\Source\GIT'
-                },
-
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\EDGE'
-                    filesDestinationPath = 'F:\Source\EDGE'
-                },
-
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\PSCore'
-                    filesDestinationPath = 'F:\Source\PSCore'
-                    MatchSource          = $true
-                },
-
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\DotNetCore'
-                    filesDestinationPath = 'F:\Source\DotNetCore'
-                    MatchSource          = $true
-                },
-
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\VisualStudio'
-                    filesDestinationPath = 'F:\Source\VisualStudio'
-                    MatchSource          = $true
-                },
-
-                @{filesSourcePath        = '\\{0}.file.core.windows.net\source\RascalPro3'
-                    filesDestinationPath = 'F:\Source\RascalPro3'
-                    MatchSource          = $true
+                    SourcePath      = 'F:\Source\Tools\profile.ps1'
+                    DestinationPath = 'c:\program files\powershell\7\profile.ps1'
                 }
             )
 

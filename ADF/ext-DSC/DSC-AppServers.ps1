@@ -35,6 +35,9 @@ Configuration AppServers
     Import-DscResource -ModuleName xSystemSecurity
     Import-DscResource -ModuleName xDNSServer
     Import-DscResource -ModuleName PackageManagementProviderResource
+    Import-DscResource -ModuleName AZCOPYDSCDir # https://github.com/brwilkinson/AZCOPYDSC
+    Import-DscResource -ModuleName WVDDSC       # https://github.com/brwilkinson/WVDDSC
+
     # Import-DscResource -ModuleName @{ModuleName = 'PowerShellGet';RequiredVersion = '3.0.0'}
 
     # Azure VM Metadata service
@@ -58,27 +61,30 @@ Configuration AppServers
         Else { If ($IfFalse -is 'ScriptBlock') { &$IfFalse } Else { $IfFalse } }
     }
     
-    # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
-    $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
-    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
-    try
-    {
-        # Global assets to download files
-        $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-        $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
-        Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
-        
-        # Create the Cred to access the storage account
-        Write-Verbose -Message "User is: [$StorageAccountName]"
-        $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force -ErrorAction stop))
-    }
-    catch
-    {
-        Write-Warning $_
-    }
+    # -------- MSI lookup for storage account keys to set Cloud Witness for SQL (if needed)
+    #$response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
+    #$ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
+    #$Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
+
+    <#
+        # moved away from using storage account keys to Oauth2 based authentication via AZCOPYDSCDir
+        try
+        {
+            $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
+            $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
+            $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
+            Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
+            
+            # Create the Cred to access the storage account
+            Write-Verbose -Message "User is: [$StorageAccountName]"
+            $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force -ErrorAction stop))
+        }
+        catch
+        {
+            Write-Warning $_
+        }
+    #>
 	
     $NetBios = $(($DomainName -split '\.')[0])
     [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
@@ -385,6 +391,23 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------     
+        foreach ($AZCOPYDSCDir in $Node.AZCOPYDSCDirPresentSource)
+        {
+            $Name = ($AZCOPYDSCDir.SourcePath -f $StorageAccountName + $AZCOPYDSCDir.DestinationPath) -replace $StringFilter 
+            AZCOPYDSCDir $Name
+            {
+                SourcePath              = ($AZCOPYDSCDir.filesSourcePath -f $StorageAccountName)
+                DestinationPath         = $AZCOPYDSCDir.filesDestinationPath
+                Ensure                  = 'Present'
+                ManagedIdentityClientID = $clientIDGlobal
+                LogDir                  = 'F:\azcopy_logs'
+            }
+            $dependsonDirectory += @("[AZCOPYDSCDir]$Name")
+        }
+
+        # Now using Oauth2, instead of keys assing "Storage Blob Data Contributor" instead of Storag account key operator
+        # Removed credential from below
+        #-------------------------------------------------------------------     
         foreach ($File in $Node.DirectoryPresentSource)
         {
             $Name = ($File.filesSourcePath -f $StorageAccountName + $File.filesDestinationPath) -replace $StringFilter 
@@ -394,9 +417,9 @@ Configuration AppServers
                 DestinationPath      = $File.filesDestinationPath
                 Ensure               = 'Present'
                 Recurse              = $true
-                PsDscRunAsCredential = $StorageCred
                 MatchSource          = IIF $File.MatchSource $File.MatchSource $False
                 Force                = $true
+                # PsDscRunAsCredential = $StorageCred
             }
             $dependsonDirectory += @("[File]$Name")
         }
@@ -1026,8 +1049,10 @@ if ((whoami) -notmatch 'system')
     # }
 
     # Set the location to the DSC extension directory
-    $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path)
-    #$DSCdir = $psscrriptroot
+    if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
+    else { $DSCdir = $psscriptroot }
+    Write-Output "DSCDir: $DSCdir"
+
     if (Test-Path -Path $DSCdir -ErrorAction SilentlyContinue)
     {
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue

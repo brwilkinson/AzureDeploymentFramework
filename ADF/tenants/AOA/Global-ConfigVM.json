@@ -974,6 +974,21 @@
         "chefClient": 0
       }
     },
+    "Server2019-gen2": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "windowsserver-gen2preview",
+        "sku": "2019-Datacenter-gen2",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
     "Server2019": {
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",

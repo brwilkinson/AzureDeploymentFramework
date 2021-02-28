@@ -16,15 +16,23 @@ Go Home [Documentation Home](./ARM.md)
 
 ![How](./ADF/Slide5.SVG)
 
+**some images are out of date, VSCode is the recommended development environment*
+
 ![How2](./ADF/Slide6.SVG)
 
 ![How3](./ADF/Slide7.SVG)
 
 ![How4](./ADF/Slide8.SVG)
 
+**some images are out of date, VSCode is the recommended development environment*
+
 ![How5](./ADF/Slide9.SVG)
 
 ![How6](./ADF/Slide10.SVG)
+
+**some images are out of date, Global data is now managed in separate config/metadata files per Tenant/App*
+
+**image is only a guide*
 
 ![Project Parts](./ADF/Slide11.SVG)
 

@@ -23,12 +23,14 @@ $pubName = 'MicrosoftWindowsServer'
 $pubname = 'MicrosoftSQLServer'
 $pubname = 'Microsoft.Azure.Diagnostics'
 $pubname = 'MicrosoftWindowsDesktop'
+
 $pubname = 'Microsoft.Powershell'   # Ext
 $pubname = 'Microsoft.Azure.ActiveDirectory.LinuxSSH'  # ext
 $pubname = 'Microsoft.Azure.ActiveDirectory' # ext
 $pubname = 'Microsoft.Azure.OpenSSH' #Ext
 Get-AzVMImageOffer -Location $location -Publisher $pubName | Select-Object Offer
 
+# Extensions
 $ExtType = 'DSC'
 $ExtType = 'LinuxDiagnostic'
 $ExtType = 'IaaSDiagnostic'
@@ -45,6 +47,8 @@ $offername = 'fortinet_fortigate-vm_v5'
 $offerName = 'WindowsServer'
 $offerName = 'SQL2016SP1-WS2016-BYOL'
 $offername = 'WindowsServerSemiAnnual'
+$offername = 'windowsserver-gen2preview'
+$offername = 'microsoftserveroperatingsystems-previews'
 $offername = 'Windows-10'
 $offername = 'office-365'
 Get-AzVMImageSku -Location $location `
@@ -66,7 +70,12 @@ $sku = 'fortinet-fortimanager'
 $sku = 'max_load_balancer'
 $sku = 'rs5-enterprise'
 $sku = '20h1-evd'
-Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU | Select-Object *
+$sku = '2019-datacenter-with-containers-g2'
+$sku = '2019-datacenter-with-containers-gs'
+$sku = '2019-Datacenter-with-Containers'
+$sku = 'windows-server-2019-azure-edition-preview'
+$sku = '2019-datacenter-gen2'
+Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU | Select-Object * | ogv
 Select-Object PublisherName, skus, Offer, Version # Location
 
 # Sample output:
@@ -123,4 +132,7 @@ Select-Object PublisherName, skus, Offer, Version # Location
     Enterprise
     Standard
     #>
-    
+
+
+$version = '17763.1757.2102060435'
+Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU -Version $version | select *
