@@ -23,11 +23,12 @@
 
             DisableIEESC                = $True
 
-            PowerShellModulesPresent    = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons', 'Az.Tools.Predictor'
+            PowerShellModulesPresent    = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons'
 
             # PowerShellModulesPresentCustom2 = @(
             #     @{Name = 'Az'; RequiredVersion = '5.3.0' }
             #     @{Name = 'PSReadline'; RequiredVersion = '2.2.0' }
+            #     @{Name = 'Az.Tools.Predictor'}
             # )
 
             # AppxPackagePresent2             = @(
@@ -90,15 +91,20 @@
                 @{ 
                     Key = 'HKEY_LOCAL_MACHINE\Software\OpenSSH'; 
                     ValueName = 'DefaultShell';	ValueData = 'C:\Program Files\PowerShell\7\pwsh.exe' ; ValueType = 'String'
+                },
+
+                @{ 
+                    Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\EdgeUpdateDev'; 
+                    ValueName = 'CanContinueWithMissingUpdate';	ValueData = '1' ; ValueType = 'Dword'
                 }
             )
 
-            LocalPolicyPresent2         = @(
-                @{KeyValueName = 'SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
-                @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*'; PolicyType = 'User'; Data = '2'; Type = 'DWord' },
-                @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\DontUsePowerShellOnWinX'; PolicyType = 'User'; Data = '0'; Type = 'DWord' },
-                @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarGlomLevel'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
-                @{KeyValueName = 'Software\Policies\Microsoft\Internet Explorer\Main\DisableFirstRunCustomize'; PolicyType = 'Machine'; Data = '1'; Type = 'DWord' }
+            LocalPolicyPresent         = @(
+                @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarGlomLevel'; PolicyType = 'User'; Data = '1'; Type = 'DWord' }
+                # @{KeyValueName = 'SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
+                # @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*'; PolicyType = 'User'; Data = '2'; Type = 'DWord' },
+                # @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\DontUsePowerShellOnWinX'; PolicyType = 'User'; Data = '0'; Type = 'DWord' },
+                # @{KeyValueName = 'Software\Policies\Microsoft\Internet Explorer\Main\DisableFirstRunCustomize'; PolicyType = 'Machine'; Data = '1'; Type = 'DWord' }
             )
 
             # Blob copy with Managed Identity - Oauth2
@@ -208,28 +214,28 @@
                     Path      = 'F:\Source\PSCore\PowerShell-7.0.3-win-x64.msi'
                     ProductId = '{05321FDB-BBA2-497D-99C6-C440E184C043}'
                     Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1'
-                },
-
-                @{
-                    Name      = 'Microsoft .NET Core Toolset 3.1.200 (x64)'
-                    Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.200-win-x64.exe'
-                    ProductId = ''
-                    Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install312.txt"'
-                },
-
-                @{
-                    Name      = 'Microsoft .NET Runtime - 5.0.0 Preview 8 (x64)'
-                    Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.100-preview.8.20417.9-win-x64.exe'
-                    ProductId = ''
-                    Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install50100.txt"'
-                },
-
-                @{  
-                    Name      = 'Visual Studio Enterprise 2019'
-                    Path      = 'F:\Source\VisualStudio\vs_enterprise__2032842161.1584647755.exe'
-                    ProductId = ''
-                    Arguments = '--installPath F:\VisualStudio\2019\Enterprise --addProductLang en-US  --includeRecommended --quiet --wait'
                 }
+
+                # @{
+                #     Name      = 'Microsoft .NET Core Toolset 3.1.200 (x64)'
+                #     Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.200-win-x64.exe'
+                #     ProductId = ''
+                #     Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install312.txt"'
+                # },
+
+                # @{
+                #     Name      = 'Microsoft .NET Runtime - 5.0.0 Preview 8 (x64)'
+                #     Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.100-preview.8.20417.9-win-x64.exe'
+                #     ProductId = ''
+                #     Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install50100.txt"'
+                # },
+
+                # @{  
+                #     Name      = 'Visual Studio Enterprise 2019'
+                #     Path      = 'F:\Source\VisualStudio\vs_enterprise__2032842161.1584647755.exe'
+                #     ProductId = ''
+                #     Arguments = '--installPath F:\VisualStudio\2019\Enterprise --addProductLang en-US  --includeRecommended --quiet --wait'
+                # }
             )
         }
     )

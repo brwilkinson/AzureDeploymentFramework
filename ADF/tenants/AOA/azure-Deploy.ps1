@@ -91,7 +91,7 @@ AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\5-azuredeploy-VMApp.json 
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP
 AzDeploy @Current -Prefix AEU2 -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP
 
-AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServers -FullUpload
+AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServers
 AzDeploy @Current -Prefix ACU1 -TF ASD:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServersLinux
 
 # ASR deploy
