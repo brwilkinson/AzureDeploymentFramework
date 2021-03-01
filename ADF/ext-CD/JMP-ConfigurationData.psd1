@@ -105,48 +105,48 @@
             AZCOPYDSCDirPresentSource   = @(
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/PSModules/'
-                    DestinationPath = 'F:\Source\PSModules\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSModules/'
+                    DestinationPath   = 'F:\Source\PSModules\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/Tools/'
-                    DestinationPath = 'F:\Source\Tools\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/Tools/'
+                    DestinationPath   = 'F:\Source\Tools\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/OpenSSH-Win64/'
-                    DestinationPath = 'F:\Source\OpenSSH-Win64\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/OpenSSH-Win64/'
+                    DestinationPath   = 'F:\Source\OpenSSH-Win64\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/GIT/'
-                    DestinationPath = 'F:\Source\GIT\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/GIT/'
+                    DestinationPath   = 'F:\Source\GIT\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/EDGE/'
-                    DestinationPath = 'F:\Source\EDGE\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/EDGE/'
+                    DestinationPath   = 'F:\Source\EDGE\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/PSCore/'
-                    DestinationPath = 'F:\Source\PSCore\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSCore/'
+                    DestinationPath   = 'F:\Source\PSCore\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/DotNetCore/'
-                    DestinationPath = 'F:\Source\DotNetCore\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/DotNetCore/'
+                    DestinationPath   = 'F:\Source\DotNetCore\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/VisualStudio/'
-                    DestinationPath = 'F:\Source\VisualStudio\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/VisualStudio/'
+                    DestinationPath   = 'F:\Source\VisualStudio\'
                 },
 
                 @{
-                    SourcePath      = 'https://{0}.blob.core.windows.net/source/RascalPro3/'
-                    DestinationPath = 'F:\Source\RascalPro3\'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/RascalPro3/'
+                    DestinationPath   = 'F:\Source\RascalPro3\'
                 }
             )
 

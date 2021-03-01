@@ -393,10 +393,10 @@ Configuration AppServers
         #-------------------------------------------------------------------     
         foreach ($AZCOPYDSCDir in $Node.AZCOPYDSCDirPresentSource)
         {
-            $Name = ($AZCOPYDSCDir.SourcePath + '_' + $AZCOPYDSCDir.DestinationPath) -replace $StringFilter 
+            $Name = ($AZCOPYDSCDir.SourcePathBlobURI + '_' + $AZCOPYDSCDir.DestinationPath) -replace $StringFilter 
             AZCOPYDSCDir $Name
             {
-                SourcePath              = ($AZCOPYDSCDir.SourcePath -f $StorageAccountName)
+                SourcePath              = ($AZCOPYDSCDir.SourcePathBlobURI -f $StorageAccountName)
                 DestinationPath         = $AZCOPYDSCDir.DestinationPath
                 Ensure                  = 'Present'
                 ManagedIdentityClientID = $clientIDGlobal
