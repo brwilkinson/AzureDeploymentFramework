@@ -80,10 +80,10 @@
       "vmDNS02"
     ],
     "DeploymentInfoObject": {
-      "InitialDNS": "templates-base\\5-azuredeploy-VMApp.json",
+      "InitialDNS": "templates-base\\05-azuredeploy-VMApp.json",
       "SetvNetDNSHub": "templates-nested/SetvNetDNSHub.json",
       "ERGW": "templates-base\\15-azuredeploy-ERGW.json",
-      "InitialJMP": "templates-base\\5-azuredeploy-VMApp.json"
+      "InitialJMP": "templates-base\\05-azuredeploy-VMApp.json"
     },
     "DC1PrivateIPAddress": "[parameters('Global').DNSServers[0]]",
     "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]",

@@ -11,8 +11,8 @@
     ADF\tenants\ADF\azure-Deploy.ps1
     # Load it in memory F5
     # Call this script to create as many SP's and GH Secrets for each environment in each region
-    . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments T0,M0,P0,S1
-    . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1,P0
+    . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments T0,M0,P0,S1
+    . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1,P0
 .NOTES
     You can F5 this script, however I recommend to just call it from a parent helper script azure-deploy.ps1
 

@@ -117,7 +117,7 @@ Go Home [Documentation Home](./ARM.md)
     1. Ensure the correct App Name is set and we can set it to S1, our First Environment (Sandbox1)
         ````powershell
         # F5 to load
-        $ASD = Get-Item -Path "$PSScriptRoot\..\.."
+        $ADF = Get-Item -Path "$PSScriptRoot\..\.."
         $App = 'ABC'
         $Enviro = 'S1'
         ````
@@ -135,8 +135,8 @@ Go Home [Documentation Home](./ARM.md)
     1. Execute this following line/s (One for each region)
         ````powershell
         # Create Service principal for Env.
-        . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
-        . ASD:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
+        . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
+        . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
         ````
         1. Sample Output, this does several things
             1. Create the Application/Service Principal in Azure ActiveDirectory

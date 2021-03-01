@@ -80,26 +80,21 @@
 
                 @{ 
                     Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
-                    ValueName = 'DontUsePowerShellOnWinX';	ValueData = 0 ; ValueType = 'Dword'
+                    ValueName = 'DontUsePowerShellOnWinX'; ValueData = 0 ; ValueType = 'Dword'
                 },
 
                 @{ 
                     Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'; 
-                    ValueName = 'TaskbarGlomLevel';	ValueData = 1 ; ValueType = 'Dword'
+                    ValueName = 'TaskbarGlomLevel'; ValueData = 1 ; ValueType = 'Dword'
                 },
 
                 @{ 
-                    Key = 'HKEY_LOCAL_MACHINE\Software\OpenSSH'; 
+                    Key = 'HKEY_LOCAL_MACHINE\Software\OpenSSH';
                     ValueName = 'DefaultShell';	ValueData = 'C:\Program Files\PowerShell\7\pwsh.exe' ; ValueType = 'String'
-                },
-
-                @{ 
-                    Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\EdgeUpdateDev'; 
-                    ValueName = 'CanContinueWithMissingUpdate';	ValueData = '1' ; ValueType = 'Dword'
                 }
             )
 
-            LocalPolicyPresent         = @(
+            LocalPolicyPresent          = @(
                 @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarGlomLevel'; PolicyType = 'User'; Data = '1'; Type = 'DWord' }
                 # @{KeyValueName = 'SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
                 # @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*'; PolicyType = 'User'; Data = '2'; Type = 'DWord' },

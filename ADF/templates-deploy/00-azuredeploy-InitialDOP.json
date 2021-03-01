@@ -75,7 +75,7 @@
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DeploymentInfoObject": {
-      "InitialDOP": "templates-base\\5-azuredeploy-VMApp.json"
+      "InitialDOP": "templates-base\\05-azuredeploy-VMApp.json"
     }
   },
   "resources": [

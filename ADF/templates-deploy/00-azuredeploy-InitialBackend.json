@@ -75,8 +75,8 @@
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DeploymentInfoObject": {
-      "VMSQLPrivate": "templates-base\\5-azuredeploy-VMApp.json",
-      "InitialFIL": "templates-base\\5-azuredeploy-VMApp.json"
+      "VMSQLPrivate": "templates-base\\05-azuredeploy-VMApp.json",
+      "InitialFIL": "templates-base\\05-azuredeploy-VMApp.json"
     }
   },
   "resources": [

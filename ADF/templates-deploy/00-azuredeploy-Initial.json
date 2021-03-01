@@ -75,14 +75,14 @@
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DeploymentInfoObject": {
-      "KV": "templates-base\\0-azuredeploy-KV.json",
-      "OMS": "templates-base\\1-azuredeploy-OMS.json",
-      "RSV": "templates-base\\2-azuredeploy-RSV.json",
-      "VNet": "templates-base\\3-azuredeploy-VNet.json",
-      "ILB": "templates-base\\4-azuredeploy-ILBalancer.json",
-      "WAFPOLICY": "templates-base\\6-azuredeploy-WAFPolicy.json",
-      "WAF": "templates-base\\6-azuredeploy-WAF.json",
-      "InitialDOP": "templates-base\\5-azuredeploy-VMApp.json"
+      "KV": "templates-base\\00-azuredeploy-KV.json",
+      "OMS": "templates-base\\01-azuredeploy-OMS.json",
+      "RSV": "templates-base\\02-azuredeploy-RSV.json",
+      "VNet": "templates-base\\03-azuredeploy-VNet.json",
+      "ILB": "templates-base\\04-azuredeploy-ILBalancer.json",
+      "WAFPOLICY": "templates-base\\06-azuredeploy-WAFPolicy.json",
+      "WAF": "templates-base\\06-azuredeploy-WAF.json",
+      "InitialDOP": "templates-base\\05-azuredeploy-VMApp.json"
     }
   },
   "resources": [
