@@ -37,7 +37,7 @@ $Plan = @{
 }
 # View the Plan
 
-Get-AzureRmMarketplaceTerms @Plan
+Get-AzMarketplaceTerms @Plan
 
 <#
     Publisher         : fortinet
@@ -53,7 +53,7 @@ Get-AzureRmMarketplaceTerms @Plan
 
 # Accept the plan
 
-Get-AzureRmMarketplaceTerms @Plan | Set-AzureRmMarketplaceTerms -Accept
+Get-AzMarketplaceTerms @Plan | Set-AzureRmMarketplaceTerms -Accept
 
 <#
   Publisher         : fortinet

@@ -1,9 +1,7 @@
-﻿<#
-# Requires -Module AZ.Resources -version 1.7.0
-# Requires -Module AZ.Accounts -version 1.6.3
-#>
+﻿
+#Requires -Module @{ ModuleName = 'Az.Accounts'; ModuleVersion = '2.2.5' }
+#Requires -Module @{ ModuleName = 'Az.Resources'; ModuleVersion = '2.2.5' }
 
-Enable-AzureRmAlias
 <# 
 .Synopsis 
    Deploy ARM Templates in a custom way, to streamline deployments 
@@ -62,7 +60,7 @@ Enable-AzureRmAlias
     ARMDeploy -DP D2 -TF .\5-azuredeploy-VMApp.json -DeploymentName AppServers
 #> 
 
-Function Start-AzDeploy
+Function global:Start-AzDeploy
 {
     Param(
         [alias('Dir', 'Path')]
@@ -289,7 +287,7 @@ Function Start-AzDeploy
         $OptionalParameters['DeploymentID'] = $Deployment.substring(1, 1)
     }
 
-    $StorageAccount = Get-AzureRmStorageAccount | Where-Object { $_.StorageAccountName -eq $StorageAccountName }
+    $StorageAccount = Get-AzStorageAccount | Where-Object { $_.StorageAccountName -eq $StorageAccountName }
 
     # Generate the value for artifacts location if it is not provided in the parameter file
     if ( -not $OptionalParameters['_artifactsLocation'] )
@@ -300,7 +298,7 @@ Function Start-AzDeploy
     # Generate a 4 hour SAS token for the artifacts location if one was not provided in the parameters file
     if ( -not $OptionalParameters['_artifactsLocationSasToken'] )
     {
-        $OptionalParameters['_artifactsLocationSasToken'] = New-AzureStorageContainerSASToken -Container $StorageContainerName -Context $StorageAccount.Context -Permission r -ExpiryTime (Get-Date).AddHours(4)
+        $OptionalParameters['_artifactsLocationSasToken'] = New-AzStorageContainerSASToken -Container $StorageContainerName -Context $StorageAccount.Context -Permission r -ExpiryTime (Get-Date).AddHours(4)
     }
 
     $TemplateParametersFile = "$ArtifactStagingDirectory\tenants\$App\azuredeploy.1.$Prefix.$Deployment.parameters.json"
@@ -329,7 +327,7 @@ Function Start-AzDeploy
         if ( -not $StorageAccount )
         {
             $StorageResourceGroupName = 'ARM_Deploy_Staging'
-            if ( -not (Get-AzureRmresourcegroup -Name $StorageResourceGroupName -Verbose -ErrorAction SilentlyContinue))
+            if ( -not (Get-Azresourcegroup -Name $StorageResourceGroupName -Verbose -ErrorAction SilentlyContinue))
             {
                 New-AzureRmResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
             }
@@ -337,10 +335,10 @@ Function Start-AzDeploy
         }
 
         # Create the storage container only if it doesn't already exist
-        if ( -not (Get-AzureStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -Verbose -ErrorAction SilentlyContinue))
+        if ( -not (Get-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -Verbose -ErrorAction SilentlyContinue))
         {
             # Copy files from the local storage staging location to the storage account container
-            New-AzureStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
+            New-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
         }
 
         if ( -not $FullUpload )
@@ -361,7 +359,7 @@ Function Start-AzDeploy
 
             git -C $ArtifactStagingDirectory diff --name-only | ForEach-Object {
                 $File = Get-Item -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
-                Set-AzureStorageBlobContent -File $File.FullName -Blob $File.FullName.Substring($ArtifactStagingDirectory.length + 1) -Container $StorageContainerName -Context $StorageAccount.Context -Force |
+                Set-AzStorageBlobContent -File $File.FullName -Blob $File.FullName.Substring($ArtifactStagingDirectory.length + 1) -Container $StorageContainerName -Context $StorageAccount.Context -Force |
                     Select-Object Name, Length, LastModified
                 }
 
@@ -381,7 +379,7 @@ Function Start-AzDeploy
                 $Exclude = '0-archive', '1-PrereqsToDeploy', 'release', 'release-Pipelines', 'release-PesterTests', 'ext-DSC', 'ext-CD', 'ext-Scripts'
                 Get-ChildItem -Path $ArtifactStagingDirectory -Recurse -File -Include *.json, *.zip, *.psd1, *.sh -Exclude $Exclude | ForEach-Object {
                     #    $_.FullName.Substring($ArtifactStagingDirectory.length)
-                    Set-AzureStorageBlobContent -File $_.FullName -Blob $_.FullName.Substring($ArtifactStagingDirectory.length + 1 ) -Container $StorageContainerName -Context $StorageAccount.Context -Force 
+                    Set-AzStorageBlobContent -File $_.FullName -Blob $_.FullName.Substring($ArtifactStagingDirectory.length + 1 ) -Container $StorageContainerName -Context $StorageAccount.Context -Force 
                 } | Select-Object Name, Length, LastModified
         }
     }
@@ -403,7 +401,7 @@ Function Start-AzDeploy
     # Create the resource group only when it doesn't already exist
     if (-not $Subscription)
     {
-        if ( -not (Get-AzureRmresourcegroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
+        if ( -not (Get-Azresourcegroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
             New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
         }
@@ -555,4 +553,4 @@ Function Start-AzDeploy
     }
 }#Start-AzDeploy
 
-New-Alias -Name AzDeploy -Value Start-AzDeploy -Force
+New-Alias -Name AzDeploy -Value Start-AzDeploy -Force -Scope Global

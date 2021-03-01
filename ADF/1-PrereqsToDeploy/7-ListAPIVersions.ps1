@@ -2,7 +2,7 @@
 break
 # List API Versions used for Templates ETC.
 
-Get-AzureRmResourceProvider | foreach ProviderNamespace
+Get-AzResourceProvider | foreach ProviderNamespace
 
 <#
 Microsoft.AAD
@@ -37,7 +37,7 @@ $ProviderNamespace = 'Microsoft.storage'
 $ProviderNamespace = 'Microsoft.HybridCompute'
 $ProviderNamespace = 'Microsoft.Compute'
 
-(Get-AzureRmResourceProvider -ProviderNamespace $ProviderNamespace).ResourceTypes | foreach ResourceTypeName
+(Get-AzResourceProvider -ProviderNamespace $ProviderNamespace).ResourceTypes | foreach ResourceTypeName
 
 <#
 availabilitySets
@@ -70,7 +70,7 @@ virtualMachines/metricDefinitions
 $ResourceTypeName = 'VirtualMachines'
 $ResourceTypeName = 'storageAccounts'
 $ResourceTypeName = 'machines'
-((Get-AzureRmResourceProvider -ProviderNamespace $ProviderNamespace).ResourceTypes | Where-Object ResourceTypeName -eq $ResourceTypeName).ApiVersions
+((Get-AzResourceProvider -ProviderNamespace $ProviderNamespace).ResourceTypes | Where-Object ResourceTypeName -eq $ResourceTypeName).ApiVersions
 
 <#
 2017-03-30

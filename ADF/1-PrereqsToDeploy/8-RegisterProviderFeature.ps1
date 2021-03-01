@@ -1,5 +1,5 @@
-Get-AzureRmResourceProvider -location 'East US 2'
-Get-AzureRmProviderFeature -ProviderNamespace Microsoft.Network -ListAvailable
+Get-AzResourceProvider -location 'East US 2'
+Get-AzProviderFeature -ProviderNamespace Microsoft.Network -ListAvailable
 Register-AzureRmProviderFeature -ProviderNamespace Microsoft.Network -featurename AllowAzureFirewall
 
-Get-AzureRmProviderFeature -ProviderNamespace Microsoft.HybridCompute -ListAvailable
+Get-AzProviderFeature -ProviderNamespace Microsoft.HybridCompute -ListAvailable
