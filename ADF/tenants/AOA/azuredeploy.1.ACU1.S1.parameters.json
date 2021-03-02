@@ -469,8 +469,8 @@
             "Name": "01",
             "Version": "1.20.2", // "1.20.2","1.19.7","1.19.6", "1.18.14"
             "skuTier": "Paid", //Free
-            "enableRBAC": false,  //true, false
-            "privateCluster": true,
+            "enableRBAC": true,  //true, false
+            "privateCluster": false,
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
             "BrownFields": 1,

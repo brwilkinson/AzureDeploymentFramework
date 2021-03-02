@@ -181,7 +181,8 @@ Function global:Start-AzDeploy
     # AZC1-ADF-RG-P0
     $ResourceGroupName = $prefix + '-' + $GlobalGlobal.OrgName + '-' + $App + '-RG-' + $Deployment
 
-    Write-Warning -Message "Using Resource Group: $ResourceGroupName"
+    Write-Warning -Message "Using Resource Group: [$ResourceGroupName]"
+    Write-Warning -Message "Using Artifacts Directory: [$ArtifactStagingDirectory]"
 
     $GlobalGlobal | Add-Member NoteProperty -Name TemplateSpec -Value $TemplateSpec.IsPresent
     $GlobalGlobal | Add-Member NoteProperty -Name TemplateSpecVersion -Value $TemplateSpecVersion
@@ -289,6 +290,24 @@ Function global:Start-AzDeploy
 
     $StorageAccount = Get-AzStorageAccount | Where-Object { $_.StorageAccountName -eq $StorageAccountName }
 
+    # Create the storage account only if it doesn't already exist
+    if ( -not $StorageAccount )
+    {
+        $StorageResourceGroupName = 'ARM_Deploy_Staging'
+        if ( -not (Get-AzResourceGroup -Name $StorageResourceGroupName -Verbose -ErrorAction SilentlyContinue))
+        {
+            New-AzureRmResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
+        }
+        $StorageAccount = New-AzureRmStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
+    }
+
+    # Create the storage container only if it doesn't already exist
+    if ( -not (Get-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -Verbose -ErrorAction SilentlyContinue))
+    {
+        # Copy files from the local storage staging location to the storage account container
+        New-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
+    }
+
     # Generate the value for artifacts location if it is not provided in the parameter file
     if ( -not $OptionalParameters['_artifactsLocation'] )
     {
@@ -321,24 +340,6 @@ Function global:Start-AzDeploy
         if ( -not ($JsonParameters | Get-Member -Type NoteProperty 'parameters') )
         {
             $JsonParameters = $JsonParameters.parameters
-        }
-
-        # Create the storage account only if it doesn't already exist
-        if ( -not $StorageAccount )
-        {
-            $StorageResourceGroupName = 'ARM_Deploy_Staging'
-            if ( -not (Get-Azresourcegroup -Name $StorageResourceGroupName -Verbose -ErrorAction SilentlyContinue))
-            {
-                New-AzureRmResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
-            }
-            $StorageAccount = New-AzureRmStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
-        }
-
-        # Create the storage container only if it doesn't already exist
-        if ( -not (Get-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -Verbose -ErrorAction SilentlyContinue))
-        {
-            # Copy files from the local storage staging location to the storage account container
-            New-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
         }
 
         if ( -not $FullUpload )
@@ -401,7 +402,7 @@ Function global:Start-AzDeploy
     # Create the resource group only when it doesn't already exist
     if (-not $Subscription)
     {
-        if ( -not (Get-Azresourcegroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
+        if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
             New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
         }

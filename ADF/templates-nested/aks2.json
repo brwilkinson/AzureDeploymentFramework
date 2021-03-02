@@ -78,6 +78,40 @@
       "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
     },
 
+    "enablePrivateCluster": {
+      "enablePrivateCluster": true,
+      "privateDNSZone": "[if(equals(parameters('AKSInfo').privateCluster,bool('false')),json('null'),resourceId(parameters('Global').HubRGName,'Microsoft.Network/privateDnsZones','privatelink.centralus.azmk8s.io'))]"
+    },
+
+    "aadProfile": {
+      "managed": true,
+      "enableAzureRBAC": "[parameters('AKSInfo').enableRBAC]",
+      "adminGroupObjectIDs": "[if(parameters('AKSInfo').enableRBAC,variables('aksAADAdminLookup'),json('null'))]",
+      "tenantID": "[parameters('global').tenantId]"
+    },
+    "podIdentityProfile": {
+      "enabled": "[parameters('AKSInfo').enableRBAC]"
+      //  not supported on creation.
+      // "userAssignedIdentities": [
+      //   {
+      //     "name": "Apps1",
+      //     "namespace": "Apps1",
+      //     "identity": {
+      //       "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiNetworkContributor'))]",
+      //       "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiNetworkContributor')),'2018-11-30').clientId]",
+      //       "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiNetworkContributor')),'2018-11-30').principalId]"
+      //     }
+      //   }
+      // ],
+      // "userAssignedIdentityExceptions": [
+      //   {
+      //     "name": "string",
+      //     "namespace": "string",
+      //     "podLabels": {}
+      //   }
+      // ]
+    },
+
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
 
@@ -212,12 +246,10 @@
           "licenseType": "Windows_Server",
           "enableCSIProxy": true
         },
-        "aadProfile": {
-          "managed": "[parameters('AKSInfo').enableRBAC]",
-          "enableAzureRBAC": "[parameters('AKSInfo').enableRBAC]",
-          "adminGroupObjectIDs": "[variables('aksAADAdminLookup')]",
-          "tenantID": "[parameters('global').tenantId]"
-        },
+        "aadProfile": "[if(parameters('AKSInfo').enableRBAC,variables('aadProfile'),json('null'))]",
+        // "apiServerAccessProfile": "[if(equals(parameters('AKSInfo').privateCluster,bool('false')),json('null'),variables('enablePrivateCluster'))]",
+
+        
         // "networkProfile": {
         //   "dnsServiceIp": "10.0.0.10",
         //   "dockerBridgeCidr": "172.17.0.1/16",
@@ -257,7 +289,6 @@
         // "servicePrincipalProfile": {
         //   "clientId": "msi"
         // },
-
         //  from deployed aks
         // "identityProfile": {
         //   "kubeletidentity": {
@@ -266,32 +297,7 @@
         //     "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiKubeletidentity')),'2018-11-30').principalId]"
         //   }
         // },
-        "podIdentityProfile": {
-          "enabled": true
-          //  not supported on creation.
-          // "userAssignedIdentities": [
-          //   {
-          //     "name": "Apps1",
-          //     "namespace": "Apps1",
-          //     "identity": {
-          //       "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiNetworkContributor'))]",
-          //       "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiNetworkContributor')),'2018-11-30').clientId]",
-          //       "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiNetworkContributor')),'2018-11-30').principalId]"
-          //     }
-          //   }
-          // ],
-          // "userAssignedIdentityExceptions": [
-          //   {
-          //     "name": "string",
-          //     "namespace": "string",
-          //     "podLabels": {}
-          //   }
-          // ]
-        },
-        "apiServerAccessProfile": {
-          "enablePrivateCluster": "[parameters('AKSInfo').privateCluster]",
-          "privateDNSZone": "[resourceId(parameters('Global').HubRGName,'Microsoft.Network/privateDnsZones','privatelink.centralus.azmk8s.io')]"
-        },
+        "podIdentityProfile": "[if(parameters('AKSInfo').enableRBAC,variables('podIdentityProfile'),json('null'))]",
         "addonProfiles": {
           "KubeDashboard": {
             "enabled": true
