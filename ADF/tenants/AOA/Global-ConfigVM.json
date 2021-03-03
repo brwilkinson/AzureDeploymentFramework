@@ -882,7 +882,7 @@
         "DomainJoin": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     },
@@ -1004,6 +1004,26 @@
         "chefClient": 0
       }
     },
+    "Server2022": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "microsoftserveroperatingsystems-previews",
+        "sku": "windows-server-2022",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "plan": {
+        "name": "windows-server-2022",
+        "publisher": "microsoftwindowsserver",
+        "product": "microsoftserveroperatingsystems-previews"
+      },
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
     "Server2019Core": {
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
@@ -1118,7 +1138,7 @@
         "DomainJoin": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     },
@@ -1147,7 +1167,7 @@
         "DomainJoin": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     },
@@ -1176,7 +1196,7 @@
         "DomainJoin": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     },
@@ -1205,7 +1225,7 @@
         "DomainJoin": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     },
@@ -1234,7 +1254,7 @@
         "DomainJoin": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     },
@@ -1279,7 +1299,7 @@
         "DomainJoin": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     },
@@ -1305,7 +1325,7 @@
         "DomainJoin": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     },
@@ -1330,7 +1350,7 @@
         "Antimalware": 0,
         "chefClient": 0,
         "GuestHealthAgent": 0,
-        "AdminCenter":0,
+        "AdminCenter": 0,
         "WindowsOpenSSH": 0
       }
     }

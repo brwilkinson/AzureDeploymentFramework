@@ -529,6 +529,7 @@
               "DDRole": "64GB",
               "OSType": "Server2019small",
               "ExcludeAdminCenter": 1,
+              "_HotPatch": true,
               "Zone": 1,
               "NICs": [
                 {
@@ -545,8 +546,9 @@
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
-              "OSType": "Server2019-gen2",
+              "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
+              "_HotPatch": true,
               "Zone": 1,
               "NICs": [
                 {

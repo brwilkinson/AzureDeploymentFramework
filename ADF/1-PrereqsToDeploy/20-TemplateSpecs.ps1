@@ -33,6 +33,6 @@ New-AzTemplateSpec -Name foo -Version 1.0a -ResourceGroupName $GlobalRG -Locatio
 
 $Spec = Get-AzTemplateSpec -ResourceGroupName $GlobalRG -Name foo -EA SilentlyContinue -Version $SpecVersion
 
-New-AzResourceGroupDeployment - `
+New-AzResourceGroupDeployment -Name foo `
     -TemplateSpecId ($Spec.Id + '/versions/' + $SpecVersion) `
-    -ResourceGroupName AZC1-BRW-ABC-RG-S1
+    -ResourceGroupName AZC1-BRW-ABC-RG-S1 -TemplateParameterObject @{storageAccountType ="Standard_LRS"}

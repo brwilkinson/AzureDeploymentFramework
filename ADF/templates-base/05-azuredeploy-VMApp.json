@@ -133,7 +133,15 @@
           "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].DDRole],json('null'))]",
           "vmName": "[concat('AZE2-',parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName)]",
           "vmHostName": "[toLower(concat(parameters('Prefix'),parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName))]",
-          "AppInfo": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')],'AppInfo'),parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].AppInfo,json('null'))]"
+          "AppInfo": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')],'AppInfo'),parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].AppInfo,json('null'))]",
+          "windowsConfiguration": {
+            "enableAutomaticUpdates": true,
+            "provisionVmAgent": true,
+            "patchSettings": {
+              "enableHotpatching": "[if(contains(variables('AppServers')[copyIndex('VM')],'HotPatch'),variables('AppServers')[copyIndex('VM')].HotPatch,bool('false'))]",
+              "patchMode": "AutomaticByOS"
+            }
+          }
         }
       },
       {
@@ -298,7 +306,7 @@
     },
     {
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
-      "name": "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('AppServers')[copyIndex(0)].VMName)]",
+      "name": "[concat('dp', variables('Deployment'),'-publicIPDeploy', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-05-01",
       "dependsOn": [
@@ -337,7 +345,7 @@
     },
     {
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
-      "name": "[concat('dp', variables('Deployment'), '-nicDeployLoop', variables('AppServers')[copyIndex(0)].VMName)]",
+      "name": "[concat('dp', variables('Deployment'),'-nicDeployLoop', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-05-01",
       "dependsOn": [
@@ -350,7 +358,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vmNicLoop.json', parameters('_artifactsLocationSasToken'))]",
+          "uri": "[concat(parameters('_artifactsLocation'),'/','templates-nested/vmNicLoop.json', parameters('_artifactsLocationSasToken'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -380,7 +388,7 @@
     },
     {
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
-      "name": "[concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
+      "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-05-01",
       "dependsOn": [
@@ -431,7 +439,7 @@
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2019-03-01",
+      "apiVersion": "2020-12-01",
       "identity": {
         "type": "SystemAssigned, UserAssigned",
         // "userAssignedIdentities": "[if(contains(variables('AppServers')[copyIndex(0)].ASNAME,'CLS'),variables('userAssignedIdentities')['Cluster'],variables('userAssignedIdentities')['Default'])]"
@@ -468,7 +476,8 @@
 
           // customdData downloaded to vm /var/lib/cloud/instance/user-data.txt
           "customData": "[if(contains(variables('AppServers')[copyIndex(0)],'customData'),base64(replace(variables('AppServers')[copyIndex(0)].customData,'{0}',concat(variables('networkId'),'.'))),json('null'))]",
-          "secrets": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),variables('secrets'),json('null'))]"
+          "secrets": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),variables('secrets'),json('null'))]",
+          "windowsConfiguration": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),variables('VM')[CopyIndex(0)].windowsConfiguration,json('null'))]"
         },
         "storageProfile": {
           "imageReference": "[variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].imageReference]",
