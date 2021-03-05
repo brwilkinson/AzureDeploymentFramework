@@ -106,6 +106,11 @@
             AZCOPYDSCDirPresentSource   = @(
 
                 @{
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/Windows_Server_InsiderPreview_LangPack_FOD_20303/'
+                    DestinationPath   = 'F:\Source\FOD\'
+                },
+
+                @{
                     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSModules/'
                     DestinationPath   = 'F:\Source\PSModules\'
                 },
@@ -171,6 +176,7 @@
                 @{
                     SourcePath      = 'F:\Source\Tools\profile.ps1'
                     DestinationPath = 'c:\program files\powershell\7\profile.ps1'
+                    MatchSource     = $true
                 }
             )
 
@@ -183,12 +189,13 @@
                     Arguments = '/silent /norestart'
                 },
 
-                @{
-                    Name      = 'Microsoft Edge'
-                    Path      = 'F:\Source\EDGE\MicrosoftEdgeEnterpriseX64.msi'
-                    ProductId = '{1BAA23D8-D46C-3014-8E86-DF6C0762F71A}'
-                    Arguments = ''
-                },
+                # no longer need edge with Server 2022
+                # @{
+                #     Name      = 'Microsoft Edge'
+                #     Path      = 'F:\Source\EDGE\MicrosoftEdgeEnterpriseX64.msi'
+                #     ProductId = '{1BAA23D8-D46C-3014-8E86-DF6C0762F71A}'
+                #     Arguments = ''
+                # },
 
                 # use Azure Admin Center in portal instead, deployed via VM extensions
                 # @{Name        = 'Windows Admin Center'
@@ -207,7 +214,7 @@
                 @{
                     Name      = 'PowerShell 7-x64'
                     Path      = 'F:\Source\PSCore\PowerShell-7.1.2-win-x64.msi'
-                    ProductId = '{357A3946-1572-4A21-9B60-4C7BD1BB9761}'
+                    ProductId = '{357A3946-1572-4A21-9B60-4C7BD1BB9761}' # '{357A3946-1572-4A21-9B60-4C7BD1BB9761}'
                     Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1'
                 }
 

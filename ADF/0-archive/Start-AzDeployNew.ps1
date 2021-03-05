@@ -317,7 +317,7 @@ Function Start-AzDeploy
         if ( -not $StorageAccount )
         {
             $StorageResourceGroupName = 'ARM_Deploy_Staging'
-            New-AzureRmResourceGroup -Location $ResourceGroupLocation -Name $StorageResourceGroupName -Force
+            New-AzResourceGroup -Location $ResourceGroupLocation -Name $StorageResourceGroupName -Force
             $StorageAccount = New-AzureRmStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
         }
 
@@ -337,7 +337,7 @@ Function Start-AzDeploy
             git -C $DSCSourceFolder diff --name-only | Where-Object { $_ -match '/ext-DSC/' } | Where-Object { $_ -match 'ps1$' } | ForEach-Object {
                 $File = Get-Item -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
                 $DSCArchiveFilePath = $File.FullName.Substring(0, $File.FullName.Length - 4) + '.zip'
-                Publish-AzureRmVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+                Publish-AzVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
             }
 
             git -C $ArtifactStagingDirectory diff --name-only | ForEach-Object {
@@ -355,7 +355,7 @@ Function Start-AzDeploy
                     Get-ChildItem $DSCSourceFolder -File -Filter '*.ps1' | ForEach-Object {
 
                         $DSCArchiveFilePath = $_.FullName.Substring(0, $_.FullName.Length - 4) + '.zip'
-                        Publish-AzureRmVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+                        Publish-AzVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
                     }
                 }
             
@@ -391,7 +391,7 @@ Function Start-AzDeploy
     {
         if ( -not (Get-Azresourcegroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
-            New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
+            New-AzResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
         }
     }
 

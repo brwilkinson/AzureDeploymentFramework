@@ -187,6 +187,7 @@ Configuration AppServers
             {
                 Name   = $Capability
                 Ensure = 'Present'
+                
             }
             $dependsonFeatures += @("[WindowsCapability]$Capability")
         }

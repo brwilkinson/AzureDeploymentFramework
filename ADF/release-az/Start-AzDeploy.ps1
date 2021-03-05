@@ -296,7 +296,7 @@ Function global:Start-AzDeploy
         $StorageResourceGroupName = 'ARM_Deploy_Staging'
         if ( -not (Get-AzResourceGroup -Name $StorageResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
-            New-AzureRmResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
+            New-AzResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
         }
         $StorageAccount = New-AzureRmStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
     }
@@ -355,7 +355,7 @@ Function global:Start-AzDeploy
             git -C $DSCSourceFolder diff --name-only | Where-Object { $_ -match '/ext-DSC/' } | Where-Object { $_ -match 'ps1$' } | ForEach-Object {
                 $File = Get-Item -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
                 $DSCArchiveFilePath = $File.FullName.Substring(0, $File.FullName.Length - 4) + '.zip'
-                Publish-AzureRmVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+                Publish-AzVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
             }
 
             git -C $ArtifactStagingDirectory diff --name-only | ForEach-Object {
@@ -373,7 +373,7 @@ Function global:Start-AzDeploy
                     Get-ChildItem $DSCSourceFolder -File -Filter '*.ps1' | ForEach-Object {
 
                         $DSCArchiveFilePath = $_.FullName.Substring(0, $_.FullName.Length - 4) + '.zip'
-                        Publish-AzureRmVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+                        Publish-AzVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
                     }
                 }
             
@@ -404,7 +404,7 @@ Function global:Start-AzDeploy
     {
         if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
-            New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
+            New-AzResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
         }
     }
 
