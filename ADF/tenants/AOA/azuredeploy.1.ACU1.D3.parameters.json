@@ -70,7 +70,7 @@
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
         "APIM": 0,
-        "AKS": 1,
+        "AKS": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 1,
@@ -124,6 +124,14 @@
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "NetworkContributor",
+            "RBAC": [
+              {
+                "Name": "Network Contributor"
               }
             ]
           },
@@ -509,17 +517,6 @@
                 "ASName": "JMP",
                 "mode": "System"
               },
-              // {
-              //   "name": "winctr",
-              //   "count": 2,
-              //   "osDiskSizeGb": 30,
-              //   "osType": "Linux",
-              //   "maxPods": 50,
-              //   "storageProfile": "ManagedDisks",
-              //   "_vmSize": "Standard_D1_v2",
-              //   "ASName": "JMP",
-              //   "mode": "User"
-              // }
               {
                 "name": "linctr2",
                 "count": 2,

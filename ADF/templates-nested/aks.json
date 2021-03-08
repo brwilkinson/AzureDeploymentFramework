@@ -438,14 +438,8 @@
           "Enviro": {
             "value": "[variables('Enviro')]"
           },
-          "DeploymentID": {
-            "value": "[parameters('DeploymentID')]"
-          },
           "Global": {
             "value": "[parameters('Global')]"
-          },
-          "rolesInfo": {
-            "value": []
           },
           "RolesGroupsLookup": {
             "value": "[variables('RolesGroupsLookup')]"

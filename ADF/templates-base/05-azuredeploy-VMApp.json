@@ -548,8 +548,9 @@
         },
         {
           //  https://docs.microsoft.com/en-us/azure/active-directory/devices/howto-vm-sign-in-azure-ad-windows
+          //  https://docs.microsoft.com/en-us/azure/virtual-machines/linux/login-using-aad
           "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.AADLogin,1))]",
-          "name": "AADLoginForWindows",
+          "name": "AADLogin",
           "type": "extensions",
           "apiVersion": "2019-03-01",
           "location": "[resourceGroup().location]",
