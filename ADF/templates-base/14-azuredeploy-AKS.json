@@ -48,19 +48,22 @@
       "type": "object"
     },
     "Global": {
-      "type": "object"
+      "type": "object",
+      "defaultValue": {"n":"1"}
     },
     "DeploymentInfo": {
       "type": "object"
     },
     "_artifactsLocation": {
       "type": "string",
+      "defaultValue": "1",
       "metadata": {
         "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
       }
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
+      "defaultValue": "1",
       "metadata": {
         "description": "Auto-generated token to access artifactsLocation"
       }
@@ -74,6 +77,7 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    // "Deployment": "[concat(parameters('Prefix'),'-','-',parameters('Environment'),parameters('DeploymentID'))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "AKSInfo": "[if(contains(parameters('DeploymentInfo'),'frontDoorInfo'),parameters('DeploymentInfo').AKSInfo,createArray())]",
@@ -95,7 +99,7 @@
       "condition": "[variables('AKS')[copyIndex(0)].match]",
       "name": "[concat('dp', variables('Deployment'),'-AKSDeploy',if(equals(length(variables('AKS')),0),'',variables('AKSInfo')[copyIndex(0)].name))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
       ],
       "copy": {

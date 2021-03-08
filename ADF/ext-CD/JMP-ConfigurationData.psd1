@@ -58,7 +58,7 @@
                 }
             )
 
-            DevOpsAgentPresent2         = @(
+            DevOpsAgentPresent          = @(
                 @{ 
                     orgUrl       = 'https://dev.azure.com/AzureDeploymentFramework/'
                     AgentVersion = '2.165.0'

@@ -37,6 +37,7 @@ Configuration AppServers
     Import-DscResource -ModuleName PackageManagementProviderResource
     Import-DscResource -ModuleName AZCOPYDSCDir # https://github.com/brwilkinson/AZCOPYDSC
     Import-DscResource -ModuleName WVDDSC       # https://github.com/brwilkinson/WVDDSC
+    # Import-DscResource -ModuleName DevOpsAgentDSC    # https://github.com/brwilkinson/DevOpsAgentDSC
 
     # Import-DscResource -ModuleName @{ModuleName = 'PowerShellGet';RequiredVersion = '3.0.0'}
 

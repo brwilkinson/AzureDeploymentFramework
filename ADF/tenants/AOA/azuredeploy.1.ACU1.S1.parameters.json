@@ -470,7 +470,8 @@
             "Version": "1.20.2", // "1.20.2","1.19.7","1.19.6", "1.18.14"
             "skuTier": "Paid", //Free
             "enableRBAC": true,  //true, false
-            "privateCluster": true,  //true, false
+            "podIdentity": false,  //true, false
+            "privateCluster": false,  //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
             "BrownFields": 1,
@@ -489,19 +490,8 @@
                 "ASName": "JMP",
                 "mode": "System"
               },
-              {
-                "name": "winctr",
-                "count": 2,
-                "osDiskSizeGb": 30,
-                "osType": "Linux",
-                "maxPods": 50,
-                "storageProfile": "ManagedDisks",
-                "_vmSize": "Standard_D1_v2",
-                "ASName": "JMP",
-                "mode": "User"
-              }
               // {
-              //   "name": "linctr2",
+              //   "name": "winctr",
               //   "count": 2,
               //   "osDiskSizeGb": 30,
               //   "osType": "Linux",
@@ -511,6 +501,17 @@
               //   "ASName": "JMP",
               //   "mode": "User"
               // }
+              {
+                "name": "linctr2",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 50,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "User"
+              }
             ]
           }
         ],

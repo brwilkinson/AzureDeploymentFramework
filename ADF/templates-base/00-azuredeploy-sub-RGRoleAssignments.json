@@ -129,6 +129,43 @@
                 }
             }
         },
+        // {
+        //     //  Local RG
+        //     // RG level role assignment - Run once for each param file [Environment] to set RBAC
+        //     "condition": "[
+        //                     and(
+        //                         not(equals(length(variables('rolesInfo')),0)),
+        //                         not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))
+        //                     )
+        //                 ]",
+        //     "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopRG-', variables('Enviro'))]",
+        //     "type": "Microsoft.Resources/deployments",
+        //     "apiVersion": "2020-06-01",
+        //     "resourceGroup": "[variables('RGName')]",
+        //     "dependsOn": [
+        //     ],
+        //     "properties": {
+        //         "mode": "Incremental",
+        //         "templateLink": {
+        //             "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsRG.json', parameters('_artifactsLocationSasToken'))]",
+        //             "contentVersion": "1.0.0.0"
+        //         },
+        //         "parameters": {
+        //             "Deployment": {
+        //                 "value": "[variables('Deployment')]"
+        //             },
+        //             "rolesInfo": {
+        //                 "value": "[variables('rolesInfo')]"
+        //             },
+        //             "RolesLookup": {
+        //                 "value": "[variables('RolesLookup')]"
+        //             },
+        //             "RolesGroupsLookup": {
+        //                 "value": "[variables('RolesGroupsLookup')]"
+        //             }
+        //         }
+        //     }
+        // },
         {
             //  Local RG
             // RG level role assignment - Run once for each param file [Environment] to set RBAC
@@ -147,7 +184,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsRG.json', parameters('_artifactsLocationSasToken'))]",
+                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsALL.json', parameters('_artifactsLocationSasToken'))]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

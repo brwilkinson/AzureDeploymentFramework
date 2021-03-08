@@ -197,7 +197,7 @@
           "dnsServiceIP": "10.0.0.10",
           "dockerBridgeCidr": "172.17.0.1/16" //Not used anywhere on network, can be re-used across all clusters.
         },
-        "podIdentityProfile": "[if(parameters('AKSInfo').enableRBAC,variables('podIdentityProfile'),json('null'))]",
+        "podIdentityProfile": "[if(parameters('AKSInfo').podIdentity,variables('podIdentityProfile'),json('null'))]",
         "addonProfiles": {
           // "KubeDashboard": {
           //   "enabled": true
@@ -217,19 +217,19 @@
             "config": {
               "logAnalyticsWorkspaceResourceID": "[variables('OMSworkspaceID')]"
             }
+          },
+          "aciConnectorLinux": {
+            "enabled": true,
+            "config": {
+              "SubnetName": "snMT01"
+            }
+            //   // not currently assignable
+            //   // "identity": {
+            //   //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux'))]",
+            //   //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux')),'2018-11-30').clientId]",
+            //   //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux')),'2018-11-30').principalId]"
+            //   // }
           }
-          // "aciConnectorLinux": {
-          //   "enabled": true,
-          //   "config": {
-          //     "SubnetName": "snMT01"
-          //   }
-          //   // not currently assignable
-          //   // "identity": {
-          //   //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux'))]",
-          //   //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux')),'2018-11-30').clientId]",
-          //   //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux')),'2018-11-30').principalId]"
-          //   // }
-          // }
         }
       },
       "resources": [
@@ -292,7 +292,7 @@
       //  Also acts as dependson resource between the next resource.
       "name": "[concat('dp-identities-',parameters('deployment'),'-aks',parameters('AKSInfo').Name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "[concat(parameters('deployment'),'-aks',parameters('AKSInfo').Name)]"
       ],
@@ -321,6 +321,21 @@
                     },
                     {
                       "Name": "Network Contributor"
+                    },
+                    {
+                      "Name": "Managed Identity Operator"
+                    },
+                    {
+                      "Name": "Virtual Machine Contributor"
+                    },
+                    {
+                      "Name": "Key Vault Certificates Officer"
+                    },
+                    {
+                      "Name": "Key Vault Secrets User"
+                    },
+                    {
+                      "Name": "Key Vault Crypto User"
                     }
                   ]
                 },
@@ -343,6 +358,14 @@
                     },
                     {
                       "Name": "Virtual Machine Contributor"
+                    }
+                  ]
+                },
+                {
+                  "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.aciConnectorLinux.identity.objectId]",
+                  "RBAC": [
+                    {
+                      "Name": "Contributor"
                     }
                   ]
                 }
@@ -388,10 +411,10 @@
       //  Assign User Assigned Identity RBAC on RG to save on role assignments.
       "name": "[concat('dp',parameters('deployment'),'-rgroleassignmentsAKSUAI-',copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-10-01",
       "copy": {
         "name": "UAILoop",
-        "count": 3
+        "count": 4
       },
       "dependsOn": [
         "[concat('dp-identities-',parameters('deployment'),'-aks',parameters('AKSInfo').Name)]"

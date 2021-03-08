@@ -1,4 +1,4 @@
-function Global:AzD
+function Global:AzSet
 {
     param (
         [string]$Enviro = 'S1',
