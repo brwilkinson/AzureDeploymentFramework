@@ -104,8 +104,12 @@
       "value": {
         "rolesInfo": [
           {
-            "Name": "Owner",
-            "Member": "benwilk@Microsoft.com"
+            "Name": "benwilk@Microsoft.com",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
           }
         ],
         "RoleDefinitionsInfo": [

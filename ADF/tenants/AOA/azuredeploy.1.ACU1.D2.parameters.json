@@ -181,20 +181,21 @@
         ],
         "rolesInfo": [
           {
-            "Name": "Contributor",
-            "Member": "benwilk@Microsoft.com"
-          },
-          {
-            "Name": "Key Vault Administrator",
-            "Member": "benwilk@Microsoft.com"
-          },
-          {
-            "Name": "Virtual Machine Administrator Login",
-            "Member": "benwilk@Microsoft.com"
-          },
-          {
-            "Name": "Azure Kubernetes Service RBAC Cluster Admin",
-            "Member": "benwilk@Microsoft.com"
+            "Name": "benwilk@Microsoft.com",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
           }
         ],
         "SPInfo": [
@@ -549,7 +550,7 @@
               "PSThing-WildCard"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [],  //"useAGIC"
+            "BEIPs": [], //"useAGIC"
             "pathRules": [
               // {
               //   "Name": "map1",

@@ -129,6 +129,7 @@
                 }
             }
         },
+        //  move to roleassignments all
         // {
         //     //  Local RG
         //     // RG level role assignment - Run once for each param file [Environment] to set RBAC
@@ -175,10 +176,14 @@
                                 not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))
                             )
                         ]",
-            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopRG-', variables('Enviro'))]",
+            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopRG-', variables('Enviro'),'-',copyIndex(1))]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "resourceGroup": "[variables('RGName')]",
+            "copy": {
+                "name": "RGRBACLoop",
+                "count": "[length( variables('rolesInfo') )]"
+            },
             "dependsOn": [
             ],
             "properties": {
@@ -191,14 +196,35 @@
                     "Deployment": {
                         "value": "[variables('Deployment')]"
                     },
-                    "rolesInfo": {
-                        "value": "[variables('rolesInfo')]"
+                    "Prefix": {
+                        "value": "[parameters('Prefix')]"
+                    },
+                    "RGName": {
+                        "value": "[variables('RGName')]"
+                    },
+                    "Enviro": {
+                        "value": "[variables('Enviro')]"
+                    },
+                    "Global": {
+                        "value": "[parameters('Global')]"
                     },
                     "RolesLookup": {
                         "value": "[variables('RolesLookup')]"
                     },
                     "RolesGroupsLookup": {
                         "value": "[variables('RolesGroupsLookup')]"
+                    },
+                    "roleInfo": {
+                        "value": "[variables('rolesInfo')[copyIndex(0)]]"
+                    },
+                    "providerPath": {
+                        "value": ""
+                    },
+                    "namePrefix": {
+                        "value": ""
+                    },
+                    "providerAPI": {
+                        "value": ""
                     }
                 }
             }
@@ -235,14 +261,8 @@
                     "Enviro": {
                         "value": "[variables('Enviro')]"
                     },
-                    "DeploymentID": {
-                        "value": "[parameters('DeploymentID')]"
-                    },
                     "Global": {
                         "value": "[parameters('Global')]"
-                    },
-                    "rolesInfo": {
-                        "value": "[variables('rolesInfo')]"
                     },
                     "RolesLookup": {
                         "value": "[variables('RolesLookup')]"
@@ -297,14 +317,8 @@
                     "Enviro": {
                         "value": "[variables('Enviro')]"
                     },
-                    "DeploymentID": {
-                        "value": "[parameters('DeploymentID')]"
-                    },
                     "Global": {
                         "value": "[parameters('Global')]"
-                    },
-                    "rolesInfo": {
-                        "value": "[variables('rolesInfo')]"
                     },
                     "RolesLookup": {
                         "value": "[variables('RolesLookup')]"

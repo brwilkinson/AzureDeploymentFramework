@@ -173,16 +173,18 @@
         ],
         "rolesInfo": [
           {
-            "Name": "Contributor",
-            "Member": "benwilk@Microsoft.com"
-          },
-          {
-            "Name": "Key Vault Administrator",
-            "Member": "benwilk@Microsoft.com"
-          },
-          {
-            "Name": "Virtual Machine Administrator Login",
-            "Member": "benwilk@Microsoft.com"
+            "Name": "benwilk@Microsoft.com",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              }
+            ]
           }
         ],
         "SPInfo": [

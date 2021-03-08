@@ -193,24 +193,38 @@
         ],
         "rolesInfo": [
           {
-            "Name": "Contributor",
-            "Member": "benwilk@Microsoft.com"
+            "Name": "benwilk@Microsoft.com",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
           },
           {
-            "Name": "Contributor",
-            "Member": "Jordan.Olshevski@microsoft.com"
-          },
-          {
-            "Name": "Key Vault Administrator",
-            "Member": "benwilk@Microsoft.com"
-          },
-          {
-            "Name": "Virtual Machine Administrator Login",
-            "Member": "benwilk@Microsoft.com"
-          },
-          {
-            "Name": "Azure Kubernetes Service RBAC Cluster Admin",
-            "Member": "benwilk@Microsoft.com"
+            "Name": "Jordan.Olshevski@microsoft.com",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
           }
         ],
         "SPInfo": [
@@ -473,9 +487,9 @@
             "Name": "01",
             "Version": "1.20.2", // "1.20.2","1.19.7","1.19.6", "1.18.14"
             "skuTier": "Paid", //Free
-            "enableRBAC": true,  //true, false
-            "podIdentity": true,  //true, false
-            "privateCluster": false,  //true, false
+            "enableRBAC": true, //true, false
+            "podIdentity": true, //true, false
+            "privateCluster": false, //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
             "BrownFields": 1,
