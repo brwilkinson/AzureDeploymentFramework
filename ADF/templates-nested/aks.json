@@ -190,9 +190,15 @@
         "aadProfile": "[if(parameters('AKSInfo').enableRBAC,variables('aadProfile'),json('null'))]",
         "apiServerAccessProfile": "[if(not(parameters('AKSInfo').privateCluster),json('null'),variables('enablePrivateCluster'))]",
         "networkProfile": {
-          "loadBalancerSku": "standard",
+          "outboundType": "loadBalancer",
+          "loadBalancerSku": "basic",
           "networkPlugin": "azure",
-          // "networkPolicy": "azure",
+          "loadBalancerProfile": {
+            "allocatedOutboundPorts": 0,
+            
+          },
+          "networkMode": "transparent",
+          "networkPolicy": "azure",
           "serviceCidr": "10.0.0.0/16", //Not used anywhere on network, can be re-used across all clusters.
           "dnsServiceIP": "10.0.0.10",
           "dockerBridgeCidr": "172.17.0.1/16" //Not used anywhere on network, can be re-used across all clusters.

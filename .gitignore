@@ -277,3 +277,4 @@ gemfile.lock
 
 # individual param files not to sync
 ADF/tenants/AOA/azuredeploy.1.ACU1.D3.parameters.json
+ADF/tenants/AOA/azuredeploy.1.ACU1.D2.parameters.json

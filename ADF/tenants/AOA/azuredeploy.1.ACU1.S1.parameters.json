@@ -66,11 +66,11 @@
         "VMSS": 0,
         "WAFPOLICY": 1,
         "FRONTDOOR": 1,
-        "WAF": 1,
+        "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
         "APIM": 1,
-        "AKS": 1,
+        "AKS": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 1,
@@ -476,11 +476,11 @@
         "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.20.2", // "1.20.2","1.19.7","1.19.6", "1.18.14"
+            "Version": "1.18.14", // "1.20.2","1.19.7","1.19.6", "1.18.14"
             "skuTier": "Paid", //Free
             "enableRBAC": true, //true, false
-            "podIdentity": false, //true, false
-            "privateCluster": false, //true, false
+            "podIdentity": true, //true, false
+            "privateCluster": true, //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
             "BrownFields": 1,

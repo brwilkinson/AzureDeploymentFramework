@@ -5,7 +5,7 @@ $GlobalRG = 'AZC1-BRW-HUB-RG-G1'
 $SpecRegion = 'centralus'
 $SpecVersion = '1.0a'
 $ForceUpdate = $true
-$TemplateFilter = '-ALL'
+$TemplateFilter = '05-azuredeploy-VMApp'
 
 Get-ChildItem -Path $TemplatesBase | Where-Object BaseName -Match $TemplateFilter | ForEach-Object {
 
@@ -36,3 +36,4 @@ $Spec = Get-AzTemplateSpec -ResourceGroupName $GlobalRG -Name foo -EA SilentlyCo
 New-AzResourceGroupDeployment -Name foo `
     -TemplateSpecId ($Spec.Id + '/versions/' + $SpecVersion) `
     -ResourceGroupName AZC1-BRW-ABC-RG-S1 -TemplateParameterObject @{storageAccountType ="Standard_LRS"}
+
