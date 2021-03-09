@@ -533,25 +533,25 @@
         ],
         "Appservers": {
           "AppServers": [
-            {
-              "VMName": "JMP01",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2019small",
-              "ExcludeAdminCenter": 1,
-              "_HotPatch": true,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "62"
-                }
-              ]
-            },
+            // {
+            //   "VMName": "JMP01",
+            //   "Role": "JMP",
+            //   "ASName": "JMP",
+            //   "DDRole": "64GB",
+            //   "OSType": "Server2019small",
+            //   "ExcludeAdminCenter": 1,
+            //   "_HotPatch": true,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "FE01",
+            //       "Primary": 1,
+            //       "FastNic": 1,
+            //       "PublicIP": "Static",
+            //       "StaticIP": "62"
+            //     }
+            //   ]
+            // },
             {
               "VMName": "JMP02",
               "Role": "JMP",

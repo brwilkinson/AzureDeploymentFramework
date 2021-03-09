@@ -318,9 +318,8 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "relativePath" : "..\\templates-nested\\PublicIP.json"
-          // "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/PublicIP.json', parameters('_artifactsLocationSasToken'))]",
-          // "contentVersion": "1.0.0.0"
+          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/PublicIP.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "Deployment": {
@@ -566,22 +565,22 @@
           }
         },
         //  currently this installs OpenSSH for Windows 7.7p1 which is too low to support azure ad.
-        {
-          "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.WindowsOpenSSH,1))]",
-          "name": "WindowsOpenSSH",
-          "type": "extensions",
-          "apiVersion": "2019-03-01",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Azure.OpenSSH",
-            "type": "WindowsOpenSSH",
-            "typeHandlerVersion": "1.0",
-            "autoUpgradeMinorVersion": true
-          }
-        },
+        // {
+        //   "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.WindowsOpenSSH,1))]",
+        //   "name": "WindowsOpenSSH",
+        //   "type": "extensions",
+        //   "apiVersion": "2019-03-01",
+        //   "location": "[resourceGroup().location]",
+        //   "dependsOn": [
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+        //   ],
+        //   "properties": {
+        //     "publisher": "Microsoft.Azure.OpenSSH",
+        //     "type": "WindowsOpenSSH",
+        //     "typeHandlerVersion": "1.0",
+        //     "autoUpgradeMinorVersion": true
+        //   }
+        // },
         // {
         //   "condition": "[and(parameters('aadJoin'),parameters('intune'))]",
         //   "name": "AADLoginForWindowsWithIntune",
