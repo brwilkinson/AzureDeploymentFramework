@@ -142,7 +142,11 @@
                 "addressPrefix": "[concat(if(equals(variables('SubnetInfo')[copyIndex('subnets')].name,'snMT02'),variables('networkIdUpper'),variables('networkId')),'.',variables('SubnetInfo')[copyIndex('subnets')].Prefix)]",
                 "networkSecurityGroup": "[if( and(contains(variables('SubnetInfo')[copyIndex('subnets')],'NSG' ), equals(variables('SubnetInfo')[copyIndex('subnets')].NSG,1)),json( concat('{\"id\":\"',string(resourceid('Microsoft.Network/networkSecurityGroups',concat(variables('Deploymentnsg'),'-nsg',variables('SubnetInfo')[copyIndex('subnets')].name))),'\"}')) , json('null'))]",
                 // "networkSecurityGroup": "[if( and(contains(variables('SubnetInfo')[copyIndex('subnets')],'NSG' ), or(equals(variables('SubnetInfo')[copyIndex('subnets')].NSG,'Hub'),equals(variables('SubnetInfo')[copyIndex('subnets')].NSG,'Spoke'))) , json( concat('{\"id\":\"',string(resourceid(parameters('Global').HubRGName,'Microsoft.Network/networkSecurityGroups',concat(variables('Deploymentnsg'),       variables('SubnetInfo')[copyIndex('subnets')].NSG,'-nsg',variables('SubnetInfo')[copyIndex('subnets')].name))),'\"}')) , json('null'))]",
-                "routeTable": "[if( and(contains(variables('SubnetInfo')[copyIndex('subnets')],'Route'), equals(variables('SubnetInfo')[copyIndex('subnets')].Route,1)), variables('RouteTableGlobal'),json('null'))]",
+                "routeTable": "[if( 
+                                    and(contains(variables('SubnetInfo')[copyIndex('subnets')],'Route'), 
+                                          equals(variables('SubnetInfo')[copyIndex('subnets')].Route,1)), 
+                                          variables('RouteTableGlobal'),
+                                    json('null'))]",
                 // "serviceEndpoints": "[if( and(contains(variables('SubnetInfo')[copyIndex('subnets')],'serviceEndpoints'), equals(variables('SubnetInfo')[copyIndex('subnets')].serviceEndpoints,1))variables('serviceEndpoints'),json('null'))]",
                 "privateEndpointNetworkPolicies": "Disabled",
                 "delegations": "[if(contains(variables('SubnetInfo')[copyIndex('subnets')],'delegations'),variables('delegations')[variables('SubnetInfo')[copyIndex('subnets')].delegations],variables('delegations')['default'])]"

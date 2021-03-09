@@ -299,7 +299,7 @@
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
-            "Route": false,
+            "Route": 0,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
@@ -307,7 +307,7 @@
             "name": "snBE02",
             "prefix": "64/28",
             "NSG": 0,
-            "Route": false,
+            "Route": 0,
             "FlowLogEnabled": false,
             "FlowAnalyticsEnabled": false
           },
@@ -315,7 +315,7 @@
             "name": "snBE01", // APIM
             "prefix": "80/28",
             "NSG": 1,
-            "Route": false,
+            "Route": 0,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
@@ -323,7 +323,7 @@
             "name": "AzureBastionSubnet",
             "prefix": "96/27",
             "NSG": 1,
-            "Route": false,
+            "Route": 0,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
@@ -331,7 +331,7 @@
             "name": "snMT01",
             "prefix": "128/25",
             "NSG": 1,
-            "Route": false,
+            "Route": 0,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
@@ -339,7 +339,7 @@
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
-            "Route": false,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           }
@@ -483,6 +483,7 @@
             "privateCluster": true, //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
+            "loadBalancer": "standard",   //"basic","standard"
             "BrownFields": 1,
             "aksAADAdminGroups": [
               "Logic_Runner_4@microsoft.onmicrosoft.com"

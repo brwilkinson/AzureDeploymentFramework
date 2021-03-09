@@ -331,10 +331,6 @@ Function global:Start-AzDeploy
 
     if ( -not $DoNotUpload )
     {
-        # Convert relative paths to absolute paths if needed
-        #$ArtifactStagingDirectory = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $ArtifactStagingDirectory))
-        #$DSCSourceFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $DSCSourceFolder))
-
         # Parse the parameter file and update the values of artifacts location and artifacts location SAS token if they are present
         $JsonParameters = Get-Content $TemplateParametersFile -Raw | ConvertFrom-Json -Depth 20
         if ( -not ($JsonParameters | Get-Member -Type NoteProperty 'parameters') )
@@ -343,45 +339,56 @@ Function global:Start-AzDeploy
         }
 
         if ( -not $FullUpload )
-        {
-            # $AllFilesinRepo = git ls-tree -r master --name-only
-            # $AllFilesinFileSystem = ls -path $ArtifactStagingDirectory -Recurse -File | Foreach {
-            #     $Root = Split-Path -path $ArtifactStagingDirectory -Leaf
-            #     "$Root\" + $_.FullName.Substring($ArtifactStagingDirectory.length + 1) -replace "\\","/"
-            # }
-            # compare-object -ReferenceObject $AllFilesinRepo -DifferenceObject $AllFilesinFileSystem
-            
+        {            
             # Create DSC configuration archive only for the files that changed
             git -C $DSCSourceFolder diff --name-only | Where-Object { $_ -match '/ext-DSC/' } | Where-Object { $_ -match 'ps1$' } | ForEach-Object {
-                $File = Get-Item -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
-                $DSCArchiveFilePath = $File.FullName.Substring(0, $File.FullName.Length - 4) + '.zip'
-                Publish-AzVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
-            }
-
-            git -C $ArtifactStagingDirectory diff --name-only | ForEach-Object {
-                $File = Get-Item -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
-                Set-AzStorageBlobContent -File $File.FullName -Blob $File.FullName.Substring($ArtifactStagingDirectory.length + 1) -Container $StorageContainerName -Context $StorageAccount.Context -Force |
-                    Select-Object Name, Length, LastModified
-                }
-
-                Start-Sleep -Seconds 4
-            }
-            else
-            {
-                if ((Test-Path $DSCSourceFolder) -and ($VSTS -NE $true))
+                
+                # ignore errors on git diff for deleted files
+                $File = Get-Item -EA Ignore -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
+                if ($File)
                 {
-                    Get-ChildItem $DSCSourceFolder -File -Filter '*.ps1' | ForEach-Object {
-
-                        $DSCArchiveFilePath = $_.FullName.Substring(0, $_.FullName.Length - 4) + '.zip'
-                        Publish-AzVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
-                    }
+                    $DSCArchiveFilePath = $File.FullName.Substring(0, $File.FullName.Length - 4) + '.zip'
+                    Publish-AzVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
                 }
+                else 
+                {
+                    Write-Verbose -Message "File not found, assume deleted, will not upload [$_]"    
+                }
+            }
+
+            # Upload only files that changes since last git add, i.e. only for the files that changed, use -fullupload to upload ALL files
+            git -C $ArtifactStagingDirectory diff --name-only | ForEach-Object {
+                
+                # ignore errors on git diff for deleted files
+                $File = Get-Item -EA Ignore -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
+                if ($File)
+                {
+                    Set-AzStorageBlobContent -File $File.FullName -Blob $File.FullName.Substring($ArtifactStagingDirectory.length + 1) -Container $StorageContainerName -Context $StorageAccount.Context -Force | Select-Object Name, Length, LastModified
+                }
+                else 
+                {
+                    Write-Verbose -Message "File not found, assume deleted, will not upload [$_]"    
+                }
+            }
+
+            Start-Sleep -Seconds 4
+        }
+        else
+        {
+            if ((Test-Path $DSCSourceFolder) -and ($VSTS -NE $true))
+            {
+                Get-ChildItem $DSCSourceFolder -File -Filter '*.ps1' | ForEach-Object {
+
+                    $DSCArchiveFilePath = $_.FullName.Substring(0, $_.FullName.Length - 4) + '.zip'
+                    Publish-AzVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+                }
+            }
             
-                $Exclude = '0-archive', '1-PrereqsToDeploy', 'release', 'release-Pipelines', 'release-PesterTests', 'ext-DSC', 'ext-CD', 'ext-Scripts'
-                Get-ChildItem -Path $ArtifactStagingDirectory -Recurse -File -Include *.json, *.zip, *.psd1, *.sh -Exclude $Exclude | ForEach-Object {
-                    #    $_.FullName.Substring($ArtifactStagingDirectory.length)
-                    Set-AzStorageBlobContent -File $_.FullName -Blob $_.FullName.Substring($ArtifactStagingDirectory.length + 1 ) -Container $StorageContainerName -Context $StorageAccount.Context -Force 
-                } | Select-Object Name, Length, LastModified
+            $Exclude = '0-archive', '1-PrereqsToDeploy', 'release', 'release-Pipelines', 'release-PesterTests', 'ext-DSC', 'ext-CD', 'ext-Scripts'
+            Get-ChildItem -Path $ArtifactStagingDirectory -Recurse -File -Include *.json, *.zip, *.psd1, *.sh -Exclude $Exclude | ForEach-Object {
+                #    $_.FullName.Substring($ArtifactStagingDirectory.length)
+                Set-AzStorageBlobContent -File $_.FullName -Blob $_.FullName.Substring($ArtifactStagingDirectory.length + 1 ) -Container $StorageContainerName -Context $StorageAccount.Context -Force 
+            } | Select-Object Name, Length, LastModified
         }
     }
 
