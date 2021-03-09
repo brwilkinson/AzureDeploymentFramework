@@ -274,3 +274,6 @@ vendor/
 # don't publish the gemfiles used for local viewing of website
 gemfile
 gemfile.lock
+
+# individual param files not to sync
+ADF/tenants/AOA/azuredeploy.1.ACU1.D3.parameters.json
