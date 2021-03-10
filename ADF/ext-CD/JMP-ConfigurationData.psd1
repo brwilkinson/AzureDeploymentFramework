@@ -58,7 +58,8 @@
                 }
             )
 
-            DevOpsAgentPresent          = @(
+            # Move to custom DSC resource
+            DevOpsAgentPresent2         = @(
                 @{ 
                     orgUrl       = 'https://dev.azure.com/AzureDeploymentFramework/'
                     AgentVersion = '2.165.0'
@@ -104,6 +105,10 @@
 
             # Blob copy with Managed Identity - Oauth2
             AZCOPYDSCDirPresentSource   = @(
+                @{  
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/SQLClient/SSMS-Setup-ENU.exe'
+                    DestinationPath   = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
+                },
 
                 @{
                     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/Windows_Server_InsiderPreview_LangPack_FOD_20303/'
@@ -187,6 +192,13 @@
                     Path      = 'F:\Source\Tools\vscode\VSCodeSetup-x64-1.25.0.exe'
                     ProductId = ''
                     Arguments = '/silent /norestart'
+                },
+
+                @{
+                    Name      = 'Microsoft SQL Server Management Studio - 18.8'
+                    Path      = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
+                    ProductId = ''
+                    Arguments = '/install /quiet /norestart'
                 },
 
                 # no longer need edge with Server 2022

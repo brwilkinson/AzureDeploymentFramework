@@ -50,8 +50,8 @@
         "LinkPrivateDns": 1,
         "PrivateLink": 1,
         "BastionHost": 0,
-        "RT": 0,
-        "FW": 0,
+        "RT": 1,
+        "FW": 1,
         "VNGW": 0,
         "ERGW": 0,
         "ADPrimary": 1,
@@ -405,7 +405,7 @@
         ],
         "RTInfo": [
           {
-            "Name": "Contoso-Hub",
+            "Name": "Hub",
             "Routes": [
               {
                 "Name": "Default-Azure-FW",

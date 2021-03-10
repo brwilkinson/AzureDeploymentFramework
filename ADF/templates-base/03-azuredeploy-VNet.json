@@ -92,9 +92,9 @@
     ],
     "DNSServers": "[parameters('Global').DNSServers]",
     "AzureDNS": "168.63.129.16",
-
+    "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
     "RouteTableGlobal": {
-      "id": "[resourceid(parameters('Global').HubRGName,'Microsoft.Network/routeTables/',concat(parameters('Prefix'),'-rt',parameters('Global').RTName))]"
+      "id": "[resourceid(parameters('Global').HubRGName,'Microsoft.Network/routeTables/',concat(replace(parameters('Global').hubVnetName,'vn','rt'),variables('Domain'),parameters('Global').RTName))]"
     },
     "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
     "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",

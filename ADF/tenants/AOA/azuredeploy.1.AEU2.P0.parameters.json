@@ -408,7 +408,7 @@
         ],
         "RTInfo": [
           {
-            "Name": "Contoso-Hub",
+            "Name": "Hub",
             "Routes": [
               {
                 "Name": "Default-Azure-FW",

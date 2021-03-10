@@ -5,15 +5,15 @@
 @{
     AllNodes = @(
         @{
-            NodeName                    = "*"
+            NodeName                    = '*'
             PSDscAllowDomainUser        = $true
             PSDscAllowPlainTextPassword = $true
 
-            SQLSourcePath               = "F:\Source\SQL2017\"
+            SQLSourcePath               = 'F:\Source\SQL2017\'
             #AdminAccount = "Contoso\localadmin"
 
             #SQLVersion = 'MSSQL13'
-            SQLFeatures                 = "SQLENGINE,FullText"
+            SQLFeatures                 = 'SQLENGINE,FullText'
 
             SQLLarge                    = $true
 
@@ -29,8 +29,8 @@
             )
 
             WindowsFeatureSetPresent    = @( 
-                "RSAT-Clustering-PowerShell", "RSAT-AD-PowerShell", "RSAT-Clustering-Mgmt",
-                "Failover-Clustering", "NET-Framework-Core", "RSAT-AD-AdminCenter" , "RSAT-DNS-Server"
+                'RSAT-Clustering-PowerShell', 'RSAT-AD-PowerShell', 'RSAT-Clustering-Mgmt',
+                'Failover-Clustering', 'NET-Framework-Core', 'RSAT-AD-AdminCenter' , 'RSAT-DNS-Server'
             )
 
             PowerShellModulesPresent    = @(
@@ -105,7 +105,8 @@
             )
 
             SoftwarePackagePresent      = @(
-                @{Name        = 'Microsoft SQL Server Management Studio - 17.7'
+                @{
+                    Name      = 'Microsoft SQL Server Management Studio - 18.8'
                     Path      = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
                     ProductId = ''
                     Arguments = '/install /quiet /norestart'
@@ -130,7 +131,7 @@
             )
         },
         @{
-            NodeName = "Localhost"
+            NodeName = 'Localhost'
         }
     )
 }
