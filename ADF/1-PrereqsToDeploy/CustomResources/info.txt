@@ -1,0 +1,7 @@
+These resources are available in github, however not in the psgallery.
+
+    Import-DscResource -ModuleName AZCOPYDSCDir     # https://github.com/brwilkinson/AZCOPYDSC
+    Import-DscResource -ModuleName WVDDSC           # https://github.com/brwilkinson/WVDDSC
+    Import-DscResource -ModuleName DevOpsAgentDSC   # https://github.com/brwilkinson/DevOpsAgentDSC
+
+Staged in this project so you don't have to get them from GitHub.

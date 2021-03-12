@@ -7,7 +7,8 @@
         'PSUseShouldProcessForStateChangingFunctions',
         'PSAvoidTrailingWhitespace',
         'PSAvoidUsingWriteHost',
-        'PSUseConsistentWhitespace'
+        'PSUseConsistentWhitespace',
+        'PSAvoidOverwritingBuiltinCmdlets'
     )
 
     Rules        = @{

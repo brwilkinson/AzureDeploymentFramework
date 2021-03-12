@@ -142,6 +142,14 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
+        DnsConnectionSuffix $DomainName
+        {
+            InterfaceAlias                 = "*Ethernet*"
+            RegisterThisConnectionsAddress = $true
+            ConnectionSpecificSuffix       = $DomainName
+        }
+
+        #-------------------------------------------------------------------
         xTimeZone EasternStandardTime
         { 
             IsSingleInstance = 'Yes'
@@ -655,15 +663,15 @@ Configuration AppServers
         # Run and SQL scripts
         foreach ($Script in $Node.SQLServerScriptsPresent)
         {
-            $i = $Script.ServerInstance -replace $StringFilter
+            $i = $Script.InstanceName -replace $StringFilter
             $Name = $Script.TestFilePath -replace $StringFilter
             SqlScript ($i + $Name)
             {
-                ServerInstance       = $Script.ServerInstance
+                InstanceName       = $Script.InstanceName
                 SetFilePath          = $Script.SetFilePath
                 GetFilePath          = $Script.GetFilePath
                 TestFilePath         = $Script.TestFilePath
-                PsDscRunAsCredential = $credlookup['SQLService']   
+                PsDscRunAsCredential = $credlookup['SQLService']
             }
 
             $dependsonSQLServerScripts += @("[xSQLServerScript]$($Name)")

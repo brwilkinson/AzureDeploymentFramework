@@ -191,7 +191,7 @@
         "aadProfile": "[if(parameters('AKSInfo').enableRBAC,variables('aadProfile'),json('null'))]",
         "apiServerAccessProfile": "[if(not(parameters('AKSInfo').privateCluster),json('null'),variables('enablePrivateCluster'))]",
         "networkProfile": {
-          "outboundType": "userDefinedRouting",     // "loadBalancer","userDefinedRouting"
+          "outboundType": "loadBalancer",     // "loadBalancer","userDefinedRouting"
           "loadBalancerSku": "[parameters('AKSInfo').loadBalancer]",
           "networkPlugin": "azure",
           "networkMode": "transparent",

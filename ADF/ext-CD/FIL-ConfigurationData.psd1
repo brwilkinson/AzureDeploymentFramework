@@ -9,7 +9,7 @@
             PSDscAllowPlainTextPassword = $true
             PSDscAllowDomainUser        = $true
 
-            # StoragePools = @{ FriendlyName = 'DATA'   ; LUNS = (0,1,2,3) ; DriveLetter = 'F'; ColumnCount = 1; FileSystem= 'ReFS' }
+            # StoragePools = @{ FriendlyName = 'DATA'   ; LUNS = (0,1,2,3) ; DriveLetter = 'F'; ColumnCount = 1}   # ; FileSystem= 'ReFS' 
             # ServiceSetStopped           = 'ShellHWDetection'
 
             # IncludesAllSubfeatures

@@ -37,7 +37,7 @@ Configuration SQLServers
     Import-DscResource -ModuleName PolicyFileEditor
 
     # Azure VM Metadata service
-    $VMMeta = Invoke-RestMethod -Headers @{"Metadata" = "true" } -URI http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
+    $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
     $Compute = $VMMeta.compute
     $NetworkInt = $VMMeta.network.interface
 
@@ -52,9 +52,9 @@ Configuration SQLServers
     {
         param($If, $IfTrue, $IfFalse)
         
-        If ($If -IsNot "Boolean") { $_ = $If }
-        If ($If) { If ($IfTrue -is "ScriptBlock") { &$IfTrue } Else { $IfTrue } }
-        Else { If ($IfFalse -is "ScriptBlock") { &$IfFalse } Else { $IfFalse } }
+        If ($If -IsNot 'Boolean') { $_ = $If }
+        If ($If) { If ($IfTrue -is 'ScriptBlock') { &$IfTrue } Else { $IfTrue } }
+        Else { If ($IfFalse -is 'ScriptBlock') { &$IfFalse } Else { $IfFalse } }
     }
     
 
@@ -68,17 +68,17 @@ Configuration SQLServers
     #$environment = "$enviro$DeploymentNumber" 
     
     # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDLocal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = "true" }
-    $ArmToken = $response.Content | convertfrom-json | Foreach access_token
-    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = "application/json"; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
+    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDLocal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
+    $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
+    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
     # # Cloud Witness
     # $SubscriptionGuid = $StorageAccountId -split "/" | where { $_ -as [Guid] }
 
-    $SaName = ("{0}sawitness" -f $Deployment ).toLower()
-    $resource = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Storage/storageAccounts/{2}" -f $SubscriptionId, $ResourceGroupName, $SaName
-    $Params['Uri'] = "https://management.azure.com{0}/{1}/?api-version=2016-01-01" -f $resource, 'listKeys'
-    $sakwitness = (Invoke-WebRequest @Params).content | convertfrom-json | Foreach Keys | Select -first 1 | foreach Value
+    $SaName = ('{0}sawitness' -f $Deployment ).toLower()
+    $resource = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Storage/storageAccounts/{2}' -f $SubscriptionId, $ResourceGroupName, $SaName
+    $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $resource, 'listKeys'
+    $sakwitness = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
     Write-Verbose "SAK Witness: $sakwitness" -Verbose
 
     try
@@ -86,13 +86,13 @@ Configuration SQLServers
         # Global assets to download files
 
         # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-        $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = "true" }
-        $ArmToken = $response.Content | convertfrom-json | Foreach access_token
-        $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = "application/json"; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
+        $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
+        $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
+        $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
         
-        $Params['Uri'] = "https://management.azure.com{0}/{1}/?api-version=2016-01-01" -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | convertfrom-json | Foreach Keys | Select -first 1 | foreach Value
+        $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
+        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
         Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
     
         # Create the Cred to access the storage account
@@ -108,10 +108,10 @@ Configuration SQLServers
     [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
 
     $credlookup = @{
-        "localadmin" = $AdminCreds
-        "DomainJoin" = $DomainCreds
-        "SQLService" = $DomainCreds
-        "DevOpsPat"  = $sshPublic
+        'localadmin' = $AdminCreds
+        'DomainJoin' = $DomainCreds
+        'SQLService' = $DomainCreds
+        'DevOpsPat'  = $sshPublic
     }
 
     $AppInfo = ConvertFrom-Json $AppInfo
@@ -120,12 +120,12 @@ Configuration SQLServers
 
     if ($DataDiskInfo)
     {
-        write-warning $DataDiskInfo
+        Write-Warning $DataDiskInfo
         $DataDiskInfo = ConvertFrom-Json $DataDiskInfo
         # Convert Hastable to object array
-        $Disks = $DataDiskInfo.psobject.properties | Foreach {
+        $Disks = $DataDiskInfo.psobject.properties | ForEach-Object {
             # Extract just the LUN ID and remove the Size
-            $LUNS = $_.value.LUNS | foreach { $_[0] }
+            $LUNS = $_.value.LUNS | ForEach-Object { $_[0] }
             # Add the previous key as the property Friendlyname and Add the new LUNS value
             [pscustomobject]$_.value | Add-Member -MemberType NoteProperty -Name FriendlyName -Value $_.Name -PassThru -Force |
                 Add-Member -MemberType NoteProperty -Name DISKLUNS -Value $_.value.LUNS -PassThru -Force |
@@ -133,7 +133,7 @@ Configuration SQLServers
             }
     
             # If the first LUN is smaller than 100GB, use the disk resource, otherwise use storage pools.
-            $DataLUNSize = $Disks | where FriendlyName -eq 'DATA' | foreach { $_.DISKLUNS[0][1] }
+            $DataLUNSize = $Disks | Where-Object FriendlyName -EQ 'DATA' | ForEach-Object { $_.DISKLUNS[0][1] }
         
             # # use Storage Pools for Large Disks
             # if ($DataLUNSize -lt 1000)
@@ -151,7 +151,7 @@ Configuration SQLServers
 
         Node $AllNodes.NodeName
         {
-            Write-Warning -Message "AllNodes"
+            Write-Warning -Message 'AllNodes'
             Write-Verbose -Message "Node is: [$($Node.NodeName)]" -Verbose
             Write-Verbose -Message "NetBios is: [$NetBios]" -Verbose
             Write-Verbose -Message "DomainName is: [$DomainName]" -Verbose
@@ -163,7 +163,7 @@ Configuration SQLServers
   
 
             # Allow this to be run against local or remote machine
-            if ($NodeName -eq "localhost")
+            if ($NodeName -eq 'localhost')
             {
                 [string]$computername = $env:COMPUTERNAME
             }
@@ -177,7 +177,7 @@ Configuration SQLServers
 
             if ($Node.WindowsFeaturesSet)
             {
-                $Node.WindowsFeaturesSet | foreach {
+                $Node.WindowsFeaturesSet | ForEach-Object {
                     Write-Verbose -Message $_ -Verbose -ErrorAction SilentlyContinue
                 }
             }
@@ -211,7 +211,9 @@ Configuration SQLServers
                     DriveLetter  = $Pool.DriveLetter
                     LUNS         = $Pool.LUNS
                     ColumnCount  = $(if ($Pool.ColumnCount) { $Pool.ColumnCount } else { 0 }) 
-                    FileSystem   = $(if ($Pool.FileSystem) { $Pool.FileSystem } else { "NTFS" })
+                    
+                    #  only in preview version of module
+                    # FileSystem   = $(if ($Pool.FileSystem) { $Pool.FileSystem } else { "NTFS" })
                 }
                 $dependsonStoragePoolsPresent += @("[xDisk]$($Pool.DriveLetter)")
             }
@@ -248,10 +250,18 @@ Configuration SQLServers
             #-------------------------------------------------------------------
 
             #-------------------------------------------------------------------
+            DnsConnectionSuffix $DomainName
+            {
+                InterfaceAlias                 = '*Ethernet*'
+                RegisterThisConnectionsAddress = $true
+                ConnectionSpecificSuffix       = $DomainName
+            }
+
+            #-------------------------------------------------------------------
             xTimeZone EasternStandardTime
             { 
                 IsSingleInstance = 'Yes'
-                TimeZone         = "Eastern Standard Time" 
+                TimeZone         = 'Eastern Standard Time' 
             }
 
             #-------------------------------------------------------------------
@@ -271,7 +281,7 @@ Configuration SQLServers
             #-------------------------------------------------------------------
             DnsConnectionSuffix DomainSuffix
             {
-                InterfaceAlias                 = "*Ethernet*"
+                InterfaceAlias                 = '*Ethernet*'
                 RegisterThisConnectionsAddress = $true
                 ConnectionSpecificSuffix       = $DomainName
                 UseSuffixWhenRegistering       = $true 
@@ -309,7 +319,7 @@ Configuration SQLServers
                     ValueData            = $RegistryKey.ValueData
                     ValueType            = $RegistryKey.ValueType
                     Force                = $true
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                 }
 
                 $dependsonRegistryKey += @("[Registry]$($RegistryKey.ValueName)")
@@ -329,7 +339,7 @@ Configuration SQLServers
             #-------------------------------------------------------------------
 
             #To clean up resource names use a regular expression to remove spaces, slashes an colons Etc.
-            $StringFilter = "\W", ''
+            $StringFilter = '\W', ''
             $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
             Write-Verbose -Message "User is: [$StorageAccountName]"
             $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force))
@@ -374,14 +384,14 @@ Configuration SQLServers
                     UserName                      = $User.Username
                     Description                   = $User.Description
                     Enabled                       = $True
-                    Password                      = $credlookup["DomainJoin"]
+                    Password                      = $credlookup['DomainJoin']
                     DomainController              = $User.DomainController
-                    DomainAdministratorCredential = $credlookup["DomainJoin"]
+                    DomainAdministratorCredential = $credlookup['DomainJoin']
                 }
                 $dependsonUser += @("[xADUser]$($User.Username)")
             }
             #-------------------------------------------------------------------
-            $SQLSvcAccount = $credlookup["SQLService"].username
+            $SQLSvcAccount = $credlookup['SQLService'].username
             Write-Warning -Message "user `$SQLSvcAccount is: $SQLSvcAccount" 
             #write-warning -Message $SQLSvcAccountCreds.GetNetworkCredential().password
 
@@ -432,37 +442,37 @@ Configuration SQLServers
                 {
                     SourcePath           = $Node.SQLSourcePath
                     Action               = 'Install'
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                     InstanceName         = $SQLInstanceName
                     Features             = $Node.SQLFeatures
                     SQLSysAdminAccounts  = $SQLSvcAccount
-                    SQLSvcAccount        = $credlookup["SQLService"]
-                    AgtSvcAccount        = $credlookup["SQLService"]
-                    InstallSharedDir     = "F:\Program Files\Microsoft SQL Server"
-                    InstallSharedWOWDir  = "F:\Program Files (x86)\Microsoft SQL Server"
-                    InstanceDir          = "F:\Program Files\Microsoft SQL Server"
-                    InstallSQLDataDir    = "F:\MSSQL\Data"
-                    SQLUserDBDir         = "F:\MSSQL\Data"
-                    SQLUserDBLogDir      = "G:\MSSQL\Logs"
-                    SQLTempDBDir         = "H:\MSSQL\Data"
-                    SQLTempDBLogDir      = "H:\MSSQL\Temp" 
-                    SQLBackupDir         = "I:\MSSQL\Backup"
+                    SQLSvcAccount        = $credlookup['SQLService']
+                    AgtSvcAccount        = $credlookup['SQLService']
+                    InstallSharedDir     = 'F:\Program Files\Microsoft SQL Server'
+                    InstallSharedWOWDir  = 'F:\Program Files (x86)\Microsoft SQL Server'
+                    InstanceDir          = 'F:\Program Files\Microsoft SQL Server'
+                    InstallSQLDataDir    = 'F:\MSSQL\Data'
+                    SQLUserDBDir         = 'F:\MSSQL\Data'
+                    SQLUserDBLogDir      = 'G:\MSSQL\Logs'
+                    SQLTempDBDir         = 'H:\MSSQL\Data'
+                    SQLTempDBLogDir      = 'H:\MSSQL\Temp' 
+                    SQLBackupDir         = 'I:\MSSQL\Backup'
                     DependsOn            = $dependsonUser
-                    UpdateEnabled        = "true"
-                    UpdateSource         = ".\Updates"
-                    SecurityMode         = "SQL"
-                    SAPwd                = $credlookup["SQLService"]
+                    UpdateEnabled        = 'true'
+                    UpdateSource         = '.\Updates'
+                    SecurityMode         = 'SQL'
+                    SAPwd                = $credlookup['SQLService']
                 }
 
                 foreach ($UserRightsAssignment in $Node.UserRightsAssignmentPresent)
                 {
-                    $uraid = $UserRightsAssignment.identity | foreach { $_ -f $SQLInstanceName }
+                    $uraid = $UserRightsAssignment.identity | ForEach-Object { $_ -f $SQLInstanceName }
 
                     UserRightsAssignment (($UserRightsAssignment.policy -replace $StringFilter) + ($uraid -replace $StringFilter))
                     {
                         Identity             = $uraid
                         Policy               = $UserRightsAssignment.policy
-                        PsDscRunAsCredential = $credlookup["DomainJoin"]
+                        PsDscRunAsCredential = $credlookup['DomainJoin']
                     }
     
                     $dependsonUserRightsAssignment += @("[UserRightsAssignment]$($UserRightsAssignment.policy)")
@@ -475,7 +485,7 @@ Configuration SQLServers
                     ServerName           = $node.nodename
                     InstanceName         = $SQLInstanceName
                     DependsOn            = '[SqlSetup]xSqlServerInstall'
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                 }
 
                 SQLServerMaxDop SetSQLServerMaxDopToAuto
@@ -543,12 +553,12 @@ Configuration SQLServers
                     {
                         Ensure               = 'Present'
                         Name                 = ($userLogin.Name -f $NetBios)  # added the ability to add domain users
-                        LoginType            = IIF $userLogin.logintype $userLogin.logintype 'WindowsUser'
-                        Disabled             = IIF $userlogin.Disabled $userlogin.Disabled $false  
+                        LoginType = IIF $userLogin.logintype $userLogin.logintype 'WindowsUser'
+                        Disabled = IIF $userlogin.Disabled $userlogin.Disabled $false  
                         ServerName           = $computername
                         InstanceName         = $SQLInstanceName
                         DependsOn            = '[SqlSetup]xSqlServerInstall'
-                        PsDscRunAsCredential = $credlookup["DomainJoin"]                   
+                        PsDscRunAsCredential = $credlookup['DomainJoin']                   
                     }
                     $dependsonuserLogin += @("[SQLServerLogin]$SQLlogin")
                 }
@@ -561,13 +571,13 @@ Configuration SQLServers
                     {
                         Ensure                         = 'Present'
                         Name                           = $userLogin.Name
-                        LoginType                      = IIF $userLogin.logintype $userLogin.logintype 'SqlLogin'
-                        Disabled                       = IIF $userlogin.Disabled $userlogin.Disabled $false  
+                        LoginType = IIF $userLogin.logintype $userLogin.logintype 'SqlLogin'
+                        Disabled = IIF $userlogin.Disabled $userlogin.Disabled $false  
                         ServerName                     = $computername
                         InstanceName                   = $SQLInstanceName
                         DependsOn                      = '[SqlSetup]xSqlServerInstall'
-                        PsDscRunAsCredential           = $credlookup["DomainJoin"]
-                        LoginCredential                = $credlookup["DomainJoin"]
+                        PsDscRunAsCredential           = $credlookup['DomainJoin']
+                        LoginCredential                = $credlookup['DomainJoin']
                         LoginMustChangePassword        = $false
                         LoginPasswordExpirationEnabled = $false
                         LoginPasswordPolicyEnforced    = $false                    
@@ -581,10 +591,10 @@ Configuration SQLServers
                     {
                         Ensure               = 'Present'
                         ServerRoleName       = $userRole.ServerRoleName
-                        MembersToInclude     = ($userRole.MembersToInclude | foreach { $_ -f $NetBios })  # added the ability to add domain users
+                        MembersToInclude     = ($userRole.MembersToInclude | ForEach-Object { $_ -f $NetBios })  # added the ability to add domain users
                         ServerName           = $computername
                         InstanceName         = $SQLInstanceName
-                        PsDscRunAsCredential = $credlookup["DomainJoin"]
+                        PsDscRunAsCredential = $credlookup['DomainJoin']
                         DependsOn            = '[SqlSetup]xSqlServerInstall'
                     }
                     $dependsonuserRoles += @("[SQLServerRole]$($userRole.ServerRoleName)")
@@ -600,7 +610,7 @@ Configuration SQLServers
                         InstanceName         = $SQLInstanceName
                         Principal            = $userPermission.Name
                         Permission           = $userPermission.Permission
-                        PsDscRunAsCredential = $credlookup["DomainJoin"]
+                        PsDscRunAsCredential = $credlookup['DomainJoin']
                         DependsOn            = '[SqlSetup]xSqlServerInstall'
                     }
                     $dependsonSQLServerPermissions += @("[SQLServerPermission]$($userPermission.Name)")
@@ -610,15 +620,15 @@ Configuration SQLServers
                 # Run and SQL scripts
                 foreach ($Script in $Node.SQLServerScriptsPresent)
                 {
-                    $i = $Script.ServerInstance -replace $StringFilter
+                    $i = $Script.InstanceName -replace $StringFilter
                     $Name = $Script.TestFilePath -replace $StringFilter
                     SQLScript ($i + $Name)
                     {
-                        ServerInstance       = "$computername\$SQLInstanceName"
+                        InstanceName         = "$computername\$SQLInstanceName"
                         SetFilePath          = $Script.SetFilePath
                         GetFilePath          = $Script.GetFilePath
                         TestFilePath         = $Script.TestFilePath
-                        PsDscRunAsCredential = $credlookup["DomainJoin"]   
+                        PsDscRunAsCredential = $credlookup['DomainJoin']   
                     }
 
                     $dependsonSQLServerScripts += @("[SQLScript]$($Name)")
@@ -639,8 +649,8 @@ Configuration SQLServers
                     Path                 = $Package.Path
                     Ensure               = 'Present'
                     ProductId            = $Package.ProductId
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
-                    DependsOn = $dependsonWebSites + '[SqlSetup]xSqlServerInstall'
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
+                    DependsOn            = $dependsonWebSites + '[SqlSetup]xSqlServerInstall'
                     Arguments            = $Package.Arguments
                 }
 
@@ -660,7 +670,7 @@ Configuration SQLServers
         Node $AllNodes.Where{ $env:computername -match $ClusterInfo.Primary }.NodeName
         {
             # Allow this to be run against local or remote machine
-            if ($NodeName -eq "localhost")
+            if ($NodeName -eq 'localhost')
             {
                 [string]$computername = $env:COMPUTERNAME
             }
@@ -670,7 +680,7 @@ Configuration SQLServers
                 [string]$computername = $Nodename
             } 
  
-            Write-Warning -Message "PrimaryClusterNode"
+            Write-Warning -Message 'PrimaryClusterNode'
             Write-Verbose -Message "Node is: [$($computername)]" -Verbose
             Write-Verbose -Message "NetBios is: [$NetBios]" -Verbose
             Write-Verbose -Message "DomainName is: [$DomainName]" -Verbose
@@ -679,27 +689,27 @@ Configuration SQLServers
 
             # Staging the Cluster Accounts and Always-On Accounts
             $ClusterName = $Prefix + $app + $environment + $ClusterInfo.CLNAME
-            $AONames = $SQLAOInfo | foreach { ('az' + $app + $environment + $_.GroupName) }
+            $AONames = $SQLAOInfo | ForEach-Object { ('az' + $app + $environment + $_.GroupName) }
             $ComputerAccounts = @($ClusterName) + @($AONames)
 	
             foreach ($cname in $ComputerAccounts)
             {
-                write-warning ("computer: $cname")
+                Write-Warning ("computer: $cname")
 
-                script ("CheckComputerAccount_" + $cname)
+                script ('CheckComputerAccount_' + $cname)
                 {
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                     GetScript            = {
                         $result = Get-ADComputer -Filter { Name -eq $using:cname } -ErrorAction SilentlyContinue
                         @{
-                            name  = "ComputerName"
+                            name  = 'ComputerName'
                             value = $result
                         }
                     }#Get
                     SetScript            = {
-                        Write-warning "Creating computer account (disabled) $($using:cname)"
-                        New-ADComputer -Name $using:cname -Enabled $false -Description "Cluster SQL Availability Group" #-Path $using:ouname
-                        Start-Sleep -seconds 20
+                        Write-Warning "Creating computer account (disabled) $($using:cname)"
+                        New-ADComputer -Name $using:cname -Enabled $false -Description 'Cluster SQL Availability Group' #-Path $using:ouname
+                        Start-Sleep -Seconds 20
                     }#Set 
                     TestScript           = {
                         $result = Get-ADComputer -Filter { Name -eq $using:cname } -ErrorAction SilentlyContinue
@@ -726,7 +736,7 @@ Configuration SQLServers
 
                 xDnsRecord $aoinfo.GroupName
                 {
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                     Name                 = $cname
                     Target               = ($NetworkID + $aoinfo.AOIP)   
                     Type                 = 'ARecord'
@@ -735,16 +745,16 @@ Configuration SQLServers
                 }
 
 
-                script ("ACL_" + $cname)
+                script ('ACL_' + $cname)
                 {
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                     GetScript            = {
                         $computer = Get-ADComputer -Filter { Name -eq $using:cname } -ErrorAction SilentlyContinue
-                        $computerPath = "AD:\" + $computer.DistinguishedName
+                        $computerPath = 'AD:\' + $computer.DistinguishedName
                         $ACL = Get-Acl -Path $computerPath
-                        $result = $ACL.Access | Where { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq "GenericAll" }
+                        $result = $ACL.Access | Where-Object { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq 'GenericAll' }
                         @{
-                            name  = "ACL"
+                            name  = 'ACL'
                             value = $result
                         }
                     }#Get
@@ -752,7 +762,7 @@ Configuration SQLServers
                     
                         $clusterSID = Get-ADComputer -Identity $using:ClusterName -ErrorAction Stop | Select-Object -ExpandProperty SID
                         $computer = Get-ADComputer -Identity $using:cname
-                        $computerPath = "AD:\" + $computer.DistinguishedName
+                        $computerPath = 'AD:\' + $computer.DistinguishedName
                         $ACL = Get-Acl -Path $computerPath
 
                         $R_W_E = [System.DirectoryServices.ActiveDirectoryAccessRule]::new($clusterSID, 'GenericAll', 'Allow')
@@ -762,9 +772,9 @@ Configuration SQLServers
                     }#Set 
                     TestScript           = {
                         $computer = Get-ADComputer -Filter { Name -eq $using:cname } -ErrorAction SilentlyContinue
-                        $computerPath = "AD:\" + $computer.DistinguishedName
+                        $computerPath = 'AD:\' + $computer.DistinguishedName
                         $ACL = Get-Acl -Path $computerPath
-                        $result = $ACL.Access | Where { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq "GenericAll" }
+                        $result = $ACL.Access | Where-Object { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq 'GenericAll' }
                         if ($result)
                         {
                             $true
@@ -780,18 +790,18 @@ Configuration SQLServers
             ########################################
             script SetRSAMachineKeys
             {
-                PsDscRunAsCredential = $credlookup["DomainJoin"]
+                PsDscRunAsCredential = $credlookup['DomainJoin']
                 GetScript            = {
-                    $rsa1 = Get-Item -path 'C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys' | foreach {
+                    $rsa1 = Get-Item -Path 'C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys' | ForEach-Object {
                         $_ | Get-NTFSAccess
                     }
-                    $rsa2 = Get-Childitem -path 'C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys' | foreach {
+                    $rsa2 = Get-ChildItem -Path 'C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys' | ForEach-Object {
                         $_ | Get-NTFSAccess
                     }
                     @{directory = $rsa1; files = $rsa2 }
                 }
                 SetScript            = {
-                    Get-Item -path 'C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys' | foreach {
+                    Get-Item -Path 'C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys' | ForEach-Object {
     
                         $_ | Set-NTFSOwner -Account BUILTIN\Administrators
                         $_ | Clear-NTFSAccess -DisableInheritance
@@ -801,7 +811,7 @@ Configuration SQLServers
                         $_ | Get-NTFSAccess
                     }
 
-                    Get-Childitem -path 'C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys' | foreach {
+                    Get-ChildItem -Path 'C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys' | ForEach-Object {
                         Write-Verbose $_.fullname -Verbose
                         #$_ | Clear-NTFSAccess -DisableInheritance 
                         $_ | Set-NTFSOwner -Account BUILTIN\Administrators
@@ -828,19 +838,19 @@ Configuration SQLServers
             ########################################
             script MoveToPrimary
             {
-                PsDscRunAsCredential = $credlookup["DomainJoin"]
+                PsDscRunAsCredential = $credlookup['DomainJoin']
                 GetScript            = {
-                    $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | foreach OwnerNode
+                    $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | ForEach-Object OwnerNode
                     @{Owner = $Owner }
                 }#Get
                 TestScript           = {
                     try
                     {
-                        $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | foreach OwnerNode | Foreach Name
+                        $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | ForEach-Object OwnerNode | ForEach-Object Name
 
                         if ($Owner -eq $env:ComputerName)
                         {
-                            Write-Warning -Message "Cluster running on Correct Node, continue"
+                            Write-Warning -Message 'Cluster running on Correct Node, continue'
                             $True
                         }
                         else
@@ -850,7 +860,7 @@ Configuration SQLServers
                     }#Try
                     Catch
                     {
-                        Write-Warning -Message "Cluster not yet enabled, continue"
+                        Write-Warning -Message 'Cluster not yet enabled, continue'
                         $True
                     }#Catch
                 }#Test
@@ -862,19 +872,19 @@ Configuration SQLServers
 
             xCluster SQLCluster
             {
-                PsDscRunAsCredential          = $credlookup["DomainJoin"]
+                PsDscRunAsCredential          = $credlookup['DomainJoin']
                 Name                          = $ClusterName
                 StaticIPAddress               = ($NetworkID + $ClusterInfo.CLIP)
-                DomainAdministratorCredential = $credlookup["DomainJoin"]
+                DomainAdministratorCredential = $credlookup['DomainJoin']
                 DependsOn                     = '[script]MoveToPrimary'
             }
 
             xClusterQuorum CloudWitness
             {
-                PsDscRunAsCredential    = $credlookup["DomainJoin"]
+                PsDscRunAsCredential    = $credlookup['DomainJoin']
                 IsSingleInstance        = 'Yes'
                 type                    = 'NodeAndCloudMajority'
-                Resource                = ($deployment + "sawitness").ToLower()
+                Resource                = ($deployment + 'sawitness').ToLower()
                 StorageAccountAccessKey = $sakwitness
             }
 
@@ -883,13 +893,13 @@ Configuration SQLServers
                 $clusterserver = ($prefix + $app + $environment + $Secondary)
                 script "AddNodeToCluster_$clusterserver"
                 {
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                     GetScript            = {
                         $result = Get-ClusterNode
                         @{key = $result }
                     }
                     SetScript            = {
-                        Write-Verbose ("Adding Cluster Node: " + $using:clusterserver) -verbose
+                        Write-Verbose ('Adding Cluster Node: ' + $using:clusterserver) -Verbose
                         Add-ClusterNode -Name $using:clusterserver -NoStorage 
                     }
                     TestScript           = {
@@ -912,7 +922,7 @@ Configuration SQLServers
         Node $AllNodes.NodeName
         {      
             # Allow this to be run against local or remote machine
-            if ($NodeName -eq "localhost")
+            if ($NodeName -eq 'localhost')
             {
                 [string]$computername = $env:COMPUTERNAME
             }
@@ -943,12 +953,12 @@ Configuration SQLServers
 
                 SqlServerEndpoint SQLEndPoint
                 {
-                    Ensure               = "Present"
+                    Ensure               = 'Present'
                     Port                 = 5022
-                    EndPointName         = "Hadr_endpoint"
+                    EndPointName         = 'Hadr_endpoint'
                     ServerName           = $computername
                     InstanceName         = $SQLInstanceName
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                 }
 
                 # Start the DefaultMirrorEndpoint in the default instance
@@ -956,34 +966,34 @@ Configuration SQLServers
                 {
                     ServerName           = $computername
                     InstanceName         = $SQLInstanceName
-                    Name                 = "Hadr_endpoint"
+                    Name                 = 'Hadr_endpoint'
                     State                = 'Started'           
                     DependsOn            = '[SqlServerEndpoint]SQLEndPoint'
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]    
+                    PsDscRunAsCredential = $credlookup['DomainJoin']    
                 }
 
                 SqlAlwaysOnService SQLCluster
                 {
-                    Ensure               = "Present"
+                    Ensure               = 'Present'
                     ServerName           = $computername
                     InstanceName         = $SQLInstanceName
                     RestartTimeout       = 360
                     DependsOn            = '[SqlServerEndpointState]StartEndpoint'
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                 } 
 
 
                 if ($computername -match $aoinfo.PrimaryAG)
                 {
             
-                    write-warning -message "Primary AO"
-                    write-warning -message "Computername: $Computername"
-                    write-warning -message "SQLInstanceName: $SQLInstanceName"
-                    write-warning -message "Groupname: $groupname"
-                    Write-warning -Message "AOIP: $AOIP"
-                    Write-warning -Message "AONAME: $AOName"
-                    Write-warning -Message "ProbePort: $ProbePort"
-                    Write-warning -Message ($computername + ".$DomainName")
+                    Write-Warning -Message 'Primary AO'
+                    Write-Warning -Message "Computername: $Computername"
+                    Write-Warning -Message "SQLInstanceName: $SQLInstanceName"
+                    Write-Warning -Message "Groupname: $groupname"
+                    Write-Warning -Message "AOIP: $AOIP"
+                    Write-Warning -Message "AONAME: $AOName"
+                    Write-Warning -Message "ProbePort: $ProbePort"
+                    Write-Warning -Message ($computername + ".$DomainName")
 
                     SqlDatabase $GroupName
                     {
@@ -1008,52 +1018,52 @@ Configuration SQLServers
                         ConnectionModeInSecondaryRole = 'AllowReadIntentConnectionsOnly'
                         BackupPriority                = 30
                         EndpointHostName              = ($computername + ".$DomainName")
-                        PsDscRunAsCredential          = $credlookup["DomainJoin"]
+                        PsDscRunAsCredential          = $credlookup['DomainJoin']
                     }
 
-                    script ("SeedingMode_" + $aoinfo.GroupName)
+                    script ('SeedingMode_' + $aoinfo.GroupName)
                     {
-                        PsDscRunAsCredential = $credlookup["DomainJoin"]
+                        PsDscRunAsCredential = $credlookup['DomainJoin']
                         GetScript            = {
                             $SQLInstanceName = $Using:SQLInstanceName
-                            if ($SQLInstanceName -eq "MSSQLServer") { $SQLInstanceName = 'Default' }
+                            if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
-                            Import-Module -name SQLServer -Verbose:$False
-                            $result = get-childitem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
-                                where name -eq $using:primary\$SQLInstanceName | select *
+                            Import-Module -Name SQLServer -Verbose:$False
+                            $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
+                                Where-Object name -EQ $using:primary\$SQLInstanceName | Select-Object *
                         if ($result)
                         {
                             @{key = $result }
                         }
                         else
                         {
-                            @{key = "Not available" }
+                            @{key = 'Not available' }
                         }
                     }
                     SetScript                = {
                         $SQLInstanceName = $Using:SQLInstanceName
-                        if ($SQLInstanceName -eq "MSSQLServer") { $SQLInstanceName = 'Default' }
+                        if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
-                        Import-Module SQLServer -force -Verbose:$False
-                        $result = get-childitem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
-                            where name -eq $using:primary\$SQLInstanceName | select *
+                        Import-Module SQLServer -Force -Verbose:$False
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
+                            Where-Object name -EQ $using:primary\$SQLInstanceName | Select-Object *
 
                         Write-Warning "PATH: $($result.pspath)"
-                        Set-SqlAvailabilityReplica -SeedingMode "Automatic" -Path $result.pspath -Verbose
+                        Set-SqlAvailabilityReplica -SeedingMode 'Automatic' -Path $result.pspath -Verbose
                     }
                     TestScript               = {
                         $SQLInstanceName = $Using:SQLInstanceName
-                        if ($SQLInstanceName -eq "MSSQLServer") { $SQLInstanceName = 'Default' }                    
+                        if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }                    
 					
-                        Import-Module -name SQLServer -force -Verbose:$False
+                        Import-Module -Name SQLServer -Force -Verbose:$False
 
-                        $result = get-childitem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
-                            where name -eq $using:primary\$SQLInstanceName | select *
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
+                            Where-Object name -EQ $using:primary\$SQLInstanceName | Select-Object *
                     
-                        write-warning "PATH: $($result.pspath)"
-                        $result1 = get-item -Path $result.pspath -ea silentlycontinue | foreach SeedingMode
+                        Write-Warning "PATH: $($result.pspath)"
+                        $result1 = Get-Item -Path $result.pspath -ea silentlycontinue | ForEach-Object SeedingMode
 
-                        if ($result1 -eq "Automatic")
+                        if ($result1 -eq 'Automatic')
                         {
                             $true
                         }
@@ -1065,20 +1075,20 @@ Configuration SQLServers
                 }
 
                 # Add DB to AOG, requires backup
-                SqlAGDatabase ($groupname + "DB")
+                SqlAGDatabase ($groupname + 'DB')
                 {
                     AvailabilityGroupName   = $groupname
-                    BackupPath              = "I:\MSSQL\Backup"
+                    BackupPath              = 'I:\MSSQL\Backup'
                     DatabaseName            = $groupname
                     InstanceName            = $SQLInstanceName
                     ServerName              = $computername
                     Ensure                  = 'Present'
                     ProcessOnlyOnActiveNode = $true
-                    PsDscRunAsCredential    = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential    = $credlookup['DomainJoin']
                 }
 
                 # Create the AO Listener for the ILB Probe (Final Step on Primary AG)
-                script ("AAListener" + $GroupName)
+                script ('AAListener' + $GroupName)
                 {
                     #PsDscRunAsCredential = $credlookup["DomainJoin"]
                     DependsOn  = $dependsonSQLServerAOScripts
@@ -1095,29 +1105,29 @@ Configuration SQLServers
                         $GroupName = $using:GroupName
                         $AOName = $using:AOName
                         $IPResourceName = "${AOName}_IP"
-                        $ClusterNetworkName = "Cluster Network 1"
-                        write-warning "AOIP $AOIP"
-                        write-warning "ProbePort $ProbePort"
-                        write-warning "GroupName $GroupName"
-                        write-warning "AOName $AOName"
-                        write-warning "IPResourceName $IPResourceName"
+                        $ClusterNetworkName = 'Cluster Network 1'
+                        Write-Warning "AOIP $AOIP"
+                        Write-Warning "ProbePort $ProbePort"
+                        Write-Warning "GroupName $GroupName"
+                        Write-Warning "AOName $AOName"
+                        Write-Warning "IPResourceName $IPResourceName"
                     
                         $nn = Get-ClusterResource -Name $AOName -ErrorAction SilentlyContinue | Stop-ClusterResource -Wait 20
                     
-                        $nn = Add-ClusterResource -ResourceType "Network Name" -Name $AOName -Group $GroupName -ErrorAction SilentlyContinue
-                        $ip = Add-ClusterResource -ResourceType "IP Address" -Name $IPResourceName -Group $GroupName -ErrorAction SilentlyContinue
+                        $nn = Add-ClusterResource -ResourceType 'Network Name' -Name $AOName -Group $GroupName -ErrorAction SilentlyContinue
+                        $ip = Add-ClusterResource -ResourceType 'IP Address' -Name $IPResourceName -Group $GroupName -ErrorAction SilentlyContinue
                         Set-ClusterResourceDependency -Resource $AOName -Dependency "[$IPResourceName]"
-                        Get-ClusterResource -Name $IPResourceName | Set-ClusterParameter -Multiple @{Address = $AOIP; ProbePort = $ProbePort; SubnetMask = "255.255.255.255"; Network = $ClusterNetworkName; EnableDhcp = 0 }
-                        Get-ClusterResource -Name $AOName | Set-ClusterParameter -Multiple @{"Name" = "$AOName" }
+                        Get-ClusterResource -Name $IPResourceName | Set-ClusterParameter -Multiple @{Address = $AOIP; ProbePort = $ProbePort; SubnetMask = '255.255.255.255'; Network = $ClusterNetworkName; EnableDhcp = 0 }
+                        Get-ClusterResource -Name $AOName | Set-ClusterParameter -Multiple @{'Name' = "$AOName" }
                         Get-ClusterResource -Name $AOName | Start-ClusterResource -Wait 20
                         Get-ClusterResource -Name $IPResourceName | Start-ClusterResource -Wait 20
                     }
                     TestScript = {
                         $AOName = ($using:AOName)
-                        write-warning "Cluster Resource Name Is ${AOName}_IP"
+                        Write-Warning "Cluster Resource Name Is ${AOName}_IP"
                         $n = Get-ClusterResource -Name "${AOName}_IP" -ea SilentlyContinue  
                                 
-                        if ($n.Name -eq "${AOName}_IP" -and $n.state -eq "Online")
+                        if ($n.Name -eq "${AOName}_IP" -and $n.state -eq 'Online')
                         {
                             $true
                         }
@@ -1131,16 +1141,17 @@ Configuration SQLServers
             elseif ($computername -match $aoinfo.secondarynode )
             {
 
-                write-warning -message "SecondaryAO"
-                write-warning -message "Computername:$Computername"
-                write-warning -message "SQLInstanceName:$SQLInstanceName"
-                write-warning -message "Groupname:$groupname"
-                Write-warning -Message "AONAME: $AOName"
-                Write-warning -Message ($computername + ".$DomainName")
+                Write-Warning -Message 'SecondaryAO'
+                Write-Warning -Message "Computername:$Computername"
+                Write-Warning -Message "SQLInstanceName:$SQLInstanceName"
+                Write-Warning -Message "Groupname:$groupname"
+                Write-Warning -Message "AONAME: $AOName"
+                Write-Warning -Message ($computername + ".$DomainName")
             
                 SqlWaitForAG $GroupName
                 {
                     Name             = $groupname
+                    InstanceName     = $SQLInstanceName
                     RetryIntervalSec = 30
                     RetryCount       = 40
                 }
@@ -1154,9 +1165,9 @@ Configuration SQLServers
                     RetryIntervalSec = $RetryIntervalSec
                 }
     
-                SqlAGReplica ($groupname + "AddReplica")
+                SqlAGReplica ($groupname + 'AddReplica')
                 {
-                    PsDscRunAsCredential          = $credlookup["DomainJoin"]
+                    PsDscRunAsCredential          = $credlookup['DomainJoin']
                     Ensure                        = 'Present'
                     Name                          = "$computername\$SQLInstanceName"
                     AvailabilityGroupName         = $groupname
@@ -1172,61 +1183,61 @@ Configuration SQLServers
                     EndpointHostName              = ($computername + ".$DomainName")
                 }
             
-                script ("SeedingMode_" + 'az' + $app + $environment + $aoinfo.GroupName)
+                script ('SeedingMode_' + 'az' + $app + $environment + $aoinfo.GroupName)
                 {
-                    DependsOn            = ('[SqlAGReplica]' + $groupname + "AddReplica")
-                    PsDscRunAsCredential = $credlookup["DomainJoin"]
+                    DependsOn            = ('[SqlAGReplica]' + $groupname + 'AddReplica')
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                     GetScript            = {
                         $SQLInstanceName = $Using:SQLInstanceName
-                        if ($SQLInstanceName -eq "MSSQLServer") { $SQLInstanceName = 'Default' }
+                        if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
-                        Import-Module -name SQLServer -Verbose:$False
+                        Import-Module -Name SQLServer -Verbose:$False
                         #$result = get-item -Path      "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary\$SQLInstanceName" -ea silentlycontinue | select *
-                        $result = get-childitem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | where name -eq $using:secondary\$SQLInstanceName | select *
-                        write-warning "PATH: $($result.pspath)"
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | Where-Object name -EQ $using:secondary\$SQLInstanceName | Select-Object *
+                        Write-Warning "PATH: $($result.pspath)"
                         if ($result)
                         {
                             @{key = $result }
                         }
                         else
                         {
-                            @{key = "Not available" }
+                            @{key = 'Not available' }
                         }
                     }
                     SetScript            = {
                         $SQLInstanceName = $Using:SQLInstanceName
-                        if ($SQLInstanceName -eq "MSSQLServer") { $SQLInstanceName = 'Default' }
+                        if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
-                        Import-Module SQLServer -force -Verbose:$False
+                        Import-Module SQLServer -Force -Verbose:$False
                         #Get-PSProvider -Verbose
                         #get-psdrive -Verbose
 
                         $p1 = "SQLSERVER:\SQL\$using:secondary\$SQLInstanceName\AvailabilityGroups\$using:groupname"
-                        write-warning "PATH: $p1"
-                        Grant-SqlAvailabilityGroupCreateAnyDatabase -path $p1
+                        Write-Warning "PATH: $p1"
+                        Grant-SqlAvailabilityGroupCreateAnyDatabase -Path $p1
 
-                        $result = get-childitem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | where name -eq $using:secondary\$SQLInstanceName | select *
-                        write-warning "PATH: $($result.pspath)"
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | Where-Object name -EQ $using:secondary\$SQLInstanceName | Select-Object *
+                        Write-Warning "PATH: $($result.pspath)"
 
                         # $p = "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary\$SQLInstanceName"
                         # write-warning "PATH: $p"
                     
-                        Set-SqlAvailabilityReplica -SeedingMode "Automatic" -Path $result.pspath -Verbose
+                        Set-SqlAvailabilityReplica -SeedingMode 'Automatic' -Path $result.pspath -Verbose
                                                                                 
                         #Set-SqlAvailabilityReplica -SeedingMode Automatic -Path "SQLSERVER:\SQL\$env:computername\DEFAULT\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary" 
                     }
                     TestScript           = {
                         $SQLInstanceName = $Using:SQLInstanceName
-                        if ($SQLInstanceName -eq "MSSQLServer") { $SQLInstanceName = 'Default' }
+                        if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
-                        Import-Module -name SQLServer -force -Verbose:$False
+                        Import-Module -Name SQLServer -Force -Verbose:$False
                         #$p = "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary\$SQLInstanceName"
                         #write-warning "PATH: $p"
-                        $result = get-childitem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | where name -eq $using:secondary\$SQLInstanceName | foreach SeedingMode
-                        write-warning "PATH: $($result.pspath)"
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | Where-Object name -EQ $using:secondary\$SQLInstanceName | ForEach-Object SeedingMode
+                        Write-Warning "PATH: $($result.pspath)"
                         #$result1 = get-item -Path $p -ea silentlycontinue | foreach SeedingMode
                         #$result2 = get-item -Path "SQLSERVER:\SQL\$env:computername\DEFAULT\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary" -ea silentlycontinue | foreach SeedingMode
-                        if ($result -eq "Automatic")
+                        if ($result -eq 'Automatic')
                         {
                             $true
                         }
@@ -1247,14 +1258,14 @@ Configuration SQLServers
 #region The following is used for manually running the script, breaks when running as system
 if ((whoami) -notmatch 'system')
 {
-    Write-Warning -Message "no testing in prod !!!"
+    Write-Warning -Message 'no testing in prod !!!'
     if ($cred)
     {
-        Write-Warning -Message "Cred is good"
+        Write-Warning -Message 'Cred is good'
     }
     else
     {
-        $Cred = get-credential localadmin
+        $Cred = Get-Credential localadmin
     }
 
     #  if ($sak)
@@ -1283,7 +1294,7 @@ if ((whoami) -notmatch 'system')
     # }
 
     # Set the location to the DSC extension directory
-    $DSCdir = ($psISE.CurrentFile.FullPath | split-Path)
+    $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path)
     if (Test-Path -Path $DSCdir -ErrorAction SilentlyContinue)
     {
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
@@ -1291,12 +1302,12 @@ if ((whoami) -notmatch 'system')
 }
 else
 {
-    Write-Warning -Message "running as system"
+    Write-Warning -Message 'running as system'
     break
 }
 #endregion
 
-dir .\SQLServers -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
+Get-ChildItem .\SQLServers -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
 
 $aoinfo = @{
     SQL01 = "[{'InstanceName':'CTO_1','GroupName':'AG01','PrimaryAG':'SQL01','SecondaryAG':'SQL02', 'AOIP':'110','ProbePort':'59999'}]"
@@ -1327,13 +1338,13 @@ if ($env:computername -match 'ADF')
 $depid = $depname.substring(1, 1)
 
 # Azure resource names (for storage account) E.g. AZE2ADFd2
-$dep = "{0}{1}{2}" -f $prefix, $app, $depname
+$dep = '{0}{1}{2}' -f $prefix, $app, $depname
 
 # Azure hostnames E.g. azADFd2
-$cn = "az{0}{1}" -f $app, $depname
+$cn = 'az{0}{1}' -f $app, $depname
  
 # Computer short name e.g. SQL01
-$cmp = $env:computername -replace $cn, ""
+$cmp = $env:computername -replace $cn, ''
 
 $network = 30 - ([int]$Depid * 2)
 $Net = "172.16.${network}."
@@ -1344,7 +1355,7 @@ $AO = "{'aoinfo': $a , 'ClusterInfo': $b}"
 $Params = @{
     StorageAccountId  = $SAID
     DomainName        = $Domain
-    ConfigurationData = ".\*-ConfigurationData.psd1"
+    ConfigurationData = '.\*-ConfigurationData.psd1'
     AppInfo           = $AO
     AdminCreds        = $cred
     #DomainJoinCreds         = $djcred
@@ -1366,7 +1377,7 @@ Set-DscLocalConfigurationManager -Path .\SQLServers -Force
 Start-DscConfiguration -Path .\SQLServers -Wait -Verbose -Force
 
 # delete mofs after push
-dir .\SQLServers -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
+Get-ChildItem .\SQLServers -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
 
 break
 

@@ -105,14 +105,19 @@
 
             # Blob copy with Managed Identity - Oauth2
             AZCOPYDSCDirPresentSource   = @(
-                @{  
-                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/SQLClient/SSMS-Setup-ENU.exe'
-                    DestinationPath   = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
-                },
+                # @{  
+                #     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/SQLClient/'
+                #     DestinationPath   = 'F:\Source\SQLClient\'
+                # },
 
                 @{
                     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/Windows_Server_InsiderPreview_LangPack_FOD_20303/'
                     DestinationPath   = 'F:\Source\FOD\'
+                },
+
+                @{
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/AppXPackage/CompanyPortal/'
+                    DestinationPath   = 'F:\Source\AppXPackage\CompanyPortal\'
                 },
 
                 @{
@@ -166,6 +171,7 @@
                 @{
                     SourcePath      = 'F:\Source\Tools\.vs-kubernetes\tools\'
                     DestinationPath = 'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\'
+                    MatchSource     = $true
                 },
 
                 @{
@@ -194,20 +200,20 @@
                     Arguments = '/silent /norestart'
                 },
 
-                @{
-                    Name      = 'Microsoft SQL Server Management Studio - 18.8'
-                    Path      = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
-                    ProductId = ''
-                    Arguments = '/install /quiet /norestart'
-                },
+                # @{
+                #     Name      = 'Microsoft SQL Server Management Studio - 18.8'
+                #     Path      = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
+                #     ProductId = ''
+                #     Arguments = '/install /quiet /norestart'
+                # },
 
                 # no longer need edge with Server 2022
-                # @{
-                #     Name      = 'Microsoft Edge'
-                #     Path      = 'F:\Source\EDGE\MicrosoftEdgeEnterpriseX64.msi'
-                #     ProductId = '{1BAA23D8-D46C-3014-8E86-DF6C0762F71A}'
-                #     Arguments = ''
-                # },
+                @{
+                    Name      = 'Microsoft Edge'
+                    Path      = 'F:\Source\EDGE\MicrosoftEdgeEnterpriseX64.msi'
+                    ProductId = '{1BAA23D8-D46C-3014-8E86-DF6C0762F71A}'
+                    Arguments = ''
+                },
 
                 # use Azure Admin Center in portal instead, deployed via VM extensions
                 # @{Name        = 'Windows Admin Center'
@@ -230,12 +236,19 @@
                     Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1'
                 }
 
-                # @{
-                #     Name      = 'Microsoft .NET Core Toolset 3.1.200 (x64)'
-                #     Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.200-win-x64.exe'
-                #     ProductId = ''
-                #     Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install312.txt"'
-                # },
+                @{
+                    Name      = 'Microsoft .NET Core SDK 3.1.407 (x64)'
+                    Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.407-win-x64.exe'
+                    ProductId = ''
+                    Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install31407.txt"'
+                },
+
+                @{
+                    Name      = 'Microsoft .NET SDK 5.0.201 (x64)'
+                    Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.201-win-x64.exe'
+                    ProductId = ''
+                    Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install50201.txt"'
+                }
 
                 # @{
                 #     Name      = 'Microsoft .NET Runtime - 5.0.0 Preview 8 (x64)'
