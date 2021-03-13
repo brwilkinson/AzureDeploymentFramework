@@ -150,7 +150,24 @@ Configuration AppServers
             InterfaceAlias                 = '*Ethernet*'
             RegisterThisConnectionsAddress = $true
             ConnectionSpecificSuffix       = $DomainName
+            UseSuffixWhenRegistering       = $true
         }
+
+        # DnsConnectionSuffix reddog.microsoft.com
+        # {
+        #     InterfaceAlias                 = '*Ethernet*'
+        #     RegisterThisConnectionsAddress = $true
+        #     ConnectionSpecificSuffix       = 'reddog.microsoft.com'
+        #     UseSuffixWhenRegistering       = $true
+        # }
+
+        # DnsConnectionSuffix internal.cloudapp.net
+        # {
+        #     InterfaceAlias                 = '*Ethernet*'
+        #     RegisterThisConnectionsAddress = $true
+        #     ConnectionSpecificSuffix       = 'internal.cloudapp.net'
+        #     UseSuffixWhenRegistering       = $true
+        # }
 
         #-------------------------------------------------------------------
         xTimeZone EasternStandardTime
@@ -178,6 +195,7 @@ Configuration AppServers
                 PolicyType   = $LocalPolicy.PolicyType
                 Data         = $LocalPolicy.Data
                 Type         = $LocalPolicy.Type
+
             }
         }
 

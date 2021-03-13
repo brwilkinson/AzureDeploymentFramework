@@ -33,7 +33,7 @@
             FontsPresent                  = @(
                 @{
                     Name = 'Fira Code Light Nerd Font Complete'
-                    Path = 'F:\Tools\Fira Code Light Nerd Font Complete.ttf'
+                    Path = 'F:\Source\Tools\Fira Code Light Nerd Font Complete.ttf'
                 }
             )
 
@@ -64,11 +64,11 @@
                     Name       = 'Microsoft.CompanyPortal'
                     Path       = 'F:\Source\AppXPackage\CompanyPortal\Microsoft.CompanyPortal_2021.228.831.0_neutral___8wekyb3d8bbwe.AppxBundle'
                     Dependency = @(
-                        'Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx',
-                        'Microsoft.UI.Xaml.2.3_2.32002.13001.0_x64__8wekyb3d8bbwe.Appx',
-                        'Microsoft.Services.Store.Engagement_10.0.19011.0_x64__8wekyb3d8bbwe.Appx',
-                        'Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx',
-                        'Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx'
+                        'F:\Source\AppXPackage\CompanyPortal\Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx',
+                        'F:\Source\AppXPackage\CompanyPortal\Microsoft.UI.Xaml.2.3_2.32002.13001.0_x64__8wekyb3d8bbwe.Appx',
+                        'F:\Source\AppXPackage\CompanyPortal\Microsoft.Services.Store.Engagement_10.0.19011.0_x64__8wekyb3d8bbwe.Appx',
+                        'F:\Source\AppXPackage\CompanyPortal\Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx',
+                        'F:\Source\AppXPackage\CompanyPortal\Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx'
                     )
                 }
             )
@@ -229,12 +229,12 @@
 
             SoftwarePackagePresent        = @(
 
-                @{
-                    Name      = 'AzurePortalInstaller'
-                    Path      = 'F:\Source\Tools\AzurePortalInstaller.exe'
-                    ProductId = ''
-                    Arguments = '/Q'
-                },
+                # @{
+                #     Name      = 'AzurePortalInstaller'
+                #     Path      = 'F:\Source\Tools\AzurePortalInstaller.exe'
+                #     ProductId = ''
+                #     Arguments = '/Q'
+                # },
 
                 @{
                     Name      = 'Microsoft Visual Studio Code'
