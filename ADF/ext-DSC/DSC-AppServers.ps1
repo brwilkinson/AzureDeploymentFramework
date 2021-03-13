@@ -38,8 +38,11 @@ Configuration AppServers
     Import-DscResource -ModuleName AZCOPYDSCDir # https://github.com/brwilkinson/AZCOPYDSC
     Import-DscResource -ModuleName WVDDSC       # https://github.com/brwilkinson/WVDDSC
     # Import-DscResource -ModuleName DevOpsAgentDSC    # https://github.com/brwilkinson/DevOpsAgentDSC
-
-    # Import-DscResource -ModuleName @{ModuleName = 'PowerShellGet';RequiredVersion = '3.0.0'}
+    Import-DscResource -ModuleName DSCR_Font
+    Import-DscResource -ModuleName DSCR_AppxPackage
+    
+    # PowerShell Modules that you want deployed, comment out if not needed
+    Import-DscResource -ModuleName BRWAzure
 
     # Azure VM Metadata service
     $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
@@ -144,7 +147,7 @@ Configuration AppServers
         #-------------------------------------------------------------------
         DnsConnectionSuffix $DomainName
         {
-            InterfaceAlias                 = "*Ethernet*"
+            InterfaceAlias                 = '*Ethernet*'
             RegisterThisConnectionsAddress = $true
             ConnectionSpecificSuffix       = $DomainName
         }
@@ -192,9 +195,10 @@ Configuration AppServers
         #-------------------------------------------------------------------
         foreach ($Capability in $Node.WindowsCapabilityPresent)
         {
-            WindowsCapability $Capability
+            WindowsCapability $Capability.Name
             {
-                Name   = $Capability
+                Name   = $Capability.Name
+                Source = $Capability.Source
                 Ensure = 'Present'
                 
             }
@@ -667,7 +671,7 @@ Configuration AppServers
             $Name = $Script.TestFilePath -replace $StringFilter
             SqlScript ($i + $Name)
             {
-                InstanceName       = $Script.InstanceName
+                InstanceName         = $Script.InstanceName
                 SetFilePath          = $Script.SetFilePath
                 GetFilePath          = $Script.GetFilePath
                 TestFilePath         = $Script.TestFilePath
@@ -675,6 +679,48 @@ Configuration AppServers
             }
 
             $dependsonSQLServerScripts += @("[xSQLServerScript]$($Name)")
+        }
+
+        #-------------------------------------------------------------------
+        # install appxpackage
+        foreach ($Font in $Node.FontsPresent)
+        {
+            cFont $Font.Name
+            {
+                Ensure   = 'Present'
+                FontFile = $Font.Path
+            }
+            $dependsonAppxPackage += @("[cAppxPackage]$($Font.Name)")
+        }
+        
+
+        #-------------------------------------------------------------------
+        # install appxpackage
+        foreach ($AppxPackage in $Node.AppxPackagePresent)
+        {
+            $Name = $AppxPackage.Name -replace $StringFilter
+            cAppxPackage $Name
+            {
+                Name           = $AppxPackage.Name
+                DependencyPath = $AppxPackage.Dependency
+                PackagePath    = $AppxPackage.Path
+                # Register       = $AppxPackage.Register
+            }
+            $dependsonAppxPackage += @("[cAppxPackage]$($Name)")
+        }
+
+        #-------------------------------------------------------------------
+        # install any appxpackage
+        foreach ($AppxProvisionedPackage in $Node.AppxProvisionedPackagePresent)
+        {
+            $Name = $AppxProvisionedPackage.Name -replace $StringFilter
+            cAppxProvisionedPackage $Name
+            {
+                PackageName           = $AppxProvisionedPackage.Name
+                DependencyPackagePath = $AppxProvisionedPackage.Dependency
+                PackagePath           = $AppxProvisionedPackage.Path
+            }
+            $dependsonProvisionedPackage += @("[cAppxProvisionedPackage]$($Name)")
         }
 
         #-------------------------------------------------------------------

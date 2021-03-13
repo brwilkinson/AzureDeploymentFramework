@@ -483,7 +483,7 @@
             "privateCluster": true, //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
-            "loadBalancer": "standard",   //"basic","standard"
+            "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "aksAADAdminGroups": [
               "Logic_Runner_4@microsoft.onmicrosoft.com"
@@ -591,7 +591,7 @@
                 }
               ]
             },
-                        {
+            {
               "VMName": "JMP04",
               "Role": "JMP",
               "ASName": "JMP",

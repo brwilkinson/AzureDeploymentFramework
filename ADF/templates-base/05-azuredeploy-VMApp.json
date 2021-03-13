@@ -980,6 +980,7 @@
           }
         },
         {
+          "condition": "[variables('VM')[copyIndex(0)].matchVM]",
           "type": "providers/dataCollectionRuleAssociations",
           "name": "[concat('Microsoft.Insights/',replace(concat(variables('Deployment'),'VMInsights'),'-',''))]",
           "apiVersion": "2019-11-01-preview",
