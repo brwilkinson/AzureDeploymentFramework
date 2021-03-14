@@ -22,15 +22,22 @@
                     Name   = 'OpenSSH.Server~~~~0.0.1.0'
                     Source = 'F:\Source\FOD\LanguagesAndOptionalFeatures'
                 },
+
                 @{
                     Name   = 'OpenSSH.Client~~~~0.0.1.0'
                     Source = 'F:\Source\FOD\LanguagesAndOptionalFeatures'
                 }
             )
 
+            # WindowsCapabilityAbsent      = @(
+            #     @{
+            #         Name   = 'OpenSSH.Client~~~~0.0.1.0'
+            #     }
+            # )
+
             ServiceSetStarted             = @('sshd')
 
-            FontsPresent                  = @(
+            FontsPresent2                 = @(
                 @{
                     Name = 'Fira Code Light Nerd Font Complete'
                     Path = 'F:\Source\Tools\Fira Code Light Nerd Font Complete.ttf'
@@ -51,14 +58,14 @@
                 @{
                     Name       = 'Microsoft.DesktopAppInstaller'
                     Path       = 'F:\Source\Tools\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle'
-                    Dependency = 'Microsoft.VCLibs.x64.14.00.Desktop.appx'
+                    Dependency = 'F:\Source\Tools\Microsoft.VCLibs.x64.14.00.Desktop.appx'
                 },
 
-                @{
-                    Name       = 'Microsoft.WindowsTerminalPreview'
-                    Path       = 'F:\Source\Tools\Microsoft.WindowsTerminalPreview_1.7.572.0_8wekyb3d8bbwe.msixbundle'
-                    Dependency = @()
-                },
+                # @{
+                #     Name       = 'Microsoft.WindowsTerminalPreview'
+                #     Path       = 'F:\Source\Tools\Microsoft.WindowsTerminalPreview_1.7.572.0_8wekyb3d8bbwe.msixbundle'
+                #     Dependency = @()
+                # },
 
                 @{
                     Name       = 'Microsoft.CompanyPortal'

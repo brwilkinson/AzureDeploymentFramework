@@ -211,13 +211,12 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
-        foreach ($Capability in $Node.WindowsCapabilityPresent)
+        foreach ($Capability in $Node.WindowsCapabilityAbsent)
         {
             WindowsCapability $Capability.Name
             {
                 Name   = $Capability.Name
-                Source = $Capability.Source
-                Ensure = 'Present'
+                Ensure = 'Absent'
                 
             }
             $dependsonFeatures += @("[WindowsCapability]$Capability")
@@ -454,6 +453,19 @@ Configuration AppServers
                 # PsDscRunAsCredential = $StorageCred
             }
             $dependsonDirectory += @("[File]$Name")
+        }
+
+        #-------------------------------------------------------------------
+        foreach ($Capability in $Node.WindowsCapabilityPresent)
+        {
+            WindowsCapability $Capability.Name
+            {
+                Name   = $Capability.Name
+                Source = $Capability.Source
+                Ensure = 'Present'
+                
+            }
+            $dependsonFeatures += @("[WindowsCapability]$Capability")
         }
 
         #-------------------------------------------------------------
@@ -701,15 +713,16 @@ Configuration AppServers
 
         #-------------------------------------------------------------------
         # install appxpackage
-        foreach ($Font in $Node.FontsPresent)
-        {
-            cFont $Font.Name
-            {
-                Ensure   = 'Present'
-                FontFile = $Font.Path
-            }
-            $dependsonAppxPackage += @("[cAppxPackage]$($Font.Name)")
-        }
+        # foreach ($Font in $Node.FontsPresent)
+        # {
+        #     cFont $Font.Name
+        #     {
+        #         Ensure   = 'Present'
+        #         FontFile = $Font.Path
+        #         PsDscRunAsCredential = $credlookup['DomainCreds']
+        #     }
+        #     $dependsonAppxPackage += @("[cAppxPackage]$($Font.Name)")
+        # }
         
 
         #-------------------------------------------------------------------
