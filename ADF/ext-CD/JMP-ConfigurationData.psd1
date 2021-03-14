@@ -88,10 +88,10 @@
             EnvironmentPathPresent        = @(
                 'F:\Source\Tools\SysInternals',
                 'F:\Source\Tools\',
-                'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\helm\windows-amd64',
-                'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\kubectl',
-                'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\minikube\windows-amd64',
-                'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\draft\windows-amd64'
+                'F:\Source\Tools\.vs-kubernetes\tools\helm\windows-amd64',
+                'F:\Source\Tools\.vs-kubernetes\tools\kubectl',
+                'F:\Source\Tools\.vs-kubernetes\tools\minikube\windows-amd64',
+                'F:\Source\Tools\.vs-kubernetes\tools\draft\windows-amd64'
             )
 
             FWRules                       = @(
@@ -210,12 +210,6 @@
             )
 
             DirectoryPresentSource        = @(
-
-                @{
-                    SourcePath      = 'F:\Source\Tools\.vs-kubernetes\tools\'
-                    DestinationPath = 'C:\Windows\System32\config\systemprofile\.vs-kubernetes\tools\'
-                    MatchSource     = $true
-                },
 
                 @{
                     SourcePath      = 'F:\Source\PSModules\PackageManagement\'
