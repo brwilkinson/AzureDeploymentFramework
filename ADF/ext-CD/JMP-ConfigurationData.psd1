@@ -61,11 +61,11 @@
                     Dependency = 'F:\Source\Tools\Microsoft.VCLibs.x64.14.00.Desktop.appx'
                 },
 
-                # @{
-                #     Name       = 'Microsoft.WindowsTerminalPreview'
-                #     Path       = 'F:\Source\Tools\Microsoft.WindowsTerminalPreview_1.7.572.0_8wekyb3d8bbwe.msixbundle'
-                #     Dependency = @()
-                # },
+                @{
+                    Name       = 'Microsoft.WindowsTerminalPreview'
+                    Path       = 'F:\Source\Tools\Microsoft.WindowsTerminalPreview_1.7.572.0_8wekyb3d8bbwe.msixbundle'
+                    Dependency = @()
+                },
 
                 @{
                     Name       = 'Microsoft.CompanyPortal'
