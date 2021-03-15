@@ -226,6 +226,12 @@
                     DestinationPath = 'c:\program files\powershell\7\profile.ps1'
                     MatchSource     = $true
                 }
+
+                @{
+                    SourcePath      = 'F:\Source\Tools\profile.ps1'
+                    DestinationPath = 'C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1'
+                    MatchSource     = $true
+                }
             )
 
             SoftwarePackagePresent        = @(

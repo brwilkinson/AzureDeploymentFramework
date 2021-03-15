@@ -23,6 +23,7 @@ Configuration ADSecondary
     Import-DscResource -ModuleName xPendingReboot 
     Import-DscResource -ModuleName xTimeZone 
     Import-DscResource -ModuleName xDnsServer
+    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC    
 
     Function IIf
     {
@@ -37,26 +38,29 @@ Configuration ADSecondary
     $SiteName = $AppInfo.SiteName
 
     # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-    $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
-    $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
-    $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
+    # $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
+    # $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
+    # $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
-    try
-    {
-        # Global assets to download files
-        $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-        $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
-        Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
+    <#
+        # moved away from using storage account keys to Oauth2 based authentication via AZCOPYDSCDir
+        try
+        {
+            # Global assets to download files
+            $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
+            $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
+            $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
+            Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
 
-        # Create the Cred to access the storage account
-        Write-Verbose -Message "User is: [$StorageAccountName]"
-        $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force -ErrorAction stop)) 
-    }
-    catch
-    {
-        Write-Warning $_
-    } 
+            # Create the Cred to access the storage account
+            Write-Verbose -Message "User is: [$StorageAccountName]"
+            $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force -ErrorAction stop)) 
+        }
+        catch
+        {
+            Write-Warning $_
+        }
+    #> 
 
     $NetBios = $(($DomainName -split '\.')[0])
     [PSCredential]$DomainCreds = [PSCredential]::New($NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password)
@@ -160,6 +164,21 @@ Configuration ADSecondary
                 PsDscRunAsCredential = $credlookup['DomainCreds']
             }
             $dependsonDir += @("[File]$Name")
+        }
+
+        #-------------------------------------------------------------------     
+        foreach ($AZCOPYDSCDir in $Node.AZCOPYDSCDirPresentSource)
+        {
+            $Name = ($AZCOPYDSCDir.SourcePathBlobURI + '_' + $AZCOPYDSCDir.DestinationPath) -replace $StringFilter 
+            AZCOPYDSCDir $Name
+            {
+                SourcePath              = ($AZCOPYDSCDir.SourcePathBlobURI -f $StorageAccountName)
+                DestinationPath         = $AZCOPYDSCDir.DestinationPath
+                Ensure                  = 'Present'
+                ManagedIdentityClientID = $clientIDGlobal
+                LogDir                  = 'F:\azcopy_logs'
+            }
+            $dependsonAZCopyDSCDir += @("[AZCOPYDSCDir]$Name")
         }
 
         #-------------------------------------------------------------------     

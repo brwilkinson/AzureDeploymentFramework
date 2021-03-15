@@ -96,8 +96,8 @@
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 0,
-        "AADLogin": 1,
+        "DomainJoin": 1,
+        "AADLogin": 0,
         "WindowsOpenSSH": 0,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
@@ -480,7 +480,7 @@
             "skuTier": "Paid", //Free
             "enableRBAC": true, //true, false
             "podIdentity": true, //true, false
-            "privateCluster": true, //true, false
+            "privateCluster": false, //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
             "loadBalancer": "standard", //"basic","standard"
@@ -557,8 +557,9 @@
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
-              "OSType": "Server2019small",
+              "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
+              // "ExcludeAADLogin": 1,
               "_HotPatch": true,
               "Zone": 1,
               "NICs": [
@@ -578,7 +579,7 @@
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
-              "ExcludeAADLogin": 1,
+              // "ExcludeAADLogin": 1,
               "_HotPatch": true,
               "Zone": 1,
               "NICs": [
@@ -598,7 +599,7 @@
               "DDRole": "64GB",
               "OSType": "Server2019small",
               "ExcludeAdminCenter": 1,
-              "ExcludeAADLogin": 1,
+              // "ExcludeAADLogin": 1,
               "_HotPatch": true,
               "Zone": 1,
               "NICs": [

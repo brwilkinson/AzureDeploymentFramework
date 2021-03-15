@@ -113,6 +113,18 @@
                 "RG": "G1",
                 "Prefix": "ACU1",
                 "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
               }
             ]
           },
