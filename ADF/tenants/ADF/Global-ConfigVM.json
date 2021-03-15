@@ -32,18 +32,19 @@
       "OS": "Linux",
       "OSDiskGB": 32,
       "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "AzureMonitorAgent": 0,
-        "GuestHealthAgent": 0,
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
         "Antimalware": 0,
-        "DependencyAgent": 0,
+        "DependencyAgent": 1,
         "DSC": 0,
         "Scripts": 0,
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     },
     "Win10O365": {
@@ -98,7 +99,7 @@
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",
-      "OSDiskGB": 32,
+      "OSDiskGB": 64,
       "RoleExtensions": {
         "Scripts": 0,
         "chefClient": 0
@@ -128,7 +129,22 @@
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",
-      "OSDiskGB": 32,
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019-gen2": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "windowsserver-gen2preview",
+        "sku": "2019-Datacenter-gen2",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
       "RoleExtensions": {
         "Scripts": 0,
         "chefClient": 0
@@ -149,6 +165,26 @@
         "chefClient": 0
       }
     },
+    "Server2022": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "microsoftserveroperatingsystems-previews",
+        "sku": "windows-server-2022",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "plan": {
+        "name": "windows-server-2022",
+        "publisher": "microsoftwindowsserver",
+        "product": "microsoftserveroperatingsystems-previews"
+      },
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
     "Server2019Core": {
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
@@ -158,7 +194,7 @@
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",
-      "OSDiskGB": 32,
+      "OSDiskGB": 64,
       "RoleExtensions": {
         "Scripts": 0,
         "chefClient": 0
@@ -168,7 +204,7 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "2019-Datacenter-smalldisk",
+        "sku": "2019-datacenter-smalldisk-g2",
         "version": "latest"
       },
       "licenseType": "Windows_Server",
@@ -183,12 +219,12 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "datacenter-core-20h2-with-containers-smalldisk",
+        "sku": "2019-Datacenter-Server-Core-smalldisk",
         "version": "latest"
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",
-      "OSDiskGB": 32,
+      "OSDiskGB": 64,
       "RoleExtensions": {
         "Scripts": 0,
         "chefClient": 0
@@ -203,7 +239,22 @@
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",
-      "OSDiskGB": 32,
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019CoreContainerssmall": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2019-datacenter-core-with-containers-smalldisk-g2",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 64,
       "RoleExtensions": {
         "Scripts": 0,
         "chefClient": 0
@@ -246,7 +297,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     },
     "MaxLoadBalancer": {
@@ -272,7 +326,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     },
     "Fortigate": {
@@ -298,7 +355,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     },
     "Fortigatepayg": {
@@ -324,7 +384,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     },
     "Fortimngr": {
@@ -350,7 +413,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     },
     "UbuntuServer1904": {
@@ -392,7 +458,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     },
     "PROXY-UBUNTU": {
@@ -415,7 +484,10 @@
         "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     },
     "CentOS75": {
@@ -430,7 +502,6 @@
       "RoleExtensions": {
         "MonitoringAgent": 0,
         "IaaSDiagnostics": 0,
-        "GuestHealthAgent": 0,
         "DependencyAgent": 0,
         "DSC": 0,
         "Scripts": 0,
@@ -438,7 +509,10 @@
         "CertMgmt": 0,
         "DomainJoin": 0,
         "Antimalware": 0,
-        "chefClient": 0
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
       }
     }
   },
