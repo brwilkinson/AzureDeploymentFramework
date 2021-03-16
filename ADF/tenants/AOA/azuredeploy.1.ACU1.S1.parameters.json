@@ -72,7 +72,7 @@
         "APIM": 1,
         "AKS": 1,
         "SQLMI": 0,
-        "CosmosDB": 0,
+        "CosmosDB": 1,
         "DASHBOARD": 1,
         "DNSLookup": 0,
         "ServerFarm": 0,
@@ -525,10 +525,19 @@
             ]
           }
         ],
-        "CosmosDB": [
+        "cosmosDBInfo": [
           {
-            "dbName": "01",
-            "Kind": "MongoDB"
+            "Name": "CDB01",
+            "Kind": "GlobalDocumentDB",
+            "defaultConsistencyLevel": "Strong",
+            "enableMultipleWriteLocations": false,
+            "enableAutomaticFailover": true,
+            "databases": [
+              {
+                "databaseName": "customers",
+                "containerName": "Info"
+              }
+            ]
           }
         ],
         "Appservers": {

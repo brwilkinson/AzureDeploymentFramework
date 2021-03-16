@@ -531,6 +531,7 @@
               "ASName": "AD",
               "DDRole": "32GB",
               "OSType": "Server2016Coresmall",
+              "ExcludeDomainJoin": 1,
               "Zone": 2,
               "NICs": [
                 {

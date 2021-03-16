@@ -417,7 +417,7 @@
       "condition": "[contains(variables('sainfo')[copyIndex(0)],'privatelinkinfo')]",
       "name": "[concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('saInfo')[copyIndex(0)].nameSuffix)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-10-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "SALoop"
       ],

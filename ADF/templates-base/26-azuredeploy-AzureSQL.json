@@ -234,7 +234,7 @@
       "condition": "[contains(variables('AzureSQLInfo')[copyIndex(0)],'privatelinkinfo')]",
       "name": "[concat('dp', variables('Deployment'), '-privatelinkloopAZSQL', variables('AzureSQLInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-10-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "SQLLoop"
       ],

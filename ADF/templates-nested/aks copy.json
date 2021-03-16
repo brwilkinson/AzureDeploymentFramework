@@ -425,7 +425,7 @@
       //  Also acts as dependson resource between the next resource.
       "name": "[concat('dp-identities-',parameters('deployment'),'-aks',parameters('AKSInfo').Name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "[concat(parameters('deployment'),'-aks',parameters('AKSInfo').Name)]"
       ],

@@ -308,7 +308,7 @@
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "name": "[concat('dp', variables('Deployment'),'-publicIPDeploy', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
       ],
       "copy": {
@@ -347,7 +347,7 @@
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "name": "[concat('dp', variables('Deployment'),'-nicDeployLoop', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('AppServers')[copyIndex(0)].VMName)]"
       ],
@@ -390,7 +390,7 @@
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
       ],
       "copy": {

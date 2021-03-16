@@ -1,0 +1,200 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "Environment": {
+      "type": "string"
+    },
+    "cosmosDBInfo": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "OMSworkspaceID": {
+      "type": "string"
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
+    }
+  },
+  "variables": {
+
+  },
+  "resources": [
+    {
+      "name": "[tolower(concat(parameters('Deployment'), '-cosmos-', parameters('cosmosDBInfo').Name))]",
+      "apiVersion": "2021-03-01-preview",
+      "kind": "[parameters('cosmosDBInfo').Kind]",
+      "type": "Microsoft.DocumentDb/databaseAccounts",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[parameters('cosmosDBInfo').defaultConsistencyLevel]"
+        },
+        "enableMultipleWriteLocations": "[parameters('cosmosDBInfo').enableMultipleWriteLocations]",
+        "enableAutomaticFailover": "[parameters('cosmosDBInfo').enableAutomaticFailover]",
+        "databaseAccountOfferType": "Standard",
+        "locations": [
+          {
+            "id": "[tolower(concat(parameters('Deployment'),'-',resourceGroup().location,'-cosmos-',parameters('cosmosDBInfo').Name))]",
+            "failoverPriority": 0,
+            "locationName": "[resourceGroup().location]"
+          }
+        ]
+        //"ipRangeFilter": "104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,0.0.0.0",
+        // "isVirtualNetworkFilterEnabled": true,
+        // "copy": [
+        //   {
+        //     "name": "virtualNetworkRules",
+        //     "count": "[length(variables('SubnetInfo'))]",
+        //     "input": {
+        //       "id": "[concat(variables('VNetID'), '/subnets/sn', variables('SubnetInfo')[copyIndex('virtualNetworkRules')].name)]"
+        //     }
+        //   }
+        // ]
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[resourceId('Microsoft.DocumentDb/databaseAccounts', 
+                          tolower(concat(parameters('Deployment'), '-cosmos-', parameters('cosmosDBInfo').Name))
+                          )]"
+          ],
+          "apiVersion": "2015-07-01",
+          "properties": {
+            "workspaceId": "[parameters('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "DataPlaneRequests",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 30,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "QueryRuntimeStatistics",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 30,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "MongoRequests",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 30,
+                  "enabled": false
+                }
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.DocumentDb/databaseAccounts/sqlDatabases",
+      "name": "[tolower(concat(parameters('Deployment'),'-cosmos-',parameters('cosmosDBInfo').Name,'/',parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName))]",
+      "apiVersion": "2021-03-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDb/databaseAccounts',tolower(concat(parameters('Deployment'),'-cosmos-',parameters('cosmosDBInfo').Name)))]"
+      ],
+      "copy": {
+        "name": "cosmosDBLoop",
+        "count": "[length(parameters('cosmosDBInfo').databases)]"
+      },
+      "properties": {
+        "resource": {
+          "id": "[parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName]"
+        },
+        "options": {
+          "throughput": 400
+        }
+      },
+      "resources": [
+        {
+          "type": "containers",
+          "name": "[parameters('cosmosDBInfo').databases[copyIndex(0)].containerName]",
+          "apiVersion": "2021-03-01-preview",
+          "dependsOn": [
+            "[resourceId('Microsoft.DocumentDb/databaseAccounts/sqlDatabases', 
+                          tolower(concat(parameters('Deployment'), '-cosmos-', parameters('cosmosDBInfo').Name)),
+                          parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName)]"
+          ],
+          "properties": {
+            "resource": {
+              "id": "[parameters('cosmosDBInfo').databases[copyIndex(0)].containerName]",
+              "partitionKey": {
+                "paths": [
+                  "/myPartitionKey"
+                ],
+                "kind": "Hash"
+              },
+              "indexingPolicy": {
+                "indexingMode": "consistent",
+                "includedPaths": [
+                  {
+                    "path": "/*"
+                  }
+                ],
+                "excludedPaths": [
+                  {
+                    "path": "/myPathToNotIndex/*"
+                  }
+                ]
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "userDefinedFunctions",
+              "name": "REGEX_MATCH",
+              "apiVersion": "2021-03-01-preview",
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDb/databaseAccounts/sqlDatabases/containers',
+                                  tolower(concat(parameters('Deployment'), '-cosmos-',parameters('cosmosDBInfo').Name)),
+                                  parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName,
+                                  parameters('cosmosDBInfo').databases[copyIndex(0)].containerName)]"
+              ],
+              "properties": {
+                "resource": {
+                  "id": "REGEX_MATCH",
+                  "body": "function REGEX_MATCH(input,pattern)\r\n{\r\n    if (input.match(pattern))\r\n    {\r\n        return input\r\n    }\r\n}"
+                },
+                "options": {
+
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "outputs": {
+  }
+}

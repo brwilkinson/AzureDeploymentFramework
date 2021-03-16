@@ -106,7 +106,7 @@
       "condition": true,
       "name": "[replace(concat('dpRoleAssignment-', parameters('roleInfo').Name,'-',copyIndex(1)),'@','_')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "subscriptionId": "[variables('RoleAssignment')[CopyIndex(0)].DestSubscriptionID]",
       "resourceGroup": "[concat(variables('RoleAssignment')[CopyIndex(0)].DestPrefix,'-',parameters('Global').OrgName,'-',variables('RoleAssignment')[CopyIndex(0)].DestApp,'-RG-',variables('RoleAssignment')[CopyIndex(0)].DestRG)]",
       "dependsOn": [

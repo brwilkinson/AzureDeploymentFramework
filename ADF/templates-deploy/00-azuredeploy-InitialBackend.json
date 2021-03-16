@@ -84,7 +84,7 @@
       "condition": "[equals(parameters('Stage').SQL,1)]",
       "name": "SQLServers",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
@@ -99,7 +99,7 @@
       "condition": "[equals(parameters('Stage').InitialFIL,1)]",
       "name": "InitialFIL",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",

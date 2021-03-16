@@ -41,7 +41,7 @@
     {
       "name": "[concat('dp', parameters('Deployment'), '-nicDeploy', parameters('VM').VMName, copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "copy": {
         "name": "nicLoop",
         "count": "[length( parameters('NICs') )]"

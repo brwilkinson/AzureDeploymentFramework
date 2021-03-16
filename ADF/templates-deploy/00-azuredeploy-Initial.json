@@ -90,7 +90,7 @@
       "condition": "[equals(parameters('Stage').KV,1)]",
       "name": "[concat('dp', variables('Deployment'), '-KV')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
@@ -105,7 +105,7 @@
       "condition": "[equals(parameters('Stage').OMS,1)]",
       "name": "[concat('dp', variables('Deployment'), '-OMS')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
@@ -120,7 +120,7 @@
       "condition": "[equals(parameters('Stage').RSV,1)]",
       "name": "[concat('dp', variables('Deployment'), '-RSV')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-OMS')]"
       ],
@@ -137,7 +137,7 @@
       "condition": "[equals(parameters('Stage').VNET,1)]",
       "name": "[concat('dp', variables('Deployment'), '-VNET')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
@@ -152,7 +152,7 @@
       "condition": "[equals(parameters('Stage').ILB,1)]",
       "name": "[concat('dp', variables('Deployment'), '-ILB')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]"
       ],
@@ -205,7 +205,7 @@
       //"name": "[concat('dp', variables('Deployment'), 'InitialDOP')]",
       "name": "InitialDOP",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]",
         "[concat('dp', variables('Deployment'), '-OMS')]"
@@ -223,7 +223,7 @@
       "condition": "[equals(parameters('Stage').WAFPOLICY,1)]",
       "name": "[concat('dp', variables('Deployment'), '-WAFPOLICY')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]"
       ],
@@ -240,7 +240,7 @@
       "condition": "[equals(parameters('Stage').WAF,1)]",
       "name": "[concat('dp', variables('Deployment'), '-WAF')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]",
         "[concat('dp', variables('Deployment'), '-WAFPOLICY')]"

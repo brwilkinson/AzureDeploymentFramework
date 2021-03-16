@@ -84,7 +84,7 @@
     {
       "name": "[replace(concat(variables('mgInfo')[copyIndex()].displayName),' ','_')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-10-01",
+      "apiVersion": "2020-10-01",
       "scope": "/",
       "location": "[variables('primaryLocation')]",
       "copy": {
