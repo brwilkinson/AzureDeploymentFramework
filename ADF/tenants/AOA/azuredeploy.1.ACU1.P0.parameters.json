@@ -331,6 +331,11 @@
         "LinkPrivateDnsInfo": [
           {
             "zoneRG": "P0",
+            "zone": "PSThing.com",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
             "zone": "privatelink.centralus.azmk8s.io",
             "Autoregistration": false
           },
@@ -357,11 +362,6 @@
           {
             "zoneRG": "P0",
             "zone": "privatelink.afs.azure.net",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "PSThing.com",
             "Autoregistration": false
           }
         ],
@@ -531,7 +531,6 @@
               "ASName": "AD",
               "DDRole": "32GB",
               "OSType": "Server2016Coresmall",
-              "ExcludeDomainJoin": 1,
               "Zone": 2,
               "NICs": [
                 {

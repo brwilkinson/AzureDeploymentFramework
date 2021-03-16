@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'S1',
+    [string]$Enviro = 'P0',
     [string]$App = 'AOA'
 )
 # F5 to load

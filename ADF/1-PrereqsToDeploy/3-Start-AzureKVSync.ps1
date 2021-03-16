@@ -1,5 +1,5 @@
 param(
-    [string]$TempCertPath = ('c:\temp\Certs')
+    [string]$TempCertPath = 'c:\temp\Certs'
 )
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
 
@@ -25,9 +25,9 @@ Get-AzKeyVaultCertificate -VaultName $primaryKVName | ForEach-Object {
         {
             mkdir $TempCertPath
         }
-        $SourceCert | Backup-AzKeyVaultCertificate -OutputFile $($TempCertPath)\$($CertName).blob -Force
-        Restore-AzKeyVaultCertificate -VaultName $SecondaryKVName -InputFile $($TempCertPath)\$($CertName).blob
-        Remove-Item -Path $($TempCertPath)\$($CertName).blob
+        $SourceCert | Backup-AzKeyVaultCertificate -OutputFile $TempCertPath\$(${CertName}).blob -Force
+        Restore-AzKeyVaultCertificate -VaultName $SecondaryKVName -InputFile $TempCertPath\$(${CertName}).blob
+        Remove-Item -Path $TempCertPath\$(${CertName}).blob
     }
     else
     {
