@@ -1,5 +1,5 @@
 param (
-    [String]$APP = 'AOA'
+    [String]$APP = 'HAA'
 )
 
 $ArtifactStagingDirectory = "$PSScriptRoot\.."
@@ -20,6 +20,7 @@ $SecondaryRGName = $Secondary.HubRGName
 $SecondaryLocation = $Global.SecondaryLocation
 $SecondaryKvName = $Secondary.KVName
 $ServicePrincipalAdmins = $Global.ServicePrincipalAdmins
+$RolesLookup = $Global.RolesLookup
 
 # Primary RG
 Write-Verbose -Message "Primary HUB RGName: $PrimaryRGName" -Verbose
@@ -59,9 +60,12 @@ if (Get-AzKeyVault -Name $PrimaryKvName -EA SilentlyContinue)
     try
     {
         $ServicePrincipalAdmins | ForEach-Object {
-            if (! (Get-AzRoleAssignment -ResourceGroupName $PrimaryRGName -SignInName $_ -RoleDefinitionName 'Key Vault Administrator'))
+            $user = $_
+            $objID = $RolesLookup | foreach $user
+            
+            if (! (Get-AzRoleAssignment -ResourceGroupName $PrimaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator'))
             {
-                New-AzRoleAssignment -ResourceGroupName $PrimaryRGName -SignInName $_ -RoleDefinitionName 'Key Vault Administrator' -Verbose
+                New-AzRoleAssignment -ResourceGroupName $PrimaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator' -Verbose
             }
         }
     }
@@ -110,9 +114,12 @@ if (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue)
     try
     {
         $ServicePrincipalAdmins | ForEach-Object {
-            if (! (Get-AzRoleAssignment -ResourceGroupName $SecondaryRGName -SignInName $_ -RoleDefinitionName 'Key Vault Administrator'))
+            $user = $_
+            $objID = $RolesLookup | foreach $user
+
+            if (! (Get-AzRoleAssignment -ResourceGroupName $SecondaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator'))
             {
-                New-AzRoleAssignment -ResourceGroupName $SecondaryRGName -SignInName $_ -RoleDefinitionName 'Key Vault Administrator' -Verbose
+                New-AzRoleAssignment -ResourceGroupName $SecondaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator' -Verbose
             }
         }
     }

@@ -2,7 +2,7 @@ function Global:AzSet
 {
     param (
         [string]$Enviro = 'S1',
-        [validateset('ABC', 'ADF', 'AOA', 'HUB', 'PSO')]
+        [validateset('ABC', 'ADF', 'AOA', 'HUB', 'PSO', 'HAA')]
         [string]$App = 'AOA'
     )
     # F5 to load

@@ -1,0 +1,44 @@
+{
+  "Global": {
+    "tenantId": "11cb9e1b-bd08-4f80-bb8f-f71940c39079",
+    "SubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
+    "hubSubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
+    "OrgName": "BRW",
+    "AppName": "HAA",
+    "SAName": "acu1brwhaag1saglobal",
+    "GlobalRGName": "ACU1-BRW-HAA-RG-G1",
+    "PrimaryLocation": "CentralUS",
+    "PrimaryPrefix": "ACU1",
+    "SecondaryLocation": "EastUS2",
+    "SecondaryPrefix": "AEU2",
+    "PublicIPAddressforRemoteAccess": "73.157.100.227/32",
+    "vmAdminUserName": "brw",
+    "CertURLs": [
+      "*.haapp.net",
+      "*.contoso.com"
+    ],
+    "ADDomainName": "contoso.com",
+    "DomainName": "haapp.net",
+    "DomainNameExt": "haapp.net",
+    "__DomainNameExtSubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
+    "__DomainNameExtRG": "ACU1-BRW-HAA-RG-G1",
+    "CertificateThumbprint": "6FE90D30E37F5D93AF30AF449A234B5DB5205935",
+    "GitHubProject": "AzureDeploymentFramework",
+    "ServicePrincipalAdmins": [
+      "benwilk@microsoft.com"
+    ],
+    "defaultWAFsslpolicyName": "AppGwSslPolicy20170401S",
+    "apimPublisherEmail": "alerts@contoso.com",
+    "alertRecipients": [
+      "alerts@contoso.com"
+    ],
+    "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
+    "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
+    "sqlCredentialName": "localadmin",
+    "sqlAutobackupRetentionPeriod": 5,
+    "RolesLookup": {
+      "benwilk@microsoft.com": "c5e10b46-28bb-48da-8cec-23ca8968d53a",
+      "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1"
+    }
+  }
+}
