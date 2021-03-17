@@ -2,7 +2,7 @@ param (
     [string]$Enviro = 'P0',
     [string]$App = 'PSO'
 )
-import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1"
+import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
 AzSet -Enviro $enviro -App $App
 break
 # F8 to run individual steps
