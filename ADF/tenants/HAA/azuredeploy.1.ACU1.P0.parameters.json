@@ -32,14 +32,14 @@
         "RG": 1,
         "RBAC": 1,
         "UAI": 1,
-        "SP": 1,
+        "SP": 0,
         "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
         "OMSDataSources": 1,
         "SA": 1,
         "StorageSync": 0,
-        "RSV": 0,
+        "RSV": 1,
         "NSGHUB": 1,
         "NSGSPOKE": 0,
         "NetworkWatcher": 1,
@@ -89,6 +89,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "VMInsights": 1,
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
@@ -223,10 +224,6 @@
                 "RG": "P0"
               },
               {
-                "Name": "Key_Vault_Reader",
-                "RG": "P0"
-              },
-              {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0"
               },
@@ -252,7 +249,7 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snFE01",
@@ -260,7 +257,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snAD01",
@@ -268,7 +265,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snBE01",
@@ -276,7 +273,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "AzureBastionSubnet",
@@ -284,7 +281,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "AzureFirewallSubnet",
@@ -302,7 +299,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snMT02",
@@ -310,7 +307,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           }
         ],
         "networkWatcherInfo": {
@@ -369,7 +366,18 @@
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": "Deny",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
           }
         ],
         "KVInfo": [
@@ -379,7 +387,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Allow",
+            "allNetworks": "Deny",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

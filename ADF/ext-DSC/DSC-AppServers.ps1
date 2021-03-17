@@ -456,12 +456,24 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
-        foreach ($Capability in $Node.WindowsCapabilityPresent)
+        foreach ($Capability in $Node.WindowsCapabilitySourcePresent)
         {
             WindowsCapability $Capability.Name
             {
                 Name   = $Capability.Name
                 Source = $Capability.Source
+                Ensure = 'Present'
+                
+            }
+            $dependsonFeatures += @("[WindowsCapability]$Capability")
+        }
+
+        #-------------------------------------------------------------------
+        foreach ($Capability in $Node.WindowsCapabilityPresent)
+        {
+            WindowsCapability $Capability.Name
+            {
+                Name   = $Capability.Name
                 Ensure = 'Present'
                 
             }
@@ -1081,7 +1093,7 @@ Configuration AppServers
                     $successFlag = $True             
                     $services = Get-CimInstance -ClassName win32_service -Filter "Name LIKE 'vstsagent.azuredeploymentframework%'"                
                     foreach ($service in $services)
-                    {                				    
+                    {
                         if ($service.startname -eq $using:mycredu)
                         {
                             Write-Warning "VSTS service: $($service.Name) -- Correct StartName: $($service.startname)"
@@ -1090,7 +1102,7 @@ Configuration AppServers
                         {
                             Write-Warning "VSTS service: $($service.Name) -- Not Correct StartName: $($service.startname)"
                             $successFlag = $False 
-                        }                                             
+                        }
                     }
                     $successFlag
                 }
@@ -1175,6 +1187,15 @@ if ($env:computername -match 'AOA')
     $prefix = $env:computername.substring(0, 4)  # AZC1
     $org = 'BRW'
 }
+if ($env:computername -match 'HAA')
+{
+    $depname = $env:computername.substring(7, 2)  # D1
+    $SAID = '/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Storage/storageAccounts/acu1brwhaag1saglobal'
+    $App = 'HAA'
+    $Domain = 'haapp.net'
+    $prefix = $env:computername.substring(0, 4)  # AZC1
+    $org = 'BRW'
+}
 
 $depid = $depname.substring(1, 1)
 
@@ -1187,6 +1208,7 @@ $dep = '{0}{1}{2}{3}' -f $prefix, $org, $app, $depname
 
 $ClientId = @{
     S1 = '5438d30f-e71c-4e9c-b0d9-117f5d154d82'
+    P0 = 'ac061a4c-ef53-4397-abcb-d3c72329d53c'
 }
 
 $Params = @{

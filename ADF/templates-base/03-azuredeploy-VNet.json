@@ -91,16 +91,21 @@
       "[concat(variables('networkId'),'.0/23')]"
     ],
     "DNSServers": "[parameters('Global').DNSServers]",
-    "AzureDNS": "168.63.129.16",
     "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
     "RouteTableGlobal": {
       "id": "[resourceid(parameters('Global').HubRGName,'Microsoft.Network/routeTables/',concat(replace(parameters('Global').hubVnetName,'vn','rt'),variables('Domain'),parameters('Global').RTName))]"
     },
-    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
     "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
-    // First Hub
-    "hubVnetName": "[parameters('Global').hubVnetName]",
-    "hubVnetResourceGroupName": "[parameters('Global').hubRGName]",
+
+    // Peer back to Hub, unless Secondary region Hub, then Peer back to Primary Region Hub.
+    "hubVnetName": "[if(contains(parameters('DeploymentInfo'),'hubRegionPrefix'),
+                        replace(parameters('Global').hubVnetName,parameters('Prefix'),parameters('DeploymentInfo').hubRegionPrefix),
+                        parameters('Global').hubVnetName
+                      )]",
+    "hubVnetResourceGroupName": "[if(contains(parameters('DeploymentInfo'),'hubRegionPrefix'),
+                        replace(parameters('Global').hubRGName,parameters('Prefix'),parameters('DeploymentInfo').hubRegionPrefix),
+                        parameters('Global').hubRGName
+                      )]",
     "hubVnetResourceSubscriptionID": "[parameters('Global').hubSubscriptionID]",
     "Deploymentnsg": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-', parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),if(equals( concat(parameters('Environment'),parameters('DeploymentID')),'P0') ,'-Hub','-Spoke'))]",
     "delegations": {

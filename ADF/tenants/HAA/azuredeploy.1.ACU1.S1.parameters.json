@@ -39,7 +39,7 @@
         "OMSDataSources": 1,
         "SA": 1,
         "StorageSync": 0,
-        "RSV": 0,
+        "RSV": 1,
         "NSGHUB": 0,
         "NSGSPOKE": 1,
         "NetworkWatcher": 0,
@@ -90,6 +90,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "VMInsights": 1,
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
@@ -348,7 +349,12 @@
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": "Deny",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
             "blobVersioning": 1,
             "changeFeed": 1,
             "softDeletePolicy": {
@@ -373,7 +379,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Allow",
+            "allNetworks": "Deny",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",

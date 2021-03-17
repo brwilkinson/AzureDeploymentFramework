@@ -89,13 +89,14 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "VMInsights": 1,
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 1,
+        "DomainJoin": 0,
         "AADLogin": 0,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
@@ -369,7 +370,18 @@
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": "Deny",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
           }
         ],
         "KVInfo": [
@@ -473,30 +485,13 @@
         ],
         "Appservers": {
           "ADPrimary": [
-            // {
-            //   "VMName": "DNS01",
-            //   "Role": "DNS",
-            //   "ASName": "DNS",
-            //   "DSConfig": "AppServers",
-            //   "DDRole": "32GB",
-            //   "OSType": "Server2019CoreContainerssmall",
-            //   "Zone": 1,
-            //   "NICs": [
-            //     {
-            //       "Subnet": "AD01",
-            //       "Primary": 1,
-            //       "StaticIP": "75"
-            //     }
-            //   ]
-            // }
-            // move back to AD Domain because of conditional access policies
             {
-              "VMName": "DC01",
-              "Role": "ADp",
-              "ASName": "AD",
+              "VMName": "DNS01",
+              "Role": "DNS",
+              "ASName": "DNS",
+              "DSConfig": "AppServers",
               "DDRole": "32GB",
-              "OSType": "Server2016Coresmall",
-              "ExcludeDomainJoin": 1,
+              "OSType": "Server2019CoreContainerssmall",
               "Zone": 1,
               "NICs": [
                 {
@@ -506,31 +501,32 @@
                 }
               ]
             }
-          ],
-          "ADSecondary": [
+            // move back to AD Domain because of conditional access policies
             // {
-            //   "VMName": "DNS02",
-            //   "Role": "DNS",
-            //   "ASName": "DNS",
-            //   "DSConfig": "AppServers",
+            //   "VMName": "DC01",
+            //   "Role": "ADp",
+            //   "ASName": "AD",
             //   "DDRole": "32GB",
-            //   "OSType": "Server2019CoreContainerssmall",
-            //   "Zone": 2,
+            //   "OSType": "Server2016Coresmall",
+            //   "ExcludeDomainJoin": 1,
+            //   "Zone": 1,
             //   "NICs": [
             //     {
             //       "Subnet": "AD01",
             //       "Primary": 1,
-            //       "StaticIP": "76"
+            //       "StaticIP": "75"
             //     }
             //   ]
             // }
-            // move back to AD Domain because of conditional access policies
+          ],
+          "ADSecondary": [
             {
-              "VMName": "DC02",
-              "Role": "ADs",
-              "ASName": "AD",
+              "VMName": "DNS02",
+              "Role": "DNS",
+              "ASName": "DNS",
+              "DSConfig": "AppServers",
               "DDRole": "32GB",
-              "OSType": "Server2016Coresmall",
+              "OSType": "Server2019CoreContainerssmall",
               "Zone": 2,
               "NICs": [
                 {
@@ -538,11 +534,27 @@
                   "Primary": 1,
                   "StaticIP": "76"
                 }
-              ],
-              "AppInfo": {
-                "SiteName": "Default-First-Site-Name"
-              }
+              ]
             }
+            // move back to AD Domain because of conditional access policies
+            // {
+            //   "VMName": "DC02",
+            //   "Role": "ADs",
+            //   "ASName": "AD",
+            //   "DDRole": "32GB",
+            //   "OSType": "Server2016Coresmall",
+            //   "Zone": 2,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "AD01",
+            //       "Primary": 1,
+            //       "StaticIP": "76"
+            //     }
+            //   ],
+            //   "AppInfo": {
+            //     "SiteName": "Default-First-Site-Name"
+            //   }
+            // }
           ]
         },
         "WAFInfo": [

@@ -94,7 +94,7 @@
       "type": "Microsoft.Portal/dashboards",
       "apiVersion": "2015-08-01-preview",
       "location": "[resourceGroup().location]",
-      "name": "[concat(variables('ApplicationList')[copyIndex()].AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-Default-Dashboard')]",
+      "name": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',variables('ApplicationList')[copyIndex()].AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-Default-Dashboard')]",
       "copy": {
         "name": "dashboardLoop",
         "count": "[length( variables('ApplicationList') )]"

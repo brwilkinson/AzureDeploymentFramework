@@ -348,7 +348,12 @@
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": "Deny",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
             "blobVersioning": 1,
             "changeFeed": 1,
             "softDeletePolicy": {
@@ -373,7 +378,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Allow",
+            "allNetworks": "Deny",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",

@@ -79,6 +79,19 @@
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "saInfo": "[parameters('DeploymentInfo').saInfo]",
     "hubRG": "[parameters('Global').hubRGName]",
+    //  Only needed this to allow private storage on deployment account, however ARM cannot access it, 
+    //  so there is no reason to use this at the moment.
+    // "copy": [
+    //   {
+    //     "name": "ipRulesAllow",
+    //     "count": "[length(parameters('Global').PublicIPAddressforRemoteAccess)]",
+    //     "input": {
+    //       //  Ip rules must be single /32 ip address or else larger than /30, this is adjusted for /32
+    //       "value": "[first(split(parameters('Global').PublicIPAddressforRemoteAccess[copyIndex('ipRulesAllow')],'/'))]",
+    //       "action": "Allow"
+    //     }
+    //   }
+    // ],
     "storageLoggingAbstractions": [
       "blobServices",
       "fileServices",
@@ -120,10 +133,17 @@
         "azureFilesIdentityBasedAuthentication": "[if(and(contains(variables('saInfo')[copyIndex()],'ADDS'),equals(variables('saInfo')[copyIndex()].ADDS,1)),variables('azureFilesIdentityBasedAuthentication'),json('null'))]",
         "largeFileSharesState": "[if(contains(variables('saInfo')[copyIndex()],'largeFileSharesState'),variables('saInfo')[copyIndex()].largeFileSharesState,json('null'))]",
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "defaultAction": "[if(contains(variables('saInfo')[copyIndex(0)],'allNetworks'),variables('saInfo')[copyIndex(0)].allNetworks,'Allow')]"
-          // "ipRules": [
-          // ],
+          //  Only needed this to allow private storage on deployment account, however ARM cannot access it, 
+          //  so there is no reason to use this at the moment.
+          // "ipRules": "[if(and(
+          //                     contains(variables('saInfo')[copyIndex(0)],'addRemoteManagementIPs'),
+          //                     equals(variables('saInfo')[copyIndex(0)].addRemoteManagementIPs,1)
+          //                     ),
+          //                 variables('ipRulesAllow'),
+          //                 json('null')
+          //               )]"
           // "virtualNetworkRules": [
           // ]
         },

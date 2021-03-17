@@ -184,6 +184,21 @@ Function global:Start-AzDeploy
     Write-Warning -Message "Using Resource Group: [$ResourceGroupName]"
     Write-Warning -Message "Using Artifacts Directory: [$ArtifactStagingDirectory]"
 
+    # Do not create the Resource Groups in this file anymore, only validat that it exists.
+    if (-not $Subscription)
+    {
+        if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
+        {
+            $StorageAccounts = Get-AzStorageAccount
+            $globalstorage = $StorageAccounts | where StorageAccountName -match g1saglobal | foreach ResourceGroupName
+            echo "`n"
+            Write-Verbose -Message "$('*' * 102)" -Verbose
+            Write-Error -Message "[$ResourceGroupName] does not match [$globalstorage], switch to the correct Subscription!!!" -EA continue
+            Write-Verbose -Message "$('*' * 102)" -Verbose
+            break 
+        }
+    }
+
     $GlobalGlobal | Add-Member NoteProperty -Name TemplateSpec -Value $TemplateSpec.IsPresent
     $GlobalGlobal | Add-Member NoteProperty -Name TemplateSpecVersion -Value $TemplateSpecVersion
     # # TemplatSpecs
@@ -259,7 +274,7 @@ Function global:Start-AzDeploy
     $Global.Add('computeSizeLookupOptions', ($computeSizeLookupOptions | ConvertTo-Json -Compress -Depth 10))
 
     $StorageAccountName = $Global.SAName
-    Write-Verbose "Storage Account is: $StorageAccountName"
+    Write-Verbose "Storage Account is: $StorageAccountName" -Verbose
 
     # # Pass in Secrets from the Global Regional
     # $Secrets = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$Prefix.json | ConvertFrom-Json -Depth 10 | Foreach Secrets
@@ -298,7 +313,7 @@ Function global:Start-AzDeploy
         {
             New-AzResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
         }
-        $StorageAccount = New-AzureRmStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
+        $StorageAccount = New-AzStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
     }
 
     # Create the storage container only if it doesn't already exist
@@ -405,15 +420,6 @@ Function global:Start-AzDeploy
 
     $TemplateArgs.Add('TemplateFile', $TemplateFile)
     $TemplateArgs.Add('TemplateParameterFile', $TemplateParametersFile)
-
-    # Create the resource group only when it doesn't already exist
-    if (-not $Subscription)
-    {
-        if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
-        {
-            New-AzResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
-        }
-    }
 
     if ($ValidateOnly)
     {

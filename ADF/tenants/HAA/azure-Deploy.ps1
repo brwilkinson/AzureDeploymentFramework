@@ -4,7 +4,7 @@ param (
 )
 # F5 to load
 $ADF = Get-Item -Path "$PSScriptRoot\..\.."
-$Current = @{App = 'HAA'; DP = $Enviro }
+$Current = @{App = $App; DP = $Enviro }
 if (!(Test-Path ADF:\)) { New-PSDrive -PSProvider FileSystem -Root $ADF -Name ADF }
 . ADF:\release-az\Start-AzDeploy.ps1
 $env:Enviro = $Enviro # add this to track on prompt (oh-my-posh env variable)

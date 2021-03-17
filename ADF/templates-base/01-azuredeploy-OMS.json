@@ -921,6 +921,7 @@
     },
     {
       // https://docs.microsoft.com/en-us/azure/azure-monitor/insights/vminsights-health-configure-dcr
+      "condition": "[equals(parameters('Extensions').VMInsights,1)]",
       "type": "Microsoft.Insights/dataCollectionRules",
       "apiVersion": "2019-11-01-preview",
       "name": "[replace(concat(variables('Deployment'),'VMInsights'),'-','')]",

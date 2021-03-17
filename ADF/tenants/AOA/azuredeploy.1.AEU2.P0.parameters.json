@@ -45,7 +45,7 @@
         "NetworkWatcher": 1,
         "FlowLogs": 1,
         "VNet": 1,
-        "VNetPeering": 0,
+        "VNetPeering": 1,
         "DNSPrivateZone": 1,
         "LinkPrivateDns": 1,
         "PrivateLink": 1,
@@ -89,6 +89,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "VMInsights": 1,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
@@ -249,6 +250,8 @@
             ]
           }
         ],
+        //  in Secondary Hub, override peer (primary) Hub
+        "hubRegionPrefix": "ACU1",
         "SubnetInfo": [
           {
             "name": "snWAF01",
@@ -372,7 +375,18 @@
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": "Deny",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
           }
         ],
         "KVInfo": [

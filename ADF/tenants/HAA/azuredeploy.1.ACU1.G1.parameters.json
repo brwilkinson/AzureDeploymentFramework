@@ -65,7 +65,7 @@
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 0,
-        "FRONTDOOR": 1,
+        "FRONTDOOR": 0,
         "WAF": 0,
         "SetExternalDNS": 0,
         "SetInternalDNS": 1,
@@ -90,6 +90,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "VMInsights": 0,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
@@ -129,10 +130,6 @@
                 "RG": "P0"
               },
               {
-                "Name": "Key_Vault_Reader",
-                "RG": "P0"
-              },
-              {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0"
               },
@@ -157,6 +154,7 @@
             "nameSuffix": "global",
             "skuName": "Standard_RAGRS",
             "allNetworks": "Allow",
+            "addRemoteManagementIPs": 1,
             "largeFileSharesState": "Disabled",
             "logging": {
               "r": 0,

@@ -220,19 +220,14 @@
             "config": {
               "logAnalyticsWorkspaceResourceID": "[variables('OMSworkspaceID')]"
             }
-          },
-          "aciConnectorLinux": {
-            "enabled": true,
-            "config": {
-              "SubnetName": "snMT01"
-            }
-            //   // not currently assignable
-            //   // "identity": {
-            //   //   "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux'))]",
-            //   //   "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux')),'2018-11-30').clientId]",
-            //   //   "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('deployment'),'-uaiAciConnectorLinux')),'2018-11-30').principalId]"
-            //   // }
           }
+          //   If you add this back, ensure you add the RBAC back in below.
+          // "aciConnectorLinux": {
+          //   "enabled": true,
+          //   "config": {
+          //     "SubnetName": "snMT01"
+          //   }
+          // }
         }
       },
       "resources": [
@@ -363,15 +358,15 @@
                       "Name": "Virtual Machine Contributor"
                     }
                   ]
-                },
-                {
-                  "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.aciConnectorLinux.identity.objectId]",
-                  "RBAC": [
-                    {
-                      "Name": "Contributor"
-                    }
-                  ]
                 }
+                // {
+                //   "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.aciConnectorLinux.identity.objectId]",
+                //   "RBAC": [
+                //     {
+                //       "Name": "Contributor"
+                //     }
+                //   ]
+                // }
               ]
             }
           }
@@ -417,7 +412,7 @@
       "apiVersion": "2020-10-01",
       "copy": {
         "name": "UAILoop",
-        "count": 4
+        "count": 3
       },
       "dependsOn": [
         "[concat('dp-identities-',parameters('deployment'),'-aks',parameters('AKSInfo').Name)]"

@@ -1,11 +1,18 @@
 @'
-kube-apiserver
-kube-audit
-kube-audit-admin
-kube-controller-manager
-kube-scheduler
-cluster-autoscaler
-guard
+AzureBackupReport
+CoreAzureBackup
+AddonAzureBackupJobs
+AddonAzureBackupAlerts
+AddonAzureBackupPolicy
+AddonAzureBackupStorage
+AddonAzureBackupProtectedInstance
+AzureSiteRecoveryJobs
+AzureSiteRecoveryEvents
+AzureSiteRecoveryReplicatedItems
+AzureSiteRecoveryReplicationStats
+AzureSiteRecoveryRecoveryPoints
+AzureSiteRecoveryReplicationDataUploadRate
+AzureSiteRecoveryProtectedDiskDataChurn
 '@ -split '\n' | ForEach-Object {
 
     @{

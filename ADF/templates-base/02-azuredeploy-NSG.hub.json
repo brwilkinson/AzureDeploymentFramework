@@ -201,20 +201,6 @@
               "priority": 1110,
               "direction": "Outbound"
             }
-          },
-          {
-            "name": "Allow-All-Inbound",
-            "properties": {
-              "description": "Allow-All-Inbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1110,
-              "direction": "Inbound"
-            }
           }
         ]
       },
