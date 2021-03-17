@@ -75,7 +75,7 @@
       "subnetCIDR": "10.2.0.0/16" // "[concat(variables('networkId'),'.0/27')]"
     },
     "IngressBrownfields": {
-      "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
+      "applicationGatewayId": "[concat('/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-D2-b/providers/Microsoft.Network/applicationGateways/',parameters('deployment'),'-waf', parameters('AKSInfo').WAFName)]"
     },
 
     "enablePrivateCluster": {

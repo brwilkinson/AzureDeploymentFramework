@@ -192,9 +192,10 @@ Function global:Start-AzDeploy
             $StorageAccounts = Get-AzStorageAccount
             $globalstorage = $StorageAccounts | where StorageAccountName -match g1saglobal | foreach ResourceGroupName
             echo "`n"
-            Write-Verbose -Message "$('*' * 102)" -Verbose
-            Write-Error -Message "[$ResourceGroupName] does not match [$globalstorage], switch to the correct Subscription!!!" -EA continue
-            Write-Verbose -Message "$('*' * 102)" -Verbose
+            $Message = "[$ResourceGroupName] does not exist, switch Subscription OR SubscriptionDeploy, currently using: [$globalstorage]!!!"
+            Write-Verbose -Message "$('*' * ($Message.length + 8))" -Verbose
+            Write-Error -Message $Message -EA continue
+            Write-Verbose -Message "$('*' * ($Message.length + 8))" -Verbose
             break 
         }
     }

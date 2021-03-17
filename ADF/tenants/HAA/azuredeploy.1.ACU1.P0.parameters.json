@@ -249,7 +249,7 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snFE01",
@@ -257,7 +257,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snAD01",
@@ -265,7 +265,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE01",
@@ -273,7 +273,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureBastionSubnet",
@@ -281,7 +281,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureFirewallSubnet",
@@ -299,7 +299,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snMT02",
@@ -307,7 +307,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           }
         ],
         "networkWatcherInfo": {

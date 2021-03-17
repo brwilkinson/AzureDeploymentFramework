@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Deploy_AZC1_BRW_ABC_RG_S1
 
 # Controls when the action will run.

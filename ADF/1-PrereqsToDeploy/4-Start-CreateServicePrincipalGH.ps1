@@ -43,7 +43,7 @@ $Account = $context.Account.Id
 
 #region Connect to AZDevOps
 $Global = Get-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10
-$GitHubProject = $Global.Global.GitHubProject
+$GHProject = $Global.Global.GHProject
 $SPAdmins = $Global.Global.ServicePrincipalAdmins
 $AppName = $Global.Global.AppName
 $OrgName = $Global.Global.OrgName
@@ -54,7 +54,7 @@ Foreach ($Environment in $Environments)
 {
     $EnvironmentName = "$($Prefix)-$($OrgName)-$($AppName)-RG-$Environment"
     $SecretName = $EnvironmentName -replace '-', '_'
-    $ServicePrincipalName = "${GitHubProject}_$EnvironmentName"
+    $ServicePrincipalName = "${GHProject}_$EnvironmentName"
 
     #region Create the Service Principal in Azure AD
     $appID = Get-AzADApplication -IdentifierUri "http://$ServicePrincipalName"

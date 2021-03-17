@@ -1,13 +1,9 @@
-# F5 to load
-$ADF = Get-Item -Path "$PSScriptRoot\..\.."
-$App = 'ABC'
-$Enviro = 'S1'
-# import deployment script
-if(!(test-path ADF:\)){new-psdrive -PSProvider FileSystem -Root $ADF -Name ADF}
-. ADF:\release-az\Start-AzDeploy.ps1
-
-Write-Verbose "ArtifactStagingDirectory is [$ADF] and App is [$App] and Enviro is [$Enviro]" -verbose
-
+param (
+    [string]$Enviro = 'P0',
+    [string]$App = 'ABC'
+)
+import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1"
+AzSet -Enviro $enviro -App $App
 break
 # F8 to run individual steps
 

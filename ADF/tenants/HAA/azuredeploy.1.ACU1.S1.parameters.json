@@ -32,7 +32,7 @@
         "RG": 1,
         "RBAC": 1,
         "UAI": 1,
-        "SP": 1,
+        "SP": 0,
         "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
@@ -70,7 +70,7 @@
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
         "APIM": 1,
-        "AKS": 1,
+        "AKS": 0,
         "SQLMI": 0,
         "CosmosDB": 1,
         "DASHBOARD": 1,
@@ -492,7 +492,7 @@
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "aksAADAdminGroups": [
-              "Logic_Runner_4@microsoft.onmicrosoft.com"
+              "AKS_Admins"
             ],
             "AgentPools": [
               {
@@ -566,67 +566,67 @@
                   "StaticIP": "62"
                 }
               ]
-            },
-            {
-              "VMName": "JMP02",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2022",
-              "ExcludeAdminCenter": 1,
-              // "ExcludeAADLogin": 1,
-              "_HotPatch": true,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "61"
-                }
-              ]
-            },
-            {
-              "VMName": "JMP03",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2022",
-              "ExcludeAdminCenter": 1,
-              // "ExcludeAADLogin": 1,
-              "_HotPatch": true,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "60"
-                }
-              ]
-            },
-            {
-              "VMName": "JMP04",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2019small",
-              "ExcludeAdminCenter": 1,
-              // "ExcludeAADLogin": 1,
-              "_HotPatch": true,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "58"
-                }
-              ]
             }
+            // {
+            //   "VMName": "JMP02",
+            //   "Role": "JMP",
+            //   "ASName": "JMP",
+            //   "DDRole": "64GB",
+            //   "OSType": "Server2022",
+            //   "ExcludeAdminCenter": 1,
+            //   // "ExcludeAADLogin": 1,
+            //   "_HotPatch": true,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "FE01",
+            //       "Primary": 1,
+            //       "FastNic": 1,
+            //       "PublicIP": "Static",
+            //       "StaticIP": "61"
+            //     }
+            //   ]
+            // },
+            // {
+            //   "VMName": "JMP03",
+            //   "Role": "JMP",
+            //   "ASName": "JMP",
+            //   "DDRole": "64GB",
+            //   "OSType": "Server2022",
+            //   "ExcludeAdminCenter": 1,
+            //   // "ExcludeAADLogin": 1,
+            //   "_HotPatch": true,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "FE01",
+            //       "Primary": 1,
+            //       "FastNic": 1,
+            //       "PublicIP": "Static",
+            //       "StaticIP": "60"
+            //     }
+            //   ]
+            // },
+            // {
+            //   "VMName": "JMP04",
+            //   "Role": "JMP",
+            //   "ASName": "JMP",
+            //   "DDRole": "64GB",
+            //   "OSType": "Server2019small",
+            //   "ExcludeAdminCenter": 1,
+            //   // "ExcludeAADLogin": 1,
+            //   "_HotPatch": true,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "FE01",
+            //       "Primary": 1,
+            //       "FastNic": 1,
+            //       "PublicIP": "Static",
+            //       "StaticIP": "58"
+            //     }
+            //   ]
+            // }
           ],
           "AppServersLinux": [
             {

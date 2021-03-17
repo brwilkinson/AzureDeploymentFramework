@@ -22,7 +22,8 @@
       "*.psthing.com"
     ],
     "CertificateThumbprint": "945C31E33E24EA30FE3423A045AA885CE6A95B74",
-    "GitHubProject": "AzureDeploymentFramework",
+    "GHProject": "ADF",
+    "ADOProject": "eshopondapr3",
     "ServicePrincipalAdmins": [
       "benwilk@microsoft.com"
     ],

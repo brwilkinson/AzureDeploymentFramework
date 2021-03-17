@@ -92,20 +92,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
-          {
-            "name": "Allow-All-Outbound",
-            "properties": {
-              "description": "Allow-All-Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1110,
-              "direction": "Outbound"
-            }
-          }
         ]
       },
       "resources": [
@@ -287,20 +273,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
-          {
-            "name": "Allow-All-Outbound",
-            "properties": {
-              "description": "Allow-All-Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1110,
-              "direction": "Outbound"
-            }
-          }
         ]
       },
       "resources": [

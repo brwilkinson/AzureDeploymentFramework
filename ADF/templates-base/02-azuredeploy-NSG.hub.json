@@ -94,20 +94,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
-          {
-            "name": "Allow-All-Outbound",
-            "properties": {
-              "description": "Allow-All-Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1110,
-              "direction": "Outbound"
-            }
-          }
         ]
       },
       "resources": [
@@ -141,20 +127,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
-          {
-            "name": "Allow-All-Outbound",
-            "properties": {
-              "description": "Allow-All-Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1110,
-              "direction": "Outbound"
-            }
-          }
         ]
       },
       "resources": [
@@ -189,17 +161,42 @@
       "properties": {
         "securityRules": [
           {
-            "name": "Allow-All-Outbound",
+            "name": "BEN_JMP_IN_Allow_RDP01",
             "properties": {
-              "description": "Allow-All-Outbound",
               "protocol": "*",
               "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[parameters('Global').PublicIPAddressforRemoteAccess]",
               "destinationAddressPrefix": "*",
               "access": "Allow",
-              "priority": 1110,
-              "direction": "Outbound"
+              "priority": 1130,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "BEN_JMP_IN_Allow_SSH01",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "[parameters('Global').PublicIPAddressforRemoteAccess]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1140,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "BEN_JMP_IN_Allow_WEB01",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "8080",
+              "sourceAddressPrefix": "[parameters('Global').PublicIPAddressforRemoteAccess]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1150,
+              "direction": "Inbound"
             }
           }
         ]
@@ -235,20 +232,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
-          {
-            "name": "Allow-All-Outbound",
-            "properties": {
-              "description": "Allow-All-Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1110,
-              "direction": "Outbound"
-            }
-          }
         ]
       },
       "resources": [
@@ -282,20 +265,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
-          {
-            "name": "Allow-All-Outbound",
-            "properties": {
-              "description": "Allow-All-Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1110,
-              "direction": "Outbound"
-            }
-          }
         ]
       },
       "resources": [

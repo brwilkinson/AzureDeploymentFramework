@@ -21,7 +21,7 @@ $Account = $context.Account.Id
 #region Connect to AZDevOps
 $Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | Foreach Global
 $AZDevOpsOrg = $Global.AZDevOpsOrg
-$GitHubProject = $Global.GitHubProject
+$ADOProject = $Global.ADOProject
 $SPAdmins = $Global.ServicePrincipalAdmins
 $AppName = $Global.AppName
 
@@ -43,7 +43,7 @@ ls vsts: | ft -AutoSize
 Foreach ($Environment in $Environments)
 {
     $EnvironmentName = "$($Prefix)-$($AppName)-RG-$Environment"
-    $ServicePrincipalName = "${GitHubProject}_$EnvironmentName"
+    $ServicePrincipalName = "${ADOProject}_$EnvironmentName"
 
     #region Create the Service Principal in Azure AD
     $appID = Get-AzADApplication -IdentifierUri "http://$ServicePrincipalName"
@@ -86,13 +86,12 @@ Foreach ($Environment in $Environments)
     # #endregion
 
     #region Create the VSTS endpoint
-    $endpoint = Get-VSTeamServiceEndpoint -ProjectName $GitHubProject | 
-    Where { $_.Type -eq 'azurerm' -and $_.Name -eq $ServicePrincipalName }
+    $endpoint = Get-VSTeamServiceEndpoint -ProjectName $ADOProject | Where { $_.Type -eq 'azurerm' -and $_.Name -eq $ServicePrincipalName }
 
     if (! $endpoint)
     {
         $params = @{
-            ProjectName          = $GitHubProject
+            ProjectName          = $ADOProject
             endpointName         = $ServicePrincipalName
             subscriptionName     = $Subscription
             subscriptionID       = $SubscriptionID

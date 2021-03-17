@@ -2,13 +2,8 @@ param (
     [string]$Enviro = 'P0',
     [string]$App = 'HAA'
 )
-# F5 to load
-$ADF = Get-Item -Path "$PSScriptRoot\..\.."
-$Current = @{App = $App; DP = $Enviro }
-if (!(Test-Path ADF:\)) { New-PSDrive -PSProvider FileSystem -Root $ADF -Name ADF }
-. ADF:\release-az\Start-AzDeploy.ps1
-$env:Enviro = $Enviro # add this to track on prompt (oh-my-posh env variable)
-Write-Verbose "ArtifactStagingDirectory is [$ADF] and App is [$App] and Enviro is [$env:Enviro]" -Verbose
+import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1"
+AzSet -Enviro $enviro -App $App
 break
 # F8 to run individual steps
 
@@ -20,6 +15,7 @@ break
 . ADF:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 @Current
 
 # Create Service principal for Env.
+set-location -path ADF:\
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments P0, G0, G1, S1, D3, T5, P7
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P4
 
