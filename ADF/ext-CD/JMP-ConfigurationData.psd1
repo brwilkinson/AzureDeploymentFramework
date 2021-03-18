@@ -83,7 +83,7 @@
             # Single set of features
             WindowsFeatureSetPresent       = 'GPMC', 'NET-Framework-Core'
 
-            DirectoryPresent               = @('F:\Source', 'F:\Repos', 'c:\program files\powershell\7')
+            DirectoryPresent               = @('F:\Source\InstallLogs', 'F:\Repos', 'c:\program files\powershell\7')
 
             EnvironmentPathPresent         = @(
                 'F:\Source\Tools\SysInternals',
@@ -118,7 +118,7 @@
             RegistryKeyPresent             = @(
                 @{ 
                     # enable developer mode to sideload appx packages, including winget
-                    Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock'; 
+                    Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock';
                     ValueName = 'AllowDevelopmentWithoutDevLicense';	ValueData = 1 ; ValueType = 'Dword'
                 },
 
@@ -135,6 +135,11 @@
                 @{ 
                     Key = 'HKEY_LOCAL_MACHINE\Software\OpenSSH';
                     ValueName = 'DefaultShell';	ValueData = 'C:\Program Files\PowerShell\7\pwsh.exe' ; ValueType = 'String'
+                },
+
+                @{ 
+                    Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main';
+                    ValueName = 'PreventFirstRunPage ';	ValueData = 1 ; ValueType = 'Dword'
                 }
             )
 
@@ -222,6 +227,11 @@
                 },
 
                 @{
+                    SourcePath      = 'F:\Source\PSModules\oh-my-posh\'
+                    DestinationPath = 'c:\program files\WindowsPowershell\Modules\oh-my-posh\'
+                },
+
+                @{
                     SourcePath      = 'F:\Source\Tools\profile.ps1'
                     DestinationPath = 'c:\program files\powershell\7\profile.ps1'
                     MatchSource     = $true
@@ -290,14 +300,14 @@
                     Name      = 'Microsoft .NET Core SDK 3.1.407 (x64)'
                     Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.407-win-x64.exe'
                     ProductId = ''
-                    Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install31407.txt"'
+                    Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install31407.txt"'
                 },
 
                 @{
                     Name      = 'Microsoft .NET SDK 5.0.201 (x64)'
                     Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.201-win-x64.exe'
                     ProductId = ''
-                    Arguments = '/Install /quiet /norestart /log "F:\Source\DotNetCore\install50201.txt"'
+                    Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install50201.txt"'
                 }
 
                 # @{

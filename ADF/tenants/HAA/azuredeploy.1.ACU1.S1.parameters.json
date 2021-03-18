@@ -126,6 +126,9 @@
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "HAA"
+              },
+              {
+                "Name": "Network Contributor"
               }
             ]
           },
@@ -237,7 +240,7 @@
             ]
           },
           {
-            "Name": "AzureDeploymentFramework_ACU1-BRW-HAA-RG-S1",
+            "Name": "{GHProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -285,6 +288,14 @@
                 "RG": "P0",
                 "Tenant": "HAA",
                 "PREFIX": "AEU2"
+              }
+            ]
+          },
+          {
+            "Name": "{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
               }
             ]
           }
@@ -335,7 +346,8 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": false,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
             "name": "snMT02",

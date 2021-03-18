@@ -118,6 +118,14 @@
             "serviceName": "Microsoft.Web/serverfarms"
           }
         }
+      ],
+      "Microsoft.ContainerInstance/containerGroups": [
+        {
+          "name": "aciDelegation",
+          "properties": {
+            "serviceName": "Microsoft.ContainerInstance/containerGroups"
+          }
+        }
       ]
     }
   },

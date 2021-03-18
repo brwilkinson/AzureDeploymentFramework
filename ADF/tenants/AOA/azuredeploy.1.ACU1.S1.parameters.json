@@ -124,6 +124,9 @@
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor"
               }
             ]
           },
