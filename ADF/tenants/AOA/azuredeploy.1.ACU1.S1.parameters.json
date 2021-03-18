@@ -336,7 +336,8 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": true,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
             "name": "snMT02",
