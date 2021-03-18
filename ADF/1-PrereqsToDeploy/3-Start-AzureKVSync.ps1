@@ -35,7 +35,8 @@ Get-AzKeyVaultCertificate -VaultName $primaryKVName | ForEach-Object {
     }
 }
 
-Get-AzKeyVaultSecret -VaultName $primaryKVName | Where-Object ContentType -NE 'application/x-pkcs12' | ForEach-Object {
+# Get-AzKeyVaultSecret -VaultName $primaryKVName | Where-Object ContentType -NE 'application/x-pkcs12' | ForEach-Object {
+Get-AzKeyVaultSecret -VaultName $primaryKVName | ForEach-Object {
     $SecretName = $_.Name
     $SourceSecret = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name $SecretName
 

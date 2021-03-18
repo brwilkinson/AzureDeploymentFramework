@@ -66,11 +66,12 @@
         "VMSS": 0,
         "WAFPOLICY": 1,
         "FRONTDOOR": 1,
-        "WAF": 0,
+        "WAF": 1,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
         "APIM": 1,
-        "AKS": 0,
+        "ACR": 1,
+        "AKS": 1,
         "SQLMI": 0,
         "CosmosDB": 1,
         "DASHBOARD": 1,
@@ -294,7 +295,7 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snFE01",
@@ -302,7 +303,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snBE02",
@@ -318,7 +319,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "AzureBastionSubnet",
@@ -326,7 +327,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snMT01",
@@ -334,7 +335,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snMT02",
@@ -342,7 +343,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           }
         ],
         "saInfo": [
@@ -395,7 +396,7 @@
             "apimSku": "Developer",
             "snName": "BE01",
             "virtualNetworkType": "Internal",
-            "certName": "PSTHING-WildCard",
+            "certName": "WildCardCert",
             "frontDoor": "01"
           }
         ],
@@ -486,7 +487,7 @@
             "skuTier": "Paid", //Free
             "enableRBAC": true, //true, false
             "podIdentity": true, //true, false
-            "privateCluster": false, //true, false
+            "privateCluster": true, //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
             "loadBalancer": "standard", //"basic","standard"
@@ -659,7 +660,7 @@
             "WAFCapacity": 2,
             "PrivateIP": "30",
             "SSLCerts": [
-              "PSThing-WildCard"
+              "WildCardCert"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
             "BEIPs": [], //"useAGIC"
@@ -701,7 +702,7 @@
                 "Port": 443,
                 "BackendPort": "80",
                 "Protocol": "https",
-                "Cert": "PSThing-WildCard",
+                "Cert": "WildCardCert",
                 "Domain": "haapp.net",
                 "Hostname": "waf",
                 "Interface": "Private" // "Public","Private"

@@ -29,8 +29,8 @@
 
 param (
     [String[]]$Environments = ('P0'),
-    [String]$Prefix = 'AZC1',
-    [String]$App = 'ADF',
+    [String]$Prefix = 'ACU1',
+    [String]$App = 'HAA',
     [Int]$SecretExpiryYears = 5
 )
 

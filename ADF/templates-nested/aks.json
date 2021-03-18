@@ -75,7 +75,7 @@
       "subnetCIDR": "10.2.0.0/16" // "[concat(variables('networkId'),'.0/27')]"
     },
     "IngressBrownfields": {
-      "applicationGatewayId": "[concat('/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-D2-b/providers/Microsoft.Network/applicationGateways/',parameters('deployment'),'-waf', parameters('AKSInfo').WAFName)]"
+      "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways/',concat(parameters('deployment'),'-waf', parameters('AKSInfo').WAFName))]"
     },
 
     "enablePrivateCluster": {
@@ -220,14 +220,14 @@
             "config": {
               "logAnalyticsWorkspaceResourceID": "[variables('OMSworkspaceID')]"
             }
+          },
+          // If you add/remove this, ensure you add/remove the RBAC back in below + loop length
+          "aciConnectorLinux": {
+            "enabled": true,
+            "config": {
+              "SubnetName": "snMT01"
+            }
           }
-          //   If you add this back, ensure you add the RBAC back in below.
-          // "aciConnectorLinux": {
-          //   "enabled": true,
-          //   "config": {
-          //     "SubnetName": "snMT01"
-          //   }
-          // }
         }
       },
       "resources": [
@@ -358,15 +358,15 @@
                       "Name": "Virtual Machine Contributor"
                     }
                   ]
+                },
+                {
+                  "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.aciConnectorLinux.identity.objectId]",
+                  "RBAC": [
+                    {
+                      "Name": "Contributor"
+                    }
+                  ]
                 }
-                // {
-                //   "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.aciConnectorLinux.identity.objectId]",
-                //   "RBAC": [
-                //     {
-                //       "Name": "Contributor"
-                //     }
-                //   ]
-                // }
               ]
             }
           }
@@ -412,7 +412,7 @@
       "apiVersion": "2020-10-01",
       "copy": {
         "name": "UAILoop",
-        "count": 3
+        "count": 4
       },
       "dependsOn": [
         "[concat('dp-identities-',parameters('deployment'),'-aks',parameters('AKSInfo').Name)]"

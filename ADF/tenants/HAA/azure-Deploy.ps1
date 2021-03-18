@@ -14,13 +14,15 @@ break
 # Export all role defintions
 . ADF:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 @Current
 
-# Create Service principal for Env.
+# Create Service principal for Env. + add GH secret or AZD Service connections
+# Infra in Github
 set-location -path ADF:\
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments P0, G0, G1, S1, D3, T5, P7
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P4
+. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
+# App pipelines in AZD
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix ACU1 -Environments P0, G0, G1, S1, D3, T5, P7
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P4
+. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
 # Bootstrap Hub RGs and Keyvaults
 . ADF:\1-PrereqsToDeploy\1-CreateHUBKeyVaults.ps1 @Current

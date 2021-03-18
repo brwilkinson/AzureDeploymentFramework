@@ -3,10 +3,9 @@
 #Requires -Module AZ.Accounts
 
 param (
-    [String]$AZDevOpsToken = 'hek3vo6bjaplf324yfyte53ok25hkxehiwjb53rqeadu7f2xvqnawlrq',
     [String[]]$Environments = ('S1','S2','D3'),
-    [String]$Prefix = 'AZC1',
-    [String]$App = 'ADF'
+    [String]$Prefix = 'ACU1',
+    [String]$App = 'HAA'
 )
 
 # This file is used for Azure DevOps
@@ -19,11 +18,16 @@ $Subscription = $Context.Subscription.Name
 $Account = $context.Account.Id
 
 #region Connect to AZDevOps
-$Global = Get-Content -Path $PSScriptRoot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | Foreach Global
+$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$($Global.PrimaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$primaryKVName = $Primary.KVName
+$AZDevOpsToken = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name DevOpsAgentPATToken -AsPlainText
+
 $AZDevOpsOrg = $Global.AZDevOpsOrg
 $ADOProject = $Global.ADOProject
 $SPAdmins = $Global.ServicePrincipalAdmins
 $AppName = $Global.AppName
+break
 
 if (-not (Get-VSTeamProfile -Name $AZDevOpsOrg))
 {

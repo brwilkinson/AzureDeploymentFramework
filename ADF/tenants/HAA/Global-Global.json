@@ -24,7 +24,8 @@
     "__DomainNameExtRG": "ACU1-BRW-HAA-RG-G1",
     "CertificateThumbprint": "6FE90D30E37F5D93AF30AF449A234B5DB5205935",
     "GHProject": "ADF",
-    "ADOProject": "eshopondapr3",
+    "ADOProject": "ADF",
+    "AZDevOpsOrg": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [
       "benwilk@microsoft.com"
     ],
@@ -44,7 +45,15 @@
       "ADF_ACU1-BRW-HAA-RG-S1": "79dc0912-294d-4284-8dd0-ea4adfec59a6",
       "ADF_ACU1-BRW-HAA-RG-D3": "b6d9101a-d873-4a08-b64a-9d07ee63f9fd",
       "ADF_ACU1-BRW-HAA-RG-T5": "a3c1ec23-9836-42ad-bbca-5a11e17d90bb",
-      "ADF_ACU1-BRW-HAA-RG-P7": "ce7379dd-c642-4c5b-8525-72efff1b5cc3"
+      "ADF_ACU1-BRW-HAA-RG-P7": "ce7379dd-c642-4c5b-8525-72efff1b5cc3",
+      "ADF_ACU1-BRW-HAA-RG-P0": "039a4ee9-f87e-4d1c-8938-ca66d9c14a2d",
+      "ADF_ACU1-BRW-HAA-RG-G0": "3f8a3c06-733a-49cb-b6d6-82a8fecf352c",
+      "ADF_ACU1-BRW-HAA-RG-G1": "6591a33f-aa8a-495a-8145-82c4b637f65e",
+      "ADF_AEU2-BRW-HAA-RG-P0": "f3d064ec-6efe-4cae-af9f-6ef9a047c474",
+      "ADF_AEU2-BRW-HAA-RG-S1": "5cd40193-ef5c-4635-a0e3-98cebba31ae5",
+      "ADF_AEU2-BRW-HAA-RG-T5": "e747e283-312a-40c4-a5f2-18a2d93439b2",
+      "ADF_AEU2-BRW-HAA-RG-P4": "a6c836ac-e61f-4cc0-8ef2-9d7bb315af4c",
+      "ADF_AEU2-BRW-HAA-RG-P7": "6a6919aa-b6b4-45a3-8e9c-04b3b34c124f"
     }
   }
 }

@@ -47,6 +47,7 @@
         "VNet": 0,
         "VNetPeering": 0,
         "DNSPrivateZone": 0,
+        "DNSPublicZone": 1,
         "LinkPrivateDns": 0,
         "PrivateLink": 0,
         "BastionHost": 0,
@@ -170,7 +171,10 @@
           }
         ],
         "DC1PrivateIPAddress": "75",
-        "DC2PrivateIPAddress": "76"
+        "DC2PrivateIPAddress": "76",
+        "DNSPublicZoneInfo":[
+          "haapp.net"
+        ]
       }
     }
   }

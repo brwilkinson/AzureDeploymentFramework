@@ -1,6 +1,6 @@
-$projectPath = 'D:\Repos\AzureDeploymentFramework'
+$projectPath = 'D:\repos\AzureDeploymentFramework'
 $TemplatesBase = "$projectPath\ADF\templates-base", "$projectPath\ADF\templates-deploy", "$projectPath\ADF\templates-nested"
-$ParamPath = 'D:\Repos\AzureDeploymentFramework\ADF\tenants\ABC\azuredeploy.1.AZC1.S1.parameters.json'
+$ParamPath = 'D:\repos\AzureDeploymentFramework\ADF\tenants\ABC\azuredeploy.1.AZC1.S1.parameters.json'
 $GlobalRG = 'AZC1-BRW-HUB-RG-G1'
 $SpecRegion = 'centralus'
 $SpecVersion = '1.0a'

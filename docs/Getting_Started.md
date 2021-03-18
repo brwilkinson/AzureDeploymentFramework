@@ -83,7 +83,7 @@ Go Home [Documentation Home](./ARM.md)
     1. In order to Load some settings into memory, once you open that file you press F5 to load it.
         1. You should see something similar to the following after you run F5
         ````powershell
-        VERBOSE: ArtifactStagingDirectory is [D:\Repos\AzureDeploymentFramework\ADF] and App is [HUB]
+        VERBOSE: ArtifactStagingDirectory is [D:\repos\AzureDeploymentFramework\ADF] and App is [HUB]
         ````
     1. Then after that you can create the intial Resource Group and Storage Account
     1. You will see the lines below, that you can execute (make sure you did F5 first! and are in your subscription)

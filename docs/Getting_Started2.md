@@ -124,7 +124,7 @@ Go Home [Documentation Home](./ARM.md)
     1. In order to Load some settings into memory, once you open that file you press F5 to load it.
     1. You should see something similar to the following after you run F5
         ````powershell
-        VERBOSE: ArtifactStagingDirectory is [D:\Repos\AzureDeploymentFramework\ADF] and App is [ABC]
+        VERBOSE: ArtifactStagingDirectory is [D:\repos\AzureDeploymentFramework\ADF] and App is [ABC]
         ````
 1. Create your Service Principals (Scripts are provided for GitHub and Azure DevOps), this document assumes GitHub
     1. This will create 1 Principal per Resource Group, Per Application

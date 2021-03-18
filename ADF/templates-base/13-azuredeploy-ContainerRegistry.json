@@ -85,7 +85,7 @@
     // "subnetAddress": "[reference(variables('subnetResourceID'), '2015-06-15' )]"
     "AppInsightsName": "[replace(concat(variables('Deployment'),'AppInsights'),'-','')]",
     "AppInsightsID": "[resourceid('microsoft.insights/components',variables('AppInsightsName'))]",
-    "ContainerRegistry": "[parameters('DeploymentInfo').ContainerRegistry]",
+    "ContainerRegistry": "[parameters('DeploymentInfo').ContainerRegistry]"
   },
   "resources": [
     {

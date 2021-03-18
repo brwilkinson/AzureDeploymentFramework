@@ -115,6 +115,7 @@
       "FRONTDOOR": "templates-base\\02-azuredeploy-FrontDoor.json",
       "WAFPOLICY": "templates-base\\06-azuredeploy-WAFPolicy.json",
       "APIM": "templates-base\\09-azuredeploy-APIM.json",
+      "ACR": "templates-base\\13-azuredeploy-ContainerRegistry.json",
       "AKS": "templates-base\\14-azuredeploy-AKS.json",
       "ServerFarm": "templates-base\\18-azuredeploy-AppServiceplan.json",
       "WebSite": "templates-base\\19-azuredeploy-AppServiceWebSite.json",
@@ -298,6 +299,23 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').KV, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[equals(parameters('Stage').ACR,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-ACR')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-VNET')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ACR, parameters('_artifactsLocationSasToken'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -820,7 +838,8 @@
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-WAF')]",
         // "[concat('dp', variables('Deployment'), '-APIM')]",
-        "[concat('dp', variables('Deployment'), '-VNET')]"
+        "[concat('dp', variables('Deployment'), '-VNET')]",
+        "[concat('dp', variables('Deployment'), '-ACR')]"
       ],
       "properties": {
         "mode": "Incremental",
