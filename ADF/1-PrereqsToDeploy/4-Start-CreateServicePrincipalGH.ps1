@@ -54,7 +54,7 @@ Foreach ($Environment in $Environments)
 {
     $EnvironmentName = "$($Prefix)-$($OrgName)-$($AppName)-RG-$Environment"
     $SecretName = $EnvironmentName -replace '-', '_'
-    $ServicePrincipalName = "${GHProject}_$EnvironmentName"
+    $ServicePrincipalName = "GH_${GHProject}_$EnvironmentName"
 
     #region Create the Service Principal in Azure AD
     $appID = Get-AzADApplication -IdentifierUri "http://$ServicePrincipalName"
@@ -130,5 +130,5 @@ $EndLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
 if ($StartLength -ne $EndLength)
 {
     $Global.Global.RolesLookup = $RolesLookup
-    $Global | ConvertTo-Json -Depth 5 | Set-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json
+    $Global | ConvertTo-Json -Depth 5 | Set-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json
 }

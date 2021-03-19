@@ -3,9 +3,10 @@
 #Requires -Module AZ.Accounts
 
 param (
-    [String[]]$Environments = ('S1','S2','D3'),
+    [String[]]$Environments = ('S1'),
     [String]$Prefix = 'ACU1',
-    [String]$App = 'HAA'
+    [String]$App = 'HAA',
+    [String]$OrgName = 'BRW'
 )
 
 # This file is used for Azure DevOps
@@ -18,16 +19,17 @@ $Subscription = $Context.Subscription.Name
 $Account = $context.Account.Id
 
 #region Connect to AZDevOps
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$($Global.PrimaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Global = Get-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10
+$Primary = Get-Content -Path $psscriptroot\..\tenants\$App\Global-$($Global.Global.PrimaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $primaryKVName = $Primary.KVName
 $AZDevOpsToken = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name DevOpsAgentPATToken -AsPlainText
 
-$AZDevOpsOrg = $Global.AZDevOpsOrg
-$ADOProject = $Global.ADOProject
-$SPAdmins = $Global.ServicePrincipalAdmins
-$AppName = $Global.AppName
-break
+$AZDevOpsOrg = $Global.Global.AZDevOpsOrg
+$ADOProject = $Global.Global.ADOProject
+$SPAdmins = $Global.Global.ServicePrincipalAdmins
+$AppName = $Global.Global.AppName
+$RolesLookup = $Global.Global.RolesLookup
+$StartLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
 
 if (-not (Get-VSTeamProfile -Name $AZDevOpsOrg))
 {
@@ -37,7 +39,7 @@ Set-VSTeamAccount -Profile $AZDevOpsOrg -Drive vsts
 
 if (-not (Get-PSDrive -Name vsts -ErrorAction ignore))
 {
-    New-PSDrive -Name vsts -PSProvider SHiPS -Root 'VSTeam#VSTeamAccount'
+    New-PSDrive -Name vsts -PSProvider SHiPS -Root 'VSTeam#vsteam_lib.Provider.Account' -Description https://dev.azure.com/AzureDeploymentFramework
 }
 
 ls vsts: | ft -AutoSize
@@ -46,8 +48,8 @@ ls vsts: | ft -AutoSize
 
 Foreach ($Environment in $Environments)
 {
-    $EnvironmentName = "$($Prefix)-$($AppName)-RG-$Environment"
-    $ServicePrincipalName = "${ADOProject}_$EnvironmentName"
+    $EnvironmentName = "$($Prefix)-$($OrgName)-$($AppName)-RG-$Environment"
+    $ServicePrincipalName = "ADO_${ADOProject}_$EnvironmentName"
 
     #region Create the Service Principal in Azure AD
     $appID = Get-AzADApplication -IdentifierUri "http://$ServicePrincipalName"
@@ -106,4 +108,21 @@ Foreach ($Environment in $Environments)
         Add-VSTeamAzureRMServiceEndpoint  @params
     }
     #endregion
+
+    if ($RolesLookup | Where-Object $ServicePrincipalName -EQ $SP.Id)
+    {
+        Write-Verbose "Service Principal [$ServicePrincipalName] already set in Global-Global.json" -Verbose
+    }
+    else 
+    {
+        Write-Verbose "Adding Service Principal [$ServicePrincipalName] to Global-Global.json" -Verbose
+        $RolesLookup | Add-Member -MemberType NoteProperty -Name $ServicePrincipalName -Value $SP.Id -Force -PassThru
+    }
+}
+$EndLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
+# Write back the SP to global-Global if new.
+if ($StartLength -ne $EndLength)
+{
+    $Global.Global.RolesLookup = $RolesLookup
+    $Global | ConvertTo-Json -Depth 5 | Set-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json
 }

@@ -32,7 +32,7 @@
         "RG": 1,
         "RBAC": 1,
         "UAI": 1,
-        "SP": 0,
+        "SP": 1,
         "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
@@ -224,76 +224,79 @@
           }
         ],
         "SPInfo": [
+          // {
+          //   "Name": "Microsoft.Azure.Frontdoor",
+          //   "RBAC": [
+          //     {
+          //       "Name": "Key Vault Certificates Officer",
+          //       "RG": "P0",
+          //       "Tenant": "HAA"
+          //     },
+          //     {
+          //       "Name": "Key Vault Secrets User",
+          //       "RG": "P0",
+          //       "Tenant": "HAA"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "Name": "{GHProject}_{RGNAME}",
+          //   "RBAC": [
+          //     {
+          //       "Name": "Contributor"
+          //     },
+          //     {
+          //       "Name": "User Access Administrator"
+          //     },
+          //     {
+          //       "Name": "Reader and Data Access",
+          //       "RG": "G1",
+          //       "Tenant": "HAA"
+          //     },
+          //     {
+          //       "Name": "Storage Account Key Operator Service Role",
+          //       "RG": "G1",
+          //       "Tenant": "HAA"
+          //     },
+          //     {
+          //       "Name": "Log Analytics Contributor",
+          //       "RG": "G1",
+          //       "Tenant": "HAA"
+          //     },
+          //     {
+          //       "Name": "Log Analytics Contributor",
+          //       "RG": "P0",
+          //       "Tenant": "HAA"
+          //     },
+          //     {
+          //       "Name": "Key Vault Secrets User",
+          //       "RG": "P0",
+          //       "Tenant": "HAA"
+          //     },
+          //     {
+          //       "Name": "Network Contributor",
+          //       "RG": "P0",
+          //       "Tenant": "HAA"
+          //     },
+          //     {
+          //       "Name": "DNS Zone Contributor",
+          //       "RG": "P0",
+          //       "Tenant": "HAA"
+          //     },
+          //     {
+          //       "Name": "DNS Zone Contributor",
+          //       "RG": "P0",
+          //       "Tenant": "HAA",
+          //       "PREFIX": "AEU2"
+          //     }
+          //   ]
+          // },
           {
-            "Name": "Microsoft.Azure.Frontdoor",
+            "Name": "ADO_ADF_ACU1-BRW-HAA-RG-S1",
             "RBAC": [
               {
-                "Name": "Key Vault Certificates Officer",
-                "RG": "P0",
-                "Tenant": "HAA"
+                "Name": "ACRPush"
               },
-              {
-                "Name": "Key Vault Secrets User",
-                "RG": "P0",
-                "Tenant": "HAA"
-              }
-            ]
-          },
-          {
-            "Name": "{GHProject}_{RGNAME}",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              },
-              {
-                "Name": "User Access Administrator"
-              },
-              {
-                "Name": "Reader and Data Access",
-                "RG": "G1",
-                "Tenant": "HAA"
-              },
-              {
-                "Name": "Storage Account Key Operator Service Role",
-                "RG": "G1",
-                "Tenant": "HAA"
-              },
-              {
-                "Name": "Log Analytics Contributor",
-                "RG": "G1",
-                "Tenant": "HAA"
-              },
-              {
-                "Name": "Log Analytics Contributor",
-                "RG": "P0",
-                "Tenant": "HAA"
-              },
-              {
-                "Name": "Key Vault Secrets User",
-                "RG": "P0",
-                "Tenant": "HAA"
-              },
-              {
-                "Name": "Network Contributor",
-                "RG": "P0",
-                "Tenant": "HAA"
-              },
-              {
-                "Name": "DNS Zone Contributor",
-                "RG": "P0",
-                "Tenant": "HAA"
-              },
-              {
-                "Name": "DNS Zone Contributor",
-                "RG": "P0",
-                "Tenant": "HAA",
-                "PREFIX": "AEU2"
-              }
-            ]
-          },
-          {
-            "Name": "{ADOProject}_{RGNAME}",
-            "RBAC": [
               {
                 "Name": "Azure Kubernetes Service RBAC Cluster Admin"
               }
@@ -408,7 +411,7 @@
             "apimSku": "Developer",
             "snName": "BE01",
             "virtualNetworkType": "Internal",
-            "certName": "WildCardCert",
+            "certName": "HAAPP-WildCard",
             "frontDoor": "01"
           }
         ],
@@ -672,7 +675,7 @@
             "WAFCapacity": 2,
             "PrivateIP": "30",
             "SSLCerts": [
-              "WildCardCert"
+              "HAAPP-WildCard"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
             "BEIPs": [], //"useAGIC"
@@ -699,14 +702,14 @@
                 "Protocol": "http",
                 "CookieBasedAffinity": "Enabled",
                 "RequestTimeout": 600,
-                "probePath": "/"
+                "probePath": "/noop"
               },
               {
                 "Port": 443,
                 "Protocol": "https",
                 "CookieBasedAffinity": "Enabled",
                 "RequestTimeout": 600,
-                "probePath": "/"
+                "probePath": "/noop"
               }
             ],
             "Listeners": [
@@ -714,10 +717,10 @@
                 "Port": 443,
                 "BackendPort": "80",
                 "Protocol": "https",
-                "Cert": "WildCardCert",
+                "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
                 "Hostname": "waf",
-                "Interface": "Private" // "Public","Private"
+                "Interface": "Public" // "Public","Private"
                 // "pathRules": "map1"
               },
               {
@@ -725,7 +728,7 @@
                 "Protocol": "http",
                 "Domain": "haapp.net",
                 "Hostname": "waf",
-                "Interface": "Private",
+                "Interface": "Public",
                 "httpsRedirect": 0
                 // "pathRules": "map1"
               }
