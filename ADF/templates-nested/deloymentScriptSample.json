@@ -45,6 +45,8 @@
                     
                     try
                     {
+                        Write-Output \"`nhostname is: \"
+                        hostname
                         Write-Output \"`nUTC is: \"
                         Get-Date
                         Write-Output \"`nResourceGroup is: \"
