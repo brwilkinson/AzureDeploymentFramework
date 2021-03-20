@@ -1,0 +1,82 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string",
+      "defaultValue": "ACU1-BRW-AOA-S1"
+    },
+    "DSName": {
+      "type": "string",
+      "defaultValue": "4"
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "name": "[concat('DeploymentScript',parameters('DSName'))]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',concat(parameters('Deployment'),'-uaiNetworkContributor'))]": {}
+        }
+      },
+      "dependsOn": [
+      ],
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "properties": {
+        "azPowerShellVersion": "5.4",
+        "storageAccountSettings": {
+          "storageAccountKey": "[listKeys(resourceid('Microsoft.Storage/storageAccounts/','acu1brwaoas1sadiag'), '2016-01-01').keys[0].value]",
+          "storageAccountName": "acu1brwaoas1sadiag"
+        },
+        "arguments": "[format(' -ResourceGroupName {0}', resourceGroup().name)]",
+        "scriptContent": "
+                    param (
+                        [string]$ResourceGroupName
+                    )
+                    
+                    try
+                    {
+                        Write-Output \"`nhostname is: \"
+                        hostname
+                        Write-Output \"`nUTC is: \"
+                        Get-Date
+                        Write-Output \"`nResourceGroup is: \"
+                        $ResourceGroupName
+                        $c = Get-AzContext -ErrorAction stop
+                        if ($c)
+                        {
+                            Write-Output \"`nContext is: \"
+                            $c | select Account,Subscription,Tenant,Environment | fl | out-string
+                            start-sleep -seconds 60
+                        }
+                        else 
+                        {
+                            throw 'Cannot get a context'
+                        }
+                    }
+                    catch
+                    {
+                        Write-Warning $_
+                        Write-Warning $_.exception
+                    }
+                ",
+        "forceUpdateTag": "[parameters('now')]",
+        "cleanupPreference": "OnSuccess",
+        "retentionInterval": "P1D",
+        "timeout": "PT3M"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

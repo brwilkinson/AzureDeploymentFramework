@@ -30,6 +30,25 @@
   },
   "variables": {
 
+    // lookup the deployment regions by name in Global config e.g. PrimaryLocation/SecondaryLocation
+    // if need more than 2 locations, add the values in global-global.json
+    "copy": [
+      {
+        "name": "locations",
+        "count": "[length(parameters('cosmosDBInfo').locations)]",
+        "input": {
+          // "id": "[tolower(
+          //                   concat(parameters('Deployment'),'-',
+          //                   parameters('Global')[parameters('cosmosDBInfo').locations[copyIndex('locations')].location],
+          //                   '-cdb-',parameters('cosmosDBInfo').Name)
+          //                   )]",
+          "failoverPriority": "[parameters('cosmosDBInfo').locations[copyIndex('locations')].failoverPriority]",
+          "locationName": "[parameters('Global')[parameters('cosmosDBInfo').locations[copyIndex('locations')].location]]",
+          "isZoneRedundant": "[parameters('cosmosDBInfo').locations[copyIndex('locations')].isZoneRedundant]"
+        }
+      }
+    ]
+
   },
   "resources": [
     {
@@ -45,13 +64,7 @@
         "enableMultipleWriteLocations": "[parameters('cosmosDBInfo').enableMultipleWriteLocations]",
         "enableAutomaticFailover": "[parameters('cosmosDBInfo').enableAutomaticFailover]",
         "databaseAccountOfferType": "Standard",
-        "locations": [
-          {
-            "id": "[tolower(concat(parameters('Deployment'),'-',resourceGroup().location,'-cosmos-',parameters('cosmosDBInfo').Name))]",
-            "failoverPriority": 0,
-            "locationName": "[resourceGroup().location]"
-          }
-        ]
+        "locations": "[variables('locations')]"
         //"ipRangeFilter": "104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,0.0.0.0",
         // "isVirtualNetworkFilterEnabled": true,
         // "copy": [
@@ -115,85 +128,85 @@
           }
         }
       ]
-    },
-    {
-      "type": "Microsoft.DocumentDb/databaseAccounts/sqlDatabases",
-      "name": "[tolower(concat(parameters('Deployment'),'-cosmos-',parameters('cosmosDBInfo').Name,'/',parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName))]",
-      "apiVersion": "2021-03-01-preview",
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDb/databaseAccounts',tolower(concat(parameters('Deployment'),'-cosmos-',parameters('cosmosDBInfo').Name)))]"
-      ],
-      "copy": {
-        "name": "cosmosDBLoop",
-        "count": "[length(parameters('cosmosDBInfo').databases)]"
-      },
-      "properties": {
-        "resource": {
-          "id": "[parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName]"
-        },
-        "options": {
-          "throughput": 400
-        }
-      },
-      "resources": [
-        {
-          "type": "containers",
-          "name": "[parameters('cosmosDBInfo').databases[copyIndex(0)].containerName]",
-          "apiVersion": "2021-03-01-preview",
-          "dependsOn": [
-            "[resourceId('Microsoft.DocumentDb/databaseAccounts/sqlDatabases', 
-                          tolower(concat(parameters('Deployment'), '-cosmos-', parameters('cosmosDBInfo').Name)),
-                          parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName)]"
-          ],
-          "properties": {
-            "resource": {
-              "id": "[parameters('cosmosDBInfo').databases[copyIndex(0)].containerName]",
-              "partitionKey": {
-                "paths": [
-                  "/myPartitionKey"
-                ],
-                "kind": "Hash"
-              },
-              "indexingPolicy": {
-                "indexingMode": "consistent",
-                "includedPaths": [
-                  {
-                    "path": "/*"
-                  }
-                ],
-                "excludedPaths": [
-                  {
-                    "path": "/myPathToNotIndex/*"
-                  }
-                ]
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "userDefinedFunctions",
-              "name": "REGEX_MATCH",
-              "apiVersion": "2021-03-01-preview",
-              "dependsOn": [
-                "[resourceId('Microsoft.DocumentDb/databaseAccounts/sqlDatabases/containers',
-                                  tolower(concat(parameters('Deployment'), '-cosmos-',parameters('cosmosDBInfo').Name)),
-                                  parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName,
-                                  parameters('cosmosDBInfo').databases[copyIndex(0)].containerName)]"
-              ],
-              "properties": {
-                "resource": {
-                  "id": "REGEX_MATCH",
-                  "body": "function REGEX_MATCH(input,pattern)\r\n{\r\n    if (input.match(pattern))\r\n    {\r\n        return input\r\n    }\r\n}"
-                },
-                "options": {
-
-                }
-              }
-            }
-          ]
-        }
-      ]
     }
+    // {
+    //   "type": "Microsoft.DocumentDb/databaseAccounts/sqlDatabases",
+    //   "name": "[tolower(concat(parameters('Deployment'),'-cosmos-',parameters('cosmosDBInfo').Name,'/',parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName))]",
+    //   "apiVersion": "2021-03-01-preview",
+    //   "dependsOn": [
+    //     "[resourceId('Microsoft.DocumentDb/databaseAccounts',tolower(concat(parameters('Deployment'),'-cosmos-',parameters('cosmosDBInfo').Name)))]"
+    //   ],
+    //   "copy": {
+    //     "name": "cosmosDBLoop",
+    //     "count": "[length(parameters('cosmosDBInfo').databases)]"
+    //   },
+    //   "properties": {
+    //     "resource": {
+    //       "id": "[parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName]"
+    //     },
+    //     "options": {
+    //       "throughput": 400
+    //     }
+    //   },
+    //   "resources": [
+    //     // {
+    //     //   "type": "containers",
+    //     //   "name": "[parameters('cosmosDBInfo').databases[copyIndex(0)].containerName]",
+    //     //   "apiVersion": "2021-03-01-preview",
+    //     //   "dependsOn": [
+    //     //     "[resourceId('Microsoft.DocumentDb/databaseAccounts/sqlDatabases', 
+    //     //                   tolower(concat(parameters('Deployment'), '-cosmos-', parameters('cosmosDBInfo').Name)),
+    //     //                   parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName)]"
+    //     //   ],
+    //     //   "properties": {
+    //     //     "resource": {
+    //     //       "id": "[parameters('cosmosDBInfo').databases[copyIndex(0)].containerName]",
+    //     //       "partitionKey": {
+    //     //         "paths": [
+    //     //           "/myPartitionKey"
+    //     //         ],
+    //     //         "kind": "Hash"
+    //     //       },
+    //     //       "indexingPolicy": {
+    //     //         "indexingMode": "consistent",
+    //     //         "includedPaths": [
+    //     //           {
+    //     //             "path": "/*"
+    //     //           }
+    //     //         ],
+    //     //         "excludedPaths": [
+    //     //           {
+    //     //             "path": "/myPathToNotIndex/*"
+    //     //           }
+    //     //         ]
+    //     //       }
+    //     //     }
+    //     //   },
+    //     //   "resources": [
+    //     //     {
+    //     //       "type": "userDefinedFunctions",
+    //     //       "name": "REGEX_MATCH",
+    //     //       "apiVersion": "2021-03-01-preview",
+    //     //       "dependsOn": [
+    //     //         "[resourceId('Microsoft.DocumentDb/databaseAccounts/sqlDatabases/containers',
+    //     //                           tolower(concat(parameters('Deployment'), '-cosmos-',parameters('cosmosDBInfo').Name)),
+    //     //                           parameters('cosmosDBInfo').databases[copyIndex(0)].databaseName,
+    //     //                           parameters('cosmosDBInfo').databases[copyIndex(0)].containerName)]"
+    //     //       ],
+    //     //       "properties": {
+    //     //         "resource": {
+    //     //           "id": "REGEX_MATCH",
+    //     //           "body": "function REGEX_MATCH(input,pattern)\r\n{\r\n    if (input.match(pattern))\r\n    {\r\n        return input\r\n    }\r\n}"
+    //     //         },
+    //     //         "options": {
+
+    //     //         }
+    //     //       }
+    //     //     }
+    //     //   ]
+    //     // }
+    //   ]
+    // }
   ],
   "outputs": {
   }

@@ -77,103 +77,76 @@
     }
   },
   "variables": {
-    // Global  BRWDev101
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
-    "snWAF01Name": "snWAF01",
-    "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snWAF01Name'))]",
-    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
-    "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
-    // "WAFInfo": "[parameters('DeploymentInfo').WAFInfo]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
-    "SBInfo": "[parameters('DeploymentInfo').SBInfo]",
-    "hubRG": "[parameters('Global').hubRGName]"
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+    "SBInfo": "[if(contains(parameters('DeploymentInfo'),'SBInfo'),parameters('DeploymentInfo').SBInfo,createArray())]",
+    "copy": [
+      {
+        "name": "SB",
+        "count": "[length(variables('SBInfo'))]",
+        "input": {
+          "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').SBInfo[copyIndex('SB')].Name)
+                        )]"
+        }
+      }
+    ]
   },
   "resources": [
     {
-      // "condition": "[equals(parameters('Stage').SB,1)]",
-      "name": "[concat(variables('Deployment'),'-sb',variables('SBInfo')[copyIndex()].Name)]",
-      "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2018-01-01-preview",
-      "location": "[resourceGroup().location]",
-      "tags": {},
-      // Basic, Standard, Premium
-      "sku": {
-        "name": "[variables('SBInfo')[copyIndex()].sku]",
-        "tier": "[variables('SBInfo')[copyIndex()].sku]",
-        "capacity": "[variables('SBInfo')[copyIndex()].skuCapacity]"
-      },
+      "condition": "[variables('SB')[copyIndex(0)].match]",
+      "name": "[concat('dp', variables('Deployment'), '-SBDeploy',if(equals(length(variables('SB')),0),'',variables('SBInfo')[copyIndex()].name))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+      ],
       "copy": {
         "name": "SBLoop",
-        "count": "[length( variables('SBInfo') )]"
+        "count": "[length( variables('SB') )]"
       },
       "properties": {
-        "zoneRedundant": "[variables('SBInfo')[copyIndex()].zoneRedundant]"
-        // "identity": {
-        //   "principalId": "string",
-        //   "tenantId": "string",
-        //   "type": "SystemAssigned"
-        // },
-        // "encryption": {
-        //   "keyVaultProperties": {
-        //     "keyName": "string",
-        //     "keyVaultUri": "string"
-        //   },
-        //   "keySource": "Microsoft.KeyVault"
-        // }
-      },
-      "resources": [
-        {
-          "name": "[variables('SBInfo')[copyIndex()].topics.Name]",
-          "type": "topics",
-          "apiVersion": "2017-04-01",
-          "dependsOn": [
-            "[concat(variables('Deployment'),'-sb',variables('SBInfo')[copyIndex()].Name)]"
-          ],
-          "properties": {
-            // "defaultMessageTimeToLive": "string",
-            // "maxSizeInMegabytes": "integer",
-            // "requiresDuplicateDetection": "boolean",
-            // "duplicateDetectionHistoryTimeWindow": "string",
-            // "enableBatchedOperations": "boolean",
-            // "status": "string",
-            // "supportOrdering": "boolean",
-            // "autoDeleteOnIdle": "string",
-            // "enablePartitioning": "boolean",
-            // "enableExpress": "boolean"
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/serviceBus.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
           },
-          "resources": [
-            {
-              "name": "[variables('SBInfo')[copyIndex()].topics.subscriptions.Name]",
-              "type": "subscriptions",
-              "apiVersion": "2017-04-01",
-              "dependsOn": [
-                "[concat(variables('SBInfo')[copyIndex()].topics.Name)]"
-              ],
-              "properties": {
-                // "lockDuration": "string",
-                // "requiresSession": "boolean",
-                // "defaultMessageTimeToLive": "string",
-                // "deadLetteringOnFilterEvaluationExceptions": "boolean",
-                // "deadLetteringOnMessageExpiration": "boolean",
-                // "duplicateDetectionHistoryTimeWindow": "string",
-                // "maxDeliveryCount": "integer",
-                // "status": "string",
-                // "enableBatchedOperations": "boolean",
-                // "autoDeleteOnIdle": "string",
-                // "forwardTo": "string",
-                // "forwardDeadLetteredMessagesTo": "string"
-              },
-              "resources": []
-            }
-          ]
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "Environment": {
+            "value": "[parameters('Environment')]"
+          },
+          "SBInfo": {
+            "value": "[variables('SBInfo')[copyIndex(0)]]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "Stage": {
+            "value": "[parameters('Stage')]"
+          },
+          "OMSworkspaceID": {
+            "value": "[variables('OMSworkspaceID')]"
+          },
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
         }
-      ]
+      }
     },
     {
       // Call the nested deployment for the Private Link
       "condition": "[contains(variables('SBInfo')[copyIndex(0)],'privatelinkinfo')]",
-      "name": "[concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('SBInfo')[copyIndex(0)].name)]",
+      "name": "[concat('dp', variables('Deployment'), '-privatelinkloopSB', variables('SBInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "dependsOn": [
@@ -197,10 +170,10 @@
             "value": "[variables('SBInfo')[copyIndex(0)].privateLinkInfo]"
           },
           "providerType": {
-            "value": "Microsoft.Storage/storageAccounts"
+            "value": "Microsoft.ServiceBus/namespaces"
           },
           "resourceName": {
-            "value": "[concat(variables('Deployment'),'sa',variables('SBInfo')[copyIndex()].name)]"
+            "value": "[concat(variables('Deployment'),'-sb',variables('SBInfo')[copyIndex()].name)]"
           }
         }
       }
@@ -210,7 +183,7 @@
       "condition": "[contains(variables('SBInfo')[copyIndex(0)],'privatelinkinfo')]",
       "name": "[concat('dp', variables('Deployment'), '-registerPrivateDNS', variables('SBInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[variables('hubRG')]",
+      "resourceGroup": "[parameters('Global').hubRGName]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
         "plLoop"
@@ -230,13 +203,13 @@
             "value": "[variables('SBInfo')[copyIndex(0)].privateLinkInfo]"
           },
           "providerURL": {
-            "value": ".core.windows.net/"
+            "value": ".windows.net/"
           },
           "resourceName": {
             "value": "[concat(variables('Deployment'),'sa',variables('SBInfo')[copyIndex()].name)]"
           },
           "Nics": {
-            "value": "[if(contains(variables('SBInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('SBInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
+            "value": "[if(contains(variables('SBInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopSB', variables('SBInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
           }
         }
       }

@@ -1,0 +1,202 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "Prefix": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "Environment": {
+      "type": "string"
+    },
+    "azSQLInfo": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "OMSworkspaceID": {
+      "type": "string"
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "sshPublic": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    // "AzureSQLElasticPoolInfo": "[parameters('DeploymentInfo').AzureSQLElasticPoolInfo]",
+    "RolesLookup": "[json(parameters('Global').RolesLookup)]"
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name)]",
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2020-11-01-preview",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "administratorLogin": "[parameters('azSQLInfo').administratorLogin]",
+        "administratorLoginPassword": "[parameters('vmAdminPassword')]",
+        // "version": "string",
+        "minimalTlsVersion": "1.2",
+        "publicNetworkAccess": "[parameters('azSQLInfo').publicNetworkAccess]"
+      },
+      "resources": [
+        {
+          "name": "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/ActiveDirectory')]",
+          "type": "Microsoft.Sql/servers/administrators",
+          "apiVersion": "2020-11-01-preview",
+          "dependsOn": [
+            "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name)]"
+          ],
+          "properties": {
+            "administratorType": "ActiveDirectory",
+            "login": "[parameters('azSQLInfo').AdminName]",
+            "sid": "[variables('RolesLookup')[parameters('azSQLInfo').AdminName]]",
+            "tenantId": "[parameters('Global').tenantId]"
+          }
+        },
+        {
+          "name": "AllowAllWindowsAzureIps",
+          "type": "firewallRules",
+          "apiVersion": "2020-11-01-preview",
+          "dependsOn": [
+            "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name)]"
+          ],
+          "location": "[resourceGroup().location]",
+          "properties": {
+            "startIpAddress": "0.0.0.0",
+            "endIpAddress": "0.0.0.0"
+          }
+        },
+        {
+          "name": "AllConnectionsAllowed",
+          "type": "firewallRules",
+          "apiVersion": "2020-11-01-preview",
+          "dependsOn": [
+            "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name)]"
+          ],
+          "location": "[resourceGroup().location]",
+          "properties": {
+            "startIpAddress": "0.0.0.0",
+            "endIpAddress": "255.255.255.255"
+          }
+        }
+      ]
+    },
+    {
+      "name": "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/',parameters('azSQLInfo').DBInfo[CopyINdex(0)].Name)]",
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2020-11-01-preview",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "DBLoop",
+        "count": "[length(parameters('azSQLInfo').DBInfo)]"
+      },
+      "sku": {
+        "name": "[parameters('azSQLInfo').DBInfo[CopyINdex(0)].skuName]"
+        // "tier": "string",
+        // "size": "string",
+        // "family": "string",
+        // "capacity": "integer"
+      },
+      "dependsOn": [
+        "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name)]"
+      ],
+      "properties": {
+        // "createMode": "string",
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "licenseType": "BasePrice"
+        // "zoneRedundant": true
+        // "maxSizeBytes": "integer",
+        // "sampleName": "string",
+        // "elasticPoolId": "string",
+        // "sourceDatabaseId": "string",
+        // "restorePointInTime": "string",
+        // "sourceDatabaseDeletionDate": "string",
+        // "recoveryServicesRecoveryPointId": "string",
+        // "longTermRetentionBackupResourceId": "string",
+        // "recoverableDatabaseId": "string",
+        // "restorableDroppedDatabaseId": "string",
+        // "catalogCollation": "string",
+        // "licenseType": "string",
+        // "readScale": "string",
+        // "readReplicaCount": "integer",
+        // "autoPauseDelay": "integer",
+        // "storageAccountType": "string",
+        // "minCapacity": "number"
+      }
+    }
+    // {
+    //   "name": "[concat(parameters('Deployment'),'-azsql',variables('AzureSQLDBAdminInfo')[copyIndex()].ServerName,'/',variables('AzureSQLDBAdminInfo')[copyIndex()].AdminName)]",
+    //   "type": "Microsoft.Sql/servers/administrators",
+    //   "apiVersion": "2019-06-01-preview",
+    //   "copy": {
+    //     "name": "DBAdminLoop",
+    //     "count": "[length( variables('AzureSQLDBAdminInfo'))]"
+    //   },
+    //   "properties": {
+    //     "administratorType": "[variables('AzureSQLDBAdminInfo')[copyIndex()].AdminType]",
+    //     "login": "[variables('AzureSQLDBAdminInfo')[copyIndex()].AdminName]",
+    //     "sid": "[variables('RolesLookup')[variables('AzureSQLDBAdminInfo')[copyIndex()].AdminName]]",
+    //     "tenantId": "[parameters('Global').tenantId]"
+    //   }
+    // },
+
+    // {
+    //   "name": "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/',variables('AzureSQLElasticPoolInfo')[copyIndex()].Name)]",
+    //   "type": "Microsoft.Sql/servers/elasticPools",
+    //   "apiVersion": "2020-11-01-preview",
+    //   "location": "[resourceGroup().location]",
+    //   "copy": {
+    //     "name": "DBLoop",
+    //     "count": "[length( variables('AzureSQLElasticPoolInfo'))]"
+    //   },
+    //   "dependsOn": [
+    //     "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name)]"
+    //   ],
+    //   "sku": {
+    //     "name": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].skuName]",
+    //     "tier": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].skuTier]",
+    //     "family": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].skuFamily]",
+    //     "capacity": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].skuCapacity]"
+    //   },
+    //   //"kind": "vcore,pool",
+    //   "properties": {
+    //     "maxSizeBytes": "[mul(1073741824,int(variables('AzureSQLElasticPoolInfo')[copyIndex()].maxSizeGB))]",
+    //     "perDatabaseSettings": {
+    //       "minCapacity": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].minCapacity]",
+    //       "maxCapacity": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].maxCapacity]"
+    //     },
+    //     "zoneRedundant": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].zoneRedundant]",
+    //     "licenseType": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].licenceType]"
+    //   }
+    // },
+  ]
+}

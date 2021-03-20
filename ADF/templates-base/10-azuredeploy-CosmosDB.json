@@ -134,7 +134,116 @@
           }
         }
       }
+    },
+        {
+      // Call the nested deployment for the Private Link
+      "condition": "[contains(variables('cosmosDBInfo')[copyIndex(0)],'privatelinkinfo')]",
+      "name": "[concat('dp', variables('Deployment'), '-privatelinkloopCosmos', variables('cosmosDBInfo')[copyIndex(0)].name)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "dependsOn": [
+        "cosmosDBLoop"
+      ],
+      "copy": {
+        "name": "plLoop",
+        "count": "[length( variables('cosmosDBInfo') )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vNetPrivateLink.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "PrivateLinkInfo": {
+            "value": "[variables('cosmosDBInfo')[copyIndex(0)].privateLinkInfo]"
+          },
+          "providerType": {
+            "value": "Microsoft.DocumentDb/databaseAccounts"
+          },
+          "resourceName": {
+            "value": "[concat(variables('Deployment'),'-cosmos-',variables('cosmosDBInfo')[copyIndex()].Name)]"
+          }
+        }
+      }
+    },
+    {
+      // REGISTER DNS IN Primary
+      // Call the nested deployment for the Private Link DNS registration
+      "condition": "[contains(variables('cosmosDBInfo')[copyIndex(0)],'privatelinkinfo')]",
+      "name": "[concat('dp', variables('Deployment'), '-registerPrivateLinkDNS-ACU1-', variables('cosmosDBInfo')[copyIndex(0)].name)]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('Global').HubRGName]",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [
+        "plLoop"
+      ],
+      "copy": {
+        "name": "plDNSLoopACU1",
+        "count": "[length( variables('cosmosDBInfo') )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "PrivateLinkInfo": {
+            "value": "[variables('cosmosDBInfo')[copyIndex(0)].privateLinkInfo]"
+          },
+          "resourceName": {
+            "value": "[concat(variables('Deployment'),'-cosmos-',variables('cosmosDBInfo')[copyIndex()].Name)]"
+          },
+          "providerURL": {
+            "value": ".azure.com/"
+          },
+          "Nics": {
+            "value": "[if(contains(variables('cosmosDBInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopCosmos', variables('cosmosDBInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
+          }
+        }
+      }
     }
+    // {
+    //   // REGISTER DNS IN Secondary
+    //   // Call the nested deployment for the Private Link DNS registration
+    //   "condition": "[contains(variables('cosmosDBInfo')[copyIndex(0)],'privatelinkinfo')]",
+    //   "name": "[concat('dp', variables('Deployment'), '-registerPrivateDNS-AEU2-', variables('cosmosDBInfo')[copyIndex(0)].name)]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "resourceGroup": "[parameters('Global').HubRGNameDR]",
+    //   "apiVersion": "2019-10-01",
+    //   "dependsOn": [
+    //     "plLoop"
+    //   ],
+    //   "copy": {
+    //     "name": "plDNSLoopAEU@",
+    //     "count": "[length( variables('cosmosDBInfo') )]"
+    //   },
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": {
+    //       "PrivateLinkInfo": {
+    //         "value": "[variables('cosmosDBInfo')[copyIndex(0)].privateLinkInfo]"
+    //       },
+    //       "providerURL": {
+    //         "value": ".azure.com/"
+    //       },
+    //       "resourceName": {
+    //         "value": "[concat(variables('Deployment'),'-cosmos-',variables('cosmosDBInfo')[copyIndex()].Name)]"
+    //       },
+    //       "Nics": {
+    //         "value": "[if(contains(variables('cosmosDBInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopCosmos', variables('cosmosDBInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
+    //       }
+    //     }
+    //   }
+    // }
   ],
   "outputs": {
   }

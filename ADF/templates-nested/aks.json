@@ -54,8 +54,6 @@
     // "BuddyRGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-B',parameters('DeploymentID') )]",
     "Enviro": "[concat(parameters('Environment'),parameters('DeploymentID'))]",
 
-    "OMSworkspaceName": "[replace(concat(parameters('deployment'),'LogAnalytics'),'-','')]",
-    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "RolesGroupsLookup": "[json(parameters('Global').RolesGroupsLookup)]",
     "RolesLookup": "[json(parameters('Global').RolesLookup)]",
     "copy": [
@@ -218,7 +216,7 @@
           "omsAgent": {
             "enabled": true,
             "config": {
-              "logAnalyticsWorkspaceResourceID": "[variables('OMSworkspaceID')]"
+              "logAnalyticsWorkspaceResourceID": "[parameters('OMSworkspaceID')]"
             }
           },
           // If you add/remove this, ensure you add/remove the RBAC back in below + loop length
@@ -240,7 +238,7 @@
           ],
           "apiVersion": "2017-05-01-preview",
           "properties": {
-            "workspaceId": "[variables('OMSworkspaceID')]",
+            "workspaceId": "[parameters('OMSworkspaceID')]",
             "logs": [
               {
                 "category": "kube-apiserver",

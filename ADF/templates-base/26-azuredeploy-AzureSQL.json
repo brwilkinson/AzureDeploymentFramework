@@ -48,26 +48,25 @@
       "type": "object"
     },
     "Global": {
-      "type": "object"
+      "type": "object",
+      "defaultValue": { "n": "1" }
     },
     "DeploymentInfo": {
       "type": "object"
     },
     "_artifactsLocation": {
       "type": "string",
+      "defaultValue": "1",
       "metadata": {
         "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
       }
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
+      "defaultValue": "1",
       "metadata": {
         "description": "Auto-generated token to access artifactsLocation"
       }
-    },
-    "deploymentTime": {
-      "type": "string",
-      "defaultValue": "[utcNow()]"
     },
     "vmAdminPassword": {
       "type": "securestring"
@@ -77,170 +76,93 @@
     }
   },
   "variables": {
-    // Global  BRWDev101
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "subscriptionId": "[subscription().subscriptionId]",
-    "resourceGroupName": "[resourceGroup().name]",
-    // Network
-    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],int(parameters('DeploymentID')))))]",
-    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
-    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
-    "APIMInfo": "[parameters('DeploymentInfo').APIMInfo]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
-    "dnsRG": { "AZC1-T07-FNFTE": "T07" },
-    "AzureSQLInfo": "[parameters('DeploymentInfo').AzureSQLInfo]",
-    "AzureSQLDBInfo": "[parameters('DeploymentInfo').AzureSQLDBInfo]",
-    "AzureSQLElasticPoolInfo": "[parameters('DeploymentInfo').AzureSQLElasticPoolInfo]",
-    "RolesLookup": "[json(parameters('Global').RolesLookup)]"
-
+    "azSQLInfo": "[if(contains(parameters('DeploymentInfo'),'frontDoorInfo'),parameters('DeploymentInfo').azSQLInfo,createArray())]",
+    "copy": [
+      {
+        "name": "azSQL",
+        "count": "[length(variables('azSQLInfo'))]",
+        "input": {
+          "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').azSQLInfo[copyIndex('azSQL')].Name)
+                        )]"
+        }
+      }
+    ]
   },
   "resources": [
     {
-      "name": "[concat(variables('Deployment'),'-azsql',variables('AzureSQLInfo')[copyIndex()].Name)]",
-      "type": "Microsoft.Sql/servers",
-      "apiVersion": "2019-06-01-preview",
-      "location": "[resourceGroup().location]",
+      "condition": "[variables('azSQL')[copyIndex(0)].match]",
+      "name": "[concat('dp', variables('Deployment'),'-azSQLDeploy',if(equals(length(variables('azSQL')),0),'',variables('azSQLInfo')[copyIndex(0)].name))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "dependsOn": [
+      ],
       "copy": {
-        "name": "SQLLoop",
-        "count": "[length( variables('AzureSQLInfo'))]"
+        "name": "azSQLLoop",
+        "count": "[length( variables('azSQL') )]"
       },
       "properties": {
-        "administratorLogin": "[variables('AzureSQLInfo')[copyIndex()].administratorLogin]",
-        "administratorLoginPassword": "[parameters('vmAdminPassword')]",
-        // "version": "string",
-        "minimalTlsVersion": "1.2",
-        "publicNetworkAccess": "[variables('AzureSQLInfo')[copyIndex()].publicNetworkAccess]"
-      },
-      "resources": [
-        {
-          "name": "[concat(variables('Deployment'),'-azsql',variables('AzureSQLInfo')[copyIndex()].Name,'/ActiveDirectory')]",
-          "type": "Microsoft.Sql/servers/administrators",
-          "apiVersion": "2019-06-01-preview",
-          "dependsOn": [
-            "[concat(variables('Deployment'),'-azsql',variables('AzureSQLInfo')[copyIndex()].Name)]"
-          ],
-          "properties": {
-            "administratorType": "ActiveDirectory",
-            "login": "[variables('AzureSQLInfo')[copyIndex()].AdminName]",
-            "sid": "[variables('RolesLookup')[variables('AzureSQLInfo')[copyIndex()].AdminName]]",
-            "tenantId": "[parameters('Global').tenantId]"
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'),'/','templates-nested/azSQL.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "Prefix": {
+            "value": "[parameters('Prefix')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "Environment": {
+            "value": "[parameters('Environment')]"
+          },
+          "azSQLInfo": {
+            "value": "[variables('azSQLInfo')[copyIndex(0)]]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "Stage": {
+            "value": "[parameters('Stage')]"
+          },
+          "OMSworkspaceID": {
+            "value": "[variables('OMSworkspaceID')]"
+          },
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
+          "vmAdminPassword": {
+            "value": "[parameters('vmAdminPassword')]"
+          },
+          "sshPublic": {
+            "value": "[parameters('sshPublic')]"
           }
         }
-        // {
-        //   "type": "firewallRules",
-        //   "apiVersion": "2014-04-01",
-        //   "dependsOn": [
-        //     "[resourceId('Microsoft.Sql/servers', 'sqlServer1')]"
-        //   ],
-        //   "location": "[resourceGroup().location]",
-        //   "name": "AllowAllWindowsAzureIps",
-        //   "properties": {
-        //     "startIpAddress": "0.0.0.0",
-        //     "endIpAddress": "0.0.0.0"
-        //   }
-        // }
-      ]
-    },
-    // {
-    //   "name": "[concat(variables('Deployment'),'-azsql',variables('AzureSQLDBAdminInfo')[copyIndex()].ServerName,'/',variables('AzureSQLDBAdminInfo')[copyIndex()].AdminName)]",
-    //   "type": "Microsoft.Sql/servers/administrators",
-    //   "apiVersion": "2019-06-01-preview",
-    //   "copy": {
-    //     "name": "DBAdminLoop",
-    //     "count": "[length( variables('AzureSQLDBAdminInfo'))]"
-    //   },
-    //   "properties": {
-    //     "administratorType": "[variables('AzureSQLDBAdminInfo')[copyIndex()].AdminType]",
-    //     "login": "[variables('AzureSQLDBAdminInfo')[copyIndex()].AdminName]",
-    //     "sid": "[variables('RolesLookup')[variables('AzureSQLDBAdminInfo')[copyIndex()].AdminName]]",
-    //     "tenantId": "[parameters('Global').tenantId]"
-    //   }
-    // },
-
-    {
-      "name": "[concat(variables('Deployment'),'-azsql',variables('AzureSQLDBInfo')[copyIndex()].ServerName,'/',variables('AzureSQLElasticPoolInfo')[copyIndex()].Name)]",
-      "type": "Microsoft.Sql/servers/elasticPools",
-      "apiVersion": "2017-10-01-preview",
-      "location": "[resourceGroup().location]",
-      "copy": {
-        "name": "DBLoop",
-        "count": "[length( variables('AzureSQLElasticPoolInfo'))]"
-      },
-      "dependsOn": [
-        "[concat(variables('Deployment'),'-azsql',variables('AzureSQLInfo')[copyIndex()].Name)]"
-      ],
-      "sku": {
-        "name": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].skuName]",
-        "tier": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].skuTier]",
-        "family": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].skuFamily]",
-        "capacity": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].skuCapacity]"
-      },
-      //"kind": "vcore,pool",
-      "properties": {
-        "maxSizeBytes": "[mul(1073741824,int(variables('AzureSQLElasticPoolInfo')[copyIndex()].maxSizeGB))]",
-        "perDatabaseSettings": {
-          "minCapacity": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].minCapacity]",
-          "maxCapacity": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].maxCapacity]"
-        },
-        "zoneRedundant": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].zoneRedundant]",
-        "licenseType": "[variables('AzureSQLElasticPoolInfo')[copyIndex()].licenceType]"
-      }
-    },
-    {
-      "name": "[concat(variables('Deployment'),'-azsql',variables('AzureSQLDBInfo')[copyIndex()].ServerName,'/',variables('AzureSQLDBInfo')[copyIndex()].DBName)]",
-      "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2019-06-01-preview",
-      "location": "[resourceGroup().location]",
-      "copy": {
-        "name": "DBLoop",
-        "count": "[length( variables('AzureSQLDBInfo'))]"
-      },
-      "sku": {
-        "name": "[variables('AzureSQLDBInfo')[copyIndex()].skuName]"
-        // "tier": "string",
-        // "size": "string",
-        // "family": "string",
-        // "capacity": "integer"
-      },
-      "dependsOn": [
-        "[concat(variables('Deployment'),'-azsql',variables('AzureSQLInfo')[copyIndex()].Name)]"
-      ],
-      "properties": {
-        // "createMode": "string",
-        // "collation": "string",
-        // "maxSizeBytes": "integer",
-        // "sampleName": "string",
-        // "elasticPoolId": "string",
-        // "sourceDatabaseId": "string",
-        // "restorePointInTime": "string",
-        // "sourceDatabaseDeletionDate": "string",
-        // "recoveryServicesRecoveryPointId": "string",
-        // "longTermRetentionBackupResourceId": "string",
-        // "recoverableDatabaseId": "string",
-        // "restorableDroppedDatabaseId": "string",
-        // "catalogCollation": "string",
-        // "zoneRedundant": "boolean",
-        // "licenseType": "string",
-        // "readScale": "string",
-        // "readReplicaCount": "integer",
-        // "autoPauseDelay": "integer",
-        // "storageAccountType": "string",
-        // "minCapacity": "number"
       }
     },
     {
       // Call the nested deployment for the Private Link
-      "condition": "[contains(variables('AzureSQLInfo')[copyIndex(0)],'privatelinkinfo')]",
-      "name": "[concat('dp', variables('Deployment'), '-privatelinkloopAZSQL', variables('AzureSQLInfo')[copyIndex(0)].name)]",
+      "condition": "[contains(variables('azSQLInfo')[copyIndex(0)],'privatelinkinfo')]",
+      "name": "[concat('dp', variables('Deployment'), '-privatelinkloopAZSQL', variables('azSQLInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "dependsOn": [
-        "SQLLoop"
+        "azSQLLoop"
       ],
       "copy": {
         "name": "plLoop",
-        "count": "[length( variables('AzureSQLInfo') )]"
+        "count": "[length( variables('azSQLInfo') )]"
       },
       "properties": {
         "mode": "Incremental",
@@ -252,47 +174,32 @@
           "Deployment": {
             "value": "[variables('Deployment')]"
           },
-          "DeploymentID": {
-            "value": "[parameters('DeploymentID')]"
-          },
           "PrivateLinkInfo": {
-            "value": "[variables('AzureSQLInfo')[copyIndex(0)].privateLinkInfo]"
+            "value": "[variables('azSQLInfo')[copyIndex(0)].privateLinkInfo]"
           },
           "providerType": {
             "value": "Microsoft.Sql/servers"
           },
           "resourceName": {
-            "value": "[concat(variables('Deployment'),'-azsql',variables('AzureSQLInfo')[copyIndex()].Name)]"
-          },
-          "Global": {
-            "value": "[parameters('Global')]"
-          },
-          "_artifactsLocation": {
-            "value": "[parameters('_artifactsLocation')]"
-          },
-          "_artifactsLocationSasToken": {
-            "value": "[parameters('_artifactsLocationSasToken')]"
-          },
-          "prefix": {
-            "value": "[parameters('prefix')]"
+            "value": "[concat(variables('Deployment'),'-azsql',variables('azSQLInfo')[copyIndex()].Name)]"
           }
         }
       }
     },
     {
-      // REGISTER DNS IN AZE2
+      // REGISTER DNS IN Primary
       // Call the nested deployment for the Private Link DNS registration
-      "condition": "[contains(variables('AzureSQLInfo')[copyIndex(0)],'privatelinkinfo')]",
-      "name": "[concat('dp', variables('Deployment'), '-registerPrivateLinkDNS-AZE2-', variables('AzureSQLInfo')[copyIndex(0)].name)]",
+      "condition": "[contains(variables('azSQLInfo')[copyIndex(0)],'privatelinkinfo')]",
+      "name": "[concat('dp', variables('Deployment'), '-registerPrivateLinkDNS-ACU1-', variables('azSQLInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[if(contains(variables('dnsRG'),resourceGroup().name),variables('dnsRG')[resourceGroup().name],parameters('Global').HubVNetRGName)]",
+      "resourceGroup": "[parameters('Global').HubRGName]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
         "plLoop"
       ],
       "copy": {
-        "name": "plDNSLoopAZE2",
-        "count": "[length( variables('AzureSQLInfo') )]"
+        "name": "plDNSLoopACU1",
+        "count": "[length( variables('azSQLInfo') )]"
       },
       "properties": {
         "mode": "Incremental",
@@ -302,56 +209,58 @@
         },
         "parameters": {
           "PrivateLinkInfo": {
-            "value": "[variables('AzureSQLInfo')[copyIndex(0)].privateLinkInfo]"
+            "value": "[variables('azSQLInfo')[copyIndex(0)].privateLinkInfo]"
+          },
+          "resourceName": {
+            "value": "[concat(variables('Deployment'),'-azsql',variables('azSQLInfo')[copyIndex()].Name)]"
           },
           "providerURL": {
             "value": ".windows.net/"
           },
-          "resourceName": {
-            "value": "[concat(variables('Deployment'),'-azsql',variables('AzureSQLInfo')[copyIndex()].Name)]"
-          },
           "Nics": {
-            "value": "[if(contains(variables('AzureSQLInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopAZSQL', variables('AzureSQLInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
-          }
-        }
-      }
-    },
-    {
-      // REGISTER DNS IN AZC1
-      // Call the nested deployment for the Private Link DNS registration
-      "condition": "[and(contains(variables('AzureSQLInfo')[copyIndex(0)],'privatelinkinfo'),not(contains(variables('dnsRG'),resourceGroup().name)))]",
-      "name": "[concat('dp', variables('Deployment'), '-registerPrivateDNS-AZC1-', variables('AzureSQLInfo')[copyIndex(0)].name)]",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[if(contains(variables('dnsRG'),resourceGroup().name),variables('dnsRG')[resourceGroup().name],parameters('Global').HubVNetRGNameDR)]",
-      "apiVersion": "2019-10-01",
-      "dependsOn": [
-        "plLoop"
-      ],
-      "copy": {
-        "name": "plDNSLoopAZC1",
-        "count": "[length( variables('AzureSQLInfo') )]"
-      },
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "PrivateLinkInfo": {
-            "value": "[variables('AzureSQLInfo')[copyIndex(0)].privateLinkInfo]"
-          },
-          "providerURL": {
-            "value": ".windows.net/"
-          },
-          "resourceName": {
-            "value": "[concat(variables('Deployment'),'-azsql',variables('AzureSQLInfo')[copyIndex()].Name)]"
-          },
-          "Nics": {
-            "value": "[if(contains(variables('AzureSQLInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopAZSQL', variables('AzureSQLInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
+            "value": "[if(contains(variables('azSQLInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopAZSQL', variables('azSQLInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
           }
         }
       }
     }
-  ]
+    // {
+    //   // REGISTER DNS IN Secondary
+    //   // Call the nested deployment for the Private Link DNS registration
+    //   "condition": "[contains(variables('azSQLInfo')[copyIndex(0)],'privatelinkinfo')]",
+    //   "name": "[concat('dp', variables('Deployment'), '-registerPrivateDNS-AEU2-', variables('azSQLInfo')[copyIndex(0)].name)]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "resourceGroup": "[parameters('Global').HubRGNameDR]",
+    //   "apiVersion": "2019-10-01",
+    //   "dependsOn": [
+    //     "plLoop"
+    //   ],
+    //   "copy": {
+    //     "name": "plDNSLoopAEU@",
+    //     "count": "[length( variables('azSQLInfo') )]"
+    //   },
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": {
+    //       "PrivateLinkInfo": {
+    //         "value": "[variables('azSQLInfo')[copyIndex(0)].privateLinkInfo]"
+    //       },
+    //       "providerURL": {
+    //         "value": ".windows.net/"
+    //       },
+    //       "resourceName": {
+    //         "value": "[concat(variables('Deployment'),'-azsql',variables('azSQLInfo')[copyIndex()].Name)]"
+    //       },
+    //       "Nics": {
+    //         "value": "[if(contains(variables('azSQLInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopAZSQL', variables('azSQLInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
+    //       }
+    //     }
+    //   }
+    // }
+  ],
+  "outputs": {
+  }
 }

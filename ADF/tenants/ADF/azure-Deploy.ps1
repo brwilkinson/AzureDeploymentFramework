@@ -56,7 +56,7 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\6-azuredeplo
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\4-azuredeploy-ILBalancer.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ADF:\templates-base\12-azuredeploy-FW.json
 
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\20-azuredeploy-RedisCache.json
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\20-azuredeploy-REDIS.json
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\9-azuredeploy-APIM.json
 AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ADF:\templates-base\9-azuredeploy-APIM.json

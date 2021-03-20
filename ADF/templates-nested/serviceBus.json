@@ -1,0 +1,147 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "Environment": {
+      "type": "string"
+    },
+    "SBInfo": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "OMSworkspaceID": {
+      "type": "string"
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access artifactsLocation"
+      }
+    },
+  },
+  "variables": {
+
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('Deployment'),'-sb',parameters('SBInfo').Name)]",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2018-01-01-preview",
+      "location": "[resourceGroup().location]",
+      // Basic, Standard, Premium
+      "sku": {
+        "name": "[parameters('SBInfo').sku]",
+        "tier": "[parameters('SBInfo').sku]",
+        "capacity": "[parameters('SBInfo').skuCapacity]"
+      },
+      "properties": {
+        "zoneRedundant": "[parameters('SBInfo').zoneRedundant]"
+        // "identity": {
+        //   "principalId": "string",
+        //   "tenantId": "string",
+        //   "type": "SystemAssigned"
+        // },
+        // "encryption": {
+        //   "keyVaultProperties": {
+        //     "keyName": "string",
+        //     "keyVaultUri": "string"
+        //   },
+        //   "keySource": "Microsoft.KeyVault"
+        // }
+      },
+      "resources": [
+      ]
+    },
+    {
+      "name": "[concat(parameters('Deployment'),'-sb',parameters('SBInfo').Name,'/',parameters('SBInfo').topics[copyIndex(0)].Name)]",
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "apiVersion": "2017-04-01",
+      "copy": {
+        "name": "SBTopicLoop",
+        "count": "[length( parameters('SBInfo').topics )]"
+      },
+      "dependsOn": [
+        "[concat(parameters('Deployment'),'-sb',parameters('SBInfo').Name)]"
+      ],
+      "properties": {
+        "defaultMessageTimeToLive": "P14D",
+        "maxSizeInMegabytes": 1024,
+        "requiresDuplicateDetection": false,
+        "duplicateDetectionHistoryTimeWindow": "PT10M",
+        "enableBatchedOperations": true,
+        "status": "Active",
+        "supportOrdering": true,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+        "enablePartitioning": false,
+        "enableExpress": false
+      }
+    },
+    {
+      "name": "[concat('dpServiceBus-TopicSubscriptions-',copyIndex(1))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "SBTopicLoop"
+      ],
+      "copy": {
+        "name": "SBTopicSubscriptionLoop",
+        "count": "[length( parameters('SBInfo').topics )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/serviceBusTopicSubscriptions.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[parameters('Deployment')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "Environment": {
+            "value": "[parameters('Environment')]"
+          },
+          "SBInfoTopic": {
+            "value": "[parameters('SBInfo').topics[CopyIndex(0)]]"
+          },
+          "SBTopicName": {
+            "value": "[concat(parameters('Deployment'),'-sb',parameters('SBInfo').Name,'/',parameters('SBInfo').topics[copyIndex(0)].Name)]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "Stage": {
+            "value": "[parameters('Stage')]"
+          },
+          "OMSworkspaceID": {
+            "value": "[parameters('OMSworkspaceID')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

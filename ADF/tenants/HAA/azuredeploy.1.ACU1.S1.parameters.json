@@ -38,6 +38,7 @@
         "OMSSolutions": 1,
         "OMSDataSources": 1,
         "SA": 1,
+        "CDN": 1,
         "StorageSync": 0,
         "RSV": 1,
         "NSGHUB": 0,
@@ -69,6 +70,7 @@
         "WAF": 1,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
+        "REDIS": 1,
         "APIM": 1,
         "ACR": 1,
         "AKS": 1,
@@ -81,7 +83,7 @@
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,
-        "AzureSQL": 0
+        "AzureSQL": 1
       }
     },
     "Extensions": {
@@ -315,23 +317,23 @@
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
-            "Route": 0,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           },
           {
             "name": "snBE02",
             "prefix": "64/28",
-            "NSG": 0,
-            "Route": 0,
+            "NSG": 1,
+            "Route": 1,
             "FlowLogEnabled": false,
             "FlowAnalyticsEnabled": false
           },
           {
-            "name": "snBE01", // APIM
+            "name": "snBE01", // APIM Dedicated
             "prefix": "80/28",
             "NSG": 1,
-            "Route": 0,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           },
@@ -347,7 +349,7 @@
             "name": "snMT01",
             "prefix": "128/25",
             "NSG": 1,
-            "Route": 0,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false,
             "delegations": "Microsoft.ContainerInstance/containerGroups"
@@ -356,7 +358,7 @@
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
-            "Route": 0,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           }
@@ -377,6 +379,29 @@
               "enabled": 1,
               "days": 7
             }
+          },
+          {
+            "nameSuffix": "catalog",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
+          }
+        ],
+        "CDNInfo": [
+          {
+            "Name": "eshopcatalog",
+            "saname": "catalog",
+            "endpoint": "catalog-endpoint"
           }
         ],
         "LogicInfo": [
@@ -402,6 +427,145 @@
                 "groupID": "vault"
               }
             ]
+          }
+        ],
+        "AzSQLInfo": [
+          {
+            "Name": "ESHOPSQL",
+            "administratorLogin": "brw",
+            "AdminName": "AZ_SQL_Admins",
+            "publicNetworkAccess": "Enabled",
+            "allNetworks": "Deny",
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snBE02",
+                "groupID": "sqlServer"
+              }
+            ],
+            "DBInfo": [
+              {
+                "Name": "catalogdb",
+                "skuName": "S1"
+              },
+              {
+                "Name": "identitydb",
+                "skuName": "S1"
+              },
+              {
+                "Name": "orderingdb",
+                "skuName": "S1"
+              }
+            ]
+          }
+        ],
+        "cosmosDBInfo": [
+          {
+            "Name": "eshop-nosql",
+            "Kind": "MongoDB", //GlobalDocumentDB, MongoDB, Parse
+            "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
+            "enableMultipleWriteLocations": true,
+            "enableAutomaticFailover": true,
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snBE02",
+                "groupID": "MongoDB"
+              }
+            ],
+            "locations": [
+              {
+                "location": "PrimaryLocation",
+                "failoverPriority": 0,
+                "isZoneRedundant": true
+              },
+              {
+                "location": "SecondaryLocation",
+                "failoverPriority": 1,
+                "isZoneRedundant": true
+              }
+            ],
+            "databases": [
+              {
+                "databaseName": "customers",
+                "containerName": "Info"
+              }
+            ]
+          }
+        ],
+        "SBInfo": [
+          {
+            "Name": "ESHOPSB",
+            "sku": "Premium",
+            "skuCapacity": 1,
+            "zoneRedundant": true,
+            "topics": [
+              {
+                "Name": "eshop_event_bus",
+                "subscriptions": [
+                  {
+                    "Name": "Basket"
+                  },
+                  {
+                    "Name": "Catalog"
+                  },
+                  {
+                    "Name": "Ordering"
+                  },
+                  {
+                    "Name": "GracePeriod"
+                  },
+                  {
+                    "Name": "Payment"
+                  }
+                ]
+              }
+            ],
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snBE02",
+                "groupID": "namespace"
+              }
+            ]
+          }
+        ],
+        "appConfigurationInfo": [
+          {
+            "name": "01",
+            "sku": "standard",
+            "publicNetworkAccess": "Enabled"
+          }
+        ],
+        "RedisInfo": [
+          {
+            "Name": "APIM01",
+            "sku": "C1"
+          },
+          {
+            "Name": "eshopredis",
+            "sku": "C1",
+            "enableNonSslPort": true
+          }
+          // {
+          //   "Name": "APIM01",
+          //   "sku": "P1"
+          // },
+          // {
+          //   "Name": "APIM03",
+          //   "sku": "C0"
+          // },
+          // {
+          //   "Name": "APIM04",
+          //   "sku": "B0"
+          // },
+          // {
+          //   "Name": "APIM05",
+          //   "sku": "B1"
+          // }
+        ],
+        "ContainerRegistry": [
+          {
+            "Name": "01",
+            "SKU": "Standard",
+            "adminUserEnabled": true
           }
         ],
         "APIMInfo": [
@@ -481,20 +645,6 @@
             ]
           }
         ],
-        "appConfigurationInfo": [
-          {
-            "name": "01",
-            "sku": "standard",
-            "publicNetworkAccess": "Enabled"
-          }
-        ],
-        "ContainerRegistry": [
-          {
-            "Name": "01",
-            "SKU": "Standard",
-            "adminUserEnabled": true
-          }
-        ],
         "AKSInfo": [
           {
             "Name": "01",
@@ -543,21 +693,6 @@
                 "_vmSize": "Standard_D1_v2",
                 "ASName": "JMP",
                 "mode": "User"
-              }
-            ]
-          }
-        ],
-        "cosmosDBInfo": [
-          {
-            "Name": "CDB01",
-            "Kind": "GlobalDocumentDB",
-            "defaultConsistencyLevel": "Strong",
-            "enableMultipleWriteLocations": false,
-            "enableAutomaticFailover": true,
-            "databases": [
-              {
-                "databaseName": "customers",
-                "containerName": "Info"
               }
             ]
           }

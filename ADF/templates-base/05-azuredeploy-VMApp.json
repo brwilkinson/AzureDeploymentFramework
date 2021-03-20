@@ -550,7 +550,7 @@
           //  https://docs.microsoft.com/en-us/azure/active-directory/devices/howto-vm-sign-in-azure-ad-windows
           //  https://docs.microsoft.com/en-us/azure/virtual-machines/linux/login-using-aad
           // "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.AADLogin,1))]",
-                    "condition": "[and(
+          "condition": "[and(
                             variables('VM')[copyIndex(0)].matchVM,
                             and(
                               not(
@@ -670,7 +670,7 @@
               "User": "[concat(parameters('Global').vmAdminUserName,'@',parameters('Global').ADDomainName)]",
               "Restart": "true",
               "Options": 3,
-              
+
             },
             "protectedSettings": {
               "Password": "[parameters('vmAdminPassword')]"

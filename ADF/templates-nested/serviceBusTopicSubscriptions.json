@@ -1,0 +1,75 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "Environment": {
+      "type": "string"
+    },
+    "SBInfoTopic": {
+      "type": "object"
+    },
+    "SBTopicName": {
+      "type": "string"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "OMSworkspaceID": {
+      "type": "string"
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
+    }
+  },
+  "variables": {
+
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('SBTopicName'),'/','root')]",
+      "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+      "apiVersion": "2017-04-01",
+      "dependsOn": [
+      ],
+      "properties": {
+        "rights": [
+          "Manage",
+          "Send",
+          "Listen"
+        ]
+      }
+    },
+    {
+      "name": "[concat(parameters('SBTopicName'),'/',parameters('SBInfoTopic').subscriptions[CopyIndex(0)].Name)]",
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+      "apiVersion": "2017-04-01",
+      "copy": {
+        "name": "subCopy",
+        "count": "[length(parameters('SBInfoTopic').subscriptions)]"
+      },
+      "dependsOn": [
+      ],
+      "properties": {
+        "lockDuration": "PT5M",
+        "requiresSession": false,
+        "defaultMessageTimeToLive": "PT14H",
+        "deadLetteringOnMessageExpiration": true,
+        "deadLetteringOnFilterEvaluationExceptions": true,
+        "maxDeliveryCount": 10,
+        "enableBatchedOperations": false,
+        "status": "Active",
+        "autoDeleteOnIdle": "P3650D"
+      }
+    }
+  ]
+}

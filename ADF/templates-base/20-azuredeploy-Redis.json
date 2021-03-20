@@ -128,19 +128,18 @@
       }
     },
     "RedisConfiguration": {
-      "Default" : {
-          "maxclients": "1000",
-          "maxmemory-reserved": 50,
-          "maxfragmentationmemory-reserved": "50",
-          "maxmemory-delta": "50"
-        },
-        "Basic": {}
+      "Default": {
+        "maxclients": "1000",
+        "maxmemory-reserved": 50,
+        "maxfragmentationmemory-reserved": "50",
+        "maxmemory-delta": "50"
+      },
+      "Basic": {}
     }
-
   },
   "resources": [
     {
-      "name": "[toLower(concat(variables('DeploymentURI'),'rc',variables('RedisInfo')[copyIndex()].name))]",
+      "name": "[tolower(concat(variables('Deployment'),'-rc',variables('RedisInfo')[copyIndex()].Name))]",
       "type": "Microsoft.Cache/Redis",
       "apiVersion": "2019-07-01",
       "location": "Central US",
@@ -150,7 +149,7 @@
       },
       "properties": {
         "sku": "[variables('SKULookup')[variables('RedisInfo')[copyIndex()].sku]]",
-        "enableNonSslPort": false,
+        "enableNonSslPort": "[variables('RedisInfo')[copyIndex()].enableNonSslPort]",
         "redisConfiguration": "[if(
                                   equals(variables('SKULookup')[variables('RedisInfo')[copyIndex()].sku].name,'Basic'),
                                           variables('RedisConfiguration')['Basic'],

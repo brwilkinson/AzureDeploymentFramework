@@ -411,6 +411,39 @@
       ]
     },
     {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[concat(variables('Deploymentnsg'),'-nsgSNBE02')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+        ]
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[concat(variables('Deploymentnsg'),'-nsgSNBE02')]"
+          ],
+          "apiVersion": "2015-07-01",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "NetworkSecurityGroupEvent",
+                "enabled": true
+              },
+              {
+                "category": "NetworkSecurityGroupRuleCounter",
+                "enabled": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "apiVersion": "2018-07-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(variables('Deploymentnsg'),'-nsgAzureBastionSubnet')]",

@@ -24,7 +24,9 @@
       "Cassandra":"cassandra.cosmos",
       "mysqlServer":"mysql",
       "mariadbServer":"mariadb",
-      "configurationStores": "azconfig"
+      "configurationStores": "azconfig",
+      "namespace": "servicebus",
+      "sqlServer": "database"
     }
 
   },
