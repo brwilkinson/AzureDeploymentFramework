@@ -37,10 +37,10 @@ jobs:
           creds: ${{secrets.ACU1_BRW_HAA_RG_D3}}
           enable-AzPSSession: true
 
-      - name: M0_RG
+      - name: ${{ env.ENV }}_RG
         uses: Azure/powershell@v1
         with:
           inlineScript: |
-            echo ${{secrets.ACU1_BRW_HAA_RG_env.ENV }} }}
+            echo ${{ secrets.ACU1_BRW_HAA_RG_env.ENV }}
             dir env:
           azPSVersion: latest
