@@ -149,13 +149,36 @@
       },
       "properties": {
         "sku": "[variables('SKULookup')[variables('RedisInfo')[copyIndex()].sku]]",
-        "enableNonSslPort": "[variables('RedisInfo')[copyIndex()].enableNonSslPort]",
+        "enableNonSslPort": "[if(contains(variables('RedisInfo')[copyIndex()],'enableNonSslPort'),variables('RedisInfo')[copyIndex()].enableNonSslPort,bool('false'))]",
         "redisConfiguration": "[if(
                                   equals(variables('SKULookup')[variables('RedisInfo')[copyIndex()].sku].name,'Basic'),
                                           variables('RedisConfiguration')['Basic'],
                                           variables('RedisConfiguration')['Default']
                                     )]"
-      }
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+            "[tolower(concat(variables('Deployment'),'-rc',variables('RedisInfo')[copyIndex()].Name))]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "workspaceId": "[variables('OMSworkspaceID')]",
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "outputs": {

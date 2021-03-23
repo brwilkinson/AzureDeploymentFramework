@@ -70,6 +70,7 @@
         "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
+        "APPCONFIG": 1,
         "REDIS": 1,
         "APIM": 1,
         "AKS": 1,

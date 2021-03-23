@@ -109,7 +109,7 @@
       },
       "resources": [
         {
-          "name": "[variables('CDNInfo')[copyIndex()].endpoint]",
+          "name": "[concat(variables('CDN')[copyIndex(0)].saname,'-',variables('CDNInfo')[copyIndex()].endpoint)]",
           "apiVersion": "2020-09-01",
           "type": "endpoints",
           "dependsOn": [
@@ -117,11 +117,7 @@
           ],
           "location": "[resourceGroup().location]",
           "properties": {
-            "originHostHeader": "[replace(replace(reference(
-                                                            resourceId('Microsoft.Storage/storageAccounts', variables('CDN')[CopyIndex(0)].saname),
-                                                            '2020-08-01-preview' ).primaryEndpoints.blob,
-                                                  'https://','')
-                                          ,'/','')]",
+            "originHostHeader": "[concat(variables('CDN')[copyIndex(0)].saname,'.blob.core.windows.net')]",
             "isHttpAllowed": true,
             "isHttpsAllowed": true,
             "queryStringCachingBehavior": "IgnoreQueryString",
@@ -132,16 +128,12 @@
               "application/x-javascript",
               "text/javascript"
             ],
-            "isCompressionEnabled": "True",
+            "isCompressionEnabled": true,
             "origins": [
               {
                 "name": "origin1",
                 "properties": {
-                  "hostName": "[replace(replace(reference(
-                                                          resourceId('Microsoft.Storage/storageAccounts', variables('CDN')[CopyIndex(0)].saname),
-                                                          '2020-08-01-preview' ).primaryEndpoints.blob,
-                                                'https://',''),
-                                        '/','')]"
+                  "hostName": "[concat(variables('CDN')[copyIndex(0)].saname,'.blob.core.windows.net')]",
                 }
               }
             ]

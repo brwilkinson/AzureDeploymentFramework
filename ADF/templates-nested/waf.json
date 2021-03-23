@@ -32,7 +32,7 @@
     "snWAF01Name": "snWAF01",
     "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snWAF01Name'))]",
     "firewallPolicy": {
-      "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/', parameters('Deployment'), '-wafPolicy', parameters('WAFInfo').WAFname)]"
+      "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/', parameters('Deployment'), '-wafPolicy', parameters('WAFInfo').WAFPolicyName)]"
     },
     "copy": [ 
       {

@@ -230,7 +230,6 @@
       },
       "resources": [
         {
-          "condition": false,
           "name": "Microsoft.Insights/service",
           "type": "providers/diagnosticSettings",
           "dependsOn": [

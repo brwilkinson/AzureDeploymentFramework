@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'P0',
+    [string]$Enviro = 'D3',
     [string]$App = 'HAA'
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
@@ -17,11 +17,11 @@ break
 # Create Service principal for Env. + add GH secret or AZD Service connections
 # Infra in Github
 set-location -path ADF:\
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments P0, G0, G1, S1, D3, T5, P7
+. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments D3, P0, G0, G1, S1, T5, P7
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
 # App pipelines in AZD
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix ACU1 -Environments P0, G0, G1, S1, D3, T5, P7
+. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix ACU1 -Environments D3, P0, G0, G1, S1, T5, P7
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
 # Bootstrap Hub RGs and Keyvaults
@@ -37,64 +37,64 @@ set-location -path ADF:\
 # Deploy Environment
 
 # Global  sub deploy for $env:Enviro
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy -FullUpload -VSTS
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-deploy\00-azuredeploy-sub-InitialRG.json -SubscriptionDeploy -FullUpload -VSTS
 AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy -FullUpload -VSTS
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\0-azuredeploy-sub-RGRoleAssignments.json -SubscriptionDeploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\0-azuredeploy-mg-ManagementGroups.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-sub-RGRoleAssignments.json -SubscriptionDeploy
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-mg-ManagementGroups.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\0-azuredeploy-Test2.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-Test2.json
 
 # $env:Enviro RG deploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-deploy\0-azuredeploy-ALL.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-deploy\0-azuredeploy-ALL.json # -FullUpload -VSTS
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-deploy\00-azuredeploy-ALL.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-deploy\00-azuredeploy-ALL.json # -FullUpload -VSTS
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\2-azuredeploy-NSG.hub.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\2-azuredeploy-NSG.hub.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-NSG.hub.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NSG.hub.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\2-azuredeploy-NSG.spoke.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\2-azuredeploy-NSG.spoke.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-NSG.spoke.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NSG.spoke.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\3-azuredeploy-DNSPrivate.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\3-azuredeploy-VNetPrivateLink.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\3-azuredeploy-VNet.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\6-azuredeploy-WAF.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-DNSPrivate.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-VNetPrivateLink.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-VNet.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\06-azuredeploy-WAF.json
 
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\3-azuredeploy-DNSPrivate.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\3-azuredeploy-VNetPrivateLink.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\3-azuredeploy-VNet.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\6-azuredeploy-WAF.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-DNSPrivate.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-VNetPrivateLink.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-VNet.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\06-azuredeploy-WAF.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\1-azuredeploy-OMS.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\01-azuredeploy-OMS.json
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\23-azuredeploy-Dashboard.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\2-azuredeploy-NetworkWatcher.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-NetworkWatcher.json
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\2-azuredeploy-NetworkFlowLogs.json
 
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\2-azuredeploy-NetworkWatcher.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\2-azuredeploy-NetworkFlowLogs.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NetworkWatcher.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NetworkFlowLogs.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\1-azuredeploy-Storage.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\01-azuredeploy-Storage.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\0-azuredeploy-KV.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\0-azuredeploy-KV.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-KV.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\00-azuredeploy-KV.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\9-azuredeploy-APIM.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\09-azuredeploy-APIM.json
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\2-azuredeploy-FrontDoor.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\2-azuredeploy-FrontDoor.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-FrontDoor.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-FrontDoor.json
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\14-azuredeploy-AKS.json -FullUpload -vsts
 
 # $env:Enviro AppServers Deploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADPrimary
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\5-azuredeploy-VMApp.json -DeploymentName ADSecondary
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName ADPrimary
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName ADSecondary
 # $env:Enviro AppServers Deploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\5-azuredeploy-VMApp.json -DeploymentName InitialDOP
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName InitialDOP
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName InitialDOP
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServers
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServersLinux
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServers
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServersLinux
 
 # ASR deploy
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\21-azuredeploy-ASRSetup.json -SubscriptionDeploy -FullUpload

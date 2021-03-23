@@ -6,10 +6,10 @@
       "value": "ACU1"
     },
     "Environment": {
-      "value": "S"
+      "value": "D"
     },
     "DeploymentID": {
-      "value": "1"
+      "value": "3"
     },
     "vmAdminPassword": {
       "reference": {
@@ -515,11 +515,7 @@
                   },
                   {
                     "Name": "Payment"
-                  },
-                  {
-                    "Name": "backgroundtasks"
                   }
-                  
                 ]
               }
             ],

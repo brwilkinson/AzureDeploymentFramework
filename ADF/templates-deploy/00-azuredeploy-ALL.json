@@ -112,6 +112,7 @@
       "VMAppLinux": "templates-base\\05-azuredeploy-VMApp.json",
       "VMSQL": "templates-base\\05-azuredeploy-VMApp.json",
       "VMFILE": "templates-base\\05-azuredeploy-VMApp.json",
+      "APPCONFIG": "templates-base\\18-azuredeploy-AppConfiguration.json",
       "WAF": "templates-base\\06-azuredeploy-WAF.json",
       "FRONTDOOR": "templates-base\\02-azuredeploy-FrontDoor.json",
       "WAFPOLICY": "templates-base\\06-azuredeploy-WAFPolicy.json",
@@ -807,6 +808,24 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').WAF, parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[equals(parameters('Stage').APPCONFIG,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-APPCONFIG')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-VNET')]",
+        "[concat('dp', variables('Deployment'), '-OMS')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').APPCONFIG, parameters('_artifactsLocationSasToken'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

@@ -165,7 +165,7 @@
             "value": "Microsoft.DocumentDb/databaseAccounts"
           },
           "resourceName": {
-            "value": "[concat(variables('Deployment'),'-cosmos-',variables('cosmosDBInfo')[copyIndex()].Name)]"
+            "value": "[tolower(concat(variables('Deployment'),'-cosmos-',variables('cosmosDBInfo')[copyIndex()].Name))]"
           }
         }
       }

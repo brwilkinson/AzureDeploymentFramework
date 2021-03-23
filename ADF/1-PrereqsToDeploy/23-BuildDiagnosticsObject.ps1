@@ -1,18 +1,16 @@
 @'
-AzureBackupReport
-CoreAzureBackup
-AddonAzureBackupJobs
-AddonAzureBackupAlerts
-AddonAzureBackupPolicy
-AddonAzureBackupStorage
-AddonAzureBackupProtectedInstance
-AzureSiteRecoveryJobs
-AzureSiteRecoveryEvents
-AzureSiteRecoveryReplicatedItems
-AzureSiteRecoveryReplicationStats
-AzureSiteRecoveryRecoveryPoints
-AzureSiteRecoveryReplicationDataUploadRate
-AzureSiteRecoveryProtectedDiskDataChurn
+SQLInsights
+AutomaticTuning
+QueryStoreRuntimeStatistics
+QueryStoreWaitStatistics
+Errors
+DatabaseWaitStatistics
+Timeouts
+Blocks
+Deadlocks
+Basic
+InstanceAndAppAdvanced
+WorkloadManagement
 '@ -split '\n' | ForEach-Object {
 
     @{

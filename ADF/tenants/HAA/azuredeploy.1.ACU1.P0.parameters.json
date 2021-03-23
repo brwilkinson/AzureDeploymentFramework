@@ -70,6 +70,7 @@
         "WAF": 0,
         "SetExternalDNS": 0,
         "SetInternalDNS": 0,
+        "APPCONFIG": 0,
         "REDIS": 0,
         "APIM": 0,
         "ACR": 0,
@@ -430,7 +431,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Deny",
+            "allNetworks": "Allow",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

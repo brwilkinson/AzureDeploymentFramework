@@ -44,19 +44,15 @@
       "HA_App_SRE_Team": "30cdef8c-ac07-4adb-8d6b-b32aaf8d869c",
       "AZ_SQL_Admins": "51e0aa08-f648-461b-b4af-8d5a6e9e09aa",
       "AKS_Admins": "fe3fc890-a38c-47c4-96ce-939a28a8d55a",
-      "ADF_ACU1-BRW-HAA-RG-S1": "79dc0912-294d-4284-8dd0-ea4adfec59a6",
-      "ADF_ACU1-BRW-HAA-RG-D3": "b6d9101a-d873-4a08-b64a-9d07ee63f9fd",
-      "ADF_ACU1-BRW-HAA-RG-T5": "a3c1ec23-9836-42ad-bbca-5a11e17d90bb",
-      "ADF_ACU1-BRW-HAA-RG-P7": "ce7379dd-c642-4c5b-8525-72efff1b5cc3",
-      "ADF_ACU1-BRW-HAA-RG-P0": "039a4ee9-f87e-4d1c-8938-ca66d9c14a2d",
-      "ADF_ACU1-BRW-HAA-RG-G0": "3f8a3c06-733a-49cb-b6d6-82a8fecf352c",
-      "ADF_ACU1-BRW-HAA-RG-G1": "6591a33f-aa8a-495a-8145-82c4b637f65e",
-      "ADF_AEU2-BRW-HAA-RG-P0": "f3d064ec-6efe-4cae-af9f-6ef9a047c474",
-      "ADF_AEU2-BRW-HAA-RG-S1": "5cd40193-ef5c-4635-a0e3-98cebba31ae5",
-      "ADF_AEU2-BRW-HAA-RG-T5": "e747e283-312a-40c4-a5f2-18a2d93439b2",
-      "ADF_AEU2-BRW-HAA-RG-P4": "a6c836ac-e61f-4cc0-8ef2-9d7bb315af4c",
-      "ADF_AEU2-BRW-HAA-RG-P7": "6a6919aa-b6b4-45a3-8e9c-04b3b34c124f",
-      "ADO_ADF_ACU1-BRW-HAA-RG-S1": "b33eddb4-2700-4b03-925b-b493f0eda569"
+      "ADO_ADF_ACU1-BRW-HAA-RG-S1": "b33eddb4-2700-4b03-925b-b493f0eda569",
+      "ADO_ADF_ACU1-BRW-HAA-RG-D3": "88660718-340e-48e3-9d1b-8e5202725038",
+      "GH_ADF_ACU1-BRW-HAA-RG-P0": "8deb6f83-2b61-4e89-8d82-4c9e014624ca",
+      "GH_ADF_ACU1-BRW-HAA-RG-G0": "bc8132e7-8f1b-4c20-bd86-75acb80160aa",
+      "GH_ADF_ACU1-BRW-HAA-RG-G1": "437712a8-c335-4820-999c-cdb20a0a4aa5",
+      "GH_ADF_ACU1-BRW-HAA-RG-S1": "3e4747f1-cfc9-417d-85f2-4159b4881ed1",
+      "GH_ADF_AEU2-BRW-HAA-RG-P0": "fadfab20-f21d-4bdd-bf7d-dc5e9eb71216",
+      "GH_ADF_AEU2-BRW-HAA-RG-S1": "8857d48a-df84-408e-a134-f8ed912b0307",
+      "GH_ADF_ACU1-BRW-HAA-RG-D3": "da149f82-8d33-4d71-98ef-96471b0e4c93"
     }
   }
 }

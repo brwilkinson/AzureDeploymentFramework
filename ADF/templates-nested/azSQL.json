@@ -111,7 +111,7 @@
       ]
     },
     {
-      "name": "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/',parameters('azSQLInfo').DBInfo[CopyINdex(0)].Name)]",
+      "name": "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/',parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name)]",
       "type": "Microsoft.Sql/servers/databases",
       "apiVersion": "2020-11-01-preview",
       "location": "[resourceGroup().location]",
@@ -151,7 +151,86 @@
         // "autoPauseDelay": "integer",
         // "storageAccountType": "string",
         // "minCapacity": "number"
-      }
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers/databases', 
+                          concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name),parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name
+                          )]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "workspaceId": "[parameters('OMSworkspaceID')]",
+            "logs": [
+              {
+                "enabled": true,
+                "category": "SQLInsights"
+              },
+              {
+                "enabled": true,
+                "category": "AutomaticTuning"
+              },
+              {
+                "enabled": true,
+                "category": "QueryStoreRuntimeStatistics"
+              },
+              {
+                "enabled": true,
+                "category": "QueryStoreWaitStatistics"
+              },
+              {
+                "enabled": true,
+                "category": "Errors"
+              },
+              {
+                "enabled": true,
+                "category": "DatabaseWaitStatistics"
+              },
+              {
+                "enabled": true,
+                "category": "Timeouts"
+              },
+              {
+                "enabled": true,
+                "category": "Blocks"
+              },
+              {
+                "enabled": true,
+                "category": "Deadlocks"
+              }
+            ],
+            "metrics": [
+              {
+                "category": "Basic",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              },
+              {
+                "category": "InstanceAndAppAdvanced",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              },
+              {
+                "category": "WorkloadManagement",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
     // {
     //   "name": "[concat(parameters('Deployment'),'-azsql',variables('AzureSQLDBAdminInfo')[copyIndex()].ServerName,'/',variables('AzureSQLDBAdminInfo')[copyIndex()].AdminName)]",

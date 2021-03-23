@@ -95,7 +95,39 @@
         "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
         "enablePartitioning": false,
         "enableExpress": false
-      }
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "Microsoft.Insights/service",
+          "dependsOn": [
+              "[resourceId('Microsoft.ServiceBus/namespaces/topics',
+                            concat(parameters('Deployment'),'-sb',parameters('SBInfo').Name),
+                            parameters('SBInfo').topics[copyIndex(0)].Name
+                            )]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "workspaceId": "[parameters('OMSworkspaceID')]",
+            "logs": [
+              {
+                "category": "OperationalLogs",
+                "enabled": true
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT5M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "[concat('dpServiceBus-TopicSubscriptions-',copyIndex(1))]",

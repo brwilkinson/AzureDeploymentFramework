@@ -92,6 +92,31 @@
                 json('[]')
             )]",
         "UAIInfo": "[if(equals(parameters('Stage').UAI,1),parameters('DeploymentInfo').UAIInfo,createArray())]",
+        "copy": [
+            {
+                "name": "SP",
+                "count": "[length(parameters('DeploymentInfo').SPInfo)]",
+                "input": {
+                    // take the service principal names and swap out the RGName and project names
+                    "Name": "[
+                        replace(
+                                replace(
+                                        replace(
+                                                parameters('DeploymentInfo').SPInfo[CopyIndex('SP')].Name,
+                                                '{GHProject}',
+                                                parameters('Global').GHProject
+                                                ),
+                                        '{ADOProject}',
+                                        parameters('Global').ADOProject
+                                        ),
+                                '{RGNAME}',
+                                variables('RGName')
+                                )
+                    ]",
+                    "RBAC": "[parameters('DeploymentInfo').SPInfo[CopyIndex('SP')].RBAC]"
+                }
+            }
+        ],
         "SPInfo": "[if(equals(parameters('Stage').SP,1),parameters('DeploymentInfo').SPInfo,createArray())]"
     },
     "resources": [
@@ -327,7 +352,7 @@
                         "value": "[variables('RolesGroupsLookup')]"
                     },
                     "roleInfo": {
-                        "value": "[variables('SPInfo')[copyIndex(0)]]"
+                        "value": "[variables('SP')[copyIndex(0)]]"
                     },
                     "providerPath": {
                         "value": ""
