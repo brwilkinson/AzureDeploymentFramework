@@ -23,7 +23,7 @@
         "TEMPDB" : { "DriveLetter" : "H", "caching": "ReadOnly","LUNS" : [ [12,64] ], "saType" : "StandardSSD_LRS" },
         "BACKUP" : { "DriveLetter" : "I", "caching": "None",    "LUNS" : [ [15,64] ], "saType" : "StandardSSD_LRS" }
       }
-},
+  },
   "ladCfg": {
     "diagnosticMonitorConfiguration": {
       "eventVolume": "Medium",

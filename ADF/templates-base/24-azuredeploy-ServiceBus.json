@@ -81,6 +81,7 @@
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "SBInfo": "[if(contains(parameters('DeploymentInfo'),'SBInfo'),parameters('DeploymentInfo').SBInfo,createArray())]",
+    "appConfigurationInfo": "[if(contains(parameters('DeploymentInfo'),'appConfigurationInfo'),parameters('DeploymentInfo').appConfigurationInfo,json('null'))]",
     "copy": [
       {
         "name": "SB",
@@ -124,6 +125,9 @@
           },
           "SBInfo": {
             "value": "[variables('SBInfo')[copyIndex(0)]]"
+          },
+          "appConfigurationInfo": {
+            "value": "[variables('appConfigurationInfo')]"
           },
           "Global": {
             "value": "[parameters('Global')]"

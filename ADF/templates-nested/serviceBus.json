@@ -14,6 +14,9 @@
     "SBInfo": {
       "type": "object"
     },
+    "appConfigurationInfo": {
+      "type": "object"
+    },
     "Global": {
       "type": "object"
     },
@@ -71,6 +74,20 @@
         // }
       },
       "resources": [
+        // {
+        //   "condition": "[not(equals(parameters('appConfigurationInfo'),json('null')))]",
+        //   "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+        //   "apiVersion": "2020-07-01-preview",
+        //   "name": "[concat(parameters('Deployment'),'-ac',if(contains(parameters('appConfigurationInfo'),'Name'),parameters('appConfigurationInfo').Name,''),'/AZConnectionString-',parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name)]",
+        //   "dependsOn": [
+        //     "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/',parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name)]"
+        //   ],
+        //   "properties": {
+        //     "value": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules',parameters('serviceBusNamespace'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]",
+        //     "contentType": "richtext"
+        //     // "tags": "[parameters('Deployment')]"
+        //   }
+        // },
         {
           "type": "providers/diagnosticSettings",
           "name": "Microsoft.Insights/service",

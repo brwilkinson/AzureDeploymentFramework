@@ -421,7 +421,7 @@
               "permission": "SecretsGetAndList"
             },
             "allNetworks": "Deny",
-            "PrivateLinkInfo": [
+            "_PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "vault"
@@ -465,7 +465,7 @@
             "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
             "enableMultipleWriteLocations": true,
             "enableAutomaticFailover": true,
-            "PrivateLinkInfo": [
+            "_PrivateLinkInfo": [
               {
                 "Subnet": "snBE02",
                 "groupID": "MongoDB"
@@ -518,12 +518,17 @@
                   },
                   {
                     "Name": "backgroundtasks"
+                  },
+                  {
+                    "Name": "ordering.signalrhub"
+                  },
+                  {
+                    "Name": "webhooks"
                   }
-                  
                 ]
               }
             ],
-            "PrivateLinkInfo": [
+            "_PrivateLinkInfo": [
               {
                 "Subnet": "snBE02",
                 "groupID": "namespace"
@@ -531,13 +536,11 @@
             ]
           }
         ],
-        "appConfigurationInfo": [
-          {
-            "name": "01",
-            "sku": "standard",
-            "publicNetworkAccess": "Enabled"
-          }
-        ],
+        "appConfigurationInfo": {
+          "name": "01",
+          "sku": "standard",
+          "publicNetworkAccess": "Enabled"
+        },
         "RedisInfo": [
           {
             "Name": "APIM01",

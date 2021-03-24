@@ -90,6 +90,7 @@
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "RedisInfo": "[parameters('DeploymentInfo').RedisInfo]",
+    "appConfigurationInfo": "[if(contains(parameters('DeploymentInfo'),'appConfigurationInfo'),parameters('DeploymentInfo').appConfigurationInfo,json('null'))]",
     "SKULookup": {
       "B0": {
         "name": "Basic",
@@ -176,6 +177,20 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "condition": "[not(equals(variables('appConfigurationInfo'),json('null')))]",
+          "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+          "apiVersion": "2020-07-01-preview",
+          "name": "[concat(variables('Deployment'),'-ac',if(contains(variables('appConfigurationInfo'),'Name'),variables('appConfigurationInfo').Name,''),'/RedisKey-',variables('RedisInfo')[copyIndex()].Name)]",
+          "dependsOn": [
+            "[tolower(concat(variables('Deployment'),'-rc',variables('RedisInfo')[copyIndex()].Name))]"
+          ],
+          "properties": {
+            "value": "[listKeys(resourceId('Microsoft.Cache/redis', tolower(concat(variables('Deployment'),'-rc',variables('RedisInfo')[copyIndex()].Name))), '2020-06-01').primaryKey]",
+            "contentType": "richtext"
+            // "tags": "[variables('Deployment')]"
           }
         }
       ]

@@ -80,6 +80,7 @@
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "azSQLInfo": "[if(contains(parameters('DeploymentInfo'),'frontDoorInfo'),parameters('DeploymentInfo').azSQLInfo,createArray())]",
+    "appConfigurationInfo": "[if(contains(parameters('DeploymentInfo'),'appConfigurationInfo'),parameters('DeploymentInfo').appConfigurationInfo,json('null'))]",
     "copy": [
       {
         "name": "azSQL",
@@ -126,6 +127,9 @@
           },
           "azSQLInfo": {
             "value": "[variables('azSQLInfo')[copyIndex(0)]]"
+          },
+          "appConfigurationInfo":{
+            "value": "[variables('appConfigurationInfo')]"
           },
           "Global": {
             "value": "[parameters('Global')]"

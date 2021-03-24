@@ -17,6 +17,9 @@
     "azSQLInfo": {
       "type": "object"
     },
+    "appConfigurationInfo": {
+      "type": "object"
+    },
     "Global": {
       "type": "object"
     },
@@ -153,11 +156,25 @@
         // "minCapacity": "number"
       },
       "resources": [
+        // {
+        //   "condition": "[not(equals(parameters('appConfigurationInfo'),json('null')))]",
+        //   "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+        //   "apiVersion": "2020-07-01-preview",
+        //   "name": "[concat(parameters('Deployment'),'-ac',if(contains(parameters('appConfigurationInfo'),'Name'),parameters('appConfigurationInfo').Name,''),'/AZConnectionString-',parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name)]",
+        //   "dependsOn": [
+        //     "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/',parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name)]"
+        //   ],
+        //   "properties": {
+        //     "value": "[listKeys(resourceId('Microsoft.Sql/servers/databases', tolower(concat(parameters('Deployment'),'-rc',parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name))),'2020-11-01-preview').primaryKey]",
+        //     "contentType": "richtext"
+        //     // "tags": "[parameters('Deployment')]"
+        //   }
+        // },
         {
           "type": "providers/diagnosticSettings",
           "name": "Microsoft.Insights/service",
           "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers/databases', 
+            "[resourceId('Microsoft.Sql/servers/databases', 
                           concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name),parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name
                           )]"
           ],

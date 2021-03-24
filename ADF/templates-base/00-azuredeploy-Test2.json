@@ -125,8 +125,8 @@
       "value": "2021-01-31T14:01:54.9571247Z"
     },
     "newvalue": {
-      "type": "string",
-      "value": "[variables('newvalue')]"
+      "type": "object",
+      "value": "[listKeys('/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/Microsoft.Sql/servers/acu1-brw-haa-d3-azsqleshopsql/databases/catalogdb','2020-08-01-preview')]"
     },
     "time2": {
       "type": "string",

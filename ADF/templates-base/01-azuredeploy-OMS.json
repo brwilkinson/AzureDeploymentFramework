@@ -73,16 +73,16 @@
     }
   },
   "variables": {
-    "Deployment": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
     "dataRetention": 31,
     "serviceTier": "pernode",
     "AAserviceTier": "OMS",
-    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceName": "[replace(concat(variables('DeploymentURI'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
-    "AAName": "[replace(concat(variables('Deployment'),'OMSAutomation'),'-','')]",
-    "AppInsightsName": "[replace(concat(variables('Deployment'),'AppInsights'),'-','')]",
-    "SADiagName": "[concat(variables('Deployment'),'sadiag')]",
-    // Perf / Event Logs / SysLog / AzureActivityLog
+    "AAName": "[replace(concat(variables('DeploymentURI'),'OMSAutomation'),'-','')]",
+    "AppInsightsName": "[replace(concat(variables('DeploymentURI'),'AppInsights'),'-','')]",
+    "appConfigurationInfo": "[if(contains(parameters('DeploymentInfo'),'appConfigurationInfo'),parameters('DeploymentInfo').appConfigurationInfo,json('null'))]",
     "dataSources": [
       {
         "name": "AzureActivityLog",
@@ -924,7 +924,7 @@
       "condition": "[equals(parameters('Extensions').VMInsights,1)]",
       "type": "Microsoft.Insights/dataCollectionRules",
       "apiVersion": "2019-11-01-preview",
-      "name": "[replace(concat(variables('Deployment'),'VMInsights'),'-','')]",
+      "name": "[replace(concat(variables('DeploymentURI'),'VMInsights'),'-','')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.OperationalInsights/workspaces/', variables('OMSworkspaceName'))]"
@@ -1149,6 +1149,20 @@
           }
         }
       ]
+    },
+    {
+      "condition": "[equals(length(variables('appConfigurationInfo')),1)]",
+      "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+      "apiVersion": "2020-07-01-preview",
+      "name": "[concat(variables('Deployment'),'-ac',if(contains(variables('appConfigurationInfo'),'Name'),variables('appConfigurationInfo').Name,''),'/InstrumentationKey')]",
+      "dependsOn": [
+        "[variables('AppInsightsName')]"
+      ],
+      "properties": {
+        "value": "[reference(resourceId('Microsoft.Insights/components', variables('AppInsightsName')), '2015-05-01').InstrumentationKey]",
+        "contentType": "richtext"
+        // "tags": "[variables('Deployment')]"
+      }
     },
     {
       "condition": "[equals(parameters('Stage').OMSDataSources,1)]",
