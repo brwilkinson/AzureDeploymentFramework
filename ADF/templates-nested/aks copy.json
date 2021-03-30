@@ -30,18 +30,7 @@
       "type": "string",
       "defaultValue": "[utcNow('F')]"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -425,7 +414,7 @@
       //  Also acts as dependson resource between the next resource.
       "name": "[concat('dp-identities-',parameters('deployment'),'-aks',parameters('AKSInfo').Name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat(parameters('deployment'),'-aks',parameters('AKSInfo').Name)]"
       ],
@@ -537,7 +526,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'),'/','templates-nested/roleAssignmentsALL.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/roleAssignmentsALL.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

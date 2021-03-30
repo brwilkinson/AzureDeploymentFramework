@@ -34,10 +34,10 @@
       "kind": "AzurePowerShell",
       "properties": {
         "azPowerShellVersion": "5.4",
-        "storageAccountSettings": {
-          "storageAccountKey": "[listKeys(resourceid('Microsoft.Storage/storageAccounts/','acu1brwaoas1sadiag'), '2016-01-01').keys[0].value]",
-          "storageAccountName": "acu1brwaoas1sadiag"
-        },
+        // "storageAccountSettings": {
+        //   "storageAccountKey": "[listKeys(resourceid('Microsoft.Storage/storageAccounts/','acu1brwaoas1sadiag'), '2016-01-01').keys[0].value]",
+        //   "storageAccountName": "acu1brwaoas1sadiag"
+        // },
         "arguments": "[format(' -ResourceGroupName {0}', resourceGroup().name)]",
         "scriptContent": "
                     param (
@@ -52,6 +52,8 @@
                         Get-Date
                         Write-Output \"`nResourceGroup is: \"
                         $ResourceGroupName
+                        $DebugPreference = 'continue'
+                        Get-AzNetworkInterface -ResourceGroupName ACU1-BRW-AOA-RG-S1 -Name ACU1-BRW-AOA-S1-nicLIN01
                         $c = Get-AzContext -ErrorAction stop
                         if ($c)
                         {
@@ -61,7 +63,7 @@
                         }
                         else 
                         {
-                            throw 'Cannot get a context'
+                            echo \"cannot get a context.\"
                         }
                     }
                     catch

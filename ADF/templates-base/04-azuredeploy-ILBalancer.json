@@ -53,18 +53,7 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -92,7 +81,7 @@
     {
       "name": "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].LBName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [],
       "copy": {
         "name": "publicIPLoop",
@@ -101,7 +90,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/PublicIP.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/PublicIP.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -130,7 +119,7 @@
       "condition": "[not(contains(variables('LBInfo')[copyIndex(0)],'NATPools'))]",
       "name": "[concat('dp', variables('Deployment'), '-LBDeploy', variables('LBInfo')[copyIndex(0)].LBName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].LBName)]"
       ],
@@ -141,7 +130,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/loadBalancer.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/loadBalancer.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -179,7 +168,7 @@
       "condition": "[contains(variables('LBInfo')[copyIndex(0)],'NATPools')]",
       "name": "[concat('dp', variables('Deployment'), '-LBDeploySS', variables('LBInfo')[copyIndex(0)].LBName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].LBName)]"
       ],
@@ -190,7 +179,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/loadBalancerSS.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/loadBalancerSS.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

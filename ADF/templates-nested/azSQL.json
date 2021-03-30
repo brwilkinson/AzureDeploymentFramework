@@ -33,18 +33,7 @@
       "type": "string",
       "defaultValue": "[utcNow('F')]"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "vmAdminPassword": {
       "type": "securestring"
     },

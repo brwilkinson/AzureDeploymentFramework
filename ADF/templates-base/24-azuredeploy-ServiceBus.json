@@ -53,18 +53,7 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "deploymentTime": {
       "type": "string",
       "defaultValue": "[utcNow()]"
@@ -110,7 +99,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/serviceBus.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/serviceBus.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -138,12 +127,7 @@
           "OMSworkspaceID": {
             "value": "[variables('OMSworkspaceID')]"
           },
-          "_artifactsLocation": {
-            "value": "[parameters('_artifactsLocation')]"
-          },
-          "_artifactsLocationSasToken": {
-            "value": "[parameters('_artifactsLocationSasToken')]"
-          },
+,
         }
       }
     },
@@ -152,7 +136,7 @@
       "condition": "[contains(variables('SBInfo')[copyIndex(0)],'privatelinkinfo')]",
       "name": "[concat('dp', variables('Deployment'), '-privatelinkloopSB', variables('SBInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "SBLoop"
       ],
@@ -163,7 +147,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vNetPrivateLink.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/vNetPrivateLink.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -199,7 +183,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

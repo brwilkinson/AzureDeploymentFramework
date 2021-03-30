@@ -53,18 +53,7 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -75,8 +64,8 @@
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DeploymentInfoObject": {
-      "VMSQLPrivate": "templates-base\\05-azuredeploy-VMApp.json",
-      "InitialFIL": "templates-base\\05-azuredeploy-VMApp.json"
+      "VMSQLPrivate": "../templates-base/05-azuredeploy-VMApp.json",
+      "InitialFIL": "../templates-base/05-azuredeploy-VMApp.json"
     }
   },
   "resources": [
@@ -84,12 +73,12 @@
       "condition": "[equals(parameters('Stage').SQL,1)]",
       "name": "SQLServers",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VMSQLPrivate, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').VMSQLPrivate]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -99,12 +88,12 @@
       "condition": "[equals(parameters('Stage').InitialFIL,1)]",
       "name": "InitialFIL",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').InitialFIL, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').InitialFIL]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

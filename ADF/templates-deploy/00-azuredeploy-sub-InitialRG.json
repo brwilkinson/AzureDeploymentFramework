@@ -53,18 +53,6 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -75,10 +63,10 @@
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DeploymentInfoObject": {
-      "RG": "templates-base\\00-azuredeploy-sub-RGs.json",
-      "RBAC": "templates-base\\00-azuredeploy-sub-RGRoleAssignments.json",
-      "RoleDefinition": "templates-base\\00-azuredeploy-sub-RoleDefinitions.json",
-      "Policy" : "templates-base\\00-azuredeploy-sub-Policy.json"
+      "RG": "../templates-base/00-azuredeploy-sub-RGs.json",
+      "RBAC": "../templates-base/00-azuredeploy-sub-RGRoleAssignments.json",
+      "RoleDefinition": "../templates-base/00-azuredeploy-sub-RoleDefinitions.json",
+      "Policy": "../templates-base/00-azuredeploy-sub-Policy.json"
     },
     "Locationlookup": {
       "AZE2": "eastus2",
@@ -94,12 +82,12 @@
       "name": "[concat('dp', variables('Deployment'), '-RG')]",
       "type": "Microsoft.Resources/deployments",
       "location": "[variables('location')]",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2021-01-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').RG, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').RG]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -110,14 +98,14 @@
       "name": "[concat('dp', variables('Deployment'), '-RBAC')]",
       "type": "Microsoft.Resources/deployments",
       "location": "[variables('location')]",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2021-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-RG')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').RBAC, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').RBAC]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -128,14 +116,14 @@
       "name": "[concat('dp', variables('Deployment'), '-RoleDefinition')]",
       "type": "Microsoft.Resources/deployments",
       "location": "[variables('location')]",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2021-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-RG')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').RoleDefinition, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').RoleDefinition]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -146,14 +134,14 @@
       "name": "[concat('dp', variables('Deployment'), '-Policy')]",
       "type": "Microsoft.Resources/deployments",
       "location": "[variables('location')]",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2021-01-01",
       "dependsOn": [
         // "[concat('dp', variables('Deployment'), '-RG')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').Policy, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').Policy]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

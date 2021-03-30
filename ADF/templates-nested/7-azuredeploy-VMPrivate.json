@@ -92,7 +92,7 @@
     {
       "name": "[concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [],
       "copy": {
         "name": "vmdiskLoop",
@@ -101,7 +101,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/disks.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/disks.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

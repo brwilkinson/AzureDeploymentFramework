@@ -53,18 +53,7 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -80,10 +69,10 @@
       "vmDNS02"
     ],
     "DeploymentInfoObject": {
-      "InitialDNS": "templates-base\\05-azuredeploy-VMApp.json",
-      "SetvNetDNSHub": "templates-nested/SetvNetDNSHub.json",
-      "ERGW": "templates-base\\15-azuredeploy-ERGW.json",
-      "InitialJMP": "templates-base\\05-azuredeploy-VMApp.json"
+      "InitialDNS": "../templates-base/05-azuredeploy-VMApp.json",
+      "SetvNetDNSHub": "../templates-nested/SetvNetDNSHub.json",
+      "ERGW": "../templates-base/15-azuredeploy-ERGW.json",
+      "InitialJMP": "../templates-base/05-azuredeploy-VMApp.json"
     },
     "DC1PrivateIPAddress": "[parameters('Global').DNSServers[0]]",
     "DC2PrivateIPAddress": "[parameters('Global').DNSServers[1]]",
@@ -94,11 +83,11 @@
     {
       "name": "AddPublicDNSHub",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SetvNetDNSHub, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').SetvNetDNSHub]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -133,14 +122,14 @@
       //"condition": "[equals(parameters('Stage').InitialDNS,1)]",
       "name": "[concat('dp', variables('Deployment'), '-InitialDNS')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "AddPublicDNSHub"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').InitialDNS, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').InitialDNS]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -149,14 +138,14 @@
     {
       "name": "RemovePublicDNSHub",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-InitialDNS')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SetvNetDNSHub, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').SetvNetDNSHub]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -190,14 +179,14 @@
     {
       "name": "ERGW",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "RemovePublicDNSHub"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ERGW, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').ERGW]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -231,7 +220,7 @@
     {
       "name": "[concat('dp', variables('Deployment'), '-InitialJMP')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-',variables('vmReboot')[0], '/extensions/Reboot')]",
         "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-',variables('vmReboot')[1], '/extensions/Reboot')]"
@@ -239,7 +228,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').InitialJMP, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').InitialJMP]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

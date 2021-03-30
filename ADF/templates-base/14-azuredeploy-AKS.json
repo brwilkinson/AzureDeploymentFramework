@@ -99,7 +99,7 @@
       "condition": "[variables('AKS')[copyIndex(0)].match]",
       "name": "[concat('dp', variables('Deployment'),'-AKSDeploy',if(equals(length(variables('AKS')),0),'',variables('AKSInfo')[copyIndex(0)].name))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
       ],
       "copy": {
@@ -109,7 +109,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'),'/','templates-nested/aks.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/aks.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -137,12 +137,7 @@
           "OMSworkspaceID": {
             "value": "[variables('OMSworkspaceID')]"
           },
-          "_artifactsLocation": {
-            "value": "[parameters('_artifactsLocation')]"
-          },
-          "_artifactsLocationSasToken": {
-            "value": "[parameters('_artifactsLocationSasToken')]"
-          },
+,
           "vmAdminPassword": {
             "value": "[parameters('vmAdminPassword')]"
           },

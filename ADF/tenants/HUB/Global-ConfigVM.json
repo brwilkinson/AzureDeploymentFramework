@@ -1129,7 +1129,7 @@
       },
       "OS": "Linux",
       "OSDiskGB": 32,
-      "fileUris": "[concat(parameters('_artifactsLocation'), '/scripts/pxy.zip', parameters('_artifactsLocationSasToken'))]",
+      "fileUris": "[concat(parameters('global')._artifactsLocation, '/scripts/pxy.zip",
       "commandToExecute": "[concat('sudo apt-get update && sudo apt-get install unzip && unzip Proxy.zip && sudo bash -x haproxyvm-configure.sh ', ' -a ', 'ilbIPAddress', ' -r ', 'ilbRabbitMqPort', ' -m ', 'ilbRabbitMqMgmtPort', ' -b ', 'dnsName', '.', 'location', '.cloudapp.azure.com -p ', 'vmNamePrefix', '0 -s ', 'vmNamePrefix', '1')]",
       "RoleExtensions": {
         "MonitoringAgent": 0,

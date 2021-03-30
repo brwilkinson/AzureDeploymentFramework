@@ -26,7 +26,7 @@
       // For user/group assigned RBAC in RG, run in deployment for easier troubleshooting
       "name": "[concat('dpRoleAssignment-Sub-', replace(parameters('rolesInfo')[copyIndex(0)].Name,' ',''))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "location" : "[parameters('location')]",
       "dependsOn": [],
       "copy": {

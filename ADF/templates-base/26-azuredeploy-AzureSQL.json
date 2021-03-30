@@ -99,7 +99,7 @@
       "condition": "[variables('azSQL')[copyIndex(0)].match]",
       "name": "[concat('dp', variables('Deployment'),'-azSQLDeploy',if(equals(length(variables('azSQL')),0),'',variables('azSQLInfo')[copyIndex(0)].name))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
       ],
       "copy": {
@@ -109,7 +109,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'),'/','templates-nested/azSQL.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/azSQL.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -140,12 +140,7 @@
           "OMSworkspaceID": {
             "value": "[variables('OMSworkspaceID')]"
           },
-          "_artifactsLocation": {
-            "value": "[parameters('_artifactsLocation')]"
-          },
-          "_artifactsLocationSasToken": {
-            "value": "[parameters('_artifactsLocationSasToken')]"
-          },
+,
           "vmAdminPassword": {
             "value": "[parameters('vmAdminPassword')]"
           },
@@ -160,7 +155,7 @@
       "condition": "[contains(variables('azSQLInfo')[copyIndex(0)],'privatelinkinfo')]",
       "name": "[concat('dp', variables('Deployment'), '-privatelinkloopAZSQL', variables('azSQLInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "azSQLLoop"
       ],
@@ -171,7 +166,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vNetPrivateLink.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/vNetPrivateLink.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -208,7 +203,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -245,7 +240,7 @@
     //   "properties": {
     //     "mode": "Incremental",
     //     "templateLink": {
-    //       "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+    //       "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
     //       "contentVersion": "1.0.0.0"
     //     },
     //     "parameters": {

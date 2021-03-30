@@ -53,18 +53,18 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+    // "_artifactsLocation": {
+    //   "type": "string",
+    //   "metadata": {
+    //     "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+    //   }
+    // },
+    // "_artifactsLocationSasToken": {
+    //   "type": "securestring",
+    //   "metadata": {
+    //     "description": "Auto-generated token to access artifactsLocation"
+    //   }
+    // },
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -93,7 +93,7 @@
   },
   "resources": [
     {
-      "name": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo')[copyIndex()].Name)]",
+      "name": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo').Name)]",
       "type": "Microsoft.AppConfiguration/configurationStores",
       "apiVersion": "2020-06-01",
       "location": "centralus",
@@ -105,14 +105,10 @@
         }
       },
       "sku": {
-        "name": "[variables('appConfigurationInfo')[copyIndex()].sku]"
-      },
-      "copy": {
-        "name": "ACLoop",
-        "count": "[length( variables('appConfigurationInfo') )]"
+        "name": "[variables('appConfigurationInfo').sku]"
       },
       "properties": {
-        "publicNetworkAccess": "[variables('appConfigurationInfo')[copyIndex()].publicNetworkAccess]",
+        "publicNetworkAccess": "[variables('appConfigurationInfo').publicNetworkAccess]",
         "encryption": {
 
           //  This is for customer managed keys for encryption
@@ -125,21 +121,18 @@
     },
     {
       // Call the nested deployment for the Private Link
-      "condition": "[contains(variables('appConfigurationInfo')[copyIndex(0)],'privatelinkinfo')]",
-      "name": "[concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('appConfigurationInfo')[copyIndex(0)].name)]",
+      "condition": "[contains(variables('appConfigurationInfo'),'privatelinkinfo')]",
+      "name": "[concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('appConfigurationInfo').name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
-      "dependsOn": [
-        "ACLoop"
+      "apiVersion": "2020-01-01",
+      "dependsOn":[
+        "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo').Name)]"
       ],
-      "copy": {
-        "name": "plLoop",
-        "count": "[length( variables('appConfigurationInfo') )]"
-      },
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vNetPrivateLink.json', parameters('_artifactsLocationSasToken'))]",
+          // "relativePath": "../templates-nested/vNetPrivateLink.json",
+          "relativePath": "../templates-nested/vNetPrivateLink.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -147,49 +140,46 @@
             "value": "[variables('Deployment')]"
           },
           "PrivateLinkInfo": {
-            "value": "[variables('appConfigurationInfo')[copyIndex(0)].privateLinkInfo]"
+            "value": "[variables('appConfigurationInfo').privateLinkInfo]"
           },
           "providerType": {
             "value": "Microsoft.AppConfiguration/configurationStores"
           },
           "resourceName": {
-            "value": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo')[copyIndex()].Name)]"
+            "value": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo').Name)]"
           }
         }
       }
     },
     {
       // Call the nested deployment for the Private Link DNS registration
-      "condition": "[contains(variables('appConfigurationInfo')[copyIndex(0)],'privatelinkinfo')]",
-      "name": "[concat('dp', variables('Deployment'), '-registerPrivateDNS', variables('appConfigurationInfo')[copyIndex(0)].name)]",
+      "condition": "[contains(variables('appConfigurationInfo'),'privatelinkinfo')]",
+      "name": "[concat('dp', variables('Deployment'), '-registerPrivateDNS', variables('appConfigurationInfo').name)]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('hubRG')]",
-      "apiVersion": "2019-10-01",
+      "apiVersion": "2020-10-01",
       "dependsOn": [
-        "plLoop"
+        "[concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('appConfigurationInfo').name)]"
       ],
-      "copy": {
-        "name": "plDNSLoop",
-        "count": "[length( variables('appConfigurationInfo') )]"
-      },
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+          // "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
+          "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "PrivateLinkInfo": {
-            "value": "[variables('appConfigurationInfo')[copyIndex(0)].privateLinkInfo]"
+            "value": "[variables('appConfigurationInfo').privateLinkInfo]"
           },
           "providerURL": {
             "value": ".io/"
           },
           "resourceName": {
-            "value": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo')[copyIndex()].Name)]"
+            "value": "[concat(variables('Deployment'),'-ac',variables('appConfigurationInfo').Name)]"
           },
           "Nics": {
-            "value": "[if(contains(variables('appConfigurationInfo')[copyIndex(0)],'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('appConfigurationInfo')[copyIndex(0)].name)),'2018-05-01').outputs.NICID.value,'')]"
+            "value": "[if(contains(variables('appConfigurationInfo'),'privatelinkinfo'),reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('appConfigurationInfo').name)),'2018-05-01').outputs.NICID.value,'')]"
           }
         }
       }

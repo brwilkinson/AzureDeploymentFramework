@@ -53,18 +53,7 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -437,7 +426,7 @@
       "condition": "[contains(variables('sainfo')[copyIndex(0)],'privatelinkinfo')]",
       "name": "[concat('dp', variables('Deployment'), '-privatelinkloopSA', variables('saInfo')[copyIndex(0)].nameSuffix)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "SALoop"
       ],
@@ -448,7 +437,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vNetPrivateLink.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/vNetPrivateLink.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -484,7 +473,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

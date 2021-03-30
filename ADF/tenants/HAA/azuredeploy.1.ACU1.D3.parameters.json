@@ -312,14 +312,14 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE02",
@@ -327,7 +327,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE01", // APIM Dedicated
@@ -335,7 +335,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureBastionSubnet",
@@ -343,7 +343,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snMT01",
@@ -351,7 +351,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false,
+            "FlowAnalyticsEnabled": true,
             "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
@@ -360,7 +360,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           }
         ],
         "saInfo": [
@@ -421,7 +421,7 @@
               "permission": "SecretsGetAndList"
             },
             "allNetworks": "Deny",
-            "PrivateLinkInfo": [
+            "_PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "vault"
@@ -465,7 +465,7 @@
             "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
             "enableMultipleWriteLocations": true,
             "enableAutomaticFailover": true,
-            "PrivateLinkInfo": [
+            "_PrivateLinkInfo": [
               {
                 "Subnet": "snBE02",
                 "groupID": "MongoDB"
@@ -515,11 +515,20 @@
                   },
                   {
                     "Name": "Payment"
+                  },
+                  {
+                    "Name": "backgroundtasks"
+                  },
+                  {
+                    "Name": "ordering.signalrhub"
+                  },
+                  {
+                    "Name": "webhooks"
                   }
                 ]
               }
             ],
-            "PrivateLinkInfo": [
+            "_PrivateLinkInfo": [
               {
                 "Subnet": "snBE02",
                 "groupID": "namespace"
@@ -527,13 +536,11 @@
             ]
           }
         ],
-        "appConfigurationInfo": [
-          {
-            "name": "01",
-            "sku": "standard",
-            "publicNetworkAccess": "Enabled"
-          }
-        ],
+        "appConfigurationInfo": {
+          "name": "01",
+          "sku": "standard",
+          "publicNetworkAccess": "Enabled"
+        },
         "RedisInfo": [
           {
             "Name": "APIM01",

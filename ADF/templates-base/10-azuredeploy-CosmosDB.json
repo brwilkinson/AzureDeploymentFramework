@@ -53,18 +53,7 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -97,7 +86,7 @@
       "condition": "[variables('cosmosDB')[copyIndex(0)].match]",
       "name": "[concat('dp', variables('Deployment'), '-cosmosDBDeploy',if(equals(length(variables('cosmosDB')),0),'',variables('cosmosDBInfo')[copyIndex()].name))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
       ],
       "copy": {
@@ -107,7 +96,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/cosmosDB.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/cosmosDB.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -140,7 +129,7 @@
       "condition": "[contains(variables('cosmosDBInfo')[copyIndex(0)],'privatelinkinfo')]",
       "name": "[concat('dp', variables('Deployment'), '-privatelinkloopCosmos', variables('cosmosDBInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "cosmosDBLoop"
       ],
@@ -151,7 +140,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vNetPrivateLink.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/vNetPrivateLink.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -188,7 +177,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -225,7 +214,7 @@
     //   "properties": {
     //     "mode": "Incremental",
     //     "templateLink": {
-    //       "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('_artifactsLocationSasToken'))]",
+    //       "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
     //       "contentVersion": "1.0.0.0"
     //     },
     //     "parameters": {

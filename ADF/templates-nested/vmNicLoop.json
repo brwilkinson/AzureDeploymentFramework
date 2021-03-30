@@ -41,7 +41,7 @@
     {
       "name": "[concat('dp', parameters('Deployment'), '-nicDeploy', parameters('VM').VMName, copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "copy": {
         "name": "nicLoop",
         "count": "[length( parameters('NICs') )]"
@@ -49,7 +49,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/vmNic.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/vmNic.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

@@ -98,6 +98,7 @@ Function global:Start-AzDeploy
         [switch] $FullUpload,
         [switch] $VSTS,
 
+        [switch] $ValidateOnly,
         [string] $DebugOptions = 'None',
         
         [switch] $TestWhatIf,
@@ -118,6 +119,13 @@ Function global:Start-AzDeploy
 
     $ErrorActionPreference = 'Stop'
     Set-StrictMode -Version 3
+
+    function Format-ValidationOutput
+    {
+        param ($ValidationOutput, [int] $Depth = 0)
+        Set-StrictMode -Off
+        return @($ValidationOutput | Where-Object { $_ -ne $null } | ForEach-Object { @('  ' * $Depth + ': ' + $_.Message) + @(Format-ValidationOutput @($_.Details) ($Depth + 1)) })
+    }
 
     if (-not ($DeploymentName))
     {
@@ -163,6 +171,9 @@ Function global:Start-AzDeploy
 
     [string] $StorageContainerName = "$Prefix-$App-stageartifacts-$env:USERNAME".ToLowerInvariant()
 
+    $OptionalParameters = @{ }
+    $TemplateArgs = @{ }
+
     # Take the Global, Config and Regional settings and combine them as an object
     # Then convert them to hashtable to pass in as parameters
     $GlobalGlobal = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
@@ -179,8 +190,8 @@ Function global:Start-AzDeploy
         if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
             $StorageAccounts = Get-AzStorageAccount
-            $globalstorage = $StorageAccounts | Where-Object StorageAccountName -Match g1saglobal | ForEach-Object ResourceGroupName
-            Write-Output "`n"
+            $globalstorage = $StorageAccounts | where StorageAccountName -match g1saglobal | foreach ResourceGroupName
+            echo "`n"
             $Message = "[$ResourceGroupName] does not exist, switch Subscription OR SubscriptionDeploy, currently using: [$globalstorage]!!!"
             Write-Verbose -Message "$('*' * ($Message.length + 8))" -Verbose
             Write-Error -Message $Message -EA continue
@@ -266,9 +277,22 @@ Function global:Start-AzDeploy
     $StorageAccountName = $Global.SAName
     Write-Verbose "Storage Account is: $StorageAccountName" -Verbose
 
-    # Optional Parameters override anything in the parameter file
-    # i.e. they are not required to be in the parameter file
-    $OptionalParameters = @{ }
+    # # Pass in Secrets from the Global Regional
+    # $Secrets = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$Prefix.json | ConvertFrom-Json -Depth 10 | Foreach Secrets
+    # $Secrets | foreach-object {
+    #     $SecretParamName = $_ | Get-Member -MemberType NoteProperty | Foreach Name
+    #     $SecretParam = $Secrets | select $SecretParamName
+    #     Write-warning "Adding $SecretParamName"
+    #     if ( -not $OptionalParameters[$SecretParamName] )
+    #     {
+    #         $OptionalParameters[$SecretParamName] = $SecretParam
+    #     }
+    # }
+
+    if ( -not $OptionalParameters['Global'] )
+    {
+        $OptionalParameters['Global'] = $Global
+    }
 
     if ( -not $OptionalParameters['Environment'] )
     {
@@ -300,6 +324,22 @@ Function global:Start-AzDeploy
         New-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
     }
 
+    # Generate the value for artifacts location if it is not provided in the parameter file
+    if ( -not $OptionalParameters['_artifactsLocation'] )
+    {
+        $OptionalParameters['_artifactsLocation'] = $StorageAccount.Context.BlobEndPoint + $StorageContainerName
+    }
+
+    # Generate a 4 hour SAS token for the artifacts location if one was not provided in the parameters file
+    if ( -not $OptionalParameters['_artifactsLocationSasToken'] )
+    {
+        $OptionalParameters['_artifactsLocationSasToken'] = New-AzStorageContainerSASToken -Container $StorageContainerName -Context $StorageAccount.Context -Permission r -ExpiryTime (Get-Date).AddHours(4)
+    }
+
+    $TemplateParametersFile = "$ArtifactStagingDirectory\tenants\$App\azuredeploy.1.$Prefix.$Deployment.parameters.json"
+    Write-Warning -Message "Using parameter file: $TemplateParametersFile"
+    Write-Warning -Message "Using template file:  $TemplateFile"
+
     if ( -not $TestWhatIf )
     {
         $OptionalParameters.Add('DeploymentDebugLogLevel', $DebugOptions)
@@ -307,13 +347,17 @@ Function global:Start-AzDeploy
 
     if ( -not $DoNotUpload )
     {
-        if ( -not $FullUpload )
+        # Parse the parameter file and update the values of artifacts location and artifacts location SAS token if they are present
+        $JsonParameters = Get-Content $TemplateParametersFile -Raw | ConvertFrom-Json -Depth 20
+        if ( -not ($JsonParameters | Get-Member -Type NoteProperty 'parameters') )
         {
-            $Include = @(
-                "$ArtifactStagingDirectory\ext-DSC\"
-            )
+            $JsonParameters = $JsonParameters.parameters
+        }
+
+        if ( -not $FullUpload )
+        {            
             # Create DSC configuration archive only for the files that changed
-            git -C $DSCSourceFolder diff --diff-filter d --name-only $Include | Where-Object { $_ -match 'ps1$' } | ForEach-Object {
+            git -C $DSCSourceFolder diff --name-only | Where-Object { $_ -match '/ext-DSC/' } | Where-Object { $_ -match 'ps1$' } | ForEach-Object {
                 
                 # ignore errors on git diff for deleted files
                 $File = Get-Item -EA Ignore -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
@@ -329,37 +373,21 @@ Function global:Start-AzDeploy
             }
 
             # Upload only files that changes since last git add, i.e. only for the files that changed, use -fullupload to upload ALL files
-            # only look in the 3 templates directories for uploading files
-            $Include = @(
-                "$ArtifactStagingDirectory\templates-base\",
-                "$ArtifactStagingDirectory\templates-deploy\",
-                "$ArtifactStagingDirectory\templates-nested\",
-                "$ArtifactStagingDirectory\ext-DSC\",
-                "$ArtifactStagingDirectory\ext-CD\",
-                "$ArtifactStagingDirectory\ext-Scripts\"
-            )
-            git -C $ArtifactStagingDirectory diff --diff-filter d --name-only $Include | ForEach-Object {
+            git -C $ArtifactStagingDirectory diff --name-only | ForEach-Object {
                 
                 # ignore errors on git diff for deleted files
-                # added --diff-filter above, so likely don't need this anymore, will leave it anyway
                 $File = Get-Item -EA Ignore -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
                 if ($File)
                 {
-                    $Params = @{ 
-                        File      = $File.FullName 
-                        Blob      = $File.FullName.Substring($ArtifactStagingDirectory.length + 1) 
-                        Container = $StorageContainerName 
-                        Context   = $StorageAccount.Context 
-                        Force     = $true
-                    }
-                    Set-AzStorageBlobContent $Params | Select-Object Name, Length, LastModified
+                    Set-AzStorageBlobContent -File $File.FullName -Blob $File.FullName.Substring($ArtifactStagingDirectory.length + 1) -Container $StorageContainerName -Context $StorageAccount.Context -Force | Select-Object Name, Length, LastModified
                 }
                 else 
                 {
                     Write-Verbose -Message "File not found, assume deleted, will not upload [$_]"
                 }
             }
-            Start-Sleep -Seconds 2
+
+            Start-Sleep -Seconds 4
         }
         else
         {
@@ -372,178 +400,171 @@ Function global:Start-AzDeploy
                 }
             }
             
-            $Include = @(
-                'templates-deploy', 'templates-base', 'templates-nested', 'ext-DSC', 'ext-CD', 'ext-Scripts'
-            )
-            Get-ChildItem -Path $ArtifactStagingDirectory -Include $Include -Recurse -Directory |
-                Get-ChildItem -File -Include *.json, *.zip, *.psd1, *.sh, *.ps1 | ForEach-Object {
-                    #    $_.FullName.Substring($ArtifactStagingDirectory.length)
-                    Set-AzStorageBlobContent -File $_.FullName -Blob $_.FullName.Substring($ArtifactStagingDirectory.length + 1 ) -Container $StorageContainerName -Context $StorageAccount.Context -Force 
-                } | Select-Object Name, Length, LastModified
+            $Exclude = '0-archive', '1-PrereqsToDeploy', 'release', 'release-Pipelines', 'release-PesterTests', 'ext-DSC', 'ext-CD', 'ext-Scripts'
+            Get-ChildItem -Path $ArtifactStagingDirectory -Recurse -File -Include *.json, *.zip, *.psd1, *.sh -Exclude $Exclude | ForEach-Object {
+                #    $_.FullName.Substring($ArtifactStagingDirectory.length)
+                Set-AzStorageBlobContent -File $_.FullName -Blob $_.FullName.Substring($ArtifactStagingDirectory.length + 1 ) -Container $StorageContainerName -Context $StorageAccount.Context -Force 
+            } | Select-Object Name, Length, LastModified
         }
     }
 
-    $TemplateArgs = @{ }
-    $SASParams = @{
-        Container  = $StorageContainerName 
-        Context    = $StorageAccount.Context
-        Permission = 'r'
-        ExpiryTime = (Get-Date).AddHours(4)
-    }
-    $queryString = (New-AzStorageContainerSASToken @SASParams).Substring(1)
-    $TemplateArgs.Add('queryString', $queryString)
+    $OptionalParameters['_artifactsLocationSasToken'] = ConvertTo-SecureString $OptionalParameters['_artifactsLocationSasToken'] -AsPlainText -Force
 
-    $TemplateURIBase = $StorageAccount.Context.BlobEndPoint + $StorageContainerName
+    # if ($TemplateSpec)
+    # {
+    #     $TemplateArgs.Add('TemplateSpecId', $TemplateSpecID)
+    # }
+    # else 
+    # {
+    #     $TemplateArgs.Add('TemplateFile', $TemplateFile)   
+    # }
 
-    # Add these to global for extensions that still need them, such as DSC extension
-    $Global.Add('_artifactsLocation', $TemplateURIBase)
-    $Global.Add('_artifactsLocationSasToken', "?${queryString}")
-    
-    if ( -not $OptionalParameters['Global'] )
-    {
-        $OptionalParameters['Global'] = $Global
-    }
-
-    $TemplateParametersFile = "$ArtifactStagingDirectory\tenants\$App\azuredeploy.1.$Prefix.$Deployment.parameters.json"
-    Write-Warning -Message "Using parameter file: [$TemplateParametersFile]"
+    $TemplateArgs.Add('TemplateFile', $TemplateFile)
     $TemplateArgs.Add('TemplateParameterFile', $TemplateParametersFile)
 
-    Write-Warning -Message "Using template file: [$TemplateFile]"
-    $TemplateFile = Get-Item -Path $TemplateFile | ForEach-Object FullName
-    $TemplateFile = $TemplateFile -replace '\\', '/'
-    $TemplateURI = $TemplateFile -replace ($ArtifactStagingDirectory -replace '\\', '/'), ''
-    $TemplateURI = $TemplateURIBase + $TemplateURI
-    
-    if ($TemplateSpec)
+    if ($ValidateOnly)
     {
-        Write-Warning -Message "Using templatespec ID: [$TemplateSpecID]"
-        $TemplateArgs.Add('TemplateSpecId', $TemplateSpecID)
-    }
-    else 
-    {
-        Write-Warning -Message "Using template file: [$TemplateURI]"
-        $TemplateArgs.Add('TemplateURI', $TemplateURI)
-    }
-
-    $OptionalParameters.getenumerator() | ForEach-Object {
-        Write-Verbose $_.Key -Verbose
-        Write-Warning $_.Value
-    }
-
-    $TemplateArgs.getenumerator() | ForEach-Object {
-        Write-Verbose $_.Key -Verbose
-        Write-Warning $_.Value
-    }
-
-    if (-not $Subscription)
-    {
-
-        if ($Deployment -eq 'M0')
+        $ErrorMessages = Format-ValidationOutput (Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName @TemplateArgs @OptionalParameters)
+        if ($ErrorMessages)
         {
-            $mgName = Get-AzManagementGroup | Where-Object DisplayName -EQ 'Tenant Root Group' | ForEach-Object Name
-            if ($TestWhatIf)
-            {
-                Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
+            Write-Output '', 'Validation returned the following errors:', @($ErrorMessages), '', 'Template is invalid.'
 
-                Get-AzTenantDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs  `
-                    @OptionalParameters -Location $ResourceGroupLocation `
-                    -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
-                return $whatif
-            }
-            else 
+            if ( $ErrorMessages.Exception.Body )
             {
-                Write-Warning "`n`tRunning Deployment !!!!"
-
-                New-AzTenantDeployment -Name $DeploymentName @TemplateArgs `
-                    -Location $ResourceGroupLocation @OptionalParameters -Verbose -ErrorVariable ErrorMessages
+                Write-Output 'Details'
+                Write-Output ($ErrorMessages.Exception.Body.Details | ForEach-Object { ('{0}: {1}' -f $_.Code, $_.Message) } )
             }
         }
-        if ($Deployment -eq 'T0')
+        else
         {
-            if ($TestWhatIf)
-            {
-                Write-Warning "`n`tRunning Tenant Deployment Whatif !!!!`n`n"
-
-                Get-AzTenantDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs  `
-                    -Location $ResourceGroupLocation @OptionalParameters `
-                    -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
-                return $whatif
-            }
-            else 
-            {
-                Write-Warning "`n`tRunning Tenant Deployment !!!!"
-
-                New-AzTenantDeployment -Name $DeploymentName @TemplateArgs `
-                    -Location $ResourceGroupLocation @OptionalParameters -Verbose -ErrorVariable ErrorMessages
-            }
+            Write-Output '', 'Template is valid.'
         }
-        if ($Deployment -eq 'M0')
-        {
-            # When doing 
-            $ResourceGroupName = $ResourceGroupName -replace 'M0', 'G1'
-            if ($TestWhatIf)
-            {
-                Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
+    }
+    else
+    {
+        $OptionalParameters.getenumerator() | ForEach-Object {
+            Write-Verbose $_.Key -Verbose
+            Write-Warning $_.Value
+        }
 
-                Get-AzResourceGroupDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName `
-                    -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
-                return $whatif
+        $TemplateArgs.getenumerator() | ForEach-Object {
+            Write-Verbose $_.Key -Verbose
+            Write-Warning $_.Value
+        }
+
+        if (-not $Subscription)
+        {
+        
+            #$OptionalParameters
+            #$TemplateArgs
+
+            if ($Deployment -eq 'M0')
+            {
+                $mgName = Get-AzManagementGroup | Where-Object DisplayName -EQ 'Tenant Root Group' | ForEach-Object Name
+                if ($TestWhatIf)
+                {
+                    Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
+
+                    Get-AzTenantDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs  `
+                        @OptionalParameters -Location $ResourceGroupLocation `
+                        -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
+                    return $whatif
+                }
+                else 
+                {
+                    Write-Warning "`n`tRunning Deployment !!!!"
+
+                    New-AzTenantDeployment -Name $DeploymentName @TemplateArgs `
+                        -Location $ResourceGroupLocation @OptionalParameters -Verbose -ErrorVariable ErrorMessages
+                }
+            }
+            if ($Deployment -eq 'T0')
+            {
+                if ($TestWhatIf)
+                {
+                    Write-Warning "`n`tRunning Tenant Deployment Whatif !!!!`n`n"
+
+                    Get-AzTenantDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs  `
+                        -Location $ResourceGroupLocation @OptionalParameters `
+                        -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
+                    return $whatif
+                }
+                else 
+                {
+                    Write-Warning "`n`tRunning Tenant Deployment !!!!"
+
+                    New-AzTenantDeployment -Name $DeploymentName @TemplateArgs `
+                        -Location $ResourceGroupLocation @OptionalParameters -Verbose -ErrorVariable ErrorMessages
+                }
+            }
+            if ($Deployment -eq 'M0')
+            {
+                # When doing 
+                $ResourceGroupName = $ResourceGroupName -replace 'M0', 'G1'
+                if ($TestWhatIf)
+                {
+                    Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
+
+                    Get-AzResourceGroupDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs @OptionalParameters `
+                        -ResourceGroupName $ResourceGroupName `
+                        -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
+                    return $whatif
+                }
+                else 
+                {
+                    Write-Warning "`n`tRunning Deployment !!!!"
+
+                    New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
+                        -ResourceGroupName $ResourceGroupName `
+                        -Verbose -ErrorVariable ErrorMessages
+                }
             }
             else 
             {
-                Write-Warning "`n`tRunning Deployment !!!!"
 
-                New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName `
-                    -Verbose -ErrorVariable ErrorMessages
+                if ($TestWhatIf)
+                {
+                    Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
+
+                    Get-AzResourceGroupDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs @OptionalParameters `
+                        -ResourceGroupName $ResourceGroupName `
+                        -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
+                    return $whatif
+                }
+                else 
+                {
+                    Write-Warning "`n`tRunning Deployment !!!!"
+
+                    New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
+                        -ResourceGroupName $ResourceGroupName `
+                        -Verbose -ErrorVariable ErrorMessages
+                }
             }
         }
         else 
         {
-
             if ($TestWhatIf)
             {
-                Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
-
-                Get-AzResourceGroupDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName `
-                    -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
+                Write-Warning "`n`tRunning Subscription Deployment Whatif !!!!"
+            
+                Get-AzDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs -Location $ResourceGroupLocation `
+                    @OptionalParameters -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
                 return $whatif
             }
             else 
             {
-                Write-Warning "`n`tRunning Deployment !!!!"
-
-                New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName `
-                    -Verbose -ErrorVariable ErrorMessages
+                Write-Warning "`n`tRunning Subscription Deployment !!!!"
+            
+                New-AzDeployment -Name $DeploymentName @TemplateArgs -Location $ResourceGroupLocation `
+                    @OptionalParameters -Verbose -ErrorVariable ErrorMessages 
             }
         }
-    }
-    else 
-    {
-        if ($TestWhatIf)
-        {
-            Write-Warning "`n`tRunning Subscription Deployment Whatif !!!!"
-            
-            Get-AzDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs -Location $ResourceGroupLocation `
-                @OptionalParameters -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
-            return $whatif
-        }
-        else 
-        {
-            Write-Warning "`n`tRunning Subscription Deployment !!!!"
-            
-            New-AzDeployment -Name $DeploymentName @TemplateArgs -Location $ResourceGroupLocation `
-                @OptionalParameters -Verbose -ErrorVariable ErrorMessages 
-        }
-    }
 
-    if ($ErrorMessages)
-    {
-        Write-Output '', 'Template deployment returned the following errors:', @(@($ErrorMessages) | 
-                ForEach-Object { $_.Exception.Message.TrimEnd("`r`n") })
+        if ($ErrorMessages)
+        {
+            Write-Output '', 'Template deployment returned the following errors:', @(@($ErrorMessages) | 
+                    ForEach-Object { $_.Exception.Message.TrimEnd("`r`n") })
+        }
     }
 }#Start-AzDeploy
 

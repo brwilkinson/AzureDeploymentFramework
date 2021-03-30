@@ -23,7 +23,7 @@ Configuration ADPrimary
     Import-DscResource -ModuleName xPendingReboot 
     Import-DscResource -ModuleName xTimeZone 
     Import-DscResource -ModuleName xDnsServer
-    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC    
+    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
 
     Function IIf
     {

@@ -53,18 +53,6 @@
         "DeploymentInfo": {
             "type": "object"
         },
-        "_artifactsLocation": {
-            "type": "string",
-            "metadata": {
-                "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-            }
-        },
-        "_artifactsLocationSasToken": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Auto-generated token to access artifactsLocation"
-            }
-        },
         "vmAdminPassword": {
             "type": "securestring"
         },
@@ -125,14 +113,14 @@
             "condition": "[equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0')]",
             "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopSub-', variables('Enviro'))]",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-01-01",
             "location": "[variables('location')]",
             "dependsOn": [
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsSUB.json', parameters('_artifactsLocationSasToken'))]",
+                    "relativePath": "../templates-nested/roleAssignmentsSUB.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -173,7 +161,7 @@
         //     "properties": {
         //         "mode": "Incremental",
         //         "templateLink": {
-        //             "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsRG.json', parameters('_artifactsLocationSasToken'))]",
+        //             "relativePath": "../templates-nested/roleAssignmentsRG.json",
         //             "contentVersion": "1.0.0.0"
         //         },
         //         "parameters": {
@@ -203,7 +191,7 @@
                         ]",
             "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsLoopRG-', variables('Enviro'),'-',copyIndex(1))]",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-01-01",
             "resourceGroup": "[variables('RGName')]",
             "copy": {
                 "name": "RGRBACLoop",
@@ -214,7 +202,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsALL.json', parameters('_artifactsLocationSasToken'))]",
+                    "relativePath": "../templates-nested/roleAssignmentsALL.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -259,7 +247,7 @@
             "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
             "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsUAI-', variables('Enviro'),'-',copyIndex(1))]",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-01-01",
             "resourceGroup": "[variables('RGName')]",
             "copy": {
                 "name": "UAILoop",
@@ -270,7 +258,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsALL.json', parameters('_artifactsLocationSasToken'))]",
+                    "relativePath": "../templates-nested/roleAssignmentsALL.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -315,7 +303,7 @@
             "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
             "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsSP-', variables('Enviro'),'-',copyIndex(1))]",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-01-01",
             "resourceGroup": "[variables('RGName')]",
             "copy": {
                 "name": "SPLoop",
@@ -326,7 +314,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/roleAssignmentsALL.json', parameters('_artifactsLocationSasToken'))]",
+                    "relativePath": "../templates-nested/roleAssignmentsALL.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

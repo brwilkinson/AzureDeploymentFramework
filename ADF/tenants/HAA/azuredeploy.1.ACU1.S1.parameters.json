@@ -312,14 +312,14 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE02",
@@ -327,7 +327,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snBE01", // APIM Dedicated
@@ -335,7 +335,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "AzureBastionSubnet",
@@ -343,7 +343,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snMT01",
@@ -351,7 +351,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false,
+            "FlowAnalyticsEnabled": true,
             "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
@@ -360,7 +360,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowAnalyticsEnabled": true
           }
         ],
         "saInfo": [
@@ -539,7 +539,13 @@
         "appConfigurationInfo": {
           "name": "01",
           "sku": "standard",
-          "publicNetworkAccess": "Enabled"
+          "publicNetworkAccess": "Enabled",
+          "PrivateLinkInfo": [
+            {
+              "Subnet": "snBE02",
+              "groupID": "configurationStores"
+            }
+          ]
         },
         "RedisInfo": [
           {

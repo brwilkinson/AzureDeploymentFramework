@@ -53,18 +53,7 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "deploymentTime": {
       "type": "string",
       "defaultValue": "[utcNow()]"
@@ -308,7 +297,7 @@
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "name": "[concat('dp', variables('Deployment'),'-publicIPDeploy', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
       ],
       "copy": {
@@ -318,7 +307,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/PublicIP.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/PublicIP.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -347,7 +336,7 @@
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "name": "[concat('dp', variables('Deployment'),'-nicDeployLoop', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('AppServers')[copyIndex(0)].VMName)]"
       ],
@@ -358,7 +347,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'),'/','templates-nested/vmNicLoop.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/vmNicLoop.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -376,12 +365,6 @@
           },
           "Global": {
             "value": "[parameters('Global')]"
-          },
-          "_artifactsLocation": {
-            "value": "[parameters('_artifactsLocation')]"
-          },
-          "_artifactsLocationSasToken": {
-            "value": "[parameters('_artifactsLocationSasToken')]"
           }
         }
       }
@@ -390,7 +373,7 @@
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
       ],
       "copy": {
@@ -400,7 +383,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', 'templates-nested/disks.json', parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "../templates-nested/disks.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -796,7 +779,7 @@
             "settings": {
               "wmfVersion": "latest",
               "configuration": {
-                "url": "[concat(parameters('_artifactsLocation'), '/ext-DSC/DSC-',if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),
+                "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-',if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),
                                                                                       variables('AppServers')[copyIndex(0)].DSConfig,
                                                                                         if(
                                                                                           contains(variables('DSCConfigLookup'),variables('DeploymentName')),
@@ -832,7 +815,7 @@
                 "clientIDGlobal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountFileContributor'),'2018-11-30').ClientId)]"
               },
               "configurationData": {
-                "url": "[concat(parameters('_artifactsLocation'), '/ext-CD/',variables('AppServers')[copyIndex(0)].Role,'-ConfigurationData.psd1')]"
+                "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',variables('AppServers')[copyIndex(0)].Role,'-ConfigurationData.psd1')]"
               }
             },
             "protectedSettings": {
@@ -846,8 +829,8 @@
                   "Password": "[parameters('sshPublic')]"
                 }
               },
-              "configurationUrlSasToken": "[parameters('_artifactsLocationSasToken')]",
-              "configurationDataUrlSasToken": "[parameters('_artifactsLocationSasToken')]"
+              "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
+              "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
             }
           }
         },

@@ -53,18 +53,7 @@
     "DeploymentInfo": {
       "type": "object"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access artifactsLocation"
-      }
-    },
+
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -75,14 +64,14 @@
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DeploymentInfoObject": {
-      "KV": "templates-base\\00-azuredeploy-KV.json",
-      "OMS": "templates-base\\01-azuredeploy-OMS.json",
-      "RSV": "templates-base\\02-azuredeploy-RSV.json",
-      "VNet": "templates-base\\03-azuredeploy-VNet.json",
-      "ILB": "templates-base\\04-azuredeploy-ILBalancer.json",
-      "WAFPOLICY": "templates-base\\06-azuredeploy-WAFPolicy.json",
-      "WAF": "templates-base\\06-azuredeploy-WAF.json",
-      "InitialDOP": "templates-base\\05-azuredeploy-VMApp.json"
+      "KV": "../templates-base/00-azuredeploy-KV.json",
+      "OMS": "../templates-base/01-azuredeploy-OMS.json",
+      "RSV": "../templates-base/02-azuredeploy-RSV.json",
+      "VNet": "../templates-base/03-azuredeploy-VNet.json",
+      "ILB": "../templates-base/04-azuredeploy-ILBalancer.json",
+      "WAFPOLICY": "../templates-base/06-azuredeploy-WAFPolicy.json",
+      "WAF": "../templates-base/06-azuredeploy-WAF.json",
+      "InitialDOP": "../templates-base/05-azuredeploy-VMApp.json"
     }
   },
   "resources": [
@@ -90,12 +79,12 @@
       "condition": "[equals(parameters('Stage').KV,1)]",
       "name": "[concat('dp', variables('Deployment'), '-KV')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').KV, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').KV]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -105,12 +94,12 @@
       "condition": "[equals(parameters('Stage').OMS,1)]",
       "name": "[concat('dp', variables('Deployment'), '-OMS')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').OMS, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').OMS]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -120,14 +109,14 @@
       "condition": "[equals(parameters('Stage').RSV,1)]",
       "name": "[concat('dp', variables('Deployment'), '-RSV')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-OMS')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').RSV, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').RSV]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -137,12 +126,12 @@
       "condition": "[equals(parameters('Stage').VNET,1)]",
       "name": "[concat('dp', variables('Deployment'), '-VNET')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VNet, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').VNet]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -152,14 +141,14 @@
       "condition": "[equals(parameters('Stage').ILB,1)]",
       "name": "[concat('dp', variables('Deployment'), '-ILB')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ILB, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').ILB]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -177,7 +166,7 @@
     //    "properties": {
     //        "mode": "Incremental",
     //        "templateLink": {
-    //            "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').AD, parameters('_artifactsLocationSasToken'))]",
+    //            "relativePath": "[variables('DeploymentInfoObject').AD]",
     //            "contentVersion": "1.0.0.0"
     //        },
     //        "parameters": "[deployment().properties.parameters]"
@@ -194,7 +183,7 @@
     //    "properties": {
     //        "mode": "Incremental",
     //        "templateLink": {
-    //            "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VMPublic, parameters('_artifactsLocationSasToken'))]",
+    //            "relativePath": "[variables('DeploymentInfoObject').VMPublic]",
     //            "contentVersion": "1.0.0.0"
     //        },
     //        "parameters": "[deployment().properties.parameters]"
@@ -205,7 +194,7 @@
       //"name": "[concat('dp', variables('Deployment'), 'InitialDOP')]",
       "name": "InitialDOP",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]",
         "[concat('dp', variables('Deployment'), '-OMS')]"
@@ -213,7 +202,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').InitialDOP, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').InitialDOP]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -223,14 +212,14 @@
       "condition": "[equals(parameters('Stage').WAFPOLICY,1)]",
       "name": "[concat('dp', variables('Deployment'), '-WAFPOLICY')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').WAFPOLICY, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').WAFPOLICY]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"
@@ -240,7 +229,7 @@
       "condition": "[equals(parameters('Stage').WAF,1)]",
       "name": "[concat('dp', variables('Deployment'), '-WAF')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2020-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]",
         "[concat('dp', variables('Deployment'), '-WAFPOLICY')]"
@@ -248,7 +237,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').WAF, parameters('_artifactsLocationSasToken'))]",
+          "relativePath": "[variables('DeploymentInfoObject').WAF]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

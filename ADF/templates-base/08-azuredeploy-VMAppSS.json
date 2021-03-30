@@ -53,18 +53,7 @@
         "DeploymentInfo": {
             "type": "object"
         },
-        "_artifactsLocation": {
-            "type": "string",
-            "metadata": {
-                "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-            }
-        },
-        "_artifactsLocationSasToken": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Auto-generated token to access artifactsLocation"
-            }
-        },
+
         "deploymentTime": {
             "type": "string",
             "defaultValue": "[utcNow()]"
@@ -438,7 +427,7 @@
                 "settings": {
                     "wmfVersion": "latest",
                     "configuration": {
-                        "url": "[concat(parameters('_artifactsLocation'), '/ext-DSC/DSC-', variables('DeploymentName'),'.zip')]",
+                        "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-', variables('DeploymentName'),'.zip')]",
                         "script": "[concat('DSC-',variables('DeploymentName'),'.ps1')]",
                         "function": "[variables('DeploymentName')]"
                     },
@@ -451,7 +440,7 @@
                         "appInfo": "[if(contains(variables('AppServers')[copyIndex(0)],'AppInfo'),string(variables('AppServers')[copyIndex(0)].AppInfo),'')]"
                     },
                     "configurationData": {
-                        "url": "[concat(parameters('_artifactsLocation'), '/ext-CD/',variables('AppServers')[copyIndex(0)].Role,'-ConfigurationData.psd1')]"
+                        "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',variables('AppServers')[copyIndex(0)].Role,'-ConfigurationData.psd1')]"
                     }
                 },
                 "protectedSettings": {
@@ -461,8 +450,8 @@
                             "Password": "[concat(reference(resourceId(parameters('global').HubRGName,'Microsoft.KeyVault/vaults', parameters('global').KVNAME),'2018-02-14').vaultUri, 'secrets/localadmin')]"
                         }
                     },
-                    "configurationUrlSasToken": "[parameters('_artifactsLocationSasToken')]",
-                    "configurationDataUrlSasToken": "[parameters('_artifactsLocationSasToken')]"
+                    "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
+                    "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
                 }
             }
         },
