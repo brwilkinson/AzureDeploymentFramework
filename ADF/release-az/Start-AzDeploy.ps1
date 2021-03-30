@@ -345,14 +345,14 @@ Function global:Start-AzDeploy
                 $File = Get-Item -EA Ignore -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $ArtifactStagingDirectory))
                 if ($File)
                 {
-                    $Params = @{ 
-                        File      = $File.FullName 
-                        Blob      = $File.FullName.Substring($ArtifactStagingDirectory.length + 1) 
-                        Container = $StorageContainerName 
-                        Context   = $StorageAccount.Context 
+                    $StorageParams = @{
+                        File      = $File.FullName
+                        Blob      = $File.FullName.Substring($ArtifactStagingDirectory.length + 1)
+                        Container = $StorageContainerName
+                        Context   = $StorageAccount.Context
                         Force     = $true
                     }
-                    Set-AzStorageBlobContent $Params | Select-Object Name, Length, LastModified
+                    Set-AzStorageBlobContent @StorageParams | Select-Object Name, Length, LastModified
                 }
                 else 
                 {
@@ -378,7 +378,14 @@ Function global:Start-AzDeploy
             Get-ChildItem -Path $ArtifactStagingDirectory -Include $Include -Recurse -Directory |
                 Get-ChildItem -File -Include *.json, *.zip, *.psd1, *.sh, *.ps1 | ForEach-Object {
                     #    $_.FullName.Substring($ArtifactStagingDirectory.length)
-                    Set-AzStorageBlobContent -File $_.FullName -Blob $_.FullName.Substring($ArtifactStagingDirectory.length + 1 ) -Container $StorageContainerName -Context $StorageAccount.Context -Force 
+                    $StorageParams = @{
+                        File      = $_.FullName
+                        Blob      = $_.FullName.Substring($ArtifactStagingDirectory.length + 1 )
+                        Container = $StorageContainerName
+                        Context   = $StorageAccount.Context
+                        Force     = $true
+                    }
+                    Set-AzStorageBlobContent @StorageParams
                 } | Select-Object Name, Length, LastModified
         }
     }
