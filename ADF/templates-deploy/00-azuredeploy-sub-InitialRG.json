@@ -92,61 +92,61 @@
         },
         "parameters": "[deployment().properties.parameters]"
       }
+    },
+    {
+      "condition": "[equals(parameters('Stage').RBAC,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-RBAC')]",
+      "type": "Microsoft.Resources/deployments",
+      "location": "[variables('location')]",
+      "apiVersion": "2021-01-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-RG')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "relativePath": "[variables('DeploymentInfoObject').RBAC]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[and(contains(parameters('Stage'),'RoleDefinition'),equals(parameters('Stage').RoleDefinition,1))]",
+      "name": "[concat('dp', variables('Deployment'), '-RoleDefinition')]",
+      "type": "Microsoft.Resources/deployments",
+      "location": "[variables('location')]",
+      "apiVersion": "2021-01-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-RG')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "relativePath": "[variables('DeploymentInfoObject').RoleDefinition]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[and(contains(parameters('Stage'),'Policy'),equals(parameters('Stage').Policy,1))]",
+      "name": "[concat('dp', variables('Deployment'), '-Policy')]",
+      "type": "Microsoft.Resources/deployments",
+      "location": "[variables('location')]",
+      "apiVersion": "2021-01-01",
+      "dependsOn": [
+        // "[concat('dp', variables('Deployment'), '-RG')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "relativePath": "[variables('DeploymentInfoObject').Policy]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
     }
-    // {
-    //   "condition": "[equals(parameters('Stage').RBAC,1)]",
-    //   "name": "[concat('dp', variables('Deployment'), '-RBAC')]",
-    //   "type": "Microsoft.Resources/deployments",
-    //   "location": "[variables('location')]",
-    //   "apiVersion": "2021-01-01",
-    //   "dependsOn": [
-    //     "[concat('dp', variables('Deployment'), '-RG')]"
-    //   ],
-    //   "properties": {
-    //     "mode": "Incremental",
-    //     "templateLink": {
-    //       "relativePath": "[variables('DeploymentInfoObject').RBAC]",
-    //       "contentVersion": "1.0.0.0"
-    //     },
-    //     "parameters": "[deployment().properties.parameters]"
-    //   }
-    // },
-    // {
-    //   "condition": "[and(contains(parameters('Stage'),'RoleDefinition'),equals(parameters('Stage').RoleDefinition,1))]",
-    //   "name": "[concat('dp', variables('Deployment'), '-RoleDefinition')]",
-    //   "type": "Microsoft.Resources/deployments",
-    //   "location": "[variables('location')]",
-    //   "apiVersion": "2021-01-01",
-    //   "dependsOn": [
-    //     "[concat('dp', variables('Deployment'), '-RG')]"
-    //   ],
-    //   "properties": {
-    //     "mode": "Incremental",
-    //     "templateLink": {
-    //       "relativePath": "[variables('DeploymentInfoObject').RoleDefinition]",
-    //       "contentVersion": "1.0.0.0"
-    //     },
-    //     "parameters": "[deployment().properties.parameters]"
-    //   }
-    // },
-    // {
-    //   "condition": "[and(contains(parameters('Stage'),'Policy'),equals(parameters('Stage').Policy,1))]",
-    //   "name": "[concat('dp', variables('Deployment'), '-Policy')]",
-    //   "type": "Microsoft.Resources/deployments",
-    //   "location": "[variables('location')]",
-    //   "apiVersion": "2021-01-01",
-    //   "dependsOn": [
-    //     // "[concat('dp', variables('Deployment'), '-RG')]"
-    //   ],
-    //   "properties": {
-    //     "mode": "Incremental",
-    //     "templateLink": {
-    //       "relativePath": "[variables('DeploymentInfoObject').Policy]",
-    //       "contentVersion": "1.0.0.0"
-    //     },
-    //     "parameters": "[deployment().properties.parameters]"
-    //   }
-    // }
   ],
   "outputs": {}
 }

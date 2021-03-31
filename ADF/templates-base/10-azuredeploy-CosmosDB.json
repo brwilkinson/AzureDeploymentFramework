@@ -96,7 +96,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "relativePath": "../templates-nested/cosmosDB.json",
+          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/cosmosDB.json', parameters('global')._artifactsLocationSasToken)]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -140,7 +140,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "relativePath": "../templates-nested/vNetPrivateLink.json",
+          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/vNetPrivateLink.json', parameters('global')._artifactsLocationSasToken)]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -177,7 +177,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
+          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('global')._artifactsLocationSasToken)]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -214,7 +214,7 @@
     //   "properties": {
     //     "mode": "Incremental",
     //     "templateLink": {
-    //       "relativePath": "../templates-nested/registerPrivateLinkDNS.json",
+    //       "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/registerPrivateLinkDNS.json', parameters('global')._artifactsLocationSasToken)]",
     //       "contentVersion": "1.0.0.0"
     //     },
     //     "parameters": {

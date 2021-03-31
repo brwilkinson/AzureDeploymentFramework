@@ -144,7 +144,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "relativePath": "../templates-nested/serviceBusTopicSubscriptions.json",
+          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/serviceBusTopicSubscriptions.json', parameters('global')._artifactsLocationSasToken)]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

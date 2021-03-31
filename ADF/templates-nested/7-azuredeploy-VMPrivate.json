@@ -101,7 +101,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "relativePath": "../templates-nested/disks.json",
+          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/disks.json', parameters('global')._artifactsLocationSasToken)]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
