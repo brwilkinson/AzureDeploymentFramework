@@ -38,7 +38,7 @@
         "OMSSolutions": 1,
         "OMSDataSources": 1,
         "SA": 1,
-        "CDN": 1,
+        "CDN": 0,
         "StorageSync": 0,
         "RSV": 1,
         "NSGHUB": 0,
@@ -57,7 +57,7 @@
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "ILB": 0,
+        "ILB": 1,
         "PLB": 0,
         "InitialDOP": 0,
         "VMApp": 1,
@@ -66,25 +66,25 @@
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 1,
-        "FRONTDOOR": 1,
-        "WAF": 1,
+        "FRONTDOOR": 0,
+        "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
-        "APPCONFIG": 1,
-        "REDIS": 1,
-        "APIM": 1,
-        "ACR": 1,
-        "AKS": 1,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "AKS": 0,
         "SQLMI": 0,
-        "CosmosDB": 1,
-        "DASHBOARD": 1,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
         "DNSLookup": 0,
         "ServerFarm": 0,
         "WebSite": 0,
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,
-        "AzureSQL": 1
+        "AzureSQL": 0
       }
     },
     "Extensions": {
@@ -312,14 +312,14 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snBE02",
@@ -327,7 +327,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snBE01", // APIM Dedicated
@@ -335,7 +335,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "AzureBastionSubnet",
@@ -343,7 +343,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           },
           {
             "name": "snMT01",
@@ -351,7 +351,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true,
+            "FlowAnalyticsEnabled": false,
             "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
@@ -360,7 +360,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": false
           }
         ],
         "saInfo": [
@@ -381,9 +381,9 @@
             }
           },
           {
-            "nameSuffix": "catalog",
+            "nameSuffix": "data",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": "Deny",
             "logging": {
               "r": 0,
               "w": 0,
@@ -395,18 +395,6 @@
               "enabled": 1,
               "days": 7
             }
-          }
-        ],
-        "CDNInfo": [
-          {
-            "Name": "eshopcatalog",
-            "saname": "catalog",
-            "endpoint": "catalog-endpoint"
-          }
-        ],
-        "LogicInfo": [
-          {
-            "Name": "SMTPTEST02"
           }
         ],
         "KVInfo": [
@@ -429,285 +417,10 @@
             ]
           }
         ],
-        "AzSQLInfo": [
-          {
-            "Name": "ESHOPSQL",
-            "administratorLogin": "brw",
-            "AdminName": "AZ_SQL_Admins",
-            "publicNetworkAccess": "Enabled",
-            "allNetworks": "Deny",
-            "_PrivateLinkInfo": [
-              {
-                "Subnet": "snBE02",
-                "groupID": "sqlServer"
-              }
-            ],
-            "DBInfo": [
-              {
-                "Name": "catalogdb",
-                "skuName": "S1"
-              },
-              {
-                "Name": "identitydb",
-                "skuName": "S1"
-              },
-              {
-                "Name": "orderingdb",
-                "skuName": "S1"
-              }
-            ]
-          }
-        ],
-        "cosmosDBInfo": [
-          {
-            "Name": "eshop-nosql",
-            "Kind": "MongoDB", //GlobalDocumentDB, MongoDB, Parse
-            "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
-            "enableMultipleWriteLocations": true,
-            "enableAutomaticFailover": true,
-            "_PrivateLinkInfo": [
-              {
-                "Subnet": "snBE02",
-                "groupID": "MongoDB"
-              }
-            ],
-            "locations": [
-              {
-                "location": "PrimaryLocation",
-                "failoverPriority": 0,
-                "isZoneRedundant": true
-              },
-              {
-                "location": "SecondaryLocation",
-                "failoverPriority": 1,
-                "isZoneRedundant": true
-              }
-            ],
-            "databases": [
-              {
-                "databaseName": "customers",
-                "containerName": "Info"
-              }
-            ]
-          }
-        ],
-        "SBInfo": [
-          {
-            "Name": "ESHOPSB",
-            "sku": "Premium",
-            "skuCapacity": 1,
-            "zoneRedundant": true,
-            "topics": [
-              {
-                "Name": "eshop_event_bus",
-                "subscriptions": [
-                  {
-                    "Name": "Basket"
-                  },
-                  {
-                    "Name": "Catalog"
-                  },
-                  {
-                    "Name": "Ordering"
-                  },
-                  {
-                    "Name": "GracePeriod"
-                  },
-                  {
-                    "Name": "Payment"
-                  },
-                  {
-                    "Name": "backgroundtasks"
-                  },
-                  {
-                    "Name": "ordering.signalrhub"
-                  },
-                  {
-                    "Name": "webhooks"
-                  }
-                ]
-              }
-            ],
-            "_PrivateLinkInfo": [
-              {
-                "Subnet": "snBE02",
-                "groupID": "namespace"
-              }
-            ]
-          }
-        ],
-        "appConfigurationInfo": {
-          "name": "01",
-          "sku": "standard",
-          "publicNetworkAccess": "Enabled"
-        },
-        "RedisInfo": [
-          {
-            "Name": "APIM01",
-            "sku": "C1"
-          },
-          {
-            "Name": "eshopredis",
-            "sku": "C1",
-            "enableNonSslPort": true
-          }
-          // {
-          //   "Name": "APIM01",
-          //   "sku": "P1"
-          // },
-          // {
-          //   "Name": "APIM03",
-          //   "sku": "C0"
-          // },
-          // {
-          //   "Name": "APIM04",
-          //   "sku": "B0"
-          // },
-          // {
-          //   "Name": "APIM05",
-          //   "sku": "B1"
-          // }
-        ],
-        "ContainerRegistry": [
-          {
-            "Name": "01",
-            "SKU": "Standard",
-            "adminUserEnabled": true
-          }
-        ],
-        "APIMInfo": [
-          {
-            "name": "01",
-            "dnsName": "API",
-            "apimSku": "Developer",
-            "snName": "BE01",
-            "virtualNetworkType": "Internal",
-            "certName": "HAAPP-WildCard",
-            "frontDoor": "01"
-          }
-        ],
-        "frontDoorInfo": [
-          {
-            "name": "01",
-            "_afdverify": "HAA",
-            "services": [
-              {
-                "Name": "APIM01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
-                "BEAddress": "apim01.azure-api.net", //always use the gateway
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
-                "patternsToMatch": [
-                  "/*"
-                ]
-              },
-              {
-                "Name": "APIM01-Developer",
-                "BEAddress": "apim01.azure-api.net",
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1,
-                "patternsToMatch": [
-                  "/*"
-                ]
-              },
-              {
-                "Name": "APIM01-Scm", // acu1-brw-haa-s1-afd 01 - apim01-scm .haapp.net
-                "BEAddress": "apim01.azure-api.net", //always use the gateway
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1,
-                "patternsToMatch": [
-                  "/*"
-                ]
-              },
-              {
-                // Default (front end) Service is Required, add backend as well for ability to test FE.
-                "Name": "Default",
-                "BEAddress": "portal.azure.com",
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "patternsToMatch": [
-                  "/*"
-                ]
-              }
-            ],
-            "probes": [
-              {
-                "Name": "probe01",
-                "ProbePath": "/"
-              }
-            ],
-            "LBSettings": [
-              {
-                "Name": "balance01",
-                "sampleSize": 4,
-                "successfulSamplesRequired": 2,
-                "additionalLatencyMilliseconds": 0
-              }
-            ]
-          }
-        ],
-        "AKSInfo": [
-          {
-            "Name": "01",
-            "Version": "1.20.2", // "1.20.2","1.19.7","1.19.6", "1.18.14"
-            "skuTier": "Paid", //Free
-            "enableRBAC": true, //true, false
-            "podIdentity": true, //true, false
-            "privateCluster": true, //true, false
-            "AgentPoolsSN": "snMT02",
-            "WAFName": "01",
-            "loadBalancer": "standard", //"basic","standard"
-            "BrownFields": 1,
-            "aksAADAdminGroups": [
-              "AKS_Admins"
-            ],
-            "AgentPools": [
-              {
-                "name": "linctr",
-                "count": 2,
-                "osDiskSizeGb": 30,
-                "osType": "Linux",
-                "maxPods": 16,
-                "storageProfile": "ManagedDisks",
-                "_vmSize": "Standard_D1_v2",
-                "ASName": "JMP",
-                "mode": "System"
-              },
-              // {
-              //   "name": "winctr",
-              //   "count": 2,
-              //   "osDiskSizeGb": 30,
-              //   "osType": "Linux",
-              //   "maxPods": 50,
-              //   "storageProfile": "ManagedDisks",
-              //   "_vmSize": "Standard_D1_v2",
-              //   "ASName": "JMP",
-              //   "mode": "User"
-              // }
-              {
-                "name": "linctr2",
-                "count": 2,
-                "osDiskSizeGb": 30,
-                "osType": "Linux",
-                "maxPods": 50,
-                "storageProfile": "ManagedDisks",
-                "_vmSize": "Standard_D1_v2",
-                "ASName": "JMP",
-                "mode": "User"
-              }
-            ]
-          }
-        ],
         "Appservers": {
           "AppServers": [
             {
-              "VMName": "JMP01",
+              "VMName": "JMP02",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -721,93 +434,139 @@
                   "Primary": 1,
                   "FastNic": 1,
                   "PublicIP": "Static",
-                  "StaticIP": "62"
-                }
-              ]
-            }
-            // {
-            //   "VMName": "JMP02",
-            //   "Role": "JMP",
-            //   "ASName": "JMP",
-            //   "DDRole": "64GB",
-            //   "OSType": "Server2022",
-            //   "ExcludeAdminCenter": 1,
-            //   // "ExcludeAADLogin": 1,
-            //   "_HotPatch": true,
-            //   "Zone": 1,
-            //   "NICs": [
-            //     {
-            //       "Subnet": "FE01",
-            //       "Primary": 1,
-            //       "FastNic": 1,
-            //       "PublicIP": "Static",
-            //       "StaticIP": "61"
-            //     }
-            //   ]
-            // },
-            // {
-            //   "VMName": "JMP03",
-            //   "Role": "JMP",
-            //   "ASName": "JMP",
-            //   "DDRole": "64GB",
-            //   "OSType": "Server2022",
-            //   "ExcludeAdminCenter": 1,
-            //   // "ExcludeAADLogin": 1,
-            //   "_HotPatch": true,
-            //   "Zone": 1,
-            //   "NICs": [
-            //     {
-            //       "Subnet": "FE01",
-            //       "Primary": 1,
-            //       "FastNic": 1,
-            //       "PublicIP": "Static",
-            //       "StaticIP": "60"
-            //     }
-            //   ]
-            // },
-            // {
-            //   "VMName": "JMP04",
-            //   "Role": "JMP",
-            //   "ASName": "JMP",
-            //   "DDRole": "64GB",
-            //   "OSType": "Server2019small",
-            //   "ExcludeAdminCenter": 1,
-            //   // "ExcludeAADLogin": 1,
-            //   "_HotPatch": true,
-            //   "Zone": 1,
-            //   "NICs": [
-            //     {
-            //       "Subnet": "FE01",
-            //       "Primary": 1,
-            //       "FastNic": 1,
-            //       "PublicIP": "Static",
-            //       "StaticIP": "58"
-            //     }
-            //   ]
-            // }
-          ],
-          "AppServersLinux": [
-            {
-              "VMName": "LIN01",
-              "Role": "LIN",
-              "ASName": "LIN",
-              "DDRole": "64GB",
-              "OSType": "CentOS75",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "59",
-                  "PublicIP": "Static"
+                  "StaticIP": "61"
                 }
               ]
             }
           ]
         },
+        "LBInfo": [
+          {
+            "LBName": "API",
+            "ASName": "API",
+            "Sku": "Basic",
+            "FrontEnd": [
+              {
+                "SNName": "MT02",
+                "Type": "Private",
+                "LBFEName": "API",
+                "LBFEIP": "254"
+              }
+            ],
+            "NATPools": [
+              {
+                "Name": "RDP",
+                "frontendPortRangeStart": 3389,
+                "frontendPortRangeEnd": 4500,
+                "enableFloatingIP": false,
+                "backendPort": 3389,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "LBFEName": "API"
+              }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "19000",
+                "LBBEProbePort": 19000
+              },
+              {
+                "ProbeName": "19080",
+                "LBBEProbePort": 19080
+              },
+              {
+                "ProbeName": "19081",
+                "LBBEProbePort": 19081
+              },
+              {
+                "ProbeName": "8988",
+                "LBBEProbePort": 8988
+              },
+              {
+                "ProbeName": "8989",
+                "LBBEProbePort": 8989
+              },
+              {
+                "ProbeName": "8990",
+                "LBBEProbePort": 8990
+              }
+            ],
+            "Services": [
+              {
+                "LBFEName": "API",
+                "RuleName": "API-19000",
+                "LBFEPort": 19000,
+                "LBBEPort": 19000,
+                "ProbeName": 19000,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "RuleName": "API-19080",
+                "LBFEPort": 19080,
+                "LBBEPort": 19080,
+                "ProbeName": 19080,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "RuleName": "API-19081",
+                "LBFEPort": 19081,
+                "LBBEPort": 19081,
+                "ProbeName": 19081,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "RuleName": "API-8988",
+                "LBFEPort": 8988,
+                "LBBEPort": 8988,
+                "ProbeName": 8988,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "RuleName": "API-8989",
+                "LBFEPort": 8989,
+                "LBBEPort": 8989,
+                "ProbeName": 8989,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "RuleName": "API-8990",
+                "LBFEPort": 8990,
+                "LBBEPort": 8990,
+                "ProbeName": 8990,
+                "DirectReturn": false
+              }
+            ]
+          }
+        ],
+        "AppServersVMSS": [
+          {
+            "VMName": "API",
+            // "SFName": "contoso",
+            "saname": "data",
+            "Role": "API",
+            "DDRole": "64GBSS",
+            "ASName": "API",
+            "OSType": "Server2016SS",
+            "Subnet": "MT02",
+            "LB": "API",
+            "NATName": "RDP",
+            "Capacity": 3,
+            "IsPrimary": true,
+            "durabilityLevel": "Bronze",
+            "placementProperties": {
+              "OSType": "Server2016SS",
+              "NodeKind": "API01"
+            }
+          }
+        ],
         "WAFInfo": [
           {
-            "WAFName": "01",
+            "WAFName": "API",
             "WAFEnabled": true,
             "WAFMode": "Detection",
             "WAFPolicyAttached": true,
@@ -820,15 +579,24 @@
               "HAAPP-WildCard"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [], //"useAGIC"
+            "BEIPs": [
+              "254"
+            ],
             "pathRules": [
-              // {
-              //   "Name": "map1",
-              //   "Protocol": "https",
-              //   "paths": [
-              //     "/map1"
-              //   ]
-              // }
+              {
+                "Name": "map1",
+                "Protocol": "https",
+                "paths": [
+                  "/api01"
+                ]
+              },
+              {
+                "Name": "map2",
+                "Protocol": "https",
+                "paths": [
+                  "/web01"
+                ]
+              }
             ],
             "frontEndPorts": [
               {
@@ -862,8 +630,8 @@
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
                 "Hostname": "waf",
-                "Interface": "Public" // "Public","Private"
-                // "pathRules": "map1"
+                "Interface": "Public", // "Public","Private"
+                "pathRules": "map1"
               },
               {
                 "Port": 80,
@@ -871,8 +639,8 @@
                 "Domain": "haapp.net",
                 "Hostname": "waf",
                 "Interface": "Public",
-                "httpsRedirect": 0
-                // "pathRules": "map1"
+                "httpsRedirect": 1,
+                "pathRules": "map1"
               }
             ]
           }

@@ -652,8 +652,7 @@
               "OUPath": "[if(contains(variables('AppServers')[copyIndex(0)],'OUPath'),variables('AppServers')[copyIndex(0)].OUPath,'')]",
               "User": "[concat(parameters('Global').vmAdminUserName,'@',parameters('Global').ADDomainName)]",
               "Restart": "true",
-              "Options": 3,
-
+              "Options": 3
             },
             "protectedSettings": {
               "Password": "[parameters('vmAdminPassword')]"

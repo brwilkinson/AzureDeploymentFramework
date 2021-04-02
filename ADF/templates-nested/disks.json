@@ -15,6 +15,10 @@
       "type": "object",
       "defaultValue": {"1":1}
     },
+    "DATASS": {
+      "type": "object",
+      "defaultValue": {"1":1}
+    },
     "SOFS": {
       "type": "object",
       "defaultValue": {"1":1}
@@ -48,6 +52,18 @@
           "diskSizeGB": "[if(contains(parameters('Data'),'1'),1, int(parameters('Data').LUNS[copyIndex('Data')][1]) )]",
           "createOption": "[if(contains(parameters('Data'),'1'),1,if(equals(length(parameters('Data').LUNS[copyIndex('Data')]),3),parameters('Data').LUNS[copyIndex('Data')][2],'Empty'))]",
           "managedDisk": "[if(contains(parameters('Data'),'1'),1, if(contains(parameters('Data'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('Data').saType,'\"}')),json('null')))]"
+        }
+      },
+      {
+        "name": "Datass",
+        "count": "[if(contains(parameters('Datass'),'1'),1,Length(parameters('Datass').LUNS))]",
+        "input": {
+          // "name": "[if(contains(parameters('Datass'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Datass').LUNS[copyIndex('Datass')][0],2,'0')) )]",
+          "lun": "[if(contains(parameters('Datass'),'1'),1, int(parameters('Datass').LUNS[copyIndex('Datass')][0]) )]",
+          "caching": "[if(contains(parameters('Datass'),'1'),1, parameters('Datass').caching )]",
+          "diskSizeGB": "[if(contains(parameters('Datass'),'1'),1, int(parameters('Datass').LUNS[copyIndex('Datass')][1]) )]",
+          "createOption": "[if(contains(parameters('Datass'),'1'),1,if(equals(length(parameters('Datass').LUNS[copyIndex('Datass')]),3),parameters('Datass').LUNS[copyIndex('Datass')][2],'Empty'))]",
+          "managedDisk": "[if(contains(parameters('Datass'),'1'),1, if(contains(parameters('Datass'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('Datass').saType,'\"}')),json('null')))]"
         }
       },
       {
@@ -118,6 +134,10 @@
       "type": "array",
       "value": "[if( contains(parameters('Data'),'1'),array('no DATA disks'),variables('Data'))]"
     },
+    "DATASS": {
+      "type": "array",
+      "value": "[if( contains(parameters('Datass'),'1'),array('no DATA disks'),variables('Datass'))]"
+    },
     "LOGS": {
       "type": "array",
       "value": "[if(contains(parameters('LOGS'),'1'),array('no LOGS disks'),variables('LOGS'))]"
@@ -135,6 +155,7 @@
       "value": "[union( 
                         if(contains(parameters('SOFS'),'1'),createArray(), variables('SOFS') ),
                         if(contains(parameters('Data'),'1'),createArray(), variables('Data') ),
+                        if(contains(parameters('Datass'),'1'),createArray(), variables('Datass') ),
                         if(contains(parameters('LOGS'),'1'),createArray(), variables('LOGS') ) , 
                         if(contains(parameters('TEMPDB'),'1'),createArray(), variables('TEMPDB') ), 
                         if(contains(parameters('BACKUP'),'1'),createArray(), variables('BACKUP') )

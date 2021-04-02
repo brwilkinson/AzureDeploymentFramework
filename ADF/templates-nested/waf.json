@@ -234,23 +234,6 @@
               }
             }
           },
-          {
-            "name": "requestRoutingRules",
-            "count": "[length(parameters('WAFInfo').Listeners)]",
-            "input": {
-              "name": "[concat('requestRoutingRule-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Hostname,parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Port)]",
-              "properties": {
-                "RuleType": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic')]",
-                "httpListener": {
-                  "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/httpListeners/','httpListener-',if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic'),'-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Hostname,'-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Port )]"
-                },
-                "backendAddressPool": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Protocol,'https'),variables('Listeners')[copyIndex('requestRoutingRules')].backendAddressPool,json('null'))]",
-                "backendHttpSettings": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Protocol,'https'),variables('Listeners')[copyIndex('requestRoutingRules')].backendHttpSettings,json('null'))]",
-                "redirectConfiguration": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Protocol,'http'),variables('Listeners')[copyIndex('requestRoutingRules')].redirectConfiguration,json('null'))]",
-                "urlPathMap": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),variables('Listeners')[copyIndex('requestRoutingRules')].urlPathMap,json('null'))]"
-              }
-            }
-          },
           // {
           //   "name": "requestRoutingRules",
           //   "count": "[length(parameters('WAFInfo').Listeners)]",
@@ -259,41 +242,58 @@
           //     "properties": {
           //       "RuleType": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic')]",
           //       "httpListener": {
-          //         "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/httpListeners/','httpListener-',
-          //                           if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic'),'-',
-          //                           parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Hostname,'-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Port )]"
+          //         "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/httpListeners/','httpListener-',if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic'),'-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Hostname,'-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Port )]"
           //       },
-          //       "backendAddressPool": "[if(
-          //                                   and(
-          //                                       contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
-          //                                       equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
-          //                                     ),
-          //                                     json('null'),
-          //                                     variables('Listeners')[copyIndex('requestRoutingRules')].backendAddressPool
-          //                                   )]",
-          //       "backendHttpSettings": "[if(
-          //                                   and(
-          //                                       contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
-          //                                       equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
-          //                                     ),
-          //                                     json('null'),
-          //                                     variables('Listeners')[copyIndex('requestRoutingRules')].backendHttpSettings
-          //                                   )]",
-          //       "redirectConfiguration": "[if(
-          //                                   and(
-          //                                       contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
-          //                                       equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
-          //                                     ),
-          //                                     variables('Listeners')[copyIndex('requestRoutingRules')].redirectConfiguration,
-          //                                     json('null')
-          //                                   )]",
-          //       "urlPathMap": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),
-          //                           variables('Listeners')[copyIndex('requestRoutingRules')].urlPathMap,
-          //                           json('null')
-          //                       )]"
+          //       "backendAddressPool": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Protocol,'https'),variables('Listeners')[copyIndex('requestRoutingRules')].backendAddressPool,json('null'))]",
+          //       "backendHttpSettings": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Protocol,'https'),variables('Listeners')[copyIndex('requestRoutingRules')].backendHttpSettings,json('null'))]",
+          //       "redirectConfiguration": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Protocol,'http'),variables('Listeners')[copyIndex('requestRoutingRules')].redirectConfiguration,json('null'))]",
+          //       "urlPathMap": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),variables('Listeners')[copyIndex('requestRoutingRules')].urlPathMap,json('null'))]"
           //     }
           //   }
           // },
+          {
+            "name": "requestRoutingRules",
+            "count": "[length(parameters('WAFInfo').Listeners)]",
+            "input": {
+              "name": "[concat('requestRoutingRule-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Hostname,parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Port)]",
+              "properties": {
+                "RuleType": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic')]",
+                "httpListener": {
+                  "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/httpListeners/','httpListener-',
+                                    if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),'PathBasedRouting','Basic'),'-',
+                                    parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Hostname,'-',parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].Port )]"
+                },
+                "backendAddressPool": "[if(
+                                            and(
+                                                contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
+                                                equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
+                                              ),
+                                              json('null'),
+                                              variables('Listeners')[copyIndex('requestRoutingRules')].backendAddressPool
+                                            )]",
+                "backendHttpSettings": "[if(
+                                            and(
+                                                contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
+                                                equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
+                                              ),
+                                              json('null'),
+                                              variables('Listeners')[copyIndex('requestRoutingRules')].backendHttpSettings
+                                            )]",
+                "redirectConfiguration": "[if(
+                                            and(
+                                                contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'httpsRedirect'),
+                                                equals(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')].httpsRedirect,1)
+                                              ),
+                                              variables('Listeners')[copyIndex('requestRoutingRules')].redirectConfiguration,
+                                              json('null')
+                                            )]",
+                "urlPathMap": "[if(contains(parameters('WAFInfo').Listeners[copyIndex('requestRoutingRules')],'pathRules'),
+                                    variables('Listeners')[copyIndex('requestRoutingRules')].urlPathMap,
+                                    json('null')
+                                )]"
+              }
+            }
+          },
           {
             "condition": "[equals(parameters('WAFInfo').Listeners[copyIndex('redirectConfigurations')].Protocol,'http')]",
             "name": "redirectConfigurations",

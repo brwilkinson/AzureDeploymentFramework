@@ -506,24 +506,6 @@
                   },
                   {
                     "Name": "Catalog"
-                  },
-                  {
-                    "Name": "Ordering"
-                  },
-                  {
-                    "Name": "GracePeriod"
-                  },
-                  {
-                    "Name": "Payment"
-                  },
-                  {
-                    "Name": "backgroundtasks"
-                  },
-                  {
-                    "Name": "ordering.signalrhub"
-                  },
-                  {
-                    "Name": "webhooks"
                   }
                 ]
               }
@@ -815,6 +797,7 @@
           {
             "WAFName": "01",
             "WAFEnabled": true,
+            "ISAGIC": true,
             "WAFMode": "Detection",
             "WAFPolicyAttached": true,
             "WAFPolicyName": "API",
@@ -828,13 +811,6 @@
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
             "BEIPs": [], //"useAGIC"
             "pathRules": [
-              // {
-              //   "Name": "map1",
-              //   "Protocol": "https",
-              //   "paths": [
-              //     "/map1"
-              //   ]
-              // }
             ],
             "frontEndPorts": [
               {
@@ -868,8 +844,7 @@
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
                 "Hostname": "waf",
-                "Interface": "Public" // "Public","Private"
-                // "pathRules": "map1"
+                "Interface": "Public"
               },
               {
                 "Port": 80,
@@ -878,7 +853,6 @@
                 "Hostname": "waf",
                 "Interface": "Public",
                 "httpsRedirect": 0
-                // "pathRules": "map1"
               }
             ]
           }

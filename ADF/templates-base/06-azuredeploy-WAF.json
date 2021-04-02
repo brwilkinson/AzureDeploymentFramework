@@ -216,7 +216,13 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/waf.json', parameters('global')._artifactsLocationSasToken)]",
+          "uri": "[concat(parameters('global')._artifactsLocation, 
+                          '/', 'templates-nested/',
+                          if(and(
+                                  contains(variables('WAFInfo')[copyIndex(0)],'ISAGIC'),
+                                  equals(variables('WAFInfo')[copyIndex(0)].ISAGIC,bool('true'))
+                                  ),'agic','waf'),'.json',
+                          parameters('global')._artifactsLocationSasToken)]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

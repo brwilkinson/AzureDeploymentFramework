@@ -1,13 +1,13 @@
-$projectPath = 'D:\repos\AzureDeploymentFramework'
-$TemplatesBase = "$projectPath\ADF\templates-base", "$projectPath\ADF\templates-deploy", "$projectPath\ADF\templates-nested"
+$projectPath = 'D:\repos\ADF'
+$TemplatesBase = "$projectPath\ADF\templates-deploy","$projectPath\ADF\templates-base", "$projectPath\ADF\templates-nested"
 $ParamPath = 'D:\repos\AzureDeploymentFramework\ADF\tenants\ABC\azuredeploy.1.AZC1.S1.parameters.json'
-$GlobalRG = 'AZC1-BRW-HUB-RG-G1'
+$GlobalRG = 'AZC1-BRW-HAA-RG-G1'
 $SpecRegion = 'centralus'
 $SpecVersion = '1.0a'
 $ForceUpdate = $true
-$TemplateFilter = '05-azuredeploy-VMApp'
+$TemplateFilter = '00-azuredeploy-ALLRP'
 
-Get-ChildItem -Path $TemplatesBase | Where-Object BaseName -Match $TemplateFilter | ForEach-Object {
+Get-ChildItem -Path $TemplatesBase | Where-Object BaseName -Match $TemplateFilter | select -first 1 | ForEach-Object {
 
     $BaseName = $_.BaseName
     $FullName = $_.FullName

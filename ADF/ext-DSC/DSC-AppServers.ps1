@@ -177,6 +177,18 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
+        foreach ($hostHeader in $Node.HostHeaders)
+        {
+            $name = ($hostHeader.hostName -f $environment)
+            HostsFile $name
+            {
+                HostName  = $name
+                IPAddress = $hostHeader.ipAddress
+                ensure    = iif $hostheader.ensure $hostheader.ensure 'Present'
+            }
+        }
+
+        #-------------------------------------------------------------------
         xIEEsc DisableIEESC
         {
             UserRole  = 'Administrators'
@@ -591,7 +603,7 @@ Configuration AppServers
 
             xWebAppPool $Name
             {
-                Name                  = $AppPool.Name
+                Name                  = ($AppPool.Name -f $environment)
                 State                 = 'Started'
                 autoStart             = $true
                 DependsOn             = '[xServiceSet]ServiceSetStarted'
@@ -610,7 +622,7 @@ Configuration AppServers
 
             xWebsite $Name
             {
-                Name            = $WebSite.Name
+                Name            = ($WebSite.Name -f $environment)
                 ApplicationPool = $WebSite.ApplicationPool
                 PhysicalPath    = $Website.PhysicalPath
                 State           = 'Started'
@@ -622,9 +634,9 @@ Configuration AppServers
                         Protocol              = $binding.Protocol
                         Port                  = $binding.Port
                         IPAddress             = $binding.IpAddress
-                        HostName              = $binding.HostHeader
+                        HostName              = ($binding.HostHeader -f $environment)
                         CertificateThumbprint = $ThumbPrint
-                        CertificateStoreName  = 'MY'   
+                        CertificateStoreName  = 'MY'
                     }
                 }
             }

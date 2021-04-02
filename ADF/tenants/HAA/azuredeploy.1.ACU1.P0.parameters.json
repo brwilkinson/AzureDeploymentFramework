@@ -440,6 +440,11 @@
             ]
           }
         ],
+        "azRelayInfo": [
+          {
+            "Name": "CS01"
+          }
+        ],
         "VNGWInfo": [
           {
             "Name": "VNGW01",

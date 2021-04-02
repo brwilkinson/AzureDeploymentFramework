@@ -62,7 +62,7 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    "Deploymentnsg": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-','-',parameters('Global').AppName,'-')]",
+    "Deploymentnsg": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-')]",
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
@@ -383,7 +383,7 @@
       "condition": "[equals(parameters('Stage').ERGW,1)]",
       "name": "[concat('dp', variables('Deployment'), 'ERGW')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-01-01",
+      "apiVersion": "2021-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]",
         "[concat('dp', variables('Deployment'), '-OMS')]"
@@ -640,7 +640,7 @@
       "condition": "[equals(parameters('Stage').InitialDOP,1)]",
       "name": "InitialDOP",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-01-01",
+      "apiVersion": "2021-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
         "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
@@ -770,7 +770,7 @@
       "condition": "[equals(parameters('Stage').WAFPOLICY,1)]",
       "name": "[concat('dp', variables('Deployment'), '-WAFPOLICY')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-01-01",
+      "apiVersion": "2021-01-01",
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-VNET')]"
       ],

@@ -73,20 +73,38 @@
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],int(parameters('DeploymentID')))))]",
     "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
     "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
-    "LogicInfo": "[parameters('DeploymentInfo').LogicInfo]",
+
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
-    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]"
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+
+    "azRelayInfo": "[if(contains(parameters('DeploymentInfo'),'azRelayInfo'),parameters('DeploymentInfo').azRelayInfo,createArray())]",
+    "copy": [
+      {
+        "name": "azRelay",
+        "count": "[length(variables('azRelayInfo'))]",
+        "input": {
+          "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').frontDoorInfo[copyIndex('azRelay')].Name)
+                        )]"
+        }
+      }
+    ]
 
   },
   "resources": [
     {
-      "name": "[concat(variables('Deployment'), '-', variables('LogicInfo')[copyIndex(0)].Name)]",
+      "name": "[concat(variables('Deployment'), '-', variables('azRelayInfo')[copyIndex(0)].Name)]",
       "type": "Microsoft.Relay/namespaces",
       "apiVersion": "2018-01-01-preview",
       "location": "[resourceGroup().location]",
       "sku": {
         "name": "Standard",
         "tier": "Standard"
+      },
+      "copy":{
+        "name": "relayCopy",
+        "count": "[length(variables('azRelay'))]"
       }
     }
   ]

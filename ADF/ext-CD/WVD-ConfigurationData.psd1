@@ -10,7 +10,7 @@
             PSDscAllowDomainUser        = $true
 
             # IncludesAllSubfeatures
-            WindowsFeaturePresent       = @('RDS-RD-Server')
+            WindowsFeaturePresent       = @('Web-Server')
 
             DirectoryPresent            = @(
                 'F:\Source'

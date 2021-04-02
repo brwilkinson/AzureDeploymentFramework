@@ -437,7 +437,7 @@ Function global:Start-AzDeploy
         Write-Warning $_.Value
     }
 
-    $TemplateArgs.getenumerator() | ForEach-Object {
+    $TemplateArgs.getenumerator() | where Key -ne 'queryString' | ForEach-Object {
         Write-Verbose $_.Key -Verbose
         Write-Warning $_.Value
     }

@@ -67,8 +67,7 @@
     },
     "variables": {
         "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-
-        //  Moved to tenants/<tenantname>/Global-ConfigVM.json
+        "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
         "OSType": "[json(parameters('Global').OSType)]",
         "WadCfg": "[json(parameters('Global').WadCfg)]",
         "ladCfg": "[json(parameters('Global').ladCfg)]",
@@ -84,7 +83,7 @@
         },
         "DeploymentName": "[deployment().name]",
         "AppServers": "[parameters('DeploymentInfo').AppServersVMSS]",
-        "AppServersSF": "[parameters('DeploymentInfo').AppServersSF]",
+        // "AppServersSF": "[parameters('DeploymentInfo').AppServersSF]",
         "subscriptionId": "[subscription().subscriptionId]",
         "resourceGroupName": "[resourceGroup().name]",
         "storageAccountType": "[if(equals(parameters('Environment'),'P'), 'Premium_LRS', 'Standard_LRS')]",
@@ -100,6 +99,12 @@
         "saaccountiddiag": "[resourceid('Microsoft.Storage/storageAccounts/',variables('SADiagName'))]",
         "saaccountidglobalsource": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',parameters('Global').HubRGName,'/providers/Microsoft.Storage/storageAccounts/', parameters('Global').SAName)]",
         "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
+        "DSCConfigLookup": {
+            "AppServers": "AppServers",
+            "InitialDOP": "AppServers",
+            "WVDServers": "AppServers",
+            "VMAppSS": "AppServers"
+        },
         "copy": [
             {
                 "name": "VM",
@@ -107,6 +112,7 @@
                 "input": {
                     "name": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName]",
                     "Extensions": "[if(contains(variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType],'RoleExtensions'),union(parameters('Extensions'),variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType].RoleExtensions),parameters('Extensions'))]",
+                    "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].DDRole],json('null'))]",
                     "NodeType": "[toLower(concat('ATM',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
                     "vmHostName": "[toLower(concat('ATM',parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
                     "vmName": "[concat('AZE2-',parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName)]",
@@ -150,48 +156,52 @@
                 "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperator'))]": {
                 },
                 "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+                },
+                "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
                 }
             },
             "Default": {
                 "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
                 },
                 "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+                },
+                "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
                 }
             }
         }
     },
     "resources": [
         {
-            "name": "[variables('SAAppDataName')]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "2018-07-01",
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
-            },
+            "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
             "dependsOn": [
             ],
-            "kind": "StorageV2",
+            "copy": {
+                "name": "vmdiskLoop",
+                "count": "[length( variables('AppServers') )]"
+            },
             "properties": {
-                "networkAcls": {
-                    "bypass": "AzureServices",
-                    "virtualNetworkRules": [
-                    ],
-                    "ipRules": [
-                    ],
-                    "defaultAction": "Allow"
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/disks.json', parameters('global')._artifactsLocationSasToken)]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "supportsHttpsTrafficOnly": true,
-                "encryption": {
-                    "keySource": "Microsoft.Storage",
-                    "services": {
-                        "blob": {
-                            "enabled": true
-                        },
-                        "file": {
-                            "enabled": true
-                        }
+                "parameters": {
+                    "Deployment": {
+                        "value": "[variables('Deployment')]"
+                    },
+                    "DeploymentID": {
+                        "value": "[parameters('DeploymentID')]"
+                    },
+                    "VMName": {
+                        "value": "[variables('AppServers')[copyIndex(0)].VMName]"
+                    },
+                    "DATASS": {
+                        "value": "[if(contains(variables('DataDiskInfo')[variables('AppServers')[copyIndex(0)].DDRole],'DATASS'),variables('DataDiskInfo')[variables('AppServers')[copyIndex(0)].DDRole].DATASS,json('{\"1\":1}'))]"
+                    },
+                    "Global": {
+                        "value": "[parameters('Global')]"
                     }
                 }
             }
@@ -199,7 +209,7 @@
         {
             "type": "Microsoft.Compute/virtualMachineScaleSets",
             "location": "[resourceGroup().location]",
-            "apiVersion": "2019-03-01",
+            "apiVersion": "2020-12-01",
             "identity": {
                 "type": "SystemAssigned, UserAssigned",
                 "userAssignedIdentities": "[variables('userAssignedIdentities')['Cluster']]"
@@ -261,7 +271,12 @@
                 "singlePlacementGroup": true,
                 "upgradePolicy": {
                     "mode": "Automatic",
-                    "automaticOSUpgrade": false
+                    // "rollingUpgradePolicy": {
+
+                    // },
+                    "automaticOSUpgradePolicy": {
+                        "enableAutomaticOSUpgrade": false
+                    }
                 },
                 "virtualMachineProfile": {
                     "osProfile": {
@@ -282,11 +297,13 @@
                                 "storageAccountType": "[variables('StorageAccountType')]"
                             }
                         },
-                        "imageReference": {
-                            "publisher": "[variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].Publisher]",
-                            "offer": "[variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].offer]",
-                            "sku": "[variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].sku]",
-                            "version": "latest"
+                        "dataDisks": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)),'2018-05-01').outputs.DATADisks.value]",
+                        "imageReference": "[variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].imageReference]"
+                    },
+                    "diagnosticsProfile": {
+                        "bootDiagnostics": {
+                            "enabled": true,
+                            "storageUri": "[concat('http://', variables('SADiagName'), '.blob.core.windows.net')]"
                         }
                     },
                     "networkProfile": {
@@ -343,42 +360,42 @@
                                     "typeHandlerVersion": "1.3",
                                     "autoUpgradeMinorVersion": true,
                                     "settings": {
-                                        "Name": "[parameters('Global').DomainName]",
+                                        "Name": "[parameters('Global').ADDomainName]",
                                         "OUPath": "[if(contains(variables('AppServers')[copyIndex(0)],'OUPath'),variables('AppServers')[copyIndex(0)].OUPath,'')]",
-                                        "User": "[concat(parameters('Global').vmAdminUserName,'@',parameters('Global').DomainName)]",
+                                        "User": "[concat(parameters('Global').vmAdminUserName,'@',parameters('Global').ADDomainName)]",
                                         "Restart": "true",
                                         "Options": 3
                                     },
                                     "protectedSettings": {
-                                        "Password": "[concat(reference(resourceId(parameters('global').HubRGName,'Microsoft.KeyVault/vaults', parameters('global').KVNAME),'2018-02-14').vaultUri, 'secrets/localadmin')]"
+                                        "Password": "[parameters('vmAdminPassword')]"
                                     }
                                 }
                             },
-                            {
-                                "name": "[concat(variables('AppServers')[copyIndex(0)].VMName,'-ServiceFabricNode')]",
-                                "properties": {
-                                    "publisher": "Microsoft.Azure.ServiceFabric",
-                                    "type": "ServiceFabricNode",
-                                    "typeHandlerVersion": "1.0",
-                                    "autoUpgradeMinorVersion": true,
-                                    "protectedSettings": {
-                                        "StorageAccountKey1": "[listKeys(variables('saaccountiddiag'), '2016-01-01').keys[0].value]",
-                                        "StorageAccountKey2": "[listKeys(variables('saaccountiddiag'), '2016-01-01').keys[1].value]"
-                                    },
-                                    "settings": {
-                                        "clusterEndpoint": "[reference(concat(variables('Deployment'), '-sf', variables('AppServers')[copyIndex(0)].SFName)).clusterEndpoint]",
-                                        "nodeTypeRef": "[variables('VM')[copyIndex(0)].NodeType]",
-                                        "dataPath": "D:\\\\SvcFab",
-                                        "durabilityLevel": "[variables('AppServers')[copyIndex(0)].durabilityLevel]",
-                                        "enableParallelJobs": true,
-                                        "nicPrefixOverride": "[if(equals(variables('AppServers')[copyIndex(0)].Subnet,'MT02'),variables('networkIdUpper'),variables('networkId'))]",
-                                        "certificate": {
-                                            "Thumbprint": "[parameters('Global').certificateThumbprint]",
-                                            "x509StoreName": "My"
-                                        }
-                                    }
-                                }
-                            },
+                            // {
+                            //     "name": "[concat(variables('AppServers')[copyIndex(0)].VMName,'-ServiceFabricNode')]",
+                            //     "properties": {
+                            //         "publisher": "Microsoft.Azure.ServiceFabric",
+                            //         "type": "ServiceFabricNode",
+                            //         "typeHandlerVersion": "1.0",
+                            //         "autoUpgradeMinorVersion": true,
+                            //         "protectedSettings": {
+                            //             "StorageAccountKey1": "[listKeys(variables('saaccountiddiag'), '2016-01-01').keys[0].value]",
+                            //             "StorageAccountKey2": "[listKeys(variables('saaccountiddiag'), '2016-01-01').keys[1].value]"
+                            //         },
+                            //         "settings": {
+                            //             "clusterEndpoint": "[reference(concat(variables('Deployment'), '-sf', variables('AppServers')[copyIndex(0)].SFName)).clusterEndpoint]",
+                            //             "nodeTypeRef": "[variables('VM')[copyIndex(0)].NodeType]",
+                            //             "dataPath": "D:\\\\SvcFab",
+                            //             "durabilityLevel": "[variables('AppServers')[copyIndex(0)].durabilityLevel]",
+                            //             "enableParallelJobs": true,
+                            //             "nicPrefixOverride": "[if(equals(variables('AppServers')[copyIndex(0)].Subnet,'MT02'),variables('networkIdUpper'),variables('networkId'))]",
+                            //             "certificate": {
+                            //                 "Thumbprint": "[parameters('Global').certificateThumbprint]",
+                            //                 "x509StoreName": "My"
+                            //             }
+                            //         }
+                            //     }
+                            // },
                             {
                                 "name": "[concat(variables('AppServers')[copyIndex(0)].VMName,'-VMDiagnosticsVmSS')]",
                                 "properties": {
@@ -398,144 +415,191 @@
                                         "storageAccountEndPoint": "https://core.windows.net/"
                                     }
                                 }
-                            }
-                        ]
-                    }
-                }
-            }
-        },
-        {
-            "condition": "[and(equals(parameters('Extensions').DSC,1),equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'))]",
-            "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-            "name": "[concat(variables('Deployment'),'-ss', variables('AppServers')[copyIndex(0)].VMName, '/Microsoft.Powershell.DSC')]",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "2018-04-01",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachineScaleSets/', concat(variables('Deployment'),'-ss', variables('AppServers')[copyIndex(0)].VMName))]",
-                "[concat('Microsoft.Resources/deployments/','nested-roleAssignmentsGlobal',variables('AppServers')[copyIndex(0)].VMName)]"
-            ],
-            "copy": {
-                "name": "vmssLoop",
-                "count": "[length(variables('AppServers'))]"
-            },
-            "properties": {
-                "publisher": "Microsoft.Powershell",
-                "type": "DSC",
-                "typeHandlerVersion": "2.24",
-                "autoUpgradeMinorVersion": true,
-                "forceUpdateTag": "[parameters('deploymentTime')]",
-                "settings": {
-                    "wmfVersion": "latest",
-                    "configuration": {
-                        "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-', variables('DeploymentName'),'.zip')]",
-                        "script": "[concat('DSC-',variables('DeploymentName'),'.ps1')]",
-                        "function": "[variables('DeploymentName')]"
-                    },
-                    "configurationArguments": {
-                        "DomainName": "[parameters('Global').DomainName]",
-                        "Thumbprint": "[parameters('Global').certificateThumbprint]",
-                        "storageAccountId": "[variables('saaccountidglobalsource')]",
-                        "deployment": "[replace(variables('Deployment'),'-','')]",
-                        "networkid": "[concat(variables('networkId'),'.')]",
-                        "appInfo": "[if(contains(variables('AppServers')[copyIndex(0)],'AppInfo'),string(variables('AppServers')[copyIndex(0)].AppInfo),'')]"
-                    },
-                    "configurationData": {
-                        "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',variables('AppServers')[copyIndex(0)].Role,'-ConfigurationData.psd1')]"
-                    }
-                },
-                "protectedSettings": {
-                    "configurationArguments": {
-                        "AdminCreds": {
-                            "UserName": "[parameters('Global').vmAdminUserName]",
-                            "Password": "[concat(reference(resourceId(parameters('global').HubRGName,'Microsoft.KeyVault/vaults', parameters('global').KVNAME),'2018-02-14').vaultUri, 'secrets/localadmin')]"
-                        }
-                    },
-                    "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
-                    "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
-                }
-            }
-        },
-        {
-            "type": "Microsoft.ServiceFabric/clusters",
-            "name": "[concat(variables('Deployment'), '-sf', variables('AppServersSF')[copyIndex(0)].SFName)]",
-            "apiVersion": "2018-02-01",
-            "location": "[resourceGroup().location]",
-            "copy": {
-                "name": "sfLoop",
-                "count": "[length(variables('AppServersSF'))]"
-            },
-            "dependsOn": [
-            ],
-            "scale": null,
-            "properties": {
-                "vmImage": "Windows",
-                "reliabilityLevel": "[variables('AppServersSF')[copyIndex(0)].reliabilitylevel]",
-                "upgradeMode": "Automatic",
-                "addonFeatures": [
-                    "DnsService",
-                    "RepairManager"
-                ],
-                "managementEndpoint": "[toLower( concat('https://',if(equals(variables('AppServersSF')[copyIndex(0)].Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',variables('AppServersSF')[copyIndex(0)].LBFEIP,':19080'))]",
-                "certificate": {
-                    "thumbprint": "[parameters('Global').certificateThumbprint]",
-                    "x509StoreName": "My"
-                },
-                "clientCertificateThumbprints": [
-                    {
-                        "isAdmin": true,
-                        "certificateThumbprint": "[parameters('Global').certificateThumbprint]"
-                    }
-                ],
-                "clientCertificateCommonNames": [
-                ],
-                // "reverseProxyCertificate": {
-                //     "thumbprint": "[parameters('Global').certificateThumbprint]",
-                //     "x509StoreName": "My"
-                // },
-                "azureActiveDirectory": "[if(equals(variables('VM')[copyIndex(0)].Extensions.VMSSAzureADEnabled,1) ,variables('azureActiveDirectory'),json('null'))]",
-                "fabricSettings": [
-                    {
-                        "name": "Security",
-                        "parameters": [
+                            },
                             {
-                                "name": "ClusterProtectionLevel",
-                                "value": "EncryptAndSign"
+                                "name": "DependencyAgent",
+                                "properties": {
+                                    "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
+                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'DependencyAgentWindows','DependencyAgentLinux')]",
+                                    "typeHandlerVersion": "9.5",
+                                    "autoUpgradeMinorVersion": true
+                                }
+                            },
+                            // https://docs.microsoft.com/en-us/azure/azure-monitor/insights/vminsights-health-enable?tabs=powershell
+                            {
+                                "name": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'AzureMonitorWindowsAgent','AzureMonitorLinuxAgent')]",
+                                "properties": {
+                                    "autoUpgradeMinorVersion": true,
+                                    "publisher": "Microsoft.Azure.Monitor",
+                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'AzureMonitorWindowsAgent','AzureMonitorLinuxAgent')]",
+                                    "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.5')]"
+                                }
+                            },
+                            {
+                                "name": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'GuestHealthWindowsAgent','GuestHealthLinuxAgent')]",
+                                "properties": {
+                                    "autoUpgradeMinorVersion": true,
+                                    "publisher": "Microsoft.Azure.Monitor.VirtualMachines.GuestHealth",
+                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'GuestHealthWindowsAgent','GuestHealthLinuxAgent')]",
+                                    "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.0')]"
+                                }
+                            },
+                            {
+                                "name": "Microsoft.Powershell.DSC",
+                                "properties": {
+                                    "provisionAfterExtensions": [
+                                        "joindomain"
+                                    ],
+                                    "publisher": "Microsoft.Powershell",
+                                    "type": "DSC",
+                                    "typeHandlerVersion": "2.24",
+                                    "autoUpgradeMinorVersion": true,
+                                    "forceUpdateTag": "[parameters('deploymentTime')]",
+                                    "settings": {
+                                        "wmfVersion": "latest",
+                                        "configuration": {
+                                            "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-',if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),
+                                                                                        variables('AppServers')[copyIndex(0)].DSConfig,
+                                                                                        if(
+                                                                                            contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
+                                                                                                    'AppServers'
+                                                                                        )),
+                                                                                        '.zip')]",
+                                            "script": "[concat('DSC-',if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),
+                                                                                        variables('AppServers')[copyIndex(0)].DSConfig,
+                                                                                        if(
+                                                                                        contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
+                                                                                                    'AppServers'
+                                                                                        )),'.ps1')]",
+                                            "function": "[if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),
+                                                                                        variables('AppServers')[copyIndex(0)].DSConfig,
+                                                                                        if(
+                                                                                        contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
+                                                                                                    'AppServers'
+                                                                                        ))]"
+                                        },
+                                        "configurationArguments": {
+                                            "DomainName": "[parameters('Global').DomainName]",
+                                            "Thumbprint": "[parameters('Global').certificateThumbprint]",
+                                            "storageAccountId": "[variables('saaccountidglobalsource')]",
+                                            "deployment": "[replace(variables('Deployment'),'-','')]",
+                                            "networkid": "[concat(variables('networkId'),'.')]",
+                                            "appInfo": "[if(contains(variables('AppServers')[copyIndex(0)],'AppInfo'),string(variables('AppServers')[copyIndex(0)].AppInfo),'')]",
+                                            "DNSInfo": "[if(and(equals(variables('AppServers')[copyIndex(0)].VMName,'JMP01'),equals(parameters('Stage').DNSLookup,1)),string(reference(resourceId('Microsoft.Resources/deployments','DNSLookup'),'2017-05-10','Full').properties.outputs.dns.value),'')]",
+                                            "DataDiskInfo": "[string(variables('VM')[copyIndex(0)].DataDisk)]",
+                                            "clientIDLocal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperator'),'2018-11-30').ClientId)]",
+                                            "clientIDGlobal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountFileContributor'),'2018-11-30').ClientId)]"
+
+                                        },
+                                        "configurationData": {
+                                            "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',variables('AppServers')[copyIndex(0)].Role,'-ConfigurationData.psd1')]"
+                                        }
+                                    },
+                                    "protectedSettings": {
+                                        "configurationArguments": {
+                                            "AdminCreds": {
+                                                "UserName": "[parameters('Global').vmAdminUserName]",
+                                                "Password": "[parameters('vmAdminPassword')]"
+                                            },
+                                            "sshPublic": {
+                                                "UserName": "pat",
+                                                "Password": "[parameters('sshPublic')]"
+                                            }
+                                        },
+                                        "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
+                                        "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
+                                    }
+                                }
                             }
                         ]
                     }
-                ],
-                "diagnosticsStorageAccountConfig": {
-                    "storageAccountName": "[variables('SADiagName')]",
-                    "protectedAccountKeyName": "StorageAccountKey1",
-                    "blobEndpoint": "[concat('https', '://', variables('SADiagName'), '.blob.core.windows.net', '/')]",
-                    "queueEndpoint": "[concat('https', '://', variables('SADiagName'), '.queue.core.windows.net', '/')]",
-                    "tableEndpoint": "[concat('https', '://', variables('SADiagName'), '.table.core.windows.net', '/')]"
-                },
-                "copy": [
-                    {
-                        "name": "nodeTypes",
-                        "count": "[length(parameters('DeploymentInfo').AppServersVMSS)]",
-                        "input": {
-                            "name": "[variables('VM')[copyIndex('nodeTypes')].NodeType]",
-                            "vmInstanceCount": "[variables('VM')[copyIndex('nodeTypes')].Capacity]",
-                            "clientConnectionEndpointPort": 19000,
-                            "httpGatewayEndpointPort": 19080,
-                            "applicationPorts": {
-                                "startPort": 20000,
-                                "endPort": 30000
-                            },
-                            "ephemeralPorts": {
-                                "startPort": 49152,
-                                "endPort": 65534
-                            },
-                            "isPrimary": "[variables('VM')[copyIndex('nodeTypes')].Primary]",
-                            "reverseProxyEndpointPort": 19081,
-                            "durabilityLevel": "[variables('VM')[copyIndex('nodeTypes')].durabilityLevel]",
-                            "placementProperties": "[variables('VM')[copyIndex('nodeTypes')].placementProperties]"
-                        }
-                    }
-                ]
+                }
             }
         }
+        // {
+        //     "type": "Microsoft.ServiceFabric/clusters",
+        //     "name": "[concat(variables('Deployment'), '-sf', variables('AppServersSF')[copyIndex(0)].SFName)]",
+        //     "apiVersion": "2018-02-01",
+        //     "location": "[resourceGroup().location]",
+        //     "copy": {
+        //         "name": "sfLoop",
+        //         "count": "[length(variables('AppServersSF'))]"
+        //     },
+        //     "dependsOn": [
+        //     ],
+        //     "scale": null,
+        //     "properties": {
+        //         "vmImage": "Windows",
+        //         "reliabilityLevel": "[variables('AppServersSF')[copyIndex(0)].reliabilitylevel]",
+        //         "upgradeMode": "Automatic",
+        //         "addonFeatures": [
+        //             "DnsService",
+        //             "RepairManager"
+        //         ],
+        //         "managementEndpoint": "[toLower( concat('https://',if(equals(variables('AppServersSF')[copyIndex(0)].Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',variables('AppServersSF')[copyIndex(0)].LBFEIP,':19080'))]",
+        //         "certificate": {
+        //             "thumbprint": "[parameters('Global').certificateThumbprint]",
+        //             "x509StoreName": "My"
+        //         },
+        //         "clientCertificateThumbprints": [
+        //             {
+        //                 "isAdmin": true,
+        //                 "certificateThumbprint": "[parameters('Global').certificateThumbprint]"
+        //             }
+        //         ],
+        //         "clientCertificateCommonNames": [
+        //         ],
+        //         // "reverseProxyCertificate": {
+        //         //     "thumbprint": "[parameters('Global').certificateThumbprint]",
+        //         //     "x509StoreName": "My"
+        //         // },
+        //         "azureActiveDirectory": "[if(equals(variables('VM')[copyIndex(0)].Extensions.VMSSAzureADEnabled,1) ,variables('azureActiveDirectory'),json('null'))]",
+        //         "fabricSettings": [
+        //             {
+        //                 "name": "Security",
+        //                 "parameters": [
+        //                     {
+        //                         "name": "ClusterProtectionLevel",
+        //                         "value": "EncryptAndSign"
+        //                     }
+        //                 ]
+        //             }
+        //         ],
+        //         "diagnosticsStorageAccountConfig": {
+        //             "storageAccountName": "[variables('SADiagName')]",
+        //             "protectedAccountKeyName": "StorageAccountKey1",
+        //             "blobEndpoint": "[concat('https', '://', variables('SADiagName'), '.blob.core.windows.net', '/')]",
+        //             "queueEndpoint": "[concat('https', '://', variables('SADiagName'), '.queue.core.windows.net', '/')]",
+        //             "tableEndpoint": "[concat('https', '://', variables('SADiagName'), '.table.core.windows.net', '/')]"
+        //         },
+        //         "copy": [
+        //             {
+        //                 "name": "nodeTypes",
+        //                 "count": "[length(parameters('DeploymentInfo').AppServersVMSS)]",
+        //                 "input": {
+        //                     "name": "[variables('VM')[copyIndex('nodeTypes')].NodeType]",
+        //                     "vmInstanceCount": "[variables('VM')[copyIndex('nodeTypes')].Capacity]",
+        //                     "clientConnectionEndpointPort": 19000,
+        //                     "httpGatewayEndpointPort": 19080,
+        //                     "applicationPorts": {
+        //                         "startPort": 20000,
+        //                         "endPort": 30000
+        //                     },
+        //                     "ephemeralPorts": {
+        //                         "startPort": 49152,
+        //                         "endPort": 65534
+        //                     },
+        //                     "isPrimary": "[variables('VM')[copyIndex('nodeTypes')].Primary]",
+        //                     "reverseProxyEndpointPort": 19081,
+        //                     "durabilityLevel": "[variables('VM')[copyIndex('nodeTypes')].durabilityLevel]",
+        //                     "placementProperties": "[variables('VM')[copyIndex('nodeTypes')].placementProperties]"
+        //                 }
+        //             }
+        //         ]
+        //     }
+        // }
     ]
 }

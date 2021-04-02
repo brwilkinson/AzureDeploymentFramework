@@ -204,118 +204,118 @@
                 }
             }
         },
-        // {
-        //     //  Assign User Assigned Identity RBAC
-        //     "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
-        //     "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsUAI-', variables('Enviro'),'-',copyIndex(1))]",
-        //     "type": "Microsoft.Resources/deployments",
-        //     "apiVersion": "2021-01-01",
-        //     "resourceGroup": "[variables('RGName')]",
-        //     "copy": {
-        //         "name": "UAILoop",
-        //         "count": "[length( variables('UAIInfo') )]"
-        //     },
-        //     "dependsOn": [
-        //     ],
-        //     "properties": {
-        //         "mode": "Incremental",
-        //         "templateLink": {
-        //             "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/roleAssignmentsALL.json', parameters('global')._artifactsLocationSasToken)]",
-        //             "contentVersion": "1.0.0.0"
-        //         },
-        //         "parameters": {
-        //             "Deployment": {
-        //                 "value": "[variables('Deployment')]"
-        //             },
-        //             "Prefix": {
-        //                 "value": "[parameters('Prefix')]"
-        //             },
-        //             "RGName": {
-        //                 "value": "[variables('RGName')]"
-        //             },
-        //             "Enviro": {
-        //                 "value": "[variables('Enviro')]"
-        //             },
-        //             "Global": {
-        //                 "value": "[parameters('Global')]"
-        //             },
-        //             "RolesLookup": {
-        //                 "value": "[variables('RolesLookup')]"
-        //             },
-        //             "RolesGroupsLookup": {
-        //                 "value": "[variables('RolesGroupsLookup')]"
-        //             },
-        //             "roleInfo": {
-        //                 "value": "[variables('UAIInfo')[copyIndex(0)]]"
-        //             },
-        //             "providerPath": {
-        //                 "value": "Microsoft.ManagedIdentity/userAssignedIdentities"
-        //             },
-        //             "namePrefix": {
-        //                 "value": "-uai"
-        //             },
-        //             "providerAPI": {
-        //                 "value": "2018-11-30"
-        //             }
-        //         }
-        //     }
-        // },
-        // {
-        //     //  Assign Service Principal RBAC
-        //     "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
-        //     "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsSP-', variables('Enviro'),'-',copyIndex(1))]",
-        //     "type": "Microsoft.Resources/deployments",
-        //     "apiVersion": "2021-01-01",
-        //     "resourceGroup": "[variables('RGName')]",
-        //     "copy": {
-        //         "name": "SPLoop",
-        //         "count": "[length( variables('SPInfo') )]"
-        //     },
-        //     "dependsOn": [
-        //     ],
-        //     "properties": {
-        //         "mode": "Incremental",
-        //         "templateLink": {
-        //             "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/roleAssignmentsALL.json', parameters('global')._artifactsLocationSasToken)]",
-        //             "contentVersion": "1.0.0.0"
-        //         },
-        //         "parameters": {
-        //             "Deployment": {
-        //                 "value": "[variables('Deployment')]"
-        //             },
-        //             "Prefix": {
-        //                 "value": "[parameters('Prefix')]"
-        //             },
-        //             "RGName": {
-        //                 "value": "[variables('RGName')]"
-        //             },
-        //             "Enviro": {
-        //                 "value": "[variables('Enviro')]"
-        //             },
-        //             "Global": {
-        //                 "value": "[parameters('Global')]"
-        //             },
-        //             "RolesLookup": {
-        //                 "value": "[variables('RolesLookup')]"
-        //             },
-        //             "RolesGroupsLookup": {
-        //                 "value": "[variables('RolesGroupsLookup')]"
-        //             },
-        //             "roleInfo": {
-        //                 "value": "[variables('SP')[copyIndex(0)]]"
-        //             },
-        //             "providerPath": {
-        //                 "value": ""
-        //             },
-        //             "namePrefix": {
-        //                 "value": ""
-        //             },
-        //             "providerAPI": {
-        //                 "value": ""
-        //             }
-        //         }
-        //     }
-        // }
+        {
+            //  Assign User Assigned Identity RBAC
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsUAI-', variables('Enviro'),'-',copyIndex(1))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-01-01",
+            "resourceGroup": "[variables('RGName')]",
+            "copy": {
+                "name": "UAILoop",
+                "count": "[length( variables('UAIInfo') )]"
+            },
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/roleAssignmentsALL.json', parameters('global')._artifactsLocationSasToken)]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "Deployment": {
+                        "value": "[variables('Deployment')]"
+                    },
+                    "Prefix": {
+                        "value": "[parameters('Prefix')]"
+                    },
+                    "RGName": {
+                        "value": "[variables('RGName')]"
+                    },
+                    "Enviro": {
+                        "value": "[variables('Enviro')]"
+                    },
+                    "Global": {
+                        "value": "[parameters('Global')]"
+                    },
+                    "RolesLookup": {
+                        "value": "[variables('RolesLookup')]"
+                    },
+                    "RolesGroupsLookup": {
+                        "value": "[variables('RolesGroupsLookup')]"
+                    },
+                    "roleInfo": {
+                        "value": "[variables('UAIInfo')[copyIndex(0)]]"
+                    },
+                    "providerPath": {
+                        "value": "Microsoft.ManagedIdentity/userAssignedIdentities"
+                    },
+                    "namePrefix": {
+                        "value": "-uai"
+                    },
+                    "providerAPI": {
+                        "value": "2018-11-30"
+                    }
+                }
+            }
+        },
+        {
+            //  Assign Service Principal RBAC
+            "condition": "[not(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0'))]",
+            "name": "[concat('dp', variables('Deployment'), '-rgroleassignmentsSP-', variables('Enviro'),'-',copyIndex(1))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-01-01",
+            "resourceGroup": "[variables('RGName')]",
+            "copy": {
+                "name": "SPLoop",
+                "count": "[length( variables('SPInfo') )]"
+            },
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/roleAssignmentsALL.json', parameters('global')._artifactsLocationSasToken)]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "Deployment": {
+                        "value": "[variables('Deployment')]"
+                    },
+                    "Prefix": {
+                        "value": "[parameters('Prefix')]"
+                    },
+                    "RGName": {
+                        "value": "[variables('RGName')]"
+                    },
+                    "Enviro": {
+                        "value": "[variables('Enviro')]"
+                    },
+                    "Global": {
+                        "value": "[parameters('Global')]"
+                    },
+                    "RolesLookup": {
+                        "value": "[variables('RolesLookup')]"
+                    },
+                    "RolesGroupsLookup": {
+                        "value": "[variables('RolesGroupsLookup')]"
+                    },
+                    "roleInfo": {
+                        "value": "[variables('SP')[copyIndex(0)]]"
+                    },
+                    "providerPath": {
+                        "value": ""
+                    },
+                    "namePrefix": {
+                        "value": ""
+                    },
+                    "providerAPI": {
+                        "value": ""
+                    }
+                }
+            }
+        }
     ],
     "outputs": {
     }

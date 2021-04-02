@@ -94,7 +94,7 @@
         {
             "name": "[concat('dp', variables('Deployment'), '-kvDeploy', variables('KVInfo')[copyIndex(0)].Name)]",
             "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-01-01",
+            "apiVersion": "2020-01-01",
             "dependsOn": [
                 "uaiLoop"
             ],

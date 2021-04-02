@@ -138,1283 +138,1282 @@
             if(
                   parameters('Global').TemplateSpec,
                   json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').OMS, parameters('_artifactsLocationSasToken'))
+                  concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').OMS, parameters('global')._artifactsLocationSasToken)
                 )
-            ]",
-          "contentVersion": "1.0.0.0"
+            ]"
         },
         "parameters": "[deployment().properties.parameters]"
       }
     },
-    {
-      "condition": "[equals(parameters('Stage').SA,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-SA')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').SA,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SA, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').RSV,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-RSV')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').RSV,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').RSV, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').NSGHUB,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-NSGHUB')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').NSGHUB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').NSGHUB, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').NSGSPOKE,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-NSGSPOKE')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').NSGSPOKE,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').NSGSPOKE, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').NetworkWatcher,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-NetworkWatcher')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').NetworkWatcher,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').NetworkWatcher, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').FlowLogs,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-FlowLogs')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-NetworkWatcher')]",
-        "[concat('dp', variables('Deployment'), '-NSGSPOKE')]",
-        "[concat('dp', variables('Deployment'), '-NSGHUB')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').FlowLogs,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').FlowLogs, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').RT,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-RT')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').RT,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').RT, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').VNET,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-VNET')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-NSGSPOKE')]",
-        "[concat('dp', variables('Deployment'), '-NSGHUB')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VNET,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VNET, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').KV,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-KV')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').KV,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').KV, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[and(contains(parameters('Stage'),'BastionHost'),equals(parameters('Stage').BastionHost,1))]",
-      "name": "[concat('dp', variables('Deployment'), '-BastionHost')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').BastionHost,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').BastionHost, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').DNSPrivateZone,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-DNSPrivateZone')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').DNSPrivateZone,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').DNSPrivateZone, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').FW,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-FW')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').FW,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').FW, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').ERGW,1)]",
-      "name": "[concat('dp', variables('Deployment'), 'ERGW')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ERGW,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ERGW, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').CosmosDB,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-CosmosDB')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').CosmosDB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').CosmosDB, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').SQLMI,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-SQLMI')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').SQLMI,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SQLMI, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').ILB,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-ILB')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ILB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ILB, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').ADPrimary,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-VNETDNSPublic')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VNetDNS,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VNetDNS, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "Deploymentnsg": {
-            "value": "[variables('Deploymentnsg')]"
-          },
-          "Deployment": {
-            "value": "[variables('Deployment')]"
-          },
-          "DeploymentID": {
-            "value": "[parameters('DeploymentID')]"
-          },
-          "Prefix": {
-            "value": "[parameters('Prefix')]"
-          },
-          "DeploymentInfo": {
-            "value": "[parameters('DeploymentInfo')]"
-          },
-          "DNSServers": {
-            "value": [
-              "[variables('DC1PrivateIPAddress')]",
-              "[variables('AzureDNS')]"
-            ]
-          },
-          "Global": {
-            "value": "[parameters('Global')]"
-          }
-        }
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').ADPrimary,1)]",
-      "name": "ADPrimary",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNETDNSPublic')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ADPrimary,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ADPrimary, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').ADPrimary,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "ADPrimary"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VNetDNS,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VNetDNS, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "Deploymentnsg": {
-            "value": "[variables('Deploymentnsg')]"
-          },
-          "Deployment": {
-            "value": "[variables('Deployment')]"
-          },
-          "DeploymentID": {
-            "value": "[parameters('DeploymentID')]"
-          },
-          "Prefix": {
-            "value": "[parameters('Prefix')]"
-          },
-          "DeploymentInfo": {
-            "value": "[parameters('DeploymentInfo')]"
-          },
-          "DNSServers": {
-            "value": [
-              "[variables('DC1PrivateIPAddress')]"
-              //"[variables('AzureDNS')]"
-              //"[variables('DC2PrivateIPAddress')]"
-            ]
-          },
-          "Global": {
-            "value": "[parameters('Global')]"
-          }
-        }
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').ADSecondary,1)]",
-      "name": "ADSecondary",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ADSecondary,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ADSecondary, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').ADSecondary,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "ADSecondary"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VNetDNS,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VNetDNS, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "Deploymentnsg": {
-            "value": "[variables('Deploymentnsg')]"
-          },
-          "Deployment": {
-            "value": "[variables('Deployment')]"
-          },
-          "DeploymentID": {
-            "value": "[parameters('DeploymentID')]"
-          },
-          "DeploymentInfo": {
-            "value": "[parameters('DeploymentInfo')]"
-          },
-          "Prefix": {
-            "value": "[parameters('Prefix')]"
-          },
-          "DNSServers": {
-            "value": [
-              "[variables('DC1PrivateIPAddress')]",
-              "[variables('DC2PrivateIPAddress')]"
-              //"[variables('AzureDNS')]"
-            ]
-          },
-          "Global": {
-            "value": "[parameters('Global')]"
-          }
-        }
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').InitialDOP,1)]",
-      "name": "InitialDOP",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-ILB')]",
-        "DNSLookup",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').InitialDOP,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').InitialDOP, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').VMApp,1)]",
-      "name": "AppServers",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-ILB')]",
-        "DNSLookup",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMApp,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VMApp, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').VMFILE,1)]",
-      "name": "VMFile",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-ILB')]",
-        "DNSLookup",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMFILE,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VMFILE, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').VMAppLinux,1)]",
-      "name": "AppServersLinux",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-ILB')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]", // wait for DNS for hostname resolution
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMAppLinux,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VMAppLinux, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').VMSQL,1)]",
-      "name": "SQLServers",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-ILB')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMSQL,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VMSQL, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').VMSS,1)]",
-      "name": "VMSS",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-ILB')]",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMSS,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').VMSS, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').WAFPOLICY,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-WAFPOLICY')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').WAFPOLICY,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').WAFPOLICY, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').WAF,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-WAF')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').WAF,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').WAF, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').DNSLookup,1)]",
-      "name": "DNSLookup",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-WAF')]",
-        "[concat('dp', variables('Deployment'), '-APIM')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').DNSLookup,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').DNSLookup, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').DASHBOARD,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-DASHBOARD')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').DASHBOARD,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').DASHBOARD, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').ServerFarm,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-ServerFarm')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ServerFarm,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').ServerFarm, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').WebSite,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-WebSite')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-ServerFarm')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').WebSite,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').WebSite, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').Function,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-Function')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-ServerFarm')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').Function,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').Function, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').MySQLDB,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-MySQLDB')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-WebSite')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').MySQLDB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').MySQLDB, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').SB,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-SB')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').SB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').SB, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').APIM,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-APIM')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').APIM,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').APIM, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
-      "condition": "[equals(parameters('Stage').AzureSQL,1)]",
-      "name": "[concat('dp', variables('Deployment'), '-AzureSQL')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNET')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "id": "[
-              if(
-                  parameters('Global').TemplateSpec,
-                  resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').AzureSQL,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
-                  json('null')
-                )
-          ]",
-          "uri": "[
-            if(
-                  parameters('Global').TemplateSpec,
-                  json('null'),
-                  concat(parameters('_artifactsLocation'), '/', variables('DeploymentInfoObject').AzureSQL, parameters('_artifactsLocationSasToken'))
-                )
-            ]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    }
+    // {
+    //   "condition": "[equals(parameters('Stage').SA,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-SA')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').SA,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').SA, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').RSV,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-RSV')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').RSV,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').RSV, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').NSGHUB,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-NSGHUB')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').NSGHUB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').NSGHUB, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').NSGSPOKE,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-NSGSPOKE')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').NSGSPOKE,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').NSGSPOKE, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').NetworkWatcher,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-NetworkWatcher')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').NetworkWatcher,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').NetworkWatcher, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').FlowLogs,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-FlowLogs')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-NetworkWatcher')]",
+    //     "[concat('dp', variables('Deployment'), '-NSGSPOKE')]",
+    //     "[concat('dp', variables('Deployment'), '-NSGHUB')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').FlowLogs,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').FlowLogs, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').RT,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-RT')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').RT,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').RT, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').VNET,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-VNET')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-NSGSPOKE')]",
+    //     "[concat('dp', variables('Deployment'), '-NSGHUB')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VNET,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VNET, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').KV,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-KV')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').KV,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').KV, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[and(contains(parameters('Stage'),'BastionHost'),equals(parameters('Stage').BastionHost,1))]",
+    //   "name": "[concat('dp', variables('Deployment'), '-BastionHost')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').BastionHost,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').BastionHost, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').DNSPrivateZone,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-DNSPrivateZone')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').DNSPrivateZone,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').DNSPrivateZone, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').FW,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-FW')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').FW,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').FW, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').ERGW,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), 'ERGW')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2020-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ERGW,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').ERGW, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').CosmosDB,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-CosmosDB')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').CosmosDB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').CosmosDB, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').SQLMI,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-SQLMI')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').SQLMI,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').SQLMI, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').ILB,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-ILB')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ILB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').ILB, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').ADPrimary,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-VNETDNSPublic')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VNetDNS,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VNetDNS, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": {
+    //       "Deploymentnsg": {
+    //         "value": "[variables('Deploymentnsg')]"
+    //       },
+    //       "Deployment": {
+    //         "value": "[variables('Deployment')]"
+    //       },
+    //       "DeploymentID": {
+    //         "value": "[parameters('DeploymentID')]"
+    //       },
+    //       "Prefix": {
+    //         "value": "[parameters('Prefix')]"
+    //       },
+    //       "DeploymentInfo": {
+    //         "value": "[parameters('DeploymentInfo')]"
+    //       },
+    //       "DNSServers": {
+    //         "value": [
+    //           "[variables('DC1PrivateIPAddress')]",
+    //           "[variables('AzureDNS')]"
+    //         ]
+    //       },
+    //       "Global": {
+    //         "value": "[parameters('Global')]"
+    //       }
+    //     }
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').ADPrimary,1)]",
+    //   "name": "ADPrimary",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSPublic')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ADPrimary,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').ADPrimary, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').ADPrimary,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "ADPrimary"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VNetDNS,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VNetDNS, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": {
+    //       "Deploymentnsg": {
+    //         "value": "[variables('Deploymentnsg')]"
+    //       },
+    //       "Deployment": {
+    //         "value": "[variables('Deployment')]"
+    //       },
+    //       "DeploymentID": {
+    //         "value": "[parameters('DeploymentID')]"
+    //       },
+    //       "Prefix": {
+    //         "value": "[parameters('Prefix')]"
+    //       },
+    //       "DeploymentInfo": {
+    //         "value": "[parameters('DeploymentInfo')]"
+    //       },
+    //       "DNSServers": {
+    //         "value": [
+    //           "[variables('DC1PrivateIPAddress')]"
+    //           //"[variables('AzureDNS')]"
+    //           //"[variables('DC2PrivateIPAddress')]"
+    //         ]
+    //       },
+    //       "Global": {
+    //         "value": "[parameters('Global')]"
+    //       }
+    //     }
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').ADSecondary,1)]",
+    //   "name": "ADSecondary",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ADSecondary,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').ADSecondary, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').ADSecondary,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "ADSecondary"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VNetDNS,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VNetDNS, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": {
+    //       "Deploymentnsg": {
+    //         "value": "[variables('Deploymentnsg')]"
+    //       },
+    //       "Deployment": {
+    //         "value": "[variables('Deployment')]"
+    //       },
+    //       "DeploymentID": {
+    //         "value": "[parameters('DeploymentID')]"
+    //       },
+    //       "DeploymentInfo": {
+    //         "value": "[parameters('DeploymentInfo')]"
+    //       },
+    //       "Prefix": {
+    //         "value": "[parameters('Prefix')]"
+    //       },
+    //       "DNSServers": {
+    //         "value": [
+    //           "[variables('DC1PrivateIPAddress')]",
+    //           "[variables('DC2PrivateIPAddress')]"
+    //           //"[variables('AzureDNS')]"
+    //         ]
+    //       },
+    //       "Global": {
+    //         "value": "[parameters('Global')]"
+    //       }
+    //     }
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').InitialDOP,1)]",
+    //   "name": "InitialDOP",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2020-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-ILB')]",
+    //     "DNSLookup",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').InitialDOP,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').InitialDOP, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').VMApp,1)]",
+    //   "name": "AppServers",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-ILB')]",
+    //     "DNSLookup",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMApp,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VMApp, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').VMFILE,1)]",
+    //   "name": "VMFile",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-ILB')]",
+    //     "DNSLookup",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMFILE,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VMFILE, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').VMAppLinux,1)]",
+    //   "name": "AppServersLinux",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-ILB')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]", // wait for DNS for hostname resolution
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMAppLinux,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VMAppLinux, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').VMSQL,1)]",
+    //   "name": "SQLServers",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+    //     "[concat('dp', variables('Deployment'), '-ILB')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMSQL,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VMSQL, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').VMSS,1)]",
+    //   "name": "VMSS",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-ILB')]",
+    //     "[concat('dp', variables('Deployment'), '-SA')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').VMSS,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').VMSS, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').WAFPOLICY,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-WAFPOLICY')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2020-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').WAFPOLICY,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').WAFPOLICY, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').WAF,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-WAF')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').WAF,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').WAF, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').DNSLookup,1)]",
+    //   "name": "DNSLookup",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-WAF')]",
+    //     "[concat('dp', variables('Deployment'), '-APIM')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').DNSLookup,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').DNSLookup, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').DASHBOARD,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-DASHBOARD')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').DASHBOARD,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').DASHBOARD, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').ServerFarm,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-ServerFarm')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ServerFarm,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').ServerFarm, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').WebSite,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-WebSite')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-ServerFarm')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').WebSite,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').WebSite, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').Function,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-Function')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-ServerFarm')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').Function,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').Function, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').MySQLDB,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-MySQLDB')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]",
+    //     "[concat('dp', variables('Deployment'), '-WebSite')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').MySQLDB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').MySQLDB, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').SB,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-SB')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').SB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').SB, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').APIM,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-APIM')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').APIM,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').APIM, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // },
+    // {
+    //   "condition": "[equals(parameters('Stage').AzureSQL,1)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-AzureSQL')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2021-01-01",
+    //   "dependsOn": [
+    //     "[concat('dp', variables('Deployment'), '-VNET')]",
+    //     "[concat('dp', variables('Deployment'), '-OMS')]"
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "id": "[
+    //           if(
+    //               parameters('Global').TemplateSpec,
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').AzureSQL,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               json('null')
+    //             )
+    //       ]",
+    //       "uri": "[
+    //         if(
+    //               parameters('Global').TemplateSpec,
+    //               json('null'),
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').AzureSQL, parameters('global')._artifactsLocationSasToken)
+    //             )
+    //         ]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": "[deployment().properties.parameters]"
+    //   }
+    // }
   ],
   "outputs": {
   }
