@@ -224,6 +224,14 @@
                 "Name": "Azure Kubernetes Service RBAC Cluster Admin"
               }
             ]
+          },
+          {
+            "Name": "BC",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              }
+            ]
           }
         ],
         "SPInfo": [
@@ -467,79 +475,31 @@
             ],
             "Probes": [
               {
-                "ProbeName": "19000",
-                "LBBEProbePort": 19000
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
               },
               {
-                "ProbeName": "19080",
-                "LBBEProbePort": 19080
-              },
-              {
-                "ProbeName": "19081",
-                "LBBEProbePort": 19081
-              },
-              {
-                "ProbeName": "8988",
-                "LBBEProbePort": 8988
-              },
-              {
-                "ProbeName": "8989",
-                "LBBEProbePort": 8989
-              },
-              {
-                "ProbeName": "8990",
-                "LBBEProbePort": 8990
+                "ProbeName": "HTTPS",
+                "LBBEProbePort": 443
               }
             ],
             "Services": [
               {
                 "LBFEName": "API",
-                "RuleName": "API-19000",
-                "LBFEPort": 19000,
-                "LBBEPort": 19000,
-                "ProbeName": 19000,
+                "RuleName": "API-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
                 "DirectReturn": false
               },
               {
                 "LBFEName": "API",
-                "RuleName": "API-19080",
-                "LBFEPort": 19080,
-                "LBBEPort": 19080,
-                "ProbeName": 19080,
+                "RuleName": "API-HTTPS",
+                "LBFEPort": 443,
+                "LBBEPort": 443,
+                "ProbeName": "HTTPS",
                 "DirectReturn": false
               },
-              {
-                "LBFEName": "API",
-                "RuleName": "API-19081",
-                "LBFEPort": 19081,
-                "LBBEPort": 19081,
-                "ProbeName": 19081,
-                "DirectReturn": false
-              },
-              {
-                "LBFEName": "API",
-                "RuleName": "API-8988",
-                "LBFEPort": 8988,
-                "LBBEPort": 8988,
-                "ProbeName": 8988,
-                "DirectReturn": false
-              },
-              {
-                "LBFEName": "API",
-                "RuleName": "API-8989",
-                "LBFEPort": 8989,
-                "LBBEPort": 8989,
-                "ProbeName": 8989,
-                "DirectReturn": false
-              },
-              {
-                "LBFEName": "API",
-                "RuleName": "API-8990",
-                "LBFEPort": 8990,
-                "LBBEPort": 8990,
-                "ProbeName": 8990,
-                "DirectReturn": false
-              }
             ]
           }
         ],

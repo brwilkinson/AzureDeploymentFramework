@@ -16,10 +16,12 @@
             # IncludesAllSubfeatures
             WindowsFeaturePresent       = 'Web-Server', 'RSAT'
 
+            # given this is for a lab and load test, just always pull down the latest App config
+            DSCConfigurationMode        = 'ApplyAndAutoCorrect'
 
             DisableIEESC                = $True
 
-            PowerShellModulesPresent    = 'Az.Resources','Az.ManagedServiceIdentity','Az.Storage','Az.Compute'
+            PowerShellModulesPresent    = 'Az.Resources', 'Az.ManagedServiceIdentity', 'Az.Storage', 'Az.Compute'
 
             # PowerShellModulesPresentCustom2 = @(
             #     @{Name = 'Az'; RequiredVersion = '5.3.0' }

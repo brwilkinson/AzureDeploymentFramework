@@ -6,9 +6,9 @@
 # Defines the values for the resource's Ensure property.
 enum Ensure
 {
-    # The resource must be absent.
+    # The resource must be absent.    
     Absent
-    # The resource must be present.
+    # The resource must be present.    
     Present
 }
 
@@ -93,11 +93,12 @@ class AppReleaseDSC
         
         # Always copy source ComponentBuild.json to local via sync from master on Blob
         $BuildFile = $this.SourcePath + '/' + (Split-Path -Path $this.BuildFileName -Leaf)
-        & $azcopy sync $BuildFile $this.BuildFileName
+        & $azcopy copy $BuildFile $this.BuildFileName
 
         # Read the build file to determine which version of the component should be in the current environment
         $RequiredBuild = Get-Content -Path $this.BuildFileName | ConvertFrom-Json |
-            ForEach-Object ComponentName | ForEach-Object $this.ComponentName | ForEach-Object $this.EnvironmentName
+            ForEach-Object ComponentName | ForEach-Object $this.ComponentName | 
+            ForEach-Object $this.EnvironmentName | ForEach-Object DefaultBuild
         
         # Check if the correct build is already installed
         $CurrentBuildFile = Join-Path -Path $this.DestinationPath -ChildPath (Join-Path -Path $this.ComponentName -ChildPath $this.ValidateFileName)
@@ -143,7 +144,7 @@ class AppReleaseDSC
                 Write-Verbose -Message "Source has ------> [$($SourceFilesCount)] files"
                 Write-Verbose -Message "Destination has -> [$($DestinationFilesCount)] files"
         
-                return ($SourceFilesCount -le $DestinationFilesCount -and ($SourceFilesBytes) -le ($DestinationFilesBytes))
+                return ( $SourceFilesCount -le ( $DestinationFilesCount -1 ) )   # don't check file sizes for now: -and ($SourceFilesBytes) -le ($DestinationFilesBytes)
             }
         }
     }
@@ -173,13 +174,14 @@ class AppReleaseDSC
         # Read source information via list command
         # Read the build file to determine which version of the component should be in the current environment
         $RequiredBuild = Get-Content -Path $this.BuildFileName | ConvertFrom-Json |
-            ForEach-Object ComponentName | ForEach-Object $this.ComponentName | ForEach-Object $this.EnvironmentName
+            ForEach-Object ComponentName | ForEach-Object $this.ComponentName |
+            ForEach-Object $this.EnvironmentName | ForEach-Object DefaultBuild
         
         $DesiredBuildFiles = $this.SourcePath + '/' + $this.ComponentName + '/' + $RequiredBuild
         $CurrentBuildFilesDir = Join-Path -Path $this.DestinationPath -ChildPath $this.ComponentName
 
         & $azcopy login --identity --identity-client-id $this.ManagedIdentityClientID
-        & $azcopy sync $DesiredBuildFiles $CurrentBuildFilesDir --recursive=true
+        & $azcopy sync $DesiredBuildFiles $CurrentBuildFilesDir --recursive=true --delete-destination true
 
         # Update the ValidateFile with the latest build
         $CurrentBuildFile = Join-Path -Path $this.DestinationPath -ChildPath (Join-Path -Path $this.ComponentName -ChildPath $this.ValidateFileName)

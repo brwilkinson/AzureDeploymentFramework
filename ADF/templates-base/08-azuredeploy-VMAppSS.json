@@ -115,13 +115,68 @@
                     "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].DDRole],json('null'))]",
                     "NodeType": "[toLower(concat(parameters('Global').AppName,parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
                     "vmHostName": "[toLower(concat(parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
-                    "vmName": "[concat('AZE2-',parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName)]",
+                    "vmName": "[concat(parameters('Prefix'),parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName)]",
                     "Primary": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].IsPrimary]",
                     "durabilityLevel": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].durabilityLevel]",
                     "placementProperties": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].placementProperties]",
                     "Capacity": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].Capacity]"
                 }
+            },
+            {
+                "name": "ScaleRules",
+                "count": "[length(parameters('DeploymentInfo').AppServersVMSS)]",
+                "input": {
+                    "location": "centralus",
+                    "tags": {},
+                    "properties": {
+                        "name": "ACU1-BRW-HAA-D3-ssAPI-Autoscale",
+                        "enabled": false,
+                        "predictiveAutoscalePolicy": {
+                            "scaleMode": "Disabled"
+                        },
+                        "targetResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
+                        "profiles": [
+                            {
+                                "name": "Auto created scale condition",
+                                "capacity": {
+                                    "minimum": "3",
+                                    "maximum": "9",
+                                    "default": "3"
+                                },
+                                "rules": [
+                                    {
+                                        "scaleAction": {
+                                            "direction": "Increase",
+                                            "type": "ChangeCount",
+                                            "value": "1",
+                                            "cooldown": "PT5M"
+                                        },
+                                        "metricTrigger": {
+                                            "metricName": "Percentage CPU",
+                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
+                                            "metricResourceUri": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/Microsoft.Compute/virtualMachineScaleSets/ACU1-BRW-HAA-D3-ssAPI",
+                                            "operator": "GreaterThan",
+                                            "statistic": "Average",
+                                            "threshold": 70,
+                                            "timeAggregation": "Average",
+                                            "timeGrain": "PT1M",
+                                            "timeWindow": "PT6M",
+                                            "Dimensions": [],
+                                            "dividePerInstance": false
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "notifications": [],
+                        "targetResourceLocation": "centralus"
+                    },
+                    "id": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/microsoft.insights/autoscalesettings/ACU1-BRW-HAA-D3-ssAPI-Autoscale",
+                    "name": "ACU1-BRW-HAA-D3-ssAPI-Autoscale",
+                    "type": "Microsoft.Insights/autoscaleSettings"
+                }
             }
+
         ],
         "azureActiveDirectory": {
             "clientApplication": "[parameters('Global').clientApplication]",
@@ -207,6 +262,7 @@
             }
         },
         {
+            "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName)]",
             "type": "Microsoft.Compute/virtualMachineScaleSets",
             "location": "[resourceGroup().location]",
             "apiVersion": "2020-12-01",
@@ -214,7 +270,6 @@
                 "type": "SystemAssigned, UserAssigned",
                 "userAssignedIdentities": "[variables('userAssignedIdentities')['Cluster']]"
             },
-            "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName)]",
             "sku": {
                 "name": "[variables('computeSizeLookupOptions')[concat(variables('AppServers')[copyIndex(0)].ASNAME,'-',variables('vmsizelookup')[parameters('Environment')])]]",
                 "tier": "Standard",
@@ -279,6 +334,7 @@
                     }
                 },
                 "virtualMachineProfile": {
+                    "licenseType": "[if(contains(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType],'licenseType'),variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].licenseType,json('null'))]",
                     "osProfile": {
                         "computerNamePrefix": "[variables('VM')[copyIndex(0)].vmHostName]",
                         "adminUsername": "[parameters('Global').vmAdminUserName]",

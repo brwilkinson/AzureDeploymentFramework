@@ -138,7 +138,7 @@ Configuration AppServers
         LocalConfigurationManager
         {
             ActionAfterReboot    = 'ContinueConfiguration'
-            ConfigurationMode    = 'ApplyAndMonitor'
+            ConfigurationMode    = iif $node.DSCConfigurationMode $node.DSCConfigurationMode 'ApplyAndMonitor'
             RebootNodeIfNeeded   = $True
             AllowModuleOverWrite = $true
         }
@@ -639,7 +639,7 @@ Configuration AppServers
             xWebsite $Name
             {
                 Name            = ($WebSite.Name -f $environment)
-                ApplicationPool = $WebSite.ApplicationPool
+                ApplicationPool = ($WebSite.ApplicationPool -f $environment)
                 PhysicalPath    = $Website.PhysicalPath
                 State           = 'Started'
                 DependsOn       = $dependsonWebAppPools
