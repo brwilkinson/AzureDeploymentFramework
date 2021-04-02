@@ -551,7 +551,7 @@
             "Role": "API",
             "DDRole": "64GBSS",
             "ASName": "API",
-            "OSType": "Server2016SS",
+            "OSType": "Server2019Containerssmall",
             "Subnet": "MT02",
             "LB": "API",
             "NATName": "RDP",

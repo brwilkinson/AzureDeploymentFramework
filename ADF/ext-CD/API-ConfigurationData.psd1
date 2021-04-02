@@ -19,7 +19,7 @@
 
             DisableIEESC                = $True
 
-            PowerShellModulesPresent    = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons', 'Az.ManagedServiceIdentity'
+            PowerShellModulesPresent    = 'Az.Resources','Az.ManagedServiceIdentity','Az.Storage','Az.Compute'
 
             # PowerShellModulesPresentCustom2 = @(
             #     @{Name = 'Az'; RequiredVersion = '5.3.0' }
@@ -32,7 +32,10 @@
 
             ServiceSetStarted           = 'WMSVC'
 
-            DirectoryPresent            = @('F:\Source\InstallLogs', 'F:\Repos', 'c:\program files\powershell\7')
+            DirectoryPresent            = @(
+                'F:\Source\InstallLogs', 'F:\Repos', 'c:\program files\powershell\7', 
+                'F:\WEB\LogHeadersAPI', 'F:\Build'
+            )
 
             EnvironmentPathPresent      = @(
                 'F:\Source\Tools\SysInternals',
@@ -123,19 +126,19 @@
                 @{
                     SourcePath      = 'F:\Source\PSModules\oh-my-posh\'
                     DestinationPath = 'c:\program files\WindowsPowershell\Modules\oh-my-posh\'
-                },
-
-                @{
-                    SourcePath      = 'F:\Source\Tools\profile.ps1'
-                    DestinationPath = 'c:\program files\powershell\7\profile.ps1'
-                    MatchSource     = $true
                 }
 
-                @{
-                    SourcePath      = 'F:\Source\Tools\profile.ps1'
-                    DestinationPath = 'C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1'
-                    MatchSource     = $true
-                }
+                # @{
+                #     SourcePath      = 'F:\Source\Tools\profile.ps1'
+                #     DestinationPath = 'c:\program files\powershell\7\profile.ps1'
+                #     MatchSource     = $true
+                # }
+
+                # @{
+                #     SourcePath      = 'F:\Source\Tools\profile.ps1'
+                #     DestinationPath = 'C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1'
+                #     MatchSource     = $true
+                # }
             )
 
             SoftwarePackagePresent      = @(
@@ -176,6 +179,18 @@
                 }
             )
 
+            # Blob copy with Managed Identity - Oauth2
+            AppReleaseDSCAppPresent     = @(
+
+                @{
+                    ComponentName     = 'LogHeadersAPI'
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/builds/'
+                    DestinationPath   = 'F:\WEB\'
+                    ValidateFileName  = 'CurrentBuild.txt'
+                    BuildFileName     = 'F:\Build\ComponentBuild.json'
+                }
+            )
+
             # Add URL to hostfile for website testing
             HostHeaders                 = @(
                 @{HostName = '{0}api.haapp.net' ; ipAddress = '127.0.0.1' }
@@ -191,7 +206,7 @@
 
             WebSitePresent              = @(
                 @{Name = '{0}api' ; ApplicationPool = '{0}api' ; 
-                    PhysicalPath = 'F:\WEB\API'; BindingPresent = @(
+                    PhysicalPath = 'F:\WEB\LogHeadersAPI'; BindingPresent = @(
                         @{HostHeader = '{0}api.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 80 ; Protocol = 'http' },
                         @{HostHeader = '{0}api.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
                         @{HostHeader = '*' ; IPAddress = '*' ; Name = '*' ; Port = 80 ; Protocol = 'http' },
@@ -199,7 +214,6 @@
                     )
                 }
             )
-
         }
     )
 }

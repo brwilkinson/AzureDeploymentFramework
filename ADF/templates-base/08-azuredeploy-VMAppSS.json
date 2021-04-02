@@ -113,8 +113,8 @@
                     "name": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName]",
                     "Extensions": "[if(contains(variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType],'RoleExtensions'),union(parameters('Extensions'),variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType].RoleExtensions),parameters('Extensions'))]",
                     "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].DDRole],json('null'))]",
-                    "NodeType": "[toLower(concat('ATM',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
-                    "vmHostName": "[toLower(concat('ATM',parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
+                    "NodeType": "[toLower(concat(parameters('Global').AppName,parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
+                    "vmHostName": "[toLower(concat(parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
                     "vmName": "[concat('AZE2-',parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName)]",
                     "Primary": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].IsPrimary]",
                     "durabilityLevel": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].durabilityLevel]",
@@ -287,7 +287,7 @@
                             "provisionVMAgent": true,
                             "enableAutomaticUpdates": true
                         },
-                        "secrets": "[if(equals(variables('AppServers')[copyIndex(0)].OSType,'Server2016SS'),variables('secrets'),json('null'))]"
+                        "secrets": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),variables('secrets'),json('null'))]"
                     },
                     "storageProfile": {
                         "osDisk": {
@@ -482,7 +482,7 @@
                                                                                         ))]"
                                         },
                                         "configurationArguments": {
-                                            "DomainName": "[parameters('Global').DomainName]",
+                                            "DomainName": "[parameters('Global').ADDomainName]",
                                             "Thumbprint": "[parameters('Global').certificateThumbprint]",
                                             "storageAccountId": "[variables('saaccountidglobalsource')]",
                                             "deployment": "[replace(variables('Deployment'),'-','')]",

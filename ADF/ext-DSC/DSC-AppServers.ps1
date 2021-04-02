@@ -37,6 +37,7 @@ Configuration AppServers
     Import-DscResource -ModuleName PackageManagementProviderResource
     Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
     Import-DscResource -ModuleName WVDDSC               # https://github.com/brwilkinson/WVDDSC
+    Import-DscResource -ModuleName AppReleaseDSC        # https://github.com/brwilkinson/AppReleaseDSC
     # Import-DscResource -ModuleName DevOpsAgentDSC     # https://github.com/brwilkinson/DevOpsAgentDSC
     Import-DscResource -ModuleName DSCR_Font
     Import-DscResource -ModuleName DSCR_AppxPackage
@@ -92,9 +93,7 @@ Configuration AppServers
 	
     $NetBios = $(($DomainName -split '\.')[0])
     [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
-
     $environment = $deployment.Substring($deployment.length - 2, 2) 
-
 
     $credlookup = @{
         'localadmin'  = $AdminCreds
@@ -229,7 +228,6 @@ Configuration AppServers
             {
                 Name   = $Capability.Name
                 Ensure = 'Absent'
-                
             }
             $dependsonFeatures += @("[WindowsCapability]$Capability")
         }
@@ -446,6 +444,24 @@ Configuration AppServers
                 LogDir                  = 'F:\azcopy_logs'
             }
             $dependsonAZCopyDSCDir += @("[AZCOPYDSCDir]$Name")
+        }
+
+        #-------------------------------------------------------------------
+        foreach ($AppComponent in $Node.AppReleaseDSCAppPresent)
+        {
+            AppReleaseDSC $AppComponent.ComponentName
+            {
+                ComponentName           = $AppComponent.ComponentName
+                SourcePath              = ($AppComponent.SourcePathBlobURI -f $StorageAccountName)
+                DestinationPath         = $AppComponent.DestinationPath
+                ValidateFileName        = $AppComponent.ValidateFileName
+                BuildFileName           = $AppComponent.BuildFileName
+                EnvironmentName         = $environment[0]
+                Ensure                  = 'Present'
+                ManagedIdentityClientID = $clientIDGlobal
+                LogDir                  = 'F:\azcopy_logs'
+            }
+            $dependsonAZCopyDSCDir += @("[AppReleaseDSC]$($AppComponent.ComponentName)")
         }
 
         # Now using Oauth2, instead of SA keys assign "Storage Blob Data Contributor" instead of Storag account key operator
