@@ -210,7 +210,10 @@
                 "Port": "[parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Port]",
                 "Protocol": "[parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Protocol]",
                 "CookieBasedAffinity": "[parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].CookieBasedAffinity]",
-                "RequestTimeout": "[parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].RequestTimeout]"
+                "RequestTimeout": "[parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].RequestTimeout]",
+                "probe": {
+                  "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/probes/Probe1' )]"
+                }
                 //"authenticationCertificates":"[if(equals(parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Protocol,'https'),array(json( concat('{\"id\":\"',string(resourceid('Microsoft.Network/applicationGateways/authenticationCertificates',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName),concat(parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Cert,'Public'))),'\"}'))),json('null'))]"
               }
             }
@@ -231,6 +234,7 @@
                 "hostName": "[tolower(concat(parameters('Deployment'),'-',parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Hostname,'.',parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Domain))]",
                 "requireServerNameIndication": "[equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol,'https')]",
                 "sslCertificate": "[if(equals(parameters('WAFInfo').Listeners[copyIndex('httpListeners')].Protocol,'https'),variables('Listeners')[copyIndex('httpListeners')].sslCertificate,json('null'))]"
+
               }
             }
           },
@@ -314,23 +318,21 @@
           },
           {
             "name": "probes",
-            "count": "[length(parameters('WAFInfo').BackendHttp)]",
+            "count": "[length(parameters('WAFInfo').probes)]",
             "input": {
-              "name": "[concat('default',parameters('WAFInfo').BackendHttp[copyIndex('probes')].protocol,'Probe')]",
-              "properties": {
-                "protocol": "[parameters('WAFInfo').BackendHttp[copyIndex('probes')].protocol]",
-                "path": "[parameters('WAFInfo').BackendHttp[copyIndex('probes')].probePath]",
-                "interval": 30,
-                "timeout": 30,
-                "unhealthyThreshold": 3,
-                "pickHostNameFromBackendHttpSettings": true,
-                "minServers": 0,
-                "match": {
-                  "body": "",
-                  "statusCodes": [
-                    "200-399"
-                  ]
-                }
+              "protocol": "[parameters('WAFInfo').probe[copyIndex('probes')].protocol]",
+              "path": "[parameters('WAFInfo').probe[copyIndex('probes')].path]",
+              "host": "[concat(parameters('WAFInfo').probes[copyIndex('probes')].name,'.',parameters('global').domainName)]",
+              "interval": 30,
+              "timeout": 30,
+              "unhealthyThreshold": 3,
+              "pickHostNameFromBackendHttpSettings": false,
+              "minServers": 0,
+              "match": {
+                "body": "",
+                "statusCodes": [
+                  "200-399"
+                ]
               }
             }
           }

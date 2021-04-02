@@ -499,7 +499,7 @@
                 "LBBEPort": 443,
                 "ProbeName": "HTTPS",
                 "DirectReturn": false
-              },
+              }
             ]
           }
         ],
@@ -543,19 +543,12 @@
               "254"
             ],
             "pathRules": [
+            ],
+            "probes": [
               {
-                "Name": "map1",
-                "Protocol": "https",
-                "paths": [
-                  "/api01"
-                ]
-              },
-              {
-                "Name": "map2",
-                "Protocol": "https",
-                "paths": [
-                  "/web01"
-                ]
+                "Name": "probe01",
+                "ProbePath": "/",
+                "Protocol": "https"
               }
             ],
             "frontEndPorts": [
@@ -572,26 +565,26 @@
                 "Protocol": "http",
                 "CookieBasedAffinity": "Enabled",
                 "RequestTimeout": 600,
-                "probePath": "/"
+                "probeName": "probe01"
               },
               {
                 "Port": 443,
                 "Protocol": "https",
                 "CookieBasedAffinity": "Enabled",
                 "RequestTimeout": 600,
-                "probePath": "/"
+                "probeName": "probe01"
               }
             ],
             "Listeners": [
               {
                 "Port": 443,
-                "BackendPort": "80",
+                "BackendPort": "443",
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
                 "Hostname": "waf",
-                "Interface": "Public", // "Public","Private"
-                "pathRules": "map1"
+                "Interface": "Public" // "Public","Private"
+                // "pathRules": "map1"
               },
               {
                 "Port": 80,
@@ -599,8 +592,8 @@
                 "Domain": "haapp.net",
                 "Hostname": "waf",
                 "Interface": "Public",
-                "httpsRedirect": 1,
-                "pathRules": "map1"
+                "httpsRedirect": 1
+                // "pathRules": "map1"
               }
             ]
           }

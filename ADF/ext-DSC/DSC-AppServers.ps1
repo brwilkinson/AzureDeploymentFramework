@@ -54,7 +54,9 @@ Configuration AppServers
     $ResourceGroupName = $Compute.resourceGroupName
     $Zone = $Compute.zone
     $prefix = $ResourceGroupName.split('-')[0]
-    $App = $ResourceGroupName.split('-')[1]
+    $OrgName = $ResourceGroupName.split('-')[1]
+    $App = $ResourceGroupName.split('-')[2]
+    $environment = $ResourceGroupName.split('-')[4]
     $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
 
     Function IIf
@@ -93,7 +95,6 @@ Configuration AppServers
 	
     $NetBios = $(($DomainName -split '\.')[0])
     [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
-    $environment = $deployment.Substring($deployment.length - 2, 2) 
 
     $credlookup = @{
         'localadmin'  = $AdminCreds
@@ -178,7 +179,7 @@ Configuration AppServers
         #-------------------------------------------------------------------
         foreach ($hostHeader in $Node.HostHeaders)
         {
-            $name = ($hostHeader.hostName -f $environment)
+            $name = ($hostHeader.hostName -f $prefix,$orgname,$app,$environment)
             HostsFile $name
             {
                 HostName  = $name
@@ -650,7 +651,7 @@ Configuration AppServers
                         Protocol              = $binding.Protocol
                         Port                  = $binding.Port
                         IPAddress             = $binding.IpAddress
-                        HostName              = ($binding.HostHeader -f $environment)
+                        HostName              = ($binding.HostHeader -f $prefix,$orgname,$app,$environment)
                         CertificateThumbprint = $ThumbPrint
                         CertificateStoreName  = 'MY'
                     }

@@ -121,60 +121,6 @@
                     "placementProperties": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].placementProperties]",
                     "Capacity": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].Capacity]"
                 }
-            },
-            {
-                "name": "ScaleRules",
-                "count": "[length(parameters('DeploymentInfo').AppServersVMSS)]",
-                "input": {
-                    "location": "centralus",
-                    "tags": {},
-                    "properties": {
-                        "name": "ACU1-BRW-HAA-D3-ssAPI-Autoscale",
-                        "enabled": false,
-                        "predictiveAutoscalePolicy": {
-                            "scaleMode": "Disabled"
-                        },
-                        "targetResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
-                        "profiles": [
-                            {
-                                "name": "Auto created scale condition",
-                                "capacity": {
-                                    "minimum": "3",
-                                    "maximum": "9",
-                                    "default": "3"
-                                },
-                                "rules": [
-                                    {
-                                        "scaleAction": {
-                                            "direction": "Increase",
-                                            "type": "ChangeCount",
-                                            "value": "1",
-                                            "cooldown": "PT5M"
-                                        },
-                                        "metricTrigger": {
-                                            "metricName": "Percentage CPU",
-                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
-                                            "metricResourceUri": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/Microsoft.Compute/virtualMachineScaleSets/ACU1-BRW-HAA-D3-ssAPI",
-                                            "operator": "GreaterThan",
-                                            "statistic": "Average",
-                                            "threshold": 70,
-                                            "timeAggregation": "Average",
-                                            "timeGrain": "PT1M",
-                                            "timeWindow": "PT6M",
-                                            "Dimensions": [],
-                                            "dividePerInstance": false
-                                        }
-                                    }
-                                ]
-                            }
-                        ],
-                        "notifications": [],
-                        "targetResourceLocation": "centralus"
-                    },
-                    "id": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/microsoft.insights/autoscalesettings/ACU1-BRW-HAA-D3-ssAPI-Autoscale",
-                    "name": "ACU1-BRW-HAA-D3-ssAPI-Autoscale",
-                    "type": "Microsoft.Insights/autoscaleSettings"
-                }
             }
 
         ],
@@ -318,6 +264,56 @@
                         },
                         "parameters": {
                         }
+                    }
+                },
+                {
+                    "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]",
+                    "apiVersion": "2015-04-01",
+                    "type": "Microsoft.Insights/autoscaleSettings",
+                    "location": "centralus",
+                    "tags": {},
+                    "properties": {
+                        "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]",
+                        "enabled": false,
+                        "predictiveAutoscalePolicy": {
+                            "scaleMode": "Disabled"
+                        },
+                        "targetResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
+                        "profiles": [
+                            {
+                                "name": "Auto created scale condition",
+                                "capacity": {
+                                    "minimum": "3",
+                                    "maximum": "9",
+                                    "default": "3"
+                                },
+                                "rules": [
+                                    {
+                                        "scaleAction": {
+                                            "direction": "Increase",
+                                            "type": "ChangeCount",
+                                            "value": "1",
+                                            "cooldown": "PT5M"
+                                        },
+                                        "metricTrigger": {
+                                            "metricName": "Percentage CPU",
+                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
+                                            "metricResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
+                                            "operator": "GreaterThan",
+                                            "statistic": "Average",
+                                            "threshold": 70,
+                                            "timeAggregation": "Average",
+                                            "timeGrain": "PT1M",
+                                            "timeWindow": "PT6M",
+                                            "Dimensions": [],
+                                            "dividePerInstance": false
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "notifications": [],
+                        "targetResourceLocation": "centralus"
                     }
                 }
             ],
