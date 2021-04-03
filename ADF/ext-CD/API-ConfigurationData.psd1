@@ -166,18 +166,25 @@
                     Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 REGISTER_MANIFEST=1'  # ENABLE_PSREMOTING=1
                 }
 
-                @{
-                    Name      = 'Microsoft .NET Core SDK 3.1.407 (x64)'
-                    Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.407-win-x64.exe'
-                    ProductId = ''
-                    Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install31407.txt"'
-                },
+                # @{
+                #     Name      = 'Microsoft .NET Core SDK 3.1.407 (x64)'
+                #     Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.407-win-x64.exe'
+                #     ProductId = ''
+                #     Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install31407.txt"'
+                # },
+
+                # @{
+                #     Name      = 'Microsoft .NET SDK 5.0.201 (x64)'
+                #     Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.201-win-x64.exe'
+                #     ProductId = ''
+                #     Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install50201.txt"'
+                # },
 
                 @{
-                    Name      = 'Microsoft .NET SDK 5.0.201 (x64)'
-                    Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.201-win-x64.exe'
+                    Name      = 'Microsoft .NET AppHost Pack - 5.0.4 (x64)'
+                    Path      = 'F:\Source\DotNetCore\dotnet-hosting-5.0.4-win.exe'
                     ProductId = ''
-                    Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install50201.txt"'
+                    Arguments = '/install /q /norestart'
                 }
             )
 

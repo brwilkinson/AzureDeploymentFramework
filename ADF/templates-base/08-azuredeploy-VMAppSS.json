@@ -271,7 +271,9 @@
                     "apiVersion": "2015-04-01",
                     "type": "Microsoft.Insights/autoscaleSettings",
                     "location": "centralus",
-                    "tags": {},
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', variables('AppServers')[copyIndex(0)].VMName))]"
+                    ],
                     "properties": {
                         "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]",
                         "enabled": false,

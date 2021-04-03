@@ -444,7 +444,7 @@ Configuration AppServers
                 ManagedIdentityClientID = $clientIDGlobal
                 LogDir                  = 'F:\azcopy_logs'
             }
-            $dependsonAZCopyDSCDir += @("[AZCOPYDSCDir]$Name")
+            $dependsonAZCopyDSCDir += @("[AZCOPYDSCDir]$Name") 
         }
 
         #-------------------------------------------------------------------

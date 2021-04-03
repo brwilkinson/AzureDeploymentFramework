@@ -34,7 +34,7 @@
     "firewallPolicy": {
       "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/', parameters('Deployment'), '-wafPolicy', parameters('WAFInfo').WAFPolicyName)]"
     },
-    "copy": [ 
+    "copy": [
       {
         "name": "Listeners",
         "count": "[length(parameters('wafInfo').Listeners)]",
@@ -58,6 +58,20 @@
             // "id": "[concat(resourceId('Microsoft.Network/applicationGateways', 'AZE2-ADF-P0-wafAPI'), '/urlPathMaps/multi')]"
           }
         }
+      },
+      {
+        "name": "BackendHttp",
+        "count": "[length(parameters('wafInfo').BackendHttp)]",
+        "input": {
+          "probe": {
+            "id": "[resourceId('Microsoft.Network/applicationGateways/probes',
+                                concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName),
+                                if(contains(parameters('WAFInfo').BackendHttp[copyIndex('BackendHttp')],'probeName'),
+                                    parameters('WAFInfo').BackendHttp[copyIndex('BackendHttp')].probeName,
+                                    'foo')
+                                )]"
+          }
+        }
       }
     ],
     "SSLpolicyLookup": {
@@ -71,7 +85,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-07-01",
       "name": "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]",
       "type": "Microsoft.Network/applicationGateways",
       "location": "[resourceGroup().location]",
@@ -140,7 +154,8 @@
                   "count": "[length(if(contains(parameters('WAFInfo'),'FQDNs'),parameters('WAFInfo').FQDNs,parameters('WAFInfo').BEIPs))]",
                   "input": {
                     "fqdn": "[if(contains(parameters('WAFInfo'),'FQDNs'),concat(replace(parameters('Deployment'),'-',''),parameters('wafInfo').FQDNs[copyIndex('BackendAddresses')],'.',parameters('Global').DomainName),json('null'))]",
-                    "ipAddress": "[if(contains(parameters('WAFInfo'),'BEIPs'),concat(variables('networkIdUpper'),'.',parameters('WAFInfo').BEIPs[copyIndex('BackendAddresses')]),json('null'))]"
+                    "ipAddress": "[if(contains(parameters('WAFInfo'),'BEIPs'),concat(variables('networkIdUpper'),'.',parameters('WAFInfo').BEIPs[copyIndex('BackendAddresses')]),json('null'))]",
+                  
 
                   }
                 }
@@ -211,10 +226,12 @@
                 "Protocol": "[parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Protocol]",
                 "CookieBasedAffinity": "[parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].CookieBasedAffinity]",
                 "RequestTimeout": "[parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].RequestTimeout]",
-                "probe": {
-                  "id": "[concat(resourceId('Microsoft.Network/applicationGateways/', concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),'/probes/Probe1' )]"
-                }
-                //"authenticationCertificates":"[if(equals(parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Protocol,'https'),array(json( concat('{\"id\":\"',string(resourceid('Microsoft.Network/applicationGateways/authenticationCertificates',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName),concat(parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Cert,'Public'))),'\"}'))),json('null'))]"
+                "probe": "[if(
+                              contains(parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')],'probeName'),
+                                        variables('BackendHttp')[copyIndex('backendHttpSettingsCollection')].probe,
+                                        json('null')
+                              )]"
+                // "authenticationCertificates":"[if(equals(parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Protocol,'https'),array(json( concat('{\"id\":\"',string(resourceid('Microsoft.Network/applicationGateways/authenticationCertificates',concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName),concat(parameters('WAFInfo').BackendHttp[copyIndex('backendHttpSettingsCollection')].Cert,'Public'))),'\"}'))),json('null'))]"
               }
             }
           },
@@ -320,19 +337,25 @@
             "name": "probes",
             "count": "[length(parameters('WAFInfo').probes)]",
             "input": {
-              "protocol": "[parameters('WAFInfo').probe[copyIndex('probes')].protocol]",
-              "path": "[parameters('WAFInfo').probe[copyIndex('probes')].path]",
-              "host": "[concat(parameters('WAFInfo').probes[copyIndex('probes')].name,'.',parameters('global').domainName)]",
-              "interval": 30,
-              "timeout": 30,
-              "unhealthyThreshold": 3,
-              "pickHostNameFromBackendHttpSettings": false,
-              "minServers": 0,
-              "match": {
-                "body": "",
-                "statusCodes": [
-                  "200-399"
-                ]
+              "name": "[parameters('WAFInfo').probes[copyIndex('probes')].name]",
+              "properties": {
+                "Protocol": "[parameters('WAFInfo').probes[copyIndex('probes')].protocol]",
+                "Path": "[parameters('WAFInfo').probes[copyIndex('probes')].path]",
+                "host": "[if(parameters('WAFInfo').probes[copyIndex('probes')].useBE,
+                            json('null'),
+                            concat(parameters('WAFInfo').probes[copyIndex('probes')].name,'.',parameters('global').domainName)
+                            )]",
+                "interval": 30,
+                "timeout": 30,
+                "unhealthyThreshold": 3,
+                "pickHostNameFromBackendHttpSettings": "[parameters('WAFInfo').probes[copyIndex('probes')].useBE]",
+                "minServers": 0,
+                "match": {
+                  "body": "",
+                  "statusCodes": [
+                    "200-399"
+                  ]
+                }
               }
             }
           }

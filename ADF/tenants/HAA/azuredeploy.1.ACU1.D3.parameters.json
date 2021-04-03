@@ -545,10 +545,23 @@
             "pathRules": [
             ],
             "probes": [
+              // {
+              //   "Name": "probe01",
+              //   "Path": "/",
+              //   "Protocol": "http",
+              //   "useBE": true
+              // },
               {
-                "Name": "probe01",
-                "ProbePath": "/",
-                "Protocol": "https"
+                "Name": "probe02",
+                "Path": "/",
+                "Protocol": "https",
+                "useBE": false
+              },
+              {
+                "Name": "probe03",
+                "Path": "/api/headers",
+                "Protocol": "https",
+                "useBE": false
               }
             ],
             "frontEndPorts": [
@@ -564,15 +577,15 @@
                 "Port": 80,
                 "Protocol": "http",
                 "CookieBasedAffinity": "Enabled",
-                "RequestTimeout": 600,
-                "probeName": "probe01"
+                "RequestTimeout": 600
+                // "probeName": "probe01"
               },
               {
                 "Port": 443,
                 "Protocol": "https",
                 "CookieBasedAffinity": "Enabled",
                 "RequestTimeout": 600,
-                "probeName": "probe01"
+                "probeName": "probe03"
               }
             ],
             "Listeners": [
@@ -583,7 +596,7 @@
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
                 "Hostname": "waf",
-                "Interface": "Public" // "Public","Private"
+                "Interface": "Public"
                 // "pathRules": "map1"
               },
               {

@@ -92,7 +92,7 @@ class AppReleaseDSC
         & $azcopy login --identity --identity-client-id $this.ManagedIdentityClientID
         
         # Always copy source ComponentBuild.json to local via sync from master on Blob
-        $BuildFile = $this.SourcePath + '/' + (Split-Path -Path $this.BuildFileName -Leaf)
+        $BuildFile = $this.SourcePath + (Split-Path -Path $this.BuildFileName -Leaf)
         & $azcopy copy $BuildFile $this.BuildFileName
 
         # Read the build file to determine which version of the component should be in the current environment
@@ -117,7 +117,7 @@ class AppReleaseDSC
             {
                 # Validate files with file count comparison
                 # Read source information via list command
-                $DesiredBuildFiles = $this.SourcePath + '/' + $this.ComponentName + '/' + $RequiredBuild
+                $DesiredBuildFiles = $this.SourcePath + $this.ComponentName + '/' + $RequiredBuild
                 $Files = & $azcopy list $DesiredBuildFiles --machine-readable
 
                 $Source = $Files | ForEach-Object {
@@ -177,7 +177,7 @@ class AppReleaseDSC
             ForEach-Object ComponentName | ForEach-Object $this.ComponentName |
             ForEach-Object $this.EnvironmentName | ForEach-Object DefaultBuild
         
-        $DesiredBuildFiles = $this.SourcePath + '/' + $this.ComponentName + '/' + $RequiredBuild
+        $DesiredBuildFiles = $this.SourcePath + $this.ComponentName + '/' + $RequiredBuild
         $CurrentBuildFilesDir = Join-Path -Path $this.DestinationPath -ChildPath $this.ComponentName
 
         & $azcopy login --identity --identity-client-id $this.ManagedIdentityClientID
