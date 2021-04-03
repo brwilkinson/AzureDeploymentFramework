@@ -111,9 +111,22 @@
     },
     "DeploymentInfo": {
       "value": {
+        "rolesInfo": [
+          {
+            "Name": "benwilk@Microsoft.com",
+            "RBAC": [
+              {
+                "Name": "Storage Blob Data Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              }
+            ]
+          }
+        ],
         "SPInfo": [
           {
-            "Name": "AzureDeploymentFramework_ACU1-BRW-HAA-RG-G1",
+            "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -124,6 +137,14 @@
               },
               {
                 "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "G1"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
                 "RG": "G1"
               },
               {
@@ -176,7 +197,7 @@
         ],
         "DC1PrivateIPAddress": "75",
         "DC2PrivateIPAddress": "76",
-        "DNSPublicZoneInfo":[
+        "DNSPublicZoneInfo": [
           "haapp.net"
         ]
       }
