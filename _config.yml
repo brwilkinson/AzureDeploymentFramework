@@ -3,3 +3,4 @@ exclude:
   - "ADF/**/*.exe"
   - ".github/*"
   - ".vscode/*"
+  - "ADF/1-PrereqsToDeploy/CustomResources/AppReleaseDSC/utilities/azcopy_windows_amd64_10.9.0/azcopy.exe"
