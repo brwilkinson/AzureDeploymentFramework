@@ -276,9 +276,9 @@
                     ],
                     "properties": {
                         "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]",
-                        "enabled": "[variables('AppServers')[copyIndex(0)].PredictiveScale]",
+                        "enabled": "[variables('AppServers')[copyIndex(0)].AutoScale]",
                         "predictiveAutoscalePolicy": {
-                            "scaleMode": "[variables('AppServers')[copyIndex(0)].AutoScale]"
+                            "scaleMode": "[variables('AppServers')[copyIndex(0)].PredictiveScale]"
                         },
                         "targetResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
                         "profiles": [
