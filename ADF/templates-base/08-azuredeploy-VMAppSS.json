@@ -276,18 +276,18 @@
                     ],
                     "properties": {
                         "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]",
-                        "enabled": false,
+                        "enabled": "[variables('AppServers')[copyIndex(0)].PredictiveScale]",
                         "predictiveAutoscalePolicy": {
-                            "scaleMode": "Disabled"
+                            "scaleMode": "[variables('AppServers')[copyIndex(0)].AutoScale]"
                         },
                         "targetResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
                         "profiles": [
                             {
                                 "name": "Auto created scale condition",
                                 "capacity": {
-                                    "minimum": "3",
-                                    "maximum": "9",
-                                    "default": "3"
+                                    "minimum": "[variables('AppServers')[copyIndex(0)].AutoScalecapacity.minimum]",
+                                    "maximum": "[variables('AppServers')[copyIndex(0)].AutoScalecapacity.maximum]",
+                                    "default": "[variables('AppServers')[copyIndex(0)].AutoScalecapacity.default]"
                                 },
                                 "rules": [
                                     {

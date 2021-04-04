@@ -171,29 +171,29 @@
                     Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 REGISTER_MANIFEST=1'  # ENABLE_PSREMOTING=1
                 }
 
-                @{
-                    Name      = 'Microsoft .NET Core SDK 3.1.407 (x64)'
-                    Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.407-win-x64.exe'
-                    ProductId = ''
-                    Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install31407.txt"'
-                },
+                # @{
+                #     Name      = 'Microsoft .NET Core SDK 3.1.407 (x64)'
+                #     Path      = 'F:\Source\DotNetCore\dotnet-sdk-3.1.407-win-x64.exe'
+                #     ProductId = ''
+                #     Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install31407.txt"'
+                # },
 
-                @{
-                    Name      = 'Microsoft .NET SDK 5.0.201 (x64)'
-                    Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.201-win-x64.exe'
-                    ProductId = ''
-                    Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install50201.txt"'
-                },
+                # @{
+                #     Name      = 'Microsoft .NET SDK 5.0.201 (x64)'
+                #     Path      = 'F:\Source\DotNetCore\dotnet-sdk-5.0.201-win-x64.exe'
+                #     ProductId = ''
+                #     Arguments = '/Install /quiet /norestart /log "F:\Source\InstallLogs\dotnet_install50201.txt"'
+                # },
+
+                # @{
+                #     Name      = 'Microsoft ASP.NET Core 5.0.4 Shared Framework (x64)'
+                #     Path      = 'F:\Source\DotNetCore\aspnetcore-runtime-5.0.4-win-x64.exe'
+                #     ProductId = ''
+                #     Arguments = '/install /q /norestart'
+                # },
 
                 @{
                     Name      = 'Microsoft ASP.NET Core 5.0.4 Shared Framework (x64)'
-                    Path      = 'F:\Source\DotNetCore\aspnetcore-runtime-5.0.4-win-x64.exe'
-                    ProductId = ''
-                    Arguments = '/install /q /norestart'
-                },
-
-                @{
-                    Name      = 'Microsoft .NET AppHost Pack - 5.0.4 (x64)'
                     Path      = 'F:\Source\DotNetCore\dotnet-hosting-5.0.4-win.exe'
                     ProductId = ''
                     Arguments = '/install /q /norestart'
@@ -232,6 +232,7 @@
                     ValidateFileName  = 'CurrentBuild.txt'
                     BuildFileName     = 'F:\Build\LogHeadersAPI\ComponentBuild.json'
                 }
+
             )
 
             # Add URL to hostfile for website testing
@@ -249,7 +250,7 @@
 
             WebSitePresent              = @(
                 @{Name = '{0}api' ; ApplicationPool = '{0}api' ;
-                    PhysicalPath = 'F:\WEB\DeployFirstApp'; BindingPresent = @(
+                    PhysicalPath = 'F:\WEB\LogHeadersAPI'; BindingPresent = @(
                         @{HostHeader = '{0}-{1}-{2}-{3}-waf.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 80 ; Protocol = 'http' },
                         @{HostHeader = '{0}-{1}-{2}-{3}-waf.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
                         @{HostHeader = '*' ; IPAddress = '*' ; Name = '*' ; Port = 80 ; Protocol = 'http' },

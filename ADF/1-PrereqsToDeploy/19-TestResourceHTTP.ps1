@@ -90,6 +90,14 @@ $rgName = 'ACU1-BRW-AOA-RG-S1'
 $Name = 'ACU1-BRW-AOA-S1-aks01'
 $type = 'Microsoft.ContainerService/managedClusters'
 
+$rgName = 'ACU1-BRW-HAA-RG-D3'
+$Name = 'ACU1-BRW-HAA-D3-ssAPI'
+$type = 'Microsoft.Compute/virtualMachineScaleSets'
+
+$rgName = 'ACU1-BRW-HAA-RG-D3'
+$Name = 'ACU1-BRW-HAA-D3-ssAPI-AutoScale'
+$type = 'Microsoft.Insights/autoscaleSettings'
+
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 
 $n = $type -split '/' | Select-Object -First 1

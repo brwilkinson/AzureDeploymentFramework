@@ -506,7 +506,13 @@
         "AppServersVMSS": [
           {
             "VMName": "API",
-            // "SFName": "contoso",
+            "AutoScale": true,
+            "PredictiveScale": "Enabled",
+            "AutoScalecapacity": {
+              "minimum": "3",
+              "maximum": "9",
+              "default": "3"
+            },
             "saname": "data",
             "Role": "API",
             "DDRole": "64GBSS",
