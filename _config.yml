@@ -1,1 +1,5 @@
 theme: jekyll-theme-cayman
+exclude:
+  - "ADF"
+  - ".github"
+  - ".vscode"
