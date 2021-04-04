@@ -1,5 +1,5 @@
 theme: jekyll-theme-cayman
 exclude:
-  - "ADF/*"
+  - "ADF/**/*.exe"
   - ".github/*"
   - ".vscode/*"
