@@ -52,7 +52,7 @@
                 @{ 
                     # enable developer mode to sideload appx packages, including winget
                     Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock';
-                    ValueName = 'AllowDevelopmentWithoutDevLicense';	ValueData = 1 ; ValueType = 'Dword'
+                    ValueName = 'AllowDevelopmentWithoutDevLicense'; ValueData = 1 ; ValueType = 'Dword'
                 },
 
                 @{ 
@@ -73,6 +73,11 @@
                 @{ 
                     Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main';
                     ValueName = 'PreventFirstRunPage ';	ValueData = 1 ; ValueType = 'Dword'
+                },
+
+                @{ 
+                    Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WebManagement\Server';
+                    ValueName = 'EnableRemoteManagement'; ValueData = 1 ; ValueType = 'Dword'
                 }
             )
 
