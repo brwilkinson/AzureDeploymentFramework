@@ -310,13 +310,75 @@
                                             "Dimensions": [],
                                             "dividePerInstance": false
                                         }
+                                    },
+                                    {
+                                        "scaleAction": {
+                                            "direction": "Decrease",
+                                            "type": "ChangeCount",
+                                            "value": "1",
+                                            "cooldown": "PT5M"
+                                        },
+                                        "metricTrigger": {
+                                            "metricName": "Percentage CPU",
+                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
+                                            "metricResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
+                                            "operator": "LessThan",
+                                            "statistic": "Average",
+                                            "threshold": 15,
+                                            "timeAggregation": "Average",
+                                            "timeGrain": "PT1M",
+                                            "timeWindow": "PT6M",
+                                            "Dimensions": [],
+                                            "dividePerInstance": false
+                                        }
                                     }
                                 ]
                             }
                         ],
                         "notifications": [],
                         "targetResourceLocation": "centralus"
-                    }
+                    },
+                    "resources": [
+                        {
+                            "type": "providers/diagnosticSettings",
+                            "name": "Microsoft.Insights/service",
+                            "dependsOn": [
+                                "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]"
+                            ],
+                            "apiVersion": "2015-07-01",
+                            "properties": {
+                                "workspaceId": "[variables('OMSworkspaceID')]",
+                                "logs": [
+                                    {
+                                        "category": "AutoscaleEvaluations",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "days": 30,
+                                            "enabled": false
+                                        }
+                                    },
+                                    {
+                                        "category": "AutoscaleScaleActions",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "days": 30,
+                                            "enabled": false
+                                        }
+                                    }
+                                ],
+                                "metrics": [
+                                    {
+                                        "timeGrain": "PT5M",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "enabled": false,
+                                            "days": 0
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
                 }
             ],
             "properties": {
