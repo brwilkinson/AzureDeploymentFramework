@@ -73,7 +73,19 @@
     "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snWAF01Name'))]",
     "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
-    "WAFInfo": "[parameters('DeploymentInfo').WAFInfo]",
+    "WAFInfo": "[if(contains(parameters('DeploymentInfo'),'WAFInfo'),parameters('DeploymentInfo').WAFInfo,createArray())]",
+    "copy": [
+      {
+        "name": "WAF",
+        "count": "[length(variables('WAFInfo'))]",
+        "input": {
+          "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').WAFInfo[copyIndex('WAF')].Name)
+                        )]"
+        }
+      }
+    ],
 
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
@@ -121,6 +133,7 @@
   },
   "resources": [
     {
+      "condition": "[variables('WAF')[copyIndex(0)].match]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
       "apiVersion": "2019-02-01",
@@ -170,6 +183,7 @@
       ]
     },
     {
+      "condition": "[variables('WAF')[copyIndex(0)].match]",
       "name": "[concat(variables('Deployment'),'-wafPolicy',variables('WAFPolicyInfo')[copyIndex(0)].name)]",
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
       "apiVersion": "2019-09-01",
@@ -202,6 +216,7 @@
       }
     },
     {
+      "condition": "[variables('WAF')[copyIndex(0)].match]",
       "name": "[concat('dp', variables('Deployment'), '-wafDeploy', variables('WafInfo')[copyIndex(0)].WAFName)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-06-01",

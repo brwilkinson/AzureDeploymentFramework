@@ -469,52 +469,12 @@
                 "enableTcpReset": true,
                 "protocol": "All"
               }
-            ],
-            "NATPools": [
-              {
-                "Name": "RDP",
-                "frontendPortRangeStart": 3389,
-                "frontendPortRangeEnd": 4500,
-                "enableFloatingIP": false,
-                "backendPort": 3389,
-                "idleTimeoutInMinutes": 4,
-                "protocol": "Tcp",
-                "LBFEName": "API"
-              }
-            ],
-            "Probes": [
-              {
-                "ProbeName": "HTTP",
-                "LBBEProbePort": 80
-              },
-              {
-                "ProbeName": "HTTPS",
-                "LBBEProbePort": 443
-              }
-            ],
-            "Services": [
-              {
-                "LBFEName": "API",
-                "RuleName": "API-HTTP",
-                "LBFEPort": 80,
-                "LBBEPort": 80,
-                "ProbeName": "HTTP",
-                "DirectReturn": false
-              },
-              {
-                "LBFEName": "API",
-                "RuleName": "API-HTTPS",
-                "LBFEPort": 443,
-                "LBBEPort": 443,
-                "ProbeName": "HTTPS",
-                "DirectReturn": false
-              }
             ]
           },
           {
             "LBName": "API",
             "ASName": "API",
-            "Sku": "Basic",
+            "Sku": "Standard",
             "FrontEnd": [
               {
                 "SNName": "MT02",
@@ -599,7 +559,7 @@
         ],
         "WAFInfo": [
           {
-            "WAFName": "API",
+            "WAFName": "API01",
             "WAFEnabled": true,
             "WAFMode": "Detection",
             "WAFPolicyAttached": true,
@@ -607,7 +567,7 @@
             "WAFSize": "WAF_v2",
             "WAFTier": "WAF_v2",
             "WAFCapacity": 2,
-            "PrivateIP": "29",
+            "PrivateIP": "27",
             "SSLCerts": [
               "HAAPP-WildCard"
             ],
@@ -615,8 +575,91 @@
             "BEIPs": [
               "254"
             ],
-            "pathRules": [
+            "pathRules": [],
+            "probes": [
+              // {
+              //   "Name": "probe01",
+              //   "Path": "/",
+              //   "Protocol": "http",
+              //   "useBE": true
+              // },
+              {
+                "Name": "probe02",
+                "Path": "/",
+                "Protocol": "https",
+                "useBE": false
+              },
+              {
+                "Name": "probe03",
+                "Path": "/api/headers",
+                "Protocol": "http",
+                "useBE": false
+              }
             ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe03"
+              },
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe02"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "HAAPP-WildCard",
+                "Domain": "haapp.net",
+                "Hostname": "API01",
+                "Interface": "Public"
+                // "pathRules": "map1"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "haapp.net",
+                "Hostname": "API01",
+                "Interface": "Public",
+                "httpsRedirect": 1
+                // "pathRules": "map1"
+              }
+            ]
+          },
+          {
+            "WAFName": "API02",
+            "WAFEnabled": false,
+            "WAFMode": "Detection",
+            "WAFPolicyAttached": true,
+            "WAFPolicyName": "API",
+            "WAFSize": "Standard_v2",
+            "WAFTier": "Standard_v2",
+            "WAFCapacity": 2,
+            "PrivateIP": "25",
+            "SSLCerts": [
+              "HAAPP-WildCard"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "BEIPs": [
+              "254"
+            ],
+            "pathRules": [],
             "probes": [
               // {
               //   "Name": "probe01",
@@ -668,7 +711,7 @@
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
-                "Hostname": "waf",
+                "Hostname": "API02",
                 "Interface": "Public"
                 // "pathRules": "map1"
               },
@@ -676,7 +719,7 @@
                 "Port": 80,
                 "Protocol": "http",
                 "Domain": "haapp.net",
-                "Hostname": "waf",
+                "Hostname": "API02",
                 "Interface": "Public",
                 "httpsRedirect": 1
                 // "pathRules": "map1"
