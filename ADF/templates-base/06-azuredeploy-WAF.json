@@ -81,7 +81,7 @@
         "input": {
           "match": "[or(
                         equals(parameters('Global').CN,'.'),
-                        contains(parameters('Global').CN,parameters('DeploymentInfo').WAFInfo[copyIndex('WAF')].Name)
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').WAFInfo[copyIndex('WAF')].WAFName)
                         )]"
         }
       }
