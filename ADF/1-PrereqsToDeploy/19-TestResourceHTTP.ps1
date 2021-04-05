@@ -95,8 +95,10 @@ $Name = 'ACU1-BRW-HAA-D3-ssAPI'
 $type = 'Microsoft.Compute/virtualMachineScaleSets'
 
 $rgName = 'ACU1-BRW-HAA-RG-D3'
-$Name = 'ACU1-BRW-HAA-D3-ssAPI-AutoScale'
-$type = 'Microsoft.Insights/autoscaleSettings'
+$Name = 'ACU1-BRW-HAA-D3-ssAPI-AutoScale/Microsoft.Insights/service'
+$type = 'Microsoft.Insights/autoscaleSettings/providers/diagnosticSettings'
+
+/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/microsoft.insights/autoscalesettings/ACU1-BRW-HAA-D3-ssAPI-Autoscale
 
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 

@@ -867,7 +867,7 @@
           "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.MonitoringAgent,1))]",
           "type": "extensions",
           "name": "MonitoringAgent",
-          "apiVersion": "2019-03-01",
+          "apiVersion": "2020-12-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
@@ -890,7 +890,7 @@
           //"condition": "[equals(parameters('Extensions').IaaSDiagnostics,1)]",
           "type": "extensions",
           "name": "VMDiagnostics",
-          "apiVersion": "2019-07-01",
+          "apiVersion": "2020-12-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
@@ -917,7 +917,7 @@
           "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.DependencyAgent,1))]",
           "type": "extensions",
           "name": "DependencyAgent",
-          "apiVersion": "2019-03-01",
+          "apiVersion": "2020-12-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"

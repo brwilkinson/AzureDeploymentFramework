@@ -82,7 +82,7 @@
       {
         "name": "API",
         "state": "enabled",
-        "mode": "Prevention",
+        "mode": "Detection",
         "ruleSetVersion": "3.0",
         "customRules": [
           {

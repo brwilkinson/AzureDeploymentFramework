@@ -339,45 +339,45 @@
                         "targetResourceLocation": "centralus"
                     },
                     "resources": [
-                        {
-                            "type": "providers/diagnosticSettings",
-                            "name": "Microsoft.Insights/service",
-                            "dependsOn": [
-                                "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]"
-                            ],
-                            "apiVersion": "2015-07-01",
-                            "properties": {
-                                "workspaceId": "[variables('OMSworkspaceID')]",
-                                "logs": [
-                                    {
-                                        "category": "AutoscaleEvaluations",
-                                        "enabled": true,
-                                        "retentionPolicy": {
-                                            "days": 30,
-                                            "enabled": false
-                                        }
-                                    },
-                                    {
-                                        "category": "AutoscaleScaleActions",
-                                        "enabled": true,
-                                        "retentionPolicy": {
-                                            "days": 30,
-                                            "enabled": false
-                                        }
-                                    }
-                                ],
-                                "metrics": [
-                                    {
-                                        "timeGrain": "PT5M",
-                                        "enabled": true,
-                                        "retentionPolicy": {
-                                            "enabled": false,
-                                            "days": 0
-                                        }
-                                    }
-                                ]
-                            }
-                        }
+                        // {
+                        //     "name": "service",
+                        //     "type": "Microsoft.Insights/diagnosticSettings",
+                        //     "dependsOn": [
+                        //         "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]"
+                        //     ],
+                        //     "apiVersion": "2015-07-01",
+                        //     "properties": {
+                        //         "workspaceId": "[variables('OMSworkspaceID')]",
+                        //         "logs": [
+                        //             {
+                        //                 "category": "AutoscaleEvaluations",
+                        //                 "enabled": true,
+                        //                 "retentionPolicy": {
+                        //                     "days": 30,
+                        //                     "enabled": false
+                        //                 }
+                        //             },
+                        //             {
+                        //                 "category": "AutoscaleScaleActions",
+                        //                 "enabled": true,
+                        //                 "retentionPolicy": {
+                        //                     "days": 30,
+                        //                     "enabled": false
+                        //                 }
+                        //             }
+                        //         ],
+                        //         "metrics": [
+                        //             {
+                        //                 "timeGrain": "PT5M",
+                        //                 "enabled": true,
+                        //                 "retentionPolicy": {
+                        //                     "enabled": false,
+                        //                     "days": 0
+                        //                 }
+                        //             }
+                        //         ]
+                        //     }
+                        // }
                     ]
                 }
             ],
@@ -513,7 +513,7 @@
                             //     }
                             // },
                             {
-                                "name": "[concat(variables('AppServers')[copyIndex(0)].VMName,'-VMDiagnosticsVmSS')]",
+                                "name": "VMDiagnostics",
                                 "properties": {
                                     "publisher": "Microsoft.Azure.Diagnostics",
                                     "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'IaaSDiagnostics','LinuxDiagnostic')]",
@@ -549,6 +549,21 @@
                                     "publisher": "Microsoft.Azure.Monitor",
                                     "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'AzureMonitorWindowsAgent','AzureMonitorLinuxAgent')]",
                                     "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.5')]"
+                                }
+                            },
+                            {
+                                "name": "MonitoringAgent",
+                                "properties": {
+                                    "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'MicrosoftMonitoringAgent','OmsAgentForLinux')]",
+                                    "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.4')]",
+                                    "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                        "workspaceId": "[reference(variables('OMSworkspaceID'), '2017-04-26-preview').CustomerId]"
+                                    },
+                                    "protectedSettings": {
+                                        "workspaceKey": "[listKeys(variables('OMSworkspaceID'), '2015-11-01-preview').primarySharedKey]"
+                                    }
                                 }
                             },
                             {
@@ -628,6 +643,16 @@
                                         "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
                                         "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
                                     }
+                                }
+                            },
+                            {
+                                "name": "HealthExtension",
+                                "properties": {
+                                    "publisher": "Microsoft.ManagedServices",
+                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'ApplicationHealthWindows','ApplicationHealthLinux')]",
+                                    "autoUpgradeMinorVersion": true,
+                                    "typeHandlerVersion": "1.0",
+                                    "settings": "[variables('AppServers')[copyIndex(0)].Health]"
                                 }
                             }
                         ]

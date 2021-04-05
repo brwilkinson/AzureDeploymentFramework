@@ -450,6 +450,68 @@
         },
         "LBInfo": [
           {
+            "LBName": "PLB01",
+            "Zone": 1,
+            "ASName": "PLB01",
+            "Sku": "Standard",
+            "FrontEnd": [
+              {
+                "Type": "Public",
+                "LBFEName": "PLB01",
+                "PublicIP": "Static"
+              }
+            ],
+            "outboundRules": [
+              {
+                "LBFEName": "PLB01",
+                "allocatedOutboundPorts": 1024,
+                "idleTimeoutInMinutes": 4,
+                "enableTcpReset": true,
+                "protocol": "All"
+              }
+            ],
+            "NATPools": [
+              {
+                "Name": "RDP",
+                "frontendPortRangeStart": 3389,
+                "frontendPortRangeEnd": 4500,
+                "enableFloatingIP": false,
+                "backendPort": 3389,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "LBFEName": "API"
+              }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              },
+              {
+                "ProbeName": "HTTPS",
+                "LBBEProbePort": 443
+              }
+            ],
+            "Services": [
+              {
+                "LBFEName": "API",
+                "RuleName": "API-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "RuleName": "API-HTTPS",
+                "LBFEPort": 443,
+                "LBBEPort": 443,
+                "ProbeName": "HTTPS",
+                "DirectReturn": false
+              }
+            ]
+          },
+          {
             "LBName": "API",
             "ASName": "API",
             "Sku": "Basic",
@@ -513,6 +575,11 @@
               "maximum": "9",
               "default": "3"
             },
+            "Health": {
+              "protocol": "https",
+              "port": "443",
+              "requestPath": "/api/headers"
+            },
             "saname": "data",
             "Role": "API",
             "DDRole": "64GBSS",
@@ -566,7 +633,7 @@
               {
                 "Name": "probe03",
                 "Path": "/api/headers",
-                "Protocol": "https",
+                "Protocol": "http",
                 "useBE": false
               }
             ],
@@ -582,14 +649,14 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "CookieBasedAffinity": "Enabled",
-                "RequestTimeout": 600
-                // "probeName": "probe01"
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe03"
               },
               {
                 "Port": 443,
                 "Protocol": "https",
-                "CookieBasedAffinity": "Enabled",
+                "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
                 "probeName": "probe03"
               }
@@ -597,7 +664,7 @@
             "Listeners": [
               {
                 "Port": 443,
-                "BackendPort": "443",
+                "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
