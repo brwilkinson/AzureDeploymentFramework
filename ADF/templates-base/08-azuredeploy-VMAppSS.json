@@ -82,8 +82,6 @@
             "S": "S"
         },
         "DeploymentName": "[deployment().name]",
-        "AppServers": "[parameters('DeploymentInfo').AppServersVMSS]",
-        // "AppServersSF": "[parameters('DeploymentInfo').AppServersSF]",
         "subscriptionId": "[subscription().subscriptionId]",
         "resourceGroupName": "[resourceGroup().name]",
         "storageAccountType": "[if(equals(parameters('Environment'),'P'), 'Premium_LRS', 'Standard_LRS')]",
@@ -105,7 +103,18 @@
             "WVDServers": "AppServers",
             "VMAppSS": "AppServers"
         },
+        "AppServers": "[if(contains(parameters('DeploymentInfo'),'AppServersVMSS'),parameters('DeploymentInfo').AppServersVMSS,createArray())]",
         "copy": [
+            {
+                "name": "VMSS",
+                "count": "[length(variables('AppServers'))]",
+                "input": {
+                    "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').AppServers[copyIndex('VMSS')].VMName)
+                        )]"
+                }
+            },
             {
                 "name": "VM",
                 "count": "[length(parameters('DeploymentInfo').AppServersVMSS)]",
@@ -124,6 +133,17 @@
             }
 
         ],
+
+        //         "loadBalancerBackendAddressPools": [
+        //     {
+        //         "id": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/Microsoft.Network/loadBalancers/ACU1-BRW-HAA-D3-lbAPI/backendAddressPools/API"
+        //     }
+        // ],
+        // "applicationGatewayBackendAddressPools": [
+        //     {
+        //         "id": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/Microsoft.Network/applicationGateways/ACU1-BRW-HAA-D3-wafAPI02/backendAddressPools/appGatewayBackendPool"
+        //     }
+        // ],
         "azureActiveDirectory": {
             "clientApplication": "[parameters('Global').clientApplication]",
             "clusterApplication": "[parameters('Global').clusterApplication]",
@@ -173,11 +193,10 @@
     },
     "resources": [
         {
+            "condition": "[variables('VMSS')[copyIndex(0)].match]",
             "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-01-01",
-            "dependsOn": [
-            ],
+            "apiVersion": "2021-01-01",
             "copy": {
                 "name": "vmdiskLoop",
                 "count": "[length( variables('AppServers') )]"
@@ -208,539 +227,59 @@
             }
         },
         {
-            "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName)]",
-            "type": "Microsoft.Compute/virtualMachineScaleSets",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "2020-12-01",
-            "identity": {
-                "type": "SystemAssigned, UserAssigned",
-                "userAssignedIdentities": "[variables('userAssignedIdentities')['Cluster']]"
-            },
-            "sku": {
-                "name": "[variables('computeSizeLookupOptions')[concat(variables('AppServers')[copyIndex(0)].ASNAME,'-',variables('vmsizelookup')[parameters('Environment')])]]",
-                "tier": "Standard",
-                "capacity": "[variables('AppServers')[copyIndex(0)].Capacity]"
-            },
-            "copy": {
-                "name": "vmssLoop",
-                "count": "[length(variables('AppServers'))]"
-            },
+            "condition": "[variables('VMSS')[copyIndex(0)].match]",
+            "name": "[concat('dp', variables('Deployment'),'-VMSSDeploy',if(equals(length(variables('AppServers')),0),'',variables('AppServers')[copyIndex(0)].VMName))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-01-01",
             "dependsOn": [
+                "vmdiskLoop"
             ],
-            "scale": null,
-            "resources": [
-                {
-                    "condition": "[equals(variables('VM')[copyIndex(0)].Extensions.MSI,1)]",
-                    "apiVersion": "2019-05-01",
-                    "type": "Microsoft.Resources/deployments",
-                    "name": "[concat('nested-roleAssignmentsGlobal',variables('AppServers')[copyIndex(0)].VMName)]",
-                    "resourceGroup": "[parameters('Global').HubRGName]",
-                    "subscriptionId": "[variables('SubscriptionID')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', variables('AppServers')[copyIndex(0)].VMName))]"
-                    ],
-                    "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                            "contentVersion": "1.0.0.0",
-                            "parameters": {
-                            },
-                            "variables": {
-                            },
-                            "resources": [
-                                {
-                                    "type": "Microsoft.Authorization/roleAssignments",
-                                    // Unique guid for the role assignment type, the resource group where it's assigned and the unique guid of the vm principalid
-                                    "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',parameters('Global').HubRGName,reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',variables('AppServers')[copyIndex(0)].VMName)),'2017-12-01','Full').identity.principalId )]",
-                                    "apiVersion": "2018-01-01-preview",
-                                    "properties": {
-                                        "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/81a9662b-bebf-436f-a333-f67b29880f12')]",
-                                        "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',variables('AppServers')[copyIndex(0)].VMName)),'2017-12-01','Full').identity.principalId]",
-                                        "scope": "[concat(Subscription().id,'/resourceGroups/',parameters('Global').HubRGName)]"
-                                    }
-                                }
-                            ]
-                        },
-                        "parameters": {
-                        }
-                    }
-                },
-                {
-                    "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]",
-                    "apiVersion": "2015-04-01",
-                    "type": "Microsoft.Insights/autoscaleSettings",
-                    "location": "centralus",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', variables('AppServers')[copyIndex(0)].VMName))]"
-                    ],
-                    "properties": {
-                        "name": "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]",
-                        "enabled": "[variables('AppServers')[copyIndex(0)].AutoScale]",
-                        "predictiveAutoscalePolicy": {
-                            "scaleMode": "[variables('AppServers')[copyIndex(0)].PredictiveScale]"
-                        },
-                        "targetResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
-                        "profiles": [
-                            {
-                                "name": "Auto created scale condition",
-                                "capacity": {
-                                    "minimum": "[variables('AppServers')[copyIndex(0)].AutoScalecapacity.minimum]",
-                                    "maximum": "[variables('AppServers')[copyIndex(0)].AutoScalecapacity.maximum]",
-                                    "default": "[variables('AppServers')[copyIndex(0)].AutoScalecapacity.default]"
-                                },
-                                "rules": [
-                                    {
-                                        "scaleAction": {
-                                            "direction": "Increase",
-                                            "type": "ChangeCount",
-                                            "value": "1",
-                                            "cooldown": "PT5M"
-                                        },
-                                        "metricTrigger": {
-                                            "metricName": "Percentage CPU",
-                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
-                                            "metricResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
-                                            "operator": "GreaterThan",
-                                            "statistic": "Average",
-                                            "threshold": 70,
-                                            "timeAggregation": "Average",
-                                            "timeGrain": "PT1M",
-                                            "timeWindow": "PT6M",
-                                            "Dimensions": [],
-                                            "dividePerInstance": false
-                                        }
-                                    },
-                                    {
-                                        "scaleAction": {
-                                            "direction": "Decrease",
-                                            "type": "ChangeCount",
-                                            "value": "1",
-                                            "cooldown": "PT5M"
-                                        },
-                                        "metricTrigger": {
-                                            "metricName": "Percentage CPU",
-                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
-                                            "metricResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName))]",
-                                            "operator": "LessThan",
-                                            "statistic": "Average",
-                                            "threshold": 15,
-                                            "timeAggregation": "Average",
-                                            "timeGrain": "PT1M",
-                                            "timeWindow": "PT6M",
-                                            "Dimensions": [],
-                                            "dividePerInstance": false
-                                        }
-                                    }
-                                ]
-                            }
-                        ],
-                        "notifications": [],
-                        "targetResourceLocation": "centralus"
-                    },
-                    "resources": [
-                        // {
-                        //     "name": "service",
-                        //     "type": "Microsoft.Insights/diagnosticSettings",
-                        //     "dependsOn": [
-                        //         "[concat(variables('Deployment'), '-ss', variables('AppServers')[copyIndex(0)].VMName,'-Autoscale')]"
-                        //     ],
-                        //     "apiVersion": "2015-07-01",
-                        //     "properties": {
-                        //         "workspaceId": "[variables('OMSworkspaceID')]",
-                        //         "logs": [
-                        //             {
-                        //                 "category": "AutoscaleEvaluations",
-                        //                 "enabled": true,
-                        //                 "retentionPolicy": {
-                        //                     "days": 30,
-                        //                     "enabled": false
-                        //                 }
-                        //             },
-                        //             {
-                        //                 "category": "AutoscaleScaleActions",
-                        //                 "enabled": true,
-                        //                 "retentionPolicy": {
-                        //                     "days": 30,
-                        //                     "enabled": false
-                        //                 }
-                        //             }
-                        //         ],
-                        //         "metrics": [
-                        //             {
-                        //                 "timeGrain": "PT5M",
-                        //                 "enabled": true,
-                        //                 "retentionPolicy": {
-                        //                     "enabled": false,
-                        //                     "days": 0
-                        //                 }
-                        //             }
-                        //         ]
-                        //     }
-                        // }
-                    ]
-                }
-            ],
+            "copy": {
+                "name": "VMSSLoop",
+                "count": "[length( variables('AppServers') )]"
+            },
             "properties": {
-                "overprovision": false,
-                "singlePlacementGroup": true,
-                "upgradePolicy": {
-                    "mode": "Automatic",
-                    // "rollingUpgradePolicy": {
-
-                    // },
-                    "automaticOSUpgradePolicy": {
-                        "enableAutomaticOSUpgrade": false
-                    }
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/VMAppSS.json', parameters('global')._artifactsLocationSasToken)]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "virtualMachineProfile": {
-                    "licenseType": "[if(contains(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType],'licenseType'),variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].licenseType,json('null'))]",
-                    "osProfile": {
-                        "computerNamePrefix": "[variables('VM')[copyIndex(0)].vmHostName]",
-                        "adminUsername": "[parameters('Global').vmAdminUserName]",
-                        "adminPassword": "[parameters('vmAdminPassword')]",
-                        "windowsConfiguration": {
-                            "provisionVMAgent": true,
-                            "enableAutomaticUpdates": true
-                        },
-                        "secrets": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),variables('secrets'),json('null'))]"
+                "parameters": {
+                    "Deployment": {
+                        "value": "[variables('Deployment')]"
                     },
-                    "storageProfile": {
-                        "osDisk": {
-                            "createOption": "FromImage",
-                            "caching": "ReadOnly",
-                            "managedDisk": {
-                                "storageAccountType": "[variables('StorageAccountType')]"
-                            }
-                        },
-                        "dataDisks": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)),'2018-05-01').outputs.DATADisks.value]",
-                        "imageReference": "[variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].imageReference]"
+                    "Prefix": {
+                        "value": "[parameters('Prefix')]"
                     },
-                    "diagnosticsProfile": {
-                        "bootDiagnostics": {
-                            "enabled": true,
-                            "storageUri": "[concat('http://', variables('SADiagName'), '.blob.core.windows.net')]"
-                        }
+                    "DeploymentID": {
+                        "value": "[parameters('DeploymentID')]"
                     },
-                    "networkProfile": {
-                        "networkInterfaceConfigurations": [
-                            {
-                                "name": "NIC-0",
-                                "properties": {
-                                    "primary": true,
-                                    "enableAcceleratedNetworking": false,
-                                    "dnsSettings": {
-                                        "dnsServers": [
-                                        ]
-                                    },
-                                    "ipConfigurations": [
-                                        {
-                                            "name": "[concat(variables('Deployment'),'-',variables('AppServers')[copyIndex(0)].VMName,'-nic0')]",
-                                            "properties": {
-                                                "subnet": {
-                                                    "id": "[concat(variables('VNetID'), '/subnets/','sn',variables('AppServers')[copyIndex(0)].Subnet)]"
-                                                },
-                                                "privateIPAddressVersion": "IPv4",
-                                                "loadBalancerBackendAddressPools": [
-                                                    {
-                                                        "id": "[resourceid('Microsoft.Network/loadBalancers/backendAddressPools', concat(variables('Deployment'),'-lb', variables('AppServers')[copyIndex(0)].LB),variables('AppServers')[copyIndex(0)].LB)]"
-                                                    }
-                                                ],
-                                                "loadBalancerInboundNatPools": [
-                                                    {
-                                                        "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatPools', concat(variables('Deployment'),'-lb', variables('AppServers')[copyIndex(0)].LB), variables('AppServers')[copyIndex(0)].NatName)]"
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
+                    "Environment": {
+                        "value": "[parameters('Environment')]"
                     },
-                    "extensionProfile": {
-                        "extensions": [
-                            {
-                                // Domain Join Options https://msdn.microsoft.com/en-us/library/aa392154(v=vs.85).aspx
-                                //   "condition": "[and(not(contains(variables('AppServers')[copyIndex(0)],'ExcludeDomainJoin')),equals(variables('VM')[copyIndex(0)].Extensions.DomainJoin,1))]",
-                                //   "apiVersion": "2018-04-01",
-                                //   "type": "extensions",
-                                //   "location": "[resourceGroup().location]",
-                                //   "dependsOn": [
-                                //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
-                                //   ],
-                                "name": "joindomain",
-                                "properties": {
-                                    "publisher": "Microsoft.Compute",
-                                    "type": "JsonADDomainExtension",
-                                    "typeHandlerVersion": "1.3",
-                                    "autoUpgradeMinorVersion": true,
-                                    "settings": {
-                                        "Name": "[parameters('Global').ADDomainName]",
-                                        "OUPath": "[if(contains(variables('AppServers')[copyIndex(0)],'OUPath'),variables('AppServers')[copyIndex(0)].OUPath,'')]",
-                                        "User": "[concat(parameters('Global').vmAdminUserName,'@',parameters('Global').ADDomainName)]",
-                                        "Restart": "true",
-                                        "Options": 3
-                                    },
-                                    "protectedSettings": {
-                                        "Password": "[parameters('vmAdminPassword')]"
-                                    }
-                                }
-                            },
-                            // {
-                            //     "name": "[concat(variables('AppServers')[copyIndex(0)].VMName,'-ServiceFabricNode')]",
-                            //     "properties": {
-                            //         "publisher": "Microsoft.Azure.ServiceFabric",
-                            //         "type": "ServiceFabricNode",
-                            //         "typeHandlerVersion": "1.0",
-                            //         "autoUpgradeMinorVersion": true,
-                            //         "protectedSettings": {
-                            //             "StorageAccountKey1": "[listKeys(variables('saaccountiddiag'), '2016-01-01').keys[0].value]",
-                            //             "StorageAccountKey2": "[listKeys(variables('saaccountiddiag'), '2016-01-01').keys[1].value]"
-                            //         },
-                            //         "settings": {
-                            //             "clusterEndpoint": "[reference(concat(variables('Deployment'), '-sf', variables('AppServers')[copyIndex(0)].SFName)).clusterEndpoint]",
-                            //             "nodeTypeRef": "[variables('VM')[copyIndex(0)].NodeType]",
-                            //             "dataPath": "D:\\\\SvcFab",
-                            //             "durabilityLevel": "[variables('AppServers')[copyIndex(0)].durabilityLevel]",
-                            //             "enableParallelJobs": true,
-                            //             "nicPrefixOverride": "[if(equals(variables('AppServers')[copyIndex(0)].Subnet,'MT02'),variables('networkIdUpper'),variables('networkId'))]",
-                            //             "certificate": {
-                            //                 "Thumbprint": "[parameters('Global').certificateThumbprint]",
-                            //                 "x509StoreName": "My"
-                            //             }
-                            //         }
-                            //     }
-                            // },
-                            {
-                                "name": "VMDiagnostics",
-                                "properties": {
-                                    "publisher": "Microsoft.Azure.Diagnostics",
-                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'IaaSDiagnostics','LinuxDiagnostic')]",
-                                    "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.9','3.0')]",
-                                    "autoUpgradeMinorVersion": true,
-                                    "settings": {
-                                        "WadCfg": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),variables('WadCfg'),json('null'))]",
-                                        "ladCfg": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),json('null'),variables('ladCfg'))]",
-                                        "StorageAccount": "[variables('saaccountiddiag')]",
-                                        "StorageType": "TableAndBlob"
-                                    },
-                                    "protectedSettings": {
-                                        "storageAccountName": "[variables('SADiagName')]",
-                                        "storageAccountKey": "[listKeys(variables('saaccountiddiag'), '2016-01-01').keys[0].value]",
-                                        "storageAccountEndPoint": "https://core.windows.net/"
-                                    }
-                                }
-                            },
-                            {
-                                "name": "DependencyAgent",
-                                "properties": {
-                                    "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
-                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'DependencyAgentWindows','DependencyAgentLinux')]",
-                                    "typeHandlerVersion": "9.5",
-                                    "autoUpgradeMinorVersion": true
-                                }
-                            },
-                            // https://docs.microsoft.com/en-us/azure/azure-monitor/insights/vminsights-health-enable?tabs=powershell
-                            {
-                                "name": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'AzureMonitorWindowsAgent','AzureMonitorLinuxAgent')]",
-                                "properties": {
-                                    "autoUpgradeMinorVersion": true,
-                                    "publisher": "Microsoft.Azure.Monitor",
-                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'AzureMonitorWindowsAgent','AzureMonitorLinuxAgent')]",
-                                    "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.5')]"
-                                }
-                            },
-                            {
-                                "name": "MonitoringAgent",
-                                "properties": {
-                                    "publisher": "Microsoft.EnterpriseCloud.Monitoring",
-                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'MicrosoftMonitoringAgent','OmsAgentForLinux')]",
-                                    "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.4')]",
-                                    "autoUpgradeMinorVersion": true,
-                                    "settings": {
-                                        "workspaceId": "[reference(variables('OMSworkspaceID'), '2017-04-26-preview').CustomerId]"
-                                    },
-                                    "protectedSettings": {
-                                        "workspaceKey": "[listKeys(variables('OMSworkspaceID'), '2015-11-01-preview').primarySharedKey]"
-                                    }
-                                }
-                            },
-                            {
-                                "name": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'GuestHealthWindowsAgent','GuestHealthLinuxAgent')]",
-                                "properties": {
-                                    "autoUpgradeMinorVersion": true,
-                                    "publisher": "Microsoft.Azure.Monitor.VirtualMachines.GuestHealth",
-                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'GuestHealthWindowsAgent','GuestHealthLinuxAgent')]",
-                                    "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'1.0','1.0')]"
-                                }
-                            },
-                            {
-                                "name": "Microsoft.Powershell.DSC",
-                                "properties": {
-                                    "provisionAfterExtensions": [
-                                        "joindomain"
-                                    ],
-                                    "publisher": "Microsoft.Powershell",
-                                    "type": "DSC",
-                                    "typeHandlerVersion": "2.24",
-                                    "autoUpgradeMinorVersion": true,
-                                    "forceUpdateTag": "[parameters('deploymentTime')]",
-                                    "settings": {
-                                        "wmfVersion": "latest",
-                                        "configuration": {
-                                            "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-',if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),
-                                                                                        variables('AppServers')[copyIndex(0)].DSConfig,
-                                                                                        if(
-                                                                                            contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
-                                                                                                    'AppServers'
-                                                                                        )),
-                                                                                        '.zip')]",
-                                            "script": "[concat('DSC-',if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),
-                                                                                        variables('AppServers')[copyIndex(0)].DSConfig,
-                                                                                        if(
-                                                                                        contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
-                                                                                                    'AppServers'
-                                                                                        )),'.ps1')]",
-                                            "function": "[if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),
-                                                                                        variables('AppServers')[copyIndex(0)].DSConfig,
-                                                                                        if(
-                                                                                        contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
-                                                                                                    'AppServers'
-                                                                                        ))]"
-                                        },
-                                        "configurationArguments": {
-                                            "DomainName": "[parameters('Global').ADDomainName]",
-                                            "Thumbprint": "[parameters('Global').certificateThumbprint]",
-                                            "storageAccountId": "[variables('saaccountidglobalsource')]",
-                                            "deployment": "[replace(variables('Deployment'),'-','')]",
-                                            "networkid": "[concat(variables('networkId'),'.')]",
-                                            "appInfo": "[if(contains(variables('AppServers')[copyIndex(0)],'AppInfo'),string(variables('AppServers')[copyIndex(0)].AppInfo),'')]",
-                                            "DNSInfo": "[if(and(equals(variables('AppServers')[copyIndex(0)].VMName,'JMP01'),equals(parameters('Stage').DNSLookup,1)),string(reference(resourceId('Microsoft.Resources/deployments','DNSLookup'),'2017-05-10','Full').properties.outputs.dns.value),'')]",
-                                            "DataDiskInfo": "[string(variables('VM')[copyIndex(0)].DataDisk)]",
-                                            "clientIDLocal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperator'),'2018-11-30').ClientId)]",
-                                            "clientIDGlobal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountFileContributor'),'2018-11-30').ClientId)]"
-
-                                        },
-                                        "configurationData": {
-                                            "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',variables('AppServers')[copyIndex(0)].Role,'-ConfigurationData.psd1')]"
-                                        }
-                                    },
-                                    "protectedSettings": {
-                                        "configurationArguments": {
-                                            "AdminCreds": {
-                                                "UserName": "[parameters('Global').vmAdminUserName]",
-                                                "Password": "[parameters('vmAdminPassword')]"
-                                            },
-                                            "sshPublic": {
-                                                "UserName": "pat",
-                                                "Password": "[parameters('sshPublic')]"
-                                            }
-                                        },
-                                        "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
-                                        "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
-                                    }
-                                }
-                            },
-                            {
-                                "name": "HealthExtension",
-                                "properties": {
-                                    "publisher": "Microsoft.ManagedServices",
-                                    "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'ApplicationHealthWindows','ApplicationHealthLinux')]",
-                                    "autoUpgradeMinorVersion": true,
-                                    "typeHandlerVersion": "1.0",
-                                    "settings": "[variables('AppServers')[copyIndex(0)].Health]"
-                                }
-                            }
-                        ]
+                    "AppServer": {
+                        "value": "[variables('AppServers')[copyIndex(0)]]"
+                    },
+                    "VM": {
+                        "value": "[variables('VM')[copyIndex(0)]]"
+                    },
+                    "Global": {
+                        "value": "[parameters('Global')]"
+                    },
+                    "Stage": {
+                        "value": "[parameters('Stage')]"
+                    },
+                    "OMSworkspaceID": {
+                        "value": "[variables('OMSworkspaceID')]"
+                    },
+                    "vmAdminPassword": {
+                        "value": "[parameters('vmAdminPassword')]"
+                    },
+                    "sshPublic": {
+                        "value": "[parameters('sshPublic')]"
                     }
                 }
             }
         }
-        // {
-        //     "type": "Microsoft.ServiceFabric/clusters",
-        //     "name": "[concat(variables('Deployment'), '-sf', variables('AppServersSF')[copyIndex(0)].SFName)]",
-        //     "apiVersion": "2018-02-01",
-        //     "location": "[resourceGroup().location]",
-        //     "copy": {
-        //         "name": "sfLoop",
-        //         "count": "[length(variables('AppServersSF'))]"
-        //     },
-        //     "dependsOn": [
-        //     ],
-        //     "scale": null,
-        //     "properties": {
-        //         "vmImage": "Windows",
-        //         "reliabilityLevel": "[variables('AppServersSF')[copyIndex(0)].reliabilitylevel]",
-        //         "upgradeMode": "Automatic",
-        //         "addonFeatures": [
-        //             "DnsService",
-        //             "RepairManager"
-        //         ],
-        //         "managementEndpoint": "[toLower( concat('https://',if(equals(variables('AppServersSF')[copyIndex(0)].Subnet,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',variables('AppServersSF')[copyIndex(0)].LBFEIP,':19080'))]",
-        //         "certificate": {
-        //             "thumbprint": "[parameters('Global').certificateThumbprint]",
-        //             "x509StoreName": "My"
-        //         },
-        //         "clientCertificateThumbprints": [
-        //             {
-        //                 "isAdmin": true,
-        //                 "certificateThumbprint": "[parameters('Global').certificateThumbprint]"
-        //             }
-        //         ],
-        //         "clientCertificateCommonNames": [
-        //         ],
-        //         // "reverseProxyCertificate": {
-        //         //     "thumbprint": "[parameters('Global').certificateThumbprint]",
-        //         //     "x509StoreName": "My"
-        //         // },
-        //         "azureActiveDirectory": "[if(equals(variables('VM')[copyIndex(0)].Extensions.VMSSAzureADEnabled,1) ,variables('azureActiveDirectory'),json('null'))]",
-        //         "fabricSettings": [
-        //             {
-        //                 "name": "Security",
-        //                 "parameters": [
-        //                     {
-        //                         "name": "ClusterProtectionLevel",
-        //                         "value": "EncryptAndSign"
-        //                     }
-        //                 ]
-        //             }
-        //         ],
-        //         "diagnosticsStorageAccountConfig": {
-        //             "storageAccountName": "[variables('SADiagName')]",
-        //             "protectedAccountKeyName": "StorageAccountKey1",
-        //             "blobEndpoint": "[concat('https', '://', variables('SADiagName'), '.blob.core.windows.net', '/')]",
-        //             "queueEndpoint": "[concat('https', '://', variables('SADiagName'), '.queue.core.windows.net', '/')]",
-        //             "tableEndpoint": "[concat('https', '://', variables('SADiagName'), '.table.core.windows.net', '/')]"
-        //         },
-        //         "copy": [
-        //             {
-        //                 "name": "nodeTypes",
-        //                 "count": "[length(parameters('DeploymentInfo').AppServersVMSS)]",
-        //                 "input": {
-        //                     "name": "[variables('VM')[copyIndex('nodeTypes')].NodeType]",
-        //                     "vmInstanceCount": "[variables('VM')[copyIndex('nodeTypes')].Capacity]",
-        //                     "clientConnectionEndpointPort": 19000,
-        //                     "httpGatewayEndpointPort": 19080,
-        //                     "applicationPorts": {
-        //                         "startPort": 20000,
-        //                         "endPort": 30000
-        //                     },
-        //                     "ephemeralPorts": {
-        //                         "startPort": 49152,
-        //                         "endPort": 65534
-        //                     },
-        //                     "isPrimary": "[variables('VM')[copyIndex('nodeTypes')].Primary]",
-        //                     "reverseProxyEndpointPort": 19081,
-        //                     "durabilityLevel": "[variables('VM')[copyIndex('nodeTypes')].durabilityLevel]",
-        //                     "placementProperties": "[variables('VM')[copyIndex('nodeTypes')].placementProperties]"
-        //                 }
-        //             }
-        //         ]
-        //     }
-        // }
     ]
 }

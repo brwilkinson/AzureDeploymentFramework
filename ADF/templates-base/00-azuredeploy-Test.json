@@ -126,13 +126,9 @@
       "type": "string",
       "value": "[string(variables('RolesGroupsLookup'))]"
     },
-    "backEnd": {
-      "type": "array",
-      "value": "[array(reference(resourceid('Microsoft.Network/applicationGateways','ACU1-BRW-AOA-S1-wafAPI'),'2020-06-01').BackendAddressPools)]"
-    },
     "kvrid": {
-      "type": "string",
-      "value": "[resourceId(parameters('Global').HubRGName,'Microsoft.Keyvault/vaults',parameters('Global').KVName)]"
+      "type": "object",
+      "value": "[reference(resourceId('Microsoft.Network/azureFirewalls',concat(variables('Deployment'),'-vnFW01')),'2019-09-01')]"
     }
   }
 }

@@ -203,6 +203,7 @@ The following defines the loadbalaners that are required
             "LBName": "API",
             "ASName": "API",
             "Sku": "Basic",
+            "Type": "Private",
             "FrontEnd": [
               {
                 "SNName": "MT01",
@@ -304,6 +305,7 @@ The following defines the loadbalaners that are required
             "LBName": "BUS",
             "ASName": "BUS",
             "Sku": "Basic",
+            "Type": "Private",
             "FrontEnd": [
               {
                 "SNName": "MT01",

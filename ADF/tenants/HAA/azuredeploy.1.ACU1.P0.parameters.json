@@ -479,7 +479,7 @@
               {
                 "Name": "Default-Azure-FW",
                 "addressPrefix": "0.0.0.0/0",
-                "nextHopIpAddress": "172.16.142.132",
+                "nextHopIpAddress": "FW01",
                 "nextHopType": "VirtualAppliance"
               }
             ]
@@ -525,6 +525,24 @@
                 "Any"
               ],
               "translatedAddress": "172.16.137.62"
+            }
+          },
+          {
+            "Name": "API01",
+            "priority": "20001",
+            "actionType": "DNAT",
+            "rule": {
+              "name": "WEB-API-Allow",
+              "sourceAddresses": [
+                "*"
+              ],
+              "destinationPorts": [
+                "443"
+              ],
+              "protocols": [
+                "Any"
+              ],
+              "translatedAddress": "10.10.139.254"
             }
           }
         ],

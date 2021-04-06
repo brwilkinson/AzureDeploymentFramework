@@ -554,10 +554,10 @@
             "LBName": "CLS01",
             "ASName": "CLS01",
             "Sku": "Basic",
+            "Type": "Private",
             "FrontEnd": [
               {
                 "SNName": "BE01",
-                "Type": "Private",
                 "LBFEName": "AG01",
                 "LBFEIP": "92"
               }

@@ -32,7 +32,13 @@
     "snWAF01Name": "snWAF01",
     "SubnetRefGW": "[concat(variables('VNetID'), '/subnets/', variables('snWAF01Name'))]",
     "firewallPolicy": {
-      "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/', parameters('Deployment'), '-wafPolicy', parameters('WAFInfo').WAFPolicyName)]"
+      "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/', parameters('Deployment'), '-wafPolicy',
+                    if(and(
+                          contains(parameters('WAFInfo'),'WAFEnabled'),
+                          equals(parameters('WAFInfo').WAFEnabled,bool('true'))),
+                       parameters('WAFInfo').WAFPolicyName,
+                      'nopolicy')
+                    )]"
     },
     "copy": [
       {
@@ -74,6 +80,7 @@
         }
       }
     ],
+
     "SSLpolicyLookup": {
       "tls12": {
         "policyName": "AppGwSslPolicy20170401S",
@@ -81,7 +88,18 @@
       },
       "Default": "[json('null')]"
 
-    }
+    },
+    "webApplicationFirewallConfiguration": {
+      "enabled": "[parameters('WAFInfo').WAFEnabled]",
+      "firewallMode": "[if(and(
+                                  contains(parameters('WAFInfo'),'WAFEnabled'),
+                                  equals(parameters('WAFInfo').WAFEnabled,bool('true'))),
+                                  parameters('WAFInfo').WAFMode,
+                              json('null'))]",
+      "ruleSetType": "OWASP",
+      "ruleSetVersion": "3.0"
+      // "disabledRuleGroups": []
+    },
   },
   "resources": [
     {
@@ -107,13 +125,11 @@
           "tier": "[parameters('WAFInfo').WAFTier]",
           "capacity": "[parameters('WAFInfo').WAFCapacity]"
         },
-        "webApplicationFirewallConfiguration": {
-          "enabled": "[parameters('WAFInfo').WAFEnabled]",
-          "firewallMode": "[parameters('WAFInfo').WAFMode]",
-          "ruleSetType": "OWASP",
-          "ruleSetVersion": "3.0"
-          // "disabledRuleGroups": []
-        },
+        "webApplicationFirewallConfiguration": "[if(and(
+                                                        contains(parameters('WAFInfo'),'WAFEnabled'),
+                                                        equals(parameters('WAFInfo').WAFEnabled,bool('true'))),
+                                                        variables('webApplicationFirewallConfiguration'),
+                                                    json('null'))]",
         "gatewayIPConfigurations": [
           {
             "name": "appGatewayIpConfig",
@@ -155,7 +171,7 @@
                   "input": {
                     "fqdn": "[if(contains(parameters('WAFInfo'),'FQDNs'),concat(replace(parameters('Deployment'),'-',''),parameters('wafInfo').FQDNs[copyIndex('BackendAddresses')],'.',parameters('Global').DomainName),json('null'))]",
                     "ipAddress": "[if(contains(parameters('WAFInfo'),'BEIPs'),concat(variables('networkIdUpper'),'.',parameters('WAFInfo').BEIPs[copyIndex('BackendAddresses')]),json('null'))]",
-                  
+
 
                   }
                 }

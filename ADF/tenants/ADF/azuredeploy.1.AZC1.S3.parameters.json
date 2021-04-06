@@ -185,9 +185,9 @@
             "Zone": 1,
             "ASName": "PLB01",
             "Sku": "Standard",
+            "Type": "Public",
             "FrontEnd": [
               {
-                "Type": "Public",
                 "LBFEName": "PLB01",
                 "PublicIP": "Static"
               }
@@ -206,10 +206,10 @@
             "LBName": "FIL",
             "ASName": "FIL",
             "Sku": "Standard",
+            "Type": "Private",
             "FrontEnd": [
               {
                 "SNName": "MT02",
-                "Type": "Private",
                 "LBFEName": "FIL",
                 "LBFEIP": "254"
               }
@@ -247,10 +247,10 @@
             "LBName": "CLS01",
             "ASName": "CLS01",
             "Sku": "Basic",
+            "Type": "Private",
             "FrontEnd": [
               {
                 "SNName": "BE02",
-                "Type": "Private",
                 "LBFEName": "AG01",
                 "LBFEIP": "110"
               }

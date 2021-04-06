@@ -232,6 +232,17 @@
                 "Name": "Contributor"
               }
             ]
+          },
+          {
+            "Name": "BC",
+            "RBAC": [
+              {
+                "Name": "Reader",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HAA"
+              }
+            ]
           }
         ],
         "SPInfo": [
@@ -333,7 +344,7 @@
             "name": "snBE02",
             "prefix": "64/28",
             "NSG": 1,
-            "Route": 0,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           },
@@ -341,7 +352,7 @@
             "name": "snBE01", // APIM Dedicated
             "prefix": "80/28",
             "NSG": 1,
-            "Route": 0,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           },
@@ -349,7 +360,6 @@
             "name": "AzureBastionSubnet",
             "prefix": "96/27",
             "NSG": 1,
-            "Route": 0,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           },
@@ -357,7 +367,7 @@
             "name": "snMT01",
             "prefix": "128/25",
             "NSG": 1,
-            "Route": 0,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false,
             "delegations": "Microsoft.ContainerInstance/containerGroups"
@@ -366,7 +376,7 @@
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
-            "Route": 0,
+            "Route": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           }
@@ -454,14 +464,14 @@
             "Zone": 1,
             "ASName": "PLB01",
             "Sku": "Standard",
+            "Type": "Public",
             "FrontEnd": [
               {
-                "Type": "Public",
                 "LBFEName": "PLB01",
                 "PublicIP": "Static"
               }
             ],
-            "outboundRules": [
+            "_outboundRules": [
               {
                 "LBFEName": "PLB01",
                 "allocatedOutboundPorts": 1024,
@@ -469,17 +479,57 @@
                 "enableTcpReset": true,
                 "protocol": "All"
               }
+            ],
+            "_NATPools": [
+              {
+                "Name": "RDP",
+                "frontendPortRangeStart": 3389,
+                "frontendPortRangeEnd": 4500,
+                "enableFloatingIP": false,
+                "backendPort": 3389,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "LBFEName": "API"
+              }
+            ],
+            "_Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              },
+              {
+                "ProbeName": "HTTPS",
+                "LBBEProbePort": 443
+              }
+            ],
+            "_Services": [
+              {
+                "LBFEName": "API",
+                "RuleName": "API-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "RuleName": "API-HTTPS",
+                "LBFEPort": 443,
+                "LBBEPort": 443,
+                "ProbeName": "HTTPS",
+                "DirectReturn": false
+              }
             ]
           },
           {
             "LBName": "API",
             "ASName": "API",
             "Sku": "Standard",
+            "Type": "Private",
             "FrontEnd": [
               {
-                "SNName": "MT02",
-                "Type": "Private",
                 "LBFEName": "API",
+                "SNName": "MT02",
                 "LBFEIP": "254"
               }
             ],
@@ -546,7 +596,19 @@
             "ASName": "API",
             "OSType": "Server2019Containerssmall",
             "Subnet": "MT02",
-            "LB": "API",
+            "LBBE": [
+              {
+                "BEName": "API",
+                "LBName": "-lbAPI"
+              },
+              {
+                "BEName": "API",
+                "LBName": "-PLB01"
+              }
+            ],
+            "_WAFBE": [
+              "API02"
+            ],
             "NATName": "RDP",
             "Capacity": 3,
             "IsPrimary": true,
@@ -585,7 +647,7 @@
               // },
               {
                 "Name": "probe02",
-                "Path": "/",
+                "Path": "/api/headers",
                 "Protocol": "https",
                 "useBE": false
               },
@@ -623,7 +685,7 @@
             "Listeners": [
               {
                 "Port": 443,
-                "BackendPort": "80",
+                "BackendPort": "443",
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
@@ -645,9 +707,9 @@
           {
             "WAFName": "API02",
             "WAFEnabled": false,
-            "WAFMode": "Detection",
-            "WAFPolicyAttached": true,
-            "WAFPolicyName": "API",
+            // "WAFMode": "Detection",
+            // "WAFPolicyAttached": false,
+            // "WAFPolicyName": "API",
             "WAFSize": "Standard_v2",
             "WAFTier": "Standard_v2",
             "WAFCapacity": 2,
@@ -669,7 +731,7 @@
               // },
               {
                 "Name": "probe02",
-                "Path": "/",
+                "Path": "/api/headers",
                 "Protocol": "https",
                 "useBE": false
               },
@@ -701,13 +763,13 @@
                 "Protocol": "https",
                 "CookieBasedAffinity": "Disabled",
                 "RequestTimeout": 600,
-                "probeName": "probe03"
+                "probeName": "probe02"
               }
             ],
             "Listeners": [
               {
                 "Port": 443,
-                "BackendPort": "80",
+                "BackendPort": "443",
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",

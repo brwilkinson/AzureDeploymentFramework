@@ -242,7 +242,8 @@
 
             # Add URL to hostfile for website testing
             HostHeaders                 = @(
-                @{HostName = '{0}-{1}-{2}-{3}-waf.haapp.net' ; ipAddress = '127.0.0.1' }
+                @{HostName = '{0}-{1}-{2}-{3}-api01.haapp.net' ; ipAddress = '127.0.0.1' }
+                @{HostName = '{0}-{1}-{2}-{3}-api02.haapp.net' ; ipAddress = '127.0.0.1' }
             )
 
             WebAppPoolPresent           = @(
@@ -256,8 +257,10 @@
             WebSitePresent              = @(
                 @{Name = '{0}api' ; ApplicationPool = '{0}api' ;
                     PhysicalPath = 'F:\WEB\LogHeadersAPI'; BindingPresent = @(
-                        @{HostHeader = '{0}-{1}-{2}-{3}-waf.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 80 ; Protocol = 'http' },
-                        @{HostHeader = '{0}-{1}-{2}-{3}-waf.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
+                        @{HostHeader = '{0}-{1}-{2}-{3}-api01.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 80 ; Protocol = 'http' },
+                        @{HostHeader = '{0}-{1}-{2}-{3}-api01.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
+                        @{HostHeader = '{0}-{1}-{2}-{3}-api02.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 80 ; Protocol = 'http' },
+                        @{HostHeader = '{0}-{1}-{2}-{3}-api02.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
                         @{HostHeader = '*' ; IPAddress = '*' ; Name = '*' ; Port = 80 ; Protocol = 'http' },
                         @{HostHeader = '*' ; IPAddress = '*' ; Name = '*' ; Port = 443 ; Protocol = 'https' }
                     )

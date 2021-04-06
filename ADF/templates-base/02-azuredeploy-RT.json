@@ -87,7 +87,7 @@
               "properties": {
                 "addressPrefix": "[variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].addressPrefix]",
                 "nextHopType": "[variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].nextHopType]",
-                "nextHopIpAddress": "[variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].nextHopIpAddress]"
+                "nextHopIpAddress": "[resourceId('Microsoft.Network/azureFirewalls',concat(variables('Deployment'),'-vn',variables('RTInfo')[copyIndex()].nextHopIpAddress))]"
               }
             }
           }
