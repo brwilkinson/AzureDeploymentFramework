@@ -91,7 +91,8 @@
             "frontendPort": "[parameters('Services')[copyIndex('loadBalancingRules')].LBFEPort]",
             "backendPort": "[parameters('Services')[copyIndex('loadBalancingRules')].LBBEPort]",
             "enableFloatingIP": "[if(and(contains(parameters('Services')[copyIndex('loadBalancingRules')],'DirectReturn'),equals( parameters('Services')[copyIndex('loadBalancingRules')].DirectReturn,bool('true')) ),parameters('Services')[copyIndex('loadBalancingRules')].DirectReturn ,bool('false'))]",
-            "loadDistribution": "[if(contains(parameters('Services')[copyIndex('loadBalancingRules')],'Persistance'),parameters('Services')[copyIndex('loadBalancingRules')].Persistance, 'Default')]"
+            "loadDistribution": "[if(contains(parameters('Services')[copyIndex('loadBalancingRules')],'Persistance'),parameters('Services')[copyIndex('loadBalancingRules')].Persistance, 'Default')]",
+            "disableOutboundSnat": true
           }
         }
       },
@@ -143,6 +144,10 @@
           "name": "[parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')].LBFEName]",
           "properties": {
             "privateIPAllocationMethod": "Static",
+            // "zones" : "[if(contains(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')],'zones'),
+            //                 parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')].zones,
+            //                 createArray('1','2','3')
+            //                 )]",
             "privateIPAddress": "[concat(
                                         if(
                                             and(
@@ -177,6 +182,10 @@
         "input": {
           "name": "[parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPublic')].LBFEName]",
           "properties": {
+            // "zones" : "[if(contains(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')],'zones'),
+            //                 parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')].zones,
+            //                 createArray('1','2','3')
+            //                 )]",
             "publicIPAddress": {
               "id": "[string(resourceid('Microsoft.Network/publicIPAddresses',concat(parameters('Deployment'),'-',parameters('LB').LBName,'-publicip', copyIndex('frontendIPConfigurationsPublic',1))))]"
             }
@@ -190,7 +199,7 @@
       "condition": "[equals(length(parameters('NATRules')),0)]",
       "name": "[concat(parameters('Deployment'),if(equals(length(parameters('NATRules')),0),'-lb',''),parameters('LB').LBName)]",
       "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2018-07-01",
+      "apiVersion": "2020-07-01",
       "location": "[resourceGroup().location]",
       "sku": "[if(contains(parameters('LB'),'Sku'),json( concat('{\"name\":\"',parameters('LB').Sku,'\"}')),json('null'))]",
       "dependsOn": [],
@@ -198,6 +207,7 @@
         "backendAddressPools": [
           {
             "name": "[parameters('LB').ASName]"
+
           }
         ],
         "inboundNatPools": "[variables('NatPools')]",
@@ -245,7 +255,7 @@
       "condition": "[not(equals(length(parameters('NATRules')),0))]",
       "name": "[concat(parameters('Deployment'),if(equals(length(parameters('NATRules')),0),'','-lb'),parameters('LB').LBName)]",
       "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2018-07-01",
+      "apiVersion": "2020-07-01",
       "location": "[resourceGroup().location]",
       "sku": "[if(contains(parameters('LB'),'Sku'),json( concat('{\"name\":\"',parameters('LB').Sku,'\"}')),json('null'))]",
       "dependsOn": [],

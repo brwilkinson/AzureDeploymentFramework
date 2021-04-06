@@ -84,7 +84,7 @@
                 "name": "applicationGatewayBackendAddressPools",
                 "count": "[length(variables('WAFBE'))]",
                 "input": {
-                    "id": "[resourceid('Microsoft.Network/loadBalancers/backendAddressPools',
+                    "id": "[resourceid('Microsoft.Network/applicationGateways/backendAddressPools',
                                         concat(parameters('Deployment'),'-waf',parameters('AppServer').WAFBE[CopyIndex('applicationGatewayBackendAddressPools')]),
                                         'appGatewayBackendPool')]"
                 }
@@ -95,7 +95,7 @@
                 "input": {
                     "id": "[resourceid('Microsoft.Network/loadBalancers/backendAddressPools',
                                         concat(parameters('Deployment'),'-lb',parameters('AppServer').LBBE[CopyIndex('loadBalancerBackendAddressPools')]),
-                                        parameters('AppServer').VMName)]"
+                                        parameters('AppServer').LBBE[CopyIndex('loadBalancerBackendAddressPools')])]"
                 }
             },
             {
@@ -185,163 +185,15 @@
             "sku": {
                 "name": "[variables('computeSizeLookupOptions')[concat(parameters('AppServer').ASNAME,'-',variables('vmsizelookup')[parameters('Environment')])]]",
                 "tier": "Standard",
-                "capacity": "[parameters('AppServer').Capacity]"
+                "capacity": "[parameters('AppServer').AutoScalecapacity.minimum]"
             },
             "scale": null,
-            "resources": [
-                {
-                    "condition": "[equals(parameters('VM').Extensions.MSI,1)]",
-                    "apiVersion": "2019-05-01",
-                    "type": "Microsoft.Resources/deployments",
-                    "name": "[concat('nested-roleAssignmentsGlobal',parameters('AppServer').VMName)]",
-                    "resourceGroup": "[parameters('Global').HubRGName]",
-                    "subscriptionId": "[variables('SubscriptionID')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', parameters('AppServer').VMName))]"
-                    ],
-                    "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                            "contentVersion": "1.0.0.0",
-                            "parameters": {
-                            },
-                            "variables": {
-                            },
-                            "resources": [
-                                {
-                                    "type": "Microsoft.Authorization/roleAssignments",
-                                    // Unique guid for the role assignment type, the resource group where it's assigned and the unique guid of the vm principalid
-                                    "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',parameters('Global').HubRGName,reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',parameters('AppServer').VMName)),'2017-12-01','Full').identity.principalId )]",
-                                    "apiVersion": "2018-01-01-preview",
-                                    "properties": {
-                                        "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/81a9662b-bebf-436f-a333-f67b29880f12')]",
-                                        "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',parameters('AppServer').VMName)),'2017-12-01','Full').identity.principalId]",
-                                        "scope": "[concat(Subscription().id,'/resourceGroups/',parameters('Global').HubRGName)]"
-                                    }
-                                }
-                            ]
-                        },
-                        "parameters": {
-                        }
-                    }
-                },
-                {
-                    "name": "[concat(variables('Deployment'), '-ss', parameters('AppServer').VMName,'-Autoscale')]",
-                    "apiVersion": "2015-04-01",
-                    "type": "Microsoft.Insights/autoscaleSettings",
-                    "location": "centralus",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', parameters('AppServer').VMName))]"
-                    ],
-                    "properties": {
-                        "name": "[concat(variables('Deployment'), '-ss', parameters('AppServer').VMName,'-Autoscale')]",
-                        "enabled": "[parameters('AppServer').AutoScale]",
-                        "predictiveAutoscalePolicy": {
-                            "scaleMode": "[parameters('AppServer').PredictiveScale]"
-                        },
-                        "targetResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', parameters('AppServer').VMName))]",
-                        "profiles": [
-                            {
-                                "name": "Auto created scale condition",
-                                "capacity": {
-                                    "minimum": "[parameters('AppServer').AutoScalecapacity.minimum]",
-                                    "maximum": "[parameters('AppServer').AutoScalecapacity.maximum]",
-                                    "default": "[parameters('AppServer').AutoScalecapacity.default]"
-                                },
-                                "rules": [
-                                    {
-                                        "scaleAction": {
-                                            "direction": "Increase",
-                                            "type": "ChangeCount",
-                                            "value": "1",
-                                            "cooldown": "PT5M"
-                                        },
-                                        "metricTrigger": {
-                                            "metricName": "Percentage CPU",
-                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
-                                            "metricResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', parameters('AppServer').VMName))]",
-                                            "operator": "GreaterThan",
-                                            "statistic": "Average",
-                                            "threshold": 70,
-                                            "timeAggregation": "Average",
-                                            "timeGrain": "PT1M",
-                                            "timeWindow": "PT6M",
-                                            "Dimensions": [],
-                                            "dividePerInstance": false
-                                        }
-                                    },
-                                    {
-                                        "scaleAction": {
-                                            "direction": "Decrease",
-                                            "type": "ChangeCount",
-                                            "value": "1",
-                                            "cooldown": "PT5M"
-                                        },
-                                        "metricTrigger": {
-                                            "metricName": "Percentage CPU",
-                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
-                                            "metricResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', parameters('AppServer').VMName))]",
-                                            "operator": "LessThan",
-                                            "statistic": "Average",
-                                            "threshold": 15,
-                                            "timeAggregation": "Average",
-                                            "timeGrain": "PT1M",
-                                            "timeWindow": "PT6M",
-                                            "Dimensions": [],
-                                            "dividePerInstance": false
-                                        }
-                                    }
-                                ]
-                            }
-                        ],
-                        "notifications": [],
-                        "targetResourceLocation": "centralus"
-                    },
-                    "resources": [
-                        // {
-                        //     "name": "service",
-                        //     "type": "Microsoft.Insights/diagnosticSettings",
-                        //     "dependsOn": [
-                        //         "[concat(variables('Deployment'), '-ss', parameters('AppServer').VMName,'-Autoscale')]"
-                        //     ],
-                        //     "apiVersion": "2015-07-01",
-                        //     "properties": {
-                        //         "workspaceId": "[variables('OMSworkspaceID')]",
-                        //         "logs": [
-                        //             {
-                        //                 "category": "AutoscaleEvaluations",
-                        //                 "enabled": true,
-                        //                 "retentionPolicy": {
-                        //                     "days": 30,
-                        //                     "enabled": false
-                        //                 }
-                        //             },
-                        //             {
-                        //                 "category": "AutoscaleScaleActions",
-                        //                 "enabled": true,
-                        //                 "retentionPolicy": {
-                        //                     "days": 30,
-                        //                     "enabled": false
-                        //                 }
-                        //             }
-                        //         ],
-                        //         "metrics": [
-                        //             {
-                        //                 "timeGrain": "PT5M",
-                        //                 "enabled": true,
-                        //                 "retentionPolicy": {
-                        //                     "enabled": false,
-                        //                     "days": 0
-                        //                 }
-                        //             }
-                        //         ]
-                        //     }
-                        // }
-                    ]
-                }
-            ],
+            // "zones" : "[if(contains(parameters('AppServer'),'zones'),
+            //                 parameters('AppServer').zones,
+            //                 createArray('1','2','3')
+            //                 )]",
             "properties": {
+                // "zoneBalance": true,
                 "overprovision": false,
                 "singlePlacementGroup": true,
                 "upgradePolicy": {
@@ -611,7 +463,160 @@
                         ]
                     }
                 }
-            }
+            },
+            "resources": [
+                {
+                    "condition": "[equals(parameters('VM').Extensions.MSI,1)]",
+                    "apiVersion": "2019-05-01",
+                    "type": "Microsoft.Resources/deployments",
+                    "name": "[concat('nested-roleAssignmentsGlobal',parameters('AppServer').VMName)]",
+                    "resourceGroup": "[parameters('Global').HubRGName]",
+                    "subscriptionId": "[variables('SubscriptionID')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', parameters('AppServer').VMName))]"
+                    ],
+                    "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                            "contentVersion": "1.0.0.0",
+                            "parameters": {
+                            },
+                            "variables": {
+                            },
+                            "resources": [
+                                {
+                                    "type": "Microsoft.Authorization/roleAssignments",
+                                    // Unique guid for the role assignment type, the resource group where it's assigned and the unique guid of the vm principalid
+                                    "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',parameters('Global').HubRGName,reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',parameters('AppServer').VMName)),'2017-12-01','Full').identity.principalId )]",
+                                    "apiVersion": "2018-01-01-preview",
+                                    "properties": {
+                                        "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/81a9662b-bebf-436f-a333-f67b29880f12')]",
+                                        "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',parameters('AppServer').VMName)),'2017-12-01','Full').identity.principalId]",
+                                        "scope": "[concat(Subscription().id,'/resourceGroups/',parameters('Global').HubRGName)]"
+                                    }
+                                }
+                            ]
+                        },
+                        "parameters": {
+                        }
+                    }
+                },
+                {
+                    "name": "[concat(variables('Deployment'), '-ss', parameters('AppServer').VMName,'-Autoscale')]",
+                    "apiVersion": "2015-04-01",
+                    "type": "Microsoft.Insights/autoscaleSettings",
+                    "location": "centralus",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', parameters('AppServer').VMName))]"
+                    ],
+                    "properties": {
+                        "name": "[concat(variables('Deployment'), '-ss', parameters('AppServer').VMName,'-Autoscale')]",
+                        "enabled": "[parameters('AppServer').AutoScale]",
+                        "predictiveAutoscalePolicy": {
+                            "scaleMode": "[parameters('AppServer').PredictiveScale]"
+                        },
+                        "targetResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', parameters('AppServer').VMName))]",
+                        "profiles": [
+                            {
+                                "name": "Auto created scale condition",
+                                "capacity": {
+                                    "minimum": "[parameters('AppServer').AutoScalecapacity.minimum]",
+                                    "maximum": "[parameters('AppServer').AutoScalecapacity.maximum]",
+                                    "default": "[parameters('AppServer').AutoScalecapacity.default]"
+                                },
+                                "rules": [
+                                    {
+                                        "scaleAction": {
+                                            "direction": "Increase",
+                                            "type": "ChangeCount",
+                                            "value": "1",
+                                            "cooldown": "PT5M"
+                                        },
+                                        "metricTrigger": {
+                                            "metricName": "Percentage CPU",
+                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
+                                            "metricResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', parameters('AppServer').VMName))]",
+                                            "operator": "GreaterThan",
+                                            "statistic": "Average",
+                                            "threshold": 70,
+                                            "timeAggregation": "Average",
+                                            "timeGrain": "PT1M",
+                                            "timeWindow": "PT6M",
+                                            "Dimensions": [],
+                                            "dividePerInstance": false
+                                        }
+                                    },
+                                    {
+                                        "scaleAction": {
+                                            "direction": "Decrease",
+                                            "type": "ChangeCount",
+                                            "value": "1",
+                                            "cooldown": "PT5M"
+                                        },
+                                        "metricTrigger": {
+                                            "metricName": "Percentage CPU",
+                                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
+                                            "metricResourceUri": "[resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'), '-ss', parameters('AppServer').VMName))]",
+                                            "operator": "LessThan",
+                                            "statistic": "Average",
+                                            "threshold": 15,
+                                            "timeAggregation": "Average",
+                                            "timeGrain": "PT1M",
+                                            "timeWindow": "PT6M",
+                                            "Dimensions": [],
+                                            "dividePerInstance": false
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "notifications": [],
+                        "targetResourceLocation": "centralus"
+                    },
+                    "resources": [
+                        // {
+                        //     "name": "service",
+                        //     "type": "Microsoft.Insights/diagnosticSettings",
+                        //     "dependsOn": [
+                        //         "[concat(variables('Deployment'), '-ss', parameters('AppServer').VMName,'-Autoscale')]"
+                        //     ],
+                        //     "apiVersion": "2015-07-01",
+                        //     "properties": {
+                        //         "workspaceId": "[variables('OMSworkspaceID')]",
+                        //         "logs": [
+                        //             {
+                        //                 "category": "AutoscaleEvaluations",
+                        //                 "enabled": true,
+                        //                 "retentionPolicy": {
+                        //                     "days": 30,
+                        //                     "enabled": false
+                        //                 }
+                        //             },
+                        //             {
+                        //                 "category": "AutoscaleScaleActions",
+                        //                 "enabled": true,
+                        //                 "retentionPolicy": {
+                        //                     "days": 30,
+                        //                     "enabled": false
+                        //                 }
+                        //             }
+                        //         ],
+                        //         "metrics": [
+                        //             {
+                        //                 "timeGrain": "PT5M",
+                        //                 "enabled": true,
+                        //                 "retentionPolicy": {
+                        //                     "enabled": false,
+                        //                     "days": 0
+                        //                 }
+                        //             }
+                        //         ]
+                        //     }
+                        // }
+                    ]
+                }
+            ]
         }
         // {
         //     "type": "Microsoft.ServiceFabric/clusters",

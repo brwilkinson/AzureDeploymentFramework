@@ -111,7 +111,7 @@
                 "input": {
                     "match": "[or(
                         equals(parameters('Global').CN,'.'),
-                        contains(parameters('Global').CN,parameters('DeploymentInfo').AppServers[copyIndex('VMSS')].VMName)
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').AppServersVMSS[copyIndex('VMSS')].VMName)
                         )]"
                 }
             },
@@ -123,27 +123,15 @@
                     "Extensions": "[if(contains(variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType],'RoleExtensions'),union(parameters('Extensions'),variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType].RoleExtensions),parameters('Extensions'))]",
                     "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].DDRole],json('null'))]",
                     "NodeType": "[toLower(concat(parameters('Global').AppName,parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
-                    "vmHostName": "[toLower(concat(parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
+                    "vmHostName": "[toLower(concat(parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
                     "vmName": "[concat(parameters('Prefix'),parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName)]",
                     "Primary": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].IsPrimary]",
                     "durabilityLevel": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].durabilityLevel]",
-                    "placementProperties": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].placementProperties]",
-                    "Capacity": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].Capacity]"
+                    "placementProperties": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].placementProperties]"
                 }
             }
 
         ],
-
-        //         "loadBalancerBackendAddressPools": [
-        //     {
-        //         "id": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/Microsoft.Network/loadBalancers/ACU1-BRW-HAA-D3-lbAPI/backendAddressPools/API"
-        //     }
-        // ],
-        // "applicationGatewayBackendAddressPools": [
-        //     {
-        //         "id": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/Microsoft.Network/applicationGateways/ACU1-BRW-HAA-D3-wafAPI02/backendAddressPools/appGatewayBackendPool"
-        //     }
-        // ],
         "azureActiveDirectory": {
             "clientApplication": "[parameters('Global').clientApplication]",
             "clusterApplication": "[parameters('Global').clusterApplication]",

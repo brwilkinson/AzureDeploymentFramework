@@ -469,9 +469,12 @@
               {
                 "LBFEName": "PLB01",
                 "PublicIP": "Static"
+                // "zones": [
+                //   "1"
+                // ]
               }
             ],
-            "_outboundRules": [
+            "outboundRules": [
               {
                 "LBFEName": "PLB01",
                 "allocatedOutboundPorts": 1024,
@@ -480,7 +483,7 @@
                 "protocol": "All"
               }
             ],
-            "_NATPools": [
+            "NATPools": [
               {
                 "Name": "RDP",
                 "frontendPortRangeStart": 3389,
@@ -489,10 +492,10 @@
                 "backendPort": 3389,
                 "idleTimeoutInMinutes": 4,
                 "protocol": "Tcp",
-                "LBFEName": "API"
+                "LBFEName": "PLB01"
               }
             ],
-            "_Probes": [
+            "Probes": [
               {
                 "ProbeName": "HTTP",
                 "LBBEProbePort": 80
@@ -502,9 +505,9 @@
                 "LBBEProbePort": 443
               }
             ],
-            "_Services": [
+            "Services": [
               {
-                "LBFEName": "API",
+                "LBFEName": "PLB01",
                 "RuleName": "API-HTTP",
                 "LBFEPort": 80,
                 "LBBEPort": 80,
@@ -512,7 +515,7 @@
                 "DirectReturn": false
               },
               {
-                "LBFEName": "API",
+                "LBFEName": "PLB01",
                 "RuleName": "API-HTTPS",
                 "LBFEPort": 443,
                 "LBBEPort": 443,
@@ -531,6 +534,9 @@
                 "LBFEName": "API",
                 "SNName": "MT02",
                 "LBFEIP": "254"
+                // "zones": [
+                //   "1"
+                // ]
               }
             ],
             "NATPools": [
@@ -580,6 +586,22 @@
             "VMName": "API",
             "AutoScale": true,
             "PredictiveScale": "Enabled",
+            "saname": "data",
+            "Role": "API",
+            "ASNAME": "API",
+            "DDRole": "64GBSS",
+            "OSType": "Server2019Containerssmall",
+            "Subnet": "MT02",
+            "NATName": "RDP",
+            "zones": [
+              "1"
+            ],
+            "LBBE": [
+              "API"
+            ],
+            "_WAFBE": [
+              "API02"
+            ],
             "AutoScalecapacity": {
               "minimum": "3",
               "maximum": "9",
@@ -590,27 +612,80 @@
               "port": "443",
               "requestPath": "/api/headers"
             },
+            "IsPrimary": true,
+            "durabilityLevel": "Bronze",
+            "placementProperties": {
+              "OSType": "Server2016SS",
+              "NodeKind": "API01"
+            }
+          },
+          {
+            "VMName": "API01",
+            "AutoScale": true,
+            "PredictiveScale": "Enabled",
             "saname": "data",
             "Role": "API",
+            "ASNAME": "API",
             "DDRole": "64GBSS",
-            "ASName": "API",
             "OSType": "Server2019Containerssmall",
             "Subnet": "MT02",
+            "NATName": "RDP",
+            "zones": [
+              "1"
+            ],
             "LBBE": [
-              {
-                "BEName": "API",
-                "LBName": "-lbAPI"
-              },
-              {
-                "BEName": "API",
-                "LBName": "-PLB01"
-              }
+              "PLB01"
             ],
             "_WAFBE": [
               "API02"
             ],
+            "AutoScalecapacity": {
+              "minimum": "3",
+              "maximum": "9",
+              "default": "3"
+            },
+            "Health": {
+              "protocol": "https",
+              "port": "443",
+              "requestPath": "/api/headers"
+            },
+            "IsPrimary": true,
+            "durabilityLevel": "Bronze",
+            "placementProperties": {
+              "OSType": "Server2016SS",
+              "NodeKind": "API01"
+            }
+          },
+          {
+            "VMName": "API02",
+            "AutoScale": true,
+            "PredictiveScale": "Enabled",
+            "saname": "data",
+            "Role": "API",
+            "ASNAME": "API",
+            "DDRole": "64GBSS",
+            "OSType": "Server2019Containerssmall",
+            "Subnet": "MT02",
             "NATName": "RDP",
-            "Capacity": 3,
+            // "zones": [
+            //   "1"
+            // ],
+            "_LBBE": [
+              "PLB01"
+            ],
+            "WAFBE": [
+              "API02"
+            ],
+            "AutoScalecapacity": {
+              "minimum": "3",
+              "maximum": "9",
+              "default": "3"
+            },
+            "Health": {
+              "protocol": "https",
+              "port": "443",
+              "requestPath": "/api/headers"
+            },
             "IsPrimary": true,
             "durabilityLevel": "Bronze",
             "placementProperties": {
@@ -632,6 +707,9 @@
             "PrivateIP": "27",
             "SSLCerts": [
               "HAAPP-WildCard"
+            ],
+            "zones": [
+              "1"
             ],
             "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
             "BEIPs": [
