@@ -1,7 +1,7 @@
 
 # Zip up all files
 break
-[string] $ArtifactStagingDirectory = 'D:\repos\AzureDeploymentFramework'
+[string] $ArtifactStagingDirectory = 'D:\repos\ADF'
 [string] $DSCSourceFolder = $ArtifactStagingDirectory + '\ADF\ext-DSC'
 
 if (Test-Path $DSCSourceFolder)
@@ -18,7 +18,7 @@ if (Test-Path $DSCSourceFolder)
 
 # Zip up only changes
 break
-[string] $ArtifactStagingDirectory = 'D:\repos\AzureDeploymentFramework'
+[string] $ArtifactStagingDirectory = 'D:\repos\ADF'
 [string] $DSCSourceFolder = $ArtifactStagingDirectory + '\ADF\ext-DSC'
 
 if (Test-Path $DSCSourceFolder)

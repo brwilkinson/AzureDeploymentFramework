@@ -35,7 +35,7 @@ $Modules | ForEach-Object {
             If ($Latest.Version -gt $ModuleLatest.version)
             {
                 Write-Verbose -Message "Installing Module $ModuleName" -Verbose
-                Save-Module -ModuleName $ModuleName -Path $BasePath -Force -Verbose
+                Save-Module -Name $ModuleName -Path $BasePath -Force -Verbose
                 $ModuleLatest = Test-ModuleManifest -Path $manifest.fullname
 
                 # Remove the examples and any .git directories from DSC Resource Modules from Gallery

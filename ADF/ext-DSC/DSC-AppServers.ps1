@@ -179,7 +179,7 @@ Configuration AppServers
         #-------------------------------------------------------------------
         foreach ($hostHeader in $Node.HostHeaders)
         {
-            $name = ($hostHeader.hostName -f $prefix,$orgname,$app,$environment)
+            $name = ($hostHeader.hostName -f $prefix, $orgname, $app, $environment)
             HostsFile $name
             {
                 HostName  = $name
@@ -652,7 +652,7 @@ Configuration AppServers
                         Protocol              = $binding.Protocol
                         Port                  = $binding.Port
                         IPAddress             = $binding.IpAddress
-                        HostName              = ($binding.HostHeader -f $prefix,$orgname,$app,$environment)
+                        HostName              = ($binding.HostHeader -f $prefix, $orgname, $app, $environment)
                         CertificateThumbprint = $ThumbPrint
                         CertificateStoreName  = 'MY'
                     }
@@ -754,17 +754,17 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
-        # install appxpackage
-        # foreach ($Font in $Node.FontsPresent)
-        # {
-        #     cFont $Font.Name
-        #     {
-        #         Ensure   = 'Present'
-        #         FontFile = $Font.Path
-        #         PsDscRunAsCredential = $credlookup['DomainCreds']
-        #     }
-        #     $dependsonAppxPackage += @("[cAppxPackage]$($Font.Name)")
-        # }
+        # install font
+        foreach ($Font in $Node.FontsPresent)
+        {
+            cFont $Font.Name
+            {
+                Ensure   = 'Present'
+                FontFile = $Font.Path
+                FontName = $Font.Name
+            }
+            $dependsonAppxPackage += @("[cAppxPackage]$($Font.Name)")
+        }
         
 
         #-------------------------------------------------------------------

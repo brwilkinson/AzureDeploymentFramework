@@ -37,7 +37,7 @@
 
             ServiceSetStarted              = @('sshd')
 
-            FontsPresent2                  = @(
+            FontsPresent                   = @(
                 @{
                     Name = 'Fira Code Light Nerd Font Complete'
                     Path = 'F:\Source\Tools\Fira Code Light Nerd Font Complete.ttf'

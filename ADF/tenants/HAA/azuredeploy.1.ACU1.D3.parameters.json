@@ -459,7 +459,8 @@
                 "sessionAffinityEnabledState": "Disabled",
                 "_EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
-                  "/api/headers"
+                  "/api/headers",
+                  "/*"
                 ]
               },
               {
