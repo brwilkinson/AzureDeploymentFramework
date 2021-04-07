@@ -99,12 +99,13 @@
                 }
             },
             {
+                "condition": "[contains(parameters('AppServer'),'NATName')]",
                 "name": "loadBalancerInboundNatPools",
                 "count": "[length(variables('LBBE'))]",
                 "input": {
                     "id": "[resourceid('Microsoft.Network/loadBalancers/inboundNatPools',
                                         concat(parameters('Deployment'),'-lb',parameters('AppServer').LBBE[CopyIndex('loadBalancerInboundNatPools')]),
-                                        parameters('AppServer').NATName)]"
+                                        if(contains(parameters('AppServer'),'NATName'),parameters('AppServer').NATName,'NA'))]"
                 }
             }
 

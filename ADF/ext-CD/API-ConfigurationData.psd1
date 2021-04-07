@@ -244,6 +244,7 @@
             HostHeaders                 = @(
                 @{HostName = '{0}-{1}-{2}-{3}-api01.haapp.net' ; ipAddress = '127.0.0.1' }
                 @{HostName = '{0}-{1}-{2}-{3}-api02.haapp.net' ; ipAddress = '127.0.0.1' }
+                @{HostName = '{0}-{1}-{2}-{3}-api03.haapp.net' ; ipAddress = '127.0.0.1' }
             )
 
             WebAppPoolPresent           = @(
@@ -261,6 +262,10 @@
                         @{HostHeader = '{0}-{1}-{2}-{3}-api01.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
                         @{HostHeader = '{0}-{1}-{2}-{3}-api02.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 80 ; Protocol = 'http' },
                         @{HostHeader = '{0}-{1}-{2}-{3}-api02.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
+                        @{HostHeader = '{0}-{1}-{2}-{3}-api03.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 80 ; Protocol = 'http' },
+                        @{HostHeader = '{0}-{1}-{2}-{3}-api03.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
+                        @{HostHeader = '{0}-{1}-{2}-{3}-afd01-plb01.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 80 ; Protocol = 'http' },
+                        @{HostHeader = '{0}-{1}-{2}-{3}-afd01-plb01.haapp.net' ; IPAddress = '*' ; Name = '{0}api' ; Port = 443 ; Protocol = 'https' },
                         @{HostHeader = '*' ; IPAddress = '*' ; Name = '*' ; Port = 80 ; Protocol = 'http' },
                         @{HostHeader = '*' ; IPAddress = '*' ; Name = '*' ; Port = 443 ; Protocol = 'https' }
                     )

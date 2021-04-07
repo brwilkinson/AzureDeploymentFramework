@@ -166,6 +166,7 @@ The following defines the loadbalaners that are required
             "Services": [
               {
                 "LBFEName": "FWP01",
+                "LBBEName": "FWP01",
                 "RuleName": "FWP-64443",
                 "LBFEPort": 64443,
                 "LBBEPort": 64443,
@@ -175,6 +176,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "FWP01",
+                "LBBEName": "FWP01",
                 "RuleName": "FWP-2222",
                 "LBFEPort": 2222,
                 "LBBEPort": 2222,
@@ -183,6 +185,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "FWP02",
+                "LBBEName": "FWP02",
                 "RuleName": "FWP-80",
                 "LBFEPort": 80,
                 "LBBEPort": 80,
@@ -191,6 +194,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "FWP03",
+                "LBBEName": "FWP03",
                 "RuleName": "FWP-3389",
                 "LBFEPort": 3389,
                 "LBBEPort": 3389,
@@ -204,6 +208,7 @@ The following defines the loadbalaners that are required
             "ASName": "API",
             "Sku": "Basic",
             "Type": "Private",
+            "BackEnd": ["API"],
             "FrontEnd": [
               {
                 "SNName": "MT01",
@@ -253,6 +258,7 @@ The following defines the loadbalaners that are required
             "Services": [
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-19000",
                 "LBFEPort": 19000,
                 "LBBEPort": 19000,
@@ -261,6 +267,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-19080",
                 "LBFEPort": 19080,
                 "LBBEPort": 19080,
@@ -269,6 +276,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-19081",
                 "LBFEPort": 19081,
                 "LBBEPort": 19081,
@@ -277,6 +285,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-8988",
                 "LBFEPort": 8988,
                 "LBBEPort": 8988,
@@ -285,6 +294,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-8989",
                 "LBFEPort": 8989,
                 "LBBEPort": 8989,
@@ -293,6 +303,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-8990",
                 "LBFEPort": 8990,
                 "LBBEPort": 8990,
@@ -306,6 +317,7 @@ The following defines the loadbalaners that are required
             "ASName": "BUS",
             "Sku": "Basic",
             "Type": "Private",
+            "BackEnd": ["BUS"],
             "FrontEnd": [
               {
                 "SNName": "MT01",
@@ -327,6 +339,7 @@ The following defines the loadbalaners that are required
             "Services": [
               {
                 "LBFEName": "BUS",
+                "LBBEName": "BUS",
                 "RuleName": "BUS-MQ",
                 "LBFEPort": 5672,
                 "LBBEPort": 5672,
@@ -335,6 +348,7 @@ The following defines the loadbalaners that are required
               },
               {
                 "LBFEName": "BUS",
+                "LBBEName": "BUS",
                 "RuleName": "BUS-MQ-ADMIN",
                 "LBFEPort": 15672,
                 "LBBEPort": 15672,

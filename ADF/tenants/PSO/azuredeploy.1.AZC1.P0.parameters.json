@@ -334,6 +334,7 @@
             "ASName": "API",
             "Sku": "Basic",
             "Type": "Private",
+            "BackEnd": ["API"],
             "FrontEnd": [
               {
                 "SNName": "MT02",
@@ -382,6 +383,7 @@
             "Services": [
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-19000",
                 "LBFEPort": 19000,
                 "LBBEPort": 19000,
@@ -390,6 +392,7 @@
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-19080",
                 "LBFEPort": 19080,
                 "LBBEPort": 19080,
@@ -398,6 +401,7 @@
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-19081",
                 "LBFEPort": 19081,
                 "LBBEPort": 19081,
@@ -406,6 +410,7 @@
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-8988",
                 "LBFEPort": 8988,
                 "LBBEPort": 8988,
@@ -414,6 +419,7 @@
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-8989",
                 "LBFEPort": 8989,
                 "LBBEPort": 8989,
@@ -422,6 +428,7 @@
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-8990",
                 "LBFEPort": 8990,
                 "LBBEPort": 8990,
@@ -435,6 +442,7 @@
             "ASName": "SF",
             "Sku": "Basic",
             "Type": "Private",
+            "BackEnd": ["SF"],
             "FrontEnd": [
               {
                 "SNName": "MT02",
@@ -483,6 +491,7 @@
             "Services": [
               {
                 "LBFEName": "SF",
+                "LBBEName": "SF",
                 "RuleName": "SF-19000",
                 "LBFEPort": 19000,
                 "LBBEPort": 19000,
@@ -491,6 +500,7 @@
               },
               {
                 "LBFEName": "SF",
+                "LBBEName": "SF",
                 "RuleName": "SF-19080",
                 "LBFEPort": 19080,
                 "LBBEPort": 19080,
@@ -499,6 +509,7 @@
               },
               {
                 "LBFEName": "SF",
+                "LBBEName": "SF",
                 "RuleName": "SF-19081",
                 "LBFEPort": 19081,
                 "LBBEPort": 19081,
@@ -507,6 +518,7 @@
               },
               {
                 "LBFEName": "SF",
+                "LBBEName": "SF",
                 "RuleName": "SF-8988",
                 "LBFEPort": 8988,
                 "LBBEPort": 8988,
@@ -515,6 +527,7 @@
               },
               {
                 "LBFEName": "SF",
+                "LBBEName": "SF",
                 "RuleName": "SF-8989",
                 "LBFEPort": 8989,
                 "LBBEPort": 8989,
@@ -523,6 +536,7 @@
               },
               {
                 "LBFEName": "SF",
+                "LBBEName": "SF",
                 "RuleName": "SF-8990",
                 "LBFEPort": 8990,
                 "LBBEPort": 8990,
@@ -539,6 +553,7 @@
             "ASName": "PLB01",
             "Sku": "Standard",
             "Type": "Public",
+            "BackEnd": ["PLB01"],
             "FrontEnd": [
               {
                 "Type": "Public",
@@ -561,6 +576,7 @@
             "ASName": "FIL",
             "Sku": "Standard",
             "Type": "Private",
+            "BackEnd": ["FIL"],
             "FrontEnd": [
               {
                 "SNName": "MT02",
@@ -581,6 +597,7 @@
             "Services": [
               {
                 "LBFEName": "FIL",
+                "LBBEName": "FIL",
                 "RuleName": "FIL-MQ",
                 "LBFEPort": 5672,
                 "LBBEPort": 5672,
@@ -589,6 +606,7 @@
               },
               {
                 "LBFEName": "FIL",
+                "LBBEName": "FIL",
                 "RuleName": "FIL-MQ-ADMIN",
                 "LBFEPort": 15672,
                 "LBBEPort": 15672,
@@ -602,6 +620,7 @@
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
+            "BackEnd": ["CLS01"],
             "FrontEnd": [
               {
                 "SNName": "BE02",

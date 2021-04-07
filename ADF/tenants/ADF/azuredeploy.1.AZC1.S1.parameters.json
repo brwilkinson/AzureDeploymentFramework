@@ -555,6 +555,7 @@
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
+            "BackEnd": ["CLS01"],
             "FrontEnd": [
               {
                 "SNName": "BE01",

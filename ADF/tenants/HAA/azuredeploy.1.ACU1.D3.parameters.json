@@ -66,7 +66,7 @@
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 1,
-        "FRONTDOOR": 0,
+        "FRONTDOOR": 1,
         "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
@@ -243,24 +243,35 @@
                 "Tenant": "HAA"
               }
             ]
+          },
+          {
+            "Name": "BC",
+            "RBAC": [
+              {
+                "Name": "Reader",
+                "RG": "P0",
+                "Prefix": "ACU1",
+                "Tenant": "HAA"
+              }
+            ]
           }
         ],
         "SPInfo": [
-          // {
-          //   "Name": "Microsoft.Azure.Frontdoor",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Key Vault Certificates Officer",
-          //       "RG": "P0",
-          //       "Tenant": "HAA"
-          //     },
-          //     {
-          //       "Name": "Key Vault Secrets User",
-          //       "RG": "P0",
-          //       "Tenant": "HAA"
-          //     }
-          //   ]
-          // },
+          {
+            "Name": "Microsoft.Azure.Frontdoor",
+            "RBAC": [
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "HAA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HAA"
+              }
+            ]
+          },
           {
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
@@ -336,7 +347,7 @@
           {
             "name": "snFE01",
             "prefix": "32/27",
-            "NSG": 1,
+            "NSG": 0,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           },
@@ -435,6 +446,54 @@
             ]
           }
         ],
+        "frontDoorInfo": [
+          {
+            "name": "01",
+            "_afdverify": "HAA",
+            "services": [
+              {
+                "Name": "PLB01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
+                "BEAddress": "api01.haapp.net", //always use the gateway
+                "ProbeName": "probe02",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "_EnableSSL": 1, // _ to rename to disable after initial deployment
+                "patternsToMatch": [
+                  "/api/headers"
+                ]
+              },
+              {
+                // Default (front end) Service is Required, add backend as well for ability to test FE.
+                "Name": "Default",
+                "BEAddress": "portal.azure.com",
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              },
+              {
+                "Name": "probe02",
+                "ProbePath": "/api/headers"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
+            ]
+          }
+        ],
         "Appservers": {
           "AppServers": [
             {
@@ -465,6 +524,9 @@
             "ASName": "PLB01",
             "Sku": "Standard",
             "Type": "Public",
+            "BackEnd": [
+              "PLB01"
+            ],
             "FrontEnd": [
               {
                 "LBFEName": "PLB01",
@@ -508,6 +570,7 @@
             "Services": [
               {
                 "LBFEName": "PLB01",
+                "LBBEName": "PLB01",
                 "RuleName": "API-HTTP",
                 "LBFEPort": 80,
                 "LBBEPort": 80,
@@ -516,6 +579,7 @@
               },
               {
                 "LBFEName": "PLB01",
+                "LBBEName": "PLB01",
                 "RuleName": "API-HTTPS",
                 "LBFEPort": 443,
                 "LBBEPort": 443,
@@ -529,6 +593,9 @@
             "ASName": "API",
             "Sku": "Standard",
             "Type": "Private",
+            "BackEnd": [
+              "API"
+            ],
             "FrontEnd": [
               {
                 "LBFEName": "API",
@@ -564,6 +631,7 @@
             "Services": [
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-HTTP",
                 "LBFEPort": 80,
                 "LBBEPort": 80,
@@ -572,6 +640,7 @@
               },
               {
                 "LBFEName": "API",
+                "LBBEName": "API",
                 "RuleName": "API-HTTPS",
                 "LBFEPort": 443,
                 "LBBEPort": 443,
@@ -692,96 +761,46 @@
               "OSType": "Server2016SS",
               "NodeKind": "API01"
             }
-          }
-        ],
-        "WAFInfo": [
+          },
           {
-            "WAFName": "API01",
-            "WAFEnabled": true,
-            "WAFMode": "Detection",
-            "WAFPolicyAttached": true,
-            "WAFPolicyName": "API",
-            "WAFSize": "WAF_v2",
-            "WAFTier": "WAF_v2",
-            "WAFCapacity": 2,
-            "PrivateIP": "27",
-            "SSLCerts": [
-              "HAAPP-WildCard"
-            ],
+            "VMName": "API03",
+            "AutoScale": true,
+            "PredictiveScale": "Enabled",
+            "saname": "data",
+            "Role": "API",
+            "ASNAME": "API",
+            "DDRole": "64GBSS",
+            "OSType": "Server2019Containerssmall",
+            "Subnet": "MT02",
+            "NATName": "RDP",
             "zones": [
               "1"
             ],
-            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [
-              "254"
+            "_LBBE": [
+              "PLB01"
             ],
-            "pathRules": [],
-            "probes": [
-              // {
-              //   "Name": "probe01",
-              //   "Path": "/",
-              //   "Protocol": "http",
-              //   "useBE": true
-              // },
-              {
-                "Name": "probe02",
-                "Path": "/api/headers",
-                "Protocol": "https",
-                "useBE": false
-              },
-              {
-                "Name": "probe03",
-                "Path": "/api/headers",
-                "Protocol": "http",
-                "useBE": false
-              }
+            "WAFBE": [
+              "API03"
             ],
-            "frontEndPorts": [
-              {
-                "Port": 80
-              },
-              {
-                "Port": 443
-              }
-            ],
-            "BackendHttp": [
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe03"
-              },
-              {
-                "Port": 443,
-                "Protocol": "https",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe02"
-              }
-            ],
-            "Listeners": [
-              {
-                "Port": 443,
-                "BackendPort": "443",
-                "Protocol": "https",
-                "Cert": "HAAPP-WildCard",
-                "Domain": "haapp.net",
-                "Hostname": "API01",
-                "Interface": "Public"
-                // "pathRules": "map1"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "haapp.net",
-                "Hostname": "API01",
-                "Interface": "Public",
-                "httpsRedirect": 1
-                // "pathRules": "map1"
-              }
-            ]
-          },
+            "AutoScalecapacity": {
+              "minimum": "3",
+              "maximum": "9",
+              "default": "3"
+            },
+            "Health": {
+              "protocol": "https",
+              "port": "443",
+              "requestPath": "/api/headers"
+            },
+            "IsPrimary": true,
+            "durabilityLevel": "Bronze",
+            "placementProperties": {
+              "OSType": "Server2016SS",
+              "NodeKind": "API01"
+            }
+          }
+        ],
+        "WAFInfo": [
           {
             "WAFName": "API02",
             "WAFEnabled": false,
@@ -847,7 +866,7 @@
             "Listeners": [
               {
                 "Port": 443,
-                "BackendPort": "443",
+                "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
                 "Domain": "haapp.net",
@@ -860,6 +879,93 @@
                 "Protocol": "http",
                 "Domain": "haapp.net",
                 "Hostname": "API02",
+                "Interface": "Public",
+                "httpsRedirect": 1
+                // "pathRules": "map1"
+              }
+            ]
+          },
+          {
+            "WAFName": "API03",
+            "WAFEnabled": true,
+            "WAFMode": "Detection",
+            "WAFPolicyAttached": true,
+            "WAFPolicyName": "API",
+            "WAFSize": "WAF_v2",
+            "WAFTier": "WAF_v2",
+            "WAFCapacity": 2,
+            "PrivateIP": "27",
+            "SSLCerts": [
+              "HAAPP-WildCard"
+            ],
+            "zones": [
+              "1"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "BEIPs": [
+              // "254"
+            ],
+            "pathRules": [],
+            "probes": [
+              // {
+              //   "Name": "probe01",
+              //   "Path": "/",
+              //   "Protocol": "http",
+              //   "useBE": true
+              // },
+              {
+                "Name": "probe02",
+                "Path": "/api/headers",
+                "Protocol": "https",
+                "useBE": false
+              },
+              {
+                "Name": "probe03",
+                "Path": "/api/headers",
+                "Protocol": "http",
+                "useBE": false
+              }
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe03"
+              },
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe02"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "HAAPP-WildCard",
+                "Domain": "haapp.net",
+                "Hostname": "API03",
+                "Interface": "Public"
+                // "pathRules": "map1"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "haapp.net",
+                "Hostname": "API03",
                 "Interface": "Public",
                 "httpsRedirect": 1
                 // "pathRules": "map1"

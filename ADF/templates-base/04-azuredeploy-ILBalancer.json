@@ -153,6 +153,9 @@
           "DeploymentID": {
             "value": "[parameters('DeploymentID')]"
           },
+          "backEndPools": {
+            "value": "[if(contains(variables('LBInfo')[copyIndex(0)],'BackEnd'),variables('LBInfo')[copyIndex(0)].BackEnd,json('[]') )]"
+          },
           "NATRules": {
             "value": "[if(contains(variables('LBInfo')[copyIndex(0)],'NATRules'),variables('LBInfo')[copyIndex(0)].NATRules,json('[]') )]"
           },

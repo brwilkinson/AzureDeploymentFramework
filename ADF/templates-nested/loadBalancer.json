@@ -8,6 +8,10 @@
     "DeploymentID": {
       "type": "string"
     },
+    "backEndPools": {
+      "type": "array",
+      "defaultValue": []
+    },
     "NATRules": {
       "type": "array",
       "defaultValue": []
@@ -43,6 +47,13 @@
     "networkIdUpper": "[concat(parameters('Global').networkid[0],string(add(1,sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID')))))))]",
     "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('Deployment'),'-vn'))]",
     "copy": [
+      {
+        "name": "backEndPools",
+        "count": "[Length(parameters('backEndPools'))]",
+        "input": {
+          "name": "[parameters('backEndPools')[copyIndex('backEndPools')]]"
+        }
+      },
       {
         "name": "NATPools",
         "count": "[Length(parameters('NATPools'))]",
@@ -204,12 +215,7 @@
       "sku": "[if(contains(parameters('LB'),'Sku'),json( concat('{\"name\":\"',parameters('LB').Sku,'\"}')),json('null'))]",
       "dependsOn": [],
       "properties": {
-        "backendAddressPools": [
-          {
-            "name": "[parameters('LB').ASName]"
-
-          }
-        ],
+        "backendAddressPools": "[variables('backEndPools')]",
         "inboundNatPools": "[variables('NatPools')]",
         "outboundRules": "[variables('outboundRules')]",
         "loadBalancingRules": "[variables('loadBalancingRules')]",

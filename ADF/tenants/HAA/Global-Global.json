@@ -41,7 +41,7 @@
     "RolesLookup": {
       "benwilk@microsoft.com": "c5e10b46-28bb-48da-8cec-23ca8968d53a",
       "BC": "c6c308ea-5d66-418d-8653-37d9e2feb443",
-      "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
+      "Microsoft.Azure.Frontdoor": "f123250b-1b9b-4b25-9ab3-1290b18a8065",
       "HA_App_SRE_Team": "30cdef8c-ac07-4adb-8d6b-b32aaf8d869c",
       "AZ_SQL_Admins": "51e0aa08-f648-461b-b4af-8d5a6e9e09aa",
       "AKS_Admins": "fe3fc890-a38c-47c4-96ce-939a28a8d55a",
