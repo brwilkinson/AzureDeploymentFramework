@@ -827,7 +827,7 @@
                   "Password": "[parameters('vmAdminPassword')]"
                 },
                 "sshPublic": {
-                  "UserName": "pat",
+                  "UserName": "ssh",
                   "Password": "[parameters('sshPublic')]"
                 },
                 "devOpsPat": {

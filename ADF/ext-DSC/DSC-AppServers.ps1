@@ -39,7 +39,7 @@ Configuration AppServers
     Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
     Import-DscResource -ModuleName WVDDSC               # https://github.com/brwilkinson/WVDDSC
     Import-DscResource -ModuleName AppReleaseDSC        # https://github.com/brwilkinson/AppReleaseDSC
-    # Import-DscResource -ModuleName DevOpsAgentDSC     # https://github.com/brwilkinson/DevOpsAgentDSC
+    Import-DscResource -ModuleName DevOpsAgentDSC       # https://github.com/brwilkinson/DevOpsAgentDSC
     Import-DscResource -ModuleName DSCR_Font
     Import-DscResource -ModuleName DSCR_AppxPackage
     
@@ -103,7 +103,7 @@ Configuration AppServers
         'DomainJoin'  = $DomainCreds
         'SQLService'  = $DomainCreds
         'usercreds'   = $AdminCreds
-        'DevOpsPat'   = $sshPublic
+        'DevOpsPat'   = $devOpsPat
     }
     
     If ($AppInfo)
@@ -882,7 +882,7 @@ Configuration AppServers
         #-------------------------------------------------------------------
         Foreach ($DevOpsAgentPool in $node.DevOpsAgentPoolPresent)
         {
-            $poolName = $DevOpsAgentPool.poolName -f $Prefix, $OrgName, $AppName, $Enviro
+            $poolName = $DevOpsAgentPool.poolName -f $Prefix, $OrgName, $App, $environment
                 
             DevOpsAgentPool $poolName
             {
@@ -895,8 +895,8 @@ Configuration AppServers
         #-------------------------------------------------------------------
         Foreach ($DevOpsAgent in $node.DevOpsAgentPresent)
         {
-            $agentName = $DevOpsAgent.name -f $Prefix, $OrgName, $AppName, $Enviro
-            $poolName = $DevOpsAgent.pool -f $Prefix, $OrgName, $AppName, $Enviro
+            $agentName = $DevOpsAgent.name -f $Prefix, $OrgName, $App, $environment
+            $poolName = $DevOpsAgent.pool -f $Prefix, $OrgName, $App, $environment
             
             DevOpsAgent $agentName
             {
@@ -907,7 +907,7 @@ Configuration AppServers
                 orgURL       = $DevOpsAgent.orgUrl
                 Ensure       = $DevOpsAgent.Ensure
                 PATCred      = $credLookup['DevOpsPAT']
-                Credential   = $credLookup[$Agent.Credlookup]
+                Credential   = $credLookup[$DevOpsAgent.Credlookup]
             }
         }
 
@@ -990,15 +990,14 @@ if ((whoami) -notmatch 'system')
         $Cred = Get-Credential localadmin
     }
 
-    # Moved to use MSI to pull SAK
-    # if ($sak)
-    # {
-    #     Write-Warning -Message "StorageAccountKey is good"
-    # }
-    # else
-    # {
-    #     $sak = Read-Host -prompt "Enter the StorageAccountKey to download files"
-    # }
+    if ($devOpsPat)
+    {
+        Write-Warning -Message "devOpsPat is good"
+    }
+    else
+    {
+        $devOpsPat = Get-Credential devOpsPat
+    }
 
     # Set the location to the DSC extension directory
     if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
@@ -1062,6 +1061,7 @@ $dep = '{0}{1}{2}{3}' -f $prefix, $org, $app, $depname
 $ClientId = @{
     S1 = '5438d30f-e71c-4e9c-b0d9-117f5d154d82'
     P0 = 'ac061a4c-ef53-4397-abcb-d3c72329d53c'
+    D3 = '7628bb94-4636-4fe4-802f-a4241a015134'
 }
 
 $Params = @{
@@ -1070,7 +1070,8 @@ $Params = @{
     DomainName        = $Domain
     networkID         = $Net
     ConfigurationData = '.\*-ConfigurationData.psd1' 
-    AdminCreds        = $cred 
+    AdminCreds        = $cred
+    DevOpsPat         = $cred 
     Deployment        = $dep  #AZE2ADFD5 (AZE2ADFD5JMP01)
     Verbose           = $true
     #DNSInfo           = '{"APIM":"104.46.120.132","APIMDEV":"104.46.102.64","WAF":"c0a1dcd4-dbab-4bba-a581-29ae2ff8ce00.cloudapp.net","WAFDEV":"46eb8888-5986-4783-bb19-cab76935978b.cloudapp.net"}'
