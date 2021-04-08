@@ -1,9 +1,10 @@
 Configuration AppServers
 {
-    Param ( 
+    Param (
         [String]$DomainName,
         [PSCredential]$AdminCreds,
         [PSCredential]$sshPublic,
+        [PSCredential]$devOpsPat,
         [Int]$RetryCount = 30,
         [Int]$RetryIntervalSec = 120,
         [String]$ThumbPrint,
@@ -878,6 +879,38 @@ Configuration AppServers
             }
         }
 
+        #-------------------------------------------------------------------
+        Foreach ($DevOpsAgentPool in $node.DevOpsAgentPoolPresent)
+        {
+            $poolName = $DevOpsAgentPool.poolName -f $Prefix, $OrgName, $AppName, $Enviro
+                
+            DevOpsAgentPool $poolName
+            {
+                PoolName = $poolName
+                PATCred  = $credLookup['DevOpsPAT']
+                orgURL   = $DevOpsAgentPool.orgUrl
+            }
+        }
+
+        #-------------------------------------------------------------------
+        Foreach ($DevOpsAgent in $node.DevOpsAgentPresent)
+        {
+            $agentName = $DevOpsAgent.name -f $Prefix, $OrgName, $AppName, $Enviro
+            $poolName = $DevOpsAgent.pool -f $Prefix, $OrgName, $AppName, $Enviro
+            
+            DevOpsAgent $agentName
+            {
+                PoolName     = $poolName
+                AgentName    = $agentName
+                AgentBase    = $DevOpsAgent.AgentBase
+                AgentVersion = $DevOpsAgent.AgentVersion
+                orgURL       = $DevOpsAgent.orgUrl
+                Ensure       = $DevOpsAgent.Ensure
+                PATCred      = $credLookup['DevOpsPAT']
+                Credential   = $credLookup[$Agent.Credlookup]
+            }
+        }
+
         #------------------------------------------------------
         # Reboot after Package Install
         xPendingReboot RebootForPackageInstall
@@ -891,263 +924,53 @@ Configuration AppServers
         }
         #-------------------------------
 
-        Foreach ($DevOpsAgent in $node.DevOpsAgentPresent)
-        {
-            # Variables
-            $DevOpsOrganization = $DevOpsAgent.orgUrl | Split-Path -Leaf
-            $AgentFile = "vsts-agent-win-x64-$($DevOpsAgent.agentVersion).zip"
-            $AgentFilePath = "$($DevOpsAgent.AgentBase)\$AgentFile"
-            $URI = "https://vstsagentpackage.azureedge.net/agent/$($DevOpsAgent.agentVersion)/$AgentFile"
-
-            Script DownloadAgent
-            {
-                GetScript  = {
-                    @{
-                        AgentInfo = (Get-Item -Path $Using:AgentFilePath -EA ignore)
-                    }
-                }
-                TestScript = {
-                    Test-Path -Path $Using:AgentFilePath
-                }
-                SetScript  = {
-                    $Agent = $Using:DevOpsAgent
-                    mkdir -Path $Agent.AgentBase -Force -EA ignore
-                    Invoke-WebRequest -Uri $Using:URI -OutFile $Using:AgentFilePath -Verbose
-                }
-            }
-
-            $Pools = $DevOpsAgent.Agents.pool | Select-Object -Unique
-            $mypatp = $credlookup['DevOpsPat'].GetNetworkCredential().password
-            $s = [System.Text.ASCIIEncoding]::new()
-            $PatBasic = [System.Convert]::ToBase64String($s.GetBytes(":$mypatp"))
-
-            foreach ($pool in $Pools)
-            {
-                $myPool = ($pool -f $Prefix, $environment)
-                
-                Script ('Pool_' + $myPool)
-                {
-                    GetScript  = {
-                        $PoolName = $using:myPool
-
-                        $headers = @{
-                            'Authorization' = "Basic $using:PatBasic"
-                            'Accept'        = 'application/json'
-                        }       
-                        $Params = @{  
-                            Method          = 'GET' 
-                            Headers         = $headers
-                            UseBasicParsing = $true 
-                            ErrorAction     = 'Stop' 
-                            ContentType     = 'application/json' 
-                            OutVariable     = 'result' 
-                        }
-
-                        $URI = 'https://dev.azure.com/{0}/_apis/distributedtask/pools' -f $Using:DevOpsOrganization
-                        $URI += "?poolName=$($PoolName)&poolType=automation"
-                        $URI += '?api-version=6.0-preview.1'
-                        $Params['Uri'] = $URI
-                        $r = Invoke-WebRequest @Params -Verbose
-                        $agentPools = $result[0].Content | ConvertFrom-Json
-                        
-                        if ($agentPools.count -gt 0)
-                        {
-                            $Selfhosted = $agentpools.value | Where-Object -Property isHosted -EQ $false
-                            $out = $Selfhosted | 
-                                Select-Object name, id, createdOn, isHosted, poolType | Format-Table -AutoSize | Out-String
-                            @{pool = $out }
-                        }
-                        else
-                        {
-                            @{pool = "no Pool $PoolName" }
-                        }
-                    }
-                    TestScript = {
-
-                        $PoolName = $using:myPool
-
-                        $headers = @{
-                            'Authorization' = "Basic $($using:PatBasic)"
-                            'Accept'        = 'application/json'
-                        }       
-                        $Params = @{  
-                            Method          = 'GET' 
-                            Headers         = $headers
-                            UseBasicParsing = $true 
-                            ErrorAction     = 'Stop' 
-                            ContentType     = 'application/json' 
-                            OutVariable     = 'result' 
-                        }
-
-                        $URI = 'https://dev.azure.com/{0}/_apis/distributedtask/pools' -f $Using:DevOpsOrganization
-                        $URI += "?poolName=$($PoolName)&poolType=automation"
-                        $URI += '?api-version=6.0-preview.1'
-                        $Params['Uri'] = $URI
-                        $r = Invoke-WebRequest @Params -Verbose
-                        $agentPools = $result[0].Content | ConvertFrom-Json
-                        
-                        if ($agentPools.count -gt 0)
-                        {
-                            $Selfhosted = $agentpools.value | Where-Object -Property isHosted -EQ $false
-                            $out = $Selfhosted | 
-                                Select-Object name, id, createdOn, isHosted, poolType | Format-Table -AutoSize | Out-String
-                            Write-Verbose $out -Verbose
-                            $true
-                        }
-                        else
-                        {
-                            Write-Verbose "PoolName $PoolName not found" -Verbose
-                            $false
-                        }
-                    }
-                    Setscript  = {
-                        $PoolName = $using:myPool
-
-                        $headers = @{
-                            'Authorization' = "Basic $($using:PatBasic)"
-                            'Accept'        = 'application/json'
-                        }       
-                        $Params = @{  
-                            Method          = 'GET' 
-                            Headers         = $headers
-                            UseBasicParsing = $true 
-                            ErrorAction     = 'Stop' 
-                            ContentType     = 'application/json' 
-                            OutVariable     = 'result' 
-                        }
-
-                        $URI = 'https://dev.azure.com/{0}/_apis/distributedtask/pools' -f $Using:DevOpsOrganization
-                        $URI += '?api-version=6.0-preview.1'
-                        $Body = @{
-                            autoProvision = $true
-                            name          = $PoolName
-                        } | ConvertTo-Json
-                        $Params['Method'] = 'POST'
-                        $Params['Body'] = $Body
-                        $Params['Uri'] = $URI
-                        $r = Invoke-WebRequest @Params -Verbose
-                        $out = $result[0].Content | ConvertFrom-Json | 
-                            Select-Object name, id, createdOn, isHosted, poolType | Format-Table -AutoSize | Out-String
-                        Write-Verbose $out -Verbose
-                    }
-                }
-            }
-
-            foreach ($agent in $DevOpsAgent.Agents)
-            {
-                # Windows Service Domain Credentials
-                $mycredp = $credlookup["$($agent.Credlookup)"].GetNetworkCredential().password
-                $mycredu = $credlookup["$($agent.Credlookup)"].username
-
-                $agentName = ($agent.Name -f $Prefix, $environment)
-                $poolName = ($agent.Pool -f $Prefix, $environment)
-                $ServiceName = "vstsagent.$DevOpsOrganization.$poolName.$agentName"
-
-                #$log = get-childitem -path .\_diag\ -ErrorAction Ignore | sort LastWriteTime | select -last 1
-
-                Script ('Agent_' + $agentName)
-                {
-                    GetScript  = {
-                        @{result = Get-Service -Name $using:ServiceName -ErrorAction Ignore -Verbose }
-                    }
-                    TestScript = {
-                        $agent = $using:Agent
-                        Write-Verbose -Message "Configuring service [$using:ServiceName] as [$($agent.Ensure)]" -Verbose 
-                        $service = Get-Service -Name $using:ServiceName -ErrorAction Ignore -Verbose
-
-                        if (-Not $Service)
-                        {
-                            if ($agent.Ensure -eq 'Present') { $false }else { $true }
-                        }
-                        else
-                        {
-                            if ($agent.Ensure -eq 'Absent') { $false }else { $true }
-                        }
-                    }
-                    Setscript  = {
-                        $agent = $using:Agent
-                        # Windows Service Domain Credentials
-                        $DevOpsAgent = $using:DevOpsAgent
-                        $credlookup = $using:credlookup
-                        $AgentPath = "F:\vsagents\$($using:agentName)"
-                        # PAT Token
-                        $mypatp = $credlookup['DevOpsPat'].GetNetworkCredential().password
-                        Push-Location
-                        mkdir -Path $AgentPath -EA ignore
-                        Set-Location -Path $AgentPath
-
-                        if (-not (Test-Path -Path .\config.cmd))
-                        {
-                            Add-Type -AssemblyName System.IO.Compression.FileSystem
-                            [System.IO.Compression.ZipFile]::ExtractToDirectory($using:AgentFilePath, $PWD)
-                        }
-
-                        if ($agent.Ensure -eq 'Present')
-                        {
-                            Write-Verbose -Message "Installing service [$using:ServiceName] setting as [$($agent.Ensure)]" -Verbose 
-                            .\config.cmd --pool $using:poolName --agent $using:agentName --auth pat --token $mypatp --url $DevOpsAgent.orgUrl --acceptTeeEula `
-                                --unattended --runAsService --windowsLogonAccount $using:mycredu --windowsLogonPassword $using:mycredp
-                            Pop-Location
-                        }
-                        elseif ($agent.Ensure -eq 'Absent')
-                        {
-                            Write-Verbose -Message "Removing service [$using:ServiceName] setting as [$($agent.Ensure)]" -Verbose 
-                            .\config.cmd remove --unattended --auth pat --token $mypatp
-                            Pop-Location
-                            Remove-Item -Path $AgentPath -Force -Recurse
-                        }
-                    }
-                }
-            }
-        }
-
-        If ($Node.VSTSAgent)
-        {
-            $mycredp = $credlookup["$($Node.VSTSAgent)"].GetNetworkCredential().password
-            $mycredu = $credlookup["$($Node.VSTSAgent)"].username
-            Write-Warning "Mycred: $mycredu"
-            # setup the vsts service to run as the domain account
+        # If ($Node.VSTSAgent)
+        # {
+        #     $mycredp = $credlookup["$($Node.VSTSAgent)"].GetNetworkCredential().password
+        #     $mycredu = $credlookup["$($Node.VSTSAgent)"].username
+        #     Write-Warning "Mycred: $mycredu"
+        #     # setup the vsts service to run as the domain account
             
-            UserRightsAssignment $mycredu
-            {
-                Identity = $mycredu
-                Policy   = 'Log_on_as_a_service'
-            }
+        #     UserRightsAssignment $mycredu
+        #     {
+        #         Identity = $mycredu
+        #         Policy   = 'Log_on_as_a_service'
+        #     }
 
-            Script ConfigureBuildAgent
-            {
-                GetScript  = {
-                    @{result = Get-Service | Where-Object { $_.name -match 'vstsagent.azuredeploymentframework' } }
-                }
-                TestScript = {
-                    $successFlag = $True             
-                    $services = Get-CimInstance -ClassName win32_service -Filter "Name LIKE 'vstsagent.azuredeploymentframework%'"                
-                    foreach ($service in $services)
-                    {
-                        if ($service.startname -eq $using:mycredu)
-                        {
-                            Write-Warning "VSTS service: $($service.Name) -- Correct StartName: $($service.startname)"
-                        }
-                        else
-                        {
-                            Write-Warning "VSTS service: $($service.Name) -- Not Correct StartName: $($service.startname)"
-                            $successFlag = $False 
-                        }
-                    }
-                    $successFlag
-                }
-                Setscript  = {
-                    $services = Get-CimInstance -ClassName win32_service -Filter "Name LIKE 'vstsagent.azuredeploymentframework%'"
-                    $services | Where-Object startname -NE $using:mycredu | ForEach-Object {                     
-                        $arguments = @{StartName = $using:mycredu ; StartPassword = $using:mycredp }
-                        Invoke-CimMethod -MethodName Change -InputObject $_ -Arguments $arguments
-                        Invoke-CimMethod -MethodName StopService -InputObject $_
-                        Start-Sleep -Seconds 60
-                        Invoke-CimMethod -MethodName StartService -InputObject $_
-                    }
-                }
-            }
-        }#end jmp
+        #     Script ConfigureBuildAgent
+        #     {
+        #         GetScript  = {
+        #             @{result = Get-Service | Where-Object { $_.name -match 'vstsagent.azuredeploymentframework' } }
+        #         }
+        #         TestScript = {
+        #             $successFlag = $True
+        #             $services = Get-CimInstance -ClassName win32_service -Filter "Name LIKE 'vstsagent.azuredeploymentframework%'"
+        #             foreach ($service in $services)
+        #             {
+        #                 if ($service.startname -eq $using:mycredu)
+        #                 {
+        #                     Write-Warning "VSTS service: $($service.Name) -- Correct StartName: $($service.startname)"
+        #                 }
+        #                 else
+        #                 {
+        #                     Write-Warning "VSTS service: $($service.Name) -- Not Correct StartName: $($service.startname)"
+        #                     $successFlag = $False 
+        #                 }
+        #             }
+        #             $successFlag
+        #         }
+        #         Setscript  = {
+        #             $services = Get-CimInstance -ClassName win32_service -Filter "Name LIKE 'vstsagent.azuredeploymentframework%'"
+        #             $services | Where-Object startname -NE $using:mycredu | ForEach-Object {
+        #                 $arguments = @{StartName = $using:mycredu ; StartPassword = $using:mycredp }
+        #                 Invoke-CimMethod -MethodName Change -InputObject $_ -Arguments $arguments
+        #                 Invoke-CimMethod -MethodName StopService -InputObject $_
+        #                 Start-Sleep -Seconds 60
+        #                 Invoke-CimMethod -MethodName StartService -InputObject $_
+        #             }
+        #         }
+        #     }
+        # }#end jmp
     }
 }#Main
 

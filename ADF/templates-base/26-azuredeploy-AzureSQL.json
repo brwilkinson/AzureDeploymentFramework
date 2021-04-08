@@ -57,6 +57,9 @@
     "vmAdminPassword": {
       "type": "securestring"
     },
+    "devOpsPat": {
+      "type": "securestring"
+    },
     "sshPublic": {
       "type": "securestring"
     }

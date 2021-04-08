@@ -4,6 +4,7 @@ Configuration VMSS
         [String]$DomainName,
         [PSCredential]$AdminCreds,
         [PSCredential]$sshPublic,
+        [PSCredential]$devOpsPat,
         [Int]$RetryCount = 30,
         [Int]$RetryIntervalSec = 120,
         [String]$ThumbPrint,

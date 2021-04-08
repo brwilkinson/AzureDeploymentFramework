@@ -4,7 +4,6 @@ param (
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
 AzSet -Enviro $enviro -App $App
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-deploy\00-azuredeploy-sub-InitialRG.json -SubscriptionDeploy
 break
 # F8 to run individual steps
 

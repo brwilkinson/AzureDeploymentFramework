@@ -4,6 +4,7 @@ Configuration SQLServers
         [String]$DomainName,
         [PSCredential]$AdminCreds,
         [PSCredential]$sshPublic,
+        [PSCredential]$devOpsPat,
         [PSCredential]$DomainJoinCreds,
         [PSCredential]$DomainSQLCreds,
         [Int]$RetryCount = 30,

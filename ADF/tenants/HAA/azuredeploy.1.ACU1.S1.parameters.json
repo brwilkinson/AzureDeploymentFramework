@@ -27,6 +27,14 @@
         "secretName": "sshPublic"
       }
     },
+    "devOpsPat": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-HAA-P0-kvVLT01"
+        },
+        "secretName": "devOpsPat"
+      }
+    },
     "Stage": {
       "value": {
         "RG": 1,

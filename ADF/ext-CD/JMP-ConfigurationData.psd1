@@ -46,7 +46,34 @@
 
             DisableIEESC                   = $True
 
-            PowerShellModulesPresent       = 'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git', 'Terminal-Icons', 'Az.ManagedServiceIdentity'
+            PowerShellModulesPresent       = @(
+                'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git',
+                'Terminal-Icons', 'Az.ManagedServiceIdentity'
+            )
+
+            DevOpsAgentPoolPresent      = @(
+                @{poolName = '{0}-{1}-{2}-{3}-Apps1' ; orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/' }
+            )
+
+            DevOpsAgentPresent          = @(
+                @{
+                    name = '{0}-{1}-{2}-{3}-Apps101'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Present';
+                    Credlookup = 'DomainCreds' ; AgentBase = 'D:\vsts-agent' ; AgentVersion = '2.184.2'
+                    orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/'
+                },
+
+                @{
+                    name = '{0}-{1}-{2}-{3}-Apps102'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Present';
+                    Credlookup = 'DomainCreds' ; AgentBase = 'D:\vsts-agent'; AgentVersion = '2.184.2'
+                    orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/'
+                },
+                
+                @{
+                    name = '{0}-{1}-{2}-{3}-Infra01'; pool = '{0}-{1}-{2}-{3}-Infra01'; Ensure = 'Present';
+                    Credlookup = 'DomainCreds' ; AgentBase = 'D:\vsts-agent'; AgentVersion = '2.184.2'
+                    orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/'
+                }
+            )
 
             # PowerShellModulesPresentCustom2 = @(
             #     @{Name = 'Az'; RequiredVersion = '5.3.0' }

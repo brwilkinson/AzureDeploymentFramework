@@ -55,8 +55,10 @@
     "DeploymentInfo": {
       "type": "object"
     },
-
     "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "devOpsPat": {
       "type": "securestring"
     },
     "sshPublic": {

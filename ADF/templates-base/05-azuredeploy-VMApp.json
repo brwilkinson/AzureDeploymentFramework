@@ -61,6 +61,9 @@
     "vmAdminPassword": {
       "type": "securestring"
     },
+    "devOpsPat": {
+      "type": "securestring"
+    },
     "sshPublic": {
       "type": "securestring"
     }
@@ -826,6 +829,10 @@
                 "sshPublic": {
                   "UserName": "pat",
                   "Password": "[parameters('sshPublic')]"
+                },
+                "devOpsPat": {
+                  "UserName": "pat",
+                  "Password": "[parameters('devOpsPat')]"
                 }
               },
               "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
