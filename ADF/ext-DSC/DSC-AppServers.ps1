@@ -720,7 +720,7 @@ Configuration AppServers
                 }#Test
             }#[Script]VirtualDirCreds
         }
-            
+
         #------------------------------------------------------
         foreach ($WebApplication in $Node.WebApplicationsPresent)
         {
@@ -1115,7 +1115,6 @@ Invoke-Command $ComputerName {
     Find-Package -ForceBootstrap -Name xComputerManagement
     Install-Module -Name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC -Force -Verbose
 }
-
 
 #test-wsman
 #get-service winrm | restart-service -PassThru

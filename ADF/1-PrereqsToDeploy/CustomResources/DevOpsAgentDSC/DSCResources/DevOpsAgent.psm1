@@ -103,7 +103,7 @@ class DevOpsAgent
             {
                 $mycredp = $this.Credential.GetNetworkCredential().password
                 $mycredu = $this.Credential.username
-                $CredArgs = @('--runAsService', '--windowsLogonAccount', $mycredu, '--windowsLogonPassword', $mycredp)
+                $CredArgs = @('--windowsLogonAccount', $mycredu, '--windowsLogonPassword', $mycredp)
             }
             else
             {
@@ -112,7 +112,7 @@ class DevOpsAgent
             
             Write-Verbose -Message "Installing service [$ServiceName] setting as [$($this.Ensure)]" -Verbose
             .\config.cmd --pool $this.PoolName --agent $this.AgentName --auth pat --token $mypatp --url $this.orgUrl --acceptTeeEula `
-                --unattended $CredArgs
+                --unattended --runAsService $CredArgs
             Pop-Location
         }
         elseif ($this.Ensure -eq 'Absent')
