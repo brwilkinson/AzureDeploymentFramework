@@ -5,12 +5,12 @@
 
 # This is our Master list of Modules in the project
 param (
-    $Modules = @('xPSDesiredStateConfiguration', 'xPendingReboot', 'SQLServerDsc', #need to check new version instead of custom for memory
+    $Modules = @('xPSDesiredStateConfiguration', 'xPendingReboot', 'SQLServerDsc',
         'xWebAdministration', 'xFailoverCluster', 'xnetworking', 'AccessControlDsc',
         'SecurityPolicyDSC', 'xTimeZone', 'xSystemSecurity', 'xRemoteDesktopSessionHost',
         'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 'xSmbShare', 'PolicyFileEditor',
-        'ComputerManagementDsc', 'NetworkingDSC', 'CertificateDsc' #old 'xComputerManagement','xStorage','xnetworking'
-        'StorageDsc', 'xActiveDirectory', 'xDFS', 'xDNSServer', 'DSCR_AppxPackage','DSCR_Font' #,'storagepoolcustom' # SQLServerDsc
+        'ComputerManagementDsc', 'NetworkingDSC', 'CertificateDsc',
+        'StorageDsc', 'xActiveDirectory', 'xDFS', 'xDNSServer', 'DSCR_AppxPackage','DSCR_Font'
     ),
     [Int32]$DownloadLatest = 0
 )
