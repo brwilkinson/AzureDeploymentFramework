@@ -1233,7 +1233,6 @@
         "MonitoringAgent": 0,
         "IaaSDiagnostics": 0,
         "DependencyAgent": 0,
-        "DSC": 0,
         "Scripts": 0,
         "MSI": 0,
         "CertMgmt": 0,

@@ -10,7 +10,8 @@ param (
         'SecurityPolicyDSC', 'xTimeZone', 'xSystemSecurity', 'xRemoteDesktopSessionHost',
         'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 'xSmbShare', 'PolicyFileEditor',
         'ComputerManagementDsc', 'NetworkingDSC', 'CertificateDsc',
-        'StorageDsc', 'xActiveDirectory', 'xDFS', 'xDNSServer', 'DSCR_AppxPackage','DSCR_Font'
+        'StorageDsc', 'xActiveDirectory', 'xDFS', 'xDNSServer', 'DSCR_AppxPackage','DSCR_Font',
+        'nxNetworking','nx','nxComputerManagement'
     ),
     [Int32]$DownloadLatest = 0
 )

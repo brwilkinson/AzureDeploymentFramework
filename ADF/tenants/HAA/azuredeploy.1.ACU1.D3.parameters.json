@@ -524,6 +524,24 @@
                 }
               ]
             }
+          ],
+          "AppServersLinux": [
+            {
+              "VMName": "LIN01",
+              "Role": "LIN",
+              "ASName": "LIN",
+              "DDRole": "64GB",
+              "OSType": "CentOS75",
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "StaticIP": "59",
+                  "PublicIP": "Static"
+                }
+              ]
+            }
           ]
         },
         "LBInfo": [
