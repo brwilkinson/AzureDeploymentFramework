@@ -83,6 +83,7 @@
         "REDIS": 0,
         "APIM": 0,
         "ACR": 0,
+        "ACI": 0,
         "AKS": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
@@ -121,7 +122,7 @@
       "value": {
         "rolesInfo": [
           {
-            "Name": "benwilk@Microsoft.com",
+            "Name": "BW",
             "RBAC": [
               {
                 "Name": "Storage Blob Data Contributor"

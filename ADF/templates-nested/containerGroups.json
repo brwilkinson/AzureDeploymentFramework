@@ -1,0 +1,165 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "DeploymentURI": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "Environment": {
+      "type": "string"
+    },
+    "ACIInfo": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "OMSworkspaceID": {
+      "type": "string"
+    },
+    "WebUser": {
+      "type": "securestring"
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
+    }
+  },
+  "variables": {
+
+    "copy": [
+      {
+        "name": "Instances",
+        "count": "[parameters('ACIInfo').InstanceCount]",
+        "input": {
+          "name": "[concat(parameters('ACIInfo').Name,'-',copyIndex('Instances'))]",
+          "location": "[if(contains(parameters('ACIInfo'),'locations'),
+                          parameters('ACIInfo').locations[mod(copyIndex('Instances'),parameters('ACIInfo').InstanceCount)],
+                          resourceGroup().location)]"
+        }
+      },
+      {
+        "name": "ENVVARS",
+        "count": "[length(parameters('ACIInfo').environmentVariables)]",
+        "input": {
+          "name": "[parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')].name]",
+          "value": "[if(contains(parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')],'value'),
+                        parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')].value,
+                        json('null')
+                      )]",
+          "secureValue": "[if(contains(parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')],'secureValue'),
+                        replace(parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')].secureValue,'{WebUser}',parameters('WebUser')),
+                        json('null')
+                      )]"
+        }
+      },
+      {
+        "name": "Mounts",
+        "count": "[length(parameters('ACIInfo').volumeMounts)]",
+        "input": {
+          "name": "[parameters('ACIInfo').volumeMounts[copyIndex('Mounts')].name]",
+          "readOnly": false,
+          "mountpath": "[parameters('ACIInfo').volumeMounts[copyIndex('Mounts')].mountPath]"
+        }
+      },
+      {
+        "name": "ports",
+        "count": "[length(parameters('ACIInfo').ports)]",
+        "input": {
+          "protocol": "TCP",
+          "port": "[parameters('ACIInfo').ports[copyIndex('ports')]]"
+        }
+      }
+    ],
+    "userAssignedIdentities": {
+      "Default": {
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(parameters('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(parameters('Deployment'),'-uaiStorageAccountOperatorGlobal'))]": {
+        },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(parameters('Deployment'),'-uaiStorageAccountFileContributor'))]": {
+        }
+      }
+    }
+  },
+
+  "resources": [
+    {
+      "name": "[concat(parameters('Deployment'),'-aci-',variables('Instances')[copyIndex(0)].name)]",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-03-01",
+      "location": "[variables('Instances')[copyIndex(0)].location]",
+      "copy": {
+        "name": "instanceLoop",
+        "count": "[length(variables('Instances'))]"
+      },
+      "identity": {
+        "type": "SystemAssigned, UserAssigned",
+        "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
+      },
+      "properties": {
+        "copy": [
+          {
+            "name": "containers",
+            "count": "[parameters('ACIInfo').scaleCount]",
+            "input": {
+              "name": "[concat(variables('Instances')[copyIndex(0)].name,'-',copyIndex('containers'))]",
+              "properties": {
+                "image": "[parameters('ACIInfo').image]",
+                "command": "[if(contains(parameters('ACIInfo'),'command'),parameters('ACIInfo').command,json('null'))]",
+                "ports": "[variables('ports')]",
+                "environmentVariables": "[if(contains(parameters('ACIInfo'),'environmentVariables'),variables('ENVVARS'),json('null'))]",
+                "volumeMounts": "[variables('Mounts')]",
+                "resources": {
+                  "requests": {
+                    "memoryInGB": "[parameters('ACIInfo').memoryInGB]",
+                    "cpu": "[parameters('ACIInfo').cpu]"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "volumes",
+            "count": "[length(parameters('ACIInfo').volumeMounts)]",
+            "input": {
+              "name": "[parameters('ACIInfo').volumeMounts[copyIndex('volumes')].name]",
+              "azureFile": {
+                "shareName": "[parameters('ACIInfo').volumeMounts[copyIndex('volumes')].name]",
+                "readOnly": false,
+                "storageAccountName": "[concat(parameters('DeploymentURI'),'sa',parameters('ACIInfo').volumeMounts[copyIndex('volumes')].storageAccount)]",
+                "storageAccountKey": "[listKeys(resourceid('Microsoft.Storage/storageAccounts/',concat(parameters('DeploymentURI'),'sa',parameters('ACIInfo').volumeMounts[copyIndex('volumes')].storageAccount)), '2016-01-01').keys[0].value]"
+              }
+            }
+          }
+        ],
+        "sku": "Standard",
+        "initContainers": [],
+        "restartPolicy": "Always",
+        "ipAddress": {
+          "ports": "[variables('ports')]",
+          "type": "[if(equals(parameters('ACIInfo').isPublic,0),'Private','Public')]",
+          "dnsNameLabel": "[tolower(concat(parameters('Deployment'),'-aci-',variables('Instances')[copyIndex(0)].name))]"
+        },
+        "osType": "Linux",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(parameters('OMSworkspaceID'), '2017-04-26-preview').CustomerId]",
+            "workspaceKey": "[listKeys(parameters('OMSworkspaceID'), '2015-11-01-preview').primarySharedKey]",
+            "logType": "ContainerInsights",
+            "metadata": {}
+          }
+        }
+      }
+    }
+  ]
+}

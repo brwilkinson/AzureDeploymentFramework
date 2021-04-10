@@ -53,6 +53,10 @@
     "DeploymentInfo": {
       "type": "object"
     },
+    "deploymentTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]"
+    },
     "vmAdminPassword": {
       "type": "securestring"
     },
@@ -64,41 +68,54 @@
     }
   },
   "variables": {
+    // Global  BRWDev101
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+
+    "subscriptionId": "[subscription().subscriptionId]",
+    "resourceGroupName": "[resourceGroup().name]",
+    // Network
+    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],int(parameters('DeploymentID')))))]",
+    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', concat(Variables('Deployment'),'-vn'))]",
+    "SubnetInfo": "[parameters('DeploymentInfo').SubnetInfo]",
+
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
-    "storageInfo": "[if(contains(parameters('DeploymentInfo'),'saInfo'),parameters('DeploymentInfo').saInfo,createArray())]",
+
+    "AppVault": "[concat(variables('Deployment'),'-kvApp01')]",
+
+    "ACIInfo": "[if(contains(parameters('DeploymentInfo'),'ACIInfo'),parameters('DeploymentInfo').ACIInfo,createArray())]",
     "copy": [
       {
-        "name": "SA",
-        "count": "[length(variables('storageInfo'))]",
+        "name": "ACI",
+        "count": "[length(variables('ACIInfo'))]",
         "input": {
           "match": "[or(
                         equals(parameters('Global').CN,'.'),
-                        contains(parameters('Global').CN,parameters('DeploymentInfo').saInfo[copyIndex('SA')].nameSuffix)
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').ACIInfo[copyIndex('ACI')].Name)
                         )]"
         }
       }
     ]
+
   },
   "resources": [
     {
-      "condition": "[variables('SA')[copyIndex(0)].match]",
-      "name": "[concat('dp', variables('Deployment'), '-storageDeploy',if(equals(length(variables('SA')),0),'',variables('storageInfo')[copyIndex()].nameSuffix))]",
+      "condition": "[variables('ACI')[copyIndex(0)].match]",
+      "name": "[concat('dp', variables('Deployment'), '-containergroupDeploy',if(equals(length(variables('ACI')),0),'',variables('ACIInfo')[copyIndex()].name))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-06-01",
       "dependsOn": [
         // "[concat('setdns',copyIndex(0))]"
       ],
       "copy": {
-        "name": "SALoop",
-        "count": "[length( variables('SA') )]"
+        "name": "aciLoop",
+        "count": "[length( variables('ACI') )]"
       },
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/storage.json', parameters('global')._artifactsLocationSasToken)]",
+          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/containerGroups.json', parameters('global')._artifactsLocationSasToken)]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -114,8 +131,8 @@
           "Environment": {
             "value": "[parameters('Environment')]"
           },
-          "storageInfo": {
-            "value": "[variables('storageInfo')[copyIndex(0)]]"
+          "ACIInfo": {
+            "value": "[variables('ACIInfo')[copyIndex(0)]]"
           },
           "Global": {
             "value": "[parameters('Global')]"
@@ -125,6 +142,14 @@
           },
           "OMSworkspaceID": {
             "value": "[variables('OMSworkspaceID')]"
+          },
+          "WebUser": {
+            "reference": {
+              "keyVault": {
+                "id": "[resourceId('Microsoft.KeyVault/vaults',variables('AppVault'))]"
+              },
+              "secretName": "WebUser"
+            }
           }
         }
       }

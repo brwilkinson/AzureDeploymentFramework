@@ -513,9 +513,10 @@ Function global:Start-AzDeploy
             {
                 Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
 
-                Get-AzResourceGroupDeploymentWhatIfResult -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName `
-                    -Verbose -ErrorVariable ErrorMessages -ResultFormat $WhatIfFormat -OutVariable global:Whatif
+                New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
+                    -ResourceGroupName $ResourceGroupName -WhatIfResultFormat $WhatIfFormat -whatif `
+                    -Verbose -ErrorVariable ErrorMessages -OutVariable global:Whatif
+                
                 return $whatif
             }
             else 
@@ -523,8 +524,7 @@ Function global:Start-AzDeploy
                 Write-Warning "`n`tRunning Deployment !!!!"
 
                 New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName `
-                    -Verbose -ErrorVariable ErrorMessages
+                    -ResourceGroupName $ResourceGroupName -Verbose -ErrorVariable ErrorMessages
             }
         }
     }

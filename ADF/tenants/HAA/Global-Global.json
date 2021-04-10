@@ -11,7 +11,10 @@
     "PrimaryPrefix": "ACU1",
     "SecondaryLocation": "EastUS2",
     "SecondaryPrefix": "AEU2",
-    "PublicIPAddressforRemoteAccess": "73.157.100.227/32",
+    "PublicIPAddressforRemoteAccess": [
+      "73.157.100.227/32",
+      "157.100.170.101/32"
+    ],
     "vmAdminUserName": "brw",
     "CertURLs": [
       "*.haapp.net",
@@ -27,7 +30,7 @@
     "ADOProject": "ADF",
     "AZDevOpsOrg": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [
-      "benwilk@microsoft.com"
+      "BW"
     ],
     "defaultWAFsslpolicyName": "AppGwSslPolicy20170401S",
     "apimPublisherEmail": "alerts@contoso.com",
@@ -39,7 +42,7 @@
     "sqlCredentialName": "localadmin",
     "sqlAutobackupRetentionPeriod": 5,
     "RolesLookup": {
-      "benwilk@microsoft.com": "c5e10b46-28bb-48da-8cec-23ca8968d53a",
+      "BW": "c5e10b46-28bb-48da-8cec-23ca8968d53a",
       "BC": "c6c308ea-5d66-418d-8653-37d9e2feb443",
       "Microsoft.Azure.Frontdoor": "f123250b-1b9b-4b25-9ab3-1290b18a8065",
       "HA_App_SRE_Team": "30cdef8c-ac07-4adb-8d6b-b32aaf8d869c",
