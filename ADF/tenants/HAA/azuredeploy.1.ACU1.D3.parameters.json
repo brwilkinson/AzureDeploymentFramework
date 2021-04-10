@@ -66,7 +66,6 @@
         "ADPrimary": 0,
         "ADSecondary": 0,
         "ILB": 1,
-        "PLB": 0,
         "InitialDOP": 0,
         "VMApp": 1,
         "VMAppLinux": 0,
@@ -521,7 +520,7 @@
           {
             "Name": "locust-worker",
             "scaleCount": 1,
-            "InstanceCount": 1,
+            "InstanceCount": 3,
             "memoryInGB": 0.3,
             "cpu": 0.3,
             "isPublic": 1,
@@ -533,9 +532,9 @@
               "locust"
             ],
             "locations": [
-              "centralus",
-              "eastus2",
-              "westus2"
+              "centralus"
+              // "eastus2",
+              // "westus2"
             ],
             "environmentVariables": [
               {
@@ -548,7 +547,7 @@
               },
               {
                 "Name": "LOCUST_MASTER_NODE_HOST",
-                "value": "acu1-brw-haa-d3-aci-locust-master-0.centralus.azurecontainer.io"
+                "value": "{Deployment}-aci-locust-master-0.centralus.azurecontainer.io"
               }
             ],
             "volumeMounts": [

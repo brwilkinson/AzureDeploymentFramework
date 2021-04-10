@@ -53,7 +53,7 @@
         "input": {
           "name": "[parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')].name]",
           "value": "[if(contains(parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')],'value'),
-                        parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')].value,
+                        replace(parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')].value,'{Deployment}',parameters('Deployment')),
                         json('null')
                       )]",
           "secureValue": "[if(contains(parameters('ACIInfo').environmentVariables[copyIndex('ENVVARS')],'secureValue'),
