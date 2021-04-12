@@ -354,7 +354,7 @@
           {
             "name": "snFE01",
             "prefix": "32/27",
-            "NSG": 0,
+            "NSG": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": false
           },

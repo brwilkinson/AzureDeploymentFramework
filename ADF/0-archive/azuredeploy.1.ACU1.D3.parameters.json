@@ -6,10 +6,10 @@
       "value": "ACU1"
     },
     "Environment": {
-      "value": "S"
+      "value": "D"
     },
     "DeploymentID": {
-      "value": "1"
+      "value": "3"
     },
     "vmAdminPassword": {
       "reference": {
@@ -27,26 +27,17 @@
         "secretName": "sshPublic"
       }
     },
-    "devOpsPat": {
-      "reference": {
-        "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
-        },
-        "secretName": "devOpsPat"
-      }
-    },
     "Stage": {
       "value": {
         "RG": 1,
         "RBAC": 1,
         "UAI": 1,
-        "SP": 1,
+        "SP": 0,
         "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
         "OMSDataSources": 1,
         "SA": 1,
-        "CDN": 0,
         "StorageSync": 0,
         "RSV": 0,
         "NSGHUB": 0,
@@ -69,21 +60,19 @@
         "PLB": 0,
         "InitialDOP": 0,
         "VMApp": 1,
-        "VMAppLinux": 0,
+        "VMAppLinux": 1,
         "VMSQL": 0,
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 1,
         "FRONTDOOR": 1,
-        "WAF": 0,
+        "WAF": 1,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
-        "APPCONFIG": 1,
-        "REDIS": 1,
-        "APIM": 1,
-        "AKS": 1,
+        "APIM": 0,
+        "AKS": 0,
         "SQLMI": 0,
-        "CosmosDB": 1,
+        "CosmosDB": 0,
         "DASHBOARD": 1,
         "DNSLookup": 0,
         "ServerFarm": 0,
@@ -101,6 +90,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "VMInsights": 1,
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
@@ -135,9 +125,6 @@
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "AOA"
-              },
-              {
-                "Name": "Network Contributor"
               }
             ]
           },
@@ -215,11 +202,25 @@
         ],
         "rolesInfo": [
           {
-            "Name": "BW",
+            "Name": "benwilk@Microsoft.com",
             "RBAC": [
               {
                 "Name": "Contributor"
               },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "Jordan.Olshevski@microsoft.com",
+            "RBAC": [
               {
                 "Name": "Key Vault Administrator"
               },
@@ -249,7 +250,7 @@
             ]
           },
           {
-            "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-S1",
+            "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-D3",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -347,8 +348,7 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true,
-            "delegations": "Microsoft.ContainerInstance/containerGroups"
+            "FlowAnalyticsEnabled": true
           },
           {
             "name": "snMT02",
@@ -363,12 +363,7 @@
           {
             "nameSuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Deny",
-            "logging": {
-              "r": 0,
-              "w": 0,
-              "d": 1
-            },
+            "allNetworks": "Allow",
             "blobVersioning": 1,
             "changeFeed": 1,
             "softDeletePolicy": {
@@ -393,7 +388,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Deny",
+            "allNetworks": "Allow",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -503,10 +498,10 @@
             "privateCluster": false, //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "API",
-            "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "aksAADAdminGroups": [
-              "Logic_Runner_4@microsoft.onmicrosoft.com"
+              "Logic_Runner_4@microsoft.onmicrosoft.com",
+              "bburns_org_fte@microsoft.com"
             ],
             "AgentPools": [
               {
@@ -520,17 +515,6 @@
                 "ASName": "JMP",
                 "mode": "System"
               },
-              // {
-              //   "name": "winctr",
-              //   "count": 2,
-              //   "osDiskSizeGb": 30,
-              //   "osType": "Linux",
-              //   "maxPods": 50,
-              //   "storageProfile": "ManagedDisks",
-              //   "_vmSize": "Standard_D1_v2",
-              //   "ASName": "JMP",
-              //   "mode": "User"
-              // }
               {
                 "name": "linctr2",
                 "count": 2,
@@ -545,42 +529,33 @@
             ]
           }
         ],
-        "cosmosDBInfo": [
+        "CosmosDB": [
           {
-            "Name": "CDB01",
-            "Kind": "GlobalDocumentDB",
-            "defaultConsistencyLevel": "Strong",
-            "enableMultipleWriteLocations": false,
-            "enableAutomaticFailover": true,
-            "databases": [
-              {
-                "databaseName": "customers",
-                "containerName": "Info"
-              }
-            ]
+            "dbName": "01",
+            "Kind": "MongoDB"
           }
         ],
         "Appservers": {
           "AppServers": [
-            {
-              "VMName": "JMP01",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2022",
-              "ExcludeAdminCenter": 1,
-              "_HotPatch": true,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "62"
-                }
-              ]
-            },
+            // {
+            //   "VMName": "JMP01",
+            //   "Role": "JMP",
+            //   "ASName": "JMP",
+            //   "DDRole": "64GB",
+            //   "OSType": "Server2019small",
+            //   "ExcludeAdminCenter": 1,
+            //   "_HotPatch": true,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "FE01",
+            //       "Primary": 1,
+            //       "FastNic": 1,
+            //       "PublicIP": "Static",
+            //       "StaticIP": "62"
+            //     }
+            //   ]
+            // },
             {
               "VMName": "JMP02",
               "Role": "JMP",
@@ -588,7 +563,6 @@
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
-              // "ExcludeAADLogin": 1,
               "_HotPatch": true,
               "Zone": 1,
               "NICs": [
@@ -598,46 +572,6 @@
                   "FastNic": 1,
                   "PublicIP": "Static",
                   "StaticIP": "61"
-                }
-              ]
-            },
-            {
-              "VMName": "JMP03",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2022",
-              "ExcludeAdminCenter": 1,
-              // "ExcludeAADLogin": 1,
-              "_HotPatch": true,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "60"
-                }
-              ]
-            },
-            {
-              "VMName": "JMP04",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2019small",
-              "ExcludeAdminCenter": 1,
-              // "ExcludeAADLogin": 1,
-              "_HotPatch": true,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "58"
                 }
               ]
             }

@@ -120,7 +120,8 @@
       "SQLMI": "../templates-base/11-azuredeploy-SQLManaged.json",
       "DASHBOARD": "../templates-base/23-azuredeploy-Dashboard.json",
       "SB": "../templates-base/24-azuredeploy-ServiceBus.json",
-      "AzureSQL": "../templates-base/26-azuredeploy-AzureSQL.json"
+      "AzureSQL": "../templates-base/26-azuredeploy-AzureSQL.json",
+      "ACI": "../templates-base/30-azuredeploy-ContainerGroups.json"
     }
   },
   "resources": [
@@ -1019,6 +1020,23 @@
         "mode": "Incremental",
         "templateLink": {
           "relativePath": "[variables('DeploymentInfoObject').AzureSQL]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[equals(parameters('Stage').ACI,1)]",
+      "name": "[concat('dp', variables('Deployment'), '-ACI')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-01-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-OMS')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "relativePath": "[variables('DeploymentInfoObject').ACI]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

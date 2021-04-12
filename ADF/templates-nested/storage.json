@@ -384,6 +384,7 @@
       ]
     },
     {
+      "condition": "[contains(parameters('storageInfo'),'fileShares')]",
       "name": "[toLower(concat(parameters('DeploymentURI'),'sa',parameters('storageInfo').namesuffix,'/default/',if(contains(parameters('storageInfo'),'fileShares'),parameters('storageInfo').fileShares[copyindex(0)].name,'NA')))]",
       "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
       "apiVersion": "2019-04-01",
@@ -392,7 +393,7 @@
       ],
       "copy": {
         "name": "StorageFileShare",
-        "count": "[length( parameters('storageInfo').fileShares )]"
+        "count": "[if(contains(parameters('storageInfo'),'fileShares'),length(parameters('storageInfo').fileShares),0)]"
       },
       "properties": {
         "shareQuota": "[parameters('storageInfo').fileShares[copyindex(0)].quota]",

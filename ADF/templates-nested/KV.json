@@ -33,6 +33,13 @@
                     "objectId": "[parameters('KVInfo').accessPolicies[copyIndex('accessPolicies')].objectId]",
                     "permissions": "[variables('keyVaultPermissions')[parameters('KVInfo').accessPolicies[copyIndex('accessPolicies')].Permissions]]"
                 }
+            },
+            {
+                "name": "ipRules",
+                "count": "[length(parameters('Global').PublicIPAddressforRemoteAccess)]",
+                "input": {
+                    "value": "[parameters('Global').PublicIPAddressforRemoteAccess[CopyIndex('ipRules')]]"
+                }
             }
         ],
         "Defaults": {
@@ -116,13 +123,7 @@
                 "networkAcls": {
                     "bypass": "AzureServices",
                     "defaultAction": "[parameters('KVInfo').allNetworks]",
-                    //  modify to pass in objects instead of string if multiple remote IP's required.
-                    "ipRules": [
-                        {
-                            "value": "[parameters('Global').PublicIPAddressforRemoteAccess]"
-                        }
-                        
-                    ]
+                    "ipRules": "[variables('ipRules')]"
                     // "virtualNetworkRules": [
                     // ]
                 },

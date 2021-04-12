@@ -11,7 +11,10 @@
     "PrimaryPrefix": "ACU1",
     "SecondaryLocation": "EastUS2",
     "SecondaryPrefix": "AEU2",
-    "PublicIPAddressforRemoteAccess": "73.157.100.227/32",
+    "PublicIPAddressforRemoteAccess": [
+      "73.157.100.227/32",
+      "157.100.170.101/32"
+    ],
     "vmAdminUserName": "brw",
     "CertURLs": [
       "*.psthing.com",
@@ -25,7 +28,7 @@
     "CertificateThumbprint": "2217CD10E365F1F005B8B726D762FCDBDCBB2621",
     "GitHubProject": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [
-      "benwilk@microsoft.com"
+      "BW"
     ],
     "defaultWAFsslpolicyName": "AppGwSslPolicy20170401S",
     "apimPublisherEmail": "alerts@contoso.com",
@@ -37,7 +40,8 @@
     "sqlCredentialName": "localadmin",
     "sqlAutobackupRetentionPeriod": 5,
     "RolesLookup": {
-      "benwilk@Microsoft.com": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "BW": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "BC": "3e156fbc-f456-4e4e-b7c8-e8be9830b8e0",
       "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
       "Logic_Runner_4@microsoft.onmicrosoft.com": "fdd71a51-494b-456a-a3dc-a9ae9e0889a6",
       "AzureDeploymentFramework_ACU1-BRW-AOA-RG-P0": "6682cb28-fe25-45f6-9943-951cd0ac1b97",

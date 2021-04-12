@@ -161,7 +161,7 @@
     {
       "condition": "[equals(parameters('Stage').SetExternalDNS,1)]",
       "apiVersion": "2020-06-01",
-      "name": "[concat('setdnsServices',copyIndex(0))]",
+      "name": "[concat('setdnsServices',copyIndex(0),'-',parameters('frontDoorInfo').name)]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
       "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
