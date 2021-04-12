@@ -43,7 +43,7 @@
         "input": {
           "name": "[concat(parameters('ACIInfo').Name,'-',copyIndex('Instances'))]",
           "location": "[if(contains(parameters('ACIInfo'),'locations'),
-                          parameters('ACIInfo').locations[mod(copyIndex('Instances'),parameters('ACIInfo').InstanceCount)],
+                          parameters('ACIInfo').locations[mod(copyIndex('Instances'),length(parameters('ACIInfo').locations))],
                           resourceGroup().location)]"
         }
       },

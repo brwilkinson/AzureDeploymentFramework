@@ -36,7 +36,7 @@
                     if(and(
                           contains(parameters('WAFInfo'),'WAFEnabled'),
                           equals(parameters('WAFInfo').WAFEnabled,bool('true'))),
-                       parameters('WAFInfo').WAFPolicyName,
+                      parameters('WAFInfo').WAFPolicyName,
                       'nopolicy')
                     )]"
     },

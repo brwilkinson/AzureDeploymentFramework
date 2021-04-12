@@ -96,50 +96,6 @@
         }
       },
       {
-        "name": "backendPools",
-        "count": "[length(parameters('frontDoorInfo').services)]",
-        "input": {
-          "name": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].Name]",
-          "properties": {
-            "backends": [
-              {
-                "address": "[toLower(if(equals(parameters('frontDoorInfo').services[copyIndex('backendPools')].Name,'Default'),
-                                                          parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress,
-                                                          concat(parameters('Deployment'),
-                                                                  '-',parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress)
-                                                          ))]",
-                "backendHostHeader": "[toLower(if(equals(parameters('frontDoorInfo').services[copyIndex('backendPools')].Name,'Default'),
-                                                          parameters('frontDoorInfo').services[copyIndex('backendPools')].BEAddress,
-                                                          concat(parameters('Deployment'),
-                                                                  '-afd',parameters('frontDoorInfo').Name,
-                                                                  '-',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name,
-                                                                  '.',parameters('global').DomainNameExt)
-                                                          ))]",
-                // "privateLinkResourceId": null,
-                // "privateLinkLocation": null,
-                // "privateEndpointStatus": null,
-                // "privateLinkApprovalMessage": null,
-                "enabledState": "Enabled",
-                "httpPort": 80,
-                "httpsPort": 443,
-                "priority": 1,
-                "weight": 50
-              }
-            ],
-            "loadBalancingSettings": {
-              "id": "[resourceId('Microsoft.Network/frontdoors/loadBalancingSettings',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name),
-                                      parameters('frontDoorInfo').services[copyIndex('backendPools')].LBSettings)]"
-            },
-            "healthProbeSettings": {
-              "id": "[resourceId('Microsoft.Network/frontdoors/healthProbeSettings',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name),
-                                      parameters('frontDoorInfo').services[copyIndex('backendPools')].ProbeName)]"
-            }
-          }
-        }
-      },
-      {
         "name": "routingRules",
         "count": "[length(parameters('frontDoorInfo').services)]",
         "input": {
@@ -175,6 +131,33 @@
     ]
   },
   "resources": [
+        {
+      "name": "[concat('dp',parameters('Deployment'),'-AFD-BEDeploy',parameters('frontDoorInfo').services[CopyIndex(0)].Name)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-01-01",
+      "copy": {
+        "name": "afdservicesBELoop",
+        "count": "[length( parameters('frontDoorInfo').services )]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('global')._artifactsLocation,'/','templates-nested/frontDoorBE.json', parameters('global')._artifactsLocationSasToken)]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "Deployment": {
+            "value": "[parameters('Deployment')]"
+          },
+          "AFDService": {
+            "value": "[parameters('frontDoorInfo').services[copyIndex(0)]]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          }
+        }
+      }
+    },
     {
       "condition": "[equals(parameters('Stage').SetExternalDNS,1)]",
       "apiVersion": "2020-06-01",
@@ -224,7 +207,7 @@
       "type": "Microsoft.Network/frontdoors",
       "location": "global",
       "dependsOn": [
-        "FD-Services-DNSLoop"
+        "afdservicesBELoop"
       ],
       "properties": {
         "friendlyName": "[parameters('frontDoorInfo').name]",
@@ -233,12 +216,33 @@
         // "frontendEndpoints": "[union(variables('DefaultFrontEnd'),variables('frontendEndpoints'))]",
         "healthProbeSettings": "[variables('healthProbeSettings')]",
         "loadBalancingSettings": "[variables('loadBalancingSettings')]",
-        "backendPools": "[variables('backendPools')]",
         "routingRules": "[variables('routingRules')]",
         "backendPoolsSettings": {
           "enforceCertificateNameCheck": "Enabled",
           "sendRecvTimeoutSeconds": 30
-        }
+        },
+        "copy": [
+          {
+            "name": "backendPools",
+            "count": "[length(parameters('frontDoorInfo').services)]",
+            "input": {
+              "name": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].Name]",
+              "properties": {
+                "backends": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp',parameters('Deployment'),'-AFD-BEDeploy',parameters('frontDoorInfo').services[CopyIndex('backendPools')].Name)),'2017-05-10','Full').properties.outputs.backends.value]",
+                "loadBalancingSettings": {
+                  "id": "[resourceId('Microsoft.Network/frontdoors/loadBalancingSettings',
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name),
+                                      parameters('frontDoorInfo').services[copyIndex('backendPools')].LBSettings)]"
+                },
+                "healthProbeSettings": {
+                  "id": "[resourceId('Microsoft.Network/frontdoors/healthProbeSettings',
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name),
+                                      parameters('frontDoorInfo').services[copyIndex('backendPools')].ProbeName)]"
+                }
+              }
+            }
+          }
+        ]
       },
       "resources": [
         {

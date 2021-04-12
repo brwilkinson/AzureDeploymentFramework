@@ -566,7 +566,11 @@
             "services": [
               {
                 "Name": "PLB01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
-                "BEAddress": "api01.haapp.net", //always use the gateway
+                "BEAddress": [
+                  {
+                    "suffix": "{Deployment}-api01.{Domain}"
+                  }
+                ],
                 "ProbeName": "probe02",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
@@ -579,7 +583,71 @@
               {
                 // Default (front end) Service is Required, add backend as well for ability to test FE.
                 "Name": "Default",
-                "BEAddress": "portal.azure.com",
+                "BEAddress": [
+                  {
+                    "suffix": "portal.azure.com"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              },
+              {
+                "Name": "probe02",
+                "ProbePath": "/api/headers"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
+            ]
+          },
+          {
+            "name": "02",
+            "_afdverify": "HAA",
+            "services": [
+              {
+                "Name": "GW01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
+                "BEAddress": [
+                  {
+                    "suffix": "{Deployment}-api02.{Domain}",
+                    "hostheader": "{Deployment}-api02.{Domain}",
+                    "weight": 50
+                  },
+                  {
+                    "suffix": "{Deployment}-api03.{Domain}",
+                    "weight": 50
+                  }
+                ],
+                "ProbeName": "probe02",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "patternsToMatch": [
+                  "/api/headers",
+                  "/*"
+                ]
+              },
+              {
+                "Name": "Default",
+                "BEAddress": [
+                  {
+                    "suffix": "portal.azure.com"
+                  }
+                ],
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",

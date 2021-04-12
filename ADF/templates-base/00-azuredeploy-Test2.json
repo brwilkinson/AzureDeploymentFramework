@@ -76,17 +76,33 @@
       "key": "abc",
       "label": "abc"
     },
-    "myarray": [ "SQL01", "SQL02" ],
-    "mask": "23",
-    "Addressspace": "10.214.126.0",
-    "name": "ORG-E2-TEST-VPNHUB-VNet-10.214.126.0_23",
-    "newvalue": "[
-                  replace(
-                          replace (
-                                replace(variables('name'),variables('Addressspace'),''),
-                                variables('mask'),''),
-                          '-_','')
-                  ]"
+    "myarray": [ 
+      
+    ],
+
+        "copy": [
+      {
+        "name": "frontendEndpoints",
+        "count": "[length(parameters('frontDoorInfo').services)]",
+        "input": {
+          "name": "[concat(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].name)]",
+          "properties": {
+            "hostName": "[toLower(concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,
+                                        if(
+                                            equals(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].Name,'Default'),
+                                              '.azurefd.net',
+                                              concat('-',parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].Name,'.',parameters('Global').DomainNameExt)
+                                          )
+                                        ))]",
+            "sessionAffinityEnabledState": "[parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].sessionAffinityEnabledState]",
+            "sessionAffinityTtlSeconds": 0
+            // "customHttpsConfiguration": null
+            // "webApplicationFirewallPolicyLink": {
+            //   "id": "string"
+            // }
+          }
+        }
+      },
 
   },
   "resources": [

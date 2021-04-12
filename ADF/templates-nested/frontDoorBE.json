@@ -1,0 +1,67 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "AFDService": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    }
+  },
+  "variables": {
+
+    "copy": [
+      {
+        "name": "backends",
+        "count": "[length(parameters('AFDService').BEAddress)]",
+        "input": {
+          "weight": "[if(contains(parameters('AFDService').BEAddress[copyIndex('backends')],'weight'),
+                          parameters('AFDService').BEAddress[copyIndex('backends')].weight,
+                          100)]",
+          "address": "[replace(
+                              replace(parameters('AFDService').BEAddress[copyIndex('backends')].suffix,
+                                      '{Deployment}',
+                                      parameters('Deployment')),
+                              '{Domain}',
+                              parameters('global').DomainNameExt)
+                              ]",
+          "backendHostHeader": "[if(contains(parameters('AFDService').BEAddress[copyIndex('backends')],'hostheader'),
+                                  replace(
+                                        replace(parameters('AFDService').BEAddress[copyIndex('backends')].hostheader,
+                                                '{Deployment}',
+                                                parameters('Deployment')),
+                                        '{Domain}',
+                                        parameters('global').DomainNameExt),
+                                  replace(
+                                        replace(parameters('AFDService').BEAddress[copyIndex('backends')].suffix,
+                                                '{Deployment}',
+                                                parameters('Deployment')),
+                                        '{Domain}',
+                                        parameters('global').DomainNameExt)
+                                )]",
+          "enabledState": "Enabled",
+          "httpPort": 80,
+          "httpsPort": 443,
+          "priority": 1
+          // "privateLinkResourceId": null,
+          // "privateLinkLocation": null,
+          // "privateEndpointStatus": null,
+          // "privateLinkApprovalMessage": null,
+        }
+      }
+    ]
+  },
+  "resources": [
+
+  ],
+  "outputs": {
+    "backends": {
+      "type": "array",
+      "value": "[variables('backends')]"
+    }
+  }
+}
