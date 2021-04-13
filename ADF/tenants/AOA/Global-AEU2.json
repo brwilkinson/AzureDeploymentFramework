@@ -3,7 +3,7 @@
     "HubRGName": "AEU2-BRW-AOA-RG-P0",
     "hubVnetName": "AEU2-BRW-AOA-P0-vn",
     "KVName": "AEU2-BRW-AOA-P0-kvVLT01",
-    "KVUrl": "https://aeu1-brw-aoa-p0-kvvlt01.vault.azure.net/",
+    "KVUrl": "https://aeu2-brw-aoa-p0-kvvlt01.vault.azure.net/",
     "certificateUrl": "https://aeu2-brw-aoa-p0-kvvlt01.vault.azure.net/certificates/PSTHING-WildCard/671f3bfa8e304e8097148f5ca50ebf2f",
     "networkId": [
       "172.16.",
