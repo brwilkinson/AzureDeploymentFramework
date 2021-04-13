@@ -266,6 +266,9 @@
                     "vmAdminPassword": {
                         "value": "[parameters('vmAdminPassword')]"
                     },
+                    "devOpsPat": {
+                        "value": "[parameters('devOpsPat')]"
+                    },
                     "sshPublic": {
                         "value": "[parameters('sshPublic')]"
                     }

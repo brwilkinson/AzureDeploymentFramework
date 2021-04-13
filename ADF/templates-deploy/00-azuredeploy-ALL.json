@@ -97,7 +97,7 @@
       "VNetDNS": "../templates-nested/SetvNetDNS.json",
       "ADPrimary": "../templates-base/05-azuredeploy-VMApp.json",
       "ADSecondary": "../templates-base/05-azuredeploy-VMApp.json",
-      "VMSS": "../templates-base/8-azuredeploy-VMAppSS.json",
+      "VMSS": "../templates-base/08-azuredeploy-VMAppSS.json",
       "InitialDOP": "../templates-base/05-azuredeploy-VMApp.json",
       "VMApp": "../templates-base/05-azuredeploy-VMApp.json",
       "VMAppLinux": "../templates-base/05-azuredeploy-VMApp.json",
@@ -750,27 +750,6 @@
       }
     },
     {
-      "condition": "[equals(parameters('Stage').VMSS,1)]",
-      "name": "VMSS",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-01-01",
-      "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
-        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
-        "[concat('dp', variables('Deployment'), '-OMS')]",
-        "[concat('dp', variables('Deployment'), '-ILB')]",
-        "[concat('dp', variables('Deployment'), '-SA')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "relativePath": "[variables('DeploymentInfoObject').VMSS]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": "[deployment().properties.parameters]"
-      }
-    },
-    {
       "condition": "[equals(parameters('Stage').WAFPOLICY,1)]",
       "name": "[concat('dp', variables('Deployment'), '-WAFPOLICY')]",
       "type": "Microsoft.Resources/deployments",
@@ -800,6 +779,28 @@
         "mode": "Incremental",
         "templateLink": {
           "relativePath": "[variables('DeploymentInfoObject').WAF]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": "[deployment().properties.parameters]"
+      }
+    },
+    {
+      "condition": "[equals(parameters('Stage').VMSS,1)]",
+      "name": "VMSS",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-01-01",
+      "dependsOn": [
+        "[concat('dp', variables('Deployment'), '-VNETDNSDC1')]",
+        "[concat('dp', variables('Deployment'), '-VNETDNSDC2')]",
+        "[concat('dp', variables('Deployment'), '-OMS')]",
+        "[concat('dp', variables('Deployment'), '-ILB')]",
+        "[concat('dp', variables('Deployment'), '-WAF')]",
+        "[concat('dp', variables('Deployment'), '-SA')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "relativePath": "[variables('DeploymentInfoObject').VMSS]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

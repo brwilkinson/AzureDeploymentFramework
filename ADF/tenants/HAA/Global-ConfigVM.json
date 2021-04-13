@@ -7,9 +7,6 @@
     "64GB" : {
         "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" }
       },
-      "64GBSS" : {
-        "DATASS" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" }
-      },      
     "64GB-2" : {
         "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64],[1,64] ], "saType" : "StandardSSD_LRS" }
       },
@@ -1233,6 +1230,7 @@
         "MonitoringAgent": 0,
         "IaaSDiagnostics": 0,
         "DependencyAgent": 0,
+        "DSC": 0,
         "Scripts": 0,
         "MSI": 0,
         "CertMgmt": 0,
