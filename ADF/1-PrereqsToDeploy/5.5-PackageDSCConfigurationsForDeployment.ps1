@@ -1,8 +1,8 @@
 
 # Zip up all files
 break
-[string] $ArtifactStagingDirectory = 'D:\repos\ADF'
-[string] $DSCSourceFolder = $ArtifactStagingDirectory + '\ADF\ext-DSC'
+[string] $ArtifactStagingDirectory = 'D:\repos\ADF\ADF'
+[string] $DSCSourceFolder = $ArtifactStagingDirectory + '\ext-DSC'
 
 if (Test-Path $DSCSourceFolder)
 {
@@ -18,8 +18,8 @@ if (Test-Path $DSCSourceFolder)
 
 # Zip up only changes
 break
-[string] $ArtifactStagingDirectory = 'D:\repos\ADF'
-[string] $DSCSourceFolder = $ArtifactStagingDirectory + '\ADF\ext-DSC'
+[string] $ArtifactStagingDirectory = 'D:\repos\ADF\ADF'
+[string] $DSCSourceFolder = $ArtifactStagingDirectory + '\ext-DSC'
 
 if (Test-Path $DSCSourceFolder)
 {

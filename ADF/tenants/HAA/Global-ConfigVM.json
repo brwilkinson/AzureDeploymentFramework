@@ -4,8 +4,11 @@
     "32GB" : {
         "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,32] ], "saType" : "StandardSSD_LRS" }
       },
-    "64GB" : {
+      "64GB" : {
         "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" }
+      },
+      "64GBSS" : {
+        "DATASS" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" }
       },
     "64GB-2" : {
         "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64],[1,64] ], "saType" : "StandardSSD_LRS" }

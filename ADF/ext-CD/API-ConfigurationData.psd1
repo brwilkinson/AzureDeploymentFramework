@@ -48,7 +48,7 @@
                 'F:\Source\Tools\.vs-kubernetes\tools\draft\windows-amd64'
             )
 
-            RegistryKeyPresent          = @(
+            RegistryKeyPresent2          = @(
                 @{ 
                     # enable developer mode to sideload appx packages, including winget
                     Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock';
