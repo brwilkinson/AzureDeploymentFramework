@@ -89,7 +89,9 @@
               "properties": {
                 "addressPrefix": "[variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].addressPrefix]",
                 "nextHopType": "[variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].nextHopType]",
-                "nextHopIpAddress": "[resourceId('Microsoft.Network/azureFirewalls',concat(variables('Deployment'),'-vn',variables('RTInfo')[copyIndex()].nextHopIpAddress))]"
+                "nextHopIpAddress": "[reference(resourceId('Microsoft.Network/azureFirewalls',
+                                                            concat(variables('Deployment'),'-vn',variables('RTInfo')[copyIndex()].Routes[copyIndex('routes')].nextHopIpAddress)
+                                                ),'2019-09-01').ipConfigurations[0].properties.privateIPAddress]"
               }
             }
           }

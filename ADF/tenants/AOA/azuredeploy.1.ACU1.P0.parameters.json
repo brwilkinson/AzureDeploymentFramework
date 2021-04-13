@@ -40,7 +40,7 @@
         "RG": 1,
         "RBAC": 1,
         "UAI": 1,
-        "SP": 1,
+        "SP": 0,
         "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
@@ -48,7 +48,7 @@
         "SA": 1,
         "CDN": 0,
         "StorageSync": 0,
-        "RSV": 0,
+        "RSV": 1,
         "NSGHUB": 1,
         "NSGSPOKE": 0,
         "NetworkWatcher": 1,
@@ -66,7 +66,6 @@
         "ADPrimary": 1,
         "ADSecondary": 1,
         "ILB": 0,
-        "PLB": 0,
         "InitialDOP": 0,
         "VMApp": 0,
         "VMAppLinux": 0,
@@ -110,7 +109,7 @@
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 0,
+        "DomainJoin": 1,
         "AADLogin": 0,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
@@ -216,46 +215,79 @@
         ],
         "SPInfo": [
           {
-            "Name": "AzureDeploymentFramework_ACU1-BRW-AOA-RG-P0",
+            "Name": "Microsoft.Azure.Frontdoor",
+            "RBAC": [
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "ACRPush"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "Contributor"
               },
               {
+                "Name": "User Access Administrator"
+              },
+              {
                 "Name": "Reader and Data Access",
-                "RG": "G1"
+                "RG": "G1",
+                "Tenant": "AOA"
               },
               {
                 "Name": "Storage Account Key Operator Service Role",
-                "RG": "G1"
+                "RG": "G1",
+                "Tenant": "AOA"
               },
               {
                 "Name": "Log Analytics Contributor",
-                "RG": "G1"
+                "RG": "G1",
+                "Tenant": "AOA"
               },
               {
                 "Name": "Log Analytics Contributor",
-                "RG": "P0"
-              },
-              {
-                "Name": "Key_Vault_Reader",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "AOA"
               },
               {
                 "Name": "Key Vault Secrets User",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "AOA"
               },
               {
                 "Name": "Network Contributor",
-                "RG": "P0"
-              },
-              {
-                "Name": "DNS Zone Contributor",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "AOA"
               },
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA",
                 "PREFIX": "AEU2"
               }
             ]
@@ -332,7 +364,7 @@
           "name": "networkwatcher"
         },
         "DNSPrivateZoneInfo": [
-          "PSThing.com",
+          "psthing.com",
           "privatelink.azurewebsites.net",
           "privatelink.vaultcore.azure.net",
           "privatelink.blob.core.windows.net",
@@ -341,17 +373,16 @@
           "privatelink.servicebus.windows.net",
           "privatelink.database.windows.net",
           "privatelink.azconfig.io",
-          "privatelink.centralus.azmk8s.io"
+          "privatelink.azurecr.io",
+          "privatelink.centralus.azmk8s.io",
+          "privatelink.mongo.cosmos.azure.com",
+          "privatelink.documents.azure.com",
+          "privatelink.redis.cache.windows.net"
         ],
         "LinkPrivateDnsInfo": [
           {
             "zoneRG": "P0",
-            "zone": "PSThing.com",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "privatelink.centralus.azmk8s.io",
+            "zone": "psthing.com",
             "Autoregistration": false
           },
           {
@@ -377,6 +408,46 @@
           {
             "zoneRG": "P0",
             "zone": "privatelink.afs.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.servicebus.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.database.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.azconfig.io",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.azurecr.io",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.centralus.azmk8s.io",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.mongo.cosmos.azure.com",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.documents.azure.com",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.redis.cache.windows.net",
             "Autoregistration": false
           }
         ],
@@ -414,6 +485,11 @@
             ]
           }
         ],
+        "azRelayInfo": [
+          {
+            "Name": "CS01"
+          }
+        ],
         "VNGWInfo": [
           {
             "Name": "VNGW01",
@@ -448,7 +524,7 @@
               {
                 "Name": "Default-Azure-FW",
                 "addressPrefix": "0.0.0.0/0",
-                "nextHopIpAddress": "172.16.142.132",
+                "nextHopIpAddress": "FW01",
                 "nextHopType": "VirtualAppliance"
               }
             ]
@@ -474,55 +550,56 @@
         "FWInfo": [
           {
             "Name": "FW01",
-            "threatIntelMode": "Alert"
-          }
-        ],
-        "natRulesInfo": [
-          {
-            "Name": "JMP01",
-            "priority": "20000",
-            "actionType": "DNAT",
-            "rule": {
-              "name": "JMP01-RDP-Allow",
-              "sourceAddresses": [
-                "73.157.100.227"
-              ],
-              "destinationPorts": [
-                "3389"
-              ],
-              "protocols": [
-                "Any"
-              ],
-              "translatedAddress": "172.16.137.62"
-            }
+            "threatIntelMode": "Alert",
+            "natRules": [
+              {
+                "Name": "JMP01",
+                "priority": "20000",
+                "actionType": "DNAT",
+                "rule": {
+                  "name": "JMP01-RDP-Allow",
+                  "sourceAddresses": [
+                    "73.157.100.227"
+                  ],
+                  "destinationPorts": [
+                    "3389"
+                  ],
+                  "protocols": [
+                    "Any"
+                  ],
+                  "translatedAddress": "172.16.137.62"
+                }
+              },
+              {
+                "Name": "API01",
+                "priority": "20001",
+                "actionType": "DNAT",
+                "rule": {
+                  "name": "WEB-API-Allow",
+                  "sourceAddresses": [
+                    "*"
+                  ],
+                  "destinationPorts": [
+                    "443"
+                  ],
+                  "protocols": [
+                    "Any"
+                  ],
+                  "translatedAddress": "10.10.139.254"
+                }
+              }
+            ]
           }
         ],
         "Appservers": {
           "ADPrimary": [
-            {
-              "VMName": "DNS01",
-              "Role": "DNS",
-              "ASName": "DNS",
-              "DSConfig": "AppServers",
-              "DDRole": "32GB",
-              "OSType": "Server2019CoreContainerssmall",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "AD01",
-                  "Primary": 1,
-                  "StaticIP": "75"
-                }
-              ]
-            }
-            // move back to AD Domain because of conditional access policies
             // {
-            //   "VMName": "DC01",
-            //   "Role": "ADp",
-            //   "ASName": "AD",
+            //   "VMName": "DNS01",
+            //   "Role": "DNS",
+            //   "ASName": "DNS",
+            //   "DSConfig": "AppServers",
             //   "DDRole": "32GB",
-            //   "OSType": "Server2016Coresmall",
-            //   "ExcludeDomainJoin": 1,
+            //   "OSType": "Server2019CoreContainerssmall",
             //   "Zone": 1,
             //   "NICs": [
             //     {
@@ -532,31 +609,32 @@
             //     }
             //   ]
             // }
-          ],
-          "ADSecondary": [
+            // move back to AD Domain because of conditional access policies
             {
-              "VMName": "DNS02",
-              "Role": "DNS",
-              "ASName": "DNS",
-              "DSConfig": "AppServers",
+              "VMName": "DC01",
+              "Role": "ADp",
+              "ASName": "AD",
               "DDRole": "32GB",
-              "OSType": "Server2019CoreContainerssmall",
-              "Zone": 2,
+              "OSType": "Server2016Coresmall",
+              "ExcludeDomainJoin": 1,
+              "Zone": 1,
               "NICs": [
                 {
                   "Subnet": "AD01",
                   "Primary": 1,
-                  "StaticIP": "76"
+                  "StaticIP": "75"
                 }
               ]
             }
-            // move back to AD Domain because of conditional access policies
+          ],
+          "ADSecondary": [
             // {
-            //   "VMName": "DC02",
-            //   "Role": "ADs",
-            //   "ASName": "AD",
+            //   "VMName": "DNS02",
+            //   "Role": "DNS",
+            //   "ASName": "DNS",
+            //   "DSConfig": "AppServers",
             //   "DDRole": "32GB",
-            //   "OSType": "Server2016Coresmall",
+            //   "OSType": "Server2019CoreContainerssmall",
             //   "Zone": 2,
             //   "NICs": [
             //     {
@@ -564,131 +642,29 @@
             //       "Primary": 1,
             //       "StaticIP": "76"
             //     }
-            //   ],
-            //   "AppInfo": {
-            //     "SiteName": "Default-First-Site-Name"
-            //   }
+            //   ]
             // }
+            // move back to AD Domain because of conditional access policies
+            {
+              "VMName": "DC02",
+              "Role": "ADs",
+              "ASName": "AD",
+              "DDRole": "32GB",
+              "OSType": "Server2016Coresmall",
+              "Zone": 2,
+              "NICs": [
+                {
+                  "Subnet": "AD01",
+                  "Primary": 1,
+                  "StaticIP": "76"
+                }
+              ],
+              "AppInfo": {
+                "SiteName": "Default-First-Site-Name"
+              }
+            }
           ]
-        },
-        "WAFInfo": [
-          {
-            "WAFName": "API",
-            "WAFEnabled": false,
-            "WAFMode": "Detection",
-            "WAFSize": "Standard_v2",
-            "WAFTier": "Standard_v2",
-            "WAFCapacity": 2,
-            "PrivateIP": "30",
-            "SSLCerts": [
-              "PSTHING-WildCard"
-            ],
-            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [
-              "254"
-            ],
-            "frontEndPorts": [
-              {
-                "Port": 80
-              },
-              {
-                "Port": 443
-              }
-            ],
-            "BackendHttp": [
-              {
-                "Port": 8988,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "Cert": "PSTHING-WildCard",
-                "hostname": "contoso.com"
-              },
-              {
-                "Port": 8989,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "Cert": "PSTHING-WildCard",
-                "hostname": "contoso.com"
-              },
-              {
-                "Port": 8990,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "Cert": "PSTHING-WildCard",
-                "hostname": "contoso.com"
-              }
-            ],
-            "Listeners": [
-              {
-                "Port": 443,
-                "BackendPort": "8988",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "contoso.com",
-                "Hostname": "yates",
-                "Interface": "Public"
-              },
-              {
-                "Port": 443,
-                "BackendPort": "8989",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "contoso.com",
-                "Hostname": "select",
-                "Interface": "Public"
-              },
-              {
-                "Port": 443,
-                "BackendPort": "8990",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "contoso.com",
-                "Hostname": "sentry",
-                "Interface": "Public"
-              },
-              {
-                "Port": 443,
-                "BackendPort": "8990",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "contoso.com",
-                "Hostname": "",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "contoso.com",
-                "Hostname": "",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "contoso.com",
-                "Hostname": "select",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "contoso.com",
-                "Hostname": "sentry",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "contoso.com",
-                "Hostname": "yates",
-                "Interface": "Public"
-              }
-            ]
-          }
-        ]
+        }
       }
     }
   }

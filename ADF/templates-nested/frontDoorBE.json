@@ -23,7 +23,7 @@
                           parameters('AFDService').BEAddress[copyIndex('backends')].weight,
                           100)]",
           "address": "[replace(
-                              replace(parameters('AFDService').BEAddress[copyIndex('backends')].suffix,
+                              replace(parameters('AFDService').BEAddress[copyIndex('backends')].address,
                                       '{Deployment}',
                                       parameters('Deployment')),
                               '{Domain}',
@@ -37,7 +37,7 @@
                                         '{Domain}',
                                         parameters('global').DomainNameExt),
                                   replace(
-                                        replace(parameters('AFDService').BEAddress[copyIndex('backends')].suffix,
+                                        replace(parameters('AFDService').BEAddress[copyIndex('backends')].address,
                                                 '{Deployment}',
                                                 parameters('Deployment')),
                                         '{Domain}',

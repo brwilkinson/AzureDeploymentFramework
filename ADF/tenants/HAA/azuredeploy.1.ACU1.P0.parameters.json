@@ -513,45 +513,45 @@
         "FWInfo": [
           {
             "Name": "FW01",
-            "threatIntelMode": "Alert"
-          }
-        ],
-        "natRulesInfo": [
-          {
-            "Name": "JMP01",
-            "priority": "20000",
-            "actionType": "DNAT",
-            "rule": {
-              "name": "JMP01-RDP-Allow",
-              "sourceAddresses": [
-                "73.157.100.227"
-              ],
-              "destinationPorts": [
-                "3389"
-              ],
-              "protocols": [
-                "Any"
-              ],
-              "translatedAddress": "172.16.137.62"
-            }
-          },
-          {
-            "Name": "API01",
-            "priority": "20001",
-            "actionType": "DNAT",
-            "rule": {
-              "name": "WEB-API-Allow",
-              "sourceAddresses": [
-                "*"
-              ],
-              "destinationPorts": [
-                "443"
-              ],
-              "protocols": [
-                "Any"
-              ],
-              "translatedAddress": "10.10.139.254"
-            }
+            "threatIntelMode": "Alert",
+            "natRules": [
+              {
+                "Name": "JMP01",
+                "priority": "20000",
+                "actionType": "DNAT",
+                "rule": {
+                  "name": "JMP01-RDP-Allow",
+                  "sourceAddresses": [
+                    "73.157.100.227"
+                  ],
+                  "destinationPorts": [
+                    "3389"
+                  ],
+                  "protocols": [
+                    "Any"
+                  ],
+                  "translatedAddress": "172.16.137.62"
+                }
+              },
+              {
+                "Name": "API01",
+                "priority": "20001",
+                "actionType": "DNAT",
+                "rule": {
+                  "name": "WEB-API-Allow",
+                  "sourceAddresses": [
+                    "*"
+                  ],
+                  "destinationPorts": [
+                    "443"
+                  ],
+                  "protocols": [
+                    "Any"
+                  ],
+                  "translatedAddress": "10.10.139.254"
+                }
+              }
+            ],
           }
         ],
         "Appservers": {

@@ -77,218 +77,64 @@
     "FWSubnet": "AzureFirewallSubnet",
     "FWSubnetRef": "[concat(variables('VNetID'), '/subnets/', variables('FWSubnet'))]",
     "Domain": "[split(parameters('Global').DomainName,'.')[0]]",
-    "FWInfo": "[parameters('DeploymentInfo').FWInfo]",
-    "NATRulesInfo": "[parameters('DeploymentInfo').NATRulesInfo]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
-    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]"
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+
+    "FWInfo": "[if(contains(parameters('DeploymentInfo'),'FWInfo'),parameters('DeploymentInfo').FWInfo,createArray())]",
+    "copy": [
+      {
+        "name": "FW",
+        "count": "[length(variables('FWInfo'))]",
+        "input": {
+          "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').FWInfo[copyIndex('FW')].Name)
+                        )]"
+        }
+      }
+    ]
+
   },
   "resources": [
     {
-      "name": "[concat(variables('Deployment'),'-vn',variables('FWInfo')[copyIndex()].Name,'-publicip1')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2018-03-01",
-      "sku": {
-        "name": "Standard"
-      },
+      "condition": "[variables('FW')[copyIndex(0)].match]",
+      "name": "[concat('dp', variables('Deployment'),'-FWDeploy',if(equals(length(variables('FW')),0),'',variables('FWInfo')[copyIndex()].name))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
       "copy": {
         "name": "FWLoop",
-        "count": "[length( variables('FWInfo') )]"
-      },
-      "dependsOn": [
-      ],
-      "properties": {
-        "publicIPAllocationMethod": "Static",
-        "dnsSettings": {
-          "domainNameLabel": "[toLower( concat(variables('Domain'), variables('Deployment'), '-',variables('FWInfo')[copyIndex()].Name ) ) ]"
-        }
-      },
-      "resources": [
-        {
-          "type": "providers/diagnosticSettings",
-          "name": "Microsoft.Insights/service",
-          "dependsOn": [
-            "[concat(variables('Deployment'),'-vn',variables('FWInfo')[copyIndex()].Name,'-publicip1')]"
-          ],
-          "apiVersion": "2015-07-01",
-          "properties": {
-            "workspaceId": "[variables('OMSworkspaceID')]",
-            "logs": [
-              {
-                "category": "DDoSProtectionNotifications",
-                "enabled": true
-              }
-            ],
-            "metrics": [
-              {
-                "timeGrain": "PT5M",
-                "enabled": true,
-                "retentionPolicy": {
-                  "enabled": false,
-                  "days": 0
-                }
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      // "condition": "[equals(parameters('Stage').FW,1)]",
-      "name": "[concat(variables('Deployment'),'-vn',variables('FWInfo')[copyIndex()].Name)]",
-      "type": "Microsoft.Network/azureFirewalls",
-      "apiVersion": "2019-09-01",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('Deployment'),'-vn',variables('FWInfo')[copyIndex()].Name,'-publicip1'))]"
-      ],
-      "copy": {
-        "name": "FWLoop",
-        "count": "[length( variables('FWInfo') )]"
+        "count": "[length( variables('FW') )]"
       },
       "properties": {
-        "threatIntelMode": "[variables('FWInfo')[copyIndex()].threatIntelMode]",
-        "additionalProperties": {
-          "ThreatIntel.Whitelist.FQDNs": "*.microsoft.com",
-          "ThreatIntel.Whitelist.IpAddresses": "72.21.81.200"
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('global')._artifactsLocation, '/', 'templates-nested/FW.json', parameters('global')._artifactsLocationSasToken)]",
+          "contentVersion": "1.0.0.0"
         },
-        "copy": [
-          {
-            "name": "natRuleCollections",
-            "count": "[length(variables('NATRulesInfo'))]",
-            "Input": {
-              "name": "[variables('NATRulesInfo')[copyIndex('natRuleCollections')].Name]",
-              "properties": {
-                "priority": "[variables('NATRulesInfo')[copyIndex('natRuleCollections')].priority]",
-                "action": {
-                  "type": "[variables('NATRulesInfo')[copyIndex('natRuleCollections')].actionType]"
-                },
-                "rules": [
-                  {
-                    "name": "[variables('NATRulesInfo')[copyIndex('natRuleCollections')].rule.name]",
-                    "sourceAddresses": "[variables('NATRulesInfo')[copyIndex('natRuleCollections')].rule.sourceAddresses]",
-                    "destinationAddresses": "[array(reference(resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-vn',variables('FWInfo')[copyIndex()].Name,'-publicip1')),'2018-03-01').ipAddress)]",
-                    "destinationPorts": "[variables('NATRulesInfo')[copyIndex('natRuleCollections')].rule.destinationPorts]",
-                    "protocols": "[variables('NATRulesInfo')[copyIndex('natRuleCollections')].rule.protocols]",
-                    "translatedAddress": "[variables('NATRulesInfo')[copyIndex('natRuleCollections')].rule.translatedAddress]",
-                    "translatedPort": "[if(contains(variables('NATRulesInfo')[copyIndex('natRuleCollections')].rule,'translatedPort'),variables('NATRulesInfo')[copyIndex('natRuleCollections')].rule.translatedPort,variables('NATRulesInfo')[copyIndex('natRuleCollections')].rule.destinationPorts[0])]"
-                  }
-                ]
-              }
-            }
-          }
-        ],
-        "networkRuleCollections": [
-          {
-            "name": "Default_Outbound",
-            "properties": {
-              "priority": 10000,
-              "action": {
-                "type": "Allow"
-              },
-              "rules": [
-                {
-                  "name": "Default_Outbound",
-                  "description": "Default outbound all East/Central",
-                  "protocols": [
-                    "Any"
-                  ],
-                  "sourceAddresses": [
-                    // "*",
-                    // "10.10.128.0/20",
-                    // "10.144.128.0/20",
-                    // "10.170.208.0/20",
-                    // "172.16.0.0/16"
-                  ],
-                  "destinationAddresses": [
-                    "*"
-                  ],
-                  "destinationPorts": [
-                    "*"
-                  ]
-                }
-              ]
-            }
-          }
-        ],
-        "ipConfigurations": [
-          {
-            "name": "FWConfig",
-            "properties": {
-              "subnet": {
-                "id": "[variables('FWSubnetRef')]"
-              },
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('Deployment'),'-vn',variables('FWInfo')[copyIndex()].Name,'-publicip1'))]"
-              }
-            }
-          }
-        ]
-      },
-      "resources": [
-        {
-          "type": "providers/diagnosticSettings",
-          "name": "Microsoft.Insights/service",
-          "dependsOn": [
-            "[concat(variables('Deployment'),'-vn',variables('FWInfo')[copyIndex()].Name)]"
-          ],
-          "apiVersion": "2015-07-01",
-          "properties": {
-            "workspaceId": "[variables('OMSworkspaceID')]",
-            "logs": [
-              {
-                "category": "AzureFirewallApplicationRule",
-                "enabled": true
-              },
-              {
-                "category": "AzureFirewallNetworkRule",
-                "enabled": true
-              }
-            ],
-            "metrics": [
-              {
-                "timeGrain": "PT5M",
-                "enabled": true,
-                "retentionPolicy": {
-                  "enabled": false,
-                  "days": 0
-                }
-              }
-            ]
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "Environment": {
+            "value": "[parameters('Environment')]"
+          },
+          "FWInfo": {
+            "value": "[variables('FWInfo')[copyIndex(0)]]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "Stage": {
+            "value": "[parameters('Stage')]"
+          },
+          "OMSworkspaceID": {
+            "value": "[variables('OMSworkspaceID')]"
           }
         }
-      ]
+      }
     }
-    //  currently cannot deploy the NAT rules as a standalone resource.
-    // {
-    //   "name": "[concat(variables('Deployment'),'-vnFW01','/',variables('NATRulesInfo')[copyIndex(0)].Name )]",
-    //   "type": "Microsoft.Network/azureFirewalls/natRuleCollections",
-    //   "apiVersion": "2018-07-01",
-    //   "location": "[resourceGroup().location]",
-    //   "copy": {
-    //     "name": "FWRulesLoop",
-    //     "count": "[length( variables('NATRulesInfo') )]"
-    //   },
-    //   "dependsOn": [
-    //     "[concat(variables('Deployment'),'-vnFW01')]"
-    //   ],
-    //   "properties": {
-    //     "priority": "[variables('NATRulesInfo')[copyIndex()].priority]",
-    //     "action": {
-    //       "type": "[variables('NATRulesInfo')[copyIndex()].actionType]",
-    //     },
-    //     "rules": [
-    //       {
-    //         "name": "[variables('NATRulesInfo')[copyIndex()].rule.name]",
-    //         "sourceAddresses": "[variables('NATRulesInfo')[copyIndex()].rule.sourceAddresses]",
-    //         "destinationAddresses": "[variables('NATRulesInfo')[copyIndex()].rule.destinationAddresses]",
-    //         "destinationPorts": "[variables('NATRulesInfo')[copyIndex()].rule.destinationPorts]",
-    //         "protocols": "[variables('NATRulesInfo')[copyIndex()].rule.protocols]",
-    //         "translatedAddress": "[variables('NATRulesInfo')[copyIndex()].rule.translatedAddress]",
-    //         "translatedPort": "[if(contains(variables('NATRulesInfo')[copyIndex()].rule,'translatedPort'),variables('FWInfo')[copyIndex()].rule.translatedPort,variables('NATRulesInfo')[copyIndex()].rule.destinationPorts[0])]",
-    //       }
-    //     ]
-    //   }
-    // }
   ]
 }

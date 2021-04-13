@@ -801,7 +801,6 @@
             "autoUpgradeMinorVersion": true,
             "forceUpdateTag": "[parameters('deploymentTime')]",
             "settings": {
-              "Mode": "push",
               "wmfVersion": "latest",
               "configuration": {
                 "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-',if(contains(variables('AppServers')[copyIndex(0)],'DSConfig'),

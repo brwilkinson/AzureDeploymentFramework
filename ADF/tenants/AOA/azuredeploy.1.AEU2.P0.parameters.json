@@ -40,7 +40,7 @@
         "RG": 1,
         "RBAC": 1,
         "UAI": 1,
-        "SP": 1,
+        "SP": 0,
         "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
@@ -48,7 +48,7 @@
         "SA": 1,
         "CDN": 0,
         "StorageSync": 0,
-        "RSV": 0,
+        "RSV": 1,
         "NSGHUB": 1,
         "NSGSPOKE": 0,
         "NetworkWatcher": 1,
@@ -66,7 +66,6 @@
         "ADPrimary": 0,
         "ADSecondary": 0,
         "ILB": 0,
-        "PLB": 0,
         "InitialDOP": 0,
         "VMApp": 0,
         "VMAppLinux": 0,
@@ -216,50 +215,80 @@
         ],
         "SPInfo": [
           {
-            "Name": "AzureDeploymentFramework_AEU2-BRW-AOA-RG-P0",
+            "Name": "Microsoft.Azure.Frontdoor",
+            "RBAC": [
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "ACRPush"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "Contributor"
               },
               {
+                "Name": "User Access Administrator"
+              },
+              {
                 "Name": "Reader and Data Access",
                 "RG": "G1",
-                "PREFIX": "ACU1"
+                "Tenant": "AOA"
               },
               {
                 "Name": "Storage Account Key Operator Service Role",
                 "RG": "G1",
-                "PREFIX": "ACU1"
+                "Tenant": "AOA"
               },
               {
                 "Name": "Log Analytics Contributor",
                 "RG": "G1",
-                "PREFIX": "ACU1"
+                "Tenant": "AOA"
               },
               {
                 "Name": "Log Analytics Contributor",
-                "RG": "P0"
-              },
-              {
-                "Name": "Key_Vault_Reader",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "AOA"
               },
               {
                 "Name": "Key Vault Secrets User",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "AOA"
               },
               {
                 "Name": "Network Contributor",
-                "RG": "P0"
-              },
-              {
-                "Name": "DNS Zone Contributor",
-                "RG": "P0"
+                "RG": "P0",
+                "Tenant": "AOA"
               },
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "P0",
-                "PREFIX": "ACU1"
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA",
+                "PREFIX": "AEU2"
               }
             ]
           }
@@ -337,7 +366,7 @@
           "name": "networkwatcher"
         },
         "DNSPrivateZoneInfo": [
-          "PSThing.com",
+          "psthing.com",
           "privatelink.azurewebsites.net",
           "privatelink.vaultcore.azure.net",
           "privatelink.blob.core.windows.net",
@@ -346,12 +375,16 @@
           "privatelink.servicebus.windows.net",
           "privatelink.database.windows.net",
           "privatelink.azconfig.io",
-          "privatelink.eastus2.azmk8s.io"
+          "privatelink.azurecr.io",
+          "privatelink.eastus2.azmk8s.io",
+          "privatelink.mongo.cosmos.azure.com",
+          "privatelink.documents.azure.com",
+          "privatelink.redis.cache.windows.net"
         ],
         "LinkPrivateDnsInfo": [
           {
             "zoneRG": "P0",
-            "zone": "privatelink.eastus2.azmk8s.io",
+            "zone": "psthing.com",
             "Autoregistration": false
           },
           {
@@ -381,7 +414,42 @@
           },
           {
             "zoneRG": "P0",
-            "zone": "PSThing.com",
+            "zone": "privatelink.servicebus.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.database.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.azconfig.io",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.azurecr.io",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.eastus2.azmk8s.io",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.mongo.cosmos.azure.com",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.documents.azure.com",
+            "Autoregistration": false
+          },
+          {
+            "zoneRG": "P0",
+            "zone": "privatelink.redis.cache.windows.net",
             "Autoregistration": false
           }
         ],
@@ -502,99 +570,6 @@
             }
           }
         ],
-        "ContainerRegistry": [
-          {
-            "Name": "CTN01",
-            "SKU": "Standard",
-            "adminUserEnabled": true
-          }
-        ],
-        "SQLMInstances": [
-          {
-            "name": "MI01",
-            "storageSizeInGB": "32",
-            "vCores": "16",
-            "hardwareFamily": "Gen5",
-            "skuName": "BC_Gen5",
-            "skuTier": "BusinessCritical",
-            "SNName": "BE01"
-          }
-        ],
-        "AKS": [
-          {
-            "Name": "AKS01",
-            "Version": "1.11.5",
-            "AgentPools": [
-              {
-                "name": "NodePool1",
-                "count": 2,
-                "osDiskSizeGb": 30,
-                "osType": "Linux",
-                "maxPods": 110,
-                "storageProfile": "ManagedDisks",
-                "vmSize": "Standard_D1_v2"
-              }
-            ]
-          }
-        ],
-        "CosmosDB": [
-          {
-            "dbName": "CDB03",
-            "Kind": "MongoDB"
-          }
-        ],
-        "APIMInfo": [
-          {
-            "name": "01",
-            "dnsName": "API",
-            "apimSku": "Developer",
-            "snName": "BE03"
-          }
-        ],
-        "AppServersVMSS": [
-          {
-            "VMName": "API",
-            "SFName": "contoso",
-            "Role": "API",
-            "ASName": "API",
-            "OSType": "Server2016SS",
-            "Subnet": "MT02",
-            "LB": "API",
-            "NATName": "RDP",
-            "Capacity": 3,
-            "IsPrimary": false,
-            "durabilityLevel": "Bronze",
-            "placementProperties": {
-              "OSType": "Server2016SS",
-              "NodeKind": "API01"
-            }
-          },
-          {
-            "VMName": "SF",
-            "SFName": "contoso",
-            "Role": "SF",
-            "ASName": "SF",
-            "OSType": "Server2016SS",
-            "Subnet": "MT02",
-            "LB": "SF",
-            "NATName": "RDP",
-            "Capacity": 3,
-            "IsPrimary": true,
-            "durabilityLevel": "Bronze",
-            "placementProperties": {
-              "OSType": "Server2016SS",
-              "NodeKind": "SF"
-            }
-          }
-        ],
-        "AppServersSF": [
-          {
-            "SFName": "contoso",
-            "LBFEIP": "253",
-            "Subnet": "MT02",
-            "reliabilityLevel": "Bronze"
-          }
-        ],
         "ASRInfo": [
           {
             "SourceRG": "P0",
@@ -645,396 +620,8 @@
                 }
               ]
             }
-          ],
-          "AppServers": [
-            {
-              "VMName": "JMP01",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2016small",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "62"
-                }
-              ]
-            }
-          ],
-          "VMFile2": [
-            {
-              "VMName": "FIL01",
-              "Role": "FIL",
-              "ASName": "FIL",
-              "DDRole": "FIL64GB",
-              "OSType": "Server2019small",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "MT02",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "253"
-                }
-              ],
-              "AppInfo": {
-                "ClusterInfo": {
-                  "CLIP": "251",
-                  "CLNAME": "CLS01",
-                  "Primary": "FIL01",
-                  "Secondary": [
-                    "FIL02"
-                  ]
-                },
-                "SOFSInfo": [
-                  {
-                    "Name": "SOFS01",
-                    "Volumes": [
-                      {
-                        "Name": "Volume1",
-                        "Size": 16
-                      },
-                      {
-                        "Name": "Volume2",
-                        "Size": 16
-                      }
-                    ]
-                  }
-                ]
-              }
-            },
-            {
-              "VMName": "FIL02",
-              "Role": "FIL",
-              "ASName": "FIL",
-              "DDRole": "FIL64GB",
-              "OSType": "Server2019small",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "MT02",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "252"
-                }
-              ]
-            }
-          ],
-          "VMFile": [
-            {
-              "VMName": "DFS01",
-              "Role": "DFS",
-              "ASName": "DFS",
-              "DDRole": "FIL64GB",
-              "OSType": "Server2019small",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "MT02",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "249",
-                  "SLB": "FIL"
-                }
-              ],
-              "AppInfo2": {
-                "ClusterInfo": {
-                  "CLIP": "247",
-                  "CLNAME": "CLS03",
-                  "Primary": "DFS01",
-                  "Secondary": [
-                    "DFS02"
-                  ]
-                },
-                "SOFSInfo": [
-                  {
-                    "Name": "SOFS02",
-                    "Volumes": [
-                      {
-                        "Name": "Volume1",
-                        "Size": 16
-                      },
-                      {
-                        "Name": "Volume2",
-                        "Size": 16
-                      }
-                    ]
-                  }
-                ]
-              }
-            },
-            {
-              "VMName": "DFS02",
-              "Role": "DFS",
-              "ASName": "DFS",
-              "DDRole": "FIL64GB",
-              "OSType": "Server2019small",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "MT02",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "248",
-                  "SLB": "FIL"
-                }
-              ]
-            }
-          ],
-          "AppServersFoo": [
-            {
-              "VMName": "JMP02",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2016small",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "61"
-                }
-              ]
-            },
-            {
-              "VMName": "JMP03",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2016small",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "60"
-                }
-              ]
-            }
-          ],
-          "AppServersLinux": [
-            {
-              "VMName": "LIN01",
-              "Role": "LIN",
-              "ASName": "LIN",
-              "DDRole": "64GB",
-              "OSType": "CentOS75",
-              "AdminUser": "localadmin",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "59",
-                  "PublicIP": "Static"
-                }
-              ]
-            }
-          ],
-          "SQLServersAS": [
-            "CLS01"
-          ],
-          "SQLServers": [
-            {
-              "VMName": "SQL01",
-              "OSType": "Server2016",
-              "ASName": "CLS01",
-              "Role": "SQL",
-              "DDRole": "SQL64GB",
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "BE02",
-                  "SLB2": "CLS01",
-                  "FastNic": 1,
-                  "Primary": 1,
-                  "StaticIP": "107"
-                }
-              ],
-              "AppInfo": {
-                "ClusterInfo": {
-                  "CLIP": "109",
-                  "CLNAME": "CLS01",
-                  "Primary": "SQL01",
-                  "Secondary": [
-                    "SQL02"
-                  ]
-                },
-                "aoinfo": [
-                  {
-                    "GroupName": "AG01",
-                    "PrimaryAG": "SQL01",
-                    "SecondaryAG": "SQL02",
-                    "AOIP": "110",
-                    "ProbePort": "59999",
-                    "InstanceName": "CTO_1"
-                  }
-                ]
-              }
-            },
-            {
-              "VMName": "SQL02",
-              "OSType": "Server2016",
-              "CLNAME": "CLS01",
-              "ASName": "CLS01",
-              "Role": "SQL",
-              "DDRole": "SQL64GB",
-              "Zone": 2,
-              "NICs": [
-                {
-                  "Subnet": "BE02",
-                  "SLB2": "CLS01",
-                  "FastNic": 1,
-                  "Primary": 1,
-                  "StaticIP": "108"
-                }
-              ],
-              "AppInfo": {
-                "ClusterInfo": {
-                  "CLIP": "109",
-                  "CLNAME": "CLS01",
-                  "Primary": "SQL01",
-                  "Secondary": [
-                    "SQL02"
-                  ]
-                },
-                "aoinfo": [
-                  {
-                    "GroupName": "AG01",
-                    "PrimaryAG": "SQL01",
-                    "SecondaryAG": "SQL02",
-                    "InstanceName": "CTO_1"
-                  }
-                ]
-              }
-            }
           ]
-        },
-        "WAFInfo": [
-          {
-            "WAFName": "API",
-            "WAFEnabled": false,
-            "WAFMode": "Detection",
-            "WAFSize": "Standard_v2",
-            "WAFTier": "Standard_v2",
-            "WAFCapacity": 2,
-            "PrivateIP": "30",
-            "SSLCerts": [
-              "PSTHING-WildCard"
-            ],
-            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [
-              "254"
-            ],
-            "frontEndPorts": [
-              {
-                "Port": 80
-              },
-              {
-                "Port": 443
-              }
-            ],
-            "BackendHttp": [
-              {
-                "Port": 8988,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "Cert": "PSTHING-WildCard",
-                "hostname": "contoso.com"
-              },
-              {
-                "Port": 8989,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "Cert": "PSTHING-WildCard",
-                "hostname": "contoso.com"
-              },
-              {
-                "Port": 8990,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "Cert": "PSTHING-WildCard",
-                "hostname": "contoso.com"
-              }
-            ],
-            "Listeners": [
-              {
-                "Port": 443,
-                "BackendPort": "8988",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "contoso.com",
-                "Hostname": "yates",
-                "Interface": "Public"
-              },
-              {
-                "Port": 443,
-                "BackendPort": "8989",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "contoso.com",
-                "Hostname": "select",
-                "Interface": "Public"
-              },
-              {
-                "Port": 443,
-                "BackendPort": "8990",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "contoso.com",
-                "Hostname": "sentry",
-                "Interface": "Public"
-              },
-              {
-                "Port": 443,
-                "BackendPort": "8990",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "contoso.com",
-                "Hostname": "",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "contoso.com",
-                "Hostname": "",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "contoso.com",
-                "Hostname": "select",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "contoso.com",
-                "Hostname": "sentry",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "contoso.com",
-                "Hostname": "yates",
-                "Interface": "Public"
-              }
-            ]
-          }
-        ]
+        }
       }
     }
   }

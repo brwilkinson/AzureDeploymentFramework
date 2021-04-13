@@ -131,8 +131,8 @@
     ]
   },
   "resources": [
-        {
-      "name": "[concat('dp',parameters('Deployment'),'-AFD-BEDeploy',parameters('frontDoorInfo').services[CopyIndex(0)].Name)]",
+    {
+      "name": "[concat('dp',parameters('Deployment'),'-AFD-BEDeploy-',parameters('frontDoorInfo').Name,'-',parameters('frontDoorInfo').services[CopyIndex(0)].Name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-01-01",
       "copy": {
@@ -213,7 +213,6 @@
         "friendlyName": "[parameters('frontDoorInfo').name]",
         "enabledState": "Enabled",
         "frontendEndpoints": "[variables('frontendEndpoints')]",
-        // "frontendEndpoints": "[union(variables('DefaultFrontEnd'),variables('frontendEndpoints'))]",
         "healthProbeSettings": "[variables('healthProbeSettings')]",
         "loadBalancingSettings": "[variables('loadBalancingSettings')]",
         "routingRules": "[variables('routingRules')]",
@@ -280,7 +279,7 @@
     },
     {
       "condition": "[and(contains(parameters('frontDoorInfo').services[CopyIndex(0)],'EnableSSL'),equals(parameters('frontDoorInfo').services[CopyIndex(0)].EnableSSL,1))]",
-      "name": "[concat('SetServicesCertificates',CopyIndex(1))]",
+      "name": "[concat('SetServicesCertificates',CopyIndex(1),'-',parameters('frontDoorInfo').name)]",
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
       "identity": {

@@ -79,7 +79,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2018-07-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(variables('Deploymentnsg'),'-nsgSNAD01')]",
       "location": "[resourceGroup().location]",
@@ -112,7 +112,7 @@
       ]
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2018-07-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(variables('Deploymentnsg'),'-nsgSNBE01')]",
       "location": "[resourceGroup().location]",
@@ -145,19 +145,19 @@
       ]
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2018-07-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(variables('Deploymentnsg'),'-nsgSNFE01')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
           {
-            "name": "BEN_JMP_IN_Allow_RDP01",
+            "name": "ALL_JMP_IN_Allow_RDP01",
             "properties": {
               "protocol": "*",
               "sourcePortRange": "*",
               "destinationPortRange": "3389",
-              "sourceAddressPrefix": "[parameters('Global').PublicIPAddressforRemoteAccess]",
+              "sourceAddressPrefixes": "[parameters('Global').PublicIPAddressforRemoteAccess]",
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 1130,
@@ -165,12 +165,12 @@
             }
           },
           {
-            "name": "BEN_JMP_IN_Allow_SSH01",
+            "name": "ALL_JMP_IN_Allow_SSH01",
             "properties": {
               "protocol": "*",
               "sourcePortRange": "*",
               "destinationPortRange": "22",
-              "sourceAddressPrefix": "[parameters('Global').PublicIPAddressforRemoteAccess]",
+              "sourceAddressPrefixes": "[parameters('Global').PublicIPAddressforRemoteAccess]",
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 1140,
@@ -178,12 +178,12 @@
             }
           },
           {
-            "name": "BEN_JMP_IN_Allow_WEB01",
+            "name": "ALL_JMP_IN_Allow_WEB01",
             "properties": {
               "protocol": "*",
               "sourcePortRange": "*",
               "destinationPortRange": "8080",
-              "sourceAddressPrefix": "[parameters('Global').PublicIPAddressforRemoteAccess]",
+              "sourceAddressPrefixes": "[parameters('Global').PublicIPAddressforRemoteAccess]",
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 1150,
@@ -217,7 +217,7 @@
       ]
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2018-07-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(variables('Deploymentnsg'),'-nsgSNMT02')]",
       "location": "[resourceGroup().location]",
@@ -250,7 +250,7 @@
       ]
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2018-07-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(variables('Deploymentnsg'),'-nsgSNMT01')]",
       "location": "[resourceGroup().location]",

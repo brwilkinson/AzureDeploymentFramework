@@ -98,7 +98,10 @@ $rgName = 'ACU1-BRW-HAA-RG-D3'
 $Name = 'ACU1-BRW-HAA-D3-ssAPI-AutoScale/Microsoft.Insights/service'
 $type = 'Microsoft.Insights/autoscaleSettings/providers/diagnosticSettings'
 
-/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-D3/providers/microsoft.insights/autoscalesettings/ACU1-BRW-HAA-D3-ssAPI-Autoscale
+$rgName = 'ACU1-BRW-AOA-RG-P0'
+$Name = 'ACU1-BRW-AOA-P0-vnFW01'
+$type = 'Microsoft.Network/azureFirewalls'
+
 
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 

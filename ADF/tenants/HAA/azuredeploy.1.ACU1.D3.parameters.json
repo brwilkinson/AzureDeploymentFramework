@@ -401,7 +401,7 @@
         ],
         "saInfo": [
           {
-            "nameSuffix": "diag",
+            "namesuffix": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Deny",
             "logging": {
@@ -417,7 +417,7 @@
             }
           },
           {
-            "nameSuffix": "data",
+            "namesuffix": "data",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "logging": {
@@ -568,7 +568,7 @@
                 "Name": "PLB01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
                 "BEAddress": [
                   {
-                    "suffix": "{Deployment}-api01.{Domain}"
+                    "address": "{Deployment}-api01.{Domain}"
                   }
                 ],
                 "ProbeName": "probe02",
@@ -585,7 +585,7 @@
                 "Name": "Default",
                 "BEAddress": [
                   {
-                    "suffix": "portal.azure.com"
+                    "address": "portal.azure.com"
                   }
                 ],
                 "ProbeName": "probe01",
@@ -623,12 +623,12 @@
                 "Name": "GW01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
                 "BEAddress": [
                   {
-                    "suffix": "{Deployment}-api02.{Domain}",
+                    "address": "{Deployment}-api02.{Domain}",
                     "hostheader": "{Deployment}-api02.{Domain}",
                     "weight": 50
                   },
                   {
-                    "suffix": "{Deployment}-api03.{Domain}",
+                    "address": "{Deployment}-api03.{Domain}",
                     "weight": 50
                   }
                 ],
@@ -645,7 +645,7 @@
                 "Name": "Default",
                 "BEAddress": [
                   {
-                    "suffix": "portal.azure.com"
+                    "address": "portal.azure.com"
                   }
                 ],
                 "ProbeName": "probe01",
