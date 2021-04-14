@@ -197,7 +197,9 @@ class AppReleaseDSC
         # Update the ValidateFile with the latest build
         $CurrentBuildFile = Join-Path -Path $this.DestinationPath -ChildPath (Join-Path -Path $this.ComponentName -ChildPath $this.ValidateFileName)
         Set-Content -Path $CurrentBuildFile -Value $RequiredBuild -Force -Verbose
-        Remove-Item -Path $CurrentBuildFilesDir\app_offline.htm -verbose
+        
+        # azcopy can remove this file on sync so this file may already be deleted
+        Remove-Item -Path $CurrentBuildFilesDir\app_offline.htm -verbose -ErrorAction SilentlyContinue
     }
 
     # Gets the resource's current state.

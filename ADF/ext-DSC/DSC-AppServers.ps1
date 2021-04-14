@@ -447,7 +447,6 @@ Configuration AppServers
             }
             $dependsonAZCopyDSCDir += @("[AZCOPYDSCDir]$Name")
         }
-        
 
         #-------------------------------------------------------------------
         foreach ($AppComponent in $Node.AppReleaseDSCAppPresent)

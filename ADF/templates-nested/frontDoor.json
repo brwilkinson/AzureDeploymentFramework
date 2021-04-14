@@ -78,7 +78,10 @@
             "path": "[parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')].ProbePath]",
             "protocol": "Https",
             "intervalInSeconds": 30,
-            "healthProbeMethod": "Head",
+            "healthProbeMethod": "[if(
+                                      contains(parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')],'probeMethod'),
+                                      parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')].probeMethod,
+                                      'Head')]",
             "enabledState": "Enabled"
           }
         }
