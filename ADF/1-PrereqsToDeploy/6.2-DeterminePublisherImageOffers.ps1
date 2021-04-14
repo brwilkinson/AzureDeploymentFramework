@@ -75,8 +75,9 @@ $sku = '2019-datacenter-with-containers-gs'
 $sku = '2019-Datacenter-with-Containers'
 $sku = 'windows-server-2019-azure-edition-preview'
 $sku = '2019-datacenter-gen2'
-Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU | Select-Object * | ogv
-Select-Object PublisherName, skus, Offer, Version # Location
+$sku = 'windows-server-2022'
+Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU | #Select-Object * | ogv
+    Select-Object PublisherName, skus, Offer, Version # Location
 
 # Sample output:
 
@@ -134,5 +135,5 @@ Select-Object PublisherName, skus, Offer, Version # Location
     #>
 
 
-$version = '17763.1757.2102060435'
+$version = '20324.3.2103272200'
 Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU -Version $version | select *

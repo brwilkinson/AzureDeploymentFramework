@@ -81,7 +81,7 @@
                 }
             )
 
-            LocalPolicyPresent          = @(
+            LocalPolicyPresent2          = @(
                 @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarGlomLevel'; PolicyType = 'User'; Data = '1'; Type = 'DWord' }
                 # @{KeyValueName = 'SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
                 # @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*'; PolicyType = 'User'; Data = '2'; Type = 'DWord' },
@@ -138,6 +138,11 @@
                 @{
                     SourcePath      = 'F:\Source\PSModules\oh-my-posh\'
                     DestinationPath = 'c:\program files\WindowsPowershell\Modules\oh-my-posh\'
+                },
+
+                @{
+                    SourcePath      = 'F:\Source\PSModules\PSReadline\'
+                    DestinationPath = 'c:\program files\WindowsPowershell\Modules\PSReadline\'
                 }
 
                 # @{
@@ -236,6 +241,7 @@
                     DestinationPath   = 'F:\WEB\'
                     ValidateFileName  = 'CurrentBuild.txt'
                     BuildFileName     = 'F:\Build\LogHeadersAPI\ComponentBuild.json'
+                    SleepTime         = '30'
                 }
 
             )

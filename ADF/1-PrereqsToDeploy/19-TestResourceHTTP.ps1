@@ -102,6 +102,9 @@ $rgName = 'ACU1-BRW-AOA-RG-P0'
 $Name = 'ACU1-BRW-AOA-P0-vnFW01'
 $type = 'Microsoft.Network/azureFirewalls'
 
+$rgName = 'ACU1-BRW-AOA-RG-D3'
+$Name = 'ACU1-BRW-AOA-D3-aci-locust-master-0'
+$type = 'Microsoft.ContainerInstance/containerGroups'
 
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 

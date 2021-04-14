@@ -160,6 +160,44 @@
           }
         }
       }
+    },
+    {
+      "condition": "[and(contains(parameters('ACIInfo'),'registerDNS'),equals(parameters('ACIInfo').registerDNS,1))]",
+      "apiVersion": "2021-01-01",
+      "name": "[concat('setdns-public-',parameters('Deployment'),'-aci-',variables('Instances')[copyIndex(0)].name,'-',parameters('global').DomainNameExt)]",
+      "type": "Microsoft.Resources/deployments",
+      "dependson": [
+        "[concat(parameters('Deployment'),'-aci-',variables('Instances')[copyIndex(0)].name)]"
+      ],
+      "copy": {
+        "name": "regDNSinstanceLoop",
+        "count": "[length(variables('Instances'))]"
+      },
+      "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
+      "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/dnsZones/CNAME",
+              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-aci-',variables('Instances')[copyIndex(0)].name))]",
+              "apiVersion": "2018-05-01",
+              "properties": {
+                "metadata": {},
+                "TTL": 3600,
+                "CNAMERecord": {
+                  "cname": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups',concat(parameters('Deployment'),'-aci-',variables('Instances')[copyIndex(0)].name)),'2021-03-01','Full').properties.ipAddress.fqdn]"
+                }
+              }
+            }
+          ]
+        }
+      }
     }
   ]
 }

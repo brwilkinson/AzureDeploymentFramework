@@ -58,19 +58,19 @@
 
             DevOpsAgentPresent             = @(
                 @{
-                    name = '{0}-{1}-{2}-{3}-Apps101'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Present';
+                    name = '{0}-{1}-{2}-{3}-Apps101'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Absent';
                     Credlookup = 'DomainCreds' ; AgentBase = 'F:\vsts-agent' ; AgentVersion = '2.184.2'
                     orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/'
                 },
 
                 @{
-                    name = '{0}-{1}-{2}-{3}-Apps102'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Present';
+                    name = '{0}-{1}-{2}-{3}-Apps102'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Absent';
                     Credlookup = 'DomainCreds' ; AgentBase = 'F:\vsts-agent'; AgentVersion = '2.184.2'
                     orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/'
                 },
                 
                 @{
-                    name = '{0}-{1}-{2}-{3}-Infra01'; pool = '{0}-{1}-{2}-{3}-Infra01'; Ensure = 'Present';
+                    name = '{0}-{1}-{2}-{3}-Infra01'; pool = '{0}-{1}-{2}-{3}-Infra01'; Ensure = 'Absent';
                     Credlookup = 'DomainCreds' ; AgentBase = 'F:\vsts-agent'; AgentVersion = '2.184.2'
                     orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/'
                 }
@@ -129,25 +129,11 @@
                 }
             )
 
-            # Move to custom DSC resource
-            DevOpsAgentPresent2            = @(
-                @{ 
-                    orgUrl       = 'https://dev.azure.com/AzureDeploymentFramework/'
-                    AgentVersion = '2.165.0'
-                    AgentBase    = 'F:\Source\vsts-agent'
-                    Agents       = @(
-                        @{pool = '{0}-{1}-Apps1'; name = '{0}-{1}-Apps101'; Ensure = 'Absent'; Credlookup = 'DomainCreds' },
-                        @{pool = '{0}-{1}-Apps1'; name = '{0}-{1}-Apps102'; Ensure = 'Absent'; Credlookup = 'DomainCreds' },
-                        @{pool = '{0}-{1}-Infra01'; name = '{0}-{1}-Infra01'; Ensure = 'Absent'; Credlookup = 'DomainCreds' }
-                    )
-                }
-            )
-
             RegistryKeyPresent             = @(
                 @{ 
                     # enable developer mode to sideload appx packages, including winget
                     Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock';
-                    ValueName = 'AllowDevelopmentWithoutDevLicense';	ValueData = 1 ; ValueType = 'Dword'
+                    ValueName = 'AllowDevelopmentWithoutDevLicense'; ValueData = 1 ; ValueType = 'Dword'
                 },
 
                 @{ 
@@ -257,6 +243,11 @@
                 @{
                     SourcePath      = 'F:\Source\PSModules\oh-my-posh\'
                     DestinationPath = 'c:\program files\WindowsPowershell\Modules\oh-my-posh\'
+                },
+
+                @{
+                    SourcePath      = 'F:\Source\PSModules\PSReadline\'
+                    DestinationPath = 'c:\program files\WindowsPowershell\Modules\PSReadline\'
                 },
 
                 @{

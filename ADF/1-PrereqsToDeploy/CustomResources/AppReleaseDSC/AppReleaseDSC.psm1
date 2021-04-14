@@ -49,6 +49,10 @@ class AppReleaseDSC
     [DscProperty(Mandatory)]
     [string]$LogDir
 
+    # When deploying new binaries, it will wait this many seconds for the site to be shutdown
+    [DscProperty()]
+    [string]$DeploySleepWaitSeconds = 30
+
     # Mandatory indicates the property is required and DSC will guarantee it is set.
     [DscProperty()]
     [Ensure]$Ensure = [Ensure]::Present
@@ -177,10 +181,15 @@ class AppReleaseDSC
         $RequiredBuild = Get-Content -Path $this.BuildFileName | ConvertFrom-Json |
             ForEach-Object ComponentName | ForEach-Object $this.ComponentName |
             ForEach-Object $this.EnvironmentName | ForEach-Object DefaultBuild
-        
+
         $Source = $this.SourcePath.TrimEnd('/')
         $DesiredBuildFiles = $Source + '/' + $this.ComponentName + '/' + $RequiredBuild
         $CurrentBuildFilesDir = Join-Path -Path $this.DestinationPath -ChildPath $this.ComponentName
+
+        # attempt to unlock binaries for ASP.NET apps
+        # https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/app-offline?view=aspnetcore-5.0
+        New-Item -Path $CurrentBuildFilesDir -Name "app_offline.htm" -ItemType "file" -Verbose
+        Start-Sleep -Seconds $this.DeploySleepWaitSeconds
 
         & $azcopy login --identity --identity-client-id $this.ManagedIdentityClientID
         & $azcopy sync $DesiredBuildFiles $CurrentBuildFilesDir --recursive=true --delete-destination true
@@ -188,6 +197,7 @@ class AppReleaseDSC
         # Update the ValidateFile with the latest build
         $CurrentBuildFile = Join-Path -Path $this.DestinationPath -ChildPath (Join-Path -Path $this.ComponentName -ChildPath $this.ValidateFileName)
         Set-Content -Path $CurrentBuildFile -Value $RequiredBuild -Force -Verbose
+        Remove-Item -Path $CurrentBuildFilesDir\app_offline.htm -verbose
     }
 
     # Gets the resource's current state.

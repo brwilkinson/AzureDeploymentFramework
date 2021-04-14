@@ -103,7 +103,7 @@
             "backendPort": "[parameters('Services')[copyIndex('loadBalancingRules')].LBBEPort]",
             "enableFloatingIP": "[if(and(contains(parameters('Services')[copyIndex('loadBalancingRules')],'DirectReturn'),equals( parameters('Services')[copyIndex('loadBalancingRules')].DirectReturn,bool('true')) ),parameters('Services')[copyIndex('loadBalancingRules')].DirectReturn ,bool('false'))]",
             "loadDistribution": "[if(contains(parameters('Services')[copyIndex('loadBalancingRules')],'Persistance'),parameters('Services')[copyIndex('loadBalancingRules')].Persistance, 'Default')]",
-            "disableOutboundSnat": true
+            "disableOutboundSnat": false
           }
         }
       },

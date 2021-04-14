@@ -463,6 +463,7 @@ Configuration AppServers
                 Ensure                  = 'Present'
                 ManagedIdentityClientID = $clientIDGlobal
                 LogDir                  = 'F:\azcopy_logs'
+                DeploySleepWaitSeconds  = $AppComponent.SleepTime
             }
             $dependsonAZCopyDSCDir += @("[AppReleaseDSC]$($AppComponent.ComponentName)")
         }
