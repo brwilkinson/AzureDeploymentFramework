@@ -925,7 +925,7 @@ elseif ($NotAA)
 else
 {
     Write-Warning -Message 'running as mof upload'
-    return 0
+    return "configuration loaded"
 }
 #endregion
 

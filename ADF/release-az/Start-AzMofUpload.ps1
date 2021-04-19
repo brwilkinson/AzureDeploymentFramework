@@ -162,8 +162,8 @@ Function global:Start-AzMofUpload
         }
         Import-AzAutomationDscNodeConfiguration @automationAccountParams -Path $mof[0]
         
-        # Delete the local MOF file.
-        Get-Item -Path "$mofdir\$Role" | Remove-Item -EA 0 -Verbose -Force -Recurse
+        # Delete the local role directory.
+        Remove-Item -Path "$mofdir\$Role" -EA 0 -Verbose -Force -Recurse
     }
     # End ForEach-Object -parallel
     # -----------------------------------------------
