@@ -834,7 +834,6 @@
                 "deployment": "[replace(variables('Deployment'),'-','')]",
                 "networkid": "[concat(variables('networkId'),'.')]",
                 "appInfo": "[if(contains(variables('AppServers')[copyIndex(0)],'AppInfo'),string(variables('AppServers')[copyIndex(0)].AppInfo),'')]",
-                "DNSInfo": "[if(and(equals(variables('AppServers')[copyIndex(0)].VMName,'JMP01'),equals(parameters('Stage').DNSLookup,1)),string(reference(resourceId('Microsoft.Resources/deployments','DNSLookup'),'2017-05-10','Full').properties.outputs.dns.value),'')]",
                 "DataDiskInfo": "[string(variables('VM')[copyIndex(0)].DataDisk)]",
                 "clientIDLocal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperator'),'2018-11-30').ClientId)]",
                 "clientIDGlobal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountFileContributor'),'2018-11-30').ClientId)]"

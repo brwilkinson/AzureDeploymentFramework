@@ -82,11 +82,11 @@ Function global:Start-AzDeploy
         [alias('AppName')]
         [string] $App = 'ADF',
 
-        [alias('ComputerName')]
-        [string] $CN = '.',
-
         [validateset('AEU2', 'ACU1', 'AZE2', 'AZC1', 'AZW2', 'AZE1')] 
         [String] $Prefix = 'AZC1',
+
+        [alias('ComputerName')]
+        [string] $CN = '.',
 
         # When deploying VM's, this is a subset of AppServers e.g. AppServers, SQLServers, ADPrimary
         [string] $DeploymentName = ($Prefix + '-' + $Deployment + '-' + (Get-ChildItem $TemplateFile).BaseName),

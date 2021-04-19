@@ -1,0 +1,108 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1",
+        "AEU2",
+        "ACU1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "deploymentTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]"
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "devOpsPat": {
+      "type": "securestring"
+    },
+    "sshPublic": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  BRWDev101
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+
+    "ImageGalleryInfo": "[if(contains(parameters('DeploymentInfo'),'ImageGalleryInfo'),parameters('DeploymentInfo').ImageGalleryInfo,createArray())]",
+    "copy": [
+      {
+        "name": "imgGallery",
+        "count": "[length(variables('ImageGalleryInfo'))]",
+        "input": {
+          "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').ImageGalleryInfo[copyIndex('imgGallery')].Name)
+                        )]"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "[concat(variables('DeploymentURI'), 'gallery', variables('ImageGalleryInfo')[copyIndex(0)].Name)]",
+      "type": "Microsoft.Compute/galleries",
+      "apiVersion": "2019-12-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "galleryCopy",
+        "count": "[length(variables('imgGallery'))]"
+      },
+      "properties": {
+        "description": "[variables('ImageGalleryInfo')[copyIndex(0)].description]",
+        "identifier": {}
+      },
+      "resources": []
+    }
+  ]
+}

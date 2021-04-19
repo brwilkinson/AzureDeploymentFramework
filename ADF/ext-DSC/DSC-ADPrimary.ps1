@@ -12,7 +12,6 @@ Configuration ADPrimary
         [String]$Deployment, #aze2adfs1
         [String]$NetworkID,
         [String]$AppInfo,
-        [String]$DNSInfo,
         [String]$DataDiskInfo,
         [String]$clientIDLocal,
         [String]$clientIDGlobal

@@ -12,7 +12,6 @@ Configuration AppServers
         [String]$Deployment,
         [String]$NetworkID,
         [String]$AppInfo,
-        [String]$DNSInfo,
         [String]$DataDiskInfo,
         [String]$clientIDLocal,
         [String]$clientIDGlobal
@@ -46,18 +45,20 @@ Configuration AppServers
     # PowerShell Modules that you want deployed, comment out if not needed
     Import-DscResource -ModuleName BRWAzure
 
-    # Azure VM Metadata service
+    <# Azure VM Metadata service
     $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
     $Compute = $VMMeta.compute
     $NetworkInt = $VMMeta.network.interface
-
     $SubscriptionId = $Compute.subscriptionId
-    $ResourceGroupName = $Compute.resourceGroupName
     $Zone = $Compute.zone
-    $prefix = $ResourceGroupName.split('-')[0]
-    $OrgName = $ResourceGroupName.split('-')[1]
-    $App = $ResourceGroupName.split('-')[2]
-    $environment = $ResourceGroupName.split('-')[4]
+    $ResourceGroupName = $Compute.resourceGroupName
+    #>
+    
+    $prefix = $Deployment.split('-')[0]
+    $OrgName = $Deployment.split('-')[1]
+    $App = $Deployment.split('-')[2]
+    $environment = $Deployment.split('-')[3]
+
     $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
 
     Function IIf
@@ -122,15 +123,8 @@ Configuration AppServers
 
     node $AllNodes.NodeName
     {
-        if ($NodeName -eq 'localhost')
-        {
-            [string]$computername = $env:COMPUTERNAME
-        }
-        else
-        {
-            Write-Verbose $Nodename.GetType().Fullname
-            [string]$computername = $Nodename
-        } 
+        [string]$computername = $Nodename
+
         Write-Verbose -Message $computername -Verbose
 
         Write-Verbose -Message "deployment: $deployment" -Verbose
@@ -171,10 +165,10 @@ Configuration AppServers
         # }
 
         #-------------------------------------------------------------------
-        xTimeZone EasternStandardTime
+        xTimeZone timezone
         { 
             IsSingleInstance = 'Yes'
-            TimeZone         = 'Eastern Standard Time' 
+            TimeZone         = iif $Node.timezone $Node.timezone 'Eastern Standard Time'
         }
 
         #-------------------------------------------------------------------
@@ -242,7 +236,6 @@ Configuration AppServers
                 Name                 = $Feature
                 Ensure               = 'Present'
                 IncludeAllSubFeature = $true
-                #Source = $ConfigurationData.NonNodeData.WindowsFeatureSource
             }
             $dependsonFeatures += @("[WindowsFeature]$Feature")
         }
@@ -278,6 +271,7 @@ Configuration AppServers
             $dependsonDisksPresent += @("[Disk]$($disk.DriveLetter)")
         }
 
+        #-------------------------------------------------------------------
         if ($Node.DNSForwarder)
         {
             xDnsServerForwarder AzureDNS
@@ -286,7 +280,8 @@ Configuration AppServers
                 IPAddresses      = $Node.DNSForwarder
             }
         }
-        #-------------------
+
+        #-------------------------------------------------------------------
         foreach ($Zone in $Node.ConditionalForwarderPresent)
         {
             xDnsServerConditionalForwarder $Zone.Name
@@ -298,49 +293,6 @@ Configuration AppServers
         }
 
         #-------------------------------------------------------------------
-        # Moved domain join to Extensions
-
-        # xWaitForADDomain $DomainName
-        # {
-        #     DependsOn  = $dependsonFeatures
-        #     DomainName = $DomainName
-        #     RetryCount = $RetryCount
-        #     RetryIntervalSec = $RetryIntervalSec
-        #     DomainUserCredential = $AdminCreds
-        # }
-
-        # xComputer DomainJoin
-        # {
-        #     Name       = $computername
-        #     DependsOn  = "[xWaitForADDomain]$DomainName"
-        #     DomainName = $DomainName
-        #     Credential = $credlookup["DomainJoin"]
-        # }
-    
-        #------------------------------------------------------------
-        # remove windows update for now, takes too long to apply updates
-        # Updated reboots to skip checking windows update paths
-        # 
-        #  xWindowsUpdateAgent MuSecurityImportant
-        #  {
-        #      IsSingleInstance = 'Yes'
-        #      UpdateNow        = $true
-        #      Category         = @('Security')
-        #      Source           = 'MicrosoftUpdate'
-        #      Notifications    = 'Disabled'
-        #  }
-        #  # Checking Windows Firewall
-
-        # reboots after DJoin and Windows Updates
-        # xPendingReboot RebootForDJoin
-        # {
-        #     Name                        = 'RebootForDJoin'
-        #     DependsOn                   = '[xComputer]DomainJoin'#,'[xWindowsUpdateAgent]MuSecurityImportant'
-        #     SkipComponentBasedServicing = $True
-        #     SkipWindowsUpdate           = $True 
-        #     SkipCcmClientSDK            = $True
-        # }
-
         Service WindowsFirewall
         {
             Name        = 'MPSSvc'
@@ -348,6 +300,7 @@ Configuration AppServers
             State       = 'Running'
         }
 
+        #-------------------------------------------------------------------
         foreach ($FWRule in $Node.FWRules)
         {
             Firewall $FWRule.Name
@@ -393,8 +346,8 @@ Configuration AppServers
             }
             $dependsonUser += @("[xADUser]$($User.Username)")
         }
+        
         #-------------------------------------------------------------------
-
         foreach ($UserRightsAssignment in $Node.UserRightsAssignmentPresent)
         {
             UserRightsAssignment $UserRightsAssignment.policy
@@ -589,6 +542,7 @@ Configuration AppServers
         $dependsonEnvironmentPath += @('[Environment]PATH')
 
         #-------------------------------------------------------------------
+        # Non PATH envs
         foreach ($EnvironmentVar in $Node.EnvironmentVarPresent)
         {
             $Name = $EnvironmentVar.Name -replace $StringFilter
@@ -839,6 +793,7 @@ Configuration AppServers
             $dependsonPackageRegKey += @("[xPackage]$($Name)")
         }
 
+        #-------------------------------------------------------------------
         if ($Node.WVDInstall)
         {
             WVDDSC RDInfraAgent
@@ -923,54 +878,6 @@ Configuration AppServers
             SkipPendingFileRename       = $true 
         }
         #-------------------------------
-
-        # If ($Node.VSTSAgent)
-        # {
-        #     $mycredp = $credlookup["$($Node.VSTSAgent)"].GetNetworkCredential().password
-        #     $mycredu = $credlookup["$($Node.VSTSAgent)"].username
-        #     Write-Warning "Mycred: $mycredu"
-        #     # setup the vsts service to run as the domain account
-            
-        #     UserRightsAssignment $mycredu
-        #     {
-        #         Identity = $mycredu
-        #         Policy   = 'Log_on_as_a_service'
-        #     }
-
-        #     Script ConfigureBuildAgent
-        #     {
-        #         GetScript  = {
-        #             @{result = Get-Service | Where-Object { $_.name -match 'vstsagent.azuredeploymentframework' } }
-        #         }
-        #         TestScript = {
-        #             $successFlag = $True
-        #             $services = Get-CimInstance -ClassName win32_service -Filter "Name LIKE 'vstsagent.azuredeploymentframework%'"
-        #             foreach ($service in $services)
-        #             {
-        #                 if ($service.startname -eq $using:mycredu)
-        #                 {
-        #                     Write-Warning "VSTS service: $($service.Name) -- Correct StartName: $($service.startname)"
-        #                 }
-        #                 else
-        #                 {
-        #                     Write-Warning "VSTS service: $($service.Name) -- Not Correct StartName: $($service.startname)"
-        #                     $successFlag = $False 
-        #                 }
-        #             }
-        #             $successFlag
-        #         }
-        #         Setscript  = {
-        #             $services = Get-CimInstance -ClassName win32_service -Filter "Name LIKE 'vstsagent.azuredeploymentframework%'"
-        #             $services | Where-Object startname -NE $using:mycredu | ForEach-Object {
-        #                 $arguments = @{StartName = $using:mycredu ; StartPassword = $using:mycredp }
-        #                 Invoke-CimMethod -MethodName Change -InputObject $_ -Arguments $arguments
-        #                 Invoke-CimMethod -MethodName StopService -InputObject $_
-        #                 Start-Sleep -Seconds 60
-        #                 Invoke-CimMethod -MethodName StartService -InputObject $_
-        #             }
-        #         }
-        #     }
-        # }#end jmp
     }
 }#Main
 
@@ -978,7 +885,7 @@ Configuration AppServers
 # F5 loads the configuration and starts the push
 
 #region The following is used for manually running the script, breaks when running as system
-if ((whoami) -notmatch 'system')
+if ((whoami) -notmatch 'system' -and $NotAA)
 {
     Write-Warning -Message 'no testing in prod !!!'
     if ($cred)
@@ -1009,10 +916,15 @@ if ((whoami) -notmatch 'system')
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
     }
 }
-else
+elseif ($NotAA)
 {
     Write-Warning -Message 'running as system'
     break
+}
+else
+{
+    Write-Warning -Message 'running as mof upload'
+    return 0
 }
 #endregion
 
@@ -1074,7 +986,6 @@ $Params = @{
     DevOpsPat         = $cred 
     Deployment        = $dep  #AZE2ADFD5 (AZE2ADFD5JMP01)
     Verbose           = $true
-    #DNSInfo           = '{"APIM":"104.46.120.132","APIMDEV":"104.46.102.64","WAF":"c0a1dcd4-dbab-4bba-a581-29ae2ff8ce00.cloudapp.net","WAFDEV":"46eb8888-5986-4783-bb19-cab76935978b.cloudapp.net"}'
 }
 
 # Compile the MOFs

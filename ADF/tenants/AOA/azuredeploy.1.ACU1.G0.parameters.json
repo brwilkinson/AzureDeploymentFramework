@@ -39,7 +39,7 @@
       "value": {
         "RG": 0,
         "RoleDefinition": 1,
-        "RBAC": 1,
+        "RBAC": 0,
         "UAI": 0,
         "SP": 0,
         "KV": 0,
@@ -128,6 +128,19 @@
             "notActions": [],
             "actions": [
               "MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION"
+            ]
+          },
+          {
+            "RoleName": "Image_Builder",
+            "description": "Lets you deploy vm images",
+            "notActions": [],
+            "actions": [
+              "Microsoft.Compute/galleries/read",
+              "Microsoft.Compute/galleries/read",
+              "Microsoft.Compute/galleries/images/read",
+              "Microsoft.Compute/galleries/images/versions/read",
+              "Microsoft.Network/virtualNetworks/read",
+              "Microsoft.Network/virtualNetworks/subnets/join/action"
             ]
           }
         ]

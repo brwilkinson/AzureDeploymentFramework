@@ -1,0 +1,255 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1",
+        "AEU2",
+        "ACU1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "deploymentTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]"
+    },
+    "vmAdminPassword": {
+      "type": "securestring"
+    },
+    "devOpsPat": {
+      "type": "securestring"
+    },
+    "sshPublic": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    // Global  BRWDev101
+    "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+    "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
+    "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
+
+    "imageTemplatesInfo": "[if(contains(parameters('DeploymentInfo'),'imageTemplatesInfo'),parameters('DeploymentInfo').imageTemplatesInfo,createArray())]",
+    "copy": [
+      {
+        "name": "image",
+        "count": "[length(variables('imageTemplatesInfo'))]",
+        "input": {
+          "match": "[or(
+                        equals(parameters('Global').CN,'.'),
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').imageTemplatesInfo[copyIndex('image')].imageName)
+                        )]"
+        }
+      }
+    ],
+    "userAssignedIdentities": {
+      "Default": {
+        // "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+        // },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiImageBuilder'))]": {
+        }
+        // "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
+        // }
+      },
+      "None": {
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[and(contains(variables('imageTemplatesInfo')[copyIndex(0)],'deployOnce'),equals(variables('imageTemplatesInfo')[copyIndex(0)].deployOnce,1))]",
+      "name": "[concat(variables('imageTemplatesInfo')[copyIndex(0)].imageName,'-',variables('imageTemplatesInfo')[copyIndex(0)].ibLocation)]",
+      "type": "Microsoft.VirtualMachineImages/imageTemplates",
+      "apiVersion": "2020-02-14",
+      "location": "[variables('imageTemplatesInfo')[copyIndex(0)].ibLocation]",
+      "dependsOn": [],
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
+      },
+      "copy": {
+        "name": "imageCopy",
+        "count": "[length(variables('imageTemplatesInfo'))]"
+      },
+      "properties": {
+        "buildTimeoutInMinutes": "[variables('imageTemplatesInfo')[copyIndex(0)].deployTimeoutmin]",
+        "vmProfile": {
+          "vmSize": "[variables('imageTemplatesInfo')[copyIndex(0)].vmSize]",
+          "osDiskSizeGB": "[variables('imageTemplatesInfo')[copyIndex(0)].osDiskSizeGB]"
+          // "vnetConfig": {
+          //   "subnetId": "/subscriptions/<subscriptionID>/resourceGroups/<vnetRgName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>"
+          // }
+        },
+        "source": {
+          "type": "PlatformImage",
+          "publisher": "MicrosoftWindowsServer",
+          "offer": "WindowsServer",
+          "sku": "2019-Datacenter",
+          "version": "latest"
+        },
+        "customize": [
+          {
+            "type": "PowerShell",
+            "name": "CreateBuildPath",
+            "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/testPsScript.ps1"
+          },
+          {
+            "type": "WindowsRestart",
+            "restartCheckCommand": "echo Azure-Image-Builder-Restarted-the-VM  > c:\\buildArtifacts\\azureImageBuilderRestart.txt",
+            "restartTimeout": "5m"
+          },
+          {
+            "type": "File",
+            "name": "downloadBuildArtifacts",
+            "sourceUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/exampleArtifacts/buildArtifacts/index.html",
+            "destination": "c:\\buildArtifacts\\index.html"
+          },
+          {
+            "type": "PowerShell",
+            "name": "settingUpMgmtAgtPath",
+            "inline": [
+              "mkdir c:\\buildActions",
+              "echo Azure-Image-Builder-Was-Here  > c:\\buildActions\\buildActionsOutput.txt"
+            ]
+          },
+          {
+            "type": "WindowsUpdate",
+            "searchCriteria": "IsInstalled=0",
+            "filters": [
+              "exclude:$_.Title -like '*Preview*'",
+              "include:$true"
+            ],
+            "updateLimit": 20
+          }
+        ],
+        "distribute": [
+          {
+            "type": "ManagedImage",
+            "imageId": "[resourceid('Microsoft.Compute/galleries/images','acu1brwaoag1gallery01','vmss2019webnetcore')]",
+            "location": "centralus",
+            "runOutputName": "[variables('imageTemplatesInfo')[copyIndex(0)].imageName]",
+            "artifactTags": {
+              "source": "azVmImageBuilder",
+              "baseosimg": "windows2019"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[and(contains(variables('imageTemplatesInfo')[copyIndex(0)],'buildNow'),equals(variables('imageTemplatesInfo')[copyIndex(0)].buildNow,1))]",
+      "name": "[concat('SetImageBuild',CopyIndex(1),'-',variables('imageTemplatesInfo')[copyIndex(0)].imageName,'-',variables('imageTemplatesInfo')[copyIndex(0)].ibLocation)]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
+      },
+      "dependsOn": [
+        "[concat(variables('imageTemplatesInfo')[copyIndex(0)].imageName,'-',variables('imageTemplatesInfo')[copyIndex(0)].ibLocation)]",
+      ],
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "copy": {
+        "name": "imageCopyBuild",
+        "count": "[length(variables('imageTemplatesInfo'))]"
+      },
+      "properties": {
+        "azPowerShellVersion": "5.4",
+        "arguments": "[format(' -ResourceGroupName {0} -ImageTemplateName {1}', 
+                                resourceGroup().name,
+                                concat(variables('imageTemplatesInfo')[copyIndex(0)].imageName,'-',variables('imageTemplatesInfo')[copyIndex(0)].ibLocation)
+                                )]",
+        "scriptContent": "
+                    param (
+                        [string]$ResourceGroupName,
+                        [string]$ImageTemplateName
+                    )
+                    
+                    try
+                    {
+                        Write-Output \"`nUTC is: \"
+                        Get-Date
+                        $c = Get-AzContext -ErrorAction stop
+                        if ($c)
+                        {
+                            Write-Output \"`nContext is: \"
+                            $c | select Account,Subscription,Tenant,Environment | fl | out-string
+
+                            Install-Module -Name Az.ImageBuilder -Force
+                            
+                            $template = Get-AzImageBuilderTemplate -ResourceGroupName $ResourceGroupName -ImageTemplateName $ImageTemplateName -ErrorAction stop
+                            if ($template.Name)
+                            {
+                                Write-Output 'Starting async run to build the image [$ImageTemplateName]!'
+                                Start-AzImageBuilderTemplate -InputObject $template -NoWait
+                            }
+                            else 
+                            {
+                              Write-Output 'cannot find [$ImageTemplateName] in [$ResourceGroupName]'
+                            }
+                        }
+                        else 
+                        {
+                            throw 'Cannot get a context'
+                        }
+                    }
+                    catch
+                    {
+                        Write-Warning $_
+                        Write-Warning $_.exception
+                    }
+                ",
+        "forceUpdateTag": "[parameters('deploymentTime')]",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "P1D",
+        "timeout": "PT3M"
+      }
+    }
+  ]
+}

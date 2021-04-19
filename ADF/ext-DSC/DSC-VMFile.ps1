@@ -12,7 +12,6 @@ Configuration VMFile
         [String]$Deployment,
         [String]$NetworkID,
         [String]$AppInfo,
-        [String]$DNSInfo,
         [String]$App = 'ADF',
         [String]$DataDiskInfo,
         [String]$clientIDLocal,

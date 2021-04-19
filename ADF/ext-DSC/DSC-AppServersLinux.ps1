@@ -12,7 +12,6 @@ Configuration AppServersLinux
         [String]$Deployment,
         [String]$NetworkID,
         [String]$AppInfo,
-        [String]$DNSInfo,
         [String]$DataDiskInfo,
         [String]$clientIDLocal,
         [String]$clientIDGlobal

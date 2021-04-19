@@ -34,14 +34,14 @@
                 @{
                     GroupName        = "Domain Admins"
                     Groupscope       = "Global"
-                    MembersToInclude = "Ben.Wilkinson"
+                    MembersToInclude = "Ben.Wilkinson","WebUser"
                 }
             ) 
 
             ADUserPresent               = @(
                 @{
-                    UserName    = "Ben.Wilkinson"
-                    Description = "DomainAdmin"
+                    UserName    = "WebUser"
+                    Description = "Web User"
                 }    
             )
 

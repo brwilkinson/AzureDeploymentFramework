@@ -14,8 +14,7 @@ Configuration SQLServers
         [String]$Deployment,
         [String]$NetworkID,
         [String]$AppInfo,
-        [String]$DNSInfo,
-        [String]$App = 'ADF',
+        [String]$App,
         [String]$DataDiskInfo,
         [String]$clientIDLocal,
         [String]$clientIDGlobal

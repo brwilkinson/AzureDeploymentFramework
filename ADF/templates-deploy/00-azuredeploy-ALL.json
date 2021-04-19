@@ -97,7 +97,7 @@
       "VNetDNS": "../templates-nested/SetvNetDNS.json",
       "ADPrimary": "../templates-base/05-azuredeploy-VMApp.json",
       "ADSecondary": "../templates-base/05-azuredeploy-VMApp.json",
-      "VMSS": "../templates-base/08-azuredeploy-VMAppSS.json",
+      "VMSS": "../templates-base/05-azuredeploy-VMAppSS.json",
       "InitialDOP": "../templates-base/05-azuredeploy-VMApp.json",
       "VMApp": "../templates-base/05-azuredeploy-VMApp.json",
       "VMAppLinux": "../templates-base/05-azuredeploy-VMApp.json",
