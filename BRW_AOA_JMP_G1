@@ -1,0 +1,1089 @@
+/*
+@TargetNode='LocalHost'
+@GeneratedBy=benwilk
+@GenerationDate=04/19/2021 16:26:10
+@GenerationHost=BENWILK-ASUSMR
+*/
+
+instance of DSC_DnsConnectionSuffix as $DSC_DnsConnectionSuffix1ref
+{
+ModuleName = "NetworkingDsc";
+ ModuleVersion = "8.2.0";
+ InterfaceAlias = "*Ethernet*";
+ RegisterThisConnectionsAddress = True;
+ UseSuffixWhenRegistering = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::144::9::DnsConnectionSuffix";
+ ConnectionSpecificSuffix = "contoso.com";
+ ResourceID = "[DnsConnectionSuffix]contoso.com";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_xTimeZone as $MSFT_xTimeZone1ref
+{
+ModuleName = "xTimeZone";
+ ModuleVersion = "1.8.0.0";
+ IsSingleInstance = "Yes";
+ TimeZone = "Eastern Standard Time";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::169::9::xTimeZone";
+ ResourceID = "[xTimeZone]timezone";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_RegistryResource as $MSFT_RegistryResource1ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ ValueData = {
+    "0"
+};
+ Key = "HKLM:\\SOFTWARE\\Microsoft\\Active Setup\\Installed Components\\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}";
+ Ensure = "Present";
+ SourceInfo = "C:\\Program Files\\WindowsPowerShell\\Modules\\xSystemSecurity\\1.5.1\\DscResources\\xIEEsc\\xIEEsc.schema.psm1::26::5::Registry";
+ ValueName = "IsInstalled";
+ ValueType = "Dword";
+ ResourceID = "[Registry]IEEscKey::[xIEEsc]DisableIEESC";
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of PshOrg_AdminTemplateSetting as $PshOrg_AdminTemplateSetting1ref
+{
+ModuleName = "PolicyFileEditor";
+ ModuleVersion = "3.0.1";
+ KeyValueName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarGlomLevel";
+ Type = "DWord";
+ Data = {
+    "1"
+};
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::200::13::cAdministrativeTemplateSetting";
+ ResourceID = "[cAdministrativeTemplateSetting]SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarGlomLevel";
+ PolicyType = "User";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_RoleResource as $MSFT_RoleResource1ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ IncludeAllSubFeature = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::235::13::WindowsFeature";
+ Ensure = "Present";
+ Name = "RSAT";
+ ResourceID = "[WindowsFeature]RSAT";
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of DSC_xServiceResource as $DSC_xServiceResource1ref
+{
+ModuleName = "xPSDesiredStateConfiguration";
+ ModuleVersion = "9.1.0";
+ SourceInfo = "::2::1::xService";
+ Name = "ShellHWDetection";
+ ResourceID = "[xService]Resource0::[xServiceSet]ServiceSetStopped";
+ State = "Stopped";
+ ConfigurationName = "AppServers";
+};
+instance of DSC_Disk as $DSC_Disk1ref
+{
+ModuleName = "StorageDsc";
+ ModuleVersion = "5.0.1";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::267::13::Disk";
+ DriveLetter = "F";
+ DiskId = "2";
+ ResourceID = "[Disk]F";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_ServiceResource as $MSFT_ServiceResource1ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ StartupType = "Automatic";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::297::9::Service";
+ Name = "MPSSvc";
+ ResourceID = "[Service]WindowsFirewall";
+ State = "Running";
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of DSC_Firewall as $DSC_Firewall1ref
+{
+ModuleName = "NetworkingDsc";
+ ModuleVersion = "8.2.0";
+ Protocol = "TCP";
+ Action = "Allow";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::307::13::Firewall";
+ Direction = "Inbound";
+ Name = "SSH TCP Inbound";
+ ResourceID = "[Firewall]SSH TCP Inbound";
+ LocalPort = {
+    "22"
+};
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential1ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_RegistryResource as $MSFT_RegistryResource2ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ PsDscRunAsCredential = $MSFT_Credential1ref;
+ ValueData = {
+    "1"
+};
+ Key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock";
+ Ensure = "Present";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::322::13::Registry";
+ ValueName = "AllowDevelopmentWithoutDevLicense";
+ ValueType = "Dword";
+ ResourceID = "[Registry]AllowDevelopmentWithoutDevLicense";
+ Force = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential2ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_RegistryResource as $MSFT_RegistryResource3ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ PsDscRunAsCredential = $MSFT_Credential2ref;
+ ValueData = {
+    "0"
+};
+ Key = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced";
+ Ensure = "Present";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::322::13::Registry";
+ ValueName = "DontUsePowerShellOnWinX";
+ ValueType = "Dword";
+ ResourceID = "[Registry]DontUsePowerShellOnWinX";
+ Force = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential3ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_RegistryResource as $MSFT_RegistryResource4ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ PsDscRunAsCredential = $MSFT_Credential3ref;
+ ValueData = {
+    "1"
+};
+ Key = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced";
+ Ensure = "Present";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::322::13::Registry";
+ ValueName = "TaskbarGlomLevel";
+ ValueType = "Dword";
+ ResourceID = "[Registry]TaskbarGlomLevel";
+ Force = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential4ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_RegistryResource as $MSFT_RegistryResource5ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ PsDscRunAsCredential = $MSFT_Credential4ref;
+ ValueData = {
+    "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+};
+ Key = "HKEY_LOCAL_MACHINE\\Software\\OpenSSH";
+ Ensure = "Present";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::322::13::Registry";
+ ValueName = "DefaultShell";
+ ValueType = "String";
+ ResourceID = "[Registry]DefaultShell";
+ Force = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential5ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_RegistryResource as $MSFT_RegistryResource6ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ PsDscRunAsCredential = $MSFT_Credential5ref;
+ ValueData = {
+    "1"
+};
+ Key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\Main";
+ Ensure = "Present";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::322::13::Registry";
+ ValueName = "PreventFirstRunPage ";
+ ValueType = "Dword";
+ ResourceID = "[Registry]PreventFirstRunPage ";
+ Force = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential6ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration1ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ PsDscRunAsCredential = $MSFT_Credential6ref;
+ DestinationPath = "F:\\Source\\InstallLogs";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::381::13::File";
+ ResourceID = "[File]FSourceInstallLogs";
+ Type = "Directory";
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential7ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration2ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ PsDscRunAsCredential = $MSFT_Credential7ref;
+ DestinationPath = "F:\\Repos";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::381::13::File";
+ ResourceID = "[File]FRepos";
+ Type = "Directory";
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential8ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration3ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ PsDscRunAsCredential = $MSFT_Credential8ref;
+ DestinationPath = "c:\\program files\\powershell\\7";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::381::13::File";
+ ResourceID = "[File]cprogramfilespowershell7";
+ Type = "Directory";
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir1ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/SQLClient/";
+ DestinationPath = "F:\\Source\\SQLClient\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceSQLClient_FSourceSQLClient";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir2ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/AppXPackage/CompanyPortal/";
+ DestinationPath = "F:\\Source\\AppXPackage\\CompanyPortal\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceAppXPackageCompanyPortal_FSourceAppXPackageCompanyPortal";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir3ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/Windows_Server_InsiderPreview_LangPack_FOD_20303/";
+ DestinationPath = "F:\\Source\\FOD\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceWindows_Server_InsiderPreview_LangPack_FOD_20303_FSourceFOD";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir4ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/PSModules/";
+ DestinationPath = "F:\\Source\\PSModules\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourcePSModules_FSourcePSModules";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir5ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/Tools/";
+ DestinationPath = "F:\\Source\\Tools\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceTools_FSourceTools";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir6ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/OpenSSH-Win64/";
+ DestinationPath = "F:\\Source\\OpenSSH-Win64\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceOpenSSHWin64_FSourceOpenSSHWin64";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir7ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/GIT/";
+ DestinationPath = "F:\\Source\\GIT\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceGIT_FSourceGIT";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir8ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/EDGE/";
+ DestinationPath = "F:\\Source\\EDGE\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceEDGE_FSourceEDGE";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir9ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/PSCore/";
+ DestinationPath = "F:\\Source\\PSCore\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourcePSCore_FSourcePSCore";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir10ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/DotNetCore/";
+ DestinationPath = "F:\\Source\\DotNetCore\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceDotNetCore_FSourceDotNetCore";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir11ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/VisualStudio/";
+ DestinationPath = "F:\\Source\\VisualStudio\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceVisualStudio_FSourceVisualStudio";
+ ConfigurationName = "AppServers";
+};
+instance of AZCOPYDSCDir as $AZCOPYDSCDir12ref
+{
+ModuleName = "AZCOPYDSCDir";
+ ModuleVersion = "1.0";
+ SourcePath = "https://acu1brwaoag1saglobal.blob.core.windows.net/source/RascalPro3/";
+ DestinationPath = "F:\\Source\\RascalPro3\\";
+ ManagedIdentityClientID = "19f67370-2d9e-4304-8729-f7cac38459bb";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::394::13::AZCOPYDSCDir";
+ Ensure = "Present";
+ LogDir = "F:\\azcopy_logs";
+ ResourceID = "[AZCOPYDSCDir]https0blobcorewindowsnetsourceRascalPro3_FSourceRascalPro3";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration4ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ SourcePath = "F:\\Source\\PSModules\\PackageManagement\\";
+ DestinationPath = "c:\\program files\\WindowsPowershell\\Modules\\PackageManagement\\";
+ Force = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::430::13::File";
+ Ensure = "Present";
+ MatchSource = False;
+ ResourceID = "[File]FSourcePSModulesPackageManagementcprogramfilesWindowsPowershellModulesPackageManagement";
+ Recurse = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration5ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ SourcePath = "F:\\Source\\PSModules\\PowerShellGet\\";
+ DestinationPath = "c:\\program files\\WindowsPowershell\\Modules\\PowerShellGet\\";
+ Force = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::430::13::File";
+ Ensure = "Present";
+ MatchSource = False;
+ ResourceID = "[File]FSourcePSModulesPowerShellGetcprogramfilesWindowsPowershellModulesPowerShellGet";
+ Recurse = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration6ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ SourcePath = "F:\\Source\\PSModules\\oh-my-posh\\";
+ DestinationPath = "c:\\program files\\WindowsPowershell\\Modules\\oh-my-posh\\";
+ Force = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::430::13::File";
+ Ensure = "Present";
+ MatchSource = False;
+ ResourceID = "[File]FSourcePSModulesohmyposhcprogramfilesWindowsPowershellModulesohmyposh";
+ Recurse = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration7ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ SourcePath = "F:\\Source\\PSModules\\PSReadline\\";
+ DestinationPath = "c:\\program files\\WindowsPowershell\\Modules\\PSReadline\\";
+ Force = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::430::13::File";
+ Ensure = "Present";
+ MatchSource = False;
+ ResourceID = "[File]FSourcePSModulesPSReadlinecprogramfilesWindowsPowershellModulesPSReadline";
+ Recurse = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration8ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ SourcePath = "F:\\Source\\Tools\\profile.ps1";
+ DestinationPath = "c:\\program files\\powershell\\7\\profile.ps1";
+ Force = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::430::13::File";
+ Ensure = "Present";
+ MatchSource = True;
+ ResourceID = "[File]FSourceToolsprofileps1cprogramfilespowershell7profileps1";
+ Recurse = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration9ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ SourcePath = "F:\\Source\\Tools\\profile.ps1";
+ DestinationPath = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\profile.ps1";
+ Force = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::430::13::File";
+ Ensure = "Present";
+ MatchSource = True;
+ ResourceID = "[File]FSourceToolsprofileps1CWindowsSystem32WindowsPowerShellv10profileps1";
+ Recurse = True;
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of DSC_WindowsCapability as $DSC_WindowsCapability1ref
+{
+ModuleName = "ComputerManagementDsc";
+ ModuleVersion = "8.4.0";
+ Source = "F:\\Source\\FOD\\LanguagesAndOptionalFeatures";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::446::13::WindowsCapability";
+ Ensure = "Present";
+ Name = "OpenSSH.Server~~~~0.0.1.0";
+ ResourceID = "[WindowsCapability]OpenSSH.Server~~~~0.0.1.0";
+ ConfigurationName = "AppServers";
+};
+instance of DSC_WindowsCapability as $DSC_WindowsCapability2ref
+{
+ModuleName = "ComputerManagementDsc";
+ ModuleVersion = "8.4.0";
+ Source = "F:\\Source\\FOD\\LanguagesAndOptionalFeatures";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::446::13::WindowsCapability";
+ Ensure = "Present";
+ Name = "OpenSSH.Client~~~~0.0.1.0";
+ ResourceID = "[WindowsCapability]OpenSSH.Client~~~~0.0.1.0";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential9ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_PSModule as $MSFT_PSModule1ref
+{
+ModuleName = "PackageManagementProviderResource";
+ ModuleVersion = "1.0.3";
+ PsDscRunAsCredential = $MSFT_Credential9ref;
+ InstallationPolicy = "Trusted";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::471::13::PSModule";
+ Name = "SQLServer";
+ ResourceID = "[PSModule]SQLServer";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential10ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_PSModule as $MSFT_PSModule2ref
+{
+ModuleName = "PackageManagementProviderResource";
+ ModuleVersion = "1.0.3";
+ PsDscRunAsCredential = $MSFT_Credential10ref;
+ InstallationPolicy = "Trusted";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::471::13::PSModule";
+ Name = "AzureAD";
+ ResourceID = "[PSModule]AzureAD";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential11ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_PSModule as $MSFT_PSModule3ref
+{
+ModuleName = "PackageManagementProviderResource";
+ ModuleVersion = "1.0.3";
+ PsDscRunAsCredential = $MSFT_Credential11ref;
+ InstallationPolicy = "Trusted";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::471::13::PSModule";
+ Name = "oh-my-posh";
+ ResourceID = "[PSModule]oh-my-posh";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential12ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_PSModule as $MSFT_PSModule4ref
+{
+ModuleName = "PackageManagementProviderResource";
+ ModuleVersion = "1.0.3";
+ PsDscRunAsCredential = $MSFT_Credential12ref;
+ InstallationPolicy = "Trusted";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::471::13::PSModule";
+ Name = "posh-git";
+ ResourceID = "[PSModule]posh-git";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential13ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_PSModule as $MSFT_PSModule5ref
+{
+ModuleName = "PackageManagementProviderResource";
+ ModuleVersion = "1.0.3";
+ PsDscRunAsCredential = $MSFT_Credential13ref;
+ InstallationPolicy = "Trusted";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::471::13::PSModule";
+ Name = "Terminal-Icons";
+ ResourceID = "[PSModule]Terminal-Icons";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential14ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "brw";
+
+};
+
+instance of MSFT_PSModule as $MSFT_PSModule6ref
+{
+ModuleName = "PackageManagementProviderResource";
+ ModuleVersion = "1.0.3";
+ PsDscRunAsCredential = $MSFT_Credential14ref;
+ InstallationPolicy = "Trusted";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::471::13::PSModule";
+ Name = "Az.ManagedServiceIdentity";
+ ResourceID = "[PSModule]Az.ManagedServiceIdentity";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_EnvironmentResource as $MSFT_EnvironmentResource1ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ Value = ";F:\\Source\\Tools\\SysInternals;F:\\Source\\Tools\\;F:\\Source\\Tools\\.vs-kubernetes\\tools\\helm\\windows-amd64;F:\\Source\\Tools\\.vs-kubernetes\\tools\\kubectl;F:\\Source\\Tools\\.vs-kubernetes\\tools\\minikube\\windows-amd64;F:\\Source\\Tools\\.vs-kubernetes\\tools\\draft\\windows-amd64";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::537::9::Environment";
+ Path = True;
+ Name = "Path";
+ ResourceID = "[Environment]PATH";
+
+ModuleVersion = "0.0";
+ ConfigurationName = "AppServers";
+};
+instance of cFont as $cFont1ref
+{
+ModuleName = "DSCR_Font";
+ ModuleVersion = "0.7.0";
+ FontName = "Fira Code Light Nerd Font Complete";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::716::13::cFont";
+ Ensure = "Present";
+ ResourceID = "[cFont]Fira Code Light Nerd Font Complete";
+ FontFile = "F:\\Source\\Tools\\Fira Code Light Nerd Font Complete.ttf";
+ ConfigurationName = "AppServers";
+};
+instance of cAppxProvisionedPackage as $cAppxProvisionedPackage1ref
+{
+ModuleName = "DSCR_AppxPackage";
+ ModuleVersion = "0.3.0";
+ DependencyPackagePath = {
+    "F:\\Source\\Tools\\Microsoft.VCLibs.x64.14.00.Desktop.appx"
+};
+ PackagePath = "F:\\Source\\Tools\\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle";
+ PackageName = "Microsoft.DesktopAppInstaller";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::746::13::cAppxProvisionedPackage";
+ ResourceID = "[cAppxProvisionedPackage]MicrosoftDesktopAppInstaller";
+ ConfigurationName = "AppServers";
+};
+instance of cAppxProvisionedPackage as $cAppxProvisionedPackage2ref
+{
+ModuleName = "DSCR_AppxPackage";
+ ModuleVersion = "0.3.0";
+ PackagePath = "F:\\Source\\Tools\\Microsoft.WindowsTerminalPreview_1.7.572.0_8wekyb3d8bbwe.msixbundle";
+ PackageName = "Microsoft.WindowsTerminalPreview";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::746::13::cAppxProvisionedPackage";
+ ResourceID = "[cAppxProvisionedPackage]MicrosoftWindowsTerminalPreview";
+ ConfigurationName = "AppServers";
+};
+instance of cAppxProvisionedPackage as $cAppxProvisionedPackage3ref
+{
+ModuleName = "DSCR_AppxPackage";
+ ModuleVersion = "0.3.0";
+ DependencyPackagePath = {
+    "F:\\Source\\AppXPackage\\CompanyPortal\\Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx",
+    "F:\\Source\\AppXPackage\\CompanyPortal\\Microsoft.UI.Xaml.2.3_2.32002.13001.0_x64__8wekyb3d8bbwe.Appx",
+    "F:\\Source\\AppXPackage\\CompanyPortal\\Microsoft.Services.Store.Engagement_10.0.19011.0_x64__8wekyb3d8bbwe.Appx",
+    "F:\\Source\\AppXPackage\\CompanyPortal\\Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx",
+    "F:\\Source\\AppXPackage\\CompanyPortal\\Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx"
+};
+ PackagePath = "F:\\Source\\AppXPackage\\CompanyPortal\\Microsoft.CompanyPortal_2021.228.831.0_neutral___8wekyb3d8bbwe.AppxBundle";
+ PackageName = "Microsoft.CompanyPortal";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::746::13::cAppxProvisionedPackage";
+ ResourceID = "[cAppxProvisionedPackage]MicrosoftCompanyPortal";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential15ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DSC_xPackageResource as $DSC_xPackageResource1ref
+{
+ModuleName = "xPSDesiredStateConfiguration";
+ ModuleVersion = "9.1.0";
+ PsDscRunAsCredential = $MSFT_Credential15ref;
+ Arguments = "/silent /norestart";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::760::13::xPackage";
+ Ensure = "Present";
+ Path = "F:\\Source\\Tools\\vscode\\VSCodeSetup-x64-1.25.0.exe";
+ Name = "Microsoft Visual Studio Code";
+ ResourceID = "[xPackage]MicrosoftVisualStudioCode";
+ ProductId = "";
+
+DependsOn = {
+    "[File]FSourcePSModulesPackageManagementcprogramfilesWindowsPowershellModulesPackageManagement",
+     "[File]FSourcePSModulesPowerShellGetcprogramfilesWindowsPowershellModulesPowerShellGet",
+     "[File]FSourcePSModulesohmyposhcprogramfilesWindowsPowershellModulesohmyposh",
+     "[File]FSourcePSModulesPSReadlinecprogramfilesWindowsPowershellModulesPSReadline",
+     "[File]FSourceToolsprofileps1cprogramfilespowershell7profileps1",
+     "[File]FSourceToolsprofileps1CWindowsSystem32WindowsPowerShellv10profileps1"};
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential16ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DSC_xPackageResource as $DSC_xPackageResource2ref
+{
+ModuleName = "xPSDesiredStateConfiguration";
+ ModuleVersion = "9.1.0";
+ PsDscRunAsCredential = $MSFT_Credential16ref;
+ Arguments = "/install /quiet /norestart";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::760::13::xPackage";
+ Ensure = "Present";
+ Path = "F:\\Source\\SQLClient\\SSMS-Setup-ENU.exe";
+ Name = "Microsoft SQL Server Management Studio - 18.8";
+ ResourceID = "[xPackage]MicrosoftSQLServerManagementStudio188";
+ ProductId = "";
+
+DependsOn = {
+    "[File]FSourcePSModulesPackageManagementcprogramfilesWindowsPowershellModulesPackageManagement",
+     "[File]FSourcePSModulesPowerShellGetcprogramfilesWindowsPowershellModulesPowerShellGet",
+     "[File]FSourcePSModulesohmyposhcprogramfilesWindowsPowershellModulesohmyposh",
+     "[File]FSourcePSModulesPSReadlinecprogramfilesWindowsPowershellModulesPSReadline",
+     "[File]FSourceToolsprofileps1cprogramfilespowershell7profileps1",
+     "[File]FSourceToolsprofileps1CWindowsSystem32WindowsPowerShellv10profileps1"};
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential17ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DSC_xPackageResource as $DSC_xPackageResource3ref
+{
+ModuleName = "xPSDesiredStateConfiguration";
+ ModuleVersion = "9.1.0";
+ PsDscRunAsCredential = $MSFT_Credential17ref;
+ Arguments = "/VERYSILENT";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::760::13::xPackage";
+ Ensure = "Present";
+ Path = "F:\\Source\\GIT\\Git-2.23.0-64-bit.exe";
+ Name = "Git version 2.23.0.windows.1";
+ ResourceID = "[xPackage]Gitversion2230windows1";
+ ProductId = "";
+
+DependsOn = {
+    "[File]FSourcePSModulesPackageManagementcprogramfilesWindowsPowershellModulesPackageManagement",
+     "[File]FSourcePSModulesPowerShellGetcprogramfilesWindowsPowershellModulesPowerShellGet",
+     "[File]FSourcePSModulesohmyposhcprogramfilesWindowsPowershellModulesohmyposh",
+     "[File]FSourcePSModulesPSReadlinecprogramfilesWindowsPowershellModulesPSReadline",
+     "[File]FSourceToolsprofileps1cprogramfilespowershell7profileps1",
+     "[File]FSourceToolsprofileps1CWindowsSystem32WindowsPowerShellv10profileps1"};
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential18ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DSC_xPackageResource as $DSC_xPackageResource4ref
+{
+ModuleName = "xPSDesiredStateConfiguration";
+ ModuleVersion = "9.1.0";
+ PsDscRunAsCredential = $MSFT_Credential18ref;
+ Arguments = "ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 REGISTER_MANIFEST=1";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::760::13::xPackage";
+ Ensure = "Present";
+ Path = "F:\\Source\\PSCore\\PowerShell-7.1.2-win-x64.msi";
+ Name = "PowerShell 7-x64";
+ ResourceID = "[xPackage]PowerShell7x64";
+ ProductId = "{357A3946-1572-4A21-9B60-4C7BD1BB9761}";
+
+DependsOn = {
+    "[File]FSourcePSModulesPackageManagementcprogramfilesWindowsPowershellModulesPackageManagement",
+     "[File]FSourcePSModulesPowerShellGetcprogramfilesWindowsPowershellModulesPowerShellGet",
+     "[File]FSourcePSModulesohmyposhcprogramfilesWindowsPowershellModulesohmyposh",
+     "[File]FSourcePSModulesPSReadlinecprogramfilesWindowsPowershellModulesPSReadline",
+     "[File]FSourceToolsprofileps1cprogramfilespowershell7profileps1",
+     "[File]FSourceToolsprofileps1CWindowsSystem32WindowsPowerShellv10profileps1"};
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential19ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DSC_xPackageResource as $DSC_xPackageResource5ref
+{
+ModuleName = "xPSDesiredStateConfiguration";
+ ModuleVersion = "9.1.0";
+ PsDscRunAsCredential = $MSFT_Credential19ref;
+ Arguments = "/Install /quiet /norestart /log \"F:\\Source\\InstallLogs\\dotnet_install31407.txt\"";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::760::13::xPackage";
+ Ensure = "Present";
+ Path = "F:\\Source\\DotNetCore\\dotnet-sdk-3.1.407-win-x64.exe";
+ Name = "Microsoft .NET Core SDK 3.1.407 (x64)";
+ ResourceID = "[xPackage]MicrosoftNETCoreSDK31407x64";
+ ProductId = "";
+
+DependsOn = {
+    "[File]FSourcePSModulesPackageManagementcprogramfilesWindowsPowershellModulesPackageManagement",
+     "[File]FSourcePSModulesPowerShellGetcprogramfilesWindowsPowershellModulesPowerShellGet",
+     "[File]FSourcePSModulesohmyposhcprogramfilesWindowsPowershellModulesohmyposh",
+     "[File]FSourcePSModulesPSReadlinecprogramfilesWindowsPowershellModulesPSReadline",
+     "[File]FSourceToolsprofileps1cprogramfilespowershell7profileps1",
+     "[File]FSourceToolsprofileps1CWindowsSystem32WindowsPowerShellv10profileps1"};
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential20ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DSC_xPackageResource as $DSC_xPackageResource6ref
+{
+ModuleName = "xPSDesiredStateConfiguration";
+ ModuleVersion = "9.1.0";
+ PsDscRunAsCredential = $MSFT_Credential20ref;
+ Arguments = "/Install /quiet /norestart /log \"F:\\Source\\InstallLogs\\dotnet_install50201.txt\"";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::760::13::xPackage";
+ Ensure = "Present";
+ Path = "F:\\Source\\DotNetCore\\dotnet-sdk-5.0.201-win-x64.exe";
+ Name = "Microsoft .NET SDK 5.0.201 (x64)";
+ ResourceID = "[xPackage]MicrosoftNETSDK50201x64";
+ ProductId = "";
+
+DependsOn = {
+    "[File]FSourcePSModulesPackageManagementcprogramfilesWindowsPowershellModulesPackageManagement",
+     "[File]FSourcePSModulesPowerShellGetcprogramfilesWindowsPowershellModulesPowerShellGet",
+     "[File]FSourcePSModulesohmyposhcprogramfilesWindowsPowershellModulesohmyposh",
+     "[File]FSourcePSModulesPSReadlinecprogramfilesWindowsPowershellModulesPSReadline",
+     "[File]FSourceToolsprofileps1cprogramfilespowershell7profileps1",
+     "[File]FSourceToolsprofileps1CWindowsSystem32WindowsPowerShellv10profileps1"};
+ ConfigurationName = "AppServers";
+};
+instance of DSC_xServiceResource as $DSC_xServiceResource2ref
+{
+ModuleName = "xPSDesiredStateConfiguration";
+ ModuleVersion = "9.1.0";
+ StartupType = "Automatic";
+ SourceInfo = "::2::1::xService";
+ Name = "sshd";
+ ResourceID = "[xService]Resource0::[xServiceSet]ServiceSetStarted";
+ State = "Running";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential21ref
+{
+Password = "gews6xn2cvdclwi37vvwsu5ruegwfjgpdasfevnw4zrqr3nb3azq";
+ UserName = "pat";
+
+};
+
+instance of DevOpsAgentPool as $DevOpsAgentPool1ref
+{
+ModuleName = "DevOpsAgentDSC";
+ ModuleVersion = "1.1";
+ orgURL = "https://dev.azure.com/AzureDeploymentFramework/";
+ PoolName = "ACU1-BRW-AOA-G1-Apps1";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::843::13::DevOpsAgentPool";
+ PATCred = $MSFT_Credential21ref;
+ ResourceID = "[DevOpsAgentPool]ACU1-BRW-AOA-G1-Apps1";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential22ref
+{
+Password = "gews6xn2cvdclwi37vvwsu5ruegwfjgpdasfevnw4zrqr3nb3azq";
+ UserName = "pat";
+
+};
+
+instance of DevOpsAgentPool as $DevOpsAgentPool2ref
+{
+ModuleName = "DevOpsAgentDSC";
+ ModuleVersion = "1.1";
+ orgURL = "https://dev.azure.com/AzureDeploymentFramework/";
+ PoolName = "ACU1-BRW-AOA-G1-Infra01";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::843::13::DevOpsAgentPool";
+ PATCred = $MSFT_Credential22ref;
+ ResourceID = "[DevOpsAgentPool]ACU1-BRW-AOA-G1-Infra01";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential23ref
+{
+Password = "gews6xn2cvdclwi37vvwsu5ruegwfjgpdasfevnw4zrqr3nb3azq";
+ UserName = "pat";
+
+};
+
+instance of MSFT_Credential as $MSFT_Credential24ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DevOpsAgent as $DevOpsAgent1ref
+{
+ModuleName = "DevOpsAgentDSC";
+ ModuleVersion = "1.1";
+ orgURL = "https://dev.azure.com/AzureDeploymentFramework/";
+ PATCred = $MSFT_Credential23ref;
+ PoolName = "ACU1-BRW-AOA-G1-Apps1";
+ Ensure = "Absent";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::857::13::DevOpsAgent";
+ AgentName = "ACU1-BRW-AOA-G1-Apps101";
+ Credential = $MSFT_Credential24ref;
+ ResourceID = "[DevOpsAgent]ACU1-BRW-AOA-G1-Apps101";
+ AgentBase = "F:\\vsts-agent";
+ AgentVersion = "2.184.2";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential25ref
+{
+Password = "gews6xn2cvdclwi37vvwsu5ruegwfjgpdasfevnw4zrqr3nb3azq";
+ UserName = "pat";
+
+};
+
+instance of MSFT_Credential as $MSFT_Credential26ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DevOpsAgent as $DevOpsAgent2ref
+{
+ModuleName = "DevOpsAgentDSC";
+ ModuleVersion = "1.1";
+ orgURL = "https://dev.azure.com/AzureDeploymentFramework/";
+ PATCred = $MSFT_Credential25ref;
+ PoolName = "ACU1-BRW-AOA-G1-Apps1";
+ Ensure = "Absent";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::857::13::DevOpsAgent";
+ AgentName = "ACU1-BRW-AOA-G1-Apps102";
+ Credential = $MSFT_Credential26ref;
+ ResourceID = "[DevOpsAgent]ACU1-BRW-AOA-G1-Apps102";
+ AgentBase = "F:\\vsts-agent";
+ AgentVersion = "2.184.2";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_Credential as $MSFT_Credential27ref
+{
+Password = "gews6xn2cvdclwi37vvwsu5ruegwfjgpdasfevnw4zrqr3nb3azq";
+ UserName = "pat";
+
+};
+
+instance of MSFT_Credential as $MSFT_Credential28ref
+{
+Password = "ContainersAreFun!2020";
+ UserName = "contoso\\brw";
+
+};
+
+instance of DevOpsAgent as $DevOpsAgent3ref
+{
+ModuleName = "DevOpsAgentDSC";
+ ModuleVersion = "1.1";
+ orgURL = "https://dev.azure.com/AzureDeploymentFramework/";
+ PATCred = $MSFT_Credential27ref;
+ PoolName = "ACU1-BRW-AOA-G1-Infra01";
+ Ensure = "Absent";
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::857::13::DevOpsAgent";
+ AgentName = "ACU1-BRW-AOA-G1-Infra01";
+ Credential = $MSFT_Credential28ref;
+ ResourceID = "[DevOpsAgent]ACU1-BRW-AOA-G1-Infra01";
+ AgentBase = "F:\\vsts-agent";
+ AgentVersion = "2.184.2";
+ ConfigurationName = "AppServers";
+};
+instance of MSFT_xPendingReboot as $MSFT_xPendingReboot1ref
+{
+ModuleName = "xPendingReboot";
+ ModuleVersion = "0.4.0.0";
+ SkipCcmClientSDK = True;
+ SkipPendingFileRename = True;
+ SourceInfo = "D:\\Repos\\ADF\\ADF\\ext-DSC\\DSC-AppServers.ps1::872::9::xPendingReboot";
+ SkipComponentBasedServicing = True;
+ Name = "RebootForPackageInstall";
+ ResourceID = "[xPendingReboot]RebootForPackageInstall";
+ SkipWindowsUpdate = True;
+
+DependsOn = {
+    "[xPackage]MicrosoftVisualStudioCode",
+     "[xPackage]MicrosoftSQLServerManagementStudio188",
+     "[xPackage]Gitversion2230windows1",
+     "[xPackage]PowerShell7x64",
+     "[xPackage]MicrosoftNETCoreSDK31407x64",
+     "[xPackage]MicrosoftNETSDK50201x64"};
+ ConfigurationName = "AppServers";
+};
+instance of OMI_ConfigurationDocument
+
+                    {
+ Version="2.0.0";
+
+                        MinimumCompatibleVersion = "2.0.0";
+
+                        CompatibleVersionAdditionalProperties= {"Omi_BaseResource:ConfigurationName"};
+
+                        Author="benwilk";
+
+                        GenerationDate="04/19/2021 16:26:10";
+
+                        GenerationHost="BENWILK-ASUSMR";
+
+                        Name="AppServers";
+
+                    };

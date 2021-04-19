@@ -137,30 +137,34 @@ Function global:Start-AzMofUpload
         & $DeploymentName @params
     
         Remove-Variable -Name NotAA -Scope global
-    
-        # Remove MOF meta files for the configuration we just ran;
-        Get-ChildItem -Path "$mofdir\$Role" -Filter *.meta.mof -verbose | Remove-Item -ea 0
         
         # Rename current MOF files to add the Environment
-        (Get-ChildItem -Path "$mofdir\$Role" -Filter *.mof -Verbose) |
-            Move-Item -Destination {
-                ($_.DirectoryName + '\' + $Global.OrgName + '_' + $using:App + '_' + $Role + '_' + $using:Environment + $_.Extension ) 
-            } -PassThru -Verbose -OutVariable mof
-        
-            # Import each MOF file into the Automation account.
-            $automationAccountParams = @{
-                AutomationAccountName = $using:AutomationAccount
-                ResourceGroupName     = $using:AAResourceGroupName
-                Verbose               = $True
-                OV                    = 'result'
-                ConfigurationName     = $DeploymentName
-                Force                 = $True
-            }
-            Import-AzAutomationDscNodeConfiguration @automationAccountParams -Path $mof[0]
-        
-            # Delete the local MOF file.
-            Get-Item -Path "$mofdir\$Role" | Remove-Item -EA 0 -Verbose -Force -Recurse
+        $Move = @{
+            Path        = "$mofdir\$Role\localhost.mof"
+            NewName     = ($Global.OrgName + '_' + $using:App + '_' + $Role + '_' + $using:Environment + '.mof')
+            Verbose     = $true
+            OutVariable = 'mof'
+            PassThru    = $true
         }
-        # End ForEach-Object -parallel
-        # -----------------------------------------------
+        Rename-Item @Move
+
+        # Remove MOF meta files for the configuration we just ran
+        Remove-Item -Path "$mofdir\$Role\localhost.meta.mof"
+        
+        # Import each MOF file into the Automation account.
+        $automationAccountParams = @{
+            AutomationAccountName = $using:AutomationAccount
+            ResourceGroupName     = $using:AAResourceGroupName
+            Verbose               = $True
+            OV                    = 'result'
+            ConfigurationName     = $DeploymentName
+            Force                 = $True
+        }
+        Import-AzAutomationDscNodeConfiguration @automationAccountParams -Path $mof[0]
+        
+        # Delete the local MOF file.
+        Get-Item -Path "$mofdir\$Role" | Remove-Item -EA 0 -Verbose -Force -Recurse
     }
+    # End ForEach-Object -parallel
+    # -----------------------------------------------
+}

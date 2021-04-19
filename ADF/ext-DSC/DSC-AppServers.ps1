@@ -17,6 +17,7 @@ Configuration AppServers
         [String]$clientIDGlobal
     )
 
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName xActiveDirectory
     Import-DscResource -ModuleName StorageDsc
