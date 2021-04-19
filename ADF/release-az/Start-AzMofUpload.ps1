@@ -1,7 +1,7 @@
 #Requires -Version 7
 #Requires -Module Az.Keyvault, Az.ManagedServiceIdentity
 
-Function Start-AzMofUpload
+Function global:Start-AzMofUpload
 {
     [cmdletbinding()]
     Param(
@@ -24,7 +24,7 @@ Function Start-AzMofUpload
         [String] $DeploymentName = 'AppServers',
     
         [validateset('API', 'SQL', 'JMP')]
-        [String] $Role = 'API',
+        [String[]] $Roles = 'API',
     
         [validateset('P0', 'G1')]
         [string] $AAEnvironment = 'G1'
@@ -56,9 +56,6 @@ Function Start-AzMofUpload
     Write-Warning -Message "Using Resource Group:      [$ResourceGroupName]"
     Write-Warning -Message "Using Parameter File:      [$TemplateParametersFile]"
     
-    $DSCConfigurationPath = Join-Path -Path $ArtifactStagingDirectory -ChildPath 'ext-DSC' -AdditionalChildPath ('DSC-' + $DeploymentName + '.ps1')
-    $DSCConfigurationDataPath = Join-Path -Path $ArtifactStagingDirectory -ChildPath 'ext-CD' -AdditionalChildPath ($Role + '-ConfigurationData.psd1')
-    
     $localadminSS = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name localadmin | ForEach-Object SecretValue
     $localadminCred = [PSCredential]::new($Global.vmAdminUserName, $localadminSS)
     
@@ -75,78 +72,95 @@ Function Start-AzMofUpload
     
     $Network = $Primary.networkId[1] - [Int]$Environment.substring(1)
     $networkID = '{0}{1}' -f $Primary.networkId[0], $Network
-    
-    try
-    {
-        $cd = Import-PowerShellDataFile -Path $DSCConfigurationDataPath -ErrorAction Stop
-    }
-    catch
-    {
-        Write-Warning "Import config data file failed - Check config data file ($DSCConfigurationDataPath)"
-        Write-Warning $_
-        Write-Warning $_.Exception
-        break
-    }
 
-    # Loop up an AppServer definition for the role and take the DataDisk format
-    $AppServer = $Parameters.parameters.DeploymentInfo.value.AppServers.$deploymentname | Where-Object Role -EQ $Role | Select-Object -First 1
-    $DDRole = $DataDiskInfo | Select-Object $AppServer.DDRole | ConvertTo-Json -Depth 5
-    $AppInfo = $AppServer.AppInfo | ConvertTo-Json -Depth 5
+    # -----------------------------------------------
+    $roles | ForEach-Object -Parallel {
+        $role = $_
+
+        # All variables passed into foreach parallel must have a $using:var
+        $AFD = $using:ArtifactStagingDirectory
+        $DeploymentName = $using:DeploymentName
+        $Parameters = $using:Parameters
+        $DataDiskInfo = $using:DataDiskInfo
+        $Global = $using:Global
+
+        $DSCConfigurationPath = Join-Path -Path $AFD -ChildPath 'ext-DSC' -AdditionalChildPath ('DSC-' + $DeploymentName + '.ps1')
+        $DSCConfigurationDataPath = Join-Path -Path $AFD -ChildPath 'ext-CD' -AdditionalChildPath ($Role + '-ConfigurationData.psd1')
     
-    # Compile to temp directory
-    $mofdir = 'C:\DSC\AA'
-    New-Item -Path $mofdir -ItemType directory -EA SilentlyContinue
+        try
+        {
+            $cd = Import-PowerShellDataFile -Path $DSCConfigurationDataPath -ErrorAction Stop
+        }
+        catch
+        {
+            Write-Warning "Import config data file failed - Check config data file ($DSCConfigurationDataPath)"
+            Write-Warning $_
+            Write-Warning $_.Exception
+            break
+        }
     
-    $Params = @{
-        DomainName        = $Global.ADDomainName
-        AdminCreds        = $localadminCred
-        sshPublic         = $sshPublicCred
-        devOpsPat         = $devOpsPatCred
-        ThumbPrint        = $Global.CertificateThumbprint
-        StorageAccountId  = $GlobalStorageID
-        Deployment        = $Deployment
-        NetworkID         = $networkID
-        clientIDLocal     = $RGclientID
-        clientIDGlobal    = $clientID
-        AppInfo           = $AppInfo
-        DataDiskInfo      = $DDRole
+        # Loop up an AppServer definition for the role and take the DataDisk format
+        $AppServer = $Parameters.parameters.DeploymentInfo.value.AppServers.$using:deploymentname | Where-Object Role -EQ $Role | Select-Object -First 1
+        $DDRole = $DataDiskInfo | Select-Object $AppServer.DDRole | ConvertTo-Json -Depth 5
+        $AppInfo = $AppServer.AppInfo | ConvertTo-Json -Depth 5
+        
+        # Compile to temp directory
+        $mofdir = 'C:\DSC\AA'
+        New-Item -Path $mofdir -ItemType directory -EA SilentlyContinue
+        
+        $Params = @{
+            DomainName        = $Global.ADDomainName
+            AdminCreds        = $using:localadminCred
+            sshPublic         = $using:sshPublicCred
+            devOpsPat         = $using:devOpsPatCred
+            ThumbPrint        = $Global.CertificateThumbprint
+            StorageAccountId  = $using:GlobalStorageID
+            Deployment        = $using:Deployment
+            NetworkID         = $using:networkID
+            clientIDLocal     = $using:RGclientID
+            clientIDGlobal    = $using:clientID
+            AppInfo           = $AppInfo
+            DataDiskInfo      = $DDRole
+        
+            ConfigurationData = $cd
+            OutputPath        = "$mofdir\$Role"
+            Verbose           = $True
+        }
+        
+        # Delete old MOF files.
+        Get-ChildItem -Path "$mofdir\$Role" -Filter *.mof -ErrorAction 0 | Remove-Item -EA 0
+        
+        # Load the configuration into memory & compile
+        $global:NotAA = $false
     
-        ConfigurationData = $cd
-        OutputPath        = $mofdir
-        Verbose           = $True
+        . $DSCConfigurationPath
+        & $DeploymentName @params
+    
+        Remove-Variable -Name NotAA -Scope global
+    
+        # Remove MOF meta files for the configuration we just ran;
+        Get-ChildItem -Path "$mofdir\$Role" -Filter *.meta.mof -verbose | Remove-Item -ea 0
+        
+        # Rename current MOF files to add the Environment
+        (Get-ChildItem -Path "$mofdir\$Role" -Filter *.mof -Verbose) |
+            Move-Item -Destination {
+                ($_.DirectoryName + '\' + $Global.OrgName + '_' + $using:App + '_' + $Role + '_' + $using:Environment + $_.Extension ) 
+            } -PassThru -Verbose -OutVariable mof
+        
+            # Import each MOF file into the Automation account.
+            $automationAccountParams = @{
+                AutomationAccountName = $using:AutomationAccount
+                ResourceGroupName     = $using:AAResourceGroupName
+                Verbose               = $True
+                OV                    = 'result'
+                ConfigurationName     = $DeploymentName
+                Force                 = $True
+            }
+            Import-AzAutomationDscNodeConfiguration @automationAccountParams -Path $mof[0]
+        
+            # Delete the local MOF file.
+            Get-Item -Path "$mofdir\$Role" | Remove-Item -EA 0 -Verbose -Force -Recurse
+        }
+        # End ForEach-Object -parallel
+        # -----------------------------------------------
     }
-    
-    # Delete old MOF files.
-    Get-ChildItem -Path $mofdir -Filter *.mof | Remove-Item -EA 0
-    
-    # Load the configuration into memory & compile
-    $global:NotAA = $false
-
-    . $DSCConfigurationPath
-    & $DeploymentName @params
-
-    Remove-Variable -Name NotAA -Scope global
-
-    # Remove MOF meta files for the configuration we just ran;
-    Get-ChildItem -Path $mofdir -Filter *.meta.mof | Remove-Item -ea 0
-    
-    # Rename current MOF files to add the Environment
-    (Get-ChildItem -Path $mofdir -Filter *.mof) |
-        Move-Item -Destination { 
-            ($_.DirectoryName + '\' + $Global.OrgName + '_' + $App + '_' + $Role + '_' + $Environment + $_.Extension ) 
-        } -PassThru -Verbose -OutVariable mof
-    
-    # Import each MOF file into the Automation account.
-    $automationAccountParams = @{
-        AutomationAccountName = $AutomationAccount
-        ResourceGroupName     = $AAResourceGroupName
-        Verbose               = $True
-        OV                    = 'result'
-    }
-    $params1 = @{ConfigurationName = $DeploymentName; Force = $True; }
-    
-    Import-AzAutomationDscNodeConfiguration @automationAccountParams @params1 -Path $mof[0]
-    
-    # Delete the MOF files.
-    Get-ChildItem -Path $mofdir -Filter *.mof | Remove-Item -EA 0 -Verbose
-}
