@@ -23,8 +23,8 @@ Function global:Start-AzMofUpload
         [validateset('AppServers', 'VMSS', 'SQLServers')] 
         [String] $DeploymentName = 'AppServers',
     
-        [validateset('API', 'SQL', 'JMP')]
-        [String[]] $Roles = 'API',
+        [validateset('API', 'SQL', 'JMP', 'IMG')]
+        [String] $Roles = 'IMG',
     
         [validateset('P0', 'G1')]
         [string] $AAEnvironment = 'G1'
@@ -167,4 +167,6 @@ Function global:Start-AzMofUpload
     }
     # End ForEach-Object -parallel
     # -----------------------------------------------
-}
+}#Start-AzMofUpload
+
+New-Alias -Name AzMofUpload -Value Start-AzMofUpload -Force -Scope Global

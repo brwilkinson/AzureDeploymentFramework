@@ -5,10 +5,12 @@
 
 # This is our Master list of Modules in the project
 param (
-    $Modules = @('xPSDesiredStateConfiguration', 'xPendingReboot', 'SQLServerDsc',
+    $Modules = @(
+        'xPSDesiredStateConfiguration', 'xPendingReboot', 'SQLServerDsc',
         'xWebAdministration', 'xFailoverCluster', 'xnetworking', 'AccessControlDsc',
         'SecurityPolicyDSC', 'xTimeZone', 'xSystemSecurity', 'xRemoteDesktopSessionHost',
-        'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 'xSmbShare', 'PolicyFileEditor',
+        'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 
+        'xSmbShare', 'PolicyFileEditor',
         'ComputerManagementDsc', 'NetworkingDSC', 'CertificateDsc',
         'StorageDsc', 'xActiveDirectory', 'xDFS', 'xDNSServer', 'DSCR_AppxPackage','DSCR_Font',
         'nxNetworking','nx','nxComputerManagement'

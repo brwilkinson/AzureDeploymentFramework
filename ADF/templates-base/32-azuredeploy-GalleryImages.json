@@ -109,7 +109,7 @@
         // "hyperVGeneration": "string",
         // "endOfLifeDate": "string",
         "identifier": {
-          "publisher": "[parameters('Global').OrgName]",
+          "publisher": "[concat(parameters('Global').OrgName,'-',variables('ImageInfo')[copyIndex(0)].identifier.role)]",
           "offer": "[variables('ImageInfo')[copyIndex(0)].identifier.offer]",
           "sku": "[variables('ImageInfo')[copyIndex(0)].identifier.sku]"
         }

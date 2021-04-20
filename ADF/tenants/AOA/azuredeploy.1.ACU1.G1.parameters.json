@@ -194,7 +194,9 @@
             "osType": "Windows",
             "identifier": {
               "offer": "WindowsServer",
-              "sku": "Win2019"
+              "sku": "Win2019",
+              "role": "IMG"
+
             }
           }
         ],
@@ -206,12 +208,12 @@
             "osDiskSizeGB": 127,
             "ibLocation": "WestCentralUS",
             "deployTimeoutmin": 360,
-            "deployOnce": 1,
+            "deployOnce": 0,
             "buildNow": 1
           }
         ],
         "Appservers": {
-          "AppServers": [  // testing for VM SS images and AA
+          "AppServers": [  // testing for VM SS images and AA Stage Configuration
             {
               "VMName": "API01",
               "Role": "API",

@@ -20,11 +20,11 @@ $BasePath
 # Copy custom DSC Resources to PSModulePath
 & $BasePath\5.2-PreReqDSCModuleListCustom.ps1
 
-break
+#break
 
 # Upload modules to Gallery
-& $BasePath\5.3-PreReqDSCModuleListAA.ps1
+& $BasePath\5.3-PreReqDSCModuleListAA.ps1 -AAEnvironment G1
 
 
 # Upload custom modules to Gallery
-& $BasePath\5.4-PreReqDSCCustomModuleAA.ps1
+& $BasePath\5.4-PreReqDSCCustomModuleAA.ps1 -AAEnvironment G1
