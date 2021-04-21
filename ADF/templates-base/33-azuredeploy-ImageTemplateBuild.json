@@ -108,6 +108,9 @@
       "apiVersion": "2020-02-14",
       "location": "[variables('imageTemplatesInfo')[copyIndex(0)].ibLocation]",
       "dependsOn": [],
+      "tags": {
+        "imagebuilderTemplate": "msiEnabled"
+      },
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"

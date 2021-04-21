@@ -107,7 +107,7 @@
             "frontendEndpoints": [
               {
                 "id": "[resourceId('Microsoft.Network/frontdoors/frontendEndpoints',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('routingRules')].Name),
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').Name),
                                               parameters('frontDoorInfo').services[copyIndex('routingRules')].Name)]"
               }
             ],
@@ -124,7 +124,7 @@
               "forwardingProtocol": "HttpsOnly",
               "backendPool": {
                 "id": "[resourceId('Microsoft.Network/frontdoors/backendPools',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('routingRules')].Name),
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').Name),
                                       parameters('frontDoorInfo').services[copyIndex('routingRules')].Name)]"
               }
             }
@@ -230,15 +230,15 @@
             "input": {
               "name": "[parameters('frontDoorInfo').services[copyIndex('backendPools')].Name]",
               "properties": {
-                "backends": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp',parameters('Deployment'),'-AFD-BEDeploy',parameters('frontDoorInfo').services[CopyIndex('backendPools')].Name)),'2017-05-10','Full').properties.outputs.backends.value]",
+                "backends": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp',parameters('Deployment'),'-AFD-BEDeploy-',parameters('frontDoorInfo').name,'-',parameters('frontDoorInfo').services[CopyIndex('backendPools')].Name)),'2017-05-10','Full').properties.outputs.backends.value]",
                 "loadBalancingSettings": {
                   "id": "[resourceId('Microsoft.Network/frontdoors/loadBalancingSettings',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name),
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name),
                                       parameters('frontDoorInfo').services[copyIndex('backendPools')].LBSettings)]"
                 },
                 "healthProbeSettings": {
                   "id": "[resourceId('Microsoft.Network/frontdoors/healthProbeSettings',
-                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').services[copyIndex('backendPools')].Name),
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name),
                                       parameters('frontDoorInfo').services[copyIndex('backendPools')].ProbeName)]"
                 }
               }

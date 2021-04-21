@@ -208,7 +208,7 @@
             "osDiskSizeGB": 127,
             "ibLocation": "WestCentralUS",
             "deployTimeoutmin": 360,
-            "deployOnce": 0,
+            "deployOnce": 1,
             "buildNow": 1
           }
         ],
