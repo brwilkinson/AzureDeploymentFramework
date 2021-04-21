@@ -260,6 +260,9 @@
                     },
                     "providerAPI": {
                         "value": "2018-11-30"
+                    },
+                    "principalType": {
+                        "value": "ServicePrincipal"
                     }
                 }
             }
@@ -316,6 +319,9 @@
                     },
                     "providerAPI": {
                         "value": ""
+                    },
+                    "principalType": {
+                        "value": "ServicePrincipal"
                     }
                 }
             }

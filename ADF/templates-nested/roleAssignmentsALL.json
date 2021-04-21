@@ -36,6 +36,10 @@
     },
     "providerAPI": {
       "type": "string"
+    },
+    "principalType": {
+      "type": "string",
+      "defaultValue": "[json('null')]"
     }
   },
   "variables": {
@@ -68,7 +72,7 @@
           "DestRG": "[if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'RG'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].RG,parameters('Enviro'))]",
           "DestPrefix": "[if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'Prefix'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].Prefix,parameters('Prefix'))]",
           "DestApp": "[if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'Tenant'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].Tenant,parameters('Global').AppName)]",
-          "principalType": "[if(contains(parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')],'principalType'),parameters('roleInfo').RBAC[CopyIndex('RoleAssignment')].principalType,json('null'))]",
+          "principalType": "[parameters('principalType')]",
           "GUID": "[
                     guid(
                       subscription().subscriptionId,
