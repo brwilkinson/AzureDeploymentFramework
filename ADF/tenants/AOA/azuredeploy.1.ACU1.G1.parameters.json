@@ -127,8 +127,7 @@
                 // "Name": "Image_Builder",
                 "Name": "contributor",
                 "RG": "G1",
-                "Prefix": "ACU1",
-                "Tenant": "AOA"
+                "Prefix": "ACU1"
               }
             ]
           }
@@ -178,38 +177,6 @@
                 "PREFIX": "AEU2"
               }
             ]
-          }
-        ],
-        "ImageGalleryInfo": [
-          {
-            "Name": "01",
-            "description": "my image gallery"
-          }
-        ],
-        "ImageInfo": [
-          {
-            "imageName": "vmss2019webnetcore",
-            "GalleryName": "01",
-            "description": "vmss windows 2019 web server .Net Core",
-            "osType": "Windows",
-            "identifier": {
-              "offer": "WindowsServer",
-              "sku": "Win2019",
-              "role": "IMG"
-
-            }
-          }
-        ],
-        // current locations https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-json#location
-        "imageTemplatesInfo": [
-          {
-            "imageName": "vmss2019webnetcore",
-            "vmSize": "Standard_D4s_v3",
-            "osDiskSizeGB": 127,
-            "ibLocation": "WestCentralUS",
-            "deployTimeoutmin": 360,
-            "deployOnce": 1,
-            "buildNow": 1
           }
         ],
         "Appservers": {

@@ -39,7 +39,7 @@
     },
     "principalType": {
       "type": "string",
-      "defaultValue": "[json('null')]"
+      "defaultValue": ""
     }
   },
   "variables": {

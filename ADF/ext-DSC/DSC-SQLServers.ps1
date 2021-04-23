@@ -17,7 +17,8 @@ Configuration SQLServers
         [String]$App,
         [String]$DataDiskInfo,
         [String]$clientIDLocal,
-        [String]$clientIDGlobal
+        [String]$clientIDGlobal,
+        [switch]$NoDomainJoin
     )
 
     Import-DscResource -ModuleName xPSDesiredStateConfiguration
@@ -58,7 +59,6 @@ Configuration SQLServers
     }
     
 
-    $NetBios = $(($DomainName -split '\.')[0])
     $enviro = $Deployment.Substring($Deployment.length - 1, 1)
     $DeploymentNumber = $Deployment.Substring($Deployment.length - 2, 1)
     $environment = $Deployment.Substring($Deployment.length - 2, 2)
@@ -103,9 +103,17 @@ Configuration SQLServers
     catch
     {
         Write-Warning $_
-    }      
+    }
 
-    [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
+    if ($NoDomainJoin)
+    {
+        [PSCredential]$DomainCreds = $AdminCreds
+    }
+    else
+    {
+        $NetBios = $(($DomainName -split '\.')[0])
+        [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
+    }
 
     $credlookup = @{
         'localadmin' = $AdminCreds

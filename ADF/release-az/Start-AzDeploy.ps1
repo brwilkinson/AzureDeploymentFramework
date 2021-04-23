@@ -178,8 +178,7 @@ Function global:Start-AzDeploy
     {
         if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
-            $StorageAccounts = Get-AzStorageAccount
-            $globalstorage = $StorageAccounts | Where-Object StorageAccountName -Match g1saglobal | ForEach-Object ResourceGroupName
+            $globalstorage = Get-AzStorageAccount | Where-Object StorageAccountName -Match g1saglobal | ForEach-Object ResourceGroupName
             Write-Output "`n"
             $Message = "[$ResourceGroupName] does not exist, switch Subscription OR SubscriptionDeploy, currently using: [$globalstorage]!!!"
             Write-Verbose -Message "$('*' * ($Message.length + 8))" -Verbose
@@ -285,12 +284,23 @@ Function global:Start-AzDeploy
     # Create the storage account only if it doesn't already exist
     if ( -not $StorageAccount )
     {
-        $StorageResourceGroupName = 'ARM_Deploy_Staging'
-        if ( -not (Get-AzResourceGroup -Name $StorageResourceGroupName -Verbose -ErrorAction SilentlyContinue))
-        {
-            New-AzResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
-        }
-        $StorageAccount = New-AzStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
+        # don't create storage account here
+
+        # $StorageResourceGroupName = 'ARM_Deploy_Staging'
+        # if ( -not (Get-AzResourceGroup -Name $StorageResourceGroupName -Verbose -ErrorAction SilentlyContinue))
+        # {
+        #     New-AzResourceGroup -Name $StorageResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop
+        # }
+        # $StorageAccount = New-AzStorageAccount -StorageAccountName $StorageAccountName -Type 'Standard_LRS' -ResourceGroupName $StorageResourceGroupName -Location $ResourceGroupLocation
+
+        $globalstorage = Get-AzStorageAccount | Where-Object StorageAccountName -Match g1saglobal | ForEach-Object ResourceGroupName
+
+        Write-Output "`n"
+        $Message = "[$StorageAccountName][$App] does not exist, switch Subscription, currently using: [$globalstorage]!!!"
+        Write-Verbose -Message "$('*' * ($Message.length + 8))" -Verbose
+        Write-Error -Message $Message -EA continue
+        Write-Verbose -Message "$('*' * ($Message.length + 8))" -Verbose
+        break 
     }
 
     # Create the storage container only if it doesn't already exist
@@ -437,7 +447,7 @@ Function global:Start-AzDeploy
         Write-Warning $_.Value
     }
 
-    $TemplateArgs.getenumerator() | where Key -ne 'queryString' | ForEach-Object {
+    $TemplateArgs.getenumerator() | Where-Object Key -NE 'queryString' | ForEach-Object {
         Write-Verbose $_.Key -Verbose
         Write-Warning $_.Value
     }
@@ -514,7 +524,7 @@ Function global:Start-AzDeploy
                 Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
 
                 New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName -WhatIfResultFormat $WhatIfFormat -whatif `
+                    -ResourceGroupName $ResourceGroupName -WhatIfResultFormat $WhatIfFormat -WhatIf `
                     -Verbose -ErrorVariable ErrorMessages -OutVariable global:Whatif
                 
                 return $whatif

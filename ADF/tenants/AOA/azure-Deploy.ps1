@@ -34,6 +34,18 @@ set-location -path ADF:\
 # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region [auto detected])
 . ADF:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
 
+# Stage and Upload DSC Resource Modules for AA
+. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMain.ps1 -DownloadLatest 0
+
+## these two steps only after 01-azuredeploy-OMS.json has been deployed, which includes the Automation account.
+
+# Using Azure Automation Pull Mode to host configurations - upload role mofs, prior to deploying AppServers
+. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix ACU1 -AAEnvironment P0 -DownloadLatest 0
+
+# upload mofs for a particular configuration
+AzMofUpload @Current -Prefix ACU1 -AAEnvironment G1 -Roles IMG -NoDomain
+AzMofUpload @Current -Prefix ACU1 -AAEnvironment P0 -Roles SQLp,SQLs
+
 # Deploy Environment
 
 # Global  sub deploy for $env:Enviro

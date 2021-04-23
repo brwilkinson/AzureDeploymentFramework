@@ -24,10 +24,12 @@ Function global:Start-AzMofUpload
         [String] $DeploymentName = 'AppServers',
     
         [validateset('API', 'SQL', 'JMP', 'IMG')]
-        [String] $Roles = 'IMG',
+        [String[]] $Roles = 'IMG',
     
         [validateset('P0', 'G1')]
-        [string] $AAEnvironment = 'G1'
+        [string] $AAEnvironment = 'G1',
+
+        [switch]$NoDomain
     )
 
     $Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
@@ -83,6 +85,7 @@ Function global:Start-AzMofUpload
         $Parameters = $using:Parameters
         $DataDiskInfo = $using:DataDiskInfo
         $Global = $using:Global
+        $NoDomain = $using:NoDomain
 
         $DSCConfigurationPath = Join-Path -Path $AFD -ChildPath 'ext-DSC' -AdditionalChildPath ('DSC-' + $DeploymentName + '.ps1')
         $DSCConfigurationDataPath = Join-Path -Path $AFD -ChildPath 'ext-CD' -AdditionalChildPath ($Role + '-ConfigurationData.psd1')
@@ -121,7 +124,8 @@ Function global:Start-AzMofUpload
             clientIDGlobal    = $using:clientID
             AppInfo           = $AppInfo
             DataDiskInfo      = $DDRole
-        
+            NoDomain          = $NoDomain
+            
             ConfigurationData = $cd
             OutputPath        = "$mofdir\$Role"
             Verbose           = $True

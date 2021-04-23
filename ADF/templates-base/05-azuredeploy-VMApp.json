@@ -77,6 +77,7 @@
     "subscriptionId": "[subscription().subscriptionId]",
     "resourceGroupName": "[resourceGroup().name]",
 
+    // this is just used for tagging the VM
     "Environment": {
       "D": "Dev",
       "I": "Int",
@@ -91,6 +92,16 @@
       "P": "P",
       "S": "D"
     },
+    "RebootNodeLookup": {
+      "D": true,
+      "Q": true,
+      "T": true,
+      "U": true,
+      "P": false
+    },
+    // set this value to higher to save money on logs for larger environments,
+    // also consider having dev environment with 15 mins, then other envs with higer values e.g. 120
+    "DSCConfigurationModeFrequencyMins": 15,
 
     "KVUrl": "[concat('https://',parameters('Global').KVName,'.vault.azure.net/')]",
     "secrets": [
@@ -123,7 +134,6 @@
           "matchVM": "[if(or(equals(parameters('Global').CN,'.'),contains(parameters('Global').CN,parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName)),bool('true'),bool('false'))]",
           "Extensions": "[if(contains(variables('OSType')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].OSType],'RoleExtensions'),union(parameters('Extensions'),variables('OSType')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].OSType].RoleExtensions),parameters('Extensions'))]",
           "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].DDRole],json('null'))]",
-          "vmName": "[concat('AZE2-',parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName)]",
           "vmHostName": "[toLower(concat(parameters('Prefix'),parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName))]",
           "AppInfo": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')],'AppInfo'),parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].AppInfo,json('null'))]",
           "windowsConfiguration": {
@@ -422,6 +432,7 @@
     },
     {
       // move to user assigned identity https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/qs-configure-template-windows-vm
+      "name": "[concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName)]",
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
@@ -435,7 +446,6 @@
       "tags": {
         "Environment": "[variables('Environment')[parameters('Environment')]]"
       },
-      "name": "[concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName)]",
       "zones": "[if(contains(variables('AppServers')[copyIndex(0)],'Zone'),array(variables('AppServers')[copyIndex(0)].Zone),json('null'))]",
       "copy": {
         "name": "vmLoop",
@@ -757,7 +767,7 @@
         //     "parameters": {}
         //   }
         // },
-                {
+        {
           "condition": "[and(variables('VM')[copyIndex(0)].matchVM,equals(variables('VM')[copyIndex(0)].Extensions.MonitoringAgent,1))]",
           "type": "extensions",
           "name": "MonitoringAgent",
@@ -780,8 +790,116 @@
           }
         },
         {
+          "condition": "[
+            and(
+              variables('VM')[copyIndex(0)].matchVM,
+              and(
+                  equals(variables('VM')[copyIndex(0)].extensions.DSC,1),
+                  equals(variables('AppServers')[copyIndex(0)].Role,'Pull')
+                )
+              )
+            ]",
+          "name": "[concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName, '/Microsoft.Powershell.DSC')]",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "apiVersion": "2018-04-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]",
+            "[concat('dp', variables('Deployment'), '-extensionsDeploy', variables('AppServers')[copyIndex(0)].VMName)]"
+          ],
+          "copy": {
+            "name": "vmExtensionsLoop",
+            "count": "[length( variables('AppServers') )]"
+          },
+          "location": "[resourceGroup().location]",
+          "tags": {
+            "displayName": "Powershell.DSC.Pull"
+          },
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.26",
+            "autoUpgradeMinorVersion": true,
+            "protectedSettings": {
+              "Items": {
+                "registrationKeyPrivate": "[listKeys(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2015-01-01-preview').keys[0].value]"
+              }
+            },
+            "settings": {
+              "ModulesUrl": "https://eus2oaasibizamarketprod1.blob.core.windows.net/automationdscpreview/RegistrationMetaConfigV2.zip",
+              "SasToken": "",
+              "ConfigurationFunction": "RegistrationMetaConfigV2.ps1\\RegistrationMetaConfigV2",
+              "advancedOptions": {
+                "forcePullAndApply": false
+              },
+              "Properties": [
+                {
+                  "Name": "RegistrationKey",
+                  "Value": {
+                    "UserName": "PLACEHOLDER_DONOTUSE",
+                    "Password": "PrivateSettingsRef:registrationKeyPrivate"
+                  },
+                  "TypeName": "System.Management.Automation.PSCredential"
+                },
+                {
+                  "Name": "RegistrationUrl",
+                  "Value": "[reference(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2015-01-01-preview').RegistrationUrl]",
+                  "TypeName": "System.String"
+                },
+                {
+                  "Name": "NodeConfigurationName",
+                  "Value": "[concat(
+                                    if(contains( variables('DSCConfiguration'),variables('DeploymentName')) ,
+                                        variables('DSCConfiguration')[variables('DeploymentName')],
+                                        'DSCAppTier'),
+                                    '.FNF_',
+                                    variables('AppServers')[copyIndex(0)].ASName,'_',parameters('Environment'),parameters('DeploymentID'))]",
+                  "TypeName": "System.String"
+                },
+                {
+                  "Name": "ConfigurationMode",
+                  "Value": "ApplyAndMonitor",
+                  "TypeName": "System.String"
+                },
+                {
+                  "Name": "RebootNodeIfNeeded",
+                  "Value": "[variables('RebootNodeLookup')[parameters('Environment')]]",
+                  "TypeName": "System.Boolean"
+                },
+                {
+                  "Name": "ConfigurationModeFrequencyMins",
+                  "Value": "[variables('DSCConfigurationModeFrequencyMins')]",
+                  "TypeName": "System.Int32"
+                },
+                {
+                  "Name": "RefreshFrequencyMins",
+                  "Value": 30,
+                  "TypeName": "System.Int32"
+                },
+                {
+                  "Name": "ActionAfterReboot",
+                  "Value": "ContinueConfiguration",
+                  "TypeName": "System.String"
+                },
+                {
+                  "Name": "AllowModuleOverwrite",
+                  "Value": true,
+                  "TypeName": "System.Boolean"
+                }
+              ]
+            }
+          }
+        },
+        {
           // "condition": "[and(equals(variables('VM')[copyIndex(0)].Extensions.DSC,1),equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'))]",
-          "condition": "[variables('VM')[copyIndex(0)].matchVM]",
+          "condition": "[
+            and(
+              variables('VM')[copyIndex(0)].matchVM,
+              and(
+                  equals(variables('VM')[copyIndex(0)].extensions.DSC,1),
+                  not(equals(variables('AppServers')[copyIndex(0)].Role,'Pull'))
+                )
+              )
+            ]",
           "type": "extensions",
           "name": "Microsoft.Powershell.DSC",
           "location": "[resourceGroup().location]",

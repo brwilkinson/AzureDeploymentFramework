@@ -14,7 +14,8 @@ Configuration AppServers
         [String]$AppInfo,
         [String]$DataDiskInfo,
         [String]$clientIDLocal,
-        [String]$clientIDGlobal
+        [String]$clientIDGlobal,
+        [switch]$NoDomainJoin
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
@@ -95,9 +96,16 @@ Configuration AppServers
             Write-Warning $_
         }
     #>
-	
-    $NetBios = $(($DomainName -split '\.')[0])
-    [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
+
+    if ($NoDomainJoin)
+    {
+        [PSCredential]$DomainCreds = $AdminCreds
+    }
+    else
+    {
+        $NetBios = $(($DomainName -split '\.')[0])
+        [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
+    }
 
     $credlookup = @{
         'localadmin'  = $AdminCreds
@@ -900,7 +908,7 @@ if ((whoami) -notmatch 'system' -and $NotAA)
 
     if ($devOpsPat)
     {
-        Write-Warning -Message "devOpsPat is good"
+        Write-Warning -Message 'devOpsPat is good'
     }
     else
     {
@@ -925,7 +933,7 @@ elseif ($NotAA)
 else
 {
     Write-Warning -Message 'running as mof upload'
-    return "configuration loaded"
+    return 'configuration loaded'
 }
 #endregion
 

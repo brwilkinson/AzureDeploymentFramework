@@ -39,8 +39,8 @@
       "value": {
         "RG": 1,
         "RBAC": 1,
-        "UAI": 0,
-        "SP": 1,
+        "UAI": 1,
+        "SP": 0,
         "KV": 0,
         "OMS": 1,
         "OMSSolutions": 0,
@@ -119,6 +119,37 @@
     },
     "DeploymentInfo": {
       "value": {
+        "uaiInfo": [
+          {
+            "name": "ImageBuilder",
+            "RBAC": [
+              {
+                // "Name": "Image_Builder",
+                "Name": "contributor",
+                "RG": "G1",
+                "Prefix": "ACU1"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperator",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          }
+        ],
         "rolesInfo": [
           {
             "Name": "BW",
@@ -181,6 +212,39 @@
                 "PREFIX": "AEU2"
               }
             ]
+          }
+        ],
+        "ImageGalleryInfo": [
+          {
+            "Name": "01",
+            "description": "my image gallery"
+          }
+        ],
+        "ImageInfo": [
+          {
+            "imageName": "vmss2019webnetcore5",
+            "GalleryName": "01",
+            "description": "vmss windows 2019 web server .Net Core",
+            "osType": "Windows",
+            "identifier": {
+              "offer": "WindowsServer",
+              "sku": "Win2019",
+              "role": "IMG5"
+            }
+          }
+        ],
+        // current locations https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-json#location
+        "imageTemplatesInfo": [
+          {
+            "imageName": "vmss2019webnetcore5",
+            "galleryName": "01",
+            "vmSize": "Standard_D4s_v3",
+            "osDiskSizeGB": 127,
+            "ibLocation": "WestCentralUS",
+            "deployTimeoutmin": 360,
+            "deployOnce": 1,
+            "buildNow": 1,
+            "PublishNow": 0
           }
         ],
         "saInfo": [

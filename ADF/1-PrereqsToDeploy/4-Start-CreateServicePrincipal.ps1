@@ -3,7 +3,7 @@
 #Requires -Module AZ.Accounts
 
 param (
-    [String[]]$Environments = ('S1'),
+    [String[]]$Environments = ('G1'),
     [String]$Prefix = 'ACU1',
     [String]$App = 'HAA',
     [String]$OrgName = 'BRW'
@@ -22,7 +22,7 @@ $Account = $context.Account.Id
 $Global = Get-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10
 $Primary = Get-Content -Path $psscriptroot\..\tenants\$App\Global-$($Global.Global.PrimaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $primaryKVName = $Primary.KVName
-$AZDevOpsToken = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name DevOpsAgentPATToken -AsPlainText
+$AZDevOpsToken = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name DevOpsPAT -AsPlainText
 
 $AZDevOpsOrg = $Global.Global.AZDevOpsOrg
 $ADOProject = $Global.Global.ADOProject

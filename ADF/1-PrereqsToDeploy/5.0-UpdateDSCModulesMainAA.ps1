@@ -1,5 +1,7 @@
 param (
-    $DownloadLatest = 0
+    $App = 'HAA',
+    $AAEnvironment = 'G1',
+    $Prefix = 'ACU1'
 )
 
 
@@ -15,11 +17,10 @@ $BasePath
 & $BasePath\5.1-PreReqDSCModuleList.ps1 -DownloadLatest 1
 #>
 
-# Same as above, only this time stage them in Program files/WinodwsPowershell Modules
-# Every one in the team stages the same module versions that 1 person in the team staged and tested and checked in.
-# This only updates modules if you are not on the correct version that was staged in the project
-# if no modules are staged in the project then execute lin 11 above.
-& $BasePath\5.1-PreReqDSCModuleList.ps1 -DownloadLatest $DownloadLatest
 
-# Copy custom DSC Resources to PSModulePath
-& $BasePath\5.2-PreReqDSCModuleListCustom.ps1
+# Upload modules to Gallery
+& $BasePath\5.3-PreReqDSCModuleListAA.ps1 -AAEnvironment $AAEnvironment -App $App -Prefix $Prefix
+
+
+# Upload custom modules to Gallery
+& $BasePath\5.4-PreReqDSCCustomModuleAA.ps1 -AAEnvironment $AAEnvironment -App $App -Prefix $Prefix

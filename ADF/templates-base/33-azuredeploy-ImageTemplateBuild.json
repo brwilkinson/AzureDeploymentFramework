@@ -108,9 +108,6 @@
       "apiVersion": "2020-02-14",
       "location": "[variables('imageTemplatesInfo')[copyIndex(0)].ibLocation]",
       "dependsOn": [],
-      "tags": {
-        "imagebuilderTemplate": "msiEnabled"
-      },
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
@@ -155,17 +152,21 @@
           {
             "type": "PowerShell",
             "name": "Join_Pull_DSC_StateConfiguration",
+            "runElevated": true,
+            "runAsSystem": false,
             "inline": [
               "Install-module -Name Az.Automation -Force",
               "Login-AzAccount -Identity",
               "$VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get",
-              "Register-AzAutomationDscNode -NodeConfigurationName AppServers.BRW_AOA_IMG_G1 -ResourceGroupName ACU1-BRW-AOA-RG-G1 -AutomationAccountName acu1brwaoag1OMSAutomation -AzureVMResourceGroup $VMMeta.compute.resourceGroupName -AzureVMName $VMMeta.compute.name -AzureVMLocation $VMMeta.compute.location -RebootNodeIfNeeded $true -ActionAfterReboot ContinueConfiguration",
+              "Register-AzAutomationDscNode -NodeConfigurationName AppServers.BRW_HAA_IMG_G1 -ResourceGroupName ACU1-BRW-HAA-RG-G1 -AutomationAccountName acu1brwhaag1OMSAutomation -AzureVMResourceGroup $VMMeta.compute.resourceGroupName -AzureVMName $VMMeta.compute.name -AzureVMLocation $VMMeta.compute.location -RebootNodeIfNeeded $true -ActionAfterReboot ContinueConfiguration",
               "Update-DscConfiguration -Wait -Verbose"
             ]
           },
           {
             "type": "PowerShell",
             "name": "Remove_DSC_StateConfiguration",
+            "runElevated": true,
+            "runAsSystem": false,
             "inline": [
               "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.mof -ErrorAction SilentlyContinue",
               "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.backup.mof -ErrorAction SilentlyContinue",
@@ -185,7 +186,7 @@
         "distribute": [
           {
             "type": "ManagedImage",
-            "imageId": "[resourceid('Microsoft.Compute/galleries/images','acu1brwaoag1gallery01','vmss2019webnetcore')]",
+            "imageId": "[resourceid('Microsoft.Compute/galleries/images',concat(variables('DeploymentURI'), 'gallery',variables('imageTemplatesInfo')[copyIndex(0)].galleryName),variables('imageTemplatesInfo')[copyIndex(0)].imageName)]",
             "location": "centralus",
             "runOutputName": "[variables('imageTemplatesInfo')[copyIndex(0)].imageName]",
             "artifactTags": {
@@ -206,7 +207,7 @@
         "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
       },
       "dependsOn": [
-        "[concat(variables('imageTemplatesInfo')[copyIndex(0)].imageName,'-',variables('imageTemplatesInfo')[copyIndex(0)].ibLocation)]",
+        "[concat(variables('imageTemplatesInfo')[copyIndex(0)].imageName,'-',variables('imageTemplatesInfo')[copyIndex(0)].ibLocation)]"
       ],
       "location": "[resourceGroup().location]",
       "kind": "AzurePowerShell",
@@ -264,6 +265,39 @@
         "cleanupPreference": "OnExpiration",
         "retentionInterval": "P1D",
         "timeout": "PT3M"
+      }
+    },
+    {
+      "condition": "[equals(variables('imageTemplatesInfo')[copyIndex(0)].imageName,1)]",
+      "name": "[concat(variables('DeploymentURI'), 'gallery', variables('imageTemplatesInfo')[copyIndex(0)].GalleryName,'/', variables('imageTemplatesInfo')[copyIndex(0)].imageName,'/0.0.1')]",
+      "type": "Microsoft.Compute/galleries/images/versions",
+      "apiVersion": "2019-12-01",
+      "dependsOn": [
+        "[concat(variables('imageTemplatesInfo')[copyIndex(0)].imageName,'-',variables('imageTemplatesInfo')[copyIndex(0)].ibLocation)]",
+        "[concat('SetImageBuild',CopyIndex(1),'-',variables('imageTemplatesInfo')[copyIndex(0)].imageName,'-',variables('imageTemplatesInfo')[copyIndex(0)].ibLocation)]"
+      ],
+      "copy": {
+        "name": "galleryimageversionCopy",
+        "count": "[length(variables('imageTemplatesInfo'))]"
+      },
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publishingProfile": {
+          "replicaCount": 1,
+          "excludeFromLatest": false,
+          "targetRegions": [
+            {
+              "name": "[resourceGroup().location]",
+              "regionalReplicaCount": 1,
+              "storageAccountType": "Standard_LRS"
+            }
+          ]
+        },
+        "storageProfile": {
+          "source": {
+            "id": "[resourceId('Microsoft.Compute/images',concat(variables('DeploymentURI'), 'gallery', variables('imageTemplatesInfo')[copyIndex(0)].GalleryName))]"
+          }
+        }
       }
     }
   ]
