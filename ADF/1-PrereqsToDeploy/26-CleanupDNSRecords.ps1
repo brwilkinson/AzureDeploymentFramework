@@ -1,12 +1,23 @@
+$DNSRG = 'ACU1-BRW-HAA-RG-G1'
+$zone = 'haapp.net'
+
 # cleanup FrontDoor Dangling DNS
-$fdname = 'ACU1-BRW-AOA-S1-afd01.azurefd.net'
-Get-AzDnsRecordSet -ResourceGroupName ACU1-BRW-AOA-RG-G1 -ZoneName 'psthing.com' -RecordType CNAME | 
+$fdname = 'acu1-brw-haa-d3-afd02.azurefd.net'
+$fdname = 'azurefd.net'
+Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
     where {$_.records[0].cname -match $fdname} | 
     Remove-AzDnsRecordSet
 
 
 # cleanup Dangling DNS
 $name = 'cloudapp.azure.com'
-Get-AzDnsRecordSet -ResourceGroupName ACU1-BRW-AOA-RG-G1 -ZoneName 'psthing.com' -RecordType CNAME | 
+Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
+    where {$_.records[0].cname -match $name} | 
+    Remove-AzDnsRecordSet
+
+
+# cleanup Dangling DNS WAF
+$name = 'waf.haapp.net'
+Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
     where {$_.records[0].cname -match $name} | 
     Remove-AzDnsRecordSet

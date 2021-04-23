@@ -153,26 +153,27 @@
             "type": "PowerShell",
             "name": "Join_Pull_DSC_StateConfiguration",
             "runElevated": true,
-            "runAsSystem": false,
+            "runAsSystem": true,
             "inline": [
               "Install-module -Name Az.Automation -Force",
-              "Login-AzAccount -Identity",
               "$VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get",
-              "Register-AzAutomationDscNode -NodeConfigurationName AppServers.BRW_HAA_IMG_G1 -ResourceGroupName ACU1-BRW-HAA-RG-G1 -AutomationAccountName acu1brwhaag1OMSAutomation -AzureVMResourceGroup $VMMeta.compute.resourceGroupName -AzureVMName $VMMeta.compute.name -AzureVMLocation $VMMeta.compute.location -RebootNodeIfNeeded $true -ActionAfterReboot ContinueConfiguration",
-              "Update-DscConfiguration -Wait -Verbose"
+              "Write-Host -Message 'RGName: $($VMMeta.compute.resourceGroupName) VMName: $($VMMeta.compute.name) '",
+              // "Login-AzAccount -Identity -Verbose",
+              // "Register-AzAutomationDscNode -NodeConfigurationName AppServers.BRW_HAA_IMG_G1 -ResourceGroupName ACU1-BRW-HAA-RG-G1 -AutomationAccountName acu1brwhaag1OMSAutomation -AzureVMResourceGroup $VMMeta.compute.resourceGroupName -AzureVMName $VMMeta.compute.name -AzureVMLocation $VMMeta.compute.location -RebootNodeIfNeeded $true -ActionAfterReboot ContinueConfiguration",
+              // "Update-DscConfiguration -Wait -Verbose"
             ]
           },
-          {
-            "type": "PowerShell",
-            "name": "Remove_DSC_StateConfiguration",
-            "runElevated": true,
-            "runAsSystem": false,
-            "inline": [
-              "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.mof -ErrorAction SilentlyContinue",
-              "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.backup.mof -ErrorAction SilentlyContinue",
-              "Remove-DscConfigurationDocument -Stage Current,Pending,Previous -ErrorAction SilentlyContinue"
-            ]
-          },
+          // {
+          //   "type": "PowerShell",
+          //   "name": "Remove_DSC_StateConfiguration",
+          //   "runElevated": true,
+          //   "runAsSystem": false,
+          //   "inline": [
+          //     "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.mof -ErrorAction SilentlyContinue",
+          //     "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.backup.mof -ErrorAction SilentlyContinue",
+          //     "Remove-DscConfigurationDocument -Stage Current,Pending,Previous -ErrorAction SilentlyContinue"
+          //   ]
+          // },
           {
             "type": "WindowsUpdate",
             "searchCriteria": "IsInstalled=0",
