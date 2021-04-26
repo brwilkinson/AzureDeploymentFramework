@@ -21,7 +21,7 @@
 
             DisableIEESC                = $True
 
-            PowerShellModulesPresent    = 'Az.Resources', 'Az.ManagedServiceIdentity', 'Az.Storage', 'Az.Compute'
+            PowerShellModulesPresent2    = 'Az.Resources', 'Az.ManagedServiceIdentity', 'Az.Storage', 'Az.Compute'
 
             # PowerShellModulesPresentCustom2 = @(
             #     @{Name = 'Az'; RequiredVersion = '5.3.0' }
@@ -39,7 +39,7 @@
                 'F:\WEB\LogHeadersAPI', 'F:\Build'
             )
 
-            EnvironmentPathPresent      = @(
+            EnvironmentPathPresent2      = @(
                 'F:\Source\Tools\SysInternals',
                 'F:\Source\Tools\',
                 'F:\Source\Tools\.vs-kubernetes\tools\helm\windows-amd64',
@@ -48,7 +48,7 @@
                 'F:\Source\Tools\.vs-kubernetes\tools\draft\windows-amd64'
             )
 
-            RegistryKeyPresent          = @(
+            RegistryKeyPresent2          = @(
                 @{ 
                     # enable developer mode to sideload appx packages, including winget
                     Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock';
@@ -92,25 +92,25 @@
             # Blob copy with Managed Identity - Oauth2
             AZCOPYDSCDirPresentSource   = @(
 
-                @{
-                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSModules/'
-                    DestinationPath   = 'F:\Source\PSModules\'
-                },
+                # @{
+                #     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSModules/'
+                #     DestinationPath   = 'F:\Source\PSModules\'
+                # },
 
-                @{
-                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/Tools/'
-                    DestinationPath   = 'F:\Source\Tools\'
-                },
+                # @{
+                #     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/Tools/'
+                #     DestinationPath   = 'F:\Source\Tools\'
+                # },
 
-                @{
-                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/GIT/'
-                    DestinationPath   = 'F:\Source\GIT\'
-                },
+                # @{
+                #     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/GIT/'
+                #     DestinationPath   = 'F:\Source\GIT\'
+                # },
 
-                @{
-                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSCore/'
-                    DestinationPath   = 'F:\Source\PSCore\'
-                },
+                # @{
+                #     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSCore/'
+                #     DestinationPath   = 'F:\Source\PSCore\'
+                # },
 
                 @{
                     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/DotNetCore/'
@@ -123,7 +123,7 @@
                 }
             )
 
-            DirectoryPresentSource      = @(
+            DirectoryPresentSource2      = @(
 
                 @{
                     SourcePath      = 'F:\Source\PSModules\PackageManagement\'
@@ -160,26 +160,26 @@
 
             SoftwarePackagePresent      = @(
 
-                @{
-                    Name      = 'Microsoft Visual Studio Code'
-                    Path      = 'F:\Source\Tools\vscode\VSCodeSetup-x64-1.25.0.exe'
-                    ProductId = ''
-                    Arguments = '/silent /norestart'
-                },
+                # @{
+                #     Name      = 'Microsoft Visual Studio Code'
+                #     Path      = 'F:\Source\Tools\vscode\VSCodeSetup-x64-1.25.0.exe'
+                #     ProductId = ''
+                #     Arguments = '/silent /norestart'
+                # },
 
-                @{
-                    Name      = 'Git version 2.23.0.windows.1'
-                    Path      = 'F:\Source\GIT\Git-2.23.0-64-bit.exe'
-                    ProductId = ''
-                    Arguments = '/VERYSILENT'
-                },
+                # @{
+                #     Name      = 'Git version 2.23.0.windows.1'
+                #     Path      = 'F:\Source\GIT\Git-2.23.0-64-bit.exe'
+                #     ProductId = ''
+                #     Arguments = '/VERYSILENT'
+                # },
 
-                @{
-                    Name      = 'PowerShell 7-x64'
-                    Path      = 'F:\Source\PSCore\PowerShell-7.1.2-win-x64.msi'
-                    ProductId = '{357A3946-1572-4A21-9B60-4C7BD1BB9761}' # '{357A3946-1572-4A21-9B60-4C7BD1BB9761}'
-                    Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 REGISTER_MANIFEST=1'  # ENABLE_PSREMOTING=1
-                }
+                # @{
+                #     Name      = 'PowerShell 7-x64'
+                #     Path      = 'F:\Source\PSCore\PowerShell-7.1.2-win-x64.msi'
+                #     ProductId = '{357A3946-1572-4A21-9B60-4C7BD1BB9761}' # '{357A3946-1572-4A21-9B60-4C7BD1BB9761}'
+                #     Arguments = 'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 REGISTER_MANIFEST=1'  # ENABLE_PSREMOTING=1
+                # }
 
                 # @{
                 #     Name      = 'Microsoft .NET Core SDK 3.1.407 (x64)'
@@ -207,14 +207,14 @@
                     Path      = 'F:\Source\DotNetCore\dotnet-hosting-5.0.4-win.exe'
                     ProductId = ''
                     Arguments = '/install /q /norestart'
-                },
-
-                @{
-                    Name      = 'IIS URL Rewrite Module 2'
-                    Path      = 'F:\Source\ISAPI\rewrite_amd64_en-US.msi'
-                    ProductId = '{9BCA2118-F753-4A1E-BCF3-5A820729965C}'
-                    Arguments = ''
                 }
+
+                # @{
+                #     Name      = 'IIS URL Rewrite Module 2'
+                #     Path      = 'F:\Source\ISAPI\rewrite_amd64_en-US.msi'
+                #     ProductId = '{9BCA2118-F753-4A1E-BCF3-5A820729965C}'
+                #     Arguments = ''
+                # }
 
                 # @{
                 #     Name      = 'Application Insights Status Monitor'

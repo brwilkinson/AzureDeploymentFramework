@@ -754,7 +754,19 @@
       }
     }
   },
-  "OSType": {
+  "OSType": {    
+    "Server2019SSIMG": {
+      "imageReference": {
+        "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore27"
+      },
+    "licenseType": "Windows_Server",
+    "OS": "Windows",
+    "OSDiskGB": 127,
+    "RoleExtensions": {
+      "Scripts": 0,
+      "chefClient": 0
+    }
+  },
     "cbld10": {
       "imageReference": {
         "id": "/subscriptions/27b750cd-ed43-42fd-9044-8d75e124ae55/resourceGroups/SBID-Build-Test/providers/Microsoft.Compute/galleries/cbldtest/images/cbld10-ext"

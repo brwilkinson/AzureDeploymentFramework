@@ -197,29 +197,21 @@
         ],
         "ImageInfo": [
           {
-            "imageName": "vmss2019webnetcore2",
+            "imageName": "vmss2019webnetcore30",
             "GalleryName": "01",
             "description": "vmss windows 2019 web server .Net Core",
             "osType": "Windows",
-            "identifier": {
-              "offer": "WindowsServer",
-              "sku": "Win2019",
-              "role": "IMG2"
-            }
-          }
-        ],
-        // current locations https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-json#location
-        "imageTemplatesInfo": [
-          {
-            "imageName": "vmss2019webnetcore2",
-            "galleryName": "01",
             "vmSize": "Standard_D4s_v3",
             "osDiskSizeGB": 127,
-            "ibLocation": "WestCentralUS",
+            "ibLocation": "WestCentralUS", // current locations https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-json#location
             "deployTimeoutmin": 360,
             "deployOnce": 1,
             "buildNow": 1,
-            "PublishNow": 0
+            "PublishNow": 0,
+            "identifier": {
+              "offer": "WindowsServer",
+              "sku": "Win2019"
+            }
           }
         ],
         "saInfo": [

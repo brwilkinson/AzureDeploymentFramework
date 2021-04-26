@@ -86,7 +86,19 @@
                         )]"
         }
       }
-    ]
+    ],
+    "userAssignedIdentities": {
+      "Default": {
+        // "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiKeyVaultSecretsGet'))]": {
+        // },
+        "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiImageBuilder'))]": {
+        }
+        // "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities',concat(variables('Deployment'),'-uaiStorageAccountFileContributor'))]": {
+        // }
+      },
+      "None": {
+      }
+    }
 
   },
   "resources": [
@@ -109,7 +121,7 @@
         // "hyperVGeneration": "string",
         // "endOfLifeDate": "string",
         "identifier": {
-          "publisher": "[concat(parameters('Global').OrgName,'-',variables('ImageInfo')[copyIndex(0)].identifier.role)]",
+          "publisher": "[variables('ImageInfo')[copyIndex(0)].imageName]",
           "offer": "[variables('ImageInfo')[copyIndex(0)].identifier.offer]",
           "sku": "[variables('ImageInfo')[copyIndex(0)].identifier.sku]"
         }
@@ -133,6 +145,299 @@
         //   "publisher": "string",
         //   "product": "string"
         // }
+      }
+    },
+    {
+      "condition": "[and(contains(variables('ImageInfo')[copyIndex(0)],'deployOnce'),equals(variables('ImageInfo')[copyIndex(0)].deployOnce,1))]",
+      "name": "[concat(variables('ImageInfo')[copyIndex(0)].imageName,'-',variables('ImageInfo')[copyIndex(0)].ibLocation)]",
+      "type": "Microsoft.VirtualMachineImages/imageTemplates",
+      "apiVersion": "2020-02-14",
+      "location": "[variables('ImageInfo')[copyIndex(0)].ibLocation]",
+      "dependsOn": [],
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
+      },
+      "copy": {
+        "name": "imageCopy",
+        "count": "[length(variables('image'))]"
+      },
+      "properties": {
+        "buildTimeoutInMinutes": "[variables('ImageInfo')[copyIndex(0)].deployTimeoutmin]",
+        "vmProfile": {
+          "vmSize": "[variables('ImageInfo')[copyIndex(0)].vmSize]",
+          "osDiskSizeGB": "[variables('ImageInfo')[copyIndex(0)].osDiskSizeGB]"
+          // "vnetConfig": {
+          //   "subnetId": "/subscriptions/<subscriptionID>/resourceGroups/<vnetRgName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>"
+          // }
+        },
+        "source": {
+          "type": "PlatformImage",
+          "publisher": "MicrosoftWindowsServer",
+          "offer": "WindowsServer",
+          "sku": "2019-Datacenter",
+          "version": "latest"
+        },
+        "customize": [
+          // {
+          //   "type": "PowerShell",
+          //   "name": "CreateBuildPath",
+          //   "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/testPsScript.ps1"
+          // },
+          // {
+          //   "type": "WindowsRestart",
+          //   "restartCheckCommand": "echo Azure-Image-Builder-Restarted-the-VM  > c:\\buildArtifacts\\azureImageBuilderRestart.txt",
+          //   "restartTimeout": "5m"
+          // },
+          {
+            "type": "File",
+            "name": "downloadBuildArtifacts1",
+            "sourceUri": "[concat(parameters('global')._artifactsLocation, '/metaConfig/','localhost.meta.mof',parameters('global')._artifactsLocationSasToken)]",
+            "destination": "d:\\metaconfig\\localhost.meta.mof"
+          },
+          {
+            "type": "File",
+            "name": "downloadBuildArtifacts2",
+            "sourceUri": "[concat(parameters('global')._artifactsLocation, '/metaConfig/','userinfo.txt',parameters('global')._artifactsLocationSasToken)]",
+            "destination": "d:\\userinfo.txt"
+          },
+          {
+            "type": "PowerShell",
+            "name": "Enable_PSRemoting",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 1'",
+              "get-childitem -path d:\\metaconfig",
+              "whoami",
+              "Get-NetConnectionProfile",
+              "Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private -Passthru",
+              "Test-WsMan"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Enable_PSRemoting",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 2'",
+              "New-LocalUser -Description brw -FullName brw -Name brw -Password (gc d:\\userinfo.txt | ConvertTo-SecureString -AsPlainText -Force)",
+              "Add-LocalGroupMember -Group administrators -Member brw",
+              "net localgroup administrators"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Enable_PSRemoting",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 3'",
+              "Enable-PSRemoting -Force",
+              "Test-WsMan"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Test_Module_Install",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 4'",
+              "Get-PackageProvider -ForceBootstrap -Name Nuget",
+              "Install-module -Name Az.Automation -Force",
+              "gmo az* -list"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Set_LCM_DSC",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 4'",
+              "Get-NetConnectionProfile",
+              "$Cred = [pscredential]::new('brw',(gc d:\\userinfo.txt | ConvertTo-SecureString -AsPlainText -Force)) ; $cs = new-cimsession -credential $Cred",
+              "$Cred",
+              "$CS",
+              "Set-DscLocalConfigurationManager -cimsession $CS -Path d:\\metaconfig -Force -Verbose"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Update_DSC",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 5'",
+              "$Cred = [pscredential]::new('brw',(gc d:\\userinfo.txt | ConvertTo-SecureString -AsPlainText -Force)) ; $cs = new-cimsession -credential $Cred",
+              "$Cred",
+              "$CS",
+              "Update-DscConfiguration -cimsession $CS -Verbose -Wait",
+              "Stop-DscConfiguration -cimsession $CS -Force",
+              "Start-DscConfiguration -cimsession $CS -wait -verbose -useexisting -Force"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Update_DSC",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 6'",
+              "$Cred = [pscredential]::new('brw',(gc d:\\userinfo.txt | ConvertTo-SecureString -AsPlainText -Force)) ; $ss = new-pssession -credential $Cred",
+              "$Cred",
+              "$PS",
+              "Invoke-command -PSSession $PS -EnableNetworkAccess -scriptblock {$env:computerName}"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Update_DSC",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 7'",
+              "Invoke-command -computername localhost -scriptblock {$env:computerName} -EnableNetworkAccess"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Remove_DSC_StateConfiguration",
+            "runElevated": true,
+            "runAsSystem": true,
+            "inline": [
+              "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.mof -ErrorAction SilentlyContinue",
+              "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.backup.mof -ErrorAction SilentlyContinue",
+              "Remove-DscConfigurationDocument -Stage Current,Pending,Previous -ErrorAction SilentlyContinue"
+            ]
+          },
+          {
+            "type": "WindowsUpdate",
+            "searchCriteria": "IsInstalled=0",
+            "filters": [
+              "exclude:$_.Title -like '*Preview*'",
+              "include:$true"
+            ],
+            "updateLimit": 20
+          }
+        ],
+        "distribute": [
+          {
+            "type": "ManagedImage",
+            "imageId": "[resourceid('Microsoft.Compute/galleries/images',concat(variables('DeploymentURI'), 'gallery',variables('ImageInfo')[copyIndex(0)].galleryName),variables('ImageInfo')[copyIndex(0)].imageName)]",
+            "location": "centralus",
+            "runOutputName": "[variables('ImageInfo')[copyIndex(0)].imageName]",
+            "artifactTags": {
+              "source": "azVmImageBuilder",
+              "baseosimg": "windows2019"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[and(contains(variables('ImageInfo')[copyIndex(0)],'buildNow'),equals(variables('ImageInfo')[copyIndex(0)].buildNow,1))]",
+      "name": "[concat('SetImageBuild',CopyIndex(1),'-',variables('ImageInfo')[copyIndex(0)].imageName,'-',variables('ImageInfo')[copyIndex(0)].ibLocation)]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": "[variables('userAssignedIdentities')['Default']]"
+      },
+      "dependsOn": [
+        "[concat(variables('ImageInfo')[copyIndex(0)].imageName,'-',variables('ImageInfo')[copyIndex(0)].ibLocation)]"
+      ],
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "copy": {
+        "name": "imageCopyBuild",
+        "count": "[length(variables('image'))]"
+      },
+      "properties": {
+        "azPowerShellVersion": "5.4",
+        "arguments": "[format(' -ResourceGroupName {0} -ImageTemplateName {1}', 
+                                resourceGroup().name,
+                                concat(variables('ImageInfo')[copyIndex(0)].imageName,'-',variables('ImageInfo')[copyIndex(0)].ibLocation)
+                                )]",
+        "scriptContent": "
+                    param (
+                        [string]$ResourceGroupName,
+                        [string]$ImageTemplateName
+                    )
+                    
+                    try
+                    {
+                        Write-Output \"`nUTC is: \"
+                        Get-Date
+                        $c = Get-AzContext -ErrorAction stop
+                        if ($c)
+                        {
+                            Write-Output \"`nContext is: \"
+                            $c | select Account,Subscription,Tenant,Environment | fl | out-string
+
+                            Install-Module -Name Az.ImageBuilder -Force
+                            
+                            $template = Get-AzImageBuilderTemplate -ResourceGroupName $ResourceGroupName -ImageTemplateName $ImageTemplateName -ErrorAction stop
+                            if ($template.Name)
+                            {
+                                Write-Output 'Starting async run to build the image [$ImageTemplateName]!'
+                                Start-AzImageBuilderTemplate -InputObject $template -NoWait
+                            }
+                            else 
+                            {
+                              Write-Output 'cannot find [$ImageTemplateName] in [$ResourceGroupName]'
+                            }
+                        }
+                        else 
+                        {
+                            throw 'Cannot get a context'
+                        }
+                    }
+                    catch
+                    {
+                        Write-Warning $_
+                        Write-Warning $_.exception
+                    }
+                ",
+        "forceUpdateTag": "[parameters('deploymentTime')]",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "P1D",
+        "timeout": "PT3M"
+      }
+    },
+    {
+      "condition": "[equals(variables('ImageInfo')[copyIndex(0)].PublishNow,1)]",
+      "name": "[concat(variables('DeploymentURI'), 'gallery', variables('ImageInfo')[copyIndex(0)].GalleryName,'/', variables('ImageInfo')[copyIndex(0)].imageName,'/0.0.1')]",
+      "type": "Microsoft.Compute/galleries/images/versions",
+      "apiVersion": "2019-12-01",
+      "dependsOn": [
+        "[concat(variables('ImageInfo')[copyIndex(0)].imageName,'-',variables('ImageInfo')[copyIndex(0)].ibLocation)]",
+        "[concat('SetImageBuild',CopyIndex(1),'-',variables('ImageInfo')[copyIndex(0)].imageName,'-',variables('ImageInfo')[copyIndex(0)].ibLocation)]"
+      ],
+      "copy": {
+        "name": "galleryimageversionCopy",
+        "count": "[length(variables('image'))]"
+      },
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publishingProfile": {
+          "replicaCount": 1,
+          "excludeFromLatest": false,
+          "targetRegions": [
+            {
+              "name": "[resourceGroup().location]",
+              "regionalReplicaCount": 1,
+              "storageAccountType": "Standard_LRS"
+            }
+          ]
+        },
+        "storageProfile": {
+          "source": {
+            "id": "[resourceId('Microsoft.Compute/images',concat(variables('DeploymentURI'), 'gallery', variables('ImageInfo')[copyIndex(0)].GalleryName))]"
+          }
+        }
       }
     }
   ]

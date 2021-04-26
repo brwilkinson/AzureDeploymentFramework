@@ -62,6 +62,7 @@
 
 Function global:Start-AzDeploy
 {
+    [CmdletBinding()]
     Param(
         [alias('Dir', 'Path')]
         [string] $ArtifactStagingDirectory = (Get-Item -Path "$PSScriptRoot\.."),
@@ -100,7 +101,7 @@ Function global:Start-AzDeploy
 
         [string] $DebugOptions = 'None',
         
-        [switch] $TestWhatIf,
+        [switch] $WhatIf,
         [validateset('ResourceIdOnly', 'FullResourcePayloads')]
         [String]$WhatIfFormat = 'ResourceIdOnly',
         [Switch]$TemplateSpec,
@@ -310,7 +311,7 @@ Function global:Start-AzDeploy
         New-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
     }
 
-    if ( -not $TestWhatIf )
+    if ( -not $WhatIf )
     {
         $OptionalParameters.Add('DeploymentDebugLogLevel', $DebugOptions)
     }
@@ -458,7 +459,7 @@ Function global:Start-AzDeploy
         if ($Deployment -eq 'M0')
         {
             $mgName = Get-AzManagementGroup | Where-Object DisplayName -EQ 'Tenant Root Group' | ForEach-Object Name
-            if ($TestWhatIf)
+            if ($WhatIf)
             {
                 Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
 
@@ -477,7 +478,7 @@ Function global:Start-AzDeploy
         }
         if ($Deployment -eq 'T0')
         {
-            if ($TestWhatIf)
+            if ($WhatIf)
             {
                 Write-Warning "`n`tRunning Tenant Deployment Whatif !!!!`n`n"
 
@@ -498,7 +499,7 @@ Function global:Start-AzDeploy
         {
             # When doing 
             $ResourceGroupName = $ResourceGroupName -replace 'M0', 'G1'
-            if ($TestWhatIf)
+            if ($WhatIf)
             {
                 Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
 
@@ -519,13 +520,13 @@ Function global:Start-AzDeploy
         else 
         {
 
-            if ($TestWhatIf)
+            if ($WhatIf)
             {
                 Write-Warning "`n`tRunning Deployment Whatif !!!!`n`n"
 
                 New-AzResourceGroupDeployment -Name $DeploymentName @TemplateArgs @OptionalParameters `
-                    -ResourceGroupName $ResourceGroupName -WhatIfResultFormat $WhatIfFormat -WhatIf `
-                    -Verbose -ErrorVariable ErrorMessages -OutVariable global:Whatif
+                    -ResourceGroupName $ResourceGroupName -WhatIfResultFormat $WhatIfFormat -Verbose `
+                    -ErrorVariable ErrorMessages -OutVariable global:Whatif -WhatIf
                 
                 return $whatif
             }
@@ -540,7 +541,7 @@ Function global:Start-AzDeploy
     }
     else 
     {
-        if ($TestWhatIf)
+        if ($WhatIf)
         {
             Write-Warning "`n`tRunning Subscription Deployment Whatif !!!!"
             

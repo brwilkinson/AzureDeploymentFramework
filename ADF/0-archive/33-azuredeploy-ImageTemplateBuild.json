@@ -143,37 +143,65 @@
           //   "restartCheckCommand": "echo Azure-Image-Builder-Restarted-the-VM  > c:\\buildArtifacts\\azureImageBuilderRestart.txt",
           //   "restartTimeout": "5m"
           // },
-          // {
-          //   "type": "File",
-          //   "name": "downloadBuildArtifacts",
-          //   "sourceUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/exampleArtifacts/buildArtifacts/index.html",
-          //   "destination": "c:\\buildArtifacts\\index.html"
-          // },
+          {
+            "type": "File",
+            "name": "downloadBuildArtifacts",
+            "sourceUri": "[concat(parameters('global')._artifactsLocation, '/metaConfig/','localhost.meta.mof',parameters('global')._artifactsLocationSasToken)]",
+            "destination": "d:\\localhost.meta.mof"
+          },
           {
             "type": "PowerShell",
-            "name": "Join_Pull_DSC_StateConfiguration",
+            "name": "Enable_PSRemoting",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 1'",
+              "Enable-PSRemoting -Force",
+              "Test-WsMan"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Enable_PSRemoting",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 2'",
+              "Test-WsMan",
+              "whoami"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Set_LCM_DSC",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 3'",
+              "Set-DscLocalConfigurationManager -Path d:\\ -Force -Verbose"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Update_DSC",
+            "runElevated": true,
+            "runAsSystem": false,
+            "inline": [
+              "Write-Host -Message 'hello world 4'",
+              "Update-DscConfiguration -Verbose -Wait"
+            ]
+          },
+          {
+            "type": "PowerShell",
+            "name": "Remove_DSC_StateConfiguration",
             "runElevated": true,
             "runAsSystem": true,
             "inline": [
-              "Install-module -Name Az.Automation -Force",
-              "$VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get",
-              "Write-Host -Message 'RGName: $($VMMeta.compute.resourceGroupName) VMName: $($VMMeta.compute.name) '",
-              // "Login-AzAccount -Identity -Verbose",
-              // "Register-AzAutomationDscNode -NodeConfigurationName AppServers.BRW_HAA_IMG_G1 -ResourceGroupName ACU1-BRW-HAA-RG-G1 -AutomationAccountName acu1brwhaag1OMSAutomation -AzureVMResourceGroup $VMMeta.compute.resourceGroupName -AzureVMName $VMMeta.compute.name -AzureVMLocation $VMMeta.compute.location -RebootNodeIfNeeded $true -ActionAfterReboot ContinueConfiguration",
-              // "Update-DscConfiguration -Wait -Verbose"
+              "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.mof -ErrorAction SilentlyContinue",
+              "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.backup.mof -ErrorAction SilentlyContinue",
+              "Remove-DscConfigurationDocument -Stage Current,Pending,Previous -ErrorAction SilentlyContinue"
             ]
           },
-          // {
-          //   "type": "PowerShell",
-          //   "name": "Remove_DSC_StateConfiguration",
-          //   "runElevated": true,
-          //   "runAsSystem": false,
-          //   "inline": [
-          //     "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.mof -ErrorAction SilentlyContinue",
-          //     "Remove-Item -Path C:\\windows\\System32\\Configuration\\MetaConfig.backup.mof -ErrorAction SilentlyContinue",
-          //     "Remove-DscConfigurationDocument -Stage Current,Pending,Previous -ErrorAction SilentlyContinue"
-          //   ]
-          // },
           {
             "type": "WindowsUpdate",
             "searchCriteria": "IsInstalled=0",
