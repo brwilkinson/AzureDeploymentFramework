@@ -10,5 +10,5 @@ Get-ChildItem -Path $Deploy -Filter *.json | Select-Object -Index 3 | ForEach-Ob
 
     write-verbose -message "file is [$($_.fullname)]" -verbose
     $File = $_.BaseName
-    bicep decompile $_.fullname 
+    bicep decompile $_.fullname
 }

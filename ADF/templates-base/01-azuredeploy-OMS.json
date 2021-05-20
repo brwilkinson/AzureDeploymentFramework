@@ -771,7 +771,7 @@
     {
       "name": "[variables('AAName')]",
       "type": "Microsoft.Automation/automationAccounts",
-      "apiVersion": "2018-01-15",
+      "apiVersion": "2020-01-13-preview",
       "location": "[If(contains(parameters('Global'),'AALocation'),parameters('Global').AALocation,resourceGroup().location)]",
       "dependsOn": [],
       "properties": {

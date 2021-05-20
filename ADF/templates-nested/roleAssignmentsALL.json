@@ -57,7 +57,7 @@
     // The Destination Tenant or App e.g. PSO 
     // Note if the destination info is not provides, assume it's local info
     // Only the Name is required if local
-
+    
     "copy": [
       {
         "name": "RoleAssignment",

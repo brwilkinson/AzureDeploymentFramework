@@ -45,11 +45,15 @@
     },
     "variables": {
         "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-        "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
+        "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+
         "OSType": "[json(parameters('Global').OSType)]",
         "WadCfg": "[json(parameters('Global').WadCfg)]",
         "ladCfg": "[json(parameters('Global').ladCfg)]",
         "computeSizeLookupOptions": "[json(parameters('Global').computeSizeLookupOptions)]",
+
+        "AAResourceGroup": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-RG-P0')]",
+        "AAName": "[concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,'P0','OMSAutomation')]",
 
         "VMSizeLookup": {
             "D": "D",
@@ -80,6 +84,25 @@
             "WVDServers": "AppServers",
             "VMAppSS": "AppServers"
         },
+
+        "RebootNodeLookup": {
+            "D": true,
+            "Q": true,
+            "T": true,
+            "U": true,
+            "P": false
+        },
+        "ConfigurationMode": {
+            "D": "ApplyAndAutoCorrect",
+            "Q": "ApplyAndAutoCorrect",
+            "T": "ApplyAndAutoCorrect",
+            "U": "ApplyAndAutoCorrect",
+            "P": "ApplyAndMonitor"
+        },
+        // set this value to higher to save money on logs for larger environments,
+        // also consider having dev environment with 15 mins, then other envs with higer values e.g. 120
+        "DSCConfigurationModeFrequencyMins": 15,
+
         "WAFBE": "[if(contains(parameters('AppServer'),'WAFBE'),parameters('AppServer').WAFBE,createArray())]",
         "LBBE": "[if(contains(parameters('AppServer'),'LBBE'),parameters('AppServer').LBBE,createArray())]",
         "copy": [
@@ -191,13 +214,13 @@
                 "tier": "Standard",
                 "capacity": "[parameters('AppServer').AutoScalecapacity.minimum]"
             },
-            "scale": null,
-            // "zones" : "[if(contains(parameters('AppServer'),'zones'),
-            //                 parameters('AppServer').zones,
-            //                 createArray('1','2','3')
-            //                 )]",
+            // "scale": null,
+            "zones": "[if(contains(parameters('AppServer'),'zones'),
+                            parameters('AppServer').zones,
+                            createArray('1','2','3')
+                            )]",
             "properties": {
-                // "zoneBalance": true,
+                "zoneBalance": true,
                 "overprovision": false,
                 "singlePlacementGroup": true,
                 "upgradePolicy": {
@@ -385,78 +408,171 @@
                                 }
                             },
                             {
-                                "name": "Microsoft.Powershell.DSC",
+                                // "condition": "[
+                                //                 and(
+                                //                 variables('VM')[copyIndex(0)].matchVM,
+                                //                 and(
+                                //                     equals(variables('VM')[copyIndex(0)].extensions.DSC,1),
+                                //                     equals(parameters('AppServer')[copyIndex(0)].Role,'Pull')
+                                //                     )
+                                //                 )
+                                //                 ]",
+                                "name": "Microsoft.Powershell.DSC.Pull",
+                                // "type": "extensions",
+                                // "apiVersion": "2021-03-01",
+                                // "dependsOn": [
+                                //     "[concat('Microsoft.Compute/virtualMachines/', concat(variables('Deployment'),'-vm', parameters('AppServer')[copyIndex(0)].VMName))]",
+                                //     "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',parameters('AppServer')[copyIndex(0)].VMName,'/extensions/joindomain')]"
+                                // ],
+                                // "location": "[resourceGroup().location]",
+                                // "tags": {
+                                //     "displayName": "Powershell.DSC.Pull"
+                                // },
                                 "properties": {
-                                    "provisionAfterExtensions": [
-                                        "joindomain"
-                                    ],
-                                    "publisher": "Microsoft.Powershell",
-                                    "type": "DSC",
-                                    "typeHandlerVersion": "2.24",
+                                    "publisher": "[if(equals(variables('OSType')[parameters('AppServer').OSType].OS,'Windows'),'Microsoft.Powershell','Microsoft.OSTCExtensions')]",
+                                    "type": "[if(equals(variables('OSType')[parameters('AppServer').OSType].OS,'Windows'),'DSC','DSCForLinux')]",
+                                    "typeHandlerVersion": "[if(equals(variables('OSType')[parameters('AppServer').OSType].OS,'Windows'),'2.77','2.0')]",
                                     "autoUpgradeMinorVersion": true,
-                                    "forceUpdateTag": "[parameters('deploymentTime')]",
-                                    "settings": {
-                                        "wmfVersion": "latest",
-                                        "configuration": {
-                                            "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-',if(contains(parameters('AppServer'),'DSConfig'),
-                                                                                        parameters('AppServer').DSConfig,
-                                                                                        if(
-                                                                                            contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
-                                                                                                    'AppServers'
-                                                                                        )),
-                                                                                        '.zip')]",
-                                            "script": "[concat('DSC-',if(contains(parameters('AppServer'),'DSConfig'),
-                                                                                        parameters('AppServer').DSConfig,
-                                                                                        if(
-                                                                                        contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
-                                                                                                    'AppServers'
-                                                                                        )),'.ps1')]",
-                                            "function": "[if(contains(parameters('AppServer'),'DSConfig'),
-                                                                                        parameters('AppServer').DSConfig,
-                                                                                        if(
-                                                                                        contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
-                                                                                                    'AppServers'
-                                                                                        ))]"
-                                        },
-                                        "configurationArguments": {
-                                            "DomainName": "[parameters('Global').ADDomainName]",
-                                            "Thumbprint": "[parameters('Global').certificateThumbprint]",
-                                            "storageAccountId": "[variables('saaccountidglobalsource')]",
-                                            "deployment": "[replace(variables('Deployment'),'-','')]",
-                                            "networkid": "[concat(variables('networkId'),'.')]",
-                                            "appInfo": "[if(contains(parameters('AppServer'),'AppInfo'),string(parameters('AppServer').AppInfo),'')]",
-                                            "DataDiskInfo": "[string(parameters('VM').DataDisk)]",
-                                            "clientIDLocal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperator'),'2018-11-30').ClientId)]",
-                                            "clientIDGlobal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountFileContributor'),'2018-11-30').ClientId)]"
-
-                                        },
-                                        "configurationData": {
-                                            "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',parameters('AppServer').Role,'-ConfigurationData.psd1')]"
+                                    "protectedSettings": {
+                                        "Items": {
+                                            "registrationKeyPrivate": "[listKeys(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2020-01-13-preview').keys[0].value]"
                                         }
                                     },
-                                    "protectedSettings": {
-                                        "configurationArguments": {
-                                            "AdminCreds": {
-                                                "UserName": "[parameters('Global').vmAdminUserName]",
-                                                "Password": "[parameters('vmAdminPassword')]"
-                                            },
-                                            "sshPublic": {
-                                                "UserName": "ssh",
-                                                "Password": "[parameters('sshPublic')]"
-                                            },
-                                            "devOpsPat": {
-                                                "UserName": "pat",
-                                                "Password": "[parameters('devOpsPat')]"
-                                            }
+                                    "settings": {
+                                        "advancedOptions": {
+                                            "forcePullAndApply": true
                                         },
-                                        "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
-                                        "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
+                                        "Properties": [
+                                            {
+                                                "Name": "RegistrationKey",
+                                                "Value": {
+                                                    "UserName": "PLACEHOLDER_DONOTUSE",
+                                                    "Password": "PrivateSettingsRef:registrationKeyPrivate"
+                                                },
+                                                "TypeName": "System.Management.Automation.PSCredential"
+                                            },
+                                            {
+                                                "Name": "RegistrationUrl",
+                                                "Value": "[reference(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2020-01-13-preview').RegistrationUrl]",
+                                                "TypeName": "System.String"
+                                            },
+                                            {
+                                                "Name": "NodeConfigurationName",
+                                                "Value": "[concat(
+                                                                    if(contains( variables('DSCConfigLookup'),variables('DeploymentName')) ,
+                                                                        variables('DSCConfigLookup')[variables('DeploymentName')],
+                                                                        'AppServers'),
+                                                                    '.',parameters('Global').OrgName,'_',parameters('Global').Appname,'_',
+                                                                    parameters('AppServer').ASName,'_',parameters('Environment'),parameters('DeploymentID'))]",
+                                                "TypeName": "System.String"
+                                            },
+                                            {
+                                                "Name": "ConfigurationMode",
+                                                "Value": "[variables('ConfigurationMode')[parameters('Environment')]]",
+                                                "TypeName": "System.String"
+                                            },
+                                            {
+                                                "Name": "RebootNodeIfNeeded",
+                                                "Value": "[variables('RebootNodeLookup')[parameters('Environment')]]",
+                                                "TypeName": "System.Boolean"
+                                            },
+                                            {
+                                                "Name": "ConfigurationModeFrequencyMins",
+                                                "Value": "[variables('DSCConfigurationModeFrequencyMins')]",
+                                                "TypeName": "System.Int32"
+                                            },
+                                            {
+                                                "Name": "RefreshFrequencyMins",
+                                                "Value": 30,
+                                                "TypeName": "System.Int32"
+                                            },
+                                            {
+                                                "Name": "ActionAfterReboot",
+                                                "Value": "ContinueConfiguration",
+                                                "TypeName": "System.String"
+                                            },
+                                            {
+                                                "Name": "AllowModuleOverwrite",
+                                                "Value": true,
+                                                "TypeName": "System.Boolean"
+                                            }
+                                        ]
                                     }
                                 }
                             },
+                            // {
+                            //     "name": "Microsoft.Powershell.DSC",
+                            //     "properties": {
+                            //         "provisionAfterExtensions": [
+                            //             "joindomain"
+                            //         ],
+                            //         "publisher": "Microsoft.Powershell",
+                            //         "type": "DSC",
+                            //         "typeHandlerVersion": "2.24",
+                            //         "autoUpgradeMinorVersion": true,
+                            //         "forceUpdateTag": "[parameters('deploymentTime')]",
+                            //         "settings": {
+                            //             "wmfVersion": "latest",
+                            //             "configuration": {
+                            //                 "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-',if(contains(parameters('AppServer'),'DSConfig'),
+                            //                                                             parameters('AppServer').DSConfig,
+                            //                                                             if(
+                            //                                                                 contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                            //                                                                         variables('DSCConfigLookup')[variables('DeploymentName')],
+                            //                                                                         'AppServers'
+                            //                                                             )),
+                            //                                                             '.zip')]",
+                            //                 "script": "[concat('DSC-',if(contains(parameters('AppServer'),'DSConfig'),
+                            //                                                             parameters('AppServer').DSConfig,
+                            //                                                             if(
+                            //                                                             contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                            //                                                                         variables('DSCConfigLookup')[variables('DeploymentName')],
+                            //                                                                         'AppServers'
+                            //                                                             )),'.ps1')]",
+                            //                 "function": "[if(contains(parameters('AppServer'),'DSConfig'),
+                            //                                                             parameters('AppServer').DSConfig,
+                            //                                                             if(
+                            //                                                             contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                            //                                                                         variables('DSCConfigLookup')[variables('DeploymentName')],
+                            //                                                                         'AppServers'
+                            //                                                             ))]"
+                            //             },
+                            //             "configurationArguments": {
+                            //                 "DomainName": "[parameters('Global').ADDomainName]",
+                            //                 "Thumbprint": "[parameters('Global').certificateThumbprint]",
+                            //                 "storageAccountId": "[variables('saaccountidglobalsource')]",
+                            //                 "deployment": "[replace(variables('Deployment'),'-','')]",
+                            //                 "networkid": "[concat(variables('networkId'),'.')]",
+                            //                 "appInfo": "[if(contains(parameters('AppServer'),'AppInfo'),string(parameters('AppServer').AppInfo),'')]",
+                            //                 "DataDiskInfo": "[string(parameters('VM').DataDisk)]",
+                            //                 "clientIDLocal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperator'),'2018-11-30').ClientId)]",
+                            //                 "clientIDGlobal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountFileContributor'),'2018-11-30').ClientId)]"
+
+                            //             },
+                            //             "configurationData": {
+                            //                 "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',parameters('AppServer').Role,'-ConfigurationData.psd1')]"
+                            //             }
+                            //         },
+                            //         "protectedSettings": {
+                            //             "configurationArguments": {
+                            //                 "AdminCreds": {
+                            //                     "UserName": "[parameters('Global').vmAdminUserName]",
+                            //                     "Password": "[parameters('vmAdminPassword')]"
+                            //                 },
+                            //                 "sshPublic": {
+                            //                     "UserName": "ssh",
+                            //                     "Password": "[parameters('sshPublic')]"
+                            //                 },
+                            //                 "devOpsPat": {
+                            //                     "UserName": "pat",
+                            //                     "Password": "[parameters('devOpsPat')]"
+                            //                 }
+                            //             },
+                            //             "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
+                            //             "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
+                            //         }
+                            //     }
+                            // },
                             {
                                 "name": "HealthExtension",
                                 "properties": {

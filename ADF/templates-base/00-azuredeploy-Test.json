@@ -65,20 +65,32 @@
   },
   "variables": {
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
+
     "RolesGroupsLookup": "[json(parameters('Global').RolesGroupsLookup)]",
     "RolesLookup": "[json(parameters('Global').RolesLookup)]",
-    "AKSInfo": {
-      "aksAADAdminGroups": [
-        "benwilk@microsoft.com"
-      ]
-    },
+    "AppServers": "[parameters('DeploymentInfo').AppServers['ADPrimary']]",
+
     "copy": [
       {
-        "name": "aksAADAdminLookup",
-        "count": "[if(not(contains(variables('AKSInfo'),'aksAADAdminGroups')),0,length(variables('AKSInfo').aksAADAdminGroups))]",
-        "input": "[variables('RolesLookup')[variables('AKSInfo').aksAADAdminGroups[copyIndex('aksAADAdminLookup')]]]"
+        "name": "ASNAME",
+        "count": "[length(parameters('DeploymentInfo').AppServers['ADPrimary'])]",
+        "Input": "[if(contains(parameters('DeploymentInfo').AppServers['ADPrimary'][copyIndex('ASNAME')],'Zone'),'usingZones',parameters('DeploymentInfo').AppServers['ADPrimary'][copyIndex('ASNAME')].ASNAME )]"
       }
     ],
+
+    // "AKSInfo": {
+    //   "aksAADAdminGroups": [
+    //     "benwilk@microsoft.com"
+    //   ]
+    // },
+    // "copy": [
+    //   {
+    //     "name": "aksAADAdminLookup",
+    //     "count": "[if(not(contains(variables('AKSInfo'),'aksAADAdminGroups')),0,length(variables('AKSInfo').aksAADAdminGroups))]",
+    //     "input": "[variables('RolesLookup')[variables('AKSInfo').aksAADAdminGroups[copyIndex('aksAADAdminLookup')]]]"
+    //   }
+    // ],
     // "copy": [
     //   {
     //     "name": "aksAADAdminLookup",
@@ -106,10 +118,34 @@
       "AzureDeploymentFramework_AEU2-BRW-AOA-RG-S1": "5ea390f8-af30-4078-b33b-71db769604f3",
       "AzureDeploymentFramework_AEU2-BRW-AOA-RG-T3": "192b9afc-f5eb-4f6c-95ce-eb6946fa62dc",
       "AzureDeploymentFramework_AEU2-BRW-AOA-RG-P4": "876a9dfa-0cb6-472d-9601-c075bfbe7292"
-    }
+    },
+
+    "AAResourceGroup": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-RG-P0')]",
+    "AAName": "[concat(variables('DeploymentURI'),'OMSAutomation')]",
+
 
   },
   "resources": [
+    {
+      "condition": "[not(equals(union(variables('ASNAME'),createArray())[copyIndex()],'usingZones'))]",
+      "name": "[concat(variables('Deployment'),'-as',union(variables('ASNAME'),createArray())[copyIndex()])]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-04-30-preview",
+      "dependsOn": [
+      ],
+      "sku": {
+        "name": "Aligned"
+      },
+      "copy": {
+        "name": "asLoop",
+        "count": "[length(union(variables('ASNAME'),createArray()))]" //Remove duplicates
+      },
+      "properties": {
+        "platformUpdateDomainCount": 5,
+        "platformFaultDomainCount": 3
+      }
+    }
   ],
   "outputs": {
     // "foo3": {
@@ -120,17 +156,29 @@
     //   "type": "string",
     //   "value": "[reference('Microsoft.KeyVault/vaults/AZC1-ADF-P0-kvVault01/secrets/localadmin/f5c73d416ffa4631b188082c0ae60a99','2018-02-14','Full')]"
     // }
-    "foo": {
-      "type": "array",
-      "value": "[variables('aksAADAdminLookup')]"
+    // "foo": {
+    //   "type": "array",
+    //   "value": "[variables('aksAADAdminLookup')]"
+    // },
+    "asnamel": {
+      "type": "int",
+      "value": "[length(union(variables('ASNAME'),createArray()))]"
     },
-    "foo3": {
-      "type": "string",
-      "value": "[string(variables('RolesGroupsLookup'))]"
+    "asname": {
+      "type": "array",
+      "value": "[union(variables('ASNAME'),createArray())]"
+    },
+        "asnamel2": {
+      "type": "int",
+      "value": "[length(variables('ASNAME'))]"
+    },
+    "asname2": {
+      "type": "array",
+      "value": "[variables('ASNAME')]"
     },
     "kvrid": {
       "type": "object",
-      "value": "[reference(resourceId('Microsoft.Network/azureFirewalls',concat(variables('Deployment'),'-vnFW01')),'2019-09-01')]"
+      "value": "[reference(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2020-01-13-preview','ALL')]"
     }
   }
 }

@@ -270,7 +270,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-01-01",
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-OMS')]"
+        "[concat('dp', variables('Deployment'), '-OMS')]",
+        "[concat('dp', variables('Deployment'), '-FW')]"
       ],
       "properties": {
         "mode": "Incremental",

@@ -71,8 +71,12 @@
   "variables": {
     // Global  This Deployment variable is used to name EVERY resource.
     "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
     "RGName": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').AppName,'-RG-',parameters('Environment'),parameters('DeploymentID') )]",
     "GlobalRGName": "[parameters('Global').GlobalRGName]",
+
+    "AAResourceGroup": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-RG-P0')]",
+    "AAName": "[concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,'P0','OMSAutomation')]",
 
     "subscriptionId": "[subscription().subscriptionId]",
     "resourceGroupName": "[resourceGroup().name]",
@@ -99,6 +103,14 @@
       "U": true,
       "P": false
     },
+    "ConfigurationMode": {
+      "D": "ApplyAndAutoCorrect",
+      "Q": "ApplyAndAutoCorrect",
+      "T": "ApplyAndAutoCorrect",
+      "U": "ApplyAndAutoCorrect",
+      "P": "ApplyAndMonitor"
+    },
+
     // set this value to higher to save money on logs for larger environments,
     // also consider having dev environment with 15 mins, then other envs with higer values e.g. 120
     "DSCConfigurationModeFrequencyMins": 15,
@@ -149,7 +161,7 @@
       {
         "name": "ASNAME",
         "count": "[length(parameters('DeploymentInfo').AppServers[deployment().name])]",
-        "Input": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('ASNAME')],'Zone'),'UsingZones',parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('ASNAME')].ASNAME )]"
+        "Input": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('ASNAME')],'Zone'),'usingZones',parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('ASNAME')].ASNAME )]"
       }
     ],
 
@@ -169,7 +181,7 @@
     },
 
     // Network, used for Cluster/AG/DNS IP's
-    "networkId": "[concat(parameters('Global').networkid[0],string(           sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
+    "networkId": "[concat(parameters('Global').networkid[0],string(sub(parameters('Global').networkid[1],mul(2,int(parameters('DeploymentID'))))))]",
     // Settings for Log Analytics
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
@@ -288,7 +300,8 @@
     //   }
     // },
     {
-      "name": "[concat(variables('Deployment'),'-as',union(variables('ASNAME'),createArray())[copyIndex()])]",
+      "condition": "[not(equals(union(variables('ASNAME'),createArray())[copyIndex()],'usingZones'))]",
+      "name": "[concat(variables('Deployment'),'-as',string(union(variables('ASNAME'),createArray())[copyIndex()]))]",
       "type": "Microsoft.Compute/availabilitySets",
       "location": "[resourceGroup().location]",
       "apiVersion": "2016-04-30-preview",
@@ -299,7 +312,7 @@
       },
       "copy": {
         "name": "asLoop",
-        "count": "[if(equals(variables('ASNAME'),'UsingZones'),0,length(union(variables('ASNAME'),createArray())))]" //Remove duplicates
+        "count": "[length(union(variables('ASNAME'),createArray()))]" //Remove duplicates
       },
       "properties": {
         "platformUpdateDomainCount": 5,
@@ -453,8 +466,8 @@
       },
       "dependsOn": [
         "[concat('dp', variables('Deployment'), '-nicDeployLoop', variables('AppServers')[copyIndex(0)].VMName)]",
-        "[concat('Microsoft.Compute/availabilitySets/', concat(variables('Deployment'),'-as',if(contains(variables('AppServers')[copyIndex(0)],'Zone'),'UsingZones',variables('AppServers')[copyIndex(0)].ASName)))]",
-        "[concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]"
+        "[concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
+        "asLoop"
       ],
       "plan": "[if(contains(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType],'plan'),variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].plan,json('null'))]",
       "properties": {
@@ -799,37 +812,30 @@
                 )
               )
             ]",
-          "name": "[concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName, '/Microsoft.Powershell.DSC')]",
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "apiVersion": "2018-04-01",
+          "name": "Microsoft.Powershell.DSC.Pull",
+          "type": "extensions",
+          "apiVersion": "2021-03-01",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]",
-            "[concat('dp', variables('Deployment'), '-extensionsDeploy', variables('AppServers')[copyIndex(0)].VMName)]"
+            "[concat('Microsoft.Compute/virtualMachines/', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]",
+            "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName,'/extensions/joindomain')]"
           ],
-          "copy": {
-            "name": "vmExtensionsLoop",
-            "count": "[length( variables('AppServers') )]"
-          },
           "location": "[resourceGroup().location]",
           "tags": {
             "displayName": "Powershell.DSC.Pull"
           },
           "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.26",
+            "publisher": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'Microsoft.Powershell','Microsoft.OSTCExtensions')]",
+            "type": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'DSC','DSCForLinux')]",
+            "typeHandlerVersion": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'2.77','2.0')]",
             "autoUpgradeMinorVersion": true,
             "protectedSettings": {
               "Items": {
-                "registrationKeyPrivate": "[listKeys(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2015-01-01-preview').keys[0].value]"
+                "registrationKeyPrivate": "[listKeys(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2020-01-13-preview').keys[0].value]"
               }
             },
             "settings": {
-              "ModulesUrl": "https://eus2oaasibizamarketprod1.blob.core.windows.net/automationdscpreview/RegistrationMetaConfigV2.zip",
-              "SasToken": "",
-              "ConfigurationFunction": "RegistrationMetaConfigV2.ps1\\RegistrationMetaConfigV2",
               "advancedOptions": {
-                "forcePullAndApply": false
+                "forcePullAndApply": true
               },
               "Properties": [
                 {
@@ -842,22 +848,22 @@
                 },
                 {
                   "Name": "RegistrationUrl",
-                  "Value": "[reference(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2015-01-01-preview').RegistrationUrl]",
+                  "Value": "[reference(resourceId(variables('AAResourceGroup'),'Microsoft.Automation/automationAccounts', variables('AAName')), '2020-01-13-preview').RegistrationUrl]",
                   "TypeName": "System.String"
                 },
                 {
                   "Name": "NodeConfigurationName",
                   "Value": "[concat(
-                                    if(contains( variables('DSCConfiguration'),variables('DeploymentName')) ,
-                                        variables('DSCConfiguration')[variables('DeploymentName')],
-                                        'DSCAppTier'),
-                                    '.FNF_',
+                                    if(contains( variables('DSCConfigLookup'),variables('DeploymentName')) ,
+                                        variables('DSCConfigLookup')[variables('DeploymentName')],
+                                        'AppServers'),
+                                    '.',parameters('Global').OrgName,'_',parameters('Global').Appname,'_',
                                     variables('AppServers')[copyIndex(0)].ASName,'_',parameters('Environment'),parameters('DeploymentID'))]",
                   "TypeName": "System.String"
                 },
                 {
                   "Name": "ConfigurationMode",
-                  "Value": "ApplyAndMonitor",
+                  "Value": "[variables('ConfigurationMode')[parameters('Environment')]]",
                   "TypeName": "System.String"
                 },
                 {

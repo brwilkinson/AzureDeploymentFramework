@@ -1,5 +1,5 @@
-$DNSRG = 'ACU1-BRW-HAA-RG-G1'
-$zone = 'haapp.net'
+$DNSRG = 'ACU1-BRW-AOA-RG-G1'
+$zone = 'psthing.com'
 
 # cleanup FrontDoor Dangling DNS
 $fdname = 'acu1-brw-haa-d3-afd02.azurefd.net'

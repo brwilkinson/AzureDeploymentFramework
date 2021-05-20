@@ -80,6 +80,7 @@
       ],
       "kind": "StorageV2",
       "properties": {
+        "allowBlobPublicAccess": false,
         "supportsBlobContainerRetention": true,
         "azureFilesIdentityBasedAuthentication": "[if(and(contains(parameters('storageInfo'),'ADDS'),equals(parameters('storageInfo').ADDS,1)),variables('azureFilesIdentityBasedAuthentication'),json('null'))]",
         "largeFileSharesState": "[if(contains(parameters('storageInfo'),'largeFileSharesState'),parameters('storageInfo').largeFileSharesState,json('null'))]",

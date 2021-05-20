@@ -348,6 +348,7 @@ Function global:Start-AzDeploy
                 "$ArtifactStagingDirectory\ext-DSC\",
                 "$ArtifactStagingDirectory\ext-CD\",
                 "$ArtifactStagingDirectory\ext-Scripts\"
+                "$ArtifactStagingDirectory\bicep\"
             )
             git -C $ArtifactStagingDirectory diff --diff-filter d --name-only $Include | ForEach-Object {
                 
@@ -384,10 +385,10 @@ Function global:Start-AzDeploy
             }
             
             $Include = @(
-                'templates-deploy', 'templates-base', 'templates-nested', 'ext-DSC', 'ext-CD', 'ext-Scripts'
+                'templates-deploy', 'templates-base', 'templates-nested', 'ext-DSC', 'ext-CD', 'ext-Scripts', 'bicep'
             )
             Get-ChildItem -Path $ArtifactStagingDirectory -Include $Include -Recurse -Directory |
-                Get-ChildItem -File -Include *.json, *.zip, *.psd1, *.sh, *.ps1 | ForEach-Object {
+                Get-ChildItem -File -Include *.json, *.zip, *.psd1, *.sh, *.ps1, *.bicep | ForEach-Object {
                     #    $_.FullName.Substring($ArtifactStagingDirectory.length)
                     $StorageParams = @{
                         File      = $_.FullName
@@ -428,19 +429,27 @@ Function global:Start-AzDeploy
 
     Write-Warning -Message "Using template file: [$TemplateFile]"
     $TemplateFile = Get-Item -Path $TemplateFile | ForEach-Object FullName
-    $TemplateFile = $TemplateFile -replace '\\', '/'
-    $TemplateURI = $TemplateFile -replace ($ArtifactStagingDirectory -replace '\\', '/'), ''
-    $TemplateURI = $TemplateURIBase + $TemplateURI
-    
-    if ($TemplateSpec)
+    if ($TemplateFile -match 'bicep')
     {
-        Write-Warning -Message "Using templatespec ID: [$TemplateSpecID]"
-        $TemplateArgs.Add('TemplateSpecId', $TemplateSpecID)
+        Write-Warning -Message "Using template File: [$TemplateURI]"
+        $TemplateArgs.Add('TemplateFile', $TemplateFile)
     }
     else 
     {
-        Write-Warning -Message "Using template file: [$TemplateURI]"
-        $TemplateArgs.Add('TemplateURI', $TemplateURI)
+        $TemplateFile = $TemplateFile -replace '\\', '/'
+        $TemplateURI = $TemplateFile -replace ($ArtifactStagingDirectory -replace '\\', '/'), ''
+        $TemplateURI = $TemplateURIBase + $TemplateURI
+
+        if ($TemplateSpec)
+        {
+            Write-Warning -Message "Using templatespec ID: [$TemplateSpecID]"
+            $TemplateArgs.Add('TemplateSpecId', $TemplateSpecID)
+        }
+        else 
+        {
+            Write-Warning -Message "Using template URI: [$TemplateURI]"
+            $TemplateArgs.Add('TemplateURI', $TemplateURI)
+        }
     }
 
     $OptionalParameters.getenumerator() | ForEach-Object {

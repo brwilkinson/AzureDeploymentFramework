@@ -47,10 +47,11 @@ set-location -path ADF:\
 
 ## these two steps only after 01-azuredeploy-OMS.json has been deployed, which includes the Automation account.
 
-# Using Azure Automation Pull Mode to host configurations - upload role mofs, prior to deploying AppServers
-. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix ACU1 -AAEnvironment P0 -DownloadLatest 0
+# Using Azure Automation Pull Mode to host configurations - upload DSC Modules, prior to deploying AppServers
+. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix ACU1 -AAEnvironment P0
+. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix AEU2 -AAEnvironment P0
 
-# upload mofs for a particular configuration
+# upload mofs for a particular configuration, prior to deploying AppServers
 AzMofUpload @Current -Prefix ACU1 -AAEnvironment G1 -Roles IMG -NoDomain
 AzMofUpload @Current -Prefix ACU1 -AAEnvironment P0 -Roles SQLp,SQLs
 
