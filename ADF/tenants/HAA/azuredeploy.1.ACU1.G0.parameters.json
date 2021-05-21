@@ -116,8 +116,12 @@
       "value": {
         "rolesInfo": [
           {
-            "Name": "Owner",
-            "Member": "BW"
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
           }
         ],
         "RoleDefinitionsInfo": [

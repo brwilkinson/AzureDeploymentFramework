@@ -1,16 +1,17 @@
 @allowed([
-    'AZE2'
-    'AZC1'
-    'AZW2'
-    'AZE1'
+    'AEU2'
+    'ACU1'
+    'AWU2'
+    'AEU1'
 ])
-param prefix string = 'AZC1'
+param prefix string = 'ACU1'
 
 @allowed([
     'HUB'
     'ADF'
+    'AOA'
 ])
-param app string = 'HUB'
+param app string = 'AOA'
 
 @allowed([
     'S'
@@ -20,7 +21,7 @@ param app string = 'HUB'
     'U'
     'P'
 ])
-param environment string
+param Environment string
 
 @allowed([
     0
@@ -34,10 +35,10 @@ param environment string
     8
     9
 ])
-param deploymentid int
+param DeploymentID int
 param stage object
 param extensions object
-param global object
+param Global object
 param deploymentinfo object
 
 @secure()
@@ -49,11 +50,11 @@ param devopspat string
 @secure()
 param sshpublic string
 
-targetScope = 'subscription'
+var enviro = '${Environment}${DeploymentID}' // D1
+var deployment = '${prefix}-${Global.orgname}-${app}-${enviro}' // AZE2-BRW-HUB-D1
+var rg = '${prefix}-${Global.orgname}-${app}-RG-${enviro}' // AZE2-BRW-HUB-D1
 
-var enviro = '${environment}${deploymentid}' // D1
-var deployment = '${prefix}-${global.orgname}-${app}-${enviro}' // AZE2-BRW-HUB-D1
-var rg = '${prefix}-${global.orgname}-RG-${app}-${enviro}' // AZE2-BRW-HUB-D1
+targetScope = 'subscription'
 
 // move location lookup to include file referencing this table: 
 // https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/docs/Naming_Standards_Prefix.md
@@ -68,7 +69,7 @@ var location = locationlookup[prefix]
 
 var identity = [for uai in deploymentinfo.uaiInfo: {
     name: uai.name
-    match: global.cn == '.' || contains(global.cn, uai.name)
+    match: Global.cn == '.' || contains(Global.cn, uai.name)
 }]
 
 resource RG 'Microsoft.Resources/resourceGroups@2021-01-01' = {
@@ -78,7 +79,7 @@ resource RG 'Microsoft.Resources/resourceGroups@2021-01-01' = {
 }
 
 module UAI './RG-UAI.bicep' = [for (uai, index) in identity: if (uai.match) {
-    name: 'mod-uai-${uai.name}'
+    name: 'dp-uai-${uai.name}'
     scope: RG
     params: {
         uai: uai

@@ -90,7 +90,7 @@ Function global:Start-AzDeploy
         [string] $CN = '.',
 
         # When deploying VM's, this is a subset of AppServers e.g. AppServers, SQLServers, ADPrimary
-        [string] $DeploymentName = ($Prefix + '-' + $Deployment + '-' + (Get-ChildItem $TemplateFile).BaseName),
+        [string] $DeploymentName = ($Prefix + '-' + $Deployment + '-' + $App + '-' + (Get-ChildItem $TemplateFile).BaseName),
 
         [Switch]$SubscriptionDeploy,
 
@@ -348,7 +348,6 @@ Function global:Start-AzDeploy
                 "$ArtifactStagingDirectory\ext-DSC\",
                 "$ArtifactStagingDirectory\ext-CD\",
                 "$ArtifactStagingDirectory\ext-Scripts\"
-                "$ArtifactStagingDirectory\bicep\"
             )
             git -C $ArtifactStagingDirectory diff --diff-filter d --name-only $Include | ForEach-Object {
                 
@@ -385,10 +384,10 @@ Function global:Start-AzDeploy
             }
             
             $Include = @(
-                'templates-deploy', 'templates-base', 'templates-nested', 'ext-DSC', 'ext-CD', 'ext-Scripts', 'bicep'
+                'templates-deploy', 'templates-base', 'templates-nested', 'ext-DSC', 'ext-CD', 'ext-Scripts'
             )
             Get-ChildItem -Path $ArtifactStagingDirectory -Include $Include -Recurse -Directory |
-                Get-ChildItem -File -Include *.json, *.zip, *.psd1, *.sh, *.ps1, *.bicep | ForEach-Object {
+                Get-ChildItem -File -Include *.json, *.zip, *.psd1, *.sh, *.ps1 | ForEach-Object {
                     #    $_.FullName.Substring($ArtifactStagingDirectory.length)
                     $StorageParams = @{
                         File      = $_.FullName
@@ -431,7 +430,7 @@ Function global:Start-AzDeploy
     $TemplateFile = Get-Item -Path $TemplateFile | ForEach-Object FullName
     if ($TemplateFile -match 'bicep')
     {
-        Write-Warning -Message "Using template File: [$TemplateURI]"
+        Write-Warning -Message "Using template File: [$TemplateFile]"
         $TemplateArgs.Add('TemplateFile', $TemplateFile)
     }
     else 
