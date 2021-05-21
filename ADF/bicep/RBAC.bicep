@@ -55,8 +55,6 @@ var enviro = '${Environment}${DeploymentID}' // D1
 var deployment = '${prefix}-${Global.orgname}-${app}-${enviro}' // AZE2-BRW-HUB-D1
 var rg = '${prefix}-${Global.orgname}-${app}-RG-${enviro}' // AZE2-BRW-HUB-D1
 
-targetScope = 'subscription'
-
 // move location lookup to include file referencing this table: 
 // https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/docs/Naming_Standards_Prefix.md 
 var locationlookup = {

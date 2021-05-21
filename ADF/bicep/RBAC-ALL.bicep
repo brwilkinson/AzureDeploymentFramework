@@ -11,7 +11,7 @@ param namePrefix string
 param providerAPI string
 param principalType string = ''
 
-targetScope = 'subscription'
+// targetScope = 'subscription'
 
 // Role Assignments can be very difficult to troubleshoot, once a role assignment exists, it can only be redeployed if it has the same GUID for the name
 // This code and outputs will ensure it's easy to troubleshoot and also that you have consistency in deployments
