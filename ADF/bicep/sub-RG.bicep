@@ -14,12 +14,7 @@ param prefix string = 'ACU1'
 param app string = 'AOA'
 
 @allowed([
-    'S'
-    'D'
-    'T'
-    'Q'
-    'U'
-    'P'
+    'G'
 ])
 param Environment string
 
@@ -78,7 +73,7 @@ resource RG 'Microsoft.Resources/resourceGroups@2021-01-01' = {
     properties:{}
 }
 
-module UAI './RG-UAI.bicep' = [for (uai, index) in identity: if (uai.match) {
+module UAI './sub-RG-UAI.bicep' = [for (uai, index) in identity: if (uai.match) {
     name: 'dp-uai-${uai.name}'
     scope: RG
     params: {
