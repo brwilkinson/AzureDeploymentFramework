@@ -616,6 +616,7 @@
     // AA Assets is to upload Azure Automation DSC Modules
     // Code to generate this table is in the PrereqstoDeploy directory
     // ..\PrereqsToDeploy\5.2-PreReqDSCModuleListAutomation.ps1
+    // doing this via ARM is too buggy, module imports often fail
     "aaAssets": {
       "modules": [
         {

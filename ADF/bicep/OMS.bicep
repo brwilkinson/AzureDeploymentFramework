@@ -75,58 +75,7 @@ var sps = [for sp in SPInfo: {
     name: replace(replace(replace(sp.Name, '{GHProject}', Global.GHProject), '{ADOProject}', Global.ADOProject), '{RGNAME}', rg)
 }]
 
-module UAI 'RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
-    name: 'dp-rbac-uai-${length(uaiinfo) == 0 ? 'na' : uai.name}'
-    params: {
-        deployment: deployment
-        prefix: prefix
-        rgName: rg
-        enviro: enviro
-        global: Global
-        rolesGroupsLookup: rolesgrouplookup
-        rolesLookup: roleslookup
-        roleInfo: uai
-        providerPath: 'Microsoft.ManagedIdentity/userAssignedIdentities'
-        namePrefix: '-uai'
-        providerAPI: '2018-11-30'
-        principalType: 'ServicePrincipal'
-    }
-}]
 
-module ROLES 'RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
-    name: 'dp-rbac-role-${length(rolesInfo) == 0 ? 'na' : role.name}'
-    params: {
-        deployment: deployment
-        prefix: prefix
-        rgName: rg
-        enviro: enviro
-        global: Global
-        rolesGroupsLookup: rolesgrouplookup
-        rolesLookup: roleslookup
-        roleInfo: role
-        providerPath: ''
-        namePrefix: ''
-        providerAPI: ''
-    }
-}]
-
-module SP 'RBAC-ALL.bicep' = [for sp in sps: {
-    name: 'dp-rbac-sp-${length(sps) == 0 ? 'na' : sp.name}'
-    params: {
-        deployment: deployment
-        prefix: prefix
-        rgName: rg
-        enviro: enviro
-        global: Global
-        rolesGroupsLookup: rolesgrouplookup
-        rolesLookup: roleslookup
-        roleInfo: sp
-        providerPath: ''
-        namePrefix: ''
-        providerAPI: ''
-        principalType: 'ServicePrincipal'
-    }
-}]
 
 output enviro string = enviro
 output deployment string = deployment
