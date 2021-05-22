@@ -15,6 +15,12 @@ param app string = 'AOA'
 
 @allowed([
     'G'
+    'I'
+    'D'
+    'U'
+    'P'
+    'S'
+    'A'
 ])
 param Environment string
 

@@ -19,8 +19,8 @@ param app string = 'AOA'
     'U'
     'P'
     'S'
-    'G'
     'A'
+    'G'
 ])
 param Environment string
 
@@ -55,6 +55,8 @@ var enviro = '${Environment}${DeploymentID}' // D1
 var deployment = '${prefix}-${Global.orgname}-${app}-${enviro}' // AZE2-BRW-HUB-D1
 var rg = '${prefix}-${Global.orgname}-${app}-RG-${enviro}' // AZE2-BRW-HUB-D1
 
+targetScope = 'subscription'
+
 // move location lookup to include file referencing this table: 
 // https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/docs/Naming_Standards_Prefix.md 
 var locationlookup = {
@@ -76,7 +78,7 @@ var sps = [for sp in SPInfo: {
     name: replace(replace(replace(sp.Name, '{GHProject}', Global.GHProject), '{ADOProject}', Global.ADOProject), '{RGNAME}', rg)
 }]
 
-module UAI 'RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
+module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
     name: 'dp-rbac-uai-${length(uaiinfo) == 0 ? 'na' : uai.name}'
     params: {
         deployment: deployment
@@ -94,7 +96,7 @@ module UAI 'RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
     }
 }]
 
-module ROLES 'RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
+module ROLES 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
     name: 'dp-rbac-role-${length(rolesInfo) == 0 ? 'na' : role.name}'
     params: {
         deployment: deployment
@@ -111,7 +113,7 @@ module ROLES 'RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
     }
 }]
 
-module SP 'RBAC-ALL.bicep' = [for sp in sps: {
+module SP 'sub-RBAC-ALL.bicep' = [for sp in sps: {
     name: 'dp-rbac-sp-${length(sps) == 0 ? 'na' : sp.name}'
     params: {
         deployment: deployment
