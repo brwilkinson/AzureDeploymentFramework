@@ -45,10 +45,11 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+var DeploymentURI = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
 var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-'
 var networkId = concat(Global.networkid[0], string((Global.networkid[1] - (2 * int(DeploymentID)))))
 var networkIdUpper = concat(Global.networkid[0], string((1 + (Global.networkid[1] - (2 * int(DeploymentID))))))
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var addressPrefixes = [
   '${networkId}.0/23'
@@ -58,6 +59,7 @@ var DC2PrivateIPAddress = Global.DNSServers[1]
 var AzureDNS = '168.63.129.16'
 
 //  remove below after they are migrated each stage to Bicep
+// will just hard code the bicep file paths, not do a lookup
 
 var DeploymentInfoObject = {
   KV: '../templates-base/00-azuredeploy-KV.json'
@@ -144,17 +146,41 @@ module dp_Deployment_SA 'SA.bicep' = if (Stage.SA == 1) {
   ]
 }
 
-module dp_Deployment_CDN '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').CDN]*/ = if (Stage.CDN == 1) {
+module dp_Deployment_CDN 'SA.CDN.bicep' = if (Stage.CDN == 1) {
   name: 'dp${Deployment}-CDN'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_SA
   ]
 }
 
-module dp_Deployment_RSV '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').RSV]*/ = if (Stage.RSV == 1) {
+module dp_Deployment_RSV 'RSV.bicep' = if (Stage.RSV == 1) {
   name: 'dp${Deployment}-RSV'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_OMS
   ]
