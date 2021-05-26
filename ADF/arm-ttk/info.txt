@@ -1,0 +1,6 @@
+This is a clone from:
+
+https://github.com/Azure/arm-ttk.git
+
+Directory has been added to Gitignore so you will need to clone the above into this directory in your fork.
+
