@@ -4,14 +4,7 @@
     'AWU2'
     'AEU1'
 ])
-param prefix string = 'ACU1'
-
-@allowed([
-    'HUB'
-    'ADF'
-    'AOA'
-])
-param app string = 'AOA'
+param Prefix string = 'ACU1'
 
 @allowed([
     'G'
@@ -25,35 +18,35 @@ param app string = 'AOA'
 param Environment string
 
 @allowed([
-    0
-    1
-    2
-    3
-    4
-    5
-    6
-    7
-    8
-    9
+    '0'
+    '1'
+    '2'
+    '3'
+    '4'
+    '5'
+    '6'
+    '7'
+    '8'
+    '9'
 ])
-param DeploymentID int
-param stage object
-param extensions object
+param DeploymentID string
+param Stage object
+param Extensions object
 param Global object
-param deploymentinfo object
+param DeploymentInfo object
 
 @secure()
-param vmadminpassword string
+param vmAdminPassword string
 
 @secure()
-param devopspat string
+param devOpsPat string
 
 @secure()
-param sshpublic string
+param sshPublic string
 
 var enviro = '${Environment}${DeploymentID}' // D1
-var deployment = '${prefix}-${Global.orgname}-${app}-${enviro}' // AZE2-BRW-HUB-D1
-var rg = '${prefix}-${Global.orgname}-${app}-RG-${enviro}' // AZE2-BRW-HUB-D1
+var deployment = '${Prefix}-${Global.orgname}-${Global.AppName}-${enviro}' // AZE2-BRW-HUB-D1
+var rg = '${Prefix}-${Global.orgname}-${Global.AppName}-RG-${enviro}' // AZE2-BRW-HUB-D1
 
 targetScope = 'subscription'
 
@@ -66,9 +59,9 @@ var locationlookup = {
     AEU2: 'eastus2'
     ACU1: 'centralus'
 }
-var location = locationlookup[prefix]
+var location = locationlookup[Prefix]
 
-var identity = [for uai in deploymentinfo.uaiInfo: {
+var identity = [for uai in DeploymentInfo.uaiInfo: {
     name: uai.name
     match: Global.cn == '.' || contains(Global.cn, uai.name)
 }]

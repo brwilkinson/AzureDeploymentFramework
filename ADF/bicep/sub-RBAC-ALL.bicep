@@ -1,8 +1,8 @@
-param deployment string
-param prefix string
+param Deployment string
+param Prefix string
 param rgName string
-param enviro string
-param global object
+param Enviro string
+param Global object
 param rolesLookup object = {}
 param rolesGroupsLookup object = {}
 param roleInfo object
@@ -14,7 +14,7 @@ param principalType string = ''
 targetScope = 'subscription'
 
 // Role Assignments can be very difficult to troubleshoot, once a role assignment exists, it can only be redeployed if it has the same GUID for the name
-// This code and outputs will ensure it's easy to troubleshoot and also that you have consistency in deployments
+// This code and outputs will ensure it's easy to troubleshoot and also that you have consistency in Deployments
 
 // GUID will always have the following format concatenated together
 // source Subscription ID
@@ -34,15 +34,15 @@ var roleAssignment = [for i in range(0, length(roleInfo.RBAC)): {
     RoleID: rolesGroupsLookup[roleInfo.RBAC[i].Name].Id
     DestSubscriptionID: (contains(roleInfo.RBAC[i], 'SubscriptionID') ? roleInfo.RBAC[i].SubScriptionID : subscription().subscriptionId)
     DestSubscription: (contains(roleInfo.RBAC[i], 'SubscriptionID') ? roleInfo.RBAC[i].SubScriptionID : subscription().id)
-    DestRG: (contains(roleInfo.RBAC[i], 'RG') ? roleInfo.RBAC[i].RG : enviro)
-    DestPrefix: (contains(roleInfo.RBAC[i], 'Prefix') ? roleInfo.RBAC[i].Prefix : prefix)
-    DestApp: (contains(roleInfo.RBAC[i], 'Tenant') ? roleInfo.RBAC[i].Tenant : global.AppName)
+    DestRG: (contains(roleInfo.RBAC[i], 'RG') ? roleInfo.RBAC[i].RG : Enviro)
+    DestPrefix: (contains(roleInfo.RBAC[i], 'Prefix') ? roleInfo.RBAC[i].Prefix : Prefix)
+    DestApp: (contains(roleInfo.RBAC[i], 'Tenant') ? roleInfo.RBAC[i].Tenant : Global.AppName)
     principalType: principalType
-    GUID: guid(subscription().subscriptionId, rgName, roleInfo.Name, roleInfo.RBAC[i].Name, (contains(roleInfo.RBAC[i], 'SubscriptionID') ? roleInfo.RBAC[i].SubScriptionID : subscription().subscriptionId), (contains(roleInfo.RBAC[i], 'RG') ? roleInfo.RBAC[i].RG : enviro), (contains(roleInfo.RBAC[i], 'Prefix') ? roleInfo.RBAC[i].Prefix : prefix), (contains(roleInfo.RBAC[i], 'Tenant') ? roleInfo.RBAC[i].Tenant : global.AppName))
-    FriendlyName: 'source: ${rgName} --> ${roleInfo.Name} --> ${roleInfo.RBAC[i].Name} --> destination: ${(contains(roleInfo.RBAC[i], 'Prefix') ? roleInfo.RBAC[i].Prefix : prefix)}-${(contains(roleInfo.RBAC[i], 'RG') ? roleInfo.RBAC[i].RG : enviro)}-${(contains(roleInfo.RBAC[i], 'Tenant') ? roleInfo.RBAC[i].Tenant : global.AppName)}'
+    GUID: guid(subscription().subscriptionId, rgName, roleInfo.Name, roleInfo.RBAC[i].Name, (contains(roleInfo.RBAC[i], 'SubscriptionID') ? roleInfo.RBAC[i].SubScriptionID : subscription().subscriptionId), (contains(roleInfo.RBAC[i], 'RG') ? roleInfo.RBAC[i].RG : Enviro), (contains(roleInfo.RBAC[i], 'Prefix') ? roleInfo.RBAC[i].Prefix : Prefix), (contains(roleInfo.RBAC[i], 'Tenant') ? roleInfo.RBAC[i].Tenant : Global.AppName))
+    FriendlyName: 'source: ${rgName} --> ${roleInfo.Name} --> ${roleInfo.RBAC[i].Name} --> destination: ${(contains(roleInfo.RBAC[i], 'Prefix') ? roleInfo.RBAC[i].Prefix : Prefix)}-${(contains(roleInfo.RBAC[i], 'RG') ? roleInfo.RBAC[i].RG : Enviro)}-${(contains(roleInfo.RBAC[i], 'Tenant') ? roleInfo.RBAC[i].Tenant : Global.AppName)}'
 }]
 
-module RBACRASUB 'sub-RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment: if (enviro == 'G0') {
+module RBACRASUB 'sub-RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment: if (Enviro == 'G0') {
     name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
     scope: subscription()
     params:{
@@ -52,13 +52,13 @@ module RBACRASUB 'sub-RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment:
         roleDefinitionId: concat(rbac.DestSubscription,'/providers/Microsoft.Authorization/roleDefinitions/',rbac.RoleID)
         principalType: rbac.principalType
         principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
-              */ reference(concat(rbac.DestSubscription,'/resourceGroups/',rbac.SourceRG, '/providers/',providerPath,'/',deployment,namePrefix,roleInfo.Name),providerAPI).principalId
+              */ reference(concat(rbac.DestSubscription,'/resourceGroups/',rbac.SourceRG, '/providers/',providerPath,'/',Deployment,namePrefix,roleInfo.Name),providerAPI).principalId
     }
 }]
 
-module RBACRARG 'RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment: if (enviro != 'G0') {
+module RBACRARG 'sub-RBAC-ALL-RA-RG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro != 'G0') {
     name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
-    scope: resourceGroup(rbac.DestSubscriptionID,concat(rbac.DestPrefix,'-',global.OrgName,'-',rbac.DestApp,'-RG-',rbac.DestRG))
+    scope: resourceGroup(rbac.DestSubscriptionID,concat(rbac.DestPrefix,'-',Global.OrgName,'-',rbac.DestApp,'-RG-',rbac.DestRG))
     params:{
         description: roleInfo.name
         name: rbac.GUID
@@ -66,7 +66,7 @@ module RBACRARG 'RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment: if (
         roleDefinitionId: concat(rbac.DestSubscription,'/providers/Microsoft.Authorization/roleDefinitions/',rbac.RoleID)
         principalType: rbac.principalType
         principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
-              */ reference(concat(rbac.DestSubscription,'/resourceGroups/',rbac.SourceRG, '/providers/',providerPath,'/',deployment,namePrefix,roleInfo.Name),providerAPI).principalId
+              */ reference(concat(rbac.DestSubscription,'/resourceGroups/',rbac.SourceRG, '/providers/',providerPath,'/',Deployment,namePrefix,roleInfo.Name),providerAPI).principalId
     }
 }]
 

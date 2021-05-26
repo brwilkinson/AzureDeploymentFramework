@@ -4,14 +4,7 @@
     'AWU2'
     'AEU1'
 ])
-param prefix string = 'ACU1'
-
-@allowed([
-    'HUB'
-    'ADF'
-    'AOA'
-])
-param app string = 'AOA'
+param Prefix string
 
 @allowed([
     'I'
@@ -19,43 +12,43 @@ param app string = 'AOA'
     'U'
     'P'
     'S'
-    'A'
     'G'
+    'A'
 ])
 param Environment string
 
 @allowed([
-    0
-    1
-    2
-    3
-    4
-    5
-    6
-    7
-    8
-    9
+    '0'
+    '1'
+    '2'
+    '3'
+    '4'
+    '5'
+    '6'
+    '7'
+    '8'
+    '9'
 ])
-param DeploymentID int
-param stage object
-param extensions object
+param DeploymentID string
+param Stage object
+param Extensions object
 param Global object
-param deploymentinfo object
+param DeploymentInfo object
 
 @secure()
-param vmadminpassword string
+param vmAdminPassword string
 
 @secure()
-param devopspat string
+param devOpsPat string
 
 @secure()
-param sshpublic string
-
-var enviro = '${Environment}${DeploymentID}' // D1
-var deployment = '${prefix}-${Global.orgname}-${app}-${enviro}' // AZE2-BRW-HUB-D1
-var rg = '${prefix}-${Global.orgname}-${app}-RG-${enviro}' // AZE2-BRW-HUB-D1
+param sshPublic string
 
 targetScope = 'subscription'
+
+var enviro = '${Environment}${DeploymentID}' // D1
+var deployment = '${Prefix}-${Global.orgname}-${Global.Appname}-${enviro}' // AZE2-BRW-HUB-D1
+var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${enviro}' // AZE2-BRW-HUB-D1
 
 // move location lookup to include file referencing this table: 
 // https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/docs/Naming_Standards_Prefix.md 
@@ -65,13 +58,13 @@ var locationlookup = {
     AEU2: 'eastus2'
     ACU1: 'centralus'
 }
-var location = locationlookup[prefix]
+var location = locationlookup[Prefix]
 var roleslookup = json(Global.RolesLookup)
 var rolesgrouplookup = json(Global.RolesGroupsLookup)
 
-var uaiinfo = contains(deploymentinfo, 'uaiinfo') ? deploymentinfo.uaiinfo : []
-var rolesInfo = contains(deploymentinfo, 'rolesInfo') ? deploymentinfo.rolesInfo : []
-var SPInfo = contains(deploymentinfo, 'SPInfo') ? deploymentinfo.SPInfo : []
+var uaiinfo = contains(DeploymentInfo, 'uaiinfo') ? DeploymentInfo.uaiinfo : []
+var rolesInfo = contains(DeploymentInfo, 'rolesInfo') ? DeploymentInfo.rolesInfo : []
+var SPInfo = contains(DeploymentInfo, 'SPInfo') ? DeploymentInfo.SPInfo : []
 
 var sps = [for sp in SPInfo: {
     RBAC: sp.RBAC
@@ -81,11 +74,11 @@ var sps = [for sp in SPInfo: {
 module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
     name: 'dp-rbac-uai-${length(uaiinfo) == 0 ? 'na' : uai.name}'
     params: {
-        deployment: deployment
-        prefix: prefix
+        Deployment: deployment
+        Prefix: Prefix
         rgName: rg
-        enviro: enviro
-        global: Global
+        Enviro: enviro
+        Global: Global
         rolesGroupsLookup: rolesgrouplookup
         rolesLookup: roleslookup
         roleInfo: uai
@@ -99,11 +92,11 @@ module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
 module ROLES 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
     name: 'dp-rbac-role-${length(rolesInfo) == 0 ? 'na' : role.name}'
     params: {
-        deployment: deployment
-        prefix: prefix
+        Deployment: deployment
+        Prefix: Prefix
         rgName: rg
-        enviro: enviro
-        global: Global
+        Enviro: enviro
+        Global: Global
         rolesGroupsLookup: rolesgrouplookup
         rolesLookup: roleslookup
         roleInfo: role
@@ -116,11 +109,11 @@ module ROLES 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
 module SP 'sub-RBAC-ALL.bicep' = [for sp in sps: {
     name: 'dp-rbac-sp-${length(sps) == 0 ? 'na' : sp.name}'
     params: {
-        deployment: deployment
-        prefix: prefix
+        Deployment: deployment
+        Prefix: Prefix
         rgName: rg
-        enviro: enviro
-        global: Global
+        Enviro: enviro
+        Global: Global
         rolesGroupsLookup: rolesgrouplookup
         rolesLookup: roleslookup
         roleInfo: sp
