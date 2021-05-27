@@ -32,4 +32,5 @@ if (-not (gcm bicep -ea 0))
     az bicep install
 }
 
+$env:Path += ";$home\.azure\bin\"
 Start-AzDeploy @Params -FullUpload:$FullUpload -VSTS -SubscriptionDeploy:$SubscriptionDeploy # -LogAzDebug:$LogAzDebug
