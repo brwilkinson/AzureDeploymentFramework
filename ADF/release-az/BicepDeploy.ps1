@@ -26,7 +26,8 @@ $Params = @{
     #TemplateParametersFile   = "$PSScriptRoot\..\azuredeploy.1.$Prefix.$Env.parameters.json"
     TemplateSpec             = $TemplateSpec
 }
-if (-not (gcm bicep))
+
+if (-not (gcm bicep2 -ea 0))
 {
     az bicep install
 }
