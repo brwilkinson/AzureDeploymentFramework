@@ -9,6 +9,7 @@ param Prefix string = 'AZE2'
 @allowed([
   'I'
   'D'
+  'T'
   'U'
   'P'
   'S'
@@ -186,33 +187,81 @@ module dp_Deployment_RSV 'RSV.bicep' = if (Stage.RSV == 1) {
   ]
 }
 
-module dp_Deployment_NSGHUB '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').NSGHUB]*/ = if (Stage.NSGHUB == 1) {
+module dp_Deployment_NSGHUB 'NSG.hub.bicep' = if (Stage.NSGHUB == 1) {
   name: 'dp${Deployment}-NSGHUB'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_OMS
   ]
 }
 
-module dp_Deployment_NSGSPOKE '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').NSGSPOKE]*/ = if (Stage.NSGSPOKE == 1) {
+module dp_Deployment_NSGSPOKE 'NSG.spoke.bicep' = if (Stage.NSGSPOKE == 1) {
   name: 'dp${Deployment}-NSGSPOKE'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_OMS
   ]
 }
 
-module dp_Deployment_NetworkWatcher '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').NetworkWatcher]*/ = if (Stage.NetworkWatcher == 1) {
+module dp_Deployment_NetworkWatcher 'NetworkWatcher.bicep' = if (Stage.NetworkWatcher == 1) {
   name: 'dp${Deployment}-NetworkWatcher'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_OMS
   ]
 }
 
-module dp_Deployment_FlowLogs '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').FlowLogs]*/ = if (Stage.FlowLogs == 1) {
+module dp_Deployment_FlowLogs 'NetworkFlowLogs.bicep' = if (Stage.FlowLogs == 1) {
   name: 'dp${Deployment}-FlowLogs'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_OMS
     dp_Deployment_NetworkWatcher
@@ -222,9 +271,21 @@ module dp_Deployment_FlowLogs '?' /*TODO: replace with correct path to [variable
   ]
 }
 
-module dp_Deployment_RT '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').RT]*/ = if (Stage.RT == 1) {
+module dp_Deployment_RT 'RT.bicep' = if (Stage.RT == 1) {
   name: 'dp${Deployment}-RT'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_OMS
     dp_Deployment_FW

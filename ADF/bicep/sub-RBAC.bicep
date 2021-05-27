@@ -9,6 +9,7 @@ param Prefix string
 @allowed([
     'I'
     'D'
+    'T'
     'U'
     'P'
     'S'

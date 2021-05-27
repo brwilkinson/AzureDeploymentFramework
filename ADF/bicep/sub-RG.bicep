@@ -10,6 +10,7 @@ param Prefix string = 'ACU1'
     'G'
     'I'
     'D'
+    'T'
     'U'
     'P'
     'S'
@@ -77,6 +78,7 @@ module UAI './sub-RG-UAI.bicep' = [for (uai, index) in identity: if (uai.match) 
     scope: RG
     params: {
         uai: uai
+        deployment: deployment
     }
 }]
 

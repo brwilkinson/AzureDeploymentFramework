@@ -50,7 +50,6 @@ var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var networkId = concat(Global.networkid[0], string((Global.networkid[1] - (2 * int(DeploymentID)))))
 
 resource nsgSNAD01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
   name: '${Deploymentnsg}-nsgSNAD01'
@@ -78,17 +77,54 @@ resource nsgSNAD01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgSNBE01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
-  name: '${Deploymentnsg}-nsgSNBE01'
+resource nsgSNWAF01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+  name: '${Deploymentnsg}-nsgSNWAF01'
   location: resourceGroup().location
   properties: {
-    securityRules: []
+    securityRules: [
+      {
+        name: 'WAF_Default_Inbound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '65200-65535'
+          sourceAddressPrefix: 'GatewayManager'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 1000
+          direction: 'Inbound'
+          sourcePortRanges: []
+          destinationPortRanges: []
+          sourceAddressPrefixes: []
+          destinationAddressPrefixes: []
+        }
+      }
+      {
+        name: 'WAF_Web_Inbound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 1010
+          direction: 'Inbound'
+          sourcePortRanges: []
+          destinationPortRanges: [
+            '80'
+            '443'
+          ]
+          sourceAddressPrefixes: []
+          destinationAddressPrefixes: []
+        }
+      }
+    ]
   }
 }
 
-resource nsgSNBE01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+resource nsgSNWAF01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
-  scope: nsgSNBE01
+  scope: nsgSNWAF01
   properties: {
     workspaceId: OMSworkspaceID
     logs: [
@@ -170,6 +206,46 @@ resource nsgSNFE01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
+resource nsgSNMT01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+  name: '${Deploymentnsg}-nsgSNMT01'
+  location: resourceGroup().location
+  properties: {
+    securityRules: [
+      {
+        name: 'HTTPS_IN_Allow_LoadTest'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 1130
+          direction: 'Inbound'
+        }
+      }
+    ]
+  }
+}
+
+resource nsgSNMT01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+  name: 'service'
+  scope: nsgSNMT01
+  properties: {
+    workspaceId: OMSworkspaceID
+    logs: [
+      {
+        category: 'NetworkSecurityGroupEvent'
+        enabled: true
+      }
+      {
+        category: 'NetworkSecurityGroupRuleCounter'
+        enabled: true
+      }
+    ]
+  }
+}
+
 resource nsgSNMT02 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
   name: '${Deploymentnsg}-nsgSNMT02'
   location: resourceGroup().location
@@ -196,17 +272,56 @@ resource nsgSNMT02Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgSNMT01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
-  name: '${Deploymentnsg}-nsgSNMT01'
+resource nsgSNBE01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+  name: '${Deploymentnsg}-nsgSNBE01'
   location: resourceGroup().location
   properties: {
-    securityRules: []
+    securityRules: [
+      {
+        name: 'APIM_Management_Inbound'
+        properties: {
+          description: 'APIM_Management_Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '3443'
+          sourceAddressPrefix: 'ApiManagement'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 1120
+          direction: 'Inbound'
+          sourcePortRanges: []
+          destinationPortRanges: []
+          sourceAddressPrefixes: []
+          destinationAddressPrefixes: []
+        }
+      }
+      {
+        name: 'APIM_Client_Inbound'
+        properties: {
+          description: 'APIM_Client_Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 1130
+          direction: 'Inbound'
+          sourcePortRanges: []
+          destinationPortRanges: [
+            '443'
+            '80'
+          ]
+          sourceAddressPrefixes: []
+          destinationAddressPrefixes: []
+        }
+      }
+    ]
   }
 }
 
-resource nsgSNMT01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+resource nsgSNBE01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
-  scope: nsgSNMT01
+  scope: nsgSNBE01
   properties: {
     workspaceId: OMSworkspaceID
     logs: [
@@ -222,54 +337,17 @@ resource nsgSNMT01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgSNWAF01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
-  name: '${Deploymentnsg}-nsgSNWAF01'
+resource nsgSNBE02 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+  name: '${Deploymentnsg}-nsgSNBE02'
   location: resourceGroup().location
   properties: {
-    securityRules: [
-      {
-        name: 'WAF_Default_Inbound'
-        properties: {
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          destinationPortRange: '65200-65535'
-          sourceAddressPrefix: 'GatewayManager'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 1000
-          direction: 'Inbound'
-          sourcePortRanges: []
-          destinationPortRanges: []
-          sourceAddressPrefixes: []
-          destinationAddressPrefixes: []
-        }
-      }
-      {
-        name: 'WAF_Web_Inbound'
-        properties: {
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: 'VirtualNetwork'
-          access: 'Allow'
-          priority: 1010
-          direction: 'Inbound'
-          sourcePortRanges: []
-          destinationPortRanges: [
-            '80'
-            '443'
-          ]
-          sourceAddressPrefixes: []
-          destinationAddressPrefixes: []
-        }
-      }
-    ]
+    securityRules: []
   }
 }
 
-resource nsgSNWAF01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+resource nsgSNBE02Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
-  scope: nsgSNWAF01
+  scope: nsgSNBE02
   properties: {
     workspaceId: OMSworkspaceID
     logs: [

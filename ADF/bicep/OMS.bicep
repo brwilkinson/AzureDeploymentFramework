@@ -9,6 +9,7 @@ param Prefix string = 'AZE2'
 @allowed([
     'I'
     'D'
+    'T'
     'U'
     'P'
     'S'

@@ -9,6 +9,7 @@
   @allowed([
     'I'
     'D'
+    'T'
     'U'
     'P'
     'S'

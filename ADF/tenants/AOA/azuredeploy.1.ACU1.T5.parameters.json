@@ -6,10 +6,10 @@
       "value": "ACU1"
     },
     "Environment": {
-      "value": "D"
+      "value": "T"
     },
     "DeploymentID": {
-      "value": "3"
+      "value": "5"
     },
     "vmAdminPassword": {
       "reference": {
@@ -73,15 +73,15 @@
         "VMFILE": 0,
         "VMSS": 1,
         "WAFPOLICY": 1,
-        "FRONTDOOR": 1,
-        "WAF": 1,
+        "FRONTDOOR": 0,
+        "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
         "APPCONFIG": 0,
         "REDIS": 0,
         "APIM": 0,
         "ACR": 0,
-        "ACI": 1,
+        "ACI": 0,
         "AKS": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
@@ -113,7 +113,7 @@
         "AADLogin": 0,
         "WindowsOpenSSH": 0,
         "Antimalware": 1,
-        "VMSSAzureADEnabled": 1,
+        "VMSSAzureADEnabled": 0,
         "SqlIaasExtension": 0
       }
     },
@@ -301,7 +301,7 @@
         ],
         "SubnetInfo": [
           {
-            "name": "snWAF01",
+            "name": "snMT01",
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
@@ -320,7 +320,8 @@
             "NSG": 1,
             "Route": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": true,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
             "name": "snBE01", // APIM Dedicated
@@ -338,13 +339,12 @@
             "FlowAnalyticsEnabled": true
           },
           {
-            "name": "snMT01",
+            "name": "snWAF01",
             "prefix": "128/25",
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
-            // "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
             "name": "snMT02",
@@ -505,7 +505,7 @@
           {
             "Name": "locust-worker",
             "scaleCount": 1,
-            "InstanceCount": 99,
+            "InstanceCount": 98,
             "memoryInGB": 0.3,
             "cpu": 0.3,
             "isPublic": 1,
@@ -550,10 +550,12 @@
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "PLB01", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
+                "Name": "GW01", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
                 "BEAddress": [
                   {
-                    "address": "{Deployment}-api01.{Domain}"
+                    "address": "{Deployment}-api02.{Domain}",
+                    "hostheader": "{Deployment}-api02.{Domain}",
+                    "weight": 50
                   }
                 ],
                 "ProbeName": "probe02",
@@ -566,7 +568,6 @@
                 ]
               },
               {
-                // Default (front end) Service is Required, add backend as well for ability to test FE.
                 "Name": "Default",
                 "BEAddress": [
                   {
@@ -590,7 +591,7 @@
               {
                 "Name": "probe02",
                 "ProbePath": "/api/headers",
-                "probeMethod": "GET"  // Head | Get
+                "probeMethod": "GET"
               }
             ],
             "LBSettings": [
@@ -616,6 +617,7 @@
                   },
                   {
                     "address": "{Deployment}-api03.{Domain}",
+                    "hostheader": "{Deployment}-api03.{Domain}",
                     "weight": 50
                   }
                 ],
@@ -683,43 +685,6 @@
                   "FastNic": 1,
                   "PublicIP": "Static",
                   "StaticIP": "62"
-                }
-              ]
-            },
-            {
-              "VMName": "JMP02",
-              "Role": "JMP",
-              "ASName": "JMP",
-              "DDRole": "64GB",
-              "OSType": "Server2022",
-              "ExcludeAdminCenter": 1,
-              "_HotPatch": true,
-              "Zone": 1,
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "61"
-                }
-              ]
-            }
-          ],
-          "AppServersLinux": [
-            {
-              "VMName": "LIN01",
-              "Role": "LIN",
-              "ASName": "LIN",
-              "DDRole": "64GB",
-              "OSType": "CentOS75",
-              "NICs": [
-                {
-                  "Subnet": "FE01",
-                  "Primary": 1,
-                  "FastNic": 1,
-                  "StaticIP": "59",
-                  "PublicIP": "Static"
                 }
               ]
             }
@@ -860,135 +825,26 @@
         ],
         "AppServersVMSS": [
           {
-            "VMName": "API",
-            "AutoScale": true,
-            "PredictiveScale": "Enabled",
-            "saname": "data",
-            "Role": "API",
-            "ASNAME": "API",
-            "DDRole": "64GBSS",
-            "OSType": "Server2019Containerssmall",
-            "Subnet": "MT02",
-            "NATName": "RDP",
-            "zones": [
-              "1"
-            ],
-            "LBBE": [
-              "API"
-            ],
-            "_WAFBE": [
-              "API02"
-            ],
-            "AutoScalecapacity": {
-              "minimum": "3",
-              "maximum": "9",
-              "default": "3"
-            },
-            "Health": {
-              "protocol": "https",
-              "port": "443",
-              "requestPath": "/api/headers"
-            },
-            "IsPrimary": true,
-            "durabilityLevel": "Bronze",
-            "placementProperties": {
-              "OSType": "Server2016SS",
-              "NodeKind": "API01"
-            }
-          },
-          {
-            "VMName": "API01",
-            "AutoScale": true,
-            "PredictiveScale": "Enabled",
-            "saname": "data",
-            "Role": "API",
-            "ASNAME": "API",
-            "DDRole": "64GBSS",
-            "OSType": "Server2019Containerssmall",
-            "Subnet": "MT01",
-            "NATName": "RDP",
-            "zones": [
-              "1"
-            ],
-            "LBBE": [
-              "PLB01"
-            ],
-            "_WAFBE": [
-              "API02"
-            ],
-            "AutoScalecapacity": {
-              "minimum": "3",
-              "maximum": "9",
-              "default": "3"
-            },
-            "Health": {
-              "protocol": "https",
-              "port": "443",
-              "requestPath": "/api/headers"
-            },
-            "IsPrimary": true,
-            "durabilityLevel": "Bronze",
-            "placementProperties": {
-              "OSType": "Server2016SS",
-              "NodeKind": "API01"
-            }
-          },
-          {
             "VMName": "API02",
             "AutoScale": true,
             "PredictiveScale": "Enabled",
             "saname": "data",
-            "Role": "API",
+            "Role": "Pull",
             "ASNAME": "API",
             "DDRole": "64GBSS",
-            "OSType": "Server2019Containerssmall",
-            "Subnet": "MT02",
-            "NATName": "RDP",
-            // "zones": [
-            //   "1"
-            // ],
-            "_LBBE": [
-              "PLB01"
-            ],
-            "WAFBE": [
-              "API02"
-            ],
-            "AutoScalecapacity": {
-              "minimum": "3",
-              "maximum": "9",
-              "default": "3"
-            },
-            "Health": {
-              "protocol": "https",
-              "port": "443",
-              "requestPath": "/api/headers"
-            },
-            "IsPrimary": true,
-            "durabilityLevel": "Bronze",
-            "placementProperties": {
-              "OSType": "Server2016SS",
-              "NodeKind": "API01"
-            }
-          },
-          {
-            "VMName": "API03",
-            "AutoScale": true,
-            "PredictiveScale": "Enabled",
-            "saname": "data",
-            "Role": "API",
-            "ASNAME": "API",
-            "DDRole": "64GBSS",
-            "OSType": "Server2019Containerssmall",
+            "OSType": "Server2019SSIMG",
             "Subnet": "MT02",
             "NATName": "RDP",
             "zones": [
-              "1"
+              "1",
+              "2",
+              "3"
             ],
-            "_LBBE": [
+            "LBBE": [
               "PLB01"
             ],
-            "WAFBE": [
-              "API03"
+            "_WAFBE": [
+              "API02"
             ],
             "AutoScalecapacity": {
               "minimum": "3",
@@ -1018,7 +874,7 @@
             "WAFSize": "Standard_v2",
             "WAFTier": "Standard_v2",
             "WAFCapacity": 40,
-            "PrivateIP": "25",
+            "PrivateIP": "253",
             "SSLCerts": [
               "PSTHING-WildCard"
             ],
@@ -1102,7 +958,7 @@
             "WAFSize": "Standard_v2",
             "WAFTier": "Standard_v2",
             "WAFCapacity": 2,
-            "PrivateIP": "27",
+            "PrivateIP": "254",
             "SSLCerts": [
               "PSTHING-WildCard"
             ],

@@ -1,0 +1,48 @@
+trigger: none 
+  # batch: 'true'
+  # branches:
+  #   include: [ master ]
+  # tags:
+  #   exclude: [ NoBuild ]
+
+variables:
+  PREFIX: ACU1
+  APP :   AOA
+  ENV:    T5
+
+
+stages:
+- stage: Subscription
+  jobs:
+  - job: Subscription_RG_RBAC
+    
+    pool:
+      vmImage: windows-latest
+      
+    steps:
+    
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'ADF_ACU1-BRW-AOA-RG-G0'
+        ScriptType: 'FilePath'
+        ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
+        FailOnStandardError: true
+        azurePowerShellVersion: 'LatestVersion'
+
+- stage: RG_ALL
+  jobs:
+  - job: RG_ALL
+
+    pool:
+    vmImage: windows-latest
+    # pool: AZC1-S1-Infra
+    steps:
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'ADF_ACU1-BRW-AOA-RG-T5'
+        ScriptType: 'FilePath'
+        ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
+        FailOnStandardError: true
+        azurePowerShellVersion: 'LatestVersion'

@@ -235,21 +235,6 @@
           }
         ],
         "SPInfo": [
-          // {
-          //   "Name": "Microsoft.Azure.Frontdoor",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Key Vault Certificates Officer",
-          //       "RG": "P0",
-          //       "Tenant": "AOA"
-          //     },
-          //     {
-          //       "Name": "Key Vault Secrets User",
-          //       "RG": "P0",
-          //       "Tenant": "AOA"
-          //     }
-          //   ]
-          // },
           {
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [

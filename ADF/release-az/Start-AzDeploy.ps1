@@ -76,7 +76,7 @@ Function global:Start-AzDeploy
         
         [parameter(mandatory)]
         [alias('DP')]
-        [validateset('A5', 'D2', 'P1', 'P0', 'S1', 'T3', 'S2', 'S3', 'D3', 'D4', 'D5', 'D6', 'D7', 'U8', 'P9', 'G0', 'G1', 'M0', 'T0')]
+        [validateset('A5', 'D2', 'P1', 'P0', 'S1', 'T5', 'S2', 'S3', 'D3', 'D4', 'D5', 'D6', 'D7', 'U8', 'P9', 'G0', 'G1', 'M0', 'A0')]
         [string]$Deployment,
 
         [validateset('ADF', 'PSO', 'HUB', 'ABC', 'AOA', 'HAA')]

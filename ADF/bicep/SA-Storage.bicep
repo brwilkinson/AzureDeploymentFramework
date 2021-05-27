@@ -347,7 +347,7 @@ module vnetPrivateLink 'vNetPrivateLink.bicep' = if (contains(storageInfo, 'priv
   ]
 }
 
-module vnetPrivateLinkDNS 'registerPrivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
+module privateLinkDNS 'privateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-registerPrivateDNS${storageInfo.nameSuffix}'
   scope: resourceGroup(hubRG)
   params: {
