@@ -26,7 +26,7 @@ stages:
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
         FailOnStandardError: true
-        azurePowerShellVersion: 'LatestVersion'
+        preferredAzurePowerShellVersion: '6.0.0'
         pwsh: true
 
 - stage: RG_ALL
@@ -45,5 +45,6 @@ stages:
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
         FailOnStandardError: true
-        azurePowerShellVersion: 'LatestVersion'
+        preferredAzurePowerShellVersion: '6.0.0'
         pwsh: true
+        
