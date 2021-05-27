@@ -27,6 +27,7 @@ stages:
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
         FailOnStandardError: true
         azurePowerShellVersion: 'LatestVersion'
+        pwsh: true
 
 - stage: RG_ALL
   jobs:
@@ -45,3 +46,4 @@ stages:
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
         FailOnStandardError: true
         azurePowerShellVersion: 'LatestVersion'
+        pwsh: true
