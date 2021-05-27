@@ -15,12 +15,10 @@ stages:
 - stage: Subscription
   jobs:
   - job: Subscription_RG_RBAC
-    
     pool:
       vmImage: windows-latest
       
     steps:
-    
     - task: AzurePowerShell@5
       inputs:
         azureSubscription: 'ADF_ACU1-BRW-AOA-RG-G0'
@@ -35,8 +33,9 @@ stages:
   - job: RG_ALL
 
     pool:
-    vmImage: windows-latest
-    # pool: AZC1-S1-Infra
+      vmImage: windows-latest
+      # pool: AZC1-S1-Infra
+      
     steps:
     - task: AzurePowerShell@5
       inputs:
