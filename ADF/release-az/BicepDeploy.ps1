@@ -27,7 +27,7 @@ $Params = @{
     TemplateSpec             = $TemplateSpec
 }
 
-if (-not (gcm bicep2 -ea 0))
+if (-not (gcm bicep -ea 0))
 {
     az bicep install
 }
