@@ -39,9 +39,9 @@
       "value": {
         "RG": 0,
         "RoleDefinition": 1,
-        "RBAC": 0,
+        "RBAC": 1,
         "UAI": 0,
-        "SP": 0,
+        "SP": 1,
         "KV": 0,
         "OMS": 0,
         "OMSSolutions": 0,
@@ -118,6 +118,24 @@
         "rolesInfo": [
           {
             "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
+          },
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "Owner"

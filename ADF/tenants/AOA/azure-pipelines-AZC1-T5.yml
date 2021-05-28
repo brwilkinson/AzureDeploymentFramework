@@ -1,9 +1,9 @@
-trigger: none 
-  # batch: 'true'
-  # branches:
-  #   include: [ master ]
-  # tags:
-  #   exclude: [ NoBuild ]
+trigger: #none 
+  batch: 'true'
+  branches:
+    include: [ master ]
+  tags:
+    exclude: [ NoBuild ]
 
 variables:
   PREFIX: ACU1
