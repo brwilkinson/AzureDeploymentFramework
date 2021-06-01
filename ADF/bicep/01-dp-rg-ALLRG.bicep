@@ -46,10 +46,10 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var DeploymentURI = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-'
-var networkId = concat(Global.networkid[0], string((Global.networkid[1] - (2 * int(DeploymentID)))))
-var networkIdUpper = concat(Global.networkid[0], string((1 + (Global.networkid[1] - (2 * int(DeploymentID))))))
+var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var addressPrefixes = [
@@ -288,20 +288,34 @@ module dp_Deployment_RT 'RT.bicep' = if (Stage.RT == 1) {
   }
   dependsOn: [
     dp_Deployment_OMS
-    dp_Deployment_FW
+    // dp_Deployment_FW
   ]
 }
 
-module dp_Deployment_VNET '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VNET]*/ = if (Stage.VNET == 1) {
+module dp_Deployment_VNET 'VNET.bicep' = if (Stage.VNET == 1) {
   name: 'dp${Deployment}-VNET'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_NSGSPOKE
     dp_Deployment_NSGHUB
   ]
 }
 
-module dp_Deployment_KV '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').KV]*/ = if (Stage.KV == 1) {
+/*
+
+module dp_Deployment_KV '?'  = if (Stage.KV == 1) {
   name: 'dp${Deployment}-KV'
   params: {}
   dependsOn: [
@@ -309,7 +323,7 @@ module dp_Deployment_KV '?' /*TODO: replace with correct path to [variables('Dep
   ]
 }
 
-module dp_Deployment_ACR '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').ACR]*/ = if (Stage.ACR == 1) {
+module dp_Deployment_ACR '?' = if (Stage.ACR == 1) {
   name: 'dp${Deployment}-ACR'
   params: {}
   dependsOn: [
@@ -317,7 +331,7 @@ module dp_Deployment_ACR '?' /*TODO: replace with correct path to [variables('De
   ]
 }
 
-module dp_Deployment_BastionHost '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').BastionHost]*/ = if (contains(Stage, 'BastionHost') && (Stage.BastionHost == 1)) {
+module dp_Deployment_BastionHost '?' = if (contains(Stage, 'BastionHost') && (Stage.BastionHost == 1)) {
   name: 'dp${Deployment}-BastionHost'
   params: {}
   dependsOn: [
@@ -325,13 +339,13 @@ module dp_Deployment_BastionHost '?' /*TODO: replace with correct path to [varia
   ]
 }
 
-module dp_Deployment_DNSPrivateZone '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').DNSPrivateZone]*/ = if (Stage.DNSPrivateZone == 1) {
+module dp_Deployment_DNSPrivateZone '?' = if (Stage.DNSPrivateZone == 1) {
   name: 'dp${Deployment}-DNSPrivateZone'
   params: {}
   dependsOn: []
 }
 
-module dp_Deployment_FW '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').FW]*/ = if (Stage.FW == 1) {
+module dp_Deployment_FW '?' = if (Stage.FW == 1) {
   name: 'dp${Deployment}-FW'
   params: {}
   dependsOn: [
@@ -339,7 +353,7 @@ module dp_Deployment_FW '?' /*TODO: replace with correct path to [variables('Dep
   ]
 }
 
-module dp_Deployment_ERGW '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').ERGW]*/ = if (Stage.ERGW == 1) {
+module dp_Deployment_ERGW '?' = if (Stage.ERGW == 1) {
   name: 'dp${Deployment}ERGW'
   params: {}
   dependsOn: [
@@ -348,7 +362,7 @@ module dp_Deployment_ERGW '?' /*TODO: replace with correct path to [variables('D
   ]
 }
 
-module dp_Deployment_CosmosDB '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').CosmosDB]*/ = if (Stage.CosmosDB == 1) {
+module dp_Deployment_CosmosDB '?' = if (Stage.CosmosDB == 1) {
   name: 'dp${Deployment}-CosmosDB'
   params: {}
   dependsOn: [
@@ -356,7 +370,7 @@ module dp_Deployment_CosmosDB '?' /*TODO: replace with correct path to [variable
   ]
 }
 
-module dp_Deployment_ILB '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').ILB]*/ = if (Stage.ILB == 1) {
+module dp_Deployment_ILB '?' = if (Stage.ILB == 1) {
   name: 'dp${Deployment}-ILB'
   params: {}
   dependsOn: [
@@ -364,7 +378,7 @@ module dp_Deployment_ILB '?' /*TODO: replace with correct path to [variables('De
   ]
 }
 
-module dp_Deployment_VNETDNSPublic '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VNetDNS]*/ = if (Stage.ADPrimary == 1) {
+module dp_Deployment_VNETDNSPublic '?' = if (Stage.ADPrimary == 1) {
   name: 'dp${Deployment}-VNETDNSPublic'
   params: {
     Deploymentnsg: Deploymentnsg
@@ -385,7 +399,7 @@ module dp_Deployment_VNETDNSPublic '?' /*TODO: replace with correct path to [var
   ]
 }
 
-module ADPrimary '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').ADPrimary]*/ = if (Stage.ADPrimary == 1) {
+module ADPrimary '?' = if (Stage.ADPrimary == 1) {
   name: 'ADPrimary'
   params: {}
   dependsOn: [
@@ -395,7 +409,7 @@ module ADPrimary '?' /*TODO: replace with correct path to [variables('Deployment
   ]
 }
 
-module dp_Deployment_VNETDNSDC1 '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VNetDNS]*/ = if (Stage.ADPrimary == 1) {
+module dp_Deployment_VNETDNSDC1 '?' = if (Stage.ADPrimary == 1) {
   name: 'dp${Deployment}-VNETDNSDC1'
   params: {
     Deploymentnsg: Deploymentnsg
@@ -413,7 +427,7 @@ module dp_Deployment_VNETDNSDC1 '?' /*TODO: replace with correct path to [variab
   ]
 }
 
-module ADSecondary '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').ADSecondary]*/ = if (Stage.ADSecondary == 1) {
+module ADSecondary '?' = if (Stage.ADSecondary == 1) {
   name: 'ADSecondary'
   params: {}
   dependsOn: [
@@ -423,7 +437,7 @@ module ADSecondary '?' /*TODO: replace with correct path to [variables('Deployme
   ]
 }
 
-module dp_Deployment_VNETDNSDC2 '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VNetDNS]*/ = if (Stage.ADSecondary == 1) {
+module dp_Deployment_VNETDNSDC2 '?' = if (Stage.ADSecondary == 1) {
   name: 'dp${Deployment}-VNETDNSDC2'
   params: {
     Deploymentnsg: Deploymentnsg
@@ -442,7 +456,7 @@ module dp_Deployment_VNETDNSDC2 '?' /*TODO: replace with correct path to [variab
   ]
 }
 
-module dp_Deployment_SQLMI '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').SQLMI]*/ = if (Stage.SQLMI == 1) {
+module dp_Deployment_SQLMI '?' = if (Stage.SQLMI == 1) {
   name: 'dp${Deployment}-SQLMI'
   params: {}
   dependsOn: [
@@ -452,7 +466,7 @@ module dp_Deployment_SQLMI '?' /*TODO: replace with correct path to [variables('
   ]
 }
 
-module DNSLookup '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').DNSLookup]*/ = if (Stage.DNSLookup == 1) {
+module DNSLookup '?' = if (Stage.DNSLookup == 1) {
   name: 'DNSLookup'
   params: {}
   dependsOn: [
@@ -460,7 +474,7 @@ module DNSLookup '?' /*TODO: replace with correct path to [variables('Deployment
   ]
 }
 
-module InitialDOP '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').InitialDOP]*/ = if (Stage.InitialDOP == 1) {
+module InitialDOP '?' = if (Stage.InitialDOP == 1) {
   name: 'InitialDOP'
   params: {}
   dependsOn: [
@@ -473,7 +487,7 @@ module InitialDOP '?' /*TODO: replace with correct path to [variables('Deploymen
   ]
 }
 
-module AppServers '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VMApp]*/ = if (Stage.VMApp == 1) {
+module AppServers '?' = if (Stage.VMApp == 1) {
   name: 'AppServers'
   params: {}
   dependsOn: [
@@ -486,7 +500,7 @@ module AppServers '?' /*TODO: replace with correct path to [variables('Deploymen
   ]
 }
 
-module VMFile '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VMFILE]*/ = if (Stage.VMFILE == 1) {
+module VMFile '?' = if (Stage.VMFILE == 1) {
   name: 'VMFile'
   params: {}
   dependsOn: [
@@ -499,7 +513,7 @@ module VMFile '?' /*TODO: replace with correct path to [variables('DeploymentInf
   ]
 }
 
-module AppServersLinux '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VMApp]*/ = if (Stage.VMAppLinux == 1) {
+module AppServersLinux '?' = if (Stage.VMAppLinux == 1) {
   name: 'AppServersLinux'
   params: {}
   dependsOn: [
@@ -512,7 +526,7 @@ module AppServersLinux '?' /*TODO: replace with correct path to [variables('Depl
   ]
 }
 
-module SQLServers '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VMSQL]*/ = if (Stage.VMSQL == 1) {
+module SQLServers '?' = if (Stage.VMSQL == 1) {
   name: 'SQLServers'
   params: {}
   dependsOn: [
@@ -524,7 +538,7 @@ module SQLServers '?' /*TODO: replace with correct path to [variables('Deploymen
   ]
 }
 
-module dp_Deployment_WAFPOLICY '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').WAFPOLICY]*/ = if (Stage.WAFPOLICY == 1) {
+module dp_Deployment_WAFPOLICY '?' = if (Stage.WAFPOLICY == 1) {
   name: 'dp${Deployment}-WAFPOLICY'
   params: {}
   dependsOn: [
@@ -532,7 +546,7 @@ module dp_Deployment_WAFPOLICY '?' /*TODO: replace with correct path to [variabl
   ]
 }
 
-module dp_Deployment_WAF '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').WAF]*/ = if (Stage.WAF == 1) {
+module dp_Deployment_WAF '?' = if (Stage.WAF == 1) {
   name: 'dp${Deployment}-WAF'
   params: {}
   dependsOn: [
@@ -541,7 +555,7 @@ module dp_Deployment_WAF '?' /*TODO: replace with correct path to [variables('De
   ]
 }
 
-module VMSS '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').VMSS]*/ = if (Stage.VMSS == 1) {
+module VMSS '?' = if (Stage.VMSS == 1) {
   name: 'VMSS'
   params: {}
   dependsOn: [
@@ -554,7 +568,7 @@ module VMSS '?' /*TODO: replace with correct path to [variables('DeploymentInfoO
   ]
 }
 
-module dp_Deployment_APPCONFIG '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').APPCONFIG]*/ = if (Stage.APPCONFIG == 1) {
+module dp_Deployment_APPCONFIG '?' = if (Stage.APPCONFIG == 1) {
   name: 'dp${Deployment}-APPCONFIG'
   params: {}
   dependsOn: [
@@ -563,7 +577,7 @@ module dp_Deployment_APPCONFIG '?' /*TODO: replace with correct path to [variabl
   ]
 }
 
-module dp_Deployment_REDIS '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').REDIS]*/ = if (Stage.REDIS == 1) {
+module dp_Deployment_REDIS '?' = if (Stage.REDIS == 1) {
   name: 'dp${Deployment}-REDIS'
   params: {}
   dependsOn: [
@@ -572,7 +586,7 @@ module dp_Deployment_REDIS '?' /*TODO: replace with correct path to [variables('
   ]
 }
 
-module dp_Deployment_APIM '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').APIM]*/ = if (Stage.APIM == 1) {
+module dp_Deployment_APIM '?' = if (Stage.APIM == 1) {
   name: 'dp${Deployment}-APIM'
   params: {}
   dependsOn: [
@@ -582,7 +596,7 @@ module dp_Deployment_APIM '?' /*TODO: replace with correct path to [variables('D
   ]
 }
 
-module dp_Deployment_FRONTDOOR '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').FRONTDOOR]*/ = if (Stage.FRONTDOOR == 1) {
+module dp_Deployment_FRONTDOOR '?' = if (Stage.FRONTDOOR == 1) {
   name: 'dp${Deployment}-FRONTDOOR'
   params: {}
   dependsOn: [
@@ -591,7 +605,7 @@ module dp_Deployment_FRONTDOOR '?' /*TODO: replace with correct path to [variabl
   ]
 }
 
-module dp_Deployment_AKS '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').AKS]*/ = if (Stage.AKS == 1) {
+module dp_Deployment_AKS '?' = if (Stage.AKS == 1) {
   name: 'dp${Deployment}-AKS'
   params: {}
   dependsOn: [
@@ -601,13 +615,13 @@ module dp_Deployment_AKS '?' /*TODO: replace with correct path to [variables('De
   ]
 }
 
-module dp_Deployment_DASHBOARD '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').DASHBOARD]*/ = if (Stage.DASHBOARD == 1) {
+module dp_Deployment_DASHBOARD '?' = if (Stage.DASHBOARD == 1) {
   name: 'dp${Deployment}-DASHBOARD'
   params: {}
   dependsOn: []
 }
 
-module dp_Deployment_ServerFarm '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').ServerFarm]*/ = if (Stage.ServerFarm == 1) {
+module dp_Deployment_ServerFarm '?' = if (Stage.ServerFarm == 1) {
   name: 'dp${Deployment}-ServerFarm'
   params: {}
   dependsOn: [
@@ -616,7 +630,7 @@ module dp_Deployment_ServerFarm '?' /*TODO: replace with correct path to [variab
   ]
 }
 
-module dp_Deployment_WebSite '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').WebSite]*/ = if (Stage.WebSite == 1) {
+module dp_Deployment_WebSite '?' = if (Stage.WebSite == 1) {
   name: 'dp${Deployment}-WebSite'
   params: {}
   dependsOn: [
@@ -626,7 +640,7 @@ module dp_Deployment_WebSite '?' /*TODO: replace with correct path to [variables
   ]
 }
 
-module dp_Deployment_Function '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').Function]*/ = if (Stage.Function == 1) {
+module dp_Deployment_Function '?' = if (Stage.Function == 1) {
   name: 'dp${Deployment}-Function'
   params: {}
   dependsOn: [
@@ -636,7 +650,7 @@ module dp_Deployment_Function '?' /*TODO: replace with correct path to [variable
   ]
 }
 
-module dp_Deployment_MySQLDB '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').MySQLDB]*/ = if (Stage.MySQLDB == 1) {
+module dp_Deployment_MySQLDB '?' = if (Stage.MySQLDB == 1) {
   name: 'dp${Deployment}-MySQLDB'
   params: {}
   dependsOn: [
@@ -646,7 +660,7 @@ module dp_Deployment_MySQLDB '?' /*TODO: replace with correct path to [variables
   ]
 }
 
-module dp_Deployment_SB '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').SB]*/ = if (Stage.SB == 1) {
+module dp_Deployment_SB '?' = if (Stage.SB == 1) {
   name: 'dp${Deployment}-SB'
   params: {}
   dependsOn: [
@@ -655,7 +669,7 @@ module dp_Deployment_SB '?' /*TODO: replace with correct path to [variables('Dep
   ]
 }
 
-module dp_Deployment_AzureSQL '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').AzureSQL]*/ = if (Stage.AzureSQL == 1) {
+module dp_Deployment_AzureSQL '?' = if (Stage.AzureSQL == 1) {
   name: 'dp${Deployment}-AzureSQL'
   params: {}
   dependsOn: [
@@ -664,10 +678,12 @@ module dp_Deployment_AzureSQL '?' /*TODO: replace with correct path to [variable
   ]
 }
 
-module dp_Deployment_ACI '?' /*TODO: replace with correct path to [variables('DeploymentInfoObject').ACI]*/ = if (Stage.ACI == 1) {
+module dp_Deployment_ACI '?' = if (Stage.ACI == 1) {
   name: 'dp${Deployment}-ACI'
   params: {}
   dependsOn: [
     dp_Deployment_OMS
   ]
 }
+
+*/
