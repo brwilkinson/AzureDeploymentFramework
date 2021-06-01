@@ -49,24 +49,24 @@ module RBACRASUB 'sub-RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment:
         description: roleInfo.name
         name: rbac.GUID
         roledescription: rbac.RoleName
-        roleDefinitionId: concat(rbac.DestSubscription,'/providers/Microsoft.Authorization/roleDefinitions/',rbac.RoleID)
+        roleDefinitionId: '${rbac.DestSubscription}/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
         principalType: rbac.principalType
         principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
-              */ reference(concat(rbac.DestSubscription,'/resourceGroups/',rbac.SourceRG, '/providers/',providerPath,'/',Deployment,namePrefix,roleInfo.Name),providerAPI).principalId
+              */ reference('${rbac.DestSubscription}/resourceGroups/${rbac.SourceRG}/providers/${providerPath}/${Deployment}${namePrefix}${roleInfo.Name}',providerAPI).principalId
     }
 }]
 
 module RBACRARG 'sub-RBAC-ALL-RA-RG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro != 'G0') {
     name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
-    scope: resourceGroup(rbac.DestSubscriptionID,concat(rbac.DestPrefix,'-',Global.OrgName,'-',rbac.DestApp,'-RG-',rbac.DestRG))
+    scope: resourceGroup(rbac.DestSubscriptionID,'${rbac.DestPrefix}-${Global.OrgName}-${rbac.DestApp}-RG-${rbac.DestRG}')
     params:{
         description: roleInfo.name
         name: rbac.GUID
         roledescription: rbac.RoleName
-        roleDefinitionId: concat(rbac.DestSubscription,'/providers/Microsoft.Authorization/roleDefinitions/',rbac.RoleID)
+        roleDefinitionId: '${rbac.DestSubscription}/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
         principalType: rbac.principalType
         principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
-              */ reference(concat(rbac.DestSubscription,'/resourceGroups/',rbac.SourceRG, '/providers/',providerPath,'/',Deployment,namePrefix,roleInfo.Name),providerAPI).principalId
+              */ reference('${rbac.DestSubscription}/resourceGroups/${rbac.SourceRG}/providers/${providerPath}/${Deployment}${namePrefix}${roleInfo.Name}',providerAPI).principalId
     }
 }]
 
