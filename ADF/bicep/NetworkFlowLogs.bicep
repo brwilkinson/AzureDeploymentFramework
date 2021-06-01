@@ -46,7 +46,7 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var DeploymentURI = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var hubDeployment = replace(Global.hubRGName, '-RG', '')
 var hubRG = Global.hubRGName
 var SADiagName = '${DeploymentURI}sadiag'
@@ -67,7 +67,6 @@ module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if
     SADIAGID: resourceId('Microsoft.Storage/storageAccounts', SADiagName)
     subNet: sn
     hubDeployment: hubDeployment
-    Deployment: Deployment
     retentionPolicydays: retentionPolicydays
     flowLogVersion: flowLogversion
     flowLogName: '${Deployment}-fl-${sn.Name}'

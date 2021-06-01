@@ -46,7 +46,7 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
-var DeploymentURI = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var RSVInfo = [

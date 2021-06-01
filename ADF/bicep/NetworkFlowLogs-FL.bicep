@@ -1,4 +1,3 @@
-param Deployment string
 param NSGID string
 param SADIAGID string
 param subNet object

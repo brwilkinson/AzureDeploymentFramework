@@ -48,19 +48,14 @@ param sshPublic string
 targetScope = 'subscription'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var DeploymentInfoObject = {
-  RG: '../templates-base/00-azuredeploy-sub-RGs.json'
-  RBAC: '../templates-base/00-azuredeploy-sub-RGRoleAssignments.json'
-  RoleDefinition: '../templates-base/00-azuredeploy-sub-RoleDefinitions.json'
-  Policy: '../templates-base/00-azuredeploy-sub-Policy.json'
-}
-var Locationlookup = {
-  AZE2: 'eastus2'
-  AZC1: 'centralus'
-  AEU2: 'eastus2'
-  ACU1: 'centralus'
-}
-var location = Locationlookup[Prefix]
+
+// var Locationlookup = {
+//   AZE2: 'eastus2'
+//   AZC1: 'centralus'
+//   AEU2: 'eastus2'
+//   ACU1: 'centralus'
+// }
+// var location = Locationlookup[Prefix]
 
 module dp_Deployment_RG 'sub-RG.bicep' = if ((Stage.RG == 1) && (!('${DeploymentID}${Environment}' == 'G0'))) {
   name: 'dp${Deployment}-RG'

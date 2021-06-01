@@ -48,7 +48,7 @@ param sshPublic string
 targetScope = 'resourceGroup'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var DeploymentURI = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var dataRetention = 31
 var serviceTier = 'PerNode'
 var AAserviceTier = 'Basic' // 'Free'

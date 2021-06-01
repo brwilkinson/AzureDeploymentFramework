@@ -1,6 +1,6 @@
-targetScope = 'resourceGroup'  // don't need this just being explicit
+param foo2 string = 'hello'
+param foo3 string = 'world'
 
-module myMod 'myMod.bicep' = {
- name: 'foo'
- scope: subscription()
-}
+var foo = foo2
+
+output myfoo string = foo

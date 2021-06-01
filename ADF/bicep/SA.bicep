@@ -46,7 +46,7 @@
   param sshPublic string
   
   var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-  var DeploymentURI = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
+  var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
   var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
   var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
   var storageInfo = (contains(DeploymentInfo, 'saInfo') ? DeploymentInfo.saInfo : [])
