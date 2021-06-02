@@ -46,7 +46,7 @@ stages:
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
         FailOnStandardError: true
-        azurePowerShellVersion: 'LatestVersion'
-        # preferredAzurePowerShellVersion: 6.0.0
+        # azurePowerShellVersion: 'LatestVersion'
+        preferredAzurePowerShellVersion: 6.0.0
         pwsh: true
         
