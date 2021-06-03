@@ -333,15 +333,27 @@ module dp_Deployment_KV 'KV.bicep' = if (Stage.KV == 1) {
   ]
 }
 
-/*
-module dp_Deployment_ACR '?' = if (Stage.ACR == 1) {
+module dp_Deployment_ACR 'ACR.bicep' = if (Stage.ACR == 1) {
   name: 'dp${Deployment}-ACR'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_VNET
   ]
 }
 
+/*
 module dp_Deployment_BastionHost '?' = if (contains(Stage, 'BastionHost') && (Stage.BastionHost == 1)) {
   name: 'dp${Deployment}-BastionHost'
   params: {}

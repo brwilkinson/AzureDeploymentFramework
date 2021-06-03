@@ -9,6 +9,7 @@ param Prefix string = 'AZE2'
 @allowed([
   'I'
   'D'
+  'T'
   'U'
   'P'
   'S'
@@ -45,26 +46,33 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var DeploymentDev = '${Prefix}-${Global.OrgName}-${Global.AppName}-D7'
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
 var Domain = split(Global.DomainName, '.')[0]
 var subscriptionId = subscription().subscriptionId
 var resourceGroupName = resourceGroup().name
 var SubnetInfo = DeploymentInfo.SubnetInfo
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var subnetResourceId = '${VnetID}/subnets/snMT01'
-var AppInsightsName = replace('${Deployment}AppInsights', '-', '')
-var AppInsightsID = resourceId('microsoft.insights/components', AppInsightsName)
+
 var ContainerRegistry = DeploymentInfo.ContainerRegistry
 
-resource Deployment_sareg_ContainerRegistry_0_Name 'Microsoft.Storage/storageAccounts@2018-07-01' = [for i in range(0, length(ContainerRegistry)): {
-  name: replace(toLower('${Deployment}sareg${ContainerRegistry[(i + 0)].Name}'), '-', '')
+var AppInsightsName = '${DeploymentURI}AppInsights'
+var AppInsightsID = resourceId('microsoft.insights/components', AppInsightsName)
+
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
+var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+
+resource ACRSA 'Microsoft.Storage/storageAccounts@2018-07-01' = [for (cr, index) in ContainerRegistry: if (false) {
+  name: '${DeploymentURI}sareg${cr.Name}'
   location: resourceGroup().location
   identity: {
     type: 'SystemAssigned'
   }
   sku: {
     name: 'Standard_LRS'
-    tier: 'Standard'
+    // tier: 'Standard'
   }
   kind: 'StorageV2'
   properties: {
@@ -90,13 +98,31 @@ resource Deployment_sareg_ContainerRegistry_0_Name 'Microsoft.Storage/storageAcc
   dependsOn: []
 }]
 
-resource Deployment_registry_ContainerRegistry_0_Name 'Microsoft.ContainerRegistry/registries@2017-10-01' = [for i in range(0, length(ContainerRegistry)): {
-  name: replace(toLower('${Deployment}registry${ContainerRegistry[(i + 0)].Name}'), '-', '')
+resource ACR 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = [for (cr, index) in ContainerRegistry: {
+  name: replace(toLower('${Deployment}registry${cr.Name}'), '-', '')
   location: resourceGroup().location
   sku: {
-    name: ContainerRegistry[(i + 0)].SKU
+    name: cr.SKU
   }
   properties: {
-    adminUserEnabled: ContainerRegistry[(i + 0)].adminUserEnabled
+    adminUserEnabled: cr.adminUserEnabled
+  }
+}]
+
+resource ACRDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (cr, index) in ContainerRegistry: {
+  name: 'service'
+  scope: ACR[index]
+  properties: {
+    workspaceId: OMSworkspaceID
+    logs: [
+      {
+        category: 'ContainerRegistryRepositoryEvents'
+        enabled: true
+      }
+      {
+        category: 'ContainerRegistryLoginEvents'
+        enabled: true
+      }
+    ]
   }
 }]

@@ -418,6 +418,13 @@
             ]
           }
         ],
+        "ContainerRegistry": [
+          {
+            "Name": "01",
+            "SKU": "Standard",
+            "adminUserEnabled": true
+          }
+        ],
         "ACIInfo": [
           {
             "Name": "locust-master",

@@ -46,9 +46,10 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${((concat(Environment, DeploymentID) == 'P0') ? '-Hub' : '-Spoke')}'
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var networkId = concat(Global.networkid[0], string((Global.networkid[1] - (2 * int(DeploymentID)))))
 

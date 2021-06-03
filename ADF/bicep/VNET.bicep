@@ -48,23 +48,24 @@ param sshPublic string
 var subscriptionId = subscription().subscriptionId
 var resourceGroupName = resourceGroup().name
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var networkId = concat(Global.networkid[0], string((Global.networkid[1] - (2 * int(DeploymentID)))))
-var networkIdUpper = concat(Global.networkid[0], string((1 + (Global.networkid[1] - (2 * int(DeploymentID))))))
+var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 var addressPrefixes = [
   '${networkId}.0/23'
 ]
 var DNSServers = Global.DNSServers
 var Domain = split(Global.DomainName, '.')[0]
 var RouteTableGlobal = {
-  id: resourceId(Global.HubRGName, 'Microsoft.Network/routeTables/', concat(replace(Global.hubVNetName, 'vn', 'rt'), Domain, Global.RTName))
+  id: resourceId(Global.HubRGName, 'Microsoft.Network/routeTables/', '${replace(Global.hubVNetName, 'vn', 'rt')}${Domain}${Global.RTName}')
 }
 var SubnetInfo = DeploymentInfo.SubnetInfo
 var hubVNetName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubVNetName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubVNetName)
 var hubVNetResourceGroupName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubRGName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubRGName)
 var hubVNetSubscriptionID = Global.hubSubscriptionID
-var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${((concat(Environment, DeploymentID) == 'P0') ? '-Hub' : '-Spoke')}'
+var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${(('${Environment}${DeploymentID}' == 'P0') ? '-Hub' : '-Spoke')}'
 var delegations = {
   default: []
   'Microsoft.Web/serverfarms': [

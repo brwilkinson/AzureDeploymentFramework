@@ -46,7 +46,8 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var hubRG = Global.hubRGName
 

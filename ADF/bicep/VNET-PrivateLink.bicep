@@ -48,7 +48,7 @@ param sshPublic string
 var subscriptionId = subscription().subscriptionId
 var resourceGroupName = resourceGroup().name
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var networkId = concat(Global.networkid[0], string((Global.networkid[1] - (2 * int(DeploymentID)))))
 var networkIdUpper = concat(Global.networkid[0], string((1 + (Global.networkid[1] - (2 * int(DeploymentID))))))
