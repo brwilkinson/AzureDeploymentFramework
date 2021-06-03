@@ -1,7 +1,7 @@
 trigger: #none 
   batch: 'true'
   branches:
-    include: [ master ]
+    include: [ dev ]
   tags:
     exclude: [ NoBuild ]
 
