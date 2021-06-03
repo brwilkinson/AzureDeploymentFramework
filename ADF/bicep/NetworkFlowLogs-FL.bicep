@@ -10,8 +10,14 @@ param Analyticsinterval int
 
 var flowLogEnabled = contains(subNet,'FlowLogEnabled') && subNet.FlowLogEnabled == true
 
+resource NetworkWatcher 'Microsoft.Network/networkWatchers@2019-11-01' existing = {
+  name: '${hubDeployment}-networkwatcher'
+}
+
 resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2020-11-01' = {
-  name: '${hubDeployment}-networkwatcher/${flowLogName}'
+  name: flowLogName
+  parent: NetworkWatcher
+  location: resourceGroup().location
   properties: {
     enabled: flowLogEnabled
     retentionPolicy: {
@@ -28,7 +34,7 @@ resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2020-11-01' = {
       networkWatcherFlowAnalyticsConfiguration: {
         enabled: flowLogEnabled
         trafficAnalyticsInterval: Analyticsinterval
-        workspaceId: OMSworkspaceID
+        workspaceResourceId: OMSworkspaceID
       }
     }
   }

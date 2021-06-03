@@ -313,16 +313,27 @@ module dp_Deployment_VNET 'VNET.bicep' = if (Stage.VNET == 1) {
   ]
 }
 
-/*
-
-module dp_Deployment_KV '?'  = if (Stage.KV == 1) {
+module dp_Deployment_KV 'KV.bicep' = if (Stage.KV == 1) {
   name: 'dp${Deployment}-KV'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_VNET
   ]
 }
 
+/*
 module dp_Deployment_ACR '?' = if (Stage.ACR == 1) {
   name: 'dp${Deployment}-ACR'
   params: {}
