@@ -58,7 +58,7 @@
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 1,
-        "BastionHost": 0,
+        "BastionHost": 1,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,

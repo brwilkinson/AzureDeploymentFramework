@@ -63,7 +63,7 @@ var AppInsightsID = resourceId('microsoft.insights/components', AppInsightsName)
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
-
+//  not sure if this is needed
 resource ACRSA 'Microsoft.Storage/storageAccounts@2018-07-01' = [for (cr, index) in ContainerRegistry: if (false) {
   name: '${DeploymentURI}sareg${cr.Name}'
   location: resourceGroup().location
@@ -122,6 +122,16 @@ resource ACRDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-previe
       {
         category: 'ContainerRegistryLoginEvents'
         enabled: true
+      }
+    ]
+    metrics: [
+      {
+        timeGrain: 'PT5M'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
   }

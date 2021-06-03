@@ -1,4 +1,4 @@
-@'
+$logs = @'
 SQLInsights
 AutomaticTuning
 QueryStoreRuntimeStatistics
@@ -11,13 +11,29 @@ Deadlocks
 Basic
 InstanceAndAppAdvanced
 WorkloadManagement
-'@ -split '\n' | ForEach-Object {
+'@
+
+# json ---------------------
+$logs -split '\n' | ForEach-Object {
 
     @{
         category = $_
         enabled  = $true
     }
-} | convertto-json | clip
+} | ConvertTo-Json | clip
+
+
+# bicep ---------------------
+$logs -split '\n' | ForEach-Object {
+
+    @"
+{
+  category: $_
+  enabled: $true
+}
+"@
+} | clip
+
 
 <#
 [

@@ -353,15 +353,28 @@ module dp_Deployment_ACR 'ACR.bicep' = if (Stage.ACR == 1) {
   ]
 }
 
-/*
-module dp_Deployment_BastionHost '?' = if (contains(Stage, 'BastionHost') && (Stage.BastionHost == 1)) {
+
+module dp_Deployment_BastionHost 'Bastion.bicep' = if (contains(Stage, 'BastionHost') && (Stage.BastionHost == 1)) {
   name: 'dp${Deployment}-BastionHost'
-  params: {}
+  params: {
+        // move these to Splatting later
+        DeploymentID: DeploymentID
+        DeploymentInfo: DeploymentInfo
+        Environment: Environment
+        Extensions: Extensions
+        Global: Global
+        Prefix: Prefix
+        Stage: Stage
+        devOpsPat: devOpsPat
+        sshPublic: sshPublic
+        vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_VNET
   ]
 }
 
+/*
 module dp_Deployment_DNSPrivateZone '?' = if (Stage.DNSPrivateZone == 1) {
   name: 'dp${Deployment}-DNSPrivateZone'
   params: {}
