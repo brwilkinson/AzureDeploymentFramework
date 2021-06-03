@@ -62,7 +62,9 @@ var locationlookup = {
 }
 var location = locationlookup[Prefix]
 
-var identity = [for uai in DeploymentInfo.uaiInfo: {
+var uaiInfo = (contains(DeploymentInfo, 'uaiInfo') ? DeploymentInfo.uaiInfo : [])
+
+var identity = [for uai in uaiInfo: {
     name: uai.name
     match: Global.cn == '.' || contains(Global.cn, uai.name)
 }]

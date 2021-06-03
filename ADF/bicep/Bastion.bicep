@@ -61,12 +61,15 @@ resource BastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' ex
 }
 
 resource PIPBastion 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
-  name: '${Deployment}-publicip${BastionInfo.name}'
+  name: '${Deployment}-${BastionInfo.name}-publicip1'
   location: resourceGroup().location
   sku: {
     name: 'Standard'
   }
   properties: {
+    dnsSettings: {
+      domainNameLabel: '${DeploymentURI}-${BastionInfo.name}'
+    }
     publicIPAllocationMethod: 'Static'
   }
 }
@@ -75,7 +78,7 @@ resource Bastion 'Microsoft.Network/bastionHosts@2021-02-01' = {
   name: '${Deployment}-${BastionInfo.name}'
   location: resourceGroup().location
   properties: {
-    dnsName: toLower('${DeploymentURI}${BastionInfo.name}.bastion.azure.com')
+    dnsName: toLower('${Deployment}-${BastionInfo.name}.bastion.azure.com')
     ipConfigurations: [
       {
         name: 'IpConf'

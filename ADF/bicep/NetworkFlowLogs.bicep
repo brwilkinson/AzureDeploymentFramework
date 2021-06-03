@@ -55,8 +55,9 @@ var flowLogversion = 1
 var AnalyticsInterval = 10
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${((concat(Environment, DeploymentID) == 'P0') ? '-Hub' : '-Spoke')}'
-var SubnetInfo = DeploymentInfo.SubnetInfo
+var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${(('${Environment}${DeploymentID}' == 'P0') ? '-Hub' : '-Spoke')}'
+
+var SubnetInfo = contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : []
 
 // Call the module once per subnet
 module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if ( contains(sn,'NSG') && sn.NSG == 1 ) {

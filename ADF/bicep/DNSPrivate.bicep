@@ -46,13 +46,10 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var subscriptionId = subscription().subscriptionId
-var resourceGroupName = resourceGroup().name
+var DNSPrivateZoneInfo = contains(DeploymentInfo, 'DNSPrivateZoneInfo') ? DeploymentInfo.DNSPrivateZoneInfo : []
 
-var networkWatcherInfo = contains(DeploymentInfo, 'networkWatcherInfo') ? DeploymentInfo.networkWatcherInfo : []
-
-resource NetworkWatcher 'Microsoft.Network/networkWatchers@2019-11-01' = {
-  name: '${Deployment}-${networkWatcherInfo.name}'
-  location: resourceGroup().location
+resource DNSPrivateZone 'Microsoft.Network/privateDnsZones@2020-06-01' = [for (pdns, index) in DNSPrivateZoneInfo: {
+  name: length(DNSPrivateZoneInfo) != 0 ? pdns : 'na'
+  location: 'global'
   properties: {}
-}
+}]

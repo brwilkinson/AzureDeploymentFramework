@@ -49,26 +49,27 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var CDNInfo = DeploymentInfo.CDNInfo
 
-var CDN = [for (item, i) in CDNInfo: {
+var CDNInfo = (contains(DeploymentInfo, 'CDNInfo') ? DeploymentInfo.CDNInfo : [])
+
+var CDN = [for (cdn, i) in CDNInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.frontDoorInfo[i].Name))
-  saname: toLower('${DeploymentURI}sa${item.saname}')
+  saname: toLower('${DeploymentURI}sa${cdn.saname}')
 }]
 
-resource SACDN 'Microsoft.Cdn/profiles@2020-09-01' = [for i in range(0, length(CDNInfo)): if (CDN[i].match) {
-  name: toLower('${DeploymentURI}sacdn${CDNInfo[i].name}')
+resource SACDN 'Microsoft.Cdn/profiles@2020-09-01' = [for (cdn, i) in CDNInfo: if (CDN[i].match) {
+  name: toLower('${DeploymentURI}sacdn${cdn.name}')
   location: resourceGroup().location
   sku: {
     name: 'Standard_Verizon'
   }
 }]
 
-resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (item, i) in CDNInfo: if (CDN[i].match) {
-  name: '${toLower('${DeploymentURI}sacdn${CDNInfo[i].name}')}/${CDN[i].saname}-${item.endpoint}'
+resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn, i) in CDNInfo: if (CDN[i].match) {
+  name: '${toLower('${DeploymentURI}sacdn${cdn.name}')}/${cdn.saname}-${cdn.endpoint}'
   location: resourceGroup().location
   properties: {
-    originHostHeader: '${CDN[i].saname}.blob.core.windows.net'
+    originHostHeader: '${cdn.saname}.blob.core.windows.net'
     isHttpAllowed: true
     isHttpsAllowed: true
     queryStringCachingBehavior: 'IgnoreQueryString'
@@ -84,14 +85,14 @@ resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (ite
       {
         name: 'origin1'
         properties: {
-          hostName: '${CDN[i].saname}.blob.core.windows.net'
+          hostName: '${cdn.saname}.blob.core.windows.net'
         }
       }
     ]
   }
 }]
 
-resource SACDNDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (item, i) in CDNInfo: if (CDN[i].match) {
+resource SACDNDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (cdn, i) in CDNInfo: if (CDN[i].match) {
   name: 'service'
   scope: SACDNEndpoint[i]
   properties: {

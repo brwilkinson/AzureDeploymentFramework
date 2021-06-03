@@ -45,7 +45,7 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
-var Deployment = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
+var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
@@ -59,7 +59,7 @@ var RSVInfo = [
 
 resource RSV 'Microsoft.RecoveryServices/vaults@2021-01-01' = [for i in range(0, length(RSVInfo)): if (Stage.RSV == 1) {
   location: resourceGroup().location
-  name: replace(concat(Deployment, RSVInfo[i].Name), '-', '')
+  name: '${DeploymentURI}${RSVInfo[i].Name}'
   sku: {
     name: RSVInfo[i].skuName
     tier: RSVInfo[i].skuTier

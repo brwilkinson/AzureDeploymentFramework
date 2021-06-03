@@ -51,10 +51,10 @@ var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var hubRG = Global.hubRGName
 
-var KeyVaultInfo = (contains(DeploymentInfo, 'KVInfo') ? DeploymentInfo.KVInfo : [])
+var KeyVaultInfo = contains(DeploymentInfo, 'KVInfo') ? DeploymentInfo.KVInfo : []
 
-var KVInfo = [for i in range(0, length(KeyVaultInfo)): {
-  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.KVInfo[i].name))
+var KVInfo = [for (kv, index) in KeyVaultInfo: {
+  match: ((Global.CN == '.') || contains(Global.CN, kv.name))
 }]
 
 //  Role assignments all in subscription deployment, not on KV deployment.
