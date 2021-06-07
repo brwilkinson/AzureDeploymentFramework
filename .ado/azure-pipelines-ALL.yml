@@ -37,7 +37,7 @@ parameters:
   type: string
 
 jobs:
-- job: Subscription_RG_RBAC
+- job: Subscription_RG_RBAC_${{ parameters.SP }}_${{ parameters.ENV }}
   pool:
     vmImage: windows-latest
     
@@ -53,7 +53,8 @@ jobs:
       preferredAzurePowerShellVersion: 6.0.0
       pwsh: true
 
-- job: RG_ALL
+- job: RG_ALL_${{ parameters.SP }}_${{ parameters.ENV }}
+  dependsOn: Subscription_RG_RBAC_${{ parameters.SP }}_${{ parameters.ENV }}
   pool:
     vmImage: windows-latest
     # pool: AZC1-S1-Infra
