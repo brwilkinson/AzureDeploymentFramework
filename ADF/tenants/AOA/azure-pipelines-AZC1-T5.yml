@@ -17,8 +17,8 @@ stages:
   jobs:
   - template: ..\..\..\.ado\azure-pipelines-ALL.yml
     parameters:
-      ORG:    $(ORG)
-      PREFIX: $(PREFIX)
-      APP :   $(APP)
-      ENV:    $(ENV)
+      ORG:    ${{ variables.ORG }}
+      PREFIX: ${{ variables.PREFIX }}
+      APP :   ${{ variables.APP }}
+      ENV:    ${{ variables.ENV }}
       SP:     ADO_${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
