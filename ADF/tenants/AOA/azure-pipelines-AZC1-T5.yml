@@ -6,9 +6,14 @@ trigger: #none
     exclude: [ NoBuild ]
 
 variables:
+  ORG:    BRW
   PREFIX: ACU1
   APP :   AOA
   ENV:    T5
+
+  AZD:    ADF
+
+  SP:     ADO_${{ variables.AZD }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG-
 
 
 stages:
@@ -21,7 +26,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'ADO_ADF_ACU1-BRW-AOA-RG-G0'
+        azureSubscription: ${{ variables.PREFIX }}-G0
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
@@ -41,7 +46,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: 'ADO_ADF_ACU1-BRW-AOA-RG-T5'
+        azureSubscription: ${{ variables.PREFIX }}-${{ variables.ENV }}
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
