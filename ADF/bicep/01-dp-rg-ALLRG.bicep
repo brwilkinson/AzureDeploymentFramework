@@ -391,6 +391,24 @@ module dp_Deployment_DNSPrivateZone 'DNSPrivate.bicep' = if (Stage.DNSPrivateZon
   dependsOn: []
 }
 
+module dp_Deployment_DNSPublicZone 'DNSPublic.bicep' = if (Stage.DNSPublicZone == 1) {
+  name: 'dp${Deployment}-DNSPublicZone'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: []
+}
+
 /*
 module dp_Deployment_FW '?' = if (Stage.FW == 1) {
   name: 'dp${Deployment}-FW'

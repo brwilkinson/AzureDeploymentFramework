@@ -547,9 +547,10 @@
             }
           }
         ],
-        "FWInfo": [
+        "FWPolicyInfo": [
           {
-            "Name": "FW01",
+            "name": "Policy01",
+            "sku": "Standard",
             "threatIntelMode": "Alert",
             "natRules": [
               {
@@ -589,6 +590,11 @@
                 }
               }
             ]
+          }
+        ],
+        "FWInfo": [
+          {
+            "Name": "FW01"
           }
         ],
         "Appservers": {

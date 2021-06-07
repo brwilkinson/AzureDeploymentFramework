@@ -74,6 +74,30 @@ resource PIPBastion 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
   }
 }
 
+resource PIPBastionDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+  name: 'service'
+  scope: PIPBastion
+  properties: {
+    workspaceId: OMSworkspaceID
+    logs: [
+      {
+        category: 'DDoSProtectionNotifications'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        timeGrain: 'PT5M'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+  }
+}
+
 resource Bastion 'Microsoft.Network/bastionHosts@2021-02-01' = {
   name: '${Deployment}-${BastionInfo.name}'
   location: resourceGroup().location

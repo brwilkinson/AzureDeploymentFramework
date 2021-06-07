@@ -8,7 +8,7 @@ break
 # F8 to run individual steps
 
 #############################
-# Note this file is here to get to you you started, I run ALL of this just from the command line
+# Note this file is here to get to you you started, you can run ALL of this from the command line
 # Put that import-module line above in your profile,...then..
 # once you know these commands you just run the following in the commandline AzSet -Enviro D3 -App AOA
 # Then you can execute most of these from Terminal.
@@ -42,19 +42,7 @@ set-location -path ADF:\
 # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region [auto detected])
 . ADF:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
 
-# Stage and Upload DSC Resource Modules for AA
-. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMain.ps1 -DownloadLatest 0
-
-## these two steps only after 01-azuredeploy-OMS.json has been deployed, which includes the Automation account.
-
-# Using Azure Automation Pull Mode to host configurations - upload DSC Modules, prior to deploying AppServers
-. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix ACU1 -AAEnvironment P0
-. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix AEU2 -AAEnvironment P0
-
-# upload mofs for a particular configuration, prior to deploying AppServers
-AzMofUpload @Current -Prefix ACU1 -AAEnvironment G1 -Roles IMG -NoDomain
-AzMofUpload @Current -Prefix ACU1 -AAEnvironment P0 -Roles SQLp,SQLs
-
+##########################################################
 # Deploy Environment
 
 # Global  sub deploy for $env:Enviro
@@ -116,6 +104,21 @@ AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\05-azuredeploy-VMApp.json
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServers
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServersLinux
+
+##########################################################
+# Stage and Upload DSC Resource Modules for AA
+. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMain.ps1 -DownloadLatest 0
+
+## these two steps only after 01-azuredeploy-OMS.json has been deployed, which includes the Automation account.
+
+# Using Azure Automation Pull Mode to host configurations - upload DSC Modules, prior to deploying AppServers
+. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix ACU1 -AAEnvironment P0
+. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix AEU2 -AAEnvironment P0
+
+# upload mofs for a particular configuration, prior to deploying AppServers
+AzMofUpload @Current -Prefix ACU1 -AAEnvironment G1 -Roles IMG -NoDomain
+AzMofUpload @Current -Prefix ACU1 -AAEnvironment P0 -Roles SQLp,SQLs
+
 
 # ASR deploy
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\21-azuredeploy-ASRSetup.json -SubscriptionDeploy -FullUpload

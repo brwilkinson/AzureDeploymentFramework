@@ -57,6 +57,7 @@
         "FW": 0,
         "VNGW": 0,
         "ERGW": 0,
+        "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "ADPrimary": 1,
         "ADSecondary": 0,

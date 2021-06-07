@@ -8,7 +8,7 @@
             "level": "off"
           },
           "no-unused-vars": {
-            "level": "off"
+            "level": "info"
           }
         }
       }

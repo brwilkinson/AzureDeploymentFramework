@@ -45,12 +45,16 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
-var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+var DNSPublicZoneInfo = contains(DeploymentInfo, 'DNSPublicZoneInfo') ? DeploymentInfo.DNSPublicZoneInfo : []
 
-var DNSPrivateZoneInfo = contains(DeploymentInfo, 'DNSPrivateZoneInfo') ? DeploymentInfo.DNSPrivateZoneInfo : []
+var ZoneInfo = [for (zone, index) in DNSPublicZoneInfo: {
+  match: ((Global.CN == '.') || contains(Global.CN, zone))
+}]
 
-resource DNSPrivateZone 'Microsoft.Network/privateDnsZones@2020-06-01' = [for (pdns, index) in DNSPrivateZoneInfo: {
-  name: length(DNSPrivateZoneInfo) != 0 ? pdns : 'na'
+resource DNSPublicZone 'Microsoft.Network/dnsZones@2018-05-01' = [for (zone, index) in DNSPublicZoneInfo: if (ZoneInfo[index].match) {
+  name: ((length(DNSPublicZoneInfo) != 0) ? zone : 'na')
   location: 'global'
-  properties: {}
+  properties: {
+    zoneType: 'Public'
+  }
 }]

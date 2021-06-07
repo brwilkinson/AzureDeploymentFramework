@@ -55,6 +55,7 @@
         "FlowLogs": 1,
         "VNet": 1,
         "VNetPeering": 1,
+        "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 1,

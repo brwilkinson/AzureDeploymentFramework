@@ -514,6 +514,7 @@
           {
             "Name": "FW01",
             "threatIntelMode": "Alert",
+            
             "natRules": [
               {
                 "Name": "JMP01",

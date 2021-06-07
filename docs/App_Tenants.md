@@ -9,7 +9,7 @@ The Framework supports deploying Multiple Applications, each application is refe
 
 A single DevOps Team owns all of the deployments for all of the tenants in the projects, including all release pipelines.
 
-If you only have a single Tenant, you can just deploy the HUB/Spoke from a single tenant.
+If you only have a single Tenant, you can just deploy the HUB/Spoke Environments from a single tenant.
 
 ####  App (Tenant) "ADF"
 ![App Tenants](./App_Tenants_Single.jpg)

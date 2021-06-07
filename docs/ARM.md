@@ -30,6 +30,7 @@ Go Readme [README](../README.md)
 ### Defining your App Tenants
 
 - [App Tenants](./App_Tenants.md)
+- [App Tenants Descriptions](./App_Tenants_Descriptions.md) (Which tenant should I use ?)
 
 ### Using Parameter Files
 

@@ -58,6 +58,7 @@
         "VNGW": 0,
         "ERGW": 0,
         "LinkPrivateDns": 0,
+        "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "PrivateLink": 0,
         "ILB": 0,
