@@ -57,7 +57,7 @@ stages:
         azureSubscription: ${{ variables.SP }}-G0
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
-        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
+        ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
         FailOnStandardError: true
         # azurePowerShellVersion: 'LatestVersion'
         preferredAzurePowerShellVersion: 6.0.0
@@ -77,7 +77,7 @@ stages:
         azureSubscription: ${{ variables.SP }}-${{ parameters.ENV }}
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
-        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
+        ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "01-dp-rg-ALLRG"'
         FailOnStandardError: true
         # azurePowerShellVersion: 'LatestVersion'
         preferredAzurePowerShellVersion: 6.0.0
