@@ -32,15 +32,9 @@ parameters:
   type: string
   default: T5
 
-- name: ADOProject
-  displayName: Azure DevOps project name
-  type: string
-  default: ADF
-
 - name: SP
   displayName: Service principal name
   type: string
-  default: ADO_${{ parameters.ADOProject }}_${{ parameters.PREFIX }}-${{ parameters.ORG }}-${{ parameters.APP }}-RG
 
   jobs:
   - job: Subscription_RG_RBAC

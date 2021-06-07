@@ -6,13 +6,14 @@ trigger: #none
     exclude: [ NoBuild ]
 
 variables:
-  ORG:    BRW
-  PREFIX: ACU1
-  APP :   AOA
-  ENV:    T5
+  ORG:        BRW
+  PREFIX:     ACU1
+  APP :       AOA
+  ENV:        T5
+  ADOProject: ADF
 
 stages:
-- stage: Subscription
+- stage: Deploy_All_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG-${{ variables.ENV }}
   jobs:
   - template: ..\..\..\.ado\azure-pipelines-ALL.yml
     parameters:
@@ -20,3 +21,4 @@ stages:
       PREFIX: $(PREFIX)
       APP :   $(APP)
       ENV:    $(ENV)
+      SP:     ADO_${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
