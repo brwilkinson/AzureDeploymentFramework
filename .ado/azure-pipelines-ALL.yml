@@ -6,13 +6,41 @@ trigger: #none
     exclude: [ NoBuild ]
 
 parameters:
-  ORG:        BRW
-  PREFIX:     ACU1
-  APP :       AOA
-  ENV:        T5
+- name: ORG
+  displayName: ORG Code
+  type: string
+  default: BRW
+  values:
+  - BRW
 
+- name: PREFIX
+  displayName: Region Prefix
+  type: string
+  default: ACU1
+  values:
+  - ACU1
+  - AEU2
+  - AEU1
+  - AWU2
+
+- name: APP
+  displayName: App/Tenant Name
+  type: string
+  default: AOA
+  values:
+  - AOA
+  - ABC
+  - ADF
+  - HAA
+  - HUB
+
+- name: ENV
+  displayName: Environment Name
+  type: string
+  default: T5
+
+variables:
   ADOProject: ADF
-
   SP:         ADO_${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
 
 
