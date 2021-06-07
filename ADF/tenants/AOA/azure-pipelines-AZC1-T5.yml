@@ -10,7 +10,7 @@ variables:
   PREFIX:     ACU1
   APP :       AOA
   ENV:        T5
-  ADOProject: ADF
+  ADOProject: ADO_ADF
 
 stages:
 - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
@@ -21,4 +21,4 @@ stages:
       PREFIX: ${{ variables.PREFIX }}
       APP :   ${{ variables.APP }}
       ENV:    ${{ variables.ENV }}
-      SP:     ADO_${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+      SP:     ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
