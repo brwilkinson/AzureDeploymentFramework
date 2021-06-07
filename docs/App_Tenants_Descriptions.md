@@ -30,7 +30,7 @@ If you only have a single Tenant, you can just deploy the HUB/Spoke Environments
 
 Some of the parameter files contains reference objects that you can copy into other tenant param files, if you need them.
 
-The goal will be to document the paramter files in each tenant to offer reference architectures.
+The goal will be to document the paramter files in 1 or more tenant to offer reference architectures.
 
 
 

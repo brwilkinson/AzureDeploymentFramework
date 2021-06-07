@@ -11,9 +11,9 @@ variables:
   APP :   AOA
   ENV:    T5
 
-  AZD:    ADF
+  ADOProject: ADF
 
-  SP:     ADO_${{ variables.AZD }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG-
+  SP:         ADO_${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG-
 
 
 stages:
@@ -26,7 +26,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: ${{ variables.PREFIX }}-G0
+        azureSubscription: ${{ variables.SP }}-G0
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
@@ -46,7 +46,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: ${{ variables.PREFIX }}-${{ variables.ENV }}
+        azureSubscription: ${{ variables.SP }}-${{ variables.ENV }}
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
