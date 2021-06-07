@@ -54,7 +54,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: ${{ variables.SP }}-G0
+        azureSubscription: ${{ parameters.SP }}-G0
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
@@ -74,7 +74,7 @@ stages:
     steps:
     - task: AzurePowerShell@5
       inputs:
-        azureSubscription: ${{ variables.SP }}-${{ variables.ENV }}
+        azureSubscription: ${{ parameters.SP }}-${{ parameters.ENV }}
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
         ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
