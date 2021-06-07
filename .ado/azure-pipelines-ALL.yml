@@ -54,7 +54,7 @@ jobs:
       pwsh: true
 
 - job: RG_ALL_${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
-  dependsOn: Subscription_RG_RBAC_${{ parameters.SP }}_${{ parameters.ENV }}
+  dependsOn: Subscription_RG_RBAC_${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
   pool:
     vmImage: windows-latest
     # pool: AZC1-S1-Infra
