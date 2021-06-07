@@ -13,7 +13,7 @@ variables:
 
   ADOProject: ADF
 
-  SP:         ADO_${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG-
+  SP:         ADO_${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
 
 
 stages:
