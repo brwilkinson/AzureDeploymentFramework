@@ -13,7 +13,7 @@ variables:
   ADOProject: ADF
 
 stages:
-- stage: Deploy_All_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG-${{ variables.ENV }}
+- stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
   jobs:
   - template: ..\..\..\.ado\azure-pipelines-ALL.yml
     parameters:
