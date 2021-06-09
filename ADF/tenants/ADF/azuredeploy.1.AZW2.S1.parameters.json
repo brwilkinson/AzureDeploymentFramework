@@ -225,18 +225,6 @@
             ]
           }
         ],
-        "LinkPrivateDnsInfo": [
-          {
-            "zoneRG": "P0",
-            "zone": "Contoso.com",
-            "Autoregistration": false
-          },
-          {
-            "zoneRG": "P0",
-            "zone": "Fabrikam.com",
-            "Autoregistration": false
-          }
-        ],
         "RTInfo": [
           {
             "Name": "Contoso-Hub",

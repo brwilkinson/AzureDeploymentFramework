@@ -6,7 +6,6 @@ param (
 Get-AzRoleDefinition | sort -Property Name | foreach {
     
     $ht += @{$_.Name = [pscustomobject]@{ Id = $_.ID; Description = $_.Description }}
-    
 }
 $ArtifactStagingDirectory = Get-Item -Path $PSScriptRoot\..
 

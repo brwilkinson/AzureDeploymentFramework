@@ -65,12 +65,10 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-NSG.spoke.
 AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NSG.spoke.json
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-DNSPrivate.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-VNetPrivateLink.json
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-VNet.json
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\06-azuredeploy-WAF.json
 
 AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-DNSPrivate.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-VNetPrivateLink.json
 AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-VNet.json
 AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\06-azuredeploy-WAF.json
 

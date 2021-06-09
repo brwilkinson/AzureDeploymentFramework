@@ -297,14 +297,14 @@
             ]
           }
         ],
-        "LinkPrivateDnsInfo": [
+        "DNSPrivateZoneInfo": [
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "Contoso.com",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "Fabrikam.com",
             "Autoregistration": false
           }

@@ -70,4 +70,3 @@ jobs:
       # azurePowerShellVersion: 'LatestVersion'
       preferredAzurePowerShellVersion: 6.0.0
       pwsh: true
-        

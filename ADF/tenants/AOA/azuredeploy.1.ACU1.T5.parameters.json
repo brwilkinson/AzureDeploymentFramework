@@ -85,7 +85,7 @@
         "ACI": 0,
         "AKS": 0,
         "SQLMI": 0,
-        "CosmosDB": 0,
+        "CosmosDB": 1,
         "DASHBOARD": 0,
         "DNSLookup": 0,
         "ServerFarm": 0,
@@ -424,6 +424,39 @@
             "Name": "01",
             "SKU": "Standard",
             "adminUserEnabled": true
+          }
+        ],
+        "cosmosDBInfo": [
+          {
+            "Name": "eshop-nosql",
+            "Kind": "MongoDB", //GlobalDocumentDB, MongoDB, Parse
+            "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
+            "enableMultipleWriteLocations": true,
+            "enableAutomaticFailover": true,
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snBE01",
+                "groupID": "MongoDB"
+              }
+            ],
+            "locations": [
+              {
+                "location": "PrimaryLocation",
+                "failoverPriority": 0,
+                "isZoneRedundant": true
+              },
+              {
+                "location": "SecondaryLocation",
+                "failoverPriority": 1,
+                "isZoneRedundant": true
+              }
+            ],
+            "databases": [
+              {
+                "databaseName": "customers",
+                "containerName": "Info"
+              }
+            ]
           }
         ],
         "ACIInfo": [

@@ -388,7 +388,9 @@ module dp_Deployment_DNSPrivateZone 'DNSPrivate.bicep' = if (Stage.DNSPrivateZon
     sshPublic: sshPublic
     vmAdminPassword: vmAdminPassword
   }
-  dependsOn: []
+  dependsOn: [
+    dp_Deployment_VNET
+  ]
 }
 
 module dp_Deployment_DNSPublicZone 'DNSPublic.bicep' = if (Stage.DNSPublicZone == 1) {
@@ -418,32 +420,71 @@ module dp_Deployment_FW '?' = if (Stage.FW == 1) {
   ]
 }
 
-module dp_Deployment_ERGW '?' = if (Stage.ERGW == 1) {
+*/
+
+module dp_Deployment_ERGW 'ERGW.bicep' = if (Stage.ERGW == 1) {
   name: 'dp${Deployment}ERGW'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_VNET
     dp_Deployment_OMS
   ]
 }
 
-module dp_Deployment_CosmosDB '?' = if (Stage.CosmosDB == 1) {
+module dp_Deployment_CosmosDB 'Cosmos.bicep' = if (Stage.CosmosDB == 1) {
   name: 'dp${Deployment}-CosmosDB'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_VNET
   ]
 }
 
-module dp_Deployment_ILB '?' = if (Stage.ILB == 1) {
-  name: 'dp${Deployment}-ILB'
-  params: {}
+module dp_Deployment_LB 'LB.bicep' = if (Stage.ILB == 1) {
+  name: 'dp${Deployment}-LB'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_VNET
   ]
 }
 
-module dp_Deployment_VNETDNSPublic '?' = if (Stage.ADPrimary == 1) {
+
+module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1) {
   name: 'dp${Deployment}-VNETDNSPublic'
   params: {
     Deploymentnsg: Deploymentnsg
@@ -464,6 +505,7 @@ module dp_Deployment_VNETDNSPublic '?' = if (Stage.ADPrimary == 1) {
   ]
 }
 
+/*
 module ADPrimary '?' = if (Stage.ADPrimary == 1) {
   name: 'ADPrimary'
   params: {}
@@ -546,7 +588,7 @@ module InitialDOP '?' = if (Stage.InitialDOP == 1) {
     dp_Deployment_VNETDNSDC1
     dp_Deployment_VNETDNSDC2
     dp_Deployment_OMS
-    dp_Deployment_ILB
+    dp_Deployment_LB
     DNSLookup
     dp_Deployment_SA
   ]
@@ -559,7 +601,7 @@ module AppServers '?' = if (Stage.VMApp == 1) {
     dp_Deployment_VNETDNSDC1
     dp_Deployment_VNETDNSDC2
     dp_Deployment_OMS
-    dp_Deployment_ILB
+    dp_Deployment_LB
     DNSLookup
     dp_Deployment_SA
   ]
@@ -572,7 +614,7 @@ module VMFile '?' = if (Stage.VMFILE == 1) {
     dp_Deployment_VNETDNSDC1
     dp_Deployment_VNETDNSDC2
     dp_Deployment_OMS
-    dp_Deployment_ILB
+    dp_Deployment_LB
     DNSLookup
     dp_Deployment_SA
   ]
@@ -583,7 +625,7 @@ module AppServersLinux '?' = if (Stage.VMAppLinux == 1) {
   params: {}
   dependsOn: [
     dp_Deployment_VNET
-    dp_Deployment_ILB
+    dp_Deployment_LB
     dp_Deployment_OMS
     dp_Deployment_VNETDNSDC1
     dp_Deployment_VNETDNSDC2
@@ -597,7 +639,7 @@ module SQLServers '?' = if (Stage.VMSQL == 1) {
   dependsOn: [
     dp_Deployment_VNETDNSDC1
     dp_Deployment_VNETDNSDC2
-    dp_Deployment_ILB
+    dp_Deployment_LB
     dp_Deployment_OMS
     dp_Deployment_SA
   ]
@@ -627,7 +669,7 @@ module VMSS '?' = if (Stage.VMSS == 1) {
     dp_Deployment_VNETDNSDC1
     dp_Deployment_VNETDNSDC2
     dp_Deployment_OMS
-    dp_Deployment_ILB
+    dp_Deployment_LB
     dp_Deployment_WAF
     dp_Deployment_SA
   ]

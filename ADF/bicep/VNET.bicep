@@ -51,23 +51,28 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var addressPrefixes = [
-  '${networkId}.0/23'
-]
-var DNSServers = Global.DNSServers
-var Domain = split(Global.DomainName, '.')[0]
-var RouteTableGlobal = {
-  id: resourceId(Global.HubRGName, 'Microsoft.Network/routeTables/', '${replace(Global.hubVNetName, 'vn', 'rt')}${Domain}${Global.RTName}')
-}
 
-var SubnetInfo = (contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : [])
+var DNSServers = Global.DNSServers
 
 var hubVNetName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubVNetName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubVNetName)
 var hubVNetResourceGroupName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubRGName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubRGName)
 var hubVNetSubscriptionID = Global.hubSubscriptionID
 var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${(('${Environment}${DeploymentID}' == 'P0') ? '-Hub' : '-Spoke')}'
+
+var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+var addressPrefixes = [
+  '${networkId}.0/23'
+]
+
+var SubnetInfo = (contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : [])
+
+var Domain = split(Global.DomainName, '.')[0]
+
+var RouteTableGlobal = {
+  id: resourceId(Global.HubRGName, 'Microsoft.Network/routeTables/', '${replace(Global.hubVNetName, 'vn', 'rt')}${Domain}${Global.RTName}')
+}
+
 var delegations = {
   default: []
   'Microsoft.Web/serverfarms': [
@@ -88,7 +93,7 @@ var delegations = {
   ]
 }
 
-resource VNET 'Microsoft.Network/virtualNetworks@2019-12-01' = {
+resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: '${Deployment}-vn'
   location: resourceGroup().location
   properties: {

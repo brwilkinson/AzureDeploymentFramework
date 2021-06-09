@@ -7,9 +7,11 @@ trigger: #none
 
 variables:
   ORG:        BRW
-  PREFIX:     ACU1
   APP :       AOA
+  
+  PREFIX:     ACU1
   ENV:        T5
+  
   ADOProject: ADO_ADF
 
 stages:
@@ -18,7 +20,7 @@ stages:
   - template: ..\..\..\.ado\azure-pipelines-ALL.yml
     parameters:
       ORG:    ${{ variables.ORG }}
-      PREFIX: ${{ variables.PREFIX }}
       APP :   ${{ variables.APP }}
+      PREFIX: ${{ variables.PREFIX }}
       ENV:    ${{ variables.ENV }}
       SP:     ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG

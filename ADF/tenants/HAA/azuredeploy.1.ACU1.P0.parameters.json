@@ -327,89 +327,73 @@
           "name": "networkwatcher"
         },
         "DNSPrivateZoneInfo": [
-          "haapp.net",
-          "privatelink.azurewebsites.net",
-          "privatelink.vaultcore.azure.net",
-          "privatelink.blob.core.windows.net",
-          "privatelink.queue.core.windows.net",
-          "privatelink.afs.azure.net",
-          "privatelink.servicebus.windows.net",
-          "privatelink.database.windows.net",
-          "privatelink.azconfig.io",
-          "privatelink.azurecr.io",
-          "privatelink.centralus.azmk8s.io",
-          "privatelink.mongo.cosmos.azure.com",
-          "privatelink.documents.azure.com",
-          "privatelink.redis.cache.windows.net"
-        ],
-        "LinkPrivateDnsInfo": [
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "HAApp.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.vaultcore.azure.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.azurewebsites.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.blob.core.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.queue.core.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.afs.azure.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.servicebus.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.database.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.azconfig.io",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.azurecr.io",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.centralus.azmk8s.io",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.mongo.cosmos.azure.com",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.documents.azure.com",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.redis.cache.windows.net",
             "Autoregistration": false
           }

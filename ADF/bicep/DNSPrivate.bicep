@@ -49,8 +49,24 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 
 var DNSPrivateZoneInfo = contains(DeploymentInfo, 'DNSPrivateZoneInfo') ? DeploymentInfo.DNSPrivateZoneInfo : []
 
+resource VNET 'Microsoft.Network/virtualNetworks@2020-11-01' existing = {
+  name: '${Deployment}-vn'
+}
+
 resource DNSPrivateZone 'Microsoft.Network/privateDnsZones@2020-06-01' = [for (pdns, index) in DNSPrivateZoneInfo: {
-  name: length(DNSPrivateZoneInfo) != 0 ? pdns : 'na'
+  name: length(DNSPrivateZoneInfo) != 0 ? pdns.zone : 'na'
   location: 'global'
   properties: {}
+}]
+
+resource DNSPrivateZoneVNETLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (pdns, index) in DNSPrivateZoneInfo: if(pdns.linkDNS == 1 && Stage.LinkPrivateDns == 1) {
+  name: '${Deployment}-vn-${pdns.linkDNS == 1 && Stage.LinkPrivateDns == 1 ? pdns.zone : 'na'}'
+  parent: DNSPrivateZone[index]
+  location: 'global'
+  properties: {
+    registrationEnabled: pdns.Autoregistration
+    virtualNetwork: {
+      id: VNET.id
+    }
+  }
 }]
