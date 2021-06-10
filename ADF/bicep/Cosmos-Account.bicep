@@ -1,38 +1,43 @@
 param Deployment string
-param DeploymentID string
-param Environment string
-param cosmosDBInfo object
+param cosmosAccount object
 param Global object
-param Stage object
 param OMSworkspaceID string
-param now string = utcNow('F')
 
-var locations = [for (cdb,index) in cosmosDBInfo.locations: {
+var locations = [for (cdb,index) in cosmosAccount.locations: {
   failoverPriority: cdb.failoverPriority
   locationName: Global[cdb.location]
   isZoneRedundant: cdb.isZoneRedundant
 }]
 
-resource CosmosDB 'Microsoft.DocumentDb/databaseAccounts@2021-03-01-preview' = {
-  name: toLower('${Deployment}-cosmos-${cosmosDBInfo.Name}')
-  kind: cosmosDBInfo.Kind
+resource CosmosAccount 'Microsoft.DocumentDb/databaseAccounts@2021-03-01-preview' = {
+  name: toLower('${Deployment}-cosmos-${cosmosAccount.Name}')
+  kind: cosmosAccount.Kind
   location: resourceGroup().location
   properties: {
     consistencyPolicy: {
-      defaultConsistencyLevel: cosmosDBInfo.defaultConsistencyLevel
+      defaultConsistencyLevel: cosmosAccount.defaultConsistencyLevel
     }
     createMode: 'Default'
-    enableMultipleWriteLocations: cosmosDBInfo.enableMultipleWriteLocations
-    enableAutomaticFailover: cosmosDBInfo.enableAutomaticFailover
+    enableMultipleWriteLocations: cosmosAccount.enableMultipleWriteLocations
+    enableAutomaticFailover: cosmosAccount.enableAutomaticFailover
     databaseAccountOfferType: 'Standard'
     locations: locations
     
   }
 }
 
+module CosmosAccountDB 'Cosmos-Account-DB.bicep'= [for (cdb, index) in cosmosAccount.databases : {
+  name: 'dp${Deployment}-cosmosDBDeployDB${((length(cosmosAccount.databases) != 0) ? cdb.databaseName : 'na')}'
+  params: {
+    cosmosAccount: cosmosAccount
+    cosmosDB: cdb
+    Deployment: Deployment
+  }
+}]
+
 resource CosmosDBDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
-  scope: CosmosDB
+  scope: CosmosAccount
   properties: {
     workspaceId: OMSworkspaceID
     logs: [

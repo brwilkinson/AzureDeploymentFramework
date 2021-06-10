@@ -57,40 +57,36 @@ var cosmosDB = [for (cosmosDb, index) in cosmosDBInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, cosmosDb.Name))
 }]
 
-module CosmosDB 'Cosmos-CosmosDB.bicep' = [for (cdb, index) in cosmosDBInfo: if(cosmosDB[index].match) {
-  name: 'dp${Deployment}-cosmosDBDeploy${((length(cosmosDBInfo) != 0) ? cdb.name : 'na')}'
+module CosmosDB 'Cosmos-Account.bicep' = [for (account, index) in cosmosDBInfo : if(cosmosDB[index].match) {
+  name: 'dp${Deployment}-cosmosDBDeploy${((length(cosmosDBInfo) != 0) ? account.name : 'na')}'
   params: {
     Deployment: Deployment
-    DeploymentID: DeploymentID
-    Environment: Environment
-    cosmosDBInfo: cdb
+    cosmosAccount: account
     Global: Global
-    Stage: Stage
     OMSworkspaceID: OMSworkspaceID
   }
-  dependsOn: []
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (cdb, index) in cosmosDBInfo: if(cosmosDB[index].match) {
-  name: 'dp${Deployment}-privatelinkloopCosmos${((length(cosmosDBInfo) != 0) ? cdb.name : 'na')}'
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (account, index) in cosmosDBInfo: if(cosmosDB[index].match) {
+  name: 'dp${Deployment}-privatelinkloopCosmos${((length(cosmosDBInfo) != 0) ? account.name : 'na')}'
   params: {
     Deployment: Deployment
-    PrivateLinkInfo: cdb.privateLinkInfo
+    PrivateLinkInfo: account.privateLinkInfo
     providerType: 'Microsoft.DocumentDb/databaseAccounts'
-    resourceName: toLower('${Deployment}-cosmos-${cdb.Name}')
+    resourceName: toLower('${Deployment}-cosmos-${account.Name}')
   }
   dependsOn: [
     CosmosDB[index]
   ]
 }]
 
-module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (cdb, index) in cosmosDBInfo: if(cosmosDB[index].match) {
-  name: 'dp${Deployment}-registerPrivateLinkDNS-ACU1-${((length(cosmosDBInfo) != 0) ? cdb.name : 'na')}'
+module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (account, index) in cosmosDBInfo: if(cosmosDB[index].match) {
+  name: 'dp${Deployment}-registerPrivateLinkDNS-ACU1-${((length(cosmosDBInfo) != 0) ? account.name : 'na')}'
   scope: resourceGroup(Global.HubRGName)
   params: {
-    PrivateLinkInfo: cdb.privateLinkInfo
-    resourceName: '${Deployment}-cosmos-${cdb.Name}'
+    PrivateLinkInfo: account.privateLinkInfo
+    resourceName: '${Deployment}-cosmos-${account.Name}'
     providerURL: '.azure.com/'
-    Nics: contains(cdb, 'privatelinkinfo') && length(cosmosDBInfo) != 0 ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
+    Nics: contains(account, 'privatelinkinfo') && length(cosmosDBInfo) != 0 ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
   }
 }]

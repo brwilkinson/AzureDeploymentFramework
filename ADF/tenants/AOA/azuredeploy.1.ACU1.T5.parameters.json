@@ -428,15 +428,15 @@
         ],
         "cosmosDBInfo": [
           {
-            "Name": "eshop-nosql",
-            "Kind": "MongoDB", //GlobalDocumentDB, MongoDB, Parse
+            "Name": "eshop-sql",
+            "Kind": "GlobalDocumentDB", //GlobalDocumentDB, MongoDB, Parse
             "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
             "enableMultipleWriteLocations": true,
             "enableAutomaticFailover": true,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snBE01",
-                "groupID": "MongoDB"
+                "groupID": "SQL"
               }
             ],
             "locations": [
@@ -454,7 +454,24 @@
             "databases": [
               {
                 "databaseName": "customers",
-                "containerName": "Info"
+                "containers": [
+                  {
+                    "containerName": "Info",
+                    "partitionKeyPaths": [
+                      "/myPartitionKey"
+                    ],
+                    "indexingPolicyPathInclude": [
+                      {
+                        "path": "/*"
+                      }
+                    ],
+                    "indexingPolicyPathExclude": [
+                      {
+                        "path": "/myPathToNotIndex/*"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }

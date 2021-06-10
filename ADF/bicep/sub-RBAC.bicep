@@ -61,7 +61,7 @@ var locationlookup = {
 }
 var location = locationlookup[Prefix]
 var roleslookup = json(Global.RolesLookup)
-var rolesgrouplookup = json(Global.RolesGroupsLookup)
+var rolesgroupslookup = json(Global.RolesGroupsLookup)
 
 var uaiinfo = contains(DeploymentInfo, 'uaiinfo') ? DeploymentInfo.uaiinfo : []
 var rolesInfo = contains(DeploymentInfo, 'rolesInfo') ? DeploymentInfo.rolesInfo : []
@@ -80,7 +80,7 @@ module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
         rgName: rg
         Enviro: enviro
         Global: Global
-        rolesGroupsLookup: rolesgrouplookup
+        rolesGroupsLookup: rolesgroupslookup
         rolesLookup: roleslookup
         roleInfo: uai
         providerPath: 'Microsoft.ManagedIdentity/userAssignedIdentities'
@@ -98,7 +98,7 @@ module ROLES 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
         rgName: rg
         Enviro: enviro
         Global: Global
-        rolesGroupsLookup: rolesgrouplookup
+        rolesGroupsLookup: rolesgroupslookup
         rolesLookup: roleslookup
         roleInfo: role
         providerPath: ''
@@ -115,7 +115,7 @@ module SP 'sub-RBAC-ALL.bicep' = [for sp in sps: {
         rgName: rg
         Enviro: enviro
         Global: Global
-        rolesGroupsLookup: rolesgrouplookup
+        rolesGroupsLookup: rolesgroupslookup
         rolesLookup: roleslookup
         roleInfo: sp
         providerPath: ''
