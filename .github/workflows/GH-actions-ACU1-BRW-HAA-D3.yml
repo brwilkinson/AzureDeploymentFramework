@@ -35,7 +35,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AzureRMLogin}}
+          creds: ${{ secrets.env.SecretName }}
           enable-AzPSSession: true
 
       - name: ${{ env.ENV }}_RG
