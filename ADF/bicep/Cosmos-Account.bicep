@@ -26,15 +26,6 @@ resource CosmosAccount 'Microsoft.DocumentDb/databaseAccounts@2021-03-01-preview
   }
 }
 
-module CosmosAccountDB 'Cosmos-Account-DB.bicep'= [for (cdb, index) in cosmosAccount.databases : {
-  name: 'dp${Deployment}-cosmosDBDeployDB${((length(cosmosAccount.databases) != 0) ? cdb.databaseName : 'na')}'
-  params: {
-    cosmosAccount: cosmosAccount
-    cosmosDB: cdb
-    Deployment: Deployment
-  }
-}]
-
 resource CosmosDBDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
   scope: CosmosAccount
@@ -78,3 +69,12 @@ resource CosmosDBDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
     ]
   }
 }
+
+module CosmosAccountDB 'Cosmos-Account-DB.bicep'= [for (cdb, index) in cosmosAccount.databases : {
+  name: 'dp${Deployment}-cosmosDBDeployDB${((length(cosmosAccount.databases) != 0) ? cdb.databaseName : 'na')}'
+  params: {
+    cosmosAccount: cosmosAccount
+    cosmosDB: cdb
+    Deployment: Deployment
+  }
+}]
