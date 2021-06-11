@@ -31,9 +31,9 @@ steps:
     azurePowerShellVersion: 'LatestVersion'
     pwsh: true
 
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'ADO_ADF_ACU1-BRW-AOA-RG-G0'
-    scriptType: 'pscore'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'bicep --version'
+# - task: AzureCLI@2
+#   inputs:
+#     azureSubscription: 'ADO_ADF_ACU1-BRW-AOA-RG-G0'
+#     scriptType: 'pscore'
+#     scriptLocation: 'inlineScript'
+#     inlineScript: 'bicep --version'
