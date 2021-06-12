@@ -21,26 +21,26 @@ resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = [for (nic,i
   dependsOn: []
 }]
 
-// resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP')) {
-//   name: 'service'
-//   scope: PublicIP[index]
-//   properties: {
-//     workspaceId: OMSworkspaceID
-//     logs: [
-//       {
-//         category: 'DDoSProtectionNotifications'
-//         enabled: true
-//       }
-//     ]
-//     metrics: [
-//       {
-//         timeGrain: 'PT5M'
-//         enabled: true
-//         retentionPolicy: {
-//           enabled: false
-//           days: 0
-//         }
-//       }
-//     ]
-//   }
-// }]
+resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP')) {
+  name: 'service'
+  scope: PublicIP[index]
+  properties: {
+    workspaceId: OMSworkspaceID
+    logs: [
+      {
+        category: 'DDoSProtectionNotifications'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        timeGrain: 'PT5M'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+  }
+}]
