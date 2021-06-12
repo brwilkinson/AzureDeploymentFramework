@@ -23,13 +23,13 @@ var DNSLookup = {
 //  dns private link zone
 // https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration
 
-resource privateLinkDNS 'Microsoft.Network/privateDnsZones/A@2020-06-01' = [for (item, i) in PrivateLinkInfo: {
+resource privateLinkDNS 'Microsoft.Network/privateDnsZones/A@2020-06-01' = [for (item, index) in PrivateLinkInfo: {
   name: 'privatelink.${(contains(DNSLookup, item.groupID) ? DNSLookup[item.groupID] : item.groupID)}${providerURL}${resourceName}'
   properties: {
     ttl: 3600
     aRecords: [
       {
-        ipv4Address: reference(Nics[(i)], '2018-05-01').ipConfigurations[0].properties.privateIPAddress
+        ipv4Address: reference(Nics[index], '2018-05-01').ipConfigurations[0].properties.privateIPAddress
       }
     ]
   }
