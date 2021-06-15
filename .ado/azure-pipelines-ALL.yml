@@ -1,0 +1,73 @@
+parameters:
+
+- name: ORG
+  displayName: ORG Code
+  type: string
+  default: BRW
+  values:
+  - BRW
+
+- name: PREFIX
+  displayName: Region Prefix
+  type: string
+  default: ACU1
+  values:
+  - ACU1
+  - AEU2
+  - AEU1
+  - AWU2
+
+- name: APP
+  displayName: App/Tenant Name
+  type: string
+  default: AOA
+  values:
+  - AOA
+  - ABC
+  - ADF
+  - HAA
+  - HUB
+
+- name: ENV
+  displayName: Environment Name
+  type: string
+  default: T5
+
+- name: SP
+  displayName: Service principal name
+  type: string
+
+jobs:
+- job: Subscription_RG_RBAC__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
+  pool:
+    vmImage: windows-latest
+    
+  steps:
+  - task: AzurePowerShell@5
+    inputs:
+      azureSubscription: ${{ parameters.SP }}-G0
+      ScriptType: 'FilePath'
+      ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
+      ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
+      FailOnStandardError: true
+      # azurePowerShellVersion: 'LatestVersion'
+      preferredAzurePowerShellVersion: 6.0.0
+      pwsh: true
+
+- job: ResourceGroup_RG_ALL__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
+  dependsOn: Subscription_RG_RBAC__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
+  pool:
+    vmImage: windows-latest
+    # pool: AZC1-S1-Infra
+    
+  steps:
+  - task: AzurePowerShell@5
+    inputs:
+      azureSubscription: ${{ parameters.SP }}-${{ parameters.ENV }}
+      ScriptType: 'FilePath'
+      ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
+      ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "01-dp-rg-ALLRG"'
+      FailOnStandardError: true
+      # azurePowerShellVersion: 'LatestVersion'
+      preferredAzurePowerShellVersion: 6.0.0
+      pwsh: true

@@ -25,7 +25,10 @@
     - These related modules will start with the same name, then have a dash E.g. SA-Storage.bicep
     - So you would never call that file directly, you would only call SA.bicep in a deployment for storage accounts.
     - The above nesting can be multiple levels e.g. sub-RBAC.bicep --> sub-RBAC-ALL.bicep --> sub-RBAC-ALL-RA.bicep
-        - Again you would only ever want to deploy sub-RBAC.bicep, not the children.
+        - Again you would only ever want to deploy **sub-RBAC.bicep**, not the children.
+        
+            ![Bicep Helper Functions](./Naming_Standards_Bicep_Modules.jpg)
+
 - Use a dot notation for segmenting Resource types into more descriptive categories
     - An example is: SA.bicep for storage OR SA.CDN.bicep for a CDN
     - The dot allows for more specific names to describe the bicep file, however diferentiates the dash used for nested deployments.
@@ -33,4 +36,8 @@
 - Any deployment names to Bicep modules will begin with 'dp', these are used for the deployment names e.g. in the Portal.
 - Currently some parameter names that have been migrated from ARM templates will maintain the casing, which is not camel case
     - Where it makes sense camel case will be used for param/variable/resource names, where it doesn't break backwards compatiblity
+
+- Helper functions are currently prefixed with an x.file.bicep, these are reusable bicep modules that can be called from more than 1 parent module.
+
+    ![Bicep Helper Functions](./Naming_Standards_Bicep_Helper.jpg)
 ---

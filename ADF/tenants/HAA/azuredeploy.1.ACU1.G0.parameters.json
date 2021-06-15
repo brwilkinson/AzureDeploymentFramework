@@ -123,6 +123,14 @@
                 "Name": "Owner"
               }
             ]
+          },
+          {
+            "Name": "One_Commercial_Azure_Governance",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
           }
         ],
         "RoleDefinitionsInfo": [

@@ -46,47 +46,45 @@ set-location -path ADF:\
 # Deploy Environment
 
 # Global  sub deploy for $env:Enviro
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-deploy\00-azuredeploy-sub-InitialRG.json -SubscriptionDeploy -FullUpload -VSTS
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy -FullUpload -VSTS
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-dp-sub-InitialRG.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 1
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-dp-sub-InitialRG.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 2
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-sub-RGRoleAssignments.json -SubscriptionDeploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-mg-ManagementGroups.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\sub-RBAC.bicep -SubscriptionDeploy
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-mg-ManagementGroups.json   #todo
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-Test2.json
 
 # $env:Enviro RG deploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-deploy\00-azuredeploy-ALL.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-deploy\00-azuredeploy-ALL.json # -FullUpload -VSTS
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-dp-rg-ALLRG.bicep      #<-- Deploys from Pipelines Region 1
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\01-dp-rg-ALLRG.bicep      #<-- Deploys from Pipelines Region 2
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-NSG.hub.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NSG.hub.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\NSG.hub.bicep
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\NSG.hub.bicep
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-NSG.spoke.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NSG.spoke.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\NSG.spoke.bicep
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\NSG.spoke.bicep
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-DNSPrivate.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-VNetPrivateLink.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\03-azuredeploy-VNet.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\06-azuredeploy-WAF.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\DNSPrivate.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VNET.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\06-azuredeploy-WAF.json   #todo
 
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-DNSPrivate.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-VNetPrivateLink.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\03-azuredeploy-VNet.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\06-azuredeploy-WAF.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\DNSPrivate.bicep
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\VNET.bicep
+AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\06-azuredeploy-WAF.json    #todo
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\01-azuredeploy-OMS.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\23-azuredeploy-Dashboard.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\OMS.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\23-azuredeploy-Dashboard.json    #todo
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-NetworkWatcher.json
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\2-azuredeploy-NetworkFlowLogs.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\NetworkWatcher.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\NetworkFlowLogs.bicep
 
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NetworkWatcher.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-NetworkFlowLogs.json
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\NetworkWatcher.bicep
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\NetworkFlowLogs.bicep
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\01-azuredeploy-Storage.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\SA.bicep
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-KV.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\00-azuredeploy-KV.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\KV.bicep
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\KV.bicep
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\09-azuredeploy-APIM.json
 

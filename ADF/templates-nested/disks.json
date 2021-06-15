@@ -13,15 +13,15 @@
     },
     "DATA": {
       "type": "object",
-      "defaultValue": {"1":1}
+      "defaultValue": {}
     },
     "DATASS": {
       "type": "object",
-      "defaultValue": {"1":1}
+      "defaultValue": {}
     },
     "SOFS": {
       "type": "object",
-      "defaultValue": {"1":1}
+      "defaultValue": {}
     },
     "LOGS": {
       "type": "object",
@@ -44,74 +44,74 @@
     "copy": [
       {
         "name": "Data",
-        "count": "[if(contains(parameters('Data'),'1'),1,Length(parameters('Data').LUNS))]",
+        "count": "[Length(parameters('Data').LUNS)]",
         "input": {
-          "name": "[if(contains(parameters('Data'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Data').LUNS[copyIndex('Data')][0],2,'0')) )]",
-          "lun": "[if(contains(parameters('Data'),'1'),1, int(parameters('Data').LUNS[copyIndex('Data')][0]) )]",
-          "caching": "[if(contains(parameters('Data'),'1'),1, parameters('Data').caching )]",
-          "diskSizeGB": "[if(contains(parameters('Data'),'1'),1, int(parameters('Data').LUNS[copyIndex('Data')][1]) )]",
-          "createOption": "[if(contains(parameters('Data'),'1'),1,if(equals(length(parameters('Data').LUNS[copyIndex('Data')]),3),parameters('Data').LUNS[copyIndex('Data')][2],'Empty'))]",
-          "managedDisk": "[if(contains(parameters('Data'),'1'),1, if(contains(parameters('Data'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('Data').saType,'\"}')),json('null')))]"
+          "name": "[concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Data').LUNS[copyIndex('Data')][0],2,'0'))]",
+          "lun": "[int(parameters('Data').LUNS[copyIndex('Data')][0])]",
+          "caching": "[parameters('Data').caching )]",
+          "diskSizeGB": "[int(parameters('Data').LUNS[copyIndex('Data')][1])]",
+          "createOption": "[if(equals(length(parameters('Data').LUNS[copyIndex('Data')]),3),parameters('Data').LUNS[copyIndex('Data')][2],'Empty')]",
+          "managedDisk": "[if(contains(parameters('Data'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('Data').saType,'\"}')),json('null'))]"
         }
       },
       {
         "name": "Datass",
-        "count": "[if(contains(parameters('Datass'),'1'),1,Length(parameters('Datass').LUNS))]",
+        "count": "[Length(parameters('Datass').LUNS)]",
         "input": {
-          // "name": "[if(contains(parameters('Datass'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Datass').LUNS[copyIndex('Datass')][0],2,'0')) )]",
-          "lun": "[if(contains(parameters('Datass'),'1'),1, int(parameters('Datass').LUNS[copyIndex('Datass')][0]) )]",
-          "caching": "[if(contains(parameters('Datass'),'1'),1, parameters('Datass').caching )]",
-          "diskSizeGB": "[if(contains(parameters('Datass'),'1'),1, int(parameters('Datass').LUNS[copyIndex('Datass')][1]) )]",
-          "createOption": "[if(contains(parameters('Datass'),'1'),1,if(equals(length(parameters('Datass').LUNS[copyIndex('Datass')]),3),parameters('Datass').LUNS[copyIndex('Datass')][2],'Empty'))]",
-          "managedDisk": "[if(contains(parameters('Datass'),'1'),1, if(contains(parameters('Datass'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('Datass').saType,'\"}')),json('null')))]"
+          // "name": "[concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Datass').LUNS[copyIndex('Datass')][0],2,'0')) )]",
+          "lun": "[int(parameters('Datass').LUNS[copyIndex('Datass')][0])]",
+          "caching": "[parameters('Datass').caching]",
+          "diskSizeGB": "[int(parameters('Datass').LUNS[copyIndex('Datass')][1])]",
+          "createOption": "[if(equals(length(parameters('Datass').LUNS[copyIndex('Datass')]),3),parameters('Datass').LUNS[copyIndex('Datass')][2],'Empty')]",
+          "managedDisk": "[if(contains(parameters('Datass'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('Datass').saType,'\"}')),json('null'))]"
         }
       },
       {
         "name": "SOFS",
-        "count": "[if(contains(parameters('SOFS'),'1'),1,Length(parameters('SOFS').LUNS))]",
+        "count": "[Length(parameters('SOFS').LUNS)]",
         "input": {
-          "name": "[if(contains(parameters('SOFS'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-SOFS' , padLeft( parameters('SOFS').LUNS[copyIndex('SOFS')][0],2,'0')) )]",
-          "lun": "[if(contains(parameters('SOFS'),'1'),1, int(parameters('SOFS').LUNS[copyIndex('SOFS')][0]) )]",
-          "caching": "[if(contains(parameters('SOFS'),'1'),1, parameters('SOFS').caching )]",
-          "diskSizeGB": "[if(contains(parameters('SOFS'),'1'),1, int(parameters('SOFS').LUNS[copyIndex('SOFS')][1]) )]",
-          "createOption": "[if(contains(parameters('SOFS'),'1'),1,if(equals(length(parameters('SOFS').LUNS[copyIndex('SOFS')]),3),parameters('SOFS').LUNS[copyIndex('SOFS')][2],'Empty'))]",
-          "managedDisk": "[if(contains(parameters('SOFS'),'1'),1, if(contains(parameters('SOFS'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('SOFS').saType,'\"}')),json('null')))]"
+          "name": "[ concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-SOFS' , padLeft( parameters('SOFS').LUNS[copyIndex('SOFS')][0],2,'0'))]",
+          "lun": "[ int(parameters('SOFS').LUNS[copyIndex('SOFS')][0])]",
+          "caching": "[ parameters('SOFS').caching]",
+          "diskSizeGB": "[ int(parameters('SOFS').LUNS[copyIndex('SOFS')][1])]",
+          "createOption": "[if(equals(length(parameters('SOFS').LUNS[copyIndex('SOFS')]),3),parameters('SOFS').LUNS[copyIndex('SOFS')][2],'Empty')]",
+          "managedDisk": "[ if(contains(parameters('SOFS'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('SOFS').saType,'\"}')),json('null'))]"
         }
       },
       {
         "name": "LOGS",
-        "count": "[if(contains(parameters('LOGS'),'1'),1,Length(parameters('LOGS').LUNS))]",
+        "count": "[Length(parameters('LOGS').LUNS)]",
         "input": {
-          "name": "[if(contains(parameters('LOGS'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-LOGS' , padLeft( parameters('LOGS').LUNS[copyIndex('LOGS')][0],2,'0')) )]",
-          "lun": "[if(contains(parameters('LOGS'),'1'),1, int(parameters('LOGS').LUNS[copyIndex('LOGS')][0]) )]",
-          "caching": "[if(contains(parameters('LOGS'),'1'),1, parameters('LOGS').caching )]",
-          "diskSizeGB": "[if(contains(parameters('LOGS'),'1'),1, int(parameters('LOGS').LUNS[copyIndex('LOGS')][1]) )]",
-          "createOption": "[if(contains(parameters('LOGS'),'1'),1,if(equals(length(parameters('LOGS').LUNS[copyIndex('LOGS')]),3),parameters('LOGS').LUNS[copyIndex('LOGS')][2],'Empty'))]",
-          "managedDisk": "[if(contains(parameters('LOGS'),'1'),1, if(contains(parameters('LOGS'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('LOGS').saType,'\"}')),json('null')))]"
+          "name": "[ concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-LOGS' , padLeft( parameters('LOGS').LUNS[copyIndex('LOGS')][0],2,'0'))]",
+          "lun": "[ int(parameters('LOGS').LUNS[copyIndex('LOGS')][0])]",
+          "caching": "[ parameters('LOGS').caching]",
+          "diskSizeGB": "[ int(parameters('LOGS').LUNS[copyIndex('LOGS')][1])]",
+          "createOption": "[if(equals(length(parameters('LOGS').LUNS[copyIndex('LOGS')]),3),parameters('LOGS').LUNS[copyIndex('LOGS')][2],'Empty')]",
+          "managedDisk": "[ if(contains(parameters('LOGS'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('LOGS').saType,'\"}')),json('null'))]"
         }
       },
       {
         "name": "TEMPDB",
-        "count": "[if(contains(parameters('TEMPDB'),'1'),1,Length(parameters('TEMPDB').LUNS))]",
+        "count": "[Length(parameters('TEMPDB').LUNS)]",
         "input": {
-          "name": "[if(contains(parameters('TEMPDB'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-TEMPDB' , padLeft( parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0],2,'0')) )]",
-          "lun": "[if(contains(parameters('TEMPDB'),'1'),1, int(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0]) )]",
-          "caching": "[if(contains(parameters('TEMPDB'),'1'),1, parameters('TEMPDB').caching )]",
-          "diskSizeGB": "[if(contains(parameters('TEMPDB'),'1'),1, int(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][1]) )]",
-          "createOption": "[if(contains(parameters('TEMPDB'),'1'),1,if(equals(length(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')]),3),parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][2],'Empty'))]",
-          "managedDisk": "[if(contains(parameters('TEMPDB'),'1'),1, if(contains(parameters('TEMPDB'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('TEMPDB').saType,'\"}')),json('null')))]"
+          "name": "[ concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-TEMPDB' , padLeft( parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0],2,'0'))]",
+          "lun": "[ int(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0])]",
+          "caching": "[ parameters('TEMPDB').caching]",
+          "diskSizeGB": "[ int(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][1])]",
+          "createOption": "[if(equals(length(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')]),3),parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][2],'Empty')]",
+          "managedDisk": "[ if(contains(parameters('TEMPDB'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('TEMPDB').saType,'\"}')),json('null'))]"
         }
       },
       {
         "name": "BACKUP",
-        "count": "[if(contains(parameters('BACKUP'),'1'),1,Length(parameters('BACKUP').LUNS))]",
+        "count": "[Length(parameters('BACKUP').LUNS)]",
         "input": {
-          "name": "[if(contains(parameters('BACKUP'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-BACKUP' , padLeft( parameters('BACKUP').LUNS[copyIndex('BACKUP')][0],2,'0')) )]",
-          "lun": "[if(contains(parameters('BACKUP'),'1'),1, int(parameters('BACKUP').LUNS[copyIndex('BACKUP')][0]) )]",
-          "caching": "[if(contains(parameters('BACKUP'),'1'),1, parameters('BACKUP').caching )]",
-          "diskSizeGB": "[if(contains(parameters('BACKUP'),'1'),1, int(parameters('BACKUP').LUNS[copyIndex('BACKUP')][1]) )]",
-          "createOption": "[if(contains(parameters('BACKUP'),'1'),1,if(equals(length(parameters('BACKUP').LUNS[copyIndex('BACKUP')]),3),parameters('BACKUP').LUNS[copyIndex('BACKUP')][2],'Empty'))]",
-          "managedDisk": "[if(contains(parameters('BACKUP'),'1'),1, if(contains(parameters('BACKUP'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('BACKUP').saType,'\"}')),json('null')))]"
+          "name": "[ concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-BACKUP' , padLeft( parameters('BACKUP').LUNS[copyIndex('BACKUP')][0],2,'0'))]",
+          "lun": "[ int(parameters('BACKUP').LUNS[copyIndex('BACKUP')][0])]",
+          "caching": "[ parameters('BACKUP').caching]",
+          "diskSizeGB": "[ int(parameters('BACKUP').LUNS[copyIndex('BACKUP')][1])]",
+          "createOption": "[if(equals(length(parameters('BACKUP').LUNS[copyIndex('BACKUP')]),3),parameters('BACKUP').LUNS[copyIndex('BACKUP')][2],'Empty')]",
+          "managedDisk": "[ if(contains(parameters('BACKUP'),'saType') ,json( concat('{\"storageAccountType\":\"',parameters('BACKUP').saType,'\"}')),json('null'))]"
         }
       }
     ]
@@ -152,13 +152,13 @@
     },
     "DATADisks": {
       "type": "array",
-      "value": "[union( 
-                        if(contains(parameters('SOFS'),'1'),createArray(), variables('SOFS') ),
-                        if(contains(parameters('Data'),'1'),createArray(), variables('Data') ),
-                        if(contains(parameters('Datass'),'1'),createArray(), variables('Datass') ),
-                        if(contains(parameters('LOGS'),'1'),createArray(), variables('LOGS') ) , 
-                        if(contains(parameters('TEMPDB'),'1'),createArray(), variables('TEMPDB') ), 
-                        if(contains(parameters('BACKUP'),'1'),createArray(), variables('BACKUP') )
+      "value": "[union(
+                        if(contains(parameters('SOFS'),'1'),'[]', variables('SOFS') ),
+                        if(contains(parameters('Data'),'1'),'[]', variables('Data') ),
+                        if(contains(parameters('Datass'),'1'),'[]', variables('Datass') ),
+                        if(contains(parameters('LOGS'),'1'),'[]', variables('LOGS') ) ,
+                        if(contains(parameters('TEMPDB'),'1'),'[]', variables('TEMPDB') ),
+                        if(contains(parameters('BACKUP'),'1'),'[]', variables('BACKUP') )
                       )]"
     }
   }

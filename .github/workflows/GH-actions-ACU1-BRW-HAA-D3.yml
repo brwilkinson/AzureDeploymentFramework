@@ -35,13 +35,13 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AzureRMLogin}}
+          creds: ${{ secrets.ACU1_BRW_HAA_RG_D3 }}
           enable-AzPSSession: true
 
       - name: ${{ env.ENV }}_RG
         uses: Azure/powershell@v1
         with:
           inlineScript: |
-            echo ${{ secrets.$env.SecretName }}
+            echo ${{ env.SecretName }}
             dir env:
           azPSVersion: latest

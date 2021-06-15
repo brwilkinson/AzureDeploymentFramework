@@ -75,7 +75,7 @@ module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVI
   }
 }]
 
-module KVPrivateLink 'vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match) {
   name: 'dp${Deployment}-privatelinkloop${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
   params: {
     Deployment: Deployment
@@ -85,13 +85,13 @@ module KVPrivateLink 'vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultInfo:
   }
 }]
 
-module KVPrivateLinkDNS 'vNetPrivateLinkDNS.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match) {
+module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match) {
   name: 'dp${Deployment}-registerPrivateDNS${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
   scope: resourceGroup(hubRG)
   params: {
     PrivateLinkInfo: kv.privateLinkInfo
     providerURL: '.azure.net/'
     resourceName: '${Deployment}-kv${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
-    Nics: (contains(kv, 'privatelinkinfo') && length(KeyVaultInfo) != 0 ? reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-privatelinkloop${kv.name}'), '2018-05-01').outputs.NICID.value : 'na')
+    Nics: contains(kv, 'privatelinkinfo') && length(KeyVaultInfo) != 0 ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
   }
 }]

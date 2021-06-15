@@ -103,10 +103,6 @@
             "Member": "benwilk@Microsoft.com"
           }
         ],
-        "DNSPrivateZoneInfo" : [
-          "Contoso.com",
-          "Fabrikam.com"
-        ],
         "SubnetInfo": [
           {
             "name": "snWAF01",
@@ -156,7 +152,7 @@
             "allNetworks" :"Allow"
           }
         ],
-        "LinkPrivateDnsInfo": [
+        "DNSPrivateZoneInfo": [
           {
             "zone": "Contoso.com",
             "Autoregistration": false

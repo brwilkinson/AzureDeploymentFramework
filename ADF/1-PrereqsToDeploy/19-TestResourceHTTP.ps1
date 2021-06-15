@@ -106,6 +106,10 @@ $rgName = 'ACU1-BRW-AOA-RG-D3'
 $Name = 'ACU1-BRW-AOA-D3-aci-locust-master-0'
 $type = 'Microsoft.ContainerInstance/containerGroups'
 
+$rgName = 'ACU1-BRW-AOA-RG-D3'
+$Name = 'ACU1-BRW-AOA-D3-aci-locust-master-0'
+$type = 'Microsoft.ContainerInstance/containerGroups'
+
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 
 $n = $type -split '/' | Select-Object -First 1

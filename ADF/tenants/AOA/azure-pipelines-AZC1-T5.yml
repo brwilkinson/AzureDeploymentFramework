@@ -6,52 +6,21 @@ trigger: #none
     exclude: [ NoBuild ]
 
 variables:
-  ORG:    BRW
-  PREFIX: ACU1
-  APP :   AOA
-  ENV:    T5
-
-  AZD:    ADF
-
-  SP:     ADO_${{ variables.AZD }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG-
-
+  ORG:        BRW
+  APP :       AOA
+  
+  PREFIX:     ACU1
+  ENV:        T5
+  
+  ADOProject: ADO_ADF
 
 stages:
-- stage: Subscription
+- stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
   jobs:
-  - job: Subscription_RG_RBAC
-    pool:
-      vmImage: windows-latest
-      
-    steps:
-    - task: AzurePowerShell@5
-      inputs:
-        azureSubscription: ${{ variables.PREFIX }}-G0
-        ScriptType: 'FilePath'
-        ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
-        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
-        FailOnStandardError: true
-        # azurePowerShellVersion: 'LatestVersion'
-        preferredAzurePowerShellVersion: 6.0.0
-        pwsh: true
-
-- stage: RG_ALL
-  jobs:
-  - job: RG_ALL
-
-    pool:
-      vmImage: windows-latest
-      # pool: AZC1-S1-Infra
-      
-    steps:
-    - task: AzurePowerShell@5
-      inputs:
-        azureSubscription: ${{ variables.PREFIX }}-${{ variables.ENV }}
-        ScriptType: 'FilePath'
-        ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
-        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "01-dp-rg-ALLRG"'
-        FailOnStandardError: true
-        # azurePowerShellVersion: 'LatestVersion'
-        preferredAzurePowerShellVersion: 6.0.0
-        pwsh: true
-        
+  - template: ..\..\..\.ado\azure-pipelines-ALL.yml
+    parameters:
+      ORG:    ${{ variables.ORG }}
+      APP :   ${{ variables.APP }}
+      PREFIX: ${{ variables.PREFIX }}
+      ENV:    ${{ variables.ENV }}
+      SP:     ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG

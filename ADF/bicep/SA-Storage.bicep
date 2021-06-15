@@ -334,7 +334,7 @@ resource SAFileShares 'Microsoft.Storage/storageAccounts/fileServices/shares@201
   ]
 }]
 
-module vnetPrivateLink 'vNetPrivateLink.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-privatelinkloopSA${storageInfo.nameSuffix}'
   params: {
     Deployment: Deployment
@@ -347,14 +347,14 @@ module vnetPrivateLink 'vNetPrivateLink.bicep' = if (contains(storageInfo, 'priv
   ]
 }
 
-module privateLinkDNS 'vNetprivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-registerPrivateDNS${storageInfo.nameSuffix}'
   scope: resourceGroup(hubRG)
   params: {
     PrivateLinkInfo: storageInfo.privateLinkInfo
     providerURL: '.core.windows.net/' 
     resourceName: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
-    Nics: contains(storageInfo, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('')
+    Nics: contains(storageInfo, 'privatelinkinfo') && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
   }
 }
 

@@ -58,6 +58,7 @@ var BastionInfo = {
 
 resource BastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   name: '${Deployment}-vn/${snAzureBastionSubnet}'
+  
 }
 
 resource PIPBastion 'Microsoft.Network/publicIPAddresses@2019-11-01' = {

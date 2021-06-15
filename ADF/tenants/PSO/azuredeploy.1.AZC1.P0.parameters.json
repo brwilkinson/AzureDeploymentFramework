@@ -109,21 +109,6 @@
             "Member": "benwilk@Microsoft.com"
           }
         ],
-        "DNSPrivateZoneInfo": [
-          "privatelink.azurewebsites.net",
-          "privatelink.vaultcore.azure.net",
-          "privatelink.blob.core.windows.net",
-          "privatelink.queue.core.windows.net",
-          "privatelink.file.core.windows.net",
-          "privatelink.afs.azure.net",
-          "privatelink.servicebus.windows.net",
-          "privatelink.database.windows.net",
-          "privatelink.azconfig.io",
-          "Contoso.com",
-          "Fabrikam.com",
-          "PSObject.com",
-          "PSThing.com"
-        ],
         "SubnetInfo": [
           {
             "name": "snMT01",
@@ -190,69 +175,69 @@
             "allNetworks": "Allow"
           }
         ],
-        "LinkPrivateDnsInfo": [
+        "DNSPrivateZoneInfo": [
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.vaultcore.azure.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.servicebus.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.database.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.azurewebsites.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.blob.core.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.queue.core.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.file.core.windows.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.afs.azure.net",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "privatelink.azconfig.io",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "Contoso.com",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "Fabrikam.com",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "PSObject.com",
             "Autoregistration": false
           },
           {
-            "zoneRG": "P0",
+            "linkDNS": 1,
             "zone": "PSThing.com",
             "Autoregistration": false
           }
