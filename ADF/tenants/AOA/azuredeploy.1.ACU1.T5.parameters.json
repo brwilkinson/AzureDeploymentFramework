@@ -88,10 +88,10 @@
         "CosmosDB": 1,
         "DASHBOARD": 0,
         "DNSLookup": 0,
-        "ServerFarm": 0,
+        "ServerFarm": 1,
         "WebSite": 0,
         "MySQLDB": 0,
-        "Function": 0,
+        "Function": 1,
         "SB": 0,
         "AzureSQL": 0
       }
@@ -214,6 +214,14 @@
                 "Name": "Storage Queue Data Contributor"
               }
             ]
+          },
+          {
+            "name": "VMOperator",
+            "RBAC": [
+              {
+                "Name": "Virtual Machine Contributor"
+              }
+            ]
           }
         ],
         "rolesInfo": [
@@ -306,7 +314,8 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": true,
+            "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",
@@ -424,6 +433,63 @@
             "Name": "01",
             "SKU": "Standard",
             "adminUserEnabled": true
+          }
+        ],
+        "appServiceplanInfo": [
+          {
+            "Name": "ASP01",
+            "kind": "elastic",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "EP1",
+            "skutier": "ElasticPremium",
+            "skusize": "EP1",
+            "skufamily": "EP",
+            "skucapacity": 1,
+            "maxWorkerCount": 100,
+            "deploy": 1
+          },
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skusize": "P1v2",
+            "skufamily": "Pv2",
+            "skucapacity": 1,
+            "deploy": 1
+          }
+        ],
+        "WebSiteInfo": [
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "saname": "wps01"
+          }
+        ],
+        "FunctionInfo": [
+          {
+            "Name": "DIS01",
+            "kind": "functionapp",
+            "AppSVCPlan": "ASP01",
+            "saname": "dis01",
+            "runtime": "dotnet",
+            "subnet": "snMT01",
+            "preWarmedCount": 1,
+            "deploy": 0
+          },
+          {
+            "Name": "PS01",
+            "kind": "functionapp",
+            "AppSVCPlan": "ASP01",
+            "saname": "dis01",
+            "runtime": "powershell",
+            "subnet": "snMT01",
+            "preWarmedCount": 1,
+            "deploy": 1
           }
         ],
         "cosmosDBInfo": [

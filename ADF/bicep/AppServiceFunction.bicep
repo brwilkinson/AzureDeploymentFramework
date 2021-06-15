@@ -4,11 +4,12 @@
   'AEU2'
   'ACU1'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
   'D'
+  'T'
   'U'
   'P'
   'S'
@@ -45,19 +46,23 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var DeploymentURI = toLower(concat(Prefix, Global.OrgName, Global.Appname, Environment, DeploymentID))
-var subscriptionId = subscription().subscriptionId
-var SADiagName = toLower('${replace(Deployment, '-', '')}sadiag')
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
+var SADiagName = '${DeploymentURI}sadiag'
+
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
 var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
 
-resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' existing = {
-  name: AppInsightsName
-}
+var WebSiteInfo = (contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : [])
+  
+var WSInfo = [for (ws, index) in WebSiteInfo: {
+  match: ((Global.CN == '.') || contains(Global.CN, ws.name))
+  saName: toLower('${DeploymentURI}sa${ws.saname}')
+}]
 
-var WebSiteInfo = DeploymentInfo.FunctionInfo
 var MSILookup = {
   SQL: 'Cluster'
   UTL: 'DefaultKeyVault'
@@ -65,6 +70,19 @@ var MSILookup = {
   OCR: 'Storage'
   PS01: 'VMOperator'
 }
+
+// merge appConfig
+var myAppConfig = [
+  { 
+    name: 'abc'
+    value: 'value'
+  }
+  { 
+    name: 'def' 
+    value: 'value'
+  }
+]
+
 var userAssignedIdentities = {
   Default: {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
@@ -74,24 +92,21 @@ var userAssignedIdentities = {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGetApp')}': {}
   }
 }
-var saname = [for item in WebSiteInfo: {
-  saName: toLower('${DeploymentURI}sa${item.saname}')
-}]
 
-resource Deployment_fn_WebSiteInfo_Name 'Microsoft.Web/sites@2019-08-01' = [for (item, i) in WebSiteInfo: if (item.deploy == 1) {
-  name: '${Deployment}-fn${item.Name}'
+resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: if (ws.deploy == 1 && WSInfo[index].match) {
+  name: '${Deployment}-fn${ws.Name}'
   identity: {
     type: 'SystemAssigned, UserAssigned'
-    userAssignedIdentities: (contains(MSILookup, WebSiteInfo[(i + 0)].NAME) ? userAssignedIdentities[MSILookup[WebSiteInfo[(i + 0)].NAME]] : userAssignedIdentities.Default)
+    userAssignedIdentities: (contains(MSILookup, ws.NAME) ? userAssignedIdentities[MSILookup[ws.NAME]] : userAssignedIdentities.Default)
   }
-  kind: item.kind
+  kind: ws.kind
   location: resourceGroup().location
   properties: {
     enabled: true
     httpsOnly: true
-    serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${item.AppSVCPlan}')
+    serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
     siteConfig: {
-      appSettings: [
+      appSettings: union(myAppConfig,[
         {
           name: 'AzureWebJobsStorage'
           value: 'DefaultEndpointsProtocol=https;AccountName=${SADiagName};AccountKey=${listKeys('Microsoft.Storage/storageAccounts/${SADiagName}', '2015-05-01-preview').key1}'
@@ -102,27 +117,28 @@ resource Deployment_fn_WebSiteInfo_Name 'Microsoft.Web/sites@2019-08-01' = [for 
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value:  appInsightsID //reference(AppInsightsID, '2015-05-01').InstrumentationKey
+          value: reference(AppInsightsID, '2015-05-01').InstrumentationKey
         }
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: reference(AppInsightsID, '2015-05-01').ConnectionString
+          value: 'InstrumentationKey=${reference(AppInsightsID, '2015-05-01').InstrumentationKey}'
         }
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
-          value: item.runtime
+          value: ws.runtime
         }
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'
           value: '~3'
         }
-      ]
+      ])
     }
   }
 }]
 
-resource Deployment_fn_WebSiteInfo_Name_Microsoft_Insights_service 'Microsoft.Web/sites/providers/diagnosticSettings@2015-07-01' = [for item in WebSiteInfo: if (item.deploy == 1) {
-  name: '${Deployment}-fn${item.Name}/Microsoft.Insights/service'
+resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (ws, index) in WebSiteInfo: if (ws.deploy == 1 && WSInfo[index].match) {
+  name: 'service'
+  scope: WS[index]
   properties: {
     workspaceId: OMSworkspaceID
     logs: [
@@ -146,30 +162,23 @@ resource Deployment_fn_WebSiteInfo_Name_Microsoft_Insights_service 'Microsoft.We
       }
     ]
   }
-  dependsOn: [
-    '${Deployment}-fn${item.Name}'
-  ]
 }]
 
-resource Deployment_fn_WebSiteInfo_Name_virtualNetwork 'Microsoft.Web/sites/config@2019-08-01' = [for item in WebSiteInfo: if (item.deploy == 1) {
-  name: '${Deployment}-fn${item.Name}/virtualNetwork'
-  location: resourceGroup().location
+resource WSVirtualNetwork 'Microsoft.Web/sites/config@2021-01-01' = [for (ws, index) in WebSiteInfo: if (ws.deploy == 1 && WSInfo[index].match) {
+  name: 'virtualNetwork'
+  parent: WS[index]
   properties: {
-    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', item.subnet)
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', ws.subnet)
     swiftSupported: true
   }
-  dependsOn: [
-    '${Deployment}-fn${item.Name}'
-  ]
 }]
 
-resource Deployment_fn_WebSiteInfo_Name_web 'Microsoft.Web/sites/config@2019-08-01' = [for item in WebSiteInfo: if (item.deploy == 1) {
-  name: '${Deployment}-fn${item.Name}/web'
-  location: resourceGroup().location
+resource WSWebConfig 'Microsoft.Web/sites/config@2021-01-01' = [for (ws, index) in WebSiteInfo: if (ws.deploy == 1 && WSInfo[index].match) {
+  name: 'web'
+  parent: WS[index]
   properties: {
-    preWarmedInstanceCount: item.preWarmedCount
+    preWarmedInstanceCount: ws.preWarmedCount
   }
-  dependsOn: [
-    '${Deployment}-fn${item.Name}'
-  ]
 }]
+
+
