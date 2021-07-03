@@ -82,6 +82,17 @@ module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.servi
   }
 }]
 
+module setdnsFDServices 'FD-frontDoor-DNS.bicep' = [for service in frontDoorInfo.services : {
+  name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  params: {
+    Deployment: Deployment
+    global: Global
+    frontDoorInfo: frontDoorInfo
+    service: service
+  }
+}]
+
 resource FD 'Microsoft.Network/frontdoors@2020-05-01' = {
   name: '${Deployment}-afd${frontDoorInfo.name}'
   location: 'global'
@@ -209,14 +220,3 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
   ]
 }]
 
-  // to do
- resource global_DomainNameExt_Deployment_afd_frontDoorInfo_name_frontDoorInfo_services_0_Name_Default_frontDoorInfo_services_0_Name 'Microsoft.Network/dnsZones/CNAME@2018-05-01' = {
-   name: toLower('${global.DomainNameExt}/${Deployment}-afd${frontDoorInfo.name}${((frontDoorInfo.services[copyIndex(0)].Name == 'Default') ? '' : '-${frontDoorInfo.services[copyIndex(0)].Name}')}')
-   properties: {
-     metadata: {}
-     TTL: 3600
-     CNAMERecord: {
-       cname: '${Deployment}-afd${frontDoorInfo.name}.azurefd.net'
-     }
-   }
- }
