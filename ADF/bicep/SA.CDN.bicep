@@ -92,10 +92,6 @@ resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn
   }
 }]
 
-resource DNSExternal 'Microsoft.Network/dnsZones@2018-05-01' existing = {
-  name: Global.DomainNameExt
-}
-
 module DNSCNAME 'x.DNS.CNAME.bicep' = [for (cdn, index) in CDNInfo: if (CDN[index].match && contains(cdn, 'hostname')) {
   name: '${DeploymentURI}${cdn.hostname}.${Global.DomainNameExt}'
   scope: resourceGroup(Global.GlobalRGName)
