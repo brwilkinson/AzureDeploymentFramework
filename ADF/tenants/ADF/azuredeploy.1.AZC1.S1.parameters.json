@@ -88,6 +88,7 @@
         "DNSLookup": 0,
         "ServerFarm": 1,
         "WebSite": 0,
+        "WebSiteContainer": 0,
         "MySQLDB": 0,
         "Function": 1,
         "SB": 1,

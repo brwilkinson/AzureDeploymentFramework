@@ -56,6 +56,7 @@ var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMS
 var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
 
+// FunctionInfo
 var WebSiteInfo = (contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : [])
   
 var WSInfo = [for (ws, index) in WebSiteInfo: {

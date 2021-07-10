@@ -1,0 +1,183 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "Environment": {
+      "type": "string"
+    },
+    "frontDoorInfo": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "OMSworkspaceID": {
+      "type": "string"
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('F')]"
+    }
+  },
+  "variables": {
+
+
+    "DefaultFrontEnd": [
+      {
+        "name": "[concat('default',parameters('frontDoorInfo').name,'-azurefd-net')]",
+        "properties": {
+          "hostName": "[toLower(concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'.azurefd.net'))]",
+          "sessionAffinityEnabledState": "Disabled",
+          "sessionAffinityTtlSeconds": 0,
+          "customHttpsConfiguration": null
+          // "webApplicationFirewallPolicyLink": {
+          //   "id": "string"
+          // }
+        }
+      }
+    ],
+
+    "copy": [
+      {
+        "name": "frontendEndpoints",
+        "count": "[length(parameters('frontDoorInfo').services)]",
+        "input": {
+          "name": "[concat(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].name)]",
+          "properties": {
+            "hostName": "[toLower(concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,
+                                        if(
+                                            equals(parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].Name,'Default'),
+                                              '.azurefd.net',
+                                              concat('-',parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].Name,'.',parameters('Global').DomainNameExt)
+                                          )
+                                        ))]",
+            "sessionAffinityEnabledState": "[parameters('frontDoorInfo').services[copyIndex('frontendEndpoints')].sessionAffinityEnabledState]",
+            "sessionAffinityTtlSeconds": 0
+            // "customHttpsConfiguration": null
+            // "webApplicationFirewallPolicyLink": {
+            //   "id": "string"
+            // }
+          }
+        }
+      },
+      {
+        "name": "healthProbeSettings",
+        "count": "[length(parameters('frontDoorInfo').probes)]",
+        "input": {
+          "name": "[parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')].name]",
+          "properties": {
+            "path": "[parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')].ProbePath]",
+            "protocol": "Https",
+            "intervalInSeconds": 30,
+            "healthProbeMethod": "[if(
+                                      contains(parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')],'probeMethod'),
+                                      parameters('frontDoorInfo').probes[copyIndex('healthProbeSettings')].probeMethod,
+                                      'Head')]",
+            "enabledState": "Enabled"
+          }
+        }
+      },
+      {
+        "name": "loadBalancingSettings",
+        "count": "[length(parameters('frontDoorInfo').LBSettings)]",
+        "input": {
+          "name": "[parameters('frontDoorInfo').LBSettings[copyIndex('loadBalancingSettings')].name]",
+          "properties": {
+            "sampleSize": "[parameters('frontDoorInfo').LBSettings[copyIndex('loadBalancingSettings')].sampleSize]",
+            "successfulSamplesRequired": "[parameters('frontDoorInfo').LBSettings[copyIndex('loadBalancingSettings')].successfulSamplesRequired]",
+            "additionalLatencyMilliseconds": "[parameters('frontDoorInfo').LBSettings[copyIndex('loadBalancingSettings')].additionalLatencyMilliseconds]"
+          }
+        }
+      },
+      {
+        "name": "routingRules",
+        "count": "[length(parameters('frontDoorInfo').services)]",
+        "input": {
+          "name": "[parameters('frontDoorInfo').services[copyIndex('routingRules')].Name]",
+          "properties": {
+            "frontendEndpoints": [
+              {
+                "id": "[resourceId('Microsoft.Network/frontdoors/frontendEndpoints',
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').Name),
+                                              parameters('frontDoorInfo').services[copyIndex('routingRules')].Name)]"
+              }
+            ],
+            "acceptedProtocols": [
+              "Http",
+              "Https"
+            ],
+            "patternsToMatch": "[parameters('frontDoorInfo').services[copyIndex('routingRules')].patternsToMatch]",
+            "enabledState": "Enabled",
+            // "cacheConfiguration": null,
+            "routeConfiguration": {
+              "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+              "customForwardingPath": null,
+              "forwardingProtocol": "HttpsOnly",
+              "backendPool": {
+                "id": "[resourceId('Microsoft.Network/frontdoors/backendPools',
+                                      concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').Name),
+                                      parameters('frontDoorInfo').services[copyIndex('routingRules')].Name)]"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "condition": "[equals(parameters('Stage').SetExternalDNS,1)]",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('setdnsServices',copyIndex(0),'-',parameters('frontDoorInfo').name)]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[if(contains(parameters('global'),'DomainNameExtRG'),parameters('global').DomainNameExtRG,parameters('global').GlobalRGName)]",
+      "subscriptionId": "[if(contains(parameters('global'),'DomainNameExtSubscriptionID'),parameters('global').DomainNameExtSubscriptionID,parameters('global').SubscriptionID)]",
+      "copy": {
+        "name": "FD-Services-DNSLoop",
+        "count": "[length( parameters('frontDoorInfo').services )]"
+      },
+      "dependsOn": [
+        // "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name)]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            // {
+            //   "type": "Microsoft.Network/dnsZones/CNAME",
+            //   // acu1-brw-aoa-s1-afd01-apim01-gateway.psthing.com  APIM behind AFD E.g. apim01-gateway or apim01
+            //   "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,
+            //                             if(
+            //                                 equals(parameters('frontDoorInfo').services[copyIndex(0)].Name,'Default'),'',
+            //                                 concat('-',parameters('frontDoorInfo').services[copyIndex(0)].Name))
+            //                             ))]",
+            //   "apiVersion": "2018-05-01",
+            //   "properties": {
+            //     "metadata": {},
+            //     "TTL": 3600,
+            //     "CNAMERecord": {
+            //       "cname": "[concat(parameters('Deployment'),'-afd',parameters('frontDoorInfo').name,'.azurefd.net')]"
+            //     }
+            //   }
+            // }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

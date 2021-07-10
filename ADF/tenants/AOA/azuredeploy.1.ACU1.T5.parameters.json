@@ -90,6 +90,7 @@
         "DNSLookup": 0,
         "ServerFarm": 1,
         "WebSite": 0,
+        "WebSiteContainer": 0,
         "MySQLDB": 0,
         "Function": 1,
         "SB": 0,
@@ -408,6 +409,14 @@
             ]
           }
         ],
+        "CDNInfo": [
+          {
+            "Name": "eshopcatalog",
+            "saname": "catalog",
+            "endpoint": "catalog-endpoint",
+            "hostname": "myweb"
+          }
+        ],
         "KVInfo": [
           {
             "Name": "App01",
@@ -460,6 +469,18 @@
             "skufamily": "Pv2",
             "skucapacity": 1,
             "deploy": 1
+          },
+          {
+            "Name": "CTR01",
+            "kind": "linux",
+            "perSiteScaling": false,
+            "reserved": true,   //true for containers
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skusize": "P1v2",
+            "skufamily": "Pv2",
+            "skucapacity": 1,
+            "deploy": 1
           }
         ],
         "WebSiteInfo": [
@@ -468,6 +489,16 @@
             "kind": "app",
             "AppSVCPlan": "WPS01",
             "saname": "wps01"
+          }
+        ],
+        "WebSiteContainerInfo": [
+          {
+            "Name": "CTR01",
+            "kind": "app,linux,container",
+            "AppSVCPlan": "CTR01",
+            "saname": "wps01",
+            "registry": "01"
+            // "registryENV": "t5"
           }
         ],
         "FunctionInfo": [

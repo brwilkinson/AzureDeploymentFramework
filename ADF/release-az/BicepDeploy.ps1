@@ -27,6 +27,9 @@ $Params = @{
     TemplateSpec             = $TemplateSpec
 }
 
+<#
+# Bicep is now included in hosted runners
+
 if (-not (gcm bicep -ea 0))
 {
     az bicep install
@@ -35,4 +38,6 @@ if (-not (gcm bicep -ea 0))
 gmo az.resources -list
 
 $env:Path += ";$home\.azure\bin\"
+#>
+
 Start-AzDeploy @Params -FullUpload:$FullUpload -VSTS -SubscriptionDeploy:$SubscriptionDeploy # -LogAzDebug:$LogAzDebug
