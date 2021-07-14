@@ -82,14 +82,25 @@ module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.servi
   }
 }]
 
-module setdnsFDServices 'FD-frontDoor-DNS.bicep' = [for service in frontDoorInfo.services : {
+//  moved to x.DNS.CNAME generic module
+// module setdnsFDServices 'FD-frontDoor-DNS.bicep' = [for service in frontDoorInfo.services : {
+//   name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
+//   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+//   params: {
+//     Deployment: Deployment
+//     global: Global
+//     frontDoorInfo: frontDoorInfo
+//     service: service
+//   }
+// }]
+
+module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services : {
   name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
-    Deployment: Deployment
-    global: Global
-    frontDoorInfo: frontDoorInfo
-    service: service
+    hostname: toLower('${Deployment}-afd${frontDoorInfo.name}${((service.Name == 'Default') ? '' : '-${service.Name}')}')
+    cname: '${Deployment}-afd${frontDoorInfo.name}.azurefd.net'
+    Global: Global
   }
 }]
 
@@ -119,7 +130,10 @@ resource FD 'Microsoft.Network/frontdoors@2020-05-01' = {
         }
       }
     }]
-  } 
+  }
+  dependsOn: [
+    DNSCNAME
+  ]
 }
 
 resource FDDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {

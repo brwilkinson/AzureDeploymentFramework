@@ -429,59 +429,59 @@
           ]
         }
       }
-    },
-    {
-      "condition": "[
-                        and(equals(parameters('Stage').SetExternalDNS,1),
-                            equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Protocol,'https')
-                            )]",
-      "apiVersion": "2020-06-01",
-      "name": "[concat('setdns-private-',parameters('WAFInfo').Listeners[CopyIndex(0)].Protocol,'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname,'-',parameters('global').DomainNameExt)]",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[parameters('Global').HubRGName]",
-      "subscriptionId": "[parameters('global').SubscriptionID]",
-      "copy": {
-        "name": "WAF-listener-ssl-DNSLoopPrivate",
-        "count": "[length( variables('Listeners') )]"
-      },
-      "dependsOn": [
-        // "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]"
-
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "parameters": {},
-          "variables": {},
-          "resources": [
-            {
-              "type": "Microsoft.Network/privateDnsZones/A",
-              "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname))]",
-              "apiVersion": "2020-06-01",
-              "properties": {
-                "metadata": {},
-                "ttl": 3600,
-                "aRecords": [
-                  {
-                    "ipv4Address": "[if(equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Interface,'Private'),
-                                                reference(resourceId('Microsoft.Network/applicationGateways',
-                                                                    concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),
-                                                          '2020-06-01','Full').properties.frontendIPConfigurations[1].properties.privateIPAddress,
-
-                                                reference(resourceId('Microsoft.network/publicipaddresses',
-                                                                    concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName,'-publicip1')),
-                                                          '2017-08-01','Full').properties.ipAddress
-                                        )]"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
     }
+    // {
+    //   "condition": "[
+    //                     and(equals(parameters('Stage').SetExternalDNS,1),
+    //                         equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Protocol,'https')
+    //                         )]",
+    //   "apiVersion": "2020-06-01",
+    //   "name": "[concat('setdns-private-',parameters('WAFInfo').Listeners[CopyIndex(0)].Protocol,'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname,'-',parameters('global').DomainNameExt)]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "resourceGroup": "[parameters('Global').HubRGName]",
+    //   "subscriptionId": "[parameters('global').SubscriptionID]",
+    //   "copy": {
+    //     "name": "WAF-listener-ssl-DNSLoopPrivate",
+    //     "count": "[length( variables('Listeners') )]"
+    //   },
+    //   "dependsOn": [
+    //     // "[concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)]"
+
+    //   ],
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "template": {
+    //       "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    //       "contentVersion": "1.0.0.0",
+    //       "parameters": {},
+    //       "variables": {},
+    //       "resources": [
+    //         {
+    //           "type": "Microsoft.Network/privateDnsZones/A",
+    //           "name": "[toLower(concat(parameters('global').DomainNameExt,'/',parameters('Deployment'),'-',parameters('WAFInfo').Listeners[CopyIndex(0)].Hostname))]",
+    //           "apiVersion": "2020-06-01",
+    //           "properties": {
+    //             "metadata": {},
+    //             "ttl": 3600,
+    //             "aRecords": [
+    //               {
+    //                 "ipv4Address": "[if(equals(parameters('WAFInfo').Listeners[CopyIndex(0)].Interface,'Private'),
+    //                                             reference(resourceId('Microsoft.Network/applicationGateways',
+    //                                                                 concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName)),
+    //                                                       '2020-06-01','Full').properties.frontendIPConfigurations[1].properties.privateIPAddress,
+
+    //                                             reference(resourceId('Microsoft.network/publicipaddresses',
+    //                                                                 concat(parameters('Deployment'),'-waf',parameters('WAFInfo').WAFName,'-publicip1')),
+    //                                                       '2017-08-01','Full').properties.ipAddress
+    //                                     )]"
+    //               }
+    //             ]
+    //           }
+    //         }
+    //       ]
+    //     }
+    //   }
+    // }
   ],
   "outputs": {
     "output1": {

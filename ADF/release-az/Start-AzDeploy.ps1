@@ -484,6 +484,7 @@ Function global:Start-AzDeploy
                     -Location $ResourceGroupLocation @OptionalParameters -Verbose -ErrorVariable ErrorMessages
             }
         }
+
         if ($Deployment -eq 'T0')
         {
             if ($WhatIf)
@@ -503,6 +504,7 @@ Function global:Start-AzDeploy
                     -Location $ResourceGroupLocation @OptionalParameters -Verbose -ErrorVariable ErrorMessages
             }
         }
+        
         if ($Deployment -eq 'M0')
         {
             # When doing 

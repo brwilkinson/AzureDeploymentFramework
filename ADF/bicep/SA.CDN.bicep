@@ -94,7 +94,7 @@ resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn
 
 module DNSCNAME 'x.DNS.CNAME.bicep' = [for (cdn, index) in CDNInfo: if (CDN[index].match && contains(cdn, 'hostname')) {
   name: '${DeploymentURI}${cdn.hostname}.${Global.DomainNameExt}'
-  scope: resourceGroup(Global.GlobalRGName)
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
     hostname: '${DeploymentURI}${cdn.hostname}'
     cname: SACDNEndpoint[index].properties.hostName

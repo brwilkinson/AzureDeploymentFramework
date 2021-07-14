@@ -12,6 +12,7 @@ targetScope = 'subscription'
 // targetScope = [
 //     'resourceGroup'
 //     'subscription'
+//     'managementGroup'
 // ]
 
 resource RA 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
