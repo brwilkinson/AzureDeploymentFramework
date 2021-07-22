@@ -83,6 +83,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
     enabled: true
     httpsOnly: true
     serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
+
     siteConfig: {
       appSettings: union(myAppConfig,[
         {
@@ -95,6 +96,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
         }
       ])
     }
+    
   }
 }]
 

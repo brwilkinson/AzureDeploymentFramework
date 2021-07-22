@@ -271,6 +271,11 @@
                 "Tenant": "AOA"
               },
               {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "AOA"

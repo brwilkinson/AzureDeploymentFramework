@@ -26,7 +26,7 @@ Configuration SQLServers
     Import-DscResource -ModuleName xActiveDirectory
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xPendingReboot
-    Import-DscResource -ModuleName xWebAdministration 
+    Import-DscResource -ModuleName xWebAdministration
     Import-DscResource -ModuleName SQLServerDsc
     Import-DscResource -ModuleName xDNSServer
     Import-DscResource -ModuleName xFailoverCluster

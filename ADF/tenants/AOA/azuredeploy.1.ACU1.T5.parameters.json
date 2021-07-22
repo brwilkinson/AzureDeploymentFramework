@@ -286,6 +286,11 @@
                 "Tenant": "AOA"
               },
               {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "AOA"
@@ -452,8 +457,6 @@
             "reserved": false,
             "skuname": "EP1",
             "skutier": "ElasticPremium",
-            "skusize": "EP1",
-            "skufamily": "EP",
             "skucapacity": 1,
             "maxWorkerCount": 100,
             "deploy": 1
@@ -465,8 +468,6 @@
             "reserved": false,
             "skuname": "P1v2",
             "skutier": "PremiumV2",
-            "skusize": "P1v2",
-            "skufamily": "Pv2",
             "skucapacity": 1,
             "deploy": 1
           },
@@ -477,8 +478,6 @@
             "reserved": true,   //true for containers
             "skuname": "P1v2",
             "skutier": "PremiumV2",
-            "skusize": "P1v2",
-            "skufamily": "Pv2",
             "skucapacity": 1,
             "deploy": 1
           }

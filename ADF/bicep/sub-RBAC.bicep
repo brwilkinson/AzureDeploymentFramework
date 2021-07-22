@@ -73,7 +73,7 @@ var sps = [for sp in SPInfo: {
 }]
 
 module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
-    name: 'dp-rbac-uai-${length(uaiinfo) == 0 ? 'na' : uai.name}'
+    name: 'dp-rbac-uai-${Prefix}-${length(uaiinfo) == 0 ? 'na' : uai.name}'
     params: {
         Deployment: deployment
         Prefix: Prefix
@@ -91,7 +91,7 @@ module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
 }]
 
 module ROLES 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
-    name: 'dp-rbac-role-${length(rolesInfo) == 0 ? 'na' : role.name}'
+    name: 'dp-rbac-role-${Prefix}-${length(rolesInfo) == 0 ? 'na' : role.name}'
     params: {
         Deployment: deployment
         Prefix: Prefix
@@ -108,7 +108,7 @@ module ROLES 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
 }]
 
 module SP 'sub-RBAC-ALL.bicep' = [for sp in sps: {
-    name: 'dp-rbac-sp-${length(sps) == 0 ? 'na' : sp.name}'
+    name: 'dp-rbac-sp-${Prefix}-${length(sps) == 0 ? 'na' : sp.name}'
     params: {
         Deployment: deployment
         Prefix: Prefix

@@ -51,12 +51,12 @@
                 'Terminal-Icons', 'Az.ManagedServiceIdentity'
             )
 
-            DevOpsAgentPoolPresent         = @(
+            DevOpsAgentPoolPresent2         = @(
                 @{poolName = '{0}-{1}-{2}-{3}-Apps1' ; orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/' },
                 @{poolName = '{0}-{1}-{2}-{3}-Infra01' ; orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/' }
             )
 
-            DevOpsAgentPresent             = @(
+            DevOpsAgentPresent2             = @(
                 @{
                     name = '{0}-{1}-{2}-{3}-Apps101'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Absent';
                     Credlookup = 'DomainCreds' ; AgentBase = 'F:\vsts-agent' ; AgentVersion = '2.184.2'

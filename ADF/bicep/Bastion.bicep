@@ -1,10 +1,11 @@
+
 @allowed([
   'AZE2'
   'AZC1'
   'AEU2'
   'ACU1'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'

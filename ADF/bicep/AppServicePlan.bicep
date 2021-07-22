@@ -79,8 +79,8 @@ resource ASP 'Microsoft.Web/serverfarms@2021-01-01' = [for (item,index) in appSe
   sku: {
     name: item.skuname
     tier: item.skutier
-    size: item.skusize
-    family: item.skufamily
+    // size: item.skusize
+    // family: item.skufamily
     capacity: item.skucapacity
   }
 }]

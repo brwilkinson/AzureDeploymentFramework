@@ -456,7 +456,6 @@ Configuration AppServers
                 Name   = $Capability.Name
                 Source = $Capability.Source
                 Ensure = 'Present'
-                
             }
             $dependsonFeatures += @("[WindowsCapability]$Capability")
         }

@@ -113,6 +113,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
     serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
     siteConfig: {
       linuxFxVersion: 'COMPOSE|${WSInfo[index].compose}'
+      
       appSettings: union(myAppConfig,[
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -220,3 +221,5 @@ resource ACRWebhook 'Microsoft.ContainerRegistry/registries/webhooks@2020-11-01-
   }
 }]
 
+var locationLookup = json(loadTextContent('prefix.json'))
+output myLocation string = locationLookup[Prefix].location

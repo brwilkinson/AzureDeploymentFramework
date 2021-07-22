@@ -49,6 +49,7 @@ var availabilityZones = [
 ]
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+
 var Environment_var = {
   D: 'Dev'
   I: 'Int'

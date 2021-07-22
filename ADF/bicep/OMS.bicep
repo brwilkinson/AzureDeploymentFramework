@@ -48,15 +48,18 @@ param sshPublic string
 targetScope = 'resourceGroup'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-var dataRetention = 31
-var serviceTier = 'PerNode'
-var AAserviceTier = 'Basic' // 'Free'
 
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var OMSWorkspaceName = '${DeploymentURI}LogAnalytics'
 var AAName = '${DeploymentURI}OMSAutomation'
 var appInsightsName = '${DeploymentURI}AppInsights'
+
+
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
+
+var dataRetention = 31
+var serviceTier = 'PerNode'
+var AAserviceTier = 'Basic' // 'Free'
 
 var dataSources = [
     {

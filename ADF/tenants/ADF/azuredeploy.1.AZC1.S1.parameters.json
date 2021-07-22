@@ -415,8 +415,6 @@
             "reserved": false,
             "skuname": "EP1",
             "skutier": "ElasticPremium",
-            "skusize": "EP1",
-            "skufamily": "EP",
             "skucapacity": 1,
             "maxWorkerCount": 100,
             "deploy": 1
@@ -428,8 +426,6 @@
           //   "reserved": false,
           //   "skuname": "P1v2",
           //   "skutier": "PremiumV2",
-          //   "skusize": "P1v2",
-          //   "skufamily": "Pv2",
           //   "skucapacity": 1,
           //   "deploy": 1
           // }
@@ -442,8 +438,6 @@
             "reserved": false,
             "skuname": "P1v2",
             "skutier": "PremiumV2",
-            "skusize": "P1v2",
-            "skufamily": "Pv2",
             "skucapacity": 1,
             "deploy": 0
           },
@@ -454,8 +448,6 @@
             "reserved": false,
             "skuname": "Y1",
             "skutier": "Dynamic",
-            "skusize": "Y1",
-            "skufamily": "Y",
             "skucapacity": 0,
             "deploy": 0
           },
@@ -466,8 +458,6 @@
             "reserved": false,
             "skuname": "EP1",
             "skutier": "ElasticPremium",
-            "skusize": "EP1",
-            "skufamily": "EP",
             "skucapacity": 1,
             "maxWorkerCount": 30,
             "deploy": 1

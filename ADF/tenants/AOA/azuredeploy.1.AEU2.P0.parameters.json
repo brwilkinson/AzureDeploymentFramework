@@ -69,7 +69,7 @@
         "InitialDOP": 0,
         "VMApp": 0,
         "VMAppLinux": 0,
-        "VMSQL": 0,
+        "VMSQL": 1,
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 0,
@@ -267,6 +267,11 @@
               },
               {
                 "Name": "Log Analytics Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key_Vault_Reader",
                 "RG": "P0",
                 "Tenant": "AOA"
               },
