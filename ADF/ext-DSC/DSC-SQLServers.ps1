@@ -264,6 +264,7 @@ Configuration SQLServers
             InterfaceAlias                 = '*Ethernet*'
             RegisterThisConnectionsAddress = $true
             ConnectionSpecificSuffix       = $DomainName
+            UseSuffixWhenRegistering       = $true
         }
 
         #-------------------------------------------------------------------
@@ -286,15 +287,6 @@ Configuration SQLServers
                 Type         = $LocalPolicy.Type
             }
         } 
-
-        #-------------------------------------------------------------------
-        DnsConnectionSuffix DomainSuffix
-        {
-            InterfaceAlias                 = '*Ethernet*'
-            RegisterThisConnectionsAddress = $true
-            ConnectionSpecificSuffix       = $DomainName
-            UseSuffixWhenRegistering       = $true 
-        }
 
         #-------------------------------------------------------------------
         Service ShellHWDetection
@@ -960,11 +952,12 @@ Configuration SQLServers
             $ProbePort = $aoinfo.ProbePort          #"59999"
             $AOName = ('az' + $app + $environment + $GroupName)  
 
-            SqlServerEndpoint SQLEndPoint
+            SqlEndpoint SQLEndPoint
             {
                 Ensure               = 'Present'
                 Port                 = 5022
                 EndPointName         = 'Hadr_endpoint'
+                EndpointType         = 'DatabaseMirroring'
                 ServerName           = $computername
                 InstanceName         = $SQLInstanceName
                 PsDscRunAsCredential = $credlookup['DomainJoin']
@@ -976,9 +969,9 @@ Configuration SQLServers
                 ServerName           = $computername
                 InstanceName         = $SQLInstanceName
                 Name                 = 'Hadr_endpoint'
-                State                = 'Started'           
-                DependsOn            = '[SqlServerEndpoint]SQLEndPoint'
-                PsDscRunAsCredential = $credlookup['DomainJoin']    
+                State                = 'Started'
+                DependsOn            = '[SqlEndpoint]SQLEndPoint'
+                PsDscRunAsCredential = $credlookup['DomainJoin']
             }
 
             SqlAlwaysOnService SQLCluster

@@ -16,7 +16,7 @@
             DirectoryPresent            = 'F:\Source'
 
             # Blob copy with Managed Identity - Oauth2
-            AZCOPYDSCDirPresentSource   = @(
+            AZCOPYDSCDirPresentSource2   = @(
 
                 @{
                     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSModules/'
@@ -42,7 +42,11 @@
                 @{
                     UserName    = "WebUser"
                     Description = "Web User"
-                }    
+                },
+                @{
+                    UserName    = "Ben.Wilkinson"
+                    Description = "Ben.Wilkinson"
+                }
             )
 
             ConditionalForwarderPresent = @(
@@ -66,7 +70,7 @@
                 #@{Name = "{0}www";Target = "{0}fe.contoso.com"; Type="CName"}
             )
             
-            SoftwarePackagePresent      = @(
+            SoftwarePackagePresent2      = @(
                 
                 @{
                     Name      = 'PowerShell 7-x64'
