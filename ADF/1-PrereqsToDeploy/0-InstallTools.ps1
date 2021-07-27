@@ -21,6 +21,31 @@ winget install Microsoft.WindowsTerminalPreview
 winget install GitHub.cli
 winget install Microsoft.AzureStorageExplorer
 
+# install a suitable NerdFont on your system, them configure it within vscode and Terminal etc.
+# you can download here
+#https://www.nerdfonts.com/font-downloads
+
+# 
+
+<# example of vscode setting
+
+    "editor.fontFamily": "FiraCode Nerd Font",
+    "editor.fontLigatures": true,
+#>
+
+<# example of Terminal setting
+
+    "profiles": {
+        "defaults": {
+            "backgroundImageOpacity": 0.10000000000000001,
+            "experimental.retroTerminalEffect": false,
+            "fontFace": "FiraCode Nerd Font",
+            "fontSize": 12,
+            "useAcrylic": false
+        },
+#>
+
+
 Install-Module -Name posh-git, Terminal-Icons
 
 # for window powershell
