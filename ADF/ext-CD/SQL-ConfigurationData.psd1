@@ -86,23 +86,47 @@
 
             DirectoryPresent            = @('F:\Source')
 
-            DirectoryPresentSource      = @(
-                @{SourcePath        = '\\{0}.file.core.windows.net\source\SQLClient\SSMS-Setup-ENU.exe'
-                    DestinationPath = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
+
+            # Blob copy with Managed Identity - Oauth2
+            AZCOPYDSCDirPresentSource   = @(
+                @{
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/SQLClient/'
+                    DestinationPath   = 'F:\Source\SQLClient\'
                 },
 
-                @{SourcePath        = '\\{0}.file.core.windows.net\source\SQL2017\'
-                    DestinationPath = 'F:\Source\SQL2017\'
+                @{
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/SQL2017/'
+                    DestinationPath   = 'F:\Source\SQL2017\'
                 },
-
-                @{SourcePath        = '\\{0}.file.core.windows.net\source\SXS\'
-                    DestinationPath = 'F:\Source\SXS\'
+                
+                @{
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/SXS/'
+                    DestinationPath   = 'F:\Source\SXS\'
                 },
-
-                @{SourcePath        = '\\{0}.file.core.windows.net\source\PSCore'
-                    DestinationPath = 'F:\Source\PSCore'
+                
+                @{
+                    SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSCore/'
+                    DestinationPath   = 'F:\Source\PSCore\'
                 }
             )
+
+            # DirectoryPresentSource2      = @(
+            #     @{SourcePath        = '\\{0}.file.core.windows.net\source\SQLClient\SSMS-Setup-ENU.exe'
+            #         DestinationPath = 'F:\Source\SQLClient\SSMS-Setup-ENU.exe'
+            #     },
+
+            #     @{SourcePath        = '\\{0}.file.core.windows.net\source\SQL2017\'
+            #         DestinationPath = 'F:\Source\SQL2017\'
+            #     },
+
+            #     @{SourcePath        = '\\{0}.file.core.windows.net\source\SXS\'
+            #         DestinationPath = 'F:\Source\SXS\'
+            #     },
+
+            #     @{SourcePath        = '\\{0}.file.core.windows.net\source\PSCore'
+            #         DestinationPath = 'F:\Source\PSCore'
+            #     }
+            # )
 
             SoftwarePackagePresent      = @(
                 @{

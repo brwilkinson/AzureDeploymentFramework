@@ -25,8 +25,6 @@ winget install Microsoft.AzureStorageExplorer
 # you can download here
 #https://www.nerdfonts.com/font-downloads
 
-# 
-
 <# example of vscode setting
 
     "editor.fontFamily": "FiraCode Nerd Font",

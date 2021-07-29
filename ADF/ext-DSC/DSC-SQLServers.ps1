@@ -14,7 +14,6 @@ Configuration SQLServers
         [String]$Deployment,
         [String]$NetworkID,
         [String]$AppInfo,
-        [String]$App,
         [String]$DataDiskInfo,
         [String]$clientIDLocal,
         [String]$clientIDGlobal,
@@ -37,6 +36,8 @@ Configuration SQLServers
     Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName PolicyFileEditor
 
+    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
+
     # Azure VM Metadata service
     $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
     $Compute = $VMMeta.compute
@@ -46,7 +47,7 @@ Configuration SQLServers
     $ResourceGroupName = $Compute.resourceGroupName
     $Zone = $Compute.zone
     $prefix = $ResourceGroupName.split('-')[0]
-    $App = $ResourceGroupName.split('-')[1]
+    $App = $ResourceGroupName.split('-')[2]
 
 
     Function IIf
@@ -81,6 +82,7 @@ Configuration SQLServers
     $sakwitness = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
     Write-Verbose "SAK Witness: $sakwitness" -Verbose
 
+    <#
     try
     {
         # Global assets to download files
@@ -104,6 +106,7 @@ Configuration SQLServers
     {
         Write-Warning $_
     }
+    #>
 
     if ($NoDomainJoin)
     {
@@ -343,23 +346,38 @@ Configuration SQLServers
         $StringFilter = '\W', ''
         $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
         Write-Verbose -Message "User is: [$StorageAccountName]"
-        $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force))
+        # $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force))
         
         #-------------------------------------------------------------------     
-        foreach ($File in $Node.DirectoryPresentSource)
-        {
-            $Name = ($File.SourcePath -f $StorageAccountName) -replace $StringFilter
+        # foreach ($File in $Node.DirectoryPresentSource)
+        # {
+        #     $Name = ($File.SourcePath -f $StorageAccountName) -replace $StringFilter
 
-            File $Name
+        #     File $Name
+        #     {
+        #         SourcePath      = ($File.SourcePath -f $StorageAccountName)
+        #         DestinationPath = $File.DestinationPath
+        #         Ensure          = 'Present'
+        #         Recurse         = $true
+        #         Credential      = $StorageCred 
+        #     }
+        #     $dependsonDirectory += @("[File]$Name")
+        # } 
+
+        #-------------------------------------------------------------------     
+        foreach ($AZCOPYDSCDir in $Node.AZCOPYDSCDirPresentSource)
+        {
+            $Name = ($AZCOPYDSCDir.SourcePathBlobURI + '_' + $AZCOPYDSCDir.DestinationPath) -replace $StringFilter
+            AZCOPYDSCDir $Name
             {
-                SourcePath      = ($File.SourcePath -f $StorageAccountName)
-                DestinationPath = $File.DestinationPath
-                Ensure          = 'Present'
-                Recurse         = $true
-                Credential      = $StorageCred 
+                SourcePath              = ($AZCOPYDSCDir.SourcePathBlobURI -f $StorageAccountName)
+                DestinationPath         = $AZCOPYDSCDir.DestinationPath
+                Ensure                  = 'Present'
+                ManagedIdentityClientID = $clientIDGlobal
+                LogDir                  = 'F:\azcopy_logs'
             }
-            $dependsonDirectory += @("[File]$Name")
-        } 
+            $dependsonAZCopyDSCDir += @("[AZCOPYDSCDir]$Name")
+        }
 
         #-------------------------------------------------------------
         if ($Node.WindowsFeatureSetPresent)
@@ -368,7 +386,7 @@ Configuration SQLServers
             {
                 Ensure = 'Present'
                 Name   = $Node.WindowsFeatureSetPresent
-                Source = $Node.SXSPath
+                # Source = $Node.SXSPath
             }
         }
 
@@ -439,7 +457,7 @@ Configuration SQLServers
         
             # https://msdn.microsoft.com/en-us/library/ms143547(v=sql.120).aspx
             # File Locations for Default and Named Instances of SQL Server
-            SqlSetup xSqlServerInstall
+            SqlSetup xSqlInstall
             {
                 SourcePath           = $Node.SQLSourcePath
                 Action               = 'Install'
@@ -479,34 +497,34 @@ Configuration SQLServers
                 $dependsonUserRightsAssignment += @("[UserRightsAssignment]$($UserRightsAssignment.policy)")
             }
             
-            SQLServerMemory SetSQLServerMaxMemory
+            SQLMemory SetSqlMaxMemory
             {
                 Ensure               = 'Present'
                 DynamicAlloc         = $true
                 ServerName           = $node.nodename
                 InstanceName         = $SQLInstanceName
-                DependsOn            = '[SqlSetup]xSqlServerInstall'
+                DependsOn            = '[SqlSetup]xSqlInstall'
                 PsDscRunAsCredential = $credlookup['DomainJoin']
             }
 
-            SQLServerMaxDop SetSQLServerMaxDopToAuto
+            SqlMaxDop SetSqlMaxDopToAuto
             {
                 Ensure       = 'Present'
                 DynamicAlloc = $true
                 ServerName   = $node.nodename
                 InstanceName = $SQLInstanceName
                 #MaxDop      = 8
-                DependsOn    = '[SqlSetup]xSqlServerInstall'
+                DependsOn    = '[SqlSetup]xSqlInstall'
             }
 
             #-------------------------------------------------------------------
 
-            SqlWindowsFirewall xSqlServerInstall
+            SqlWindowsFirewall xSqlInstall
             {
                 SourcePath   = $Node.SQLSourcePath
                 InstanceName = $SQLInstanceName
                 Features     = $Node.SQLFeatures
-                DependsOn    = '[SqlSetup]xSqlServerInstall'
+                DependsOn    = '[SqlSetup]xSqlInstall'
             }
 
             sqlservernetwork TCPPort1433
@@ -520,7 +538,7 @@ Configuration SQLServers
 
             Foreach ($sqlconfig in $node.SQLconfigurationPresent)
             {
-                sqlServerconfiguration ($sqlInstanceName + $SQLconfig.OptionName)
+                Sqlconfiguration ($sqlInstanceName + $SQLconfig.OptionName)
                 {
                     InstanceName   = $sqlInstanceName
                     OptionName     = $sqlconfig.OptionName
@@ -531,64 +549,64 @@ Configuration SQLServers
             }
 
 
-            # foreach ($userLogin in $Node.SQLServerLogins)
+            # foreach ($userLogin in $Node.SqlLogins)
             # {
-            #     SQLServerLogin $userLogin.Name
+            #     SqlLogin $userLogin.Name
             #     {
             #         Ensure               = 'Present'
             #         Name                 = $userLogin.Name
             #         LoginType            = 'WindowsUser'
             #         ServerName           = $computername
             #         InstanceName         = $SQLInstanceName
-            #         DependsOn            = '[SqlSetup]xSqlServerInstall'
+            #         DependsOn            = '[SqlSetup]xSqlInstall'
             #         PsDscRunAsCredential = $credlookup["DomainJoin"]
             #     }
-            #     $dependsonuserLogin += @("[SQLServerLogin]$($userLogin.Name)")
+            #     $dependsonuserLogin += @("[SqlLogin]$($userLogin.Name)")
             # }
 
-            # updated SQLServersLogins to allow disabled accounts + sql accounts etc
+            # updated SqlsLogins to allow disabled accounts + sql accounts etc
             foreach ($userLogin in $Node.SQLServerLoginsWindows)
             {
                 $SQLlogin = ($userLogin.Name + $SQLInstanceName) #### Changed
-                SQLServerLogin $SQLlogin
+                SqlLogin $SQLlogin
                 {
                     Ensure               = 'Present'
                     Name                 = ($userLogin.Name -f $NetBios)  # added the ability to add domain users
-                    LoginType = IIF $userLogin.logintype $userLogin.logintype 'WindowsUser'
-                    Disabled = IIF $userlogin.Disabled $userlogin.Disabled $false  
+                    LoginType            = IIF $userLogin.logintype $userLogin.logintype 'WindowsUser'
+                    Disabled             = IIF $userlogin.Disabled $userlogin.Disabled $false  
                     ServerName           = $computername
                     InstanceName         = $SQLInstanceName
-                    DependsOn            = '[SqlSetup]xSqlServerInstall'
-                    PsDscRunAsCredential = $credlookup['DomainJoin']                   
+                    DependsOn            = '[SqlSetup]xSqlInstall'
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                 }
-                $dependsonuserLogin += @("[SQLServerLogin]$SQLlogin")
+                $dependsonuserLogin += @("[SqlLogin]$SQLlogin")
             }
 
-            # updated SQLServersLogins to allow disabled accounts + sql accounts etc
+            # updated SqlsLogins to allow disabled accounts + sql accounts etc
             foreach ($userLogin in $Node.SQLServerLoginsSQL)
             {
                 $SQLlogin = ($userLogin.Name + $SQLInstanceName) #### Changed
-                SQLServerLogin $SQLlogin
+                SqlLogin $SQLlogin
                 {
                     Ensure                         = 'Present'
                     Name                           = $userLogin.Name
-                    LoginType = IIF $userLogin.logintype $userLogin.logintype 'SqlLogin'
-                    Disabled = IIF $userlogin.Disabled $userlogin.Disabled $false  
+                    LoginType                      = IIF $userLogin.logintype $userLogin.logintype 'SqlLogin'
+                    Disabled                       = IIF $userlogin.Disabled $userlogin.Disabled $false  
                     ServerName                     = $computername
                     InstanceName                   = $SQLInstanceName
-                    DependsOn                      = '[SqlSetup]xSqlServerInstall'
+                    DependsOn                      = '[SqlSetup]xSqlInstall'
                     PsDscRunAsCredential           = $credlookup['DomainJoin']
                     LoginCredential                = $credlookup['DomainJoin']
                     LoginMustChangePassword        = $false
                     LoginPasswordExpirationEnabled = $false
                     LoginPasswordPolicyEnforced    = $false                    
                 }
-                $dependsonuserLogin += @("[SQLServerLogin]$SQLlogin")
+                $dependsonuserLogin += @("[SqlLogin]$SQLlogin")
             }
 
             foreach ($userRole in $Node.SQLServerRoles)
             {
-                SQLServerRole $userRole.ServerRoleName
+                SqlRole $userRole.ServerRoleName
                 {
                     Ensure               = 'Present'
                     ServerRoleName       = $userRole.ServerRoleName
@@ -596,15 +614,15 @@ Configuration SQLServers
                     ServerName           = $computername
                     InstanceName         = $SQLInstanceName
                     PsDscRunAsCredential = $credlookup['DomainJoin']
-                    DependsOn            = '[SqlSetup]xSqlServerInstall'
+                    DependsOn            = '[SqlSetup]xSqlInstall'
                 }
-                $dependsonuserRoles += @("[SQLServerRole]$($userRole.ServerRoleName)")
+                $dependsonuserRoles += @("[SqlRole]$($userRole.ServerRoleName)")
             }
 
             foreach ($userPermission in $Node.SQLServerPermissions)
             {
                 # Add the required permissions to the cluster service login
-                SQLServerPermission $userPermission.Name
+                SqlPermission $userPermission.Name
                 {
                     Ensure               = 'Present'
                     ServerName           = $computername
@@ -612,9 +630,9 @@ Configuration SQLServers
                     Principal            = $userPermission.Name
                     Permission           = $userPermission.Permission
                     PsDscRunAsCredential = $credlookup['DomainJoin']
-                    DependsOn            = '[SqlSetup]xSqlServerInstall'
+                    DependsOn            = '[SqlSetup]xSqlInstall'
                 }
-                $dependsonSQLServerPermissions += @("[SQLServerPermission]$($userPermission.Name)")
+                $dependsonSqlPermissions += @("[SqlPermission]$($userPermission.Name)")
             }
             #-------------------------------------------------------------------
 
@@ -632,7 +650,7 @@ Configuration SQLServers
                     PsDscRunAsCredential = $credlookup['DomainJoin']   
                 }
 
-                $dependsonSQLServerScripts += @("[SQLScript]$($Name)")
+                $dependsonSqlScripts += @("[SQLScript]$($Name)")
             }
             #-------------------------------------------------------------------
         }#Foreach $SQLAOInfo
@@ -651,7 +669,7 @@ Configuration SQLServers
                 Ensure               = 'Present'
                 ProductId            = $Package.ProductId
                 PsDscRunAsCredential = $credlookup['DomainJoin']
-                DependsOn            = $dependsonWebSites + '[SqlSetup]xSqlServerInstall'
+                DependsOn            = $dependsonWebSites + '[SqlSetup]xSqlInstall'
                 Arguments            = $Package.Arguments
             }
 
@@ -690,7 +708,7 @@ Configuration SQLServers
 
         # Staging the Cluster Accounts and Always-On Accounts
         $ClusterName = $Prefix + $app + $environment + $ClusterInfo.CLNAME
-        $AONames = $SQLAOInfo | ForEach-Object { ('az' + $app + $environment + $_.GroupName) }
+        $AONames = $SQLAOInfo | ForEach-Object { ($Prefix + $app + $environment + $_.GroupName) }
         $ComputerAccounts = @($ClusterName) + @($AONames)
 	
         foreach ($cname in $ComputerAccounts)
@@ -729,7 +747,7 @@ Configuration SQLServers
         foreach ($aoinfo in $SQLAOInfo)
         {
             # The AG Name in AD + DNS
-            $cname = ('az' + $app + $environment + $aoinfo.GroupName).tolower()
+            $cname = ($prefix + $app + $environment + $aoinfo.GroupName).tolower()
 
             #     SQL01 = "[{'InstanceName':'ADF_1','GroupName':'AG01','PrimaryAG':'SQL01','SecondaryAG':'SQL02', 'AOIP':'215','ProbePort':'59999'}]"
 
@@ -806,9 +824,9 @@ Configuration SQLServers
     
                     $_ | Set-NTFSOwner -Account BUILTIN\Administrators
                     $_ | Clear-NTFSAccess -DisableInheritance
-                    $_ | Add-NTFSAccess�-Account�'EVERYONE'�-AccessRights�FullControl -InheritanceFlags None -PropagationFlags InheritOnly
-                    $_ | Add-NTFSAccess�-Account�BUILTIN\Administrators�-AccessRights�FullControl -InheritanceFlags None -PropagationFlags InheritOnly
-                    $_ | Add-NTFSAccess�-Account�'NT AUTHORITY\SYSTEM'�-AccessRights�FullControl -InheritanceFlags None -PropagationFlags InheritOnly
+                    $_ | Add-NTFSAccess -Account 'EVERYONE' -AccessRights FullControl -InheritanceFlags None -PropagationFlags InheritOnly
+                    $_ | Add-NTFSAccess -Account BUILTIN\Administrators -AccessRights FullControl -InheritanceFlags None -PropagationFlags InheritOnly
+                    $_ | Add-NTFSAccess -Account 'NT AUTHORITY\SYSTEM' -AccessRights FullControl -InheritanceFlags None -PropagationFlags InheritOnly
                     $_ | Get-NTFSAccess
                 }
 
@@ -816,9 +834,9 @@ Configuration SQLServers
                     Write-Verbose $_.fullname -Verbose
                     #$_ | Clear-NTFSAccess -DisableInheritance 
                     $_ | Set-NTFSOwner -Account BUILTIN\Administrators
-                    $_ | Add-NTFSAccess�-Account�'EVERYONE'�-AccessRights�FullControl
-                    $_ | Add-NTFSAccess�-Account�BUILTIN\Administrators�-AccessRights�FullControl
-                    $_ | Add-NTFSAccess�-Account�'NT AUTHORITY\SYSTEM'�-AccessRights�FullControl
+                    $_ | Add-NTFSAccess -Account 'EVERYONE' -AccessRights FullControl
+                    $_ | Add-NTFSAccess -Account BUILTIN\Administrators -AccessRights FullControl
+                    $_ | Add-NTFSAccess -Account 'NT AUTHORITY\SYSTEM' -AccessRights FullControl
         
                     $_ | Get-NTFSAccess
                 }
@@ -1330,20 +1348,20 @@ $ClusterInfo = @{
 # D2    (1 chars)
 if ($env:computername -match 'ADF')
 {
-    $depname = $env:computername.substring(5, 2)  # D1
+    $depname = $env:computername.substring(7, 2)  # D1
     $SAID = '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/rgglobal/providers/Microsoft.Storage/storageAccounts/saeastus2'
-    $App = 'ADF'
     $Domain = 'psobject.com'
+    $app = $env:computername.substring(4, 3)
     $prefix = $env:computername.substring(0, 4)  # AZC1
 }
 
 $depid = $depname.substring(1, 1)
 
 # Azure resource names (for storage account) E.g. AZE2ADFd2
-$dep = '{0}{1}{2}' -f $prefix, $app, $depname
+$dep = '{0}-ORG-{1}-{2}' -f $prefix, $app, $depname
 
 # Azure hostnames E.g. azADFd2
-$cn = 'az{0}{1}' -f $app, $depname
+$cn = '{0}{1}{2}' -f $prefix, $app, $depname
  
 # Computer short name e.g. SQL01
 $cmp = $env:computername -replace $cn, ''
@@ -1365,7 +1383,6 @@ $Params = @{
     #StorageAccountKeySource = $sak
     Deployment        = $dep
     networkID         = $Net 
-    App               = $App
     Verbose           = $true
 }
 

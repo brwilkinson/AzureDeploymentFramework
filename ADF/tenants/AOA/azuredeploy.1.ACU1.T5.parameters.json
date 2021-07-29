@@ -522,6 +522,17 @@
             "deploy": 1
           }
         ],
+        "appConfigurationInfo": {
+          "name": "01",
+          "sku": "standard",
+          "publicNetworkAccess": "Enabled",
+          "PrivateLinkInfo": [
+            {
+              "Subnet": "snBE02",
+              "groupID": "configurationStores"
+            }
+          ]
+        },
         "AKSInfo": [
           {
             "Name": "01",

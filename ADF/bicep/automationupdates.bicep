@@ -50,6 +50,14 @@ var OMSWorkspaceName = '${DeploymentURI}LogAnalytics'
 var AAName = '${DeploymentURI}OMSAutomation'
 var appInsightsName = '${DeploymentURI}AppInsights'
 
+var AAJobs = [
+  {
+    name: 'job1'
+    runbookname: 'rb-job1'
+    runOn: 'xyz'
+  }
+]
+
 
 resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
   name: AAName

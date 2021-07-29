@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'D3',
+    [string]$Enviro = 'T5',
     [string]$App = 'AOA'
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
@@ -85,6 +85,8 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\SA.bicep
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\KV.bicep
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\KV.bicep
+
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\AppServiceFunction.bicep
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\09-azuredeploy-APIM.json
 
