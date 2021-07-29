@@ -525,10 +525,10 @@
         "appConfigurationInfo": {
           "name": "01",
           "sku": "standard",
-          "publicNetworkAccess": "Enabled",
+          "publicNetworkAccess": "Disabled",
           "PrivateLinkInfo": [
             {
-              "Subnet": "snBE02",
+              "Subnet": "snBE01",
               "groupID": "configurationStores"
             }
           ]

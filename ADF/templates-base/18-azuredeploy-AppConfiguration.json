@@ -93,6 +93,7 @@
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
     "appConfigurationInfo": "[parameters('DeploymentInfo').appConfigurationInfo]",
     "hubRG": "[parameters('Global').hubRGName]"
+    
 
   },
   "resources": [
