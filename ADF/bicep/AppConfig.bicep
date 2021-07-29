@@ -75,8 +75,8 @@ resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
   }
 }
 
-module  vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfigurationInfo, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-privatelinkloopSA${appConfigurationInfo.name}'
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfigurationInfo, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-privatelinkloopAC${appConfigurationInfo.name}'
   params: {
     Deployment: Deployment
     PrivateLinkInfo: appConfigurationInfo.privateLinkInfo
