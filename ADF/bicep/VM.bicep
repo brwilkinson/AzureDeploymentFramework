@@ -275,10 +275,10 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (v
       dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${vm.VMName}'), '2018-05-01').outputs.DATADisks.value
     }
     networkProfile: {
-      networkInterfaces: [for j in range(0, length(vm.NICs)): {
-        id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${(contains(vm.NICs[j], 'LB') ? '-niclb' : (contains(vm.NICs[j], 'PLB') ? '-nicplb' : (contains(vm.NICs[j], 'SLB') ? '-nicslb' : '-nic')))}${((j == 0) ? '' : (j + 1))}${vm.VMName}')
+      networkInterfaces: [for (nic,index) in vm.NICs : {
+        id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${(contains(nic, 'LB') ? '-niclb' : (contains(nic, 'PLB') ? '-nicplb' : (contains(nic, 'SLB') ? '-nicslb' : '-nic')))}${((index == 0) ? '' : (index + 1))}${vm.VMName}')
         properties: {
-          primary: contains(vm.NICs[j], 'Primary')
+          primary: contains(nic, 'Primary')
         }
       }]
     }
