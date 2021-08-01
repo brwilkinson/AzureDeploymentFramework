@@ -46,7 +46,6 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var subscriptionId = subscription().subscriptionId
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var snWAF01Name = 'snWAF01'
 var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'

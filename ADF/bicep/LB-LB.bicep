@@ -111,7 +111,7 @@ var frontendIPConfigurationsPublic = [for (fe, index) in LB.FrontEnd: {
   name: fe.LBFEName
   properties: {
     publicIPAddress: {
-      id: string(resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-${LB.LBName}-publicip${(index + 1)}'))
+      id: string(resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-${LB.LBName}-publicip${index + 1}'))
     }
   }
 }]

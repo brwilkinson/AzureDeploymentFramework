@@ -56,6 +56,7 @@
         "VNet": 1,
         "VNetPeering": 0,
         "DNSPrivateZone": 0,
+        "DNSPublicZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 1,
         "BastionHost": 0,

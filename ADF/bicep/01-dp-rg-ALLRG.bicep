@@ -393,7 +393,7 @@ module dp_Deployment_DNSPrivateZone 'DNSPrivate.bicep' = if (Stage.DNSPrivateZon
   ]
 }
 
-module dp_Deployment_DNSPublicZone 'DNSPublic.bicep' = if (Stage.DNSPublicZone == 1) {
+module dp_Deployment_DNSPublicZone 'DNSPublic.bicep' = if (contains(Stage, 'DNSPublicZone') && Stage.DNSPublicZone == 1) {
   name: 'dp${Deployment}-DNSPublicZone'
   params: {
     // move these to Splatting later
@@ -483,7 +483,6 @@ module dp_Deployment_LB 'LB.bicep' = if (Stage.ILB == 1) {
   ]
 }
 
-
 module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1) {
   name: 'dp${Deployment}-VNETDNSPublic'
   params: {
@@ -505,10 +504,128 @@ module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (Stage.ADPrimary ==
   ]
 }
 
-/*
-module ADPrimary '?' = if (Stage.ADPrimary == 1) {
+module dp_Deployment_ServerFarm 'AppServicePlan.bicep' = if (Stage.ServerFarm == 1) {
+  name: 'dp${Deployment}-ServerFarm'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+  ]
+}
+
+module dp_Deployment_WebSite 'AppServiceWebSite.bicep' = if (Stage.WebSite == 1) {
+  name: 'dp${Deployment}-WebSite'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+    dp_Deployment_ServerFarm
+  ]
+}
+
+module dp_Deployment_Function 'AppServiceFunction.bicep' = if (Stage.Function == 1) {
+  name: 'dp${Deployment}-Function'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+    dp_Deployment_ServerFarm
+  ]
+}
+
+module dp_Deployment_Container 'AppServiceContainer.bicep' = if (Stage.WebSiteContainer == 1) {
+  name: 'dp${Deployment}-Container'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+    dp_Deployment_ServerFarm
+  ]
+}
+
+module dp_Deployment_ACI 'ACI.bicep' = if (Stage.ACI == 1) {
+  name: 'dp${Deployment}-ACI'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_OMS
+  ]
+}
+
+module ADPrimary 'VM.bicep' = if (Stage.ADPrimary == 1) {
   name: 'ADPrimary'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_VNETDNSPublic
     dp_Deployment_OMS
@@ -516,7 +633,7 @@ module ADPrimary '?' = if (Stage.ADPrimary == 1) {
   ]
 }
 
-module dp_Deployment_VNETDNSDC1 '?' = if (Stage.ADPrimary == 1) {
+module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1) {
   name: 'dp${Deployment}-VNETDNSDC1'
   params: {
     Deploymentnsg: Deploymentnsg
@@ -534,9 +651,21 @@ module dp_Deployment_VNETDNSDC1 '?' = if (Stage.ADPrimary == 1) {
   ]
 }
 
-module ADSecondary '?' = if (Stage.ADSecondary == 1) {
+module ADSecondary 'VM.bicep' = if (Stage.ADSecondary == 1) {
   name: 'ADSecondary'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
   dependsOn: [
     dp_Deployment_VNETDNSDC1
     dp_Deployment_OMS
@@ -544,7 +673,7 @@ module ADSecondary '?' = if (Stage.ADSecondary == 1) {
   ]
 }
 
-module dp_Deployment_VNETDNSDC2 '?' = if (Stage.ADSecondary == 1) {
+module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (Stage.ADSecondary == 1) {
   name: 'dp${Deployment}-VNETDNSDC2'
   params: {
     Deploymentnsg: Deploymentnsg
@@ -563,6 +692,115 @@ module dp_Deployment_VNETDNSDC2 '?' = if (Stage.ADSecondary == 1) {
   ]
 }
 
+// module DNSLookup '?' = if (Stage.DNSLookup == 1) {
+//   name: 'DNSLookup'
+//   params: {}
+//   dependsOn: [
+//     dp_Deployment_WAF
+//   ]
+// }
+
+module AppServers 'VM.bicep' = if (Stage.VMApp == 1) {
+  name: 'AppServers'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNETDNSDC1
+    dp_Deployment_VNETDNSDC2
+    dp_Deployment_OMS
+    dp_Deployment_LB
+    // DNSLookup
+    dp_Deployment_SA
+  ]
+}
+
+module VMFile 'VM.bicep' = if (Stage.VMFILE == 1) {
+  name: 'VMFile'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNETDNSDC1
+    dp_Deployment_VNETDNSDC2
+    dp_Deployment_OMS
+    dp_Deployment_LB
+    // DNSLookup
+    dp_Deployment_SA
+  ]
+}
+
+module AppServersLinux 'VM.bicep' = if (Stage.VMAppLinux == 1) {
+  name: 'AppServersLinux'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_LB
+    dp_Deployment_OMS
+    dp_Deployment_VNETDNSDC1
+    dp_Deployment_VNETDNSDC2
+    dp_Deployment_SA
+  ]
+}
+
+module SQLServers 'VM.bicep' = if (Stage.VMSQL == 1) {
+  name: 'SQLServers'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNETDNSDC1
+    dp_Deployment_VNETDNSDC2
+    dp_Deployment_LB
+    dp_Deployment_OMS
+    dp_Deployment_SA
+  ]
+}
+
+/*
+
 module dp_Deployment_SQLMI '?' = if (Stage.SQLMI == 1) {
   name: 'dp${Deployment}-SQLMI'
   params: {}
@@ -570,78 +808,6 @@ module dp_Deployment_SQLMI '?' = if (Stage.SQLMI == 1) {
     dp_Deployment_VNET
     dp_Deployment_VNETDNSDC1
     dp_Deployment_VNETDNSDC2
-  ]
-}
-
-module DNSLookup '?' = if (Stage.DNSLookup == 1) {
-  name: 'DNSLookup'
-  params: {}
-  dependsOn: [
-    dp_Deployment_WAF
-  ]
-}
-
-module InitialDOP '?' = if (Stage.InitialDOP == 1) {
-  name: 'InitialDOP'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNETDNSDC1
-    dp_Deployment_VNETDNSDC2
-    dp_Deployment_OMS
-    dp_Deployment_LB
-    DNSLookup
-    dp_Deployment_SA
-  ]
-}
-
-module AppServers '?' = if (Stage.VMApp == 1) {
-  name: 'AppServers'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNETDNSDC1
-    dp_Deployment_VNETDNSDC2
-    dp_Deployment_OMS
-    dp_Deployment_LB
-    DNSLookup
-    dp_Deployment_SA
-  ]
-}
-
-module VMFile '?' = if (Stage.VMFILE == 1) {
-  name: 'VMFile'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNETDNSDC1
-    dp_Deployment_VNETDNSDC2
-    dp_Deployment_OMS
-    dp_Deployment_LB
-    DNSLookup
-    dp_Deployment_SA
-  ]
-}
-
-module AppServersLinux '?' = if (Stage.VMAppLinux == 1) {
-  name: 'AppServersLinux'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_LB
-    dp_Deployment_OMS
-    dp_Deployment_VNETDNSDC1
-    dp_Deployment_VNETDNSDC2
-    dp_Deployment_SA
-  ]
-}
-
-module SQLServers '?' = if (Stage.VMSQL == 1) {
-  name: 'SQLServers'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNETDNSDC1
-    dp_Deployment_VNETDNSDC2
-    dp_Deployment_LB
-    dp_Deployment_OMS
-    dp_Deployment_SA
   ]
 }
 
@@ -712,6 +878,7 @@ module dp_Deployment_FRONTDOOR '?' = if (Stage.FRONTDOOR == 1) {
   ]
 }
 
+
 module dp_Deployment_AKS '?' = if (Stage.AKS == 1) {
   name: 'dp${Deployment}-AKS'
   params: {}
@@ -726,35 +893,6 @@ module dp_Deployment_DASHBOARD '?' = if (Stage.DASHBOARD == 1) {
   name: 'dp${Deployment}-DASHBOARD'
   params: {}
   dependsOn: []
-}
-
-module dp_Deployment_ServerFarm '?' = if (Stage.ServerFarm == 1) {
-  name: 'dp${Deployment}-ServerFarm'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_OMS
-  ]
-}
-
-module dp_Deployment_WebSite '?' = if (Stage.WebSite == 1) {
-  name: 'dp${Deployment}-WebSite'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_OMS
-    dp_Deployment_ServerFarm
-  ]
-}
-
-module dp_Deployment_Function '?' = if (Stage.Function == 1) {
-  name: 'dp${Deployment}-Function'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_OMS
-    dp_Deployment_ServerFarm
-  ]
 }
 
 module dp_Deployment_MySQLDB '?' = if (Stage.MySQLDB == 1) {
@@ -785,12 +923,5 @@ module dp_Deployment_AzureSQL '?' = if (Stage.AzureSQL == 1) {
   ]
 }
 
-module dp_Deployment_ACI '?' = if (Stage.ACI == 1) {
-  name: 'dp${Deployment}-ACI'
-  params: {}
-  dependsOn: [
-    dp_Deployment_OMS
-  ]
-}
 
 */

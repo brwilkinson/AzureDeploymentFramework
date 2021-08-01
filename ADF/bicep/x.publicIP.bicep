@@ -7,7 +7,7 @@ param OMSworkspaceID string
 
 
 resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP')) {
-  name: '${Deployment}-${(contains(VM, 'VMName') ? VM.VMName : VM.LBName)}-publicip${(index + 1)}'
+  name: '${Deployment}-${(contains(VM, 'VMName') ? VM.VMName : VM.LBName)}-publicip${index + 1}'
   location: resourceGroup().location
   sku: {
     name: contains(VM, 'Zone') ? 'Standard' : 'Basic'
@@ -15,10 +15,9 @@ resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = [for (nic,i
   properties: {
     publicIPAllocationMethod: nic.PublicIP
     dnsSettings: {
-      domainNameLabel: toLower('${Deployment}${contains(VM, 'VMName') ? '-vm${VM.VMName}' : '-lb${VM.LBName}'}-${(index + 1)}')
+      domainNameLabel: toLower('${Deployment}${contains(VM, 'VMName') ? '-vm${VM.VMName}' : '-lb${VM.LBName}'}-${index + 1}')
     }
   }
-  dependsOn: []
 }]
 
 resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP')) {

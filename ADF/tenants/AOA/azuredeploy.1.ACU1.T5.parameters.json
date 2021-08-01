@@ -445,7 +445,7 @@
         "ContainerRegistry": [
           {
             "Name": "01",
-            "SKU": "Standard",
+            "SKU": "Premium",  // "Standard",
             "adminUserEnabled": true
           }
         ],
@@ -525,7 +525,7 @@
         "appConfigurationInfo": {
           "name": "01",
           "sku": "standard",
-          "publicNetworkAccess": "Disabled",
+          "publicNetworkAccess": "Enabled",
           "PrivateLinkInfo": [
             {
               "Subnet": "snBE01",
