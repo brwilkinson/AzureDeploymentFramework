@@ -57,7 +57,7 @@ var CDN = [for (cdn, i) in CDNInfo: {
   saname: toLower('${DeploymentURI}sa${cdn.saname}')
 }]
 
-resource SACDN 'Microsoft.Cdn/profiles@2020-09-01' = [for (cdn, i) in CDNInfo: if (CDN[i].match) {
+resource SACDN 'Microsoft.Cdn/profiles@2020-09-01' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
   name: toLower('${DeploymentURI}sacdn${cdn.name}')
   location: resourceGroup().location
   sku: {
@@ -65,11 +65,11 @@ resource SACDN 'Microsoft.Cdn/profiles@2020-09-01' = [for (cdn, i) in CDNInfo: i
   }
 }]
 
-resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn, i) in CDNInfo: if (CDN[i].match) {
+resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
   name: '${toLower('${DeploymentURI}sacdn${cdn.name}')}/${cdn.saname}-${cdn.endpoint}'
   location: resourceGroup().location
   properties: {
-    originHostHeader: '${cdn.saname}.blob.core.windows.net'
+    originHostHeader: '${cdn.saname}.blob.${environment().suffixes.storage}' // .core.windows.net
     isHttpAllowed: true
     isHttpsAllowed: true
     queryStringCachingBehavior: 'IgnoreQueryString'
@@ -85,26 +85,43 @@ resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn
       {
         name: 'origin1'
         properties: {
-          hostName: '${cdn.saname}.blob.core.windows.net'
+          hostName: '${cdn.saname}.blob.${environment().suffixes.storage}'
         }
       }
     ]
   }
 }]
 
-resource SACDNDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (cdn, i) in CDNInfo: if (CDN[i].match) {
+module DNSCNAME 'x.DNS.CNAME.bicep' = [for (cdn, index) in CDNInfo: if (CDN[index].match && contains(cdn, 'hostname')) {
+  name: '${DeploymentURI}${cdn.hostname}.${Global.DomainNameExt}'
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  params: {
+    hostname: '${DeploymentURI}${cdn.hostname}'
+    cname: SACDNEndpoint[index].properties.hostName
+    Global: Global
+  }
+}]
+
+resource SACDNDNS 'Microsoft.Cdn/profiles/endpoints/customDomains@2020-09-01' = [for (cdn, index) in CDNInfo: if (CDN[index].match && contains(cdn, 'hostname')) {
+  name: '${DeploymentURI}${cdn.hostname}'
+  parent: SACDNEndpoint[index]
+  properties: {
+    hostName: '${DeploymentURI}${cdn.hostname}.${Global.DomainNameExt}'
+  }
+  dependsOn: [
+    DNSCNAME
+  ]
+}]
+
+resource SACDNDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
   name: 'service'
-  scope: SACDNEndpoint[i]
+  scope: SACDNEndpoint[index]
   properties: {
     workspaceId: OMSworkspaceID
-    metrics: [
+    logs: [
       {
-        timeGrain: 'PT5M'
+        category: 'CoreAnalytics'
         enabled: true
-        retentionPolicy: {
-          enabled: false
-          days: 0
-        }
       }
     ]
   }

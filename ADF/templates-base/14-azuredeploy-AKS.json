@@ -69,7 +69,7 @@
     // "Deployment": "[concat(parameters('Prefix'),'-','-',parameters('Environment'),parameters('DeploymentID'))]",
     "OMSworkspaceName": "[replace(concat(variables('Deployment'),'LogAnalytics'),'-','')]",
     "OMSworkspaceID": "[resourceid('Microsoft.OperationalInsights/workspaces/',variables('OMSworkspaceName'))]",
-    "AKSInfo": "[if(contains(parameters('DeploymentInfo'),'frontDoorInfo'),parameters('DeploymentInfo').AKSInfo,createArray())]",
+    "AKSInfo": "[if(contains(parameters('DeploymentInfo'),'AKSInfo'),parameters('DeploymentInfo').AKSInfo,createArray())]",
     "copy": [
       {
         "name": "AKS",
@@ -126,7 +126,6 @@
           "OMSworkspaceID": {
             "value": "[variables('OMSworkspaceID')]"
           },
-,
           "vmAdminPassword": {
             "value": "[parameters('vmAdminPassword')]"
           },

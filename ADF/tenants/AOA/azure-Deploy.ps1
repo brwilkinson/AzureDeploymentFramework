@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'P0',
+    [string]$Enviro = 'T5',
     [string]$App = 'AOA'
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
@@ -86,6 +86,8 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\SA.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\KV.bicep
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\KV.bicep
 
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\AppServiceFunction.bicep
+
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\09-azuredeploy-APIM.json
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-FrontDoor.json
@@ -100,11 +102,14 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName InitialDOP
 AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName InitialDOP
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServers
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServers 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServersLinux
+
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName SQLServers
 
 ##########################################################
 # Stage and Upload DSC Resource Modules for AA
+. ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMain.ps1 -DownloadLatest 1
 . ADF:\1-PrereqsToDeploy\5.0-UpdateDSCModulesMain.ps1 -DownloadLatest 0
 
 ## these two steps only after 01-azuredeploy-OMS.json has been deployed, which includes the Automation account.

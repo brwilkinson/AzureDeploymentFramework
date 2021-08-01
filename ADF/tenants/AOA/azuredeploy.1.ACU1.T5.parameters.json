@@ -81,15 +81,16 @@
         "APPCONFIG": 0,
         "REDIS": 0,
         "APIM": 0,
-        "ACR": 0,
+        "ACR": 1,
         "ACI": 0,
-        "AKS": 0,
+        "AKS": 1,
         "SQLMI": 0,
         "CosmosDB": 1,
         "DASHBOARD": 0,
         "DNSLookup": 0,
         "ServerFarm": 1,
         "WebSite": 0,
+        "WebSiteContainer": 0,
         "MySQLDB": 0,
         "Function": 1,
         "SB": 0,
@@ -285,6 +286,11 @@
                 "Tenant": "AOA"
               },
               {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "AOA"
@@ -408,6 +414,14 @@
             ]
           }
         ],
+        "CDNInfo": [
+          {
+            "Name": "eshopcatalog",
+            "saname": "catalog",
+            "endpoint": "catalog-endpoint",
+            "hostname": "myweb"
+          }
+        ],
         "KVInfo": [
           {
             "Name": "App01",
@@ -431,7 +445,7 @@
         "ContainerRegistry": [
           {
             "Name": "01",
-            "SKU": "Standard",
+            "SKU": "Premium",  // "Standard",
             "adminUserEnabled": true
           }
         ],
@@ -443,8 +457,6 @@
             "reserved": false,
             "skuname": "EP1",
             "skutier": "ElasticPremium",
-            "skusize": "EP1",
-            "skufamily": "EP",
             "skucapacity": 1,
             "maxWorkerCount": 100,
             "deploy": 1
@@ -456,8 +468,16 @@
             "reserved": false,
             "skuname": "P1v2",
             "skutier": "PremiumV2",
-            "skusize": "P1v2",
-            "skufamily": "Pv2",
+            "skucapacity": 1,
+            "deploy": 1
+          },
+          {
+            "Name": "CTR01",
+            "kind": "linux",
+            "perSiteScaling": false,
+            "reserved": true,   //true for containers
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
             "skucapacity": 1,
             "deploy": 1
           }
@@ -468,6 +488,16 @@
             "kind": "app",
             "AppSVCPlan": "WPS01",
             "saname": "wps01"
+          }
+        ],
+        "WebSiteContainerInfo": [
+          {
+            "Name": "CTR01",
+            "kind": "app,linux,container",
+            "AppSVCPlan": "CTR01",
+            "saname": "wps01",
+            "registry": "01"
+            // "registryENV": "t5"
           }
         ],
         "FunctionInfo": [
@@ -490,6 +520,69 @@
             "subnet": "snMT01",
             "preWarmedCount": 1,
             "deploy": 1
+          }
+        ],
+        "appConfigurationInfo": {
+          "name": "01",
+          "sku": "standard",
+          "publicNetworkAccess": "Enabled",
+          "PrivateLinkInfo": [
+            {
+              "Subnet": "snBE01",
+              "groupID": "configurationStores"
+            }
+          ]
+        },
+        "AKSInfo": [
+          {
+            "Name": "01",
+            "Version": "1.20.2", // "1.20.2","1.19.7","1.19.6", "1.18.14"
+            "skuTier": "Paid", //Free
+            "enableRBAC": true, //true, false
+            "podIdentity": true, //true, false
+            "privateCluster": true, //true, false
+            "AgentPoolsSN": "snMT02",
+            "WAFName": "01",
+            "loadBalancer": "standard", //"basic","standard"
+            "BrownFields": 0,
+            "aksAADAdminGroups": [
+              "AKS_Admins"
+            ],
+            "AgentPools": [
+              {
+                "name": "linctr",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 16,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "System"
+              },
+              // {
+              //   "name": "winctr",
+              //   "count": 2,
+              //   "osDiskSizeGb": 30,
+              //   "osType": "Linux",
+              //   "maxPods": 50,
+              //   "storageProfile": "ManagedDisks",
+              //   "_vmSize": "Standard_D1_v2",
+              //   "ASName": "JMP",
+              //   "mode": "User"
+              // }
+              {
+                "name": "linctr2",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 50,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "User"
+              }
+            ]
           }
         ],
         "cosmosDBInfo": [

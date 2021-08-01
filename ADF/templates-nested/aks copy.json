@@ -1,0 +1,79 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Deployment": {
+      "type": "string"
+    },
+    "AKSInfo": {
+      "type": "object"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "ManagedIdentities": {
+      "type": "array",
+      "value": [
+        {
+          "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').identityProfile.kubeletidentity.objectId]",
+          "RBAC": [
+            {
+              "Name": "Contributor"
+            },
+            {
+              "Name": "Network Contributor"
+            },
+            {
+              "Name": "Managed Identity Operator"
+            },
+            {
+              "Name": "Virtual Machine Contributor"
+            },
+            {
+              "Name": "Key Vault Certificates Officer"
+            },
+            {
+              "Name": "Key Vault Secrets User"
+            },
+            {
+              "Name": "Key Vault Crypto User"
+            }
+          ]
+        },
+        {
+          "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.omsAgent.identity.objectId]",
+          "RBAC": [
+            {
+              "Name": "Monitoring Metrics Publisher"
+            }
+          ]
+        },
+        {
+          "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.IngressApplicationGateway.identity.objectId]",
+          "RBAC": [
+            {
+              "Name": "Network Contributor"
+            },
+            {
+              "Name": "Managed Identity Operator"
+            },
+            {
+              "Name": "Virtual Machine Contributor"
+            }
+          ]
+        },
+        {
+          "name": "[reference(concat('Microsoft.ContainerService/managedClusters/',concat(parameters('deployment'),'-aks',parameters('AKSInfo').name)),'2020-12-01').addonProfiles.aciConnectorLinux.identity.objectId]",
+          "RBAC": [
+            {
+              "Name": "Contributor"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

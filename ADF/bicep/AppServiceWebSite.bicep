@@ -56,14 +56,14 @@ var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMS
 var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
 
-var WebSiteInfo = (contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.WebSiteInfo : [])
+var WebSiteInfo = (contains(DeploymentInfo, 'WebSiteInfo') ? DeploymentInfo.WebSiteInfo : [])
   
 var WSInfo = [for (ws, index) in WebSiteInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, ws.name))
   saName: toLower('${DeploymentURI}sa${ws.saname}')
 }]
 
-// merge appConfig
+// merge appConfig, move this to the websiteInfo as a property to pass in these from the param file
 var myAppConfig = [
   { 
     name: 'abc'
@@ -83,6 +83,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
     enabled: true
     httpsOnly: true
     serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
+
     siteConfig: {
       appSettings: union(myAppConfig,[
         {
@@ -95,6 +96,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
         }
       ])
     }
+    
   }
 }]
 
@@ -157,3 +159,4 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [f
     ]
   }
 }]
+

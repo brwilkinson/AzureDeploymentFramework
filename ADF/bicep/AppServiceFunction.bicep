@@ -56,6 +56,7 @@ var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMS
 var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
 
+// FunctionInfo
 var WebSiteInfo = (contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : [])
   
 var WSInfo = [for (ws, index) in WebSiteInfo: {
@@ -83,6 +84,10 @@ var myAppConfig = [
   }
 ]
 
+resource SADiag 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: SADiagName
+}
+
 var userAssignedIdentities = {
   Default: {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
@@ -109,11 +114,11 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
       appSettings: union(myAppConfig,[
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiagName};AccountKey=${listKeys('Microsoft.Storage/storageAccounts/${SADiagName}', '2015-05-01-preview').key1}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value}'
         }
         {
           name: 'Storage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiagName};AccountKey=${listKeys('Microsoft.Storage/storageAccounts/${SADiagName}', '2015-05-01-preview').key1}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value}'
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'

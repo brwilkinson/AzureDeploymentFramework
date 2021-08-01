@@ -67,40 +67,37 @@ var AppInsightsID = resourceId('microsoft.insights/components', AppInsightsName)
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
-//  not sure if this is needed, disable for now with false
-resource ACRSA 'Microsoft.Storage/storageAccounts@2018-07-01' = [for (cr, index) in ContainerRegistry: if (false && ACRInfo[index].match) {
-  name: '${DeploymentURI}sareg${cr.Name}'
-  location: resourceGroup().location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  sku: {
-    name: 'Standard_LRS'
-    // tier: 'Standard'
-  }
-  kind: 'StorageV2'
-  properties: {
-    networkAcls: {
-      bypass: 'AzureServices'
-      virtualNetworkRules: []
-      ipRules: []
-      defaultAction: 'Allow'
-    }
-    supportsHttpsTrafficOnly: true
-    encryption: {
-      keySource: 'Microsoft.Storage'
-      services: {
-        blob: {
-          enabled: true
-        }
-        file: {
-          enabled: true
-        }
-      }
-    }
-  }
-  dependsOn: []
-}]
+// var storageInfo = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
+  //   nameSuffix: toLower('reg${cr.Name}')
+  //   skuName: 'Standard_LRS'
+  //   allNetworks: 'Deny'
+  //   logging: {
+  //     r: 0
+  //     w: 0
+  //     d: 1
+  //   }
+  //   blobVersioning: 1
+  //   changeFeed: 1
+  //   softDeletePolicy: {
+  //     enabled: 1
+  //     days: 7
+  //   }
+  // }]
+  
+  // module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: {
+  //   name: 'dp${Deployment}-storageDeploy${sa.nameSuffix}'
+  //   params: {
+  //     Deployment: Deployment
+  //     DeploymentURI: DeploymentURI
+  //     DeploymentID: DeploymentID
+  //     Environment: Environment
+  //     storageInfo: sa
+  //     Global: Global
+  //     Stage: Stage
+  //     OMSworkspaceID: OMSworkspaceID
+  //   }
+  //   dependsOn: []
+  // }]
 
 resource ACR 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
   name: toLower('${DeploymentURI}registry${cr.Name}')
@@ -110,6 +107,8 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = [for 
   }
   properties: {
     adminUserEnabled: cr.adminUserEnabled
+    dataEndpointEnabled: true
+    zoneRedundancy: 'Enabled'
   }
 }]
 

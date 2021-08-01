@@ -39,7 +39,7 @@
                 
             )
 
-            SoftwarePackagePresent      = @(
+            SoftwarePackagePresent2      = @(
                 
                 @{
                     Name      = 'PowerShell 7-x64'

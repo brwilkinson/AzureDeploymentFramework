@@ -26,12 +26,6 @@ param DISKS object = {
 
 param Global object
 
-var ALLDisks = [for (disk,Index) in DISKS. : {
-
-}
-  
-]
-
 
 
 var Data_var = [for i in range(0, (contains(DATA, '1') ? 1 : length(DATA.LUNS))): {

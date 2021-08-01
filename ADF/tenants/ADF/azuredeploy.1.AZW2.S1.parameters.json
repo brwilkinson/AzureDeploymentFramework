@@ -86,6 +86,7 @@
         "DNSLookup": 0,
         "ServerFarm": 1,
         "WebSite": 1,
+        "WebSiteContainer": 0,
         "MySQLDB": 1,
         "Function":1
       }
@@ -269,8 +270,6 @@
             "reserved": false,
             "skuname": "S2",
             "skutier": "Standard",
-            "skusize": "S2",
-            "skufamily": "S",
             "skucapacity": 1
           },
           {
@@ -280,8 +279,6 @@
             "reserved": false,
             "skuname": "Y1",
             "skutier": "Dynamic",
-            "skusize": "Y1",
-            "skufamily": "Y",
             "skucapacity": 0
           }
         ],
@@ -293,8 +290,6 @@
             "reserved": false,
             "skuname": "P1v2",
             "skutier": "PremiumV2",
-            "skusize": "P1v2",
-            "skufamily": "Pv2",
             "skucapacity": 1
           }
         ],

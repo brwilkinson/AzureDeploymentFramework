@@ -4,43 +4,33 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.3.539.46024",
-      "templateHash": "1340771713801929872"
+      "version": "0.4.63.48766",
+      "templateHash": "17501283501084959776"
+    }
+  },
+  "parameters": {
+    "foo2": {
+      "type": "string",
+      "defaultValue": "hello"
+    },
+    "foo3": {
+      "type": "string",
+      "defaultValue": "world"
     }
   },
   "functions": [],
-  "resources": [
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-10-01",
-      "name": "foo",
-      "subscriptionId": "[subscription().subscriptionId]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.3.539.46024",
-              "templateHash": "5530374495462177361"
-            }
-          },
-          "functions": [],
-          "resources": [],
-          "outputs": {
-            "message": {
-              "type": "string",
-              "value": "hello"
-            }
-          }
-        }
-      }
+  "variables": {
+    "foo": "[parameters('foo2')]"
+  },
+  "resources": [],
+  "outputs": {
+    "myfoo": {
+      "type": "string",
+      "value": "[variables('foo')]"
+    },
+    "webapp": {
+      "type": "object",
+      "value": "[reference(resourceId('Microsoft.Web/sites', 'ACU1-BRW-AOA-T5-wsCTR01'), '2021-01-01', 'FULL').properties.siteConfig]"
     }
-  ]
+  }
 }

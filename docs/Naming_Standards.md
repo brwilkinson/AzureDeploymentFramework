@@ -12,88 +12,87 @@ Go Home [Documentation Home](./ARM.md)
     Common naming standards/conventions/examples:
 
 ```diff
-+       - AZC1-FAB-ADF-RG-S1
++       - ACU1-FAB-ADF-RG-S1
              - [Central US Deployment for Fabrikam organization, for ADF App team Resource Group
                  Sandbox 1 RG]
             
-+       - AZC1-FAB-ADF-S1-wafFW01
++       - ACU1-FAB-ADF-S1-wafFW01
             - [Central US Deployment for Fabrikam organization, for ADF App team, deploying a Web App. 
                 Firewall in Sandbox 1 Resource Group]
 !                   - The name that you provide: FW01
             
-+       - AZC1-FAB-ADF-S1-vmSQL01
++       - ACU1-FAB-ADF-S1-vmSQL01
             - [Central US Deployment for ADF App team, 
                 deploying vmSQL01 Azure Virtual Machine in Sandbox 1 Resource Group]
 !                   - The name that you provide: SQL01
             
-+       - AZC1ADFS1SQL01
++       - ACU1ADFS1SQL01
             - [Central US Deployment (VM hostname on internal Domain [15 char limit]) for ADF App team, 
                 deploying SQL01 VM in Sandbox 1 Resource Group]
 !                   - The name that you provide: SQL01
                     - OrgName [FAB] is not included, since on internal domain and limit is 15 chars.
             
-+       - AZC1-FAB-ADF-S1-nicSQL01
++       - ACU1-FAB-ADF-S1-nicSQL01
             - [A Network interface on the above Virtual Machine]
             - Generated from VM Name e.g. SQL01
             
-+       - AZC1-FAB-ADF-S1-vn
++       - ACU1-FAB-ADF-S1-vn
             - [A Virtual Network in the Sandbox 1 Resource Group - a Spoke Environment]
             - Always 1 VNET per RG/Environment, also per Parameter file definition.
             
-+       - AZC1-FAB-ADF-RG-S1
++       - ACU1-FAB-ADF-RG-S1
             - [The Spoke Resource Group for Above (ADF App)]
             
-+       - AZC1-FAB-HUB-RG-P0
++       - ACU1-FAB-HUB-RG-P0
             - [The HUB Resource Group for HUB App]
             
-+       - azc1fabhubg1saglobal
++       - acu1fabhubg1saglobal
             - [Central US Deployment for FAB organization, for HUB App team, deploying a storage account 
                 (lower case 24 char limit) in Global (G1) Resource Group]
 !                   - The name that you provide: global
             
-+       - AZC1-FAB-HUB-P0-kvVLT01
++       - ACU1-FAB-HUB-P0-kvVLT01
             - [Central US Deployment for FAB organization, for HUB App team, deploying a keyvault 
                 in the HUB (P0) Resource Group]
 !                   - The name that you provide: VLT01
             
-+       - AZC1-FAB-HUB-P0-kvVLT01-pl-vault-snMT02.nic.50a08879-44ce-4a16-a9e9-8595ce9734ca
++       - ACU1-FAB-HUB-P0-kvVLT01-pl-vault-snMT02.nic.50a08879-44ce-4a16-a9e9-8595ce9734ca
             - [A private link connection on the above Keyvault to subnet MT02]
             
-+       - AZC1-FAB-HUB-P0-networkwatcher
++       - ACU1-FAB-HUB-P0-networkwatcher
             - [Network watcher on above HUB]
             
-+       - AZC1-FAB-HUB-P0-networkwatcher/AZC1-FAB-ABC-S1-fl-AzureBastionSubnet
++       - ACU1-FAB-HUB-P0-networkwatcher/ACU1-FAB-ABC-S1-fl-AzureBastionSubnet
             - [A Subnet from S1 Spoke Bastion Subnet connecting back to the Hub Network watcher]
 ```
 
 |Name |Example|Allowed/Sample Values |Defintion |
 |---|---|---|---|
-|Example_Resource |**AZC1-FAB-HUB-P0-kvVLT01**|AZC1-FAB-HUB-P0-kvVLT01|A sample resource name used in this table<br/> Sample of a keyvault name |
-|[Prefix](./Naming_Standards_Prefix.md) |**{Prefix}**-FAB-HUB-P0-kvVLT01|AZE2 + AZC1|Location - Azure Region (Using Azure Partner Regions) |
-|DeploymentID |AZC1-FAB-HUB-P**{DeploymentID}**-kvVLT01|0 + 1 --> 8 <br/> 00 + 01 --> 15|The deployment iterations (configured to 8 environments) <br/>The deployment iterations (configured to 16 environments)<br/>- Network ranges in Hub/Spoke are dynamically assigned based on this [DeploymentID] |
-|Environment|AZC1-FAB-HUB-**{Environment}**0-kvVLT01|S + D + T + Q + U + P |The specific environment type:<br/>[Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
+|Example_Resource |**ACU1-FAB-HUB-P0-kvVLT01**|ACU1-FAB-HUB-P0-kvVLT01|A sample resource name used in this table<br/> Sample of a keyvault name |
+|[Prefix](./Naming_Standards_Prefix.md) |**{Prefix}**-FAB-HUB-P0-kvVLT01|AZE2 + ACU1|Location - Azure Region (Using Azure Partner Regions) |
+|DeploymentID |ACU1-FAB-HUB-P**{DeploymentID}**-kvVLT01|0 + 1 --> 8 <br/> 00 + 01 --> 15|The deployment iterations (configured to 8 environments) <br/>The deployment iterations (configured to 16 environments)<br/>- Network ranges in Hub/Spoke are dynamically assigned based on this [DeploymentID] |
+|Environment|ACU1-FAB-HUB-**{Environment}**0-kvVLT01|S + D + T + Q + U + P |The specific environment type:<br/>[Sandbox --> Dev --> Test --> UAT --> QA --> Prod]|
 |etype|Prod|PreProd + Prod|The general environment type |
-|Enviro |AZC1-FAB-HUB-**{Enviro}**-kvVLT01|D03 + T04 + Q06 + U08 + P09 + P00 <br/>S1 + D2 + D3 + T4 + U5 + P6 |The environment name (16 environments)<br/>The environment name (8 environments)|
-|OrgName|AZC1-**{OrgName}**-HUB-P0-kvVLT01|FAB or ADW or WTP or FAB|Your 3 letter Organization (company) name.<br/>This ensures public Azure Resources have a unique name|
-|App|AZC1-FAB-**{App}**-P0-kvVLT01|ADF, HUB, PSO, ABC|The App (tenant) name|
-|ResourcePrefix|AZC1-FAB-HUB-P0-**{ResourcePrefix}**VLT01|kv,sa,vm,vmss,fw,waf,nsg|The resource type prefix<br/>e.g. kv|
-|Name|AZC1-FAB-HUB-P0-kv**{Name}**|short name e.g. VLT01|The resource name, this is the part that you define in the parameter file|
-|Deployment |**{Deployment}**-kvVLT01| AZC1FABADFS1 + AZC1-FAB-ADF-S1 + azc1fabadfs1 | Used for naming resources e.g. part of hostname and Azure Resource names, lower for storage Etc.<br/> [Prefix + App + Enviro]|
+|Enviro |ACU1-FAB-HUB-**{Enviro}**-kvVLT01|D03 + T04 + Q06 + U08 + P09 + P00 <br/>S1 + D2 + D3 + T4 + U5 + P6 |The environment name (16 environments)<br/>The environment name (8 environments)|
+|OrgName|ACU1-**{OrgName}**-HUB-P0-kvVLT01|FAB or ADW or WTP or FAB|Your 3 letter Organization (company) name.<br/>This ensures public Azure Resources have a unique name|
+|App|ACU1-FAB-**{App}**-P0-kvVLT01|ADF, HUB, PSO, ABC|The App (tenant) name|
+|ResourcePrefix|ACU1-FAB-HUB-P0-**{ResourcePrefix}**VLT01|kv,sa,vm,vmss,fw,waf,nsg|The resource type prefix<br/>e.g. kv|
+|Name|ACU1-FAB-HUB-P0-kv**{Name}**|short name e.g. VLT01|The resource name, this is the part that you define in the parameter file|
+|Deployment |**{Deployment}**-kvVLT01| ACU1FABADFS1 + ACU1-FAB-ADF-S1 + acu1fabadfs1 | Used for naming resources e.g. part of hostname and Azure Resource names, lower for storage Etc.<br/> [Prefix + App + Enviro]|
 |Subscription|G0|Azure Subscription Deployments G0|E.g. RBAC or Policy|
 |Global|G1|A Global environment G1 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
-|HUB|P0|A Hub environment is denoted by the P0 or P00|AZC1-FAB-ADF-P0 Central Hub, AZE2-FAB-ADF-P0 EastUS2 Hub|
-|DR|P0 or any other mirrored environment e.g. T4|Primary Test environment AZC1-FAB-ADF-T4 would have a mirror environment<br/>DR Test environment AZE2-FAB-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
+|HUB|P0|A Hub environment is denoted by the P0 or P00|ACU1-FAB-ADF-P0 Central Hub, AZE2-FAB-ADF-P0 EastUS2 Hub|
+|DR|P0 or any other mirrored environment e.g. T4|Primary Test environment ACU1-FAB-ADF-T4 would have a mirror environment<br/>DR Test environment AZE2-FAB-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
 |* | ------------------------------------------------------------- | * |---------------------------|
 
 <br/>
-
 
 #### *How are the standard implemented?*
 
 The name of any resource is determined via the following method.
     - Example the Hub tenant, Central US Global Parameter File
 
-- [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
+- [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.ACU1.G1.parameters.json)
     - The parameter file defines a Resource Group
     - This contains, the 3 parameters that automatically build the resource names.
         - [Prefix](./Naming_Standards_Prefix.md)
@@ -103,7 +102,7 @@ The name of any resource is determined via the following method.
             ```jsonc
               "parameters": {
                 "Prefix": {
-                  "value": "AZC1"
+                  "value": "ACU1"
                 },
                 "Environment": {
                   "value": "G"
@@ -120,9 +119,9 @@ The name of any resource is determined via the following method.
         - This is used for URI's and also things such as storage account names.
         ```jsonc
         "variables": {
-                        // example: AZC1-FAB-HUB-G1
+                        // example: ACU1-FAB-HUB-G1
         "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-                        // example: azc1fabhubg1
+                        // example: acu1fabhubg1
         "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
         }
         ```
@@ -137,7 +136,7 @@ The name of any resource is determined via the following method.
               "type": "Microsoft.Storage/storageAccounts",
               "location": "[resourceGroup().location]",
         ```
-- [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.AZC1.G1.parameters.json)
+- [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.ACU1.G1.parameters.json)
     - The parameter also contains individual resource definitions for that Resource Group
     - Notice the nameSuffix value above for 'global' comes from the parameter file as below.
         ```json
@@ -175,7 +174,7 @@ The name of any resource is determined via the following method.
         - parameters('Global').Appname
     ```jsonc
         "variables": {
-                        // example: AZC1-FAB-HUB-G1
+                        // example: ACU1-FAB-HUB-G1
         "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
     ```
 

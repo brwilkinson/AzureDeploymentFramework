@@ -112,8 +112,6 @@
       "sku": {
         "name": "[variables('appServiceplanInfo')[copyIndex()].skuname]",
         "tier": "[variables('appServiceplanInfo')[copyIndex()].skutier]",
-        "size": "[variables('appServiceplanInfo')[copyIndex()].skusize]",
-        "family": "[variables('appServiceplanInfo')[copyIndex()].skufamily]",
         "capacity": "[variables('appServiceplanInfo')[copyIndex()].skucapacity]"
         // "skuCapacity": {
         //   "minimum": "integer",
