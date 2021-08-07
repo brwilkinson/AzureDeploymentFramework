@@ -442,6 +442,18 @@
             ]
           }
         ],
+        "RedisInfo": [
+          {
+            "Name": "APIM01",
+            "sku": "C1",
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "redisCache"
+              }
+            ]
+          }
+        ],
         "APIMInfo": [
           {
             "name": "01",

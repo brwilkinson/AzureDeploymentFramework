@@ -13,6 +13,7 @@ var DNSLookup = {
   configurationStores: 'azconfig'
   namespace: 'servicebus'
   sqlServer: 'database'
+  redisCache: 'redis.cache'
 }
 
 //  dns private link group id
