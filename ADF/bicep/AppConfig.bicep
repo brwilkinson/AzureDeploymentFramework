@@ -53,7 +53,9 @@ var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var appConfigurationInfo = DeploymentInfo.appConfigurationInfo
+
+var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
+
 var hubRG = Global.hubRGName
 
 resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
@@ -84,7 +86,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfiguration
   }
 }
 
-module ACPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(appConfigurationInfo, 'privatelinkinfo')) {
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(appConfigurationInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-registerPrivateDNS${appConfigurationInfo.name}'
   scope: resourceGroup(hubRG)
   params: {

@@ -55,6 +55,7 @@ var AAName = '${Prefix}${Global.OrgName}${Global.Appname}P0OMSAutomation'
 
 var Environment_var = {
   D: 'Dev'
+  T: 'Test'
   I: 'Int'
   U: 'UAT'
   P: 'PROD'
@@ -62,6 +63,7 @@ var Environment_var = {
 }
 var VMSizeLookup = {
   D: 'D'
+  T: 'D'
   I: 'D'
   U: 'D'
   P: 'P'

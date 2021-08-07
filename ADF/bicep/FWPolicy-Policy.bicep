@@ -35,7 +35,9 @@ resource FWPolicy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
     insights:{
       isEnabled:true
       logAnalyticsResources:{
-        defaultWorkspaceId: OMSworkspaceID
+        defaultWorkspaceId: {
+              id: OMSworkspaceID
+          }
       }
     }
     // intrusionDetection: {

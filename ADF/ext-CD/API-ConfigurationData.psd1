@@ -161,8 +161,8 @@
             SoftwarePackagePresent      = @(
 
                 # @{
-                #     Name      = 'Microsoft Visual Studio Code'
-                #     Path      = 'F:\Source\Tools\vscode\VSCodeSetup-x64-1.25.0.exe'
+                    # Name      = 'Microsoft Visual Studio Code'
+                    # Path      = 'F:\Source\Tools\vscode\VSCodeSetup-x64-1.59.0.exe'
                 #     ProductId = ''
                 #     Arguments = '/silent /norestart'
                 # },

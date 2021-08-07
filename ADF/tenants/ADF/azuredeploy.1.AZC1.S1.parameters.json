@@ -218,7 +218,7 @@
             "prefix": "0/25",
             "NSG": 1,
             "Route": false,
-            "delegations" : "Microsoft.Web/serverfarms"
+            "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snMT02",
@@ -356,12 +356,14 @@
             "sku": "Premium",
             "skuCapacity": 1,
             "zoneRedundant": false,
-            "topics": {
-              "Name": "TopicOrderTracking",
-              "subscriptions": {
-                "Name": "SubOrderTracking"
+            "topics": [
+              {
+                "Name": "TopicOrderTracking",
+                "subscriptions": {
+                  "Name": "SubOrderTracking"
+                }
               }
-            },
+            ],
             "PrivateLinkInfo": [
               {
                 "Subnet": "snBE01",
@@ -556,7 +558,9 @@
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
-            "BackEnd": ["CLS01"],
+            "BackEnd": [
+              "CLS01"
+            ],
             "FrontEnd": [
               {
                 "SNName": "BE01",

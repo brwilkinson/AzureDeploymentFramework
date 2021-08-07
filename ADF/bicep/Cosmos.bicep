@@ -67,7 +67,7 @@ module CosmosDB 'Cosmos-Account.bicep' = [for (account, index) in cosmosDBInfo :
   }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (account, index) in cosmosDBInfo: if(cosmosDB[index].match) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (account, index) in cosmosDBInfo: if(cosmosDB[index].match && contains(account, 'privatelinkinfo')) {
   name: 'dp${Deployment}-privatelinkloopCosmos${((length(cosmosDBInfo) != 0) ? account.name : 'na')}'
   params: {
     Deployment: Deployment
@@ -80,7 +80,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (account, index) in cosm
   ]
 }]
 
-module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (account, index) in cosmosDBInfo: if(cosmosDB[index].match) {
+module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (account, index) in cosmosDBInfo: if(cosmosDB[index].match && contains(account, 'privatelinkinfo')) {
   name: 'dp${Deployment}-registerPrivateLinkDNS-ACU1-${((length(cosmosDBInfo) != 0) ? account.name : 'na')}'
   scope: resourceGroup(Global.HubRGName)
   params: {
