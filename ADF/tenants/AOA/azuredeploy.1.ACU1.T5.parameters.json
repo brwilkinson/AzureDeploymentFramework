@@ -80,7 +80,7 @@
         "SetInternalDNS": 1,
         "APPCONFIG": 0,
         "REDIS": 0,
-        "APIM": 0,
+        "APIM": 1,
         "ACR": 1,
         "ACI": 0,
         "AKS": 1,
@@ -442,6 +442,17 @@
             ]
           }
         ],
+        "APIMInfo": [
+          {
+            "name": "01",
+            "dnsName": "API",
+            "apimSku": "Developer",
+            "snName": "BE01",
+            "virtualNetworkType": "Internal",
+            "certName": "PSTHING-WildCard",
+            "frontDoor": "01"
+          }
+        ],
         "ContainerRegistry": [
           {
             "Name": "01",
@@ -763,28 +774,59 @@
         ],
         "frontDoorInfo": [
           {
-            "name": "01",
+            "name": "03",
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "GW01", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
+                "Name": "APIM03", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
                 "BEAddress": [
                   {
-                    "address": "{Deployment}-api02.{Domain}",
-                    "hostheader": "{Deployment}-api02.{Domain}",
-                    "weight": 50
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03.{Domain}"
                   }
                 ],
-                "ProbeName": "probe02",
+                "ProbeName": "probe01",
                 "LBSettings": "balance01",
                 "sessionAffinityEnabledState": "Disabled",
                 "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
-                  "/api/headers",
                   "/*"
                 ]
               },
               {
+                "Name": "APIM03-Developer",
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-developer.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                "Name": "APIM03-Scm", // acu1-BRW-AOA-s1-afd 01 - apim01-scm .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-scm.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                // Default (front end) Service is Required, add backend as well for ability to test FE.
                 "Name": "Default",
                 "BEAddress": [
                   {
@@ -802,76 +844,7 @@
             "probes": [
               {
                 "Name": "probe01",
-                "ProbePath": "/",
-                "probeMethod": "GET"
-              },
-              {
-                "Name": "probe02",
-                "ProbePath": "/api/headers",
-                "probeMethod": "GET"
-              }
-            ],
-            "LBSettings": [
-              {
-                "Name": "balance01",
-                "sampleSize": 4,
-                "successfulSamplesRequired": 2,
-                "additionalLatencyMilliseconds": 0
-              }
-            ]
-          },
-          {
-            "name": "02",
-            "_afdverify": "AOA",
-            "services": [
-              {
-                "Name": "GW01", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
-                "BEAddress": [
-                  {
-                    "address": "{Deployment}-api02.{Domain}",
-                    "hostheader": "{Deployment}-api02.{Domain}",
-                    "weight": 50
-                  },
-                  {
-                    "address": "{Deployment}-api03.{Domain}",
-                    "hostheader": "{Deployment}-api03.{Domain}",
-                    "weight": 50
-                  }
-                ],
-                "ProbeName": "probe02",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
-                "patternsToMatch": [
-                  "/api/headers",
-                  "/*"
-                ]
-              },
-              {
-                "Name": "Default",
-                "BEAddress": [
-                  {
-                    "address": "portal.azure.com"
-                  }
-                ],
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "patternsToMatch": [
-                  "/*"
-                ]
-              }
-            ],
-            "probes": [
-              {
-                "Name": "probe01",
-                "ProbePath": "/",
-                "probeMethod": "GET"
-              },
-              {
-                "Name": "probe02",
-                "ProbePath": "/api/headers",
-                "probeMethod": "GET"
+                "ProbePath": "/"
               }
             ],
             "LBSettings": [
@@ -891,7 +864,7 @@
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
-              "OSType": "Server2019",
+              "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
               "_HotPatch": true,
               "Zone": 1,

@@ -151,7 +151,7 @@
 
                 @{
                     Name      = 'Microsoft Visual Studio Code'
-                    Path      = 'C:\Source\Tools\vscode\VSCodeSetup-x64-1.25.0.exe'
+                    Path      = 'F:\Source\Tools\vscode\VSCodeSetup-x64-1.59.0.exe'
                     ProductId = ''
                     Arguments = '/silent /norestart'
                 },
