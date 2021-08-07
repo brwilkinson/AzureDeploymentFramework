@@ -93,7 +93,7 @@
         "WebSiteContainer": 0,
         "MySQLDB": 0,
         "Function": 1,
-        "SB": 0,
+        "SB": 1,
         "AzureSQL": 0
       }
     },
@@ -453,10 +453,59 @@
             "frontDoor": "01"
           }
         ],
+        "SBInfo": [
+          {
+            "Name": "BUSOrderTracking",
+            "sku": "Premium",
+            "skuCapacity": 1,
+            "zoneRedundant": false,
+            "topics": [
+              {
+                "Name": "TopicOrderTracking",
+                "subscriptions": [
+                  {
+                    "Name": "SubOrderTracking"
+                  }
+                ]
+              }
+            ],
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "namespace"
+              }
+            ]
+          },
+          {
+            "Name": "ESHOPSB",
+            "sku": "Premium",
+            "skuCapacity": 1,
+            "zoneRedundant": true,
+            "topics": [
+              {
+                "Name": "eshop_event_bus",
+                "subscriptions": [
+                  {
+                    "Name": "Basket"
+                  },
+                  {
+                    "Name": "Catalog"
+                  }
+                ]
+              }
+            ],
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "namespace"
+              }
+            ]
+          }
+        ],
         "ContainerRegistry": [
           {
             "Name": "01",
-            "SKU": "Premium",  // "Standard",
+            "SKU": "Premium", // "Standard",
             "adminUserEnabled": true
           }
         ],
@@ -486,7 +535,7 @@
             "Name": "CTR01",
             "kind": "linux",
             "perSiteScaling": false,
-            "reserved": true,   //true for containers
+            "reserved": true, //true for containers
             "skuname": "P1v2",
             "skutier": "PremiumV2",
             "skucapacity": 1,

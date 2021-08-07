@@ -29,8 +29,7 @@
     "now": {
       "type": "string",
       "defaultValue": "[utcNow('F')]"
-    },
-
+    }
   },
   "variables": {
 
