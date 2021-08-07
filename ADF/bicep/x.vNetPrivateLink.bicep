@@ -31,7 +31,6 @@ resource subnetPrivateEndpoint 'Microsoft.Network/privateEndpoints@2019-11-01' =
       id: resourceId('Microsoft.Network/virtualNetworks/subnets', privateLink[index].vNet, pl.Subnet)
     }
   }
-  dependsOn: []
 }]
 
 // output NICID array = [for (pl, index) in PrivateLinkInfo: reference(resourceId('Microsoft.Network/privateEndpoints', '${resourceName}-pl-${pl.groupID}-${pl.Subnet}'), '2019-11-01', 'Full').properties.networkInterfaces[0].id]
