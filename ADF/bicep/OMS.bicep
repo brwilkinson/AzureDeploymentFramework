@@ -60,6 +60,11 @@ var dataRetention = 31
 var serviceTier = 'PerNode'
 var AAserviceTier = 'Basic' // 'Free'
 
+var patchingStatus = {
+    linux: false
+    windows: true
+}
+
 var dataSources = [
     {
         name: 'AzureActivityLog'
@@ -879,6 +884,7 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
         }
         tasks: {}
         scheduleInfo: {
+            isEnabled: patchingStatus.windows
             frequency: 'Week'
             interval: 1
             advancedSchedule: {
@@ -921,6 +927,7 @@ resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpda
         }
         tasks: {}
         scheduleInfo: {
+            isEnabled: patchingStatus.linux
             frequency: 'Week'
             interval: 1
             advancedSchedule: {

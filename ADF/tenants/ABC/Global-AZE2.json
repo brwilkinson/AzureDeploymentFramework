@@ -7,6 +7,7 @@
     "certificateUrl": "https://aze2-brw-hub-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/287befc1773d41e7884d3ae12f7d9034",
     "networkId": ["172.19.",142],
     "DNSServers": ["172.18.142.75","172.18.142.76"],
+    "AALocation": "EastUS",
     "nsgRGName": "AZE2-BRW-HUB-RG-P0",
     "RTRGName": "AZE2-BRW-HUB-RG-P0",
     "RTName": "rtContoso-Hub",
