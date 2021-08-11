@@ -88,24 +88,24 @@ AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\KV.bicep
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\AppServiceFunction.bicep
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\09-azuredeploy-APIM.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\APIM.bicep
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\02-azuredeploy-FrontDoor.json
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\02-azuredeploy-FrontDoor.json
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\FD.bicep
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\FD.bicep
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\14-azuredeploy-AKS.json -FullUpload -vsts
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\AKS.bicep
 
 # $env:Enviro AppServers Deploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName ADPrimary
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName ADSecondary
-# $env:Enviro AppServers Deploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName InitialDOP
-AzDeploy @Current -Prefix AEU2 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName InitialDOP
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName ADPrimary
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName ADSecondary
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServers 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName AppServersLinux
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName AppServers
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\05-azuredeploy-VMApp.json -DeploymentName SQLServers
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName AppServers -CN JMP02
+
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName AppServersLinux
+
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName SQLServers
 
 ##########################################################
 # Stage and Upload DSC Resource Modules for AA

@@ -37,11 +37,6 @@ $Name = 'Web-Test-SMTP'
 $type = 'Microsoft.Logic/workflows'
 
 
-# View vm json
-$rgName = 'AZC1-BRW-HUB-RG-P0'
-$Name = 'AZC1-BRW-HUB-P0-vmDC01'
-$type = 'Microsoft.Compute/virtualMachines'
-
 # View host pool json
 $rgName = 'AZC1-BRW-ABC-RG-S1'
 $Name = 'AZC1-BRW-ABC-S1-wvdhp01'
@@ -109,6 +104,11 @@ $type = 'Microsoft.ContainerInstance/containerGroups'
 $rgName = 'ACU1-BRW-AOA-RG-D3'
 $Name = 'ACU1-BRW-AOA-D3-aci-locust-master-0'
 $type = 'Microsoft.ContainerInstance/containerGroups'
+
+# View vm json
+$rgName = 'ACU1-BRW-AOA-RG-T5'
+$Name = 'ACU1-BRW-AOA-T5-vmJMP02'
+$type = 'Microsoft.Compute/virtualMachines'
 
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 

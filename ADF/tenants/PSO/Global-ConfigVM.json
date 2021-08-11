@@ -807,6 +807,7 @@
         "version": "latest"
       },
       "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
       "OS": "Windows",
       "OSDiskGB": 127,
       "RoleExtensions": {
@@ -867,6 +868,7 @@
         "version": "latest"
       },
       "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
       "OS": "Windows",
       "OSDiskGB": 127,
       "RoleExtensions": {
@@ -878,10 +880,11 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "2019-Datacenter-Server-Core",
+        "sku": "2019-Datacenter-Core",
         "version": "latest"
       },
       "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
       "OS": "Windows",
       "OSDiskGB": 32,
       "RoleExtensions": {
