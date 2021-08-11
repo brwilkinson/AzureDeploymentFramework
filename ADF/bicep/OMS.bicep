@@ -54,7 +54,6 @@ var OMSWorkspaceName = '${DeploymentURI}LogAnalytics'
 var AAName = '${DeploymentURI}OMSAutomation'
 var appInsightsName = '${DeploymentURI}AppInsights'
 
-
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
 
 var dataRetention = 31
@@ -845,6 +844,92 @@ resource OMSworkspaceName_Automation 'Microsoft.OperationalInsights/workspaces/l
     name: 'Automation'
     properties: {
         resourceId: AA.id
+    }
+}
+
+resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
+    parent: AA
+    name: 'Update-Twice-Weekly-Windows'
+    properties: {
+        updateConfiguration: {
+            operatingSystem: 'Windows'
+            windows: {
+                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
+                excludedKbNumbers: []
+                includedKbNumbers: []
+                rebootSetting: 'IfRequired'
+            }
+            duration: 'PT2H'
+            // azureVirtualMachines: []
+            // nonAzureComputerNames: []
+            targets: {
+                azureQueries: [
+                    {
+                        scope: [
+                            resourceGroup().id
+                        ]
+                        tagSettings: {
+                            tags: {}
+                            filterOperator: 'All'
+                        }
+                        locations: []
+                    }
+                ]
+            }
+        }
+        tasks: {}
+        scheduleInfo: {
+            frequency: 'Week'
+            interval: 1
+            advancedSchedule: {
+                weekDays: [
+                    'Wednesday'
+                    'Thursday'
+                ]
+            }
+        }
+    }
+}
+
+resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
+    parent: AA
+    name: 'Update-Twice-Weekly-Linux'
+    properties: {
+        updateConfiguration: {
+            operatingSystem: 'Linux'
+            linux: {
+                includedPackageClassifications: 'Critical, Other, Security, Unclassified'
+                // includedPackageNameMasks: []
+                // excludedPackageNameMasks: []
+                rebootSetting: 'IfRequired'
+            }
+            duration: 'PT2H'
+            targets: {
+                azureQueries: [
+                    {
+                        scope: [
+                            resourceGroup().id
+                        ]
+                        tagSettings: {
+                            tags: {}
+                            filterOperator: 'All'
+                        }
+                        locations: []
+                    }
+                ]
+            }
+        }
+        tasks: {}
+        scheduleInfo: {
+            frequency: 'Week'
+            interval: 1
+            advancedSchedule: {
+                weekDays: [
+                    'Wednesday'
+                    'Thursday'
+                ]
+            }
+        }
     }
 }
 

@@ -9,6 +9,7 @@ Get-AzProviderFeature -ProviderNamespace Microsoft.Network -list
 Register-AzProviderFeature -ProviderNamespace Microsoft.Network -FeatureName BypassCnameCheckForCustomDomainDeletion
 
 # AKS
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-OpenServiceMesh
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-IngressApplicationGatewayAddon
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName EnableAzureRBACPreview
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName EnablePodIdentityPreview
