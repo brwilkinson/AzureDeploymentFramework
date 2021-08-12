@@ -45,6 +45,8 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
+param now string = utcNow('F')
+
 targetScope = 'resourceGroup'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -60,9 +62,12 @@ var dataRetention = 31
 var serviceTier = 'PerNode'
 var AAserviceTier = 'Basic' // 'Free'
 
-var patchingStatus = {
-    linux: false
-    windows: true
+var patchingEnabled = {
+    linuxWeekly: false
+    
+    windowsNOW: false
+    windowsWeekly: true
+    windowsMonthly: true
 }
 
 var dataSources = [
@@ -853,6 +858,95 @@ resource OMSworkspaceName_Automation 'Microsoft.OperationalInsights/workspaces/l
     }
 }
 
+resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
+    parent: AA
+    name: 'Update-Third-Saturday-Windows'
+    properties: {
+        updateConfiguration: {
+            operatingSystem: 'Windows'
+            windows: {
+                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
+                excludedKbNumbers: []
+                includedKbNumbers: []
+                rebootSetting: 'IfRequired'
+            }
+            duration: 'PT2H'
+            // azureVirtualMachines: []
+            // nonAzureComputerNames: []
+            targets: {
+                azureQueries: [
+                    {
+                        scope: [
+                            resourceGroup().id
+                        ]
+                        tagSettings: {
+                            tags: {}
+                            filterOperator: 'All'
+                        }
+                        locations: []
+                    }
+                ]
+            }
+        }
+        tasks: {}
+        scheduleInfo: {
+            isEnabled: patchingEnabled.windowsMonthly
+            frequency: 'Month'
+            timeZone: 'America/Los_Angeles'
+            interval: 1
+            startTime: dateTimeAdd('20:00', 'P1D')
+            advancedSchedule: {
+                monthlyOccurrences: [
+                    {
+                        day: 'Saturday'
+                        occurrence: 3
+                    }
+                ]
+            }
+        }
+    }
+}
+
+resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
+    parent: AA
+    name: 'Update-NOW-Windows'
+    properties: {
+        updateConfiguration: {
+            operatingSystem: 'Windows'
+            windows: {
+                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
+                excludedKbNumbers: []
+                includedKbNumbers: []
+                rebootSetting: 'IfRequired'
+            }
+            duration: 'PT2H'
+            // azureVirtualMachines: []
+            // nonAzureComputerNames: []
+            targets: {
+                azureQueries: [
+                    {
+                        scope: [
+                            resourceGroup().id
+                        ]
+                        tagSettings: {
+                            tags: {}
+                            filterOperator: 'All'
+                        }
+                        locations: []
+                    }
+                ]
+            }
+        }
+        tasks: {}
+        scheduleInfo: {
+            isEnabled: patchingEnabled.windowsNOW
+            frequency: 'OneTime'
+            interval: 1
+            nextRunOffsetMinutes: 15
+        }
+    }
+}
+
 resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
     parent: AA
     name: 'Update-Twice-Weekly-Windows'
@@ -885,9 +979,11 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
         }
         tasks: {}
         scheduleInfo: {
-            isEnabled: patchingStatus.windows
+            isEnabled: patchingEnabled.windowsWeekly
             frequency: 'Week'
             interval: 1
+            timeZone: 'America/Los_Angeles'
+            startTime: dateTimeAdd('12:00', 'P1D')
             advancedSchedule: {
                 weekDays: [
                     'Wednesday'
@@ -928,9 +1024,11 @@ resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpda
         }
         tasks: {}
         scheduleInfo: {
-            isEnabled: patchingStatus.linux
+            isEnabled: patchingEnabled.linuxWeekly
             frequency: 'Week'
             interval: 1
+            timeZone: 'America/Los_Angeles'
+            startTime: dateTimeAdd('12:00', 'P1D')
             advancedSchedule: {
                 weekDays: [
                     'Wednesday'
