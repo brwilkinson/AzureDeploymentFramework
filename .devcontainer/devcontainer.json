@@ -25,8 +25,8 @@
         }
     },
     "files.defaultLanguage": "powershell",
-    "terminal.integrated.defaultProfile.linux": "pwsh"
-    // "terminal.integrated.shell.linux": "pwsh"
+    "terminal.integrated.defaultProfile.linux": "pwsh",
+    "terminal.integrated.shell.linux": "pwsh"
   },
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
