@@ -6,7 +6,8 @@
 
 FROM mcr.microsoft.com/vscode/devcontainers/dotnet:latest
 
-RUN pwsh -c "install-module az,posh-git,Terminal-Icons -Force"
+RUN pwsh -c "install-module az, posh-git, Terminal-Icons -Force"
+RUN pwsh -c "install-module oh-my-posh -Force -AllowPrerelease"
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
