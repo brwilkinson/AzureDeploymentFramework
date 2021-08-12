@@ -982,6 +982,8 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
             isEnabled: patchingEnabled.windowsWeekly
             frequency: 'Week'
             interval: 1
+            timeZone: 'America/Los_Angeles'
+            startTime: dateTimeAdd('12:00', 'P1D')
             advancedSchedule: {
                 weekDays: [
                     'Wednesday'
@@ -1025,6 +1027,8 @@ resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpda
             isEnabled: patchingEnabled.linuxWeekly
             frequency: 'Week'
             interval: 1
+            timeZone: 'America/Los_Angeles'
+            startTime: dateTimeAdd('12:00', 'P1D')
             advancedSchedule: {
                 weekDays: [
                     'Wednesday'
