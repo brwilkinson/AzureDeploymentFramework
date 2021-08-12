@@ -25,12 +25,14 @@
         }
     },
     "files.defaultLanguage": "powershell",
-    "terminal.integrated.defaultProfile.linux": "pwsh"
+    "terminal.integrated.defaultProfile.linux": "pwsh",
+    "Terminal.integrated.shell.linux": "pwsh"
   },
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
     "ms-vscode.powershell-preview",
-    "ms-azuretools.vscode-bicep"
+    "ms-azuretools.vscode-bicep",
+    "ms-dotnettools.csharp"
   ],
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
