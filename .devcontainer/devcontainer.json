@@ -30,7 +30,13 @@
   },
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
+    "ms-vscode.azure-account",
     "ms-vscode.powershell-preview",
+    "msazurermtools.azurerm-vscode-tools",
+    "GitHub.vscode-pull-request-github",
+    "eamodio.gitlens",
+    "ms-dotnettools.vscode-dotnet-runtime",
+    "oderwat.indent-rainbow",
     "ms-azuretools.vscode-bicep",
     "ms-dotnettools.csharp"
   ],
