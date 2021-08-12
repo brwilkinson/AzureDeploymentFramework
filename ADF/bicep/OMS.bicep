@@ -600,6 +600,7 @@ var solutions = [
     'ServiceFabric'
     'InfrastructureInsights'
     'VMInsights'
+    'SecurityInsights'
 ]
 var aaAssets = {
     modules: [
