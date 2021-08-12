@@ -6,6 +6,8 @@
 
 FROM mcr.microsoft.com/vscode/devcontainers/dotnet:latest
 
+RUN pwsh -c "install-module az,posh-git,Terminal-Icons -Force"
+
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
