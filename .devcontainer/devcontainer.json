@@ -20,13 +20,13 @@
     },
     "terminal.integrated.profiles.linux": {
         "pwsh": {
-            "path": "pwsh",
+            "path": "/usr/bin/pwsh",
             "icon": "terminal-powershell"
         }
     },
     "files.defaultLanguage": "powershell",
-    "terminal.integrated.defaultProfile.linux": "pwsh",
-    "Terminal.integrated.shell.linux": "pwsh"
+    "terminal.integrated.defaultProfile.linux": "pwsh"
+    // "terminal.integrated.shell.linux": "/usr/bin/pwsh"
   },
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
