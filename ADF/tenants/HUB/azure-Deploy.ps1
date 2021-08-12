@@ -25,7 +25,7 @@ break
 . ADF:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
 
 # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
-. ADF:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
+. ADF:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1 -App $App
 
 # Deploy Environment
 

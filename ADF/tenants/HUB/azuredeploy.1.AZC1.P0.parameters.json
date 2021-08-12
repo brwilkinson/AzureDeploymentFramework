@@ -104,6 +104,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "VMInsights": 1,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
@@ -111,6 +112,7 @@
         "MSI": 1,
         "CertMgmt": 0,
         "DomainJoin": 1,
+        "AADLogin": 0,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
         "SqlIaasExtension": 0
@@ -446,7 +448,9 @@
             "ASName": "API",
             "Sku": "Basic",
             "Type": "Private",
-            "BackEnd": ["API"],
+            "BackEnd": [
+              "API"
+            ],
             "FrontEnd": [
               {
                 "SNName": "MT02",
@@ -554,7 +558,9 @@
             "ASName": "SF",
             "Sku": "Basic",
             "Type": "Private",
-            "BackEnd": ["SF"],
+            "BackEnd": [
+              "SF"
+            ],
             "FrontEnd": [
               {
                 "SNName": "MT02",
@@ -665,7 +671,9 @@
             "ASName": "PLB01",
             "Sku": "Standard",
             "Type": "Public",
-            "BackEnd": ["PLB01"],
+            "BackEnd": [
+              "PLB01"
+            ],
             "FrontEnd": [
               {
                 "Type": "Public",
@@ -688,7 +696,9 @@
             "ASName": "FIL",
             "Sku": "Standard",
             "Type": "Private",
-            "BackEnd": ["FIL"],
+            "BackEnd": [
+              "FIL"
+            ],
             "FrontEnd": [
               {
                 "SNName": "MT02",
@@ -732,7 +742,9 @@
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
-            "BackEnd": ["CLS01"],
+            "BackEnd": [
+              "CLS01"
+            ],
             "FrontEnd": [
               {
                 "SNName": "BE02",

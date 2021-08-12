@@ -11,7 +11,21 @@
   },
   // Set *default* container specific settings.json values on container create.
   "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
+    "[PowerShell]": {
+      "editor.defaultFormatter": "ms-vscode.powershell-preview",
+      "editor.formatOnPaste": false,
+      "editor.formatOnSave": true,
+      "editor.formatOnType": true,
+      "editor.snippetSuggestions": "inline"
+    },
+    "terminal.integrated.profiles.linux": {
+        "pwsh": {
+            "path": "pwsh",
+            "icon": "terminal-powershell"
+        }
+    },
+    "files.defaultLanguage": "powershell",
+    "terminal.integrated.defaultProfile.linux": "pwsh"
   },
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [

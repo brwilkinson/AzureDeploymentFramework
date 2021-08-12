@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'T5',
+    [string]$Enviro = 'P0',
     [string]$App = 'AOA'
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
@@ -40,7 +40,7 @@ set-location -path ADF:\
 . ADF:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 @Current
 
 # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region [auto detected])
-. ADF:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
+. ADF:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1 -App $App
 
 ##########################################################
 # Deploy Environment

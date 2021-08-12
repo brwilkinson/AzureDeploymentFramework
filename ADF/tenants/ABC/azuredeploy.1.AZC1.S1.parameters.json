@@ -105,6 +105,7 @@
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
+        "VMInsights": 1,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
@@ -112,6 +113,7 @@
         "MSI": 1,
         "CertMgmt": 0,
         "DomainJoin": 1,
+        "AADLogin": 0,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
         "SqlIaasExtension": 0
