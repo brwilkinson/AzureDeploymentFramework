@@ -17,7 +17,7 @@ variables:
 stages:
 - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
   jobs:
-  - template: ..\..\..\.ado\azure-pipelines-ALL.yml
+  - template: ..\..\..\.ado\ado-pipelines-ALL.yml
     parameters:
       ORG:    ${{ variables.ORG }}
       APP :   ${{ variables.APP }}
