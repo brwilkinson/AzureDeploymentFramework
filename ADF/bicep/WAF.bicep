@@ -97,7 +97,7 @@ resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
 }]
 
 module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {
-  name: 'dp${Deployment}-wafDeploy${((length(WAFInfo) == 0) ? 'na' : waf.WAFName)}'
+  name: 'dp${Deployment}-WAFDeploy${((length(WAFInfo) == 0) ? 'na' : waf.WAFName)}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID

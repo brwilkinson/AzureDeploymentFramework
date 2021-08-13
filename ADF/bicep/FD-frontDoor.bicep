@@ -74,7 +74,7 @@ var routingRules = [for service in frontDoorInfo.services : {
 }]
 
 module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.services : {
-  name: 'dp${Deployment}-AFD-BEDeploy-${frontDoorInfo.Name}-${service.Name}'
+  name: 'dp${Deployment}-FD-BEDeploy-${frontDoorInfo.Name}-${service.Name}'
   params: {
     Deployment: Deployment
     AFDService: service

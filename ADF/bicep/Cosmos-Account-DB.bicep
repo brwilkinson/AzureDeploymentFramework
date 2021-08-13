@@ -19,7 +19,7 @@ resource CDB 'Microsoft.DocumentDb/databaseAccounts/sqlDatabases@2021-03-01-prev
   }
 }
 module CosmosDBContainer 'Cosmos-Account-DB-Container.bicep' = [for (container, index) in cosmosDB.containers : {
-  name: 'dp${Deployment}-cosmosDBDeployDBContaine${((length(cosmosDB.containers) != 0) ? container.containerName : 'na')}'
+  name: 'dp${Deployment}-Cosmos-DeployDBContainer${((length(cosmosDB.containers) != 0) ? container.containerName : 'na')}'
   params: {
     cosmosAccount: cosmosAccount
     cosmosDB: cosmosDB

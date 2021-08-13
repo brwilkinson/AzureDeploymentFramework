@@ -62,7 +62,7 @@ var LB = [for i in range(0, length(LBInfo)): {
 }]
 
 module PublicIP 'x.publicIP.bicep' = [for (lb,index) in LBInfo: {
-  name: 'dp${Deployment}-publicIPDeploy${lb.LBName}'
+  name: 'dp${Deployment}-LB-publicIPDeploy${lb.LBName}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
@@ -74,7 +74,7 @@ module PublicIP 'x.publicIP.bicep' = [for (lb,index) in LBInfo: {
 }]
 
 module LBs 'LB-LB.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {
-  name: 'dp${Deployment}-LBDeploy${lb.LBName}'
+  name: 'dp${Deployment}-LB-Deploy${lb.LBName}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID

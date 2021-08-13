@@ -64,7 +64,7 @@ var KVInfo = [for (kv, index) in KeyVaultInfo: {
 // }]
 
 module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match) {
-  name: 'dp${Deployment}-kvDeploy${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
+  name: 'dp${Deployment}-KV-Deploy${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
@@ -76,7 +76,7 @@ module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVI
 }]
 
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-privatelinkloop${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
+  name: 'dp${Deployment}-KV-privatelinkloop${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
   params: {
     Deployment: Deployment
     PrivateLinkInfo: kv.privateLinkInfo
@@ -86,7 +86,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultI
 }]
 
 module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-registerPrivateDNS${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
+  name: 'dp${Deployment}-KV-registerPrivateDNS${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
   scope: resourceGroup(hubRG)
   params: {
     PrivateLinkInfo: kv.privateLinkInfo

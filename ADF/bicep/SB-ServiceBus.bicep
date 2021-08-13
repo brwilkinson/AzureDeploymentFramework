@@ -63,7 +63,7 @@ resource SBTopic 'Microsoft.ServiceBus/namespaces/topics@2017-04-01' = [for (top
 }]
 
 module dpServiceBus_TopicSubscriptions_1 'SB-ServiceBus-TopicSubscription.bicep' = [for (topic,index) in SBInfo.topics : {
-  name: 'dp${Deployment}-TopicSubscriptions-${index + 1}'
+  name: 'dp${Deployment}-SB-TopicSubscriptions-${index + 1}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID

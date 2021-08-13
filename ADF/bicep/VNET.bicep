@@ -150,7 +150,7 @@ resource VNETPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2
 }
 
 module VNETPeeringHUB 'VNET-Peering.bicep' = if (Stage.VNetPeering == 1) {
-  name: '${hubVNetName}--${Deployment}-vn'
+  name: 'dpVNET-${hubVNetName}--${Deployment}-vn'
   scope: resourceGroup(hubVNetResourceGroupName)
   params: {
     subscriptionID: subscriptionId
