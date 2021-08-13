@@ -50,8 +50,8 @@ jobs:
       ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
       ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "00-dp-sub-InitialRG" -SubscriptionDeploy'
       FailOnStandardError: true
-      # azurePowerShellVersion: 'LatestVersion'
-      preferredAzurePowerShellVersion: 6.0.0
+      azurePowerShellVersion: 'LatestVersion'
+      # preferredAzurePowerShellVersion: 6.0.0
       pwsh: true
 
 - job: ResourceGroup_RG_ALL__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
@@ -68,6 +68,6 @@ jobs:
       ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
       ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "01-dp-rg-ALLRG"'
       FailOnStandardError: true
-      # azurePowerShellVersion: 'LatestVersion'
-      preferredAzurePowerShellVersion: 6.0.0
+      azurePowerShellVersion: 'LatestVersion'
+      # preferredAzurePowerShellVersion: 6.0.0
       pwsh: true

@@ -7,13 +7,11 @@ AzSet -Enviro $enviro -App $App
 break
 # F8 to run individual steps
 
-#############################
-# Note this file is here to get to you you started, you can run ALL of this from the command line
+#region Note this file is here to get to you you started, you can run ALL of this from the command line
 # Put that import-module line above in your profile,...then..
 # once you know these commands you just run the following in the commandline AzSet -Enviro D3 -App AOA
-# Then you can execute most of these from Terminal.
-# Everything that works in here or Terminal, also works in a Pipeline.
-#############################
+# Then you can execute from Terminal.
+#endregion
 
 # Pre-reqs
 # Create Global Storage Account
