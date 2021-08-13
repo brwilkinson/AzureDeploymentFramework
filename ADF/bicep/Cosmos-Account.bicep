@@ -71,7 +71,7 @@ resource CosmosDBDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
 }
 
 module CosmosAccountDB 'Cosmos-Account-DB.bicep'= [for (cdb, index) in cosmosAccount.databases : {
-  name: 'dp${Deployment}-cosmosDBDeployDB${((length(cosmosAccount.databases) != 0) ? cdb.databaseName : 'na')}'
+  name: 'dp${Deployment}-Cosmos-DeployDB${((length(cosmosAccount.databases) != 0) ? cdb.databaseName : 'na')}'
   params: {
     cosmosAccount: cosmosAccount
     cosmosDB: cdb

@@ -69,7 +69,7 @@ resource kv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
 }
 
 module ACG 'ACI-ACI.bicep' = [for (aci,index) in ACIInfo : if (ACI[index].match) {
-  name: 'dp${Deployment}-containergroupDeploy${aci.name}'
+  name: 'dp${Deployment}-ACI-containergroupDeploy${aci.name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI

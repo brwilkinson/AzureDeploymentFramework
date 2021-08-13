@@ -59,7 +59,7 @@ var FW = [for (fw, index) in FWInfo: {
 }]
 
 module FireWall 'FW-FW.bicep' = [for (fw, index) in FWInfo: if(FW[index].match) {
-  name: 'dp${Deployment}-FWDeploy${((length(FW) != 0) ? fw.name : 'na')}'
+  name: 'dp${Deployment}-FW-Deploy${((length(FW) != 0) ? fw.name : 'na')}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID

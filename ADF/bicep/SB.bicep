@@ -59,7 +59,7 @@ var SB = [for (sb,index) in SBInfo : {
 }]
 
 module SBs 'SB-ServiceBus.bicep' = [for (sb,index) in SBInfo : if(SB[index].match) {
-  name: 'dp${Deployment}-SBDeploy${sb.name}'
+  name: 'dp${Deployment}-SB-Deploy${sb.name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
@@ -73,7 +73,7 @@ module SBs 'SB-ServiceBus.bicep' = [for (sb,index) in SBInfo : if(SB[index].matc
 }]
 
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (sb,index) in SBInfo : if(SB[index].match && contains(sb, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-privatelinkloopSB${sb.name}'
+  name: 'dp${Deployment}-SB-privatelinkloop${sb.name}'
   params: {
     Deployment: Deployment
     PrivateLinkInfo: sb.privateLinkInfo
@@ -86,7 +86,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (sb,index) in SBInfo : i
 }]
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (sb,index) in SBInfo : if(SB[index].match && contains(sb, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-registerPrivateDNS${sb.name}'
+  name: 'dp${Deployment}-SB-registerPrivateDNS${sb.name}'
   scope: resourceGroup(Global.hubRGName)
   params: {
     PrivateLinkInfo: sb.privateLinkInfo

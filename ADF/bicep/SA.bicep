@@ -57,7 +57,7 @@
   }]
   
   module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: if (SAInfo[index].match) {
-    name: 'dp${Deployment}-storageDeploy${((length(storageInfo) == 0) ? 'na' : sa.nameSuffix)}'
+    name: 'dp${Deployment}-SA-Deploy${((length(storageInfo) == 0) ? 'na' : sa.nameSuffix)}'
     params: {
       Deployment: Deployment
       DeploymentURI: DeploymentURI

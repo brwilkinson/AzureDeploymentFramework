@@ -205,7 +205,7 @@ resource AS 'Microsoft.Compute/availabilitySets@2021-03-01' = [for (as, index) i
 }]
 
 module VMPIP 'x.publicIP.bicep' = [for (vm, index) in AppServers: if (VM[index].match) {
-  name: 'dp${Deployment}-publicIPDeploy${vm.VMName}'
+  name: 'dp${Deployment}-VM-publicIPDeploy${vm.VMName}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
@@ -217,7 +217,7 @@ module VMPIP 'x.publicIP.bicep' = [for (vm, index) in AppServers: if (VM[index].
 }]
 
 module VMNIC 'x.NIC.bicep' = [for (vm, index) in AppServers: if (VM[index].match) {
-  name: 'dp${Deployment}-nicDeployLoop${vm.VMName}'
+  name: 'dp${Deployment}-VM-nicDeployLoop${vm.VMName}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
@@ -231,7 +231,7 @@ module VMNIC 'x.NIC.bicep' = [for (vm, index) in AppServers: if (VM[index].match
 }]
 
 module DISKLOOKUP 'y.disks.bicep' = [for (vm, index) in AppServers: if (VM[index].match) {
-  name: 'dp${Deployment}-diskLookup${vm.VMName}'
+  name: 'dp${Deployment}-VM-diskLookup${vm.VMName}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID

@@ -799,6 +799,109 @@ module SQLServers 'VM.bicep' = if (Stage.VMSQL == 1) {
   ]
 }
 
+module dp_Deployment_DASHBOARD 'Dashboard.bicep' = if (Stage.DASHBOARD == 1) {
+  name: 'dp${Deployment}-DASHBOARD'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: []
+}
+
+module dp_Deployment_REDIS 'REDIS.bicep' = if (Stage.REDIS == 1) {
+  name: 'dp${Deployment}-REDIS'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+  ]
+}
+
+module dp_Deployment_APIM 'APIM.bicep' = if (Stage.APIM == 1) {
+  name: 'dp${Deployment}-APIM'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_VNETDNSDC2
+    dp_Deployment_OMS
+  ]
+}
+
+module dp_Deployment_SB 'SB.bicep' = if (Stage.SB == 1) {
+  name: 'dp${Deployment}-SB'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+  ]
+}
+
+module dp_Deployment_APPCONFIG 'AppConfig.bicep' = if (Stage.APPCONFIG == 1) {
+  name: 'dp${Deployment}-APPCONFIG'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+  ]
+}
+
 /*
 
 module dp_Deployment_SQLMI '?' = if (Stage.SQLMI == 1) {
@@ -841,34 +944,6 @@ module VMSS '?' = if (Stage.VMSS == 1) {
   ]
 }
 
-module dp_Deployment_APPCONFIG '?' = if (Stage.APPCONFIG == 1) {
-  name: 'dp${Deployment}-APPCONFIG'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_OMS
-  ]
-}
-
-module dp_Deployment_REDIS '?' = if (Stage.REDIS == 1) {
-  name: 'dp${Deployment}-REDIS'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_OMS
-  ]
-}
-
-module dp_Deployment_APIM '?' = if (Stage.APIM == 1) {
-  name: 'dp${Deployment}-APIM'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_VNETDNSDC2
-    dp_Deployment_OMS
-  ]
-}
-
 module dp_Deployment_FRONTDOOR '?' = if (Stage.FRONTDOOR == 1) {
   name: 'dp${Deployment}-FRONTDOOR'
   params: {}
@@ -889,12 +964,6 @@ module dp_Deployment_AKS '?' = if (Stage.AKS == 1) {
   ]
 }
 
-module dp_Deployment_DASHBOARD '?' = if (Stage.DASHBOARD == 1) {
-  name: 'dp${Deployment}-DASHBOARD'
-  params: {}
-  dependsOn: []
-}
-
 module dp_Deployment_MySQLDB '?' = if (Stage.MySQLDB == 1) {
   name: 'dp${Deployment}-MySQLDB'
   params: {}
@@ -902,15 +971,6 @@ module dp_Deployment_MySQLDB '?' = if (Stage.MySQLDB == 1) {
     dp_Deployment_VNET
     dp_Deployment_OMS
     dp_Deployment_WebSite
-  ]
-}
-
-module dp_Deployment_SB '?' = if (Stage.SB == 1) {
-  name: 'dp${Deployment}-SB'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_OMS
   ]
 }
 
