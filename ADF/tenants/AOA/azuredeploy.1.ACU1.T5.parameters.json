@@ -74,7 +74,7 @@
         "VMFILE": 0,
         "VMSS": 1,
         "WAFPOLICY": 1,
-        "FRONTDOOR": 0,
+        "FRONTDOOR": 1,
         "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
