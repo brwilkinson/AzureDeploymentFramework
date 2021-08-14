@@ -39,7 +39,9 @@
             "eamodio.gitlens",
             "ms-dotnettools.vscode-dotnet-runtime",
             "oderwat.indent-rainbow",
-            "ms-azuretools.vscode-bicep"
+            "ms-azuretools.vscode-bicep",
+            "humao.rest-client",
+            "pspester.pester-test"
         ]
     }
 }
