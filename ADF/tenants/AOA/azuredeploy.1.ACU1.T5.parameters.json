@@ -80,7 +80,7 @@
         "SetInternalDNS": 1,
         "APPCONFIG": 0,
         "REDIS": 0,
-        "APIM": 0,
+        "APIM": 1,
         "ACR": 1,
         "ACI": 0,
         "AKS": 1,
@@ -464,7 +464,7 @@
             "name": "01",
             "dnsName": "API",
             "apimSku": "Developer",
-            "snName": "snMT01",
+            "snName": "snBE01",
             "virtualNetworkType": "Internal",
             "certName": "PSTHING-WildCard",
             "frontDoor": "01"
@@ -671,7 +671,7 @@
             "enableAutomaticFailover": true,
             "PrivateLinkInfo": [
               {
-                "Subnet": "snMT01",
+                "Subnet": "snMT02",
                 "groupID": "SQL"
               }
             ],
