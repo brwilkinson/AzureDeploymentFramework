@@ -246,7 +246,7 @@
         ],
         "SPInfo": [
           {
-            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "Name": "GH_{GHProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "ACRPush"
@@ -257,7 +257,7 @@
             ]
           },
           {
-            "Name": "GH_{GHProject}_{RGNAME}",
+            "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "Contributor"
