@@ -80,7 +80,7 @@
         "SetInternalDNS": 1,
         "APPCONFIG": 0,
         "REDIS": 0,
-        "APIM": 1,
+        "APIM": 0,
         "ACR": 1,
         "ACI": 0,
         "AKS": 1,
@@ -320,8 +320,8 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
-            // "delegations": "Microsoft.Web/serverfarms"
+            "FlowAnalyticsEnabled": true,
+            "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",
