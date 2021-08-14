@@ -5,7 +5,7 @@ param VM object
 param Global object
 
 module NIC 'x.NIC-NIC.bicep' = [for (nic,index) in NICs : {
-  name: 'dp${Deployment}-nicDeploy${VM.VMName}${index + 1}'
+  name: 'dp${Deployment}-nicDeploy${VM.Name}${index + 1}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID

@@ -14,57 +14,28 @@ resource FWSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existin
   name: '${Deployment}-vn/${FWSubnetName}'
 }
 
-resource FWPublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
-  name: '${Deployment}-vn${FWInfo.Name}-publicip1'
-  location: resourceGroup().location
-  sku: {
-    name: 'Standard'
-  }
-  zones: [
-    '1'
-    '2'
-    '3'
-  ]
-  properties: {
-    publicIPAllocationMethod: 'Static'
-    dnsSettings: {
-      domainNameLabel: toLower('${Domain}${Deployment}-${FWInfo.Name}')
-    }
+module PublicIP 'x.publicIP.bicep' = {
+  name: 'dp${Deployment}-FW-publicIPDeploy${FWInfo.Name}'
+  params: {
+    Deployment: Deployment
+    DeploymentID: DeploymentID
+    NICs: array(FWInfo)
+    VM: FWInfo
+    PIPprefix: 'fw'
+    Global: Global
+    OMSworkspaceID: OMSworkspaceID
   }
 }
 
-resource FWPIPDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
-  name: 'service'
-  scope: FWPublicIP
-  properties: {
-    workspaceId: OMSworkspaceID
-    logs: [
-      {
-        category: 'DDoSProtectionNotifications'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        timeGrain: 'PT5M'
-        enabled: true
-        retentionPolicy: {
-          enabled: false
-          days: 0
-        }
-      }
-    ]
-  }
-}
-
+/*
 resource FW 'Microsoft.Network/azureFirewalls@2019-09-01' = {
-  name: '${Deployment}-vn${FWInfo.Name}'
+  name: '${Deployment}-fw${FWInfo.Name}'
   location: resourceGroup().location
-  zones: [
-    '1'
-    '2'
-    '3'
-  ]
+  // zones: [
+  //   '1'
+  //   '2'
+  //   '3'
+  // ]
   properties: {
     threatIntelMode: FWInfo.threatIntelMode
     additionalProperties: {
@@ -82,7 +53,7 @@ resource FW 'Microsoft.Network/azureFirewalls@2019-09-01' = {
           {
             name: nat.rule.name
             sourceAddresses: nat.rule.sourceAddresses
-            destinationAddresses: array(FWPublicIP.properties.ipAddress)
+            destinationAddresses: array(reference(resourceId('Microsoft.Network/publicIPAddresses','${Deployment}-fw${FWInfo.Name}-publicip1'),'2021-02-01').properties.ipAddress)
             destinationPorts: nat.rule.destinationPorts
             protocols: nat.rule.protocols
             translatedAddress: nat.rule.translatedAddress
@@ -128,12 +99,15 @@ resource FW 'Microsoft.Network/azureFirewalls@2019-09-01' = {
             id: FWSubnet.id
           }
           publicIPAddress: {
-            id: FWPublicIP.id
+            id: PublicIP.outputs.PIPID[0]
           }
         }
       }
     ]
   }
+  dependsOn: [
+    PublicIP
+  ]
 }
 
 resource FWDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
@@ -163,3 +137,5 @@ resource FWDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
     ]
   }
 }
+
+*/

@@ -354,7 +354,7 @@
         ],
         "LBInfo2": [
           {
-            "LBName": "API",
+            "Name": "API",
             "ASName": "API",
             "Sku": "Basic",
             "Type": "Private",
@@ -462,7 +462,7 @@
             ]
           },
           {
-            "LBName": "SF",
+            "Name": "SF",
             "ASName": "SF",
             "Sku": "Basic",
             "Type": "Private",
@@ -572,7 +572,7 @@
         ],
         "LBInfo": [
           {
-            "LBName": "PLB01",
+            "Name": "PLB01",
             "Zone": 1,
             "ASName": "PLB01",
             "Sku": "Standard",
@@ -596,7 +596,7 @@
             ]
           },
           {
-            "LBName": "FIL",
+            "Name": "FIL",
             "ASName": "FIL",
             "Sku": "Standard",
             "Type": "Private",
@@ -640,7 +640,7 @@
             ]
           },
           {
-            "LBName": "CLS01",
+            "Name": "CLS01",
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
@@ -674,7 +674,7 @@
         "Appservers": {
           "ADPrimary": [
             {
-              "VMName": "DC01",
+              "Name": "DC01",
               "Role": "ADp",
               "ASName": "AD",
               "DDRole": "32GB",
@@ -692,7 +692,7 @@
           ],
           "ADSecondary": [
             {
-              "VMName": "DC02",
+              "Name": "DC02",
               "Role": "ADs",
               "ASName": "AD",
               "DDRole": "32GB",
@@ -709,7 +709,7 @@
           ],
           "InitialDOP": [
             {
-              "VMName": "JMP01",
+              "Name": "JMP01",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",

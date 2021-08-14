@@ -29,7 +29,7 @@ var NATPools_var = [for item in NATPools: {
     frontendPortRangeEnd: item.frontendPortRangeEnd
     backendPort: item.backendPort
     frontendIPConfiguration: {
-      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.LBName}')}/frontendIPConfigurations/${item.LBFEName}'
+      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.Name}')}/frontendIPConfigurations/${item.LBFEName}'
     }
   }
 }]
@@ -48,13 +48,13 @@ var loadBalancingRules = [for item in Services: {
   name: item.RuleName
   properties: {
     frontendIPConfiguration: {
-      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.LBName}')}/frontendIPConfigurations/${item.LBFEName}'
+      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.Name}')}/frontendIPConfigurations/${item.LBFEName}'
     }
     backendAddressPool: {
-      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.LBName}')}/backendAddressPools/${LB.ASName}'
+      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.Name}')}/backendAddressPools/${LB.ASName}'
     }
     probe: {
-      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.LBName}')}/probes/${item.ProbeName}'
+      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.Name}')}/probes/${item.ProbeName}'
     }
     protocol: (contains(item, 'protocol') ? item.Protocol : 'tcp')
     frontendPort: item.LBFEPort
@@ -73,11 +73,11 @@ var outboundRules_var = [for item in outboundRules: {
     idleTimeoutInMinutes: item.idleTimeoutInMinutes
     frontendIPConfigurations: [
       {
-        id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.LBName}')}/frontendIPConfigurations/${item.LBFEName}'
+        id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.Name}')}/frontendIPConfigurations/${item.LBFEName}'
       }
     ]
     backendAddressPool: {
-      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.LBName}')}/backendAddressPools/${item.LBFEName}'
+      id: '${resourceId('Microsoft.Network/loadBalancers/', '${Deployment}-lb${LB.Name}')}/backendAddressPools/${item.LBFEName}'
     }
   }
 }]
@@ -91,7 +91,7 @@ var NATRules_var = [for item in NATRules: {
     idleTimeoutInMinutes: item.idleTimeoutInMinutes
     enableFloatingIP: item.enableFloatingIP
     frontendIPConfiguration: {
-      id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', '${Deployment}-lb${LB.LBName}', item.LBFEName)
+      id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', '${Deployment}-lb${LB.Name}', item.LBFEName)
     }
   }
 }]
@@ -111,13 +111,13 @@ var frontendIPConfigurationsPublic = [for (fe, index) in LB.FrontEnd: {
   name: fe.LBFEName
   properties: {
     publicIPAddress: {
-      id: string(resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-${LB.LBName}-publicip${index + 1}'))
+      id: string(resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-lb${LB.Name}-publicip${index + 1}'))
     }
   }
 }]
 
 resource LBalancer 'Microsoft.Network/loadBalancers@2020-07-01' = if (length(NATRules) == 0) {
-  name: '${Deployment}${((length(NATRules) == 0) ? '-lb' : 'na')}${LB.LBName}'
+  name: '${Deployment}${((length(NATRules) == 0) ? '-lb' : 'na')}${LB.Name}'
   location: resourceGroup().location
   sku: (contains(LB, 'Sku') ? json('{"name":"${LB.Sku}"}') : json('null'))
   properties: {
@@ -161,7 +161,7 @@ resource LBalancerDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview
 
 
 resource LBalancerSS 'Microsoft.Network/loadBalancers@2020-07-01' = if ((length(NATRules) != 0)) {
-  name: '${Deployment}${((length(NATRules) != 0) ? '-lb' : 'na')}${LB.LBName}'
+  name: '${Deployment}${((length(NATRules) != 0) ? '-lb' : 'na')}${LB.Name}'
   location: resourceGroup().location
   sku: (contains(LB, 'Sku') ? json('{"name":"${LB.Sku}"}') : json('null'))
   properties: {

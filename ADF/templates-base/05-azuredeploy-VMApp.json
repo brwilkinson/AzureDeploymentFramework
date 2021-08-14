@@ -142,11 +142,11 @@
         "name": "VM",
         "count": "[length(parameters('DeploymentInfo').AppServers[deployment().name])]",
         "input": {
-          "name": "[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName]",
-          "matchVM": "[if(or(equals(parameters('Global').CN,'.'),contains(parameters('Global').CN,parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName)),bool('true'),bool('false'))]",
+          "name": "[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].Name]",
+          "matchVM": "[if(or(equals(parameters('Global').CN,'.'),contains(parameters('Global').CN,parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].Name)),bool('true'),bool('false'))]",
           "Extensions": "[if(contains(variables('OSType')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].OSType],'RoleExtensions'),union(parameters('Extensions'),variables('OSType')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].OSType].RoleExtensions),parameters('Extensions'))]",
           "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].DDRole],json('null'))]",
-          "vmHostName": "[toLower(concat(parameters('Prefix'),parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].VMName))]",
+          "vmHostName": "[toLower(concat(parameters('Prefix'),parameters('Global').AppName,parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].Name))]",
           "AppInfo": "[if(contains(parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')],'AppInfo'),parameters('DeploymentInfo').AppServers[deployment().name][copyIndex('VM')].AppInfo,json('null'))]",
           "windowsConfiguration": {
             "enableAutomaticUpdates": true,
@@ -323,7 +323,7 @@
     },
     {
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
-      "name": "[concat('dp', variables('Deployment'),'-publicIPDeploy', variables('AppServers')[copyIndex(0)].VMName)]",
+      "name": "[concat('dp', variables('Deployment'),'-publicIPDeploy', variables('AppServers')[copyIndex(0)].Name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "dependsOn": [
@@ -362,11 +362,11 @@
     },
     {
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
-      "name": "[concat('dp', variables('Deployment'),'-nicDeployLoop', variables('AppServers')[copyIndex(0)].VMName)]",
+      "name": "[concat('dp', variables('Deployment'),'-nicDeployLoop', variables('AppServers')[copyIndex(0)].Name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('AppServers')[copyIndex(0)].VMName)]"
+        "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('AppServers')[copyIndex(0)].Name)]"
       ],
       "copy": {
         "name": "nicLoop",
@@ -399,7 +399,7 @@
     },
     {
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
-      "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
+      "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].Name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "dependsOn": [
@@ -421,8 +421,8 @@
           "DeploymentID": {
             "value": "[parameters('DeploymentID')]"
           },
-          "VMName": {
-            "value": "[variables('AppServers')[copyIndex(0)].VMName]"
+          "Name": {
+            "value": "[variables('AppServers')[copyIndex(0)].Name]"
           },
           "SOFS": {
             "value": "[if(contains(variables('DataDiskInfo')[variables('AppServers')[copyIndex(0)].DDRole],'SOFS'),variables('DataDiskInfo')[variables('AppServers')[copyIndex(0)].DDRole].SOFS,json('{\"1\":1}'))]"
@@ -447,7 +447,7 @@
     },
     {
       // move to user assigned identity https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/qs-configure-template-windows-vm
-      "name": "[concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName)]",
+      "name": "[concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name)]",
       "condition": "[variables('VM')[copyIndex(0)].matchVM]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
@@ -467,8 +467,8 @@
         "count": "[length(variables('AppServers'))]"
       },
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-nicDeployLoop', variables('AppServers')[copyIndex(0)].VMName)]",
-        "[concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
+        "[concat('dp', variables('Deployment'), '-nicDeployLoop', variables('AppServers')[copyIndex(0)].Name)]",
+        "[concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].Name)]",
         "asLoop"
       ],
       "plan": "[if(contains(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType],'plan'),variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].plan,json('null'))]",
@@ -493,7 +493,7 @@
         "storageProfile": {
           "imageReference": "[variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].imageReference]",
           "osDisk": {
-            "name": "[concat(variables('Deployment'),'-',variables('AppServers')[copyIndex(0)].VMName, '-OSDisk')]",
+            "name": "[concat(variables('Deployment'),'-',variables('AppServers')[copyIndex(0)].Name, '-OSDisk')]",
             "caching": "ReadWrite",
             "diskSizeGB": "[variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OSDiskGB]",
             "createOption": "FromImage",
@@ -504,7 +504,7 @@
 
           // "dataDisks" : [{"name":"AZE2-ADF-S2-DC01-DATA-DATA00","lun":0,"caching":"ReadOnly","diskSizeGB":32,"createOption":"Empty"}]
           // "dataDisks": "[if(contains(variables('AppServers')[copyIndex(0)],'ddInfo'),variables('AppServers')[copyIndex(0)].ddInfo,json('null'))]"
-          "dataDisks": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)),'2018-05-01').outputs.DATADisks.value]"
+          "dataDisks": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].Name)),'2018-05-01').outputs.DATADisks.value]"
         },
         "networkProfile": {
           "copy": [
@@ -512,8 +512,8 @@
               "name": "networkInterfaces",
               "count": "[length(variables('AppServers')[copyIndex(0)].NICs)]",
               "input": {
-                // "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('Deployment'),'-',variables('AppServers')[copyIndex(0)].VMName,if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'LB'),'-niclb',if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'PLB'),'-nicplb',if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'ISLB'),'-nicislb','-nic'))),copyIndex('networkInterfaces',1)))]",
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('Deployment'),if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'LB'),'-niclb',if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'PLB'),'-nicplb',if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'SLB'),'-nicslb','-nic'))),if(equals(copyIndex('networkInterfaces'),0),'',copyIndex('networkInterfaces',1)),variables('AppServers')[copyIndex(0)].VMName))]",
+                // "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('Deployment'),'-',variables('AppServers')[copyIndex(0)].Name,if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'LB'),'-niclb',if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'PLB'),'-nicplb',if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'ISLB'),'-nicislb','-nic'))),copyIndex('networkInterfaces',1)))]",
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('Deployment'),if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'LB'),'-niclb',if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'PLB'),'-nicplb',if(contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'SLB'),'-nicslb','-nic'))),if(equals(copyIndex('networkInterfaces'),0),'',copyIndex('networkInterfaces',1)),variables('AppServers')[copyIndex(0)].Name))]",
 
                 "properties": {
                   "primary": "[contains(variables('AppServers')[copyIndex(0)].NICs[copyIndex('networkInterfaces')],'Primary')]"
@@ -538,7 +538,7 @@
           "apiVersion": "2019-03-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.KeyVault.Edp",
@@ -577,7 +577,7 @@
           "apiVersion": "2019-03-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "publisher": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'Microsoft.Azure.ActiveDirectory','Microsoft.Azure.ActiveDirectory.LinuxSSH')]",
@@ -594,7 +594,7 @@
         //   "apiVersion": "2019-03-01",
         //   "location": "[resourceGroup().location]",
         //   "dependsOn": [
-        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]"
         //   ],
         //   "properties": {
         //     "publisher": "Microsoft.Azure.OpenSSH",
@@ -610,7 +610,7 @@
         //   "apiVersion": "2019-03-01",
         //   "location": "[resourceGroup().location]",
         //   "dependsOn": [
-        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]"
         //   ],
         //   "properties": {
         //     "publisher": "Microsoft.Azure.ActiveDirectory",
@@ -639,7 +639,7 @@
           "type": "extensions",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "autoUpgradeMinorVersion": true,
@@ -668,7 +668,7 @@
           "name": "joindomain",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "publisher": "Microsoft.Compute",
@@ -696,7 +696,7 @@
         //   "apiVersion": "2019-03-01",
         //   "location": "[resourceGroup().location]",
         //   "dependsOn": [
-        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]"
         //   ],
         //   "properties": {
         //     "publisher": "Microsoft.ManagedIdentity",
@@ -717,10 +717,10 @@
         //   "condition": "[and(and(or(equals(variables('AppServers')[copyIndex(0)].Role,'DFS'),or( equals(variables('AppServers')[copyIndex(0)].Role,'FIL'),equals(variables('AppServers')[copyIndex(0)].Role,'SQL'))),equals(parameters('Extensions').DSC,1)),equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'))]",
         //   "apiVersion": "2019-05-01",
         //   "type": "Microsoft.Resources/deployments",
-        //   "name": "[concat('nested-roleAssignmentsLocal',variables('AppServers')[copyIndex(0)].VMName)]",
+        //   "name": "[concat('nested-roleAssignmentsLocal',variables('AppServers')[copyIndex(0)].Name)]",
         //   "dependsOn": [
-        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]",
-        //     "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName,'/extensions/ManagedIdentityExtension')]"
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]",
+        //     "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name,'/extensions/ManagedIdentityExtension')]"
         //   ],
         //   "properties": {
         //     "mode": "Incremental",
@@ -733,11 +733,11 @@
         //         {
         //           "type": "Microsoft.Authorization/roleAssignments",
         //           // Unique guid for the role assignment type, the resource group where it's assigned and the unique guid of the vm principalid
-        //           "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',resourceGroup().name,reference(resourceid('Microsoft.Compute/virtualMachines',concat(variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName)),'2017-12-01','Full').identity.principalId )]",
+        //           "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',resourceGroup().name,reference(resourceid('Microsoft.Compute/virtualMachines',concat(variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name)),'2017-12-01','Full').identity.principalId )]",
         //           "apiVersion": "2018-01-01-preview",
         //           "properties": {
         //             "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/81a9662b-bebf-436f-a333-f67b29880f12')]",
-        //             "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachines',concat(variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName)),'2017-12-01','Full').identity.principalId]",
+        //             "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachines',concat(variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name)),'2017-12-01','Full').identity.principalId]",
         //             "scope": "[resourceGroup().id]"
         //           }
         //         }
@@ -751,12 +751,12 @@
         //   "condition": "[equals(variables('VM')[copyIndex(0)].Extensions.MSI,1)]",
         //   "apiVersion": "2019-05-01",
         //   "type": "Microsoft.Resources/deployments",
-        //   "name": "[concat('nested-roleAssignmentsGlobal',variables('AppServers')[copyIndex(0)].VMName)]",
+        //   "name": "[concat('nested-roleAssignmentsGlobal',variables('AppServers')[copyIndex(0)].Name)]",
         //   "resourceGroup": "[parameters('Global').HubRGName]",
         //   "subscriptionId": "[variables('SubscriptionID')]",
         //   "dependsOn": [
-        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]",
-        //     "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName,'/extensions/ManagedIdentityExtension')]"
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]",
+        //     "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name,'/extensions/ManagedIdentityExtension')]"
         //   ],
         //   "properties": {
         //     "mode": "Incremental",
@@ -769,11 +769,11 @@
         //         {
         //           "type": "Microsoft.Authorization/roleAssignments",
         //           // Unique guid for the role assignment type, the resource group where it's assigned and the unique guid of the vm principalid
-        //           "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',parameters('Global').HubRGName,reference(resourceid('Microsoft.Compute/virtualMachines',concat(variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName)),'2017-12-01','Full').identity.principalId )]",
+        //           "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',parameters('Global').HubRGName,reference(resourceid('Microsoft.Compute/virtualMachines',concat(variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name)),'2017-12-01','Full').identity.principalId )]",
         //           "apiVersion": "2018-01-01-preview",
         //           "properties": {
         //             "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/81a9662b-bebf-436f-a333-f67b29880f12')]",
-        //             "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachines',concat(variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName)),'2017-12-01','Full').identity.principalId]",
+        //             "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachines',concat(variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name)),'2017-12-01','Full').identity.principalId]",
         //             "scope": "[concat(Subscription().id,'/resourceGroups/',parameters('Global').HubRGName)]"
         //           }
         //         }
@@ -789,7 +789,7 @@
           "apiVersion": "2020-12-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "publisher": "Microsoft.EnterpriseCloud.Monitoring",
@@ -818,8 +818,8 @@
           "type": "extensions",
           "apiVersion": "2021-03-01",
           "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]",
-            "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName,'/extensions/joindomain')]"
+            "[concat('Microsoft.Compute/virtualMachines/', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]",
+            "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name,'/extensions/joindomain')]"
           ],
           "location": "[resourceGroup().location]",
           "tags": {
@@ -913,12 +913,12 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2021-03-01",
           "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].VMName))]",
-            // "[concat('Microsoft.Resources/deployments/','nested-roleAssignmentsGlobal',variables('AppServers')[copyIndex(0)].VMName)]",
-            // "[concat('Microsoft.Resources/deployments/','nested-roleAssignmentsLocal',variables('AppServers')[copyIndex(0)].VMName)]",
+            "[concat('Microsoft.Compute/virtualMachines/', concat(variables('Deployment'),'-vm', variables('AppServers')[copyIndex(0)].Name))]",
+            // "[concat('Microsoft.Resources/deployments/','nested-roleAssignmentsGlobal',variables('AppServers')[copyIndex(0)].Name)]",
+            // "[concat('Microsoft.Resources/deployments/','nested-roleAssignmentsLocal',variables('AppServers')[copyIndex(0)].Name)]",
             // "[concat('Microsoft.Storage/storageAccounts/',variables('saWitnessName'))]",
-            // "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName,'/extensions/ManagedIdentityExtension')]",
-            "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].VMName,'/extensions/joindomain')]"
+            // "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name,'/extensions/ManagedIdentityExtension')]",
+            "[concat('Microsoft.Compute/virtualMachines/',variables('Deployment'),'-vm',variables('AppServers')[copyIndex(0)].Name,'/extensions/joindomain')]"
           ],
           "properties": {
             "publisher": "[if(equals(variables('OSType')[variables('AppServers')[copyIndex(0)].OSType].OS,'Windows'),'Microsoft.Powershell','Microsoft.OSTCExtensions')]",
@@ -995,7 +995,7 @@
         //   "type": "extensions",
         //   "location": "[resourceGroup().location]",
         //   "dependsOn": [
-        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+        //     "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
         //   ],
         //   "tags": {
         //     "displayName": "AzDevOpsAgent"
@@ -1010,7 +1010,7 @@
         //       "VSTSAccountName": "[parameters('Global').AZDevOpsOrg]",
         //       "TeamProject": "[parameters('Global').GitHubProject]",
         //       "DeploymentGroup": "[parameters('Global').GitHubProject]",
-        //       "AgentName": "[replace(concat(variables('Deployment'), variables('VM')[copyIndex(0)].VMName),'-','')]",
+        //       "AgentName": "[replace(concat(variables('Deployment'), variables('VM')[copyIndex(0)].Name),'-','')]",
         //       "Tags": "[variables('Deployment')]"
         //     },
         //     "protectedSettings": {
@@ -1026,7 +1026,7 @@
           "apiVersion": "2020-12-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.Diagnostics",
@@ -1053,7 +1053,7 @@
           "apiVersion": "2020-12-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
@@ -1070,7 +1070,7 @@
           "apiVersion": "2020-12-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "autoUpgradeMinorVersion": true,
@@ -1086,7 +1086,7 @@
           "apiVersion": "2020-12-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "autoUpgradeMinorVersion": true,
@@ -1101,7 +1101,7 @@
           "name": "[concat('Microsoft.Insights/',replace(concat(variables('Deployment'),'VMInsights'),'-',''))]",
           "apiVersion": "2019-11-01-preview",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "description": "Association of data collection rule for VM Insights Health.",
@@ -1116,7 +1116,7 @@
           "apiVersion": "2019-03-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "publisher": "Chef.Bootstrap.WindowsAzure",
@@ -1143,8 +1143,8 @@
           "apiVersion": "2019-03-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]",
-            "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName),'Microsoft.Powershell.DSC')]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]",
+            "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name),'Microsoft.Powershell.DSC')]"
           ],
           "properties": {
             "type": "SqlIaaSAgent",
@@ -1184,7 +1184,7 @@
           "name": "AzureBackupWindowsWorkload",
           "apiVersion": "2019-03-01",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "autoUpgradeMinorVersion": true,
@@ -1204,7 +1204,7 @@
           "apiVersion": "2019-03-01",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].VMName))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('Deployment'), '-vm', variables('AppServers')[copyIndex(0)].Name))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.Security",
@@ -1261,7 +1261,7 @@
     },
     "Disks": {
       "type": "object",
-      "value": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[0].VMName)),'2018-05-01').outputs.dataDisks]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments',concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[0].Name)),'2018-05-01').outputs.dataDisks]"
     }
   }
 }

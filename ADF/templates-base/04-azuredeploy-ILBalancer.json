@@ -84,7 +84,7 @@
         "input": {
           "match": "[or(
                         equals(parameters('Global').CN,'.'),
-                        contains(parameters('Global').CN,parameters('DeploymentInfo').LBInfo[copyIndex('LB')].LBName)
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').LBInfo[copyIndex('LB')].Name)
                         )]"
         }
       }
@@ -94,7 +94,7 @@
   "resources": [
     {
       "condition": "[variables('LB')[copyIndex(0)].match]",
-      "name": "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].LBName)]",
+      "name": "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].Name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-01-01",
       "dependsOn": [],
@@ -132,11 +132,11 @@
     },
     {
       "condition": "[variables('LB')[copyIndex(0)].match]",
-      "name": "[concat('dp', variables('Deployment'), '-LBDeploy', variables('LBInfo')[copyIndex(0)].LBName)]",
+      "name": "[concat('dp', variables('Deployment'), '-LBDeploy', variables('LBInfo')[copyIndex(0)].Name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-01-01",
       "dependsOn": [
-        "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].LBName)]"
+        "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].Name)]"
       ],
       "copy": {
         "name": "LBLoop",
@@ -187,11 +187,11 @@
     }
     // {
     //   "condition": "[and(variables('LB')[copyIndex(0)].match,contains(variables('LBInfo')[copyIndex(0)],'NATPools'))]",
-    //   "name": "[concat('dp', variables('Deployment'), '-LBDeploySS', variables('LBInfo')[copyIndex(0)].LBName)]",
+    //   "name": "[concat('dp', variables('Deployment'), '-LBDeploySS', variables('LBInfo')[copyIndex(0)].Name)]",
     //   "type": "Microsoft.Resources/deployments",
     //   "apiVersion": "2021-01-01",
     //   "dependsOn": [
-    //     "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].LBName)]"
+    //     "[concat('dp', variables('Deployment'), '-publicIPDeploy', variables('LBInfo')[copyIndex(0)].Name)]"
     //   ],
     //   "copy": {
     //     "name": "LBLoop",

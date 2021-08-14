@@ -52,66 +52,37 @@ var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var snAzureBastionSubnet = 'AzureBastionSubnet'
 
-// can move out to param file when needed, pehaps in Hub/P0
-var BastionInfo = {
-  name: 'bst01'
-}
+var bst = contains(DeploymentInfo, 'BastionInfo') ? DeploymentInfo.BastionInfo : {}
 
 resource BastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   name: '${Deployment}-vn/${snAzureBastionSubnet}'
-  
 }
 
-resource PIPBastion 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
-  name: '${Deployment}-${BastionInfo.name}-publicip1'
-  location: resourceGroup().location
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    dnsSettings: {
-      domainNameLabel: '${DeploymentURI}-${BastionInfo.name}'
-    }
-    publicIPAllocationMethod: 'Static'
+module PublicIP 'x.publicIP.bicep' = if(contains(bst,'name')) {
+  name: 'dp${Deployment}-Bastion-publicIPDeploy${bst.Name}'
+  params: {
+    Deployment: Deployment
+    DeploymentID: DeploymentID
+    NICs: array(bst)
+    VM: bst
+    PIPprefix: 'bst'
+    Global: Global
+    OMSworkspaceID: OMSworkspaceID
   }
 }
 
-resource PIPBastionDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
-  name: 'service'
-  scope: PIPBastion
-  properties: {
-    workspaceId: OMSworkspaceID
-    logs: [
-      {
-        category: 'DDoSProtectionNotifications'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        timeGrain: 'PT5M'
-        enabled: true
-        retentionPolicy: {
-          enabled: false
-          days: 0
-        }
-      }
-    ]
-  }
-}
-
-resource Bastion 'Microsoft.Network/bastionHosts@2021-02-01' = {
-  name: '${Deployment}-${BastionInfo.name}'
+resource Bastion 'Microsoft.Network/bastionHosts@2021-02-01' = if(contains(bst,'name')) {
+  name: '${Deployment}-bst${bst.name}'
   location: resourceGroup().location
   properties: {
-    dnsName: toLower('${Deployment}-${BastionInfo.name}.bastion.azure.com')
+    dnsName: toLower('${Deployment}-${bst.name}.bastion.azure.com')
     ipConfigurations: [
       {
         name: 'IpConf'
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
-            id: PIPBastion.id
+            id: PublicIP.outputs.PIPID[0]
           }
           subnet: {
             id: BastionSubnet.id
@@ -122,7 +93,7 @@ resource Bastion 'Microsoft.Network/bastionHosts@2021-02-01' = {
   }
 }
 
-resource BastionDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+resource BastionDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = if(contains(bst,'name')) {
   name: 'service'
   scope: Bastion
   properties: {

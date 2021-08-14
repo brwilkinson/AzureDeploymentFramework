@@ -544,7 +544,7 @@
         "Appservers": {
           "AppServers": [
             // {
-            //   "VMName": "JMP01",
+            //   "Name": "JMP01",
             //   "Role": "JMP",
             //   "ASName": "JMP",
             //   "DDRole": "64GB",
@@ -563,7 +563,7 @@
             //   ]
             // },
             {
-              "VMName": "JMP02",
+              "Name": "JMP02",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -584,7 +584,7 @@
           ],
           "AppServersLinux": [
             {
-              "VMName": "LIN01",
+              "Name": "LIN01",
               "Role": "LIN",
               "ASName": "LIN",
               "DDRole": "64GB",

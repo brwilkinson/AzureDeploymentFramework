@@ -183,7 +183,7 @@
        
         "LBInfo2": [
           {
-            "LBName": "API",
+            "Name": "API",
             "ASName": "API",
             "Sku": "Basic",
             "Type": "Private",
@@ -291,7 +291,7 @@
             ]
           },
           {
-            "LBName": "SF",
+            "Name": "SF",
             "ASName": "SF",
             "Sku": "Basic",
             "Type": "Private",
@@ -401,7 +401,7 @@
         ],
         "LBInfo": [
           {
-            "LBName": "PLB01",
+            "Name": "PLB01",
             "Zone": 1,
             "ASName": "PLB01",
             "Sku": "Standard",
@@ -425,7 +425,7 @@
             ]
           },
           {
-            "LBName": "FIL",
+            "Name": "FIL",
             "ASName": "FIL",
             "Sku": "Standard",
             "Type": "Private",
@@ -469,7 +469,7 @@
             ]
           },
           {
-            "LBName": "CLS01",
+            "Name": "CLS01",
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
@@ -503,7 +503,7 @@
         "Appservers": {
           "VMFile": [
             {
-              "VMName": "DFS01",
+              "Name": "DFS01",
               "Role": "DFS",
               "ASName": "DFS",
               "DDRole": "FIL64GB",
@@ -545,7 +545,7 @@
               }
             },
             {
-              "VMName": "DFS02",
+              "Name": "DFS02",
               "Role": "DFS",
               "ASName": "DFS",
               "DDRole": "FIL64GB",

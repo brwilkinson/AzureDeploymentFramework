@@ -77,4 +77,7 @@ module CosmosAccountDB 'Cosmos-Account-DB.bicep'= [for (cdb, index) in cosmosAcc
     cosmosDB: cdb
     Deployment: Deployment
   }
+  dependsOn: [
+    CosmosAccount
+  ]
 }]

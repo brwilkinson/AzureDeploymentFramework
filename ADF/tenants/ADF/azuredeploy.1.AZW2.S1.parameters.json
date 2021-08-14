@@ -348,7 +348,7 @@
         "Appservers": {
           "InitialDOP": [
             {
-              "VMName": "JMP01",
+              "Name": "JMP01",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -370,7 +370,7 @@
           ],
           "AppServersLinux": [
             {
-              "VMName": "LIN01",
+              "Name": "LIN01",
               "Role": "LIN",
               "ASName": "LIN",
               "DDRole": "0GB",
