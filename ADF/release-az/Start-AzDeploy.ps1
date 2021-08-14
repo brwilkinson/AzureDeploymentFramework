@@ -342,9 +342,10 @@ Function global:Start-AzDeploy
             # Upload only files that changes since last git add, i.e. only for the files that changed, use -fullupload to upload ALL files
             # only look in the 3 templates directories for uploading files
             $Include = @(
-                "$ArtifactStagingDirectory\templates-base\",
-                "$ArtifactStagingDirectory\templates-deploy\",
-                "$ArtifactStagingDirectory\templates-nested\",
+                # no longer check ARM template directories for uploads
+                # "$ArtifactStagingDirectory\templates-base\",
+                # "$ArtifactStagingDirectory\templates-deploy\",
+                # "$ArtifactStagingDirectory\templates-nested\",
                 "$ArtifactStagingDirectory\ext-DSC\",
                 "$ArtifactStagingDirectory\ext-CD\",
                 "$ArtifactStagingDirectory\ext-Scripts\"
@@ -384,7 +385,8 @@ Function global:Start-AzDeploy
             }
             
             $Include = @(
-                'templates-deploy', 'templates-base', 'templates-nested', 'ext-DSC', 'ext-CD', 'ext-Scripts'
+                # no longer uploading any templates only extensions
+                'ext-DSC', 'ext-CD', 'ext-Scripts' # 'templates-deploy', 'templates-base', 'templates-nested',
             )
             Get-ChildItem -Path $ArtifactStagingDirectory -Include $Include -Recurse -Directory |
                 Get-ChildItem -File -Include *.json, *.zip, *.psd1, *.sh, *.ps1 | ForEach-Object {
