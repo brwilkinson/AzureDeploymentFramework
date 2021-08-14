@@ -465,7 +465,7 @@
             "dnsName": "API",
             "apimSku": "Developer",
             "snName": "BE01",
-            "virtualNetworkType": "Internal",
+            "virtualNetworkType": "External",
             "certName": "PSTHING-WildCard",
             "frontDoor": "01"
           }

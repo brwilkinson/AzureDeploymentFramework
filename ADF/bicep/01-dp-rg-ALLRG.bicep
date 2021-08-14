@@ -860,6 +860,27 @@ module dp_Deployment_APIM 'APIM.bicep' = if (Stage.APIM == 1) {
   ]
 }
 
+module dp_Deployment_FRONTDOOR 'FD.bicep' = if (Stage.FRONTDOOR == 1) {
+  name: 'dp${Deployment}-FRONTDOOR'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    // dp_Deployment_WAF
+    dp_Deployment_APIM
+  ]
+}
+
 module dp_Deployment_SB 'SB.bicep' = if (Stage.SB == 1) {
   name: 'dp${Deployment}-SB'
   params: {
@@ -943,16 +964,6 @@ module VMSS '?' = if (Stage.VMSS == 1) {
     dp_Deployment_SA
   ]
 }
-
-module dp_Deployment_FRONTDOOR '?' = if (Stage.FRONTDOOR == 1) {
-  name: 'dp${Deployment}-FRONTDOOR'
-  params: {}
-  dependsOn: [
-    dp_Deployment_WAF
-    dp_Deployment_APIM
-  ]
-}
-
 
 module dp_Deployment_AKS '?' = if (Stage.AKS == 1) {
   name: 'dp${Deployment}-AKS'
