@@ -465,7 +465,7 @@
             "dnsName": "API",
             "apimSku": "Developer",
             "snName": "BE01",
-            "virtualNetworkType": "External",
+            "virtualNetworkType": "Internal",
             "certName": "PSTHING-WildCard",
             "frontDoor": "01"
           }
@@ -605,7 +605,7 @@
           "publicNetworkAccess": "Enabled",
           "PrivateLinkInfo": [
             {
-              "Subnet": "snBE01",
+              "Subnet": "snBE02",
               "groupID": "configurationStores"
             }
           ]
@@ -671,7 +671,7 @@
             "enableAutomaticFailover": true,
             "PrivateLinkInfo": [
               {
-                "Subnet": "snBE01",
+                "Subnet": "snBE02",
                 "groupID": "SQL"
               }
             ],
