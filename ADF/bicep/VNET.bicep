@@ -115,9 +115,9 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         */  {
               id: NSG[index].id
             }
-        routeTable: ((contains(sn, 'Route') && (sn.Route == 1)) ? RouteTableGlobal : json('null'))
+        routeTable: contains(sn, 'Route') && (sn.Route == 1) ? RouteTableGlobal : json('null')
         privateEndpointNetworkPolicies: 'Disabled'
-        delegations: (contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default)
+        delegations: contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default
       }
     }]
   }
