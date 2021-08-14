@@ -320,8 +320,8 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true,
-            "delegations": "Microsoft.Web/serverfarms"
+            "FlowAnalyticsEnabled": true
+            // "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",
