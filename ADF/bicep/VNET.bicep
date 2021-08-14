@@ -54,8 +54,6 @@ var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMS
 
 var DNSServers = Global.DNSServers
 
-var abc = loadTextContent()
-
 var hubVNetName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubVNetName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubVNetName)
 var hubVNetResourceGroupName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubRGName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubRGName)
 var hubVNetSubscriptionID = Global.hubSubscriptionID
