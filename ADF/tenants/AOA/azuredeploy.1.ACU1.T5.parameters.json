@@ -334,7 +334,7 @@
             "name": "snBE02",
             "prefix": "64/28",
             "NSG": 1,
-            "Route": 1,
+            "Route": 0, //1
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true,
             "delegations": "Microsoft.ContainerInstance/containerGroups"
@@ -343,7 +343,7 @@
             "name": "snBE01", // APIM Dedicated
             "prefix": "80/28",
             "NSG": 1,
-            "Route": 1,
+            "Route": 0, //1
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
@@ -366,7 +366,7 @@
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
-            "Route": 1,
+            "Route": 0, //1
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           }
