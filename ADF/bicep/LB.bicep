@@ -58,23 +58,24 @@ var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] -
 var LBInfo = contains(DeploymentInfo, 'LBInfo') ? DeploymentInfo.LBInfo : []
 
 var LB = [for i in range(0, length(LBInfo)): {
-  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.LBInfo[i].LBName))
+  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.LBInfo[i].Name))
 }]
 
 module PublicIP 'x.publicIP.bicep' = [for (lb,index) in LBInfo: {
-  name: 'dp${Deployment}-LB-publicIPDeploy${lb.LBName}'
+  name: 'dp${Deployment}-LB-publicIPDeploy${lb.Name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
     NICs: lb.FrontEnd
     VM: lb
+    PIPprefix: 'lb'
     Global: Global
     OMSworkspaceID: OMSworkspaceID
   }
 }]
 
 module LBs 'LB-LB.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {
-  name: 'dp${Deployment}-LB-Deploy${lb.LBName}'
+  name: 'dp${Deployment}-LB-Deploy${lb.Name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID

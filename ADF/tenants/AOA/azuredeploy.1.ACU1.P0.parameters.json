@@ -585,13 +585,15 @@
         ],
         "FWInfo": [
           {
-            "Name": "FW01"
+            "Name": "FW01",
+            "PublicIP": "Static",
+            "Zone": true
           }
         ],
         "Appservers": {
           "ADPrimary": [
             // {
-            //   "VMName": "DNS01",
+            //   "Name": "DNS01",
             //   "Role": "DNS",
             //   "ASName": "DNS",
             //   "DSConfig": "AppServers",
@@ -608,7 +610,7 @@
             // }
             // move back to AD Domain because of conditional access policies
             {
-              "VMName": "DC01",
+              "Name": "DC01",
               "Role": "ADp",
               "ASName": "AD",
               "DDRole": "32GB",
@@ -626,7 +628,7 @@
           ],
           "ADSecondary": [
             // {
-            //   "VMName": "DNS02",
+            //   "Name": "DNS02",
             //   "Role": "DNS",
             //   "ASName": "DNS",
             //   "DSConfig": "AppServers",
@@ -643,7 +645,7 @@
             // }
             // move back to AD Domain because of conditional access policies
             {
-              "VMName": "DC02",
+              "Name": "DC02",
               "Role": "ADs",
               "ASName": "AD",
               "DDRole": "32GB",

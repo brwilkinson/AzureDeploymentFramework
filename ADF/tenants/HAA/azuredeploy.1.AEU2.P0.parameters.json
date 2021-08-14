@@ -539,7 +539,7 @@
         "Appservers": {
           "ADPrimary": [
             {
-              "VMName": "DC01",
+              "Name": "DC01",
               "Role": "ADp",
               "ASName": "AD",
               "DDRole": "32GB",
@@ -557,7 +557,7 @@
           ],
           "ADSecondary": [
             {
-              "VMName": "DC02",
+              "Name": "DC02",
               "Role": "ADs",
               "ASName": "AD",
               "DDRole": "32GB",

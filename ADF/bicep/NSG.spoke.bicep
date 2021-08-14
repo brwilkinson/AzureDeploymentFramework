@@ -52,7 +52,7 @@ var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
-resource nsgSNAD01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+resource nsgSNAD01 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${Deploymentnsg}-nsgSNAD01'
   location: resourceGroup().location
   properties: {
@@ -78,7 +78,7 @@ resource nsgSNAD01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgSNWAF01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+resource nsgSNWAF01 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${Deploymentnsg}-nsgSNWAF01'
   location: resourceGroup().location
   properties: {
@@ -141,7 +141,7 @@ resource nsgSNWAF01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01
   }
 }
 
-resource nsgSNFE01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+resource nsgSNFE01 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${Deploymentnsg}-nsgSNFE01'
   location: resourceGroup().location
   properties: {
@@ -207,7 +207,7 @@ resource nsgSNFE01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgSNMT01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+resource nsgSNMT01 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${Deploymentnsg}-nsgSNMT01'
   location: resourceGroup().location
   properties: {
@@ -247,7 +247,7 @@ resource nsgSNMT01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgSNMT02 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+resource nsgSNMT02 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${Deploymentnsg}-nsgSNMT02'
   location: resourceGroup().location
   properties: {
@@ -273,7 +273,7 @@ resource nsgSNMT02Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgSNBE01 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+resource nsgSNBE01 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${Deploymentnsg}-nsgSNBE01'
   location: resourceGroup().location
   properties: {
@@ -338,7 +338,7 @@ resource nsgSNBE01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgSNBE02 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+resource nsgSNBE02 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${Deploymentnsg}-nsgSNBE02'
   location: resourceGroup().location
   properties: {
@@ -364,7 +364,7 @@ resource nsgSNBE02Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   }
 }
 
-resource nsgAzureBastionSubnet 'Microsoft.Network/networkSecurityGroups@2018-07-01' = {
+resource nsgAzureBastionSubnet 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${Deploymentnsg}-nsgAzureBastionSubnet'
   location: resourceGroup().location
   properties: {

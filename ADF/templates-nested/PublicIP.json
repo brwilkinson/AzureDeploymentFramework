@@ -39,10 +39,10 @@
   },
   "resources": [
     // {
-    //   "condition": "[and(contains(parameters('VM'),'VMName'),contains(parameters('NICs')[copyIndex(0)],'PublicIP'))]",
+    //   "condition": "[and(contains(parameters('VM'),'Name'),contains(parameters('NICs')[copyIndex(0)],'PublicIP'))]",
     //   "apiVersion": "2018-07-01",
     //   "type": "Microsoft.Network/networkSecurityGroups",
-    //   "name": "[concat(parameters('Deployment'), '-vm', if(contains(parameters('VM'),'VMName'),parameters('VM').VMName,parameters('VM').LBName), '-nsgJMP',copyIndex(1))]",
+    //   "name": "[concat(parameters('Deployment'), '-vm', if(contains(parameters('VM'),'Name'),parameters('VM').Name,parameters('VM').Name), '-nsgJMP',copyIndex(1))]",
     //   "location": "[resourceGroup().location]",
     //   "copy": {
     //     "name": "nsg",
@@ -108,8 +108,8 @@
     // },
     {
       "condition": "[contains(parameters('NICs')[copyIndex(0)],'PublicIP')]",
-      "name": "[concat(parameters('Deployment'),'-',if(contains(parameters('VM'),'VMName'),parameters('VM').VMName,parameters('VM').LBName),'-publicip',copyIndex(1))]",
-      //if(contains(parameters('VM'),'VMName'),parameters('VM').VMName,parameters('VM').LBName)
+      "name": "[concat(parameters('Deployment'),'-',if(contains(parameters('VM'),'Name'),parameters('VM').Name,parameters('VM').Name),'-publicip',copyIndex(1))]",
+      //if(contains(parameters('VM'),'Name'),parameters('VM').Name,parameters('VM').Name)
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
       "sku" :{
@@ -125,7 +125,7 @@
       "properties": {
         "publicIPAllocationMethod": "[parameters('NICs')[copyIndex(0)].PublicIP]",
         "dnsSettings": {
-          "domainNameLabel": "[toLower( concat(variables('Domain'), parameters('Deployment'), '-vm', if(contains(parameters('VM'),'VMName'),parameters('VM').VMName,parameters('VM').LBName),'-',copyIndex(1) ) ) ]"
+          "domainNameLabel": "[toLower( concat(variables('Domain'), parameters('Deployment'), '-vm', if(contains(parameters('VM'),'Name'),parameters('VM').Name,parameters('VM').Name),'-',copyIndex(1) ) ) ]"
         }
       },
       "resources": [
@@ -134,7 +134,7 @@
           "type": "providers/diagnosticSettings",
           "name": "Microsoft.Insights/service",
           "dependsOn": [
-            "[concat(parameters('Deployment'),'-',if(contains(parameters('VM'),'VMName'),parameters('VM').VMName,parameters('VM').LBName),'-publicip',copyIndex(1))]"
+            "[concat(parameters('Deployment'),'-',if(contains(parameters('VM'),'Name'),parameters('VM').Name,parameters('VM').Name),'-publicip',copyIndex(1))]"
           ],
           "apiVersion": "2015-07-01",
           "properties": {

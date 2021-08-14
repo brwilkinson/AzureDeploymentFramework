@@ -8,7 +8,7 @@
     "DeploymentID": {
       "type": "string"
     },
-    "VMName" : {
+    "Name" : {
       "type": "string"
     },
     "DATA": {
@@ -46,7 +46,7 @@
         "name": "Data",
         "count": "[if(contains(parameters('Data'),'LUNS'),Length(parameters('Data').LUNS),0)]",
         "input": {
-          "name": "[concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Data').LUNS[copyIndex('Data')][0],2,'0'))]",
+          "name": "[concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-DATA' , padLeft( parameters('Data').LUNS[copyIndex('Data')][0],2,'0'))]",
           "lun": "[int(parameters('Data').LUNS[copyIndex('Data')][0])]",
           "caching": "[parameters('Data').caching]",
           "diskSizeGB": "[int(parameters('Data').LUNS[copyIndex('Data')][1])]",
@@ -58,7 +58,7 @@
         "name": "Datass",
         "count": "[if(contains(parameters('Datass'),'LUNS'),Length(parameters('Datass').LUNS),0)]",
         "input": {
-          // "name": "[concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Datass').LUNS[copyIndex('Datass')][0],2,'0')) )]",
+          // "name": "[concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-DATA' , padLeft( parameters('Datass').LUNS[copyIndex('Datass')][0],2,'0')) )]",
           "lun": "[int(parameters('Datass').LUNS[copyIndex('Datass')][0])]",
           "caching": "[parameters('Datass').caching]",
           "diskSizeGB": "[int(parameters('Datass').LUNS[copyIndex('Datass')][1])]",
@@ -70,7 +70,7 @@
         "name": "SOFS",
         "count": "[if(contains(parameters('SOFS'),'LUNS'),Length(parameters('SOFS').LUNS),0)]",
         "input": {
-          "name": "[ concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-SOFS' , padLeft( parameters('SOFS').LUNS[copyIndex('SOFS')][0],2,'0'))]",
+          "name": "[ concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-SOFS' , padLeft( parameters('SOFS').LUNS[copyIndex('SOFS')][0],2,'0'))]",
           "lun": "[ int(parameters('SOFS').LUNS[copyIndex('SOFS')][0])]",
           "caching": "[ parameters('SOFS').caching]",
           "diskSizeGB": "[ int(parameters('SOFS').LUNS[copyIndex('SOFS')][1])]",
@@ -82,7 +82,7 @@
         "name": "LOGS",
         "count": "[if(contains(parameters('LOGS'),'LUNS'),Length(parameters('LOGS').LUNS),0)]",
         "input": {
-          "name": "[ concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-LOGS' , padLeft( parameters('LOGS').LUNS[copyIndex('LOGS')][0],2,'0'))]",
+          "name": "[ concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-LOGS' , padLeft( parameters('LOGS').LUNS[copyIndex('LOGS')][0],2,'0'))]",
           "lun": "[ int(parameters('LOGS').LUNS[copyIndex('LOGS')][0])]",
           "caching": "[ parameters('LOGS').caching]",
           "diskSizeGB": "[ int(parameters('LOGS').LUNS[copyIndex('LOGS')][1])]",
@@ -94,7 +94,7 @@
         "name": "TEMPDB",
         "count": "[if(contains(parameters('TEMPDB'),'LUNS'),Length(parameters('TEMPDB').LUNS),0)]",
         "input": {
-          "name": "[ concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-TEMPDB' , padLeft( parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0],2,'0'))]",
+          "name": "[ concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-TEMPDB' , padLeft( parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0],2,'0'))]",
           "lun": "[ int(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0])]",
           "caching": "[ parameters('TEMPDB').caching]",
           "diskSizeGB": "[ int(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][1])]",
@@ -106,7 +106,7 @@
         "name": "BACKUP",
         "count": "[if(contains(parameters('BACKUP'),'LUNS'),Length(parameters('BACKUP').LUNS),0)]",
         "input": {
-          "name": "[ concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-BACKUP' , padLeft( parameters('BACKUP').LUNS[copyIndex('BACKUP')][0],2,'0'))]",
+          "name": "[ concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-BACKUP' , padLeft( parameters('BACKUP').LUNS[copyIndex('BACKUP')][0],2,'0'))]",
           "lun": "[ int(parameters('BACKUP').LUNS[copyIndex('BACKUP')][0])]",
           "caching": "[ parameters('BACKUP').caching]",
           "diskSizeGB": "[ int(parameters('BACKUP').LUNS[copyIndex('BACKUP')][1])]",

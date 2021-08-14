@@ -167,11 +167,11 @@ var userAssignedIdentities = {
   None: {}
 }
 var VM = [for (vm, index) in AppServers: {
-  name: vm.VMName
-  match: ((Global.CN == '.') || contains(Global.CN, vm.VMName)) ? bool('true') : bool('false')
+  name: vm.Name
+  match: ((Global.CN == '.') || contains(Global.CN, vm.Name)) ? bool('true') : bool('false')
   Extensions: contains(OSType[vm.OSType], 'RoleExtensions') ? union(Extensions, OSType[vm.OSType].RoleExtensions) : Extensions
   DataDisk: contains(vm, 'DDRole') ? DataDiskInfo[vm.DDRole] : json('null')
-  vmHostName: toLower('${Prefix}${Global.AppName}${Environment}${DeploymentID}${vm.VMName}')
+  vmHostName: toLower('${Prefix}${Global.AppName}${Environment}${DeploymentID}${vm.Name}')
   AppInfo: contains(vm, 'AppInfo') ? vm.AppInfo : json('null')
   windowsConfiguration: {
     enableAutomaticUpdates: true
@@ -205,19 +205,20 @@ resource AS 'Microsoft.Compute/availabilitySets@2021-03-01' = [for (as, index) i
 }]
 
 module VMPIP 'x.publicIP.bicep' = [for (vm, index) in AppServers: if (VM[index].match) {
-  name: 'dp${Deployment}-VM-publicIPDeploy${vm.VMName}'
+  name: 'dp${Deployment}-VM-publicIPDeploy${vm.Name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
     NICs: vm.NICs
     VM: vm
+    PIPprefix: 'vm'
     Global: Global
     OMSworkspaceID: OMSworkspaceID
   }
 }]
 
 module VMNIC 'x.NIC.bicep' = [for (vm, index) in AppServers: if (VM[index].match) {
-  name: 'dp${Deployment}-VM-nicDeployLoop${vm.VMName}'
+  name: 'dp${Deployment}-VM-nicDeployLoop${vm.Name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
@@ -231,11 +232,11 @@ module VMNIC 'x.NIC.bicep' = [for (vm, index) in AppServers: if (VM[index].match
 }]
 
 module DISKLOOKUP 'y.disks.bicep' = [for (vm, index) in AppServers: if (VM[index].match) {
-  name: 'dp${Deployment}-VM-diskLookup${vm.VMName}'
+  name: 'dp${Deployment}-VM-diskLookup${vm.Name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
-    VMName: vm.VMName
+    Name: vm.Name
     SOFS: (contains(DataDiskInfo[vm.DDRole], 'SOFS') ? DataDiskInfo[vm.DDRole].SOFS : json('{"1":1}'))
     DATA: (contains(DataDiskInfo[vm.DDRole], 'DATA') ? DataDiskInfo[vm.DDRole].DATA : json('{"1":1}'))
     LOGS: (contains(DataDiskInfo[vm.DDRole], 'LOGS') ? DataDiskInfo[vm.DDRole].LOGS : json('{"1":1}'))
@@ -246,7 +247,7 @@ module DISKLOOKUP 'y.disks.bicep' = [for (vm, index) in AppServers: if (VM[index
 }]
 
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match) {
-  name: '${Deployment}-vm${vm.VMName}'
+  name: '${Deployment}-vm${vm.Name}'
   location: resourceGroup().location
   identity: {
     type: 'SystemAssigned, UserAssigned'
@@ -275,7 +276,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (v
     storageProfile: {
       imageReference: OSType[vm.OSType].imageReference
       osDisk: {
-        name: '${Deployment}-${vm.VMName}-OSDisk'
+        name: '${Deployment}-${vm.Name}-OSDisk'
         caching: 'ReadWrite'
         diskSizeGB: OSType[vm.OSType].OSDiskGB
         createOption: 'FromImage'
@@ -283,11 +284,11 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (v
           storageAccountType: storageAccountType
         }
       }
-      dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${vm.VMName}'), '2018-05-01').outputs.DATADisks.value
+      dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${vm.Name}'), '2018-05-01').outputs.DATADisks.value
     }
     networkProfile: {
       networkInterfaces: [for (nic, index) in vm.NICs: {
-        id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${(contains(nic, 'LB') ? '-niclb' : (contains(nic, 'PLB') ? '-nicplb' : (contains(nic, 'SLB') ? '-nicslb' : '-nic')))}${((index == 0) ? '' : (index + 1))}${vm.VMName}')
+        id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${(contains(nic, 'LB') ? '-niclb' : (contains(nic, 'PLB') ? '-nicplb' : (contains(nic, 'SLB') ? '-nicslb' : '-nic')))}${((index == 0) ? '' : (index + 1))}${vm.Name}')
         properties: {
           primary: contains(nic, 'Primary')
         }
@@ -721,4 +722,4 @@ output foo2 string = subscription().id
 output foo3 string = resourceGroup().name
 output foo4 string = resourceGroup().id
 output foo6 array = VM
-output Disks object = reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${AppServers[0].VMName}'), '2018-05-01').outputs.dataDisks
+output Disks object = reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${AppServers[0].Name}'), '2018-05-01').outputs.dataDisks

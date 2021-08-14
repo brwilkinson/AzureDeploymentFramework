@@ -114,7 +114,7 @@
                 "input": {
                     "match": "[or(
                         equals(parameters('Global').CN,'.'),
-                        contains(parameters('Global').CN,parameters('DeploymentInfo').AppServersVMSS[copyIndex('VMSS')].VMName)
+                        contains(parameters('Global').CN,parameters('DeploymentInfo').AppServersVMSS[copyIndex('VMSS')].Name)
                         )]"
                 }
             },
@@ -122,12 +122,12 @@
                 "name": "VM",
                 "count": "[length(parameters('DeploymentInfo').AppServersVMSS)]",
                 "input": {
-                    "name": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName]",
+                    "name": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].Name]",
                     "Extensions": "[if(contains(variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType],'RoleExtensions'),union(parameters('Extensions'),variables('OSType')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].OSType].RoleExtensions),parameters('Extensions'))]",
                     "DataDisk": "[if(contains(parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')],'DDRole'), variables('DataDiskInfo')[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].DDRole],json('null'))]",
-                    "NodeType": "[toLower(concat(parameters('Global').AppName,parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
-                    "vmHostName": "[toLower(concat(parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName))]",
-                    "vmName": "[concat(parameters('Prefix'),parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].VMName)]",
+                    "NodeType": "[toLower(concat(parameters('Global').AppName,parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].Name))]",
+                    "vmHostName": "[toLower(concat(parameters('Environment'),parameters('DeploymentID'),parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].Name))]",
+                    "Name": "[concat(parameters('Prefix'),parameters('Global').AppName,'-',parameters('Environment'),parameters('DeploymentID'),'-',parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].Name)]",
                     "Primary": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].IsPrimary]",
                     "durabilityLevel": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].durabilityLevel]",
                     "placementProperties": "[parameters('DeploymentInfo').AppServersVMSS[copyIndex('VM')].placementProperties]"
@@ -185,7 +185,7 @@
     "resources": [
         {
             "condition": "[variables('VMSS')[copyIndex(0)].match]",
-            "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
+            "name": "[concat('dp', variables('Deployment'),'-diskLookup', variables('AppServers')[copyIndex(0)].Name)]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-01-01",
             "copy": {
@@ -205,8 +205,8 @@
                     "DeploymentID": {
                         "value": "[parameters('DeploymentID')]"
                     },
-                    "VMName": {
-                        "value": "[variables('AppServers')[copyIndex(0)].VMName]"
+                    "Name": {
+                        "value": "[variables('AppServers')[copyIndex(0)].Name]"
                     },
                     "DATASS": {
                         "value": "[if(contains(variables('DataDiskInfo')[variables('AppServers')[copyIndex(0)].DDRole],'DATASS'),variables('DataDiskInfo')[variables('AppServers')[copyIndex(0)].DDRole].DATASS,json('{\"1\":1}'))]"
@@ -219,7 +219,7 @@
         },
         {
             "condition": "[variables('VMSS')[copyIndex(0)].match]",
-            "name": "[concat('dp', variables('Deployment'),'-VMSSDeploy',if(equals(length(variables('AppServers')),0),'',variables('AppServers')[copyIndex(0)].VMName))]",
+            "name": "[concat('dp', variables('Deployment'),'-VMSSDeploy',if(equals(length(variables('AppServers')),0),'',variables('AppServers')[copyIndex(0)].Name))]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-01-01",
             "dependsOn": [

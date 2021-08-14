@@ -26,4 +26,7 @@ module CosmosDBContainer 'Cosmos-Account-DB-Container.bicep' = [for (container, 
     cosmosContainer: container
     Deployment: Deployment
   }
+  dependsOn: [
+    CDB
+  ]
 }]

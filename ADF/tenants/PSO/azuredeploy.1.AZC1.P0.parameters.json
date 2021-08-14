@@ -324,7 +324,7 @@
         ],
         "LBInfo2": [
           {
-            "LBName": "API",
+            "Name": "API",
             "ASName": "API",
             "Sku": "Basic",
             "Type": "Private",
@@ -432,7 +432,7 @@
             ]
           },
           {
-            "LBName": "SF",
+            "Name": "SF",
             "ASName": "SF",
             "Sku": "Basic",
             "Type": "Private",
@@ -542,7 +542,7 @@
         ],
         "LBInfo": [
           {
-            "LBName": "PLB01",
+            "Name": "PLB01",
             "Zone": 1,
             "ASName": "PLB01",
             "Sku": "Standard",
@@ -566,7 +566,7 @@
             ]
           },
           {
-            "LBName": "FIL",
+            "Name": "FIL",
             "ASName": "FIL",
             "Sku": "Standard",
             "Type": "Private",
@@ -610,7 +610,7 @@
             ]
           },
           {
-            "LBName": "CLS01",
+            "Name": "CLS01",
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
@@ -692,7 +692,7 @@
         ],
         "AppServersVMSS": [
           {
-            "VMName": "API",
+            "Name": "API",
             "SFName": "contoso",
             "Role": "API",
             "ASName": "API",
@@ -709,7 +709,7 @@
             }
           },
           {
-            "VMName": "SF",
+            "Name": "SF",
             "SFName": "contoso",
             "Role": "SF",
             "ASName": "SF",
@@ -752,7 +752,7 @@
         "Appservers": {
           "ADPrimary": [
             {
-              "VMName": "DC01",
+              "Name": "DC01",
               "Role": "ADp",
               "ASName": "AD",
               "DDRole": "32GB",
@@ -770,7 +770,7 @@
           ],
           "ADSecondary": [
             {
-              "VMName": "DC02",
+              "Name": "DC02",
               "Role": "ADs",
               "ASName": "AD",
               "DDRole": "32GB",
@@ -787,7 +787,7 @@
           ],
           "AppServers": [
             {
-              "VMName": "JMP01",
+              "Name": "JMP01",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -806,7 +806,7 @@
           ],
           "VMFile2": [
             {
-              "VMName": "FIL01",
+              "Name": "FIL01",
               "Role": "FIL",
               "ASName": "FIL",
               "DDRole": "FIL64GB",
@@ -847,7 +847,7 @@
               }
             },
             {
-              "VMName": "FIL02",
+              "Name": "FIL02",
               "Role": "FIL",
               "ASName": "FIL",
               "DDRole": "FIL64GB",
@@ -865,7 +865,7 @@
           ],
           "VMFile": [
             {
-              "VMName": "DFS01",
+              "Name": "DFS01",
               "Role": "DFS",
               "ASName": "DFS",
               "DDRole": "FIL64GB",
@@ -907,7 +907,7 @@
               }
             },
             {
-              "VMName": "DFS02",
+              "Name": "DFS02",
               "Role": "DFS",
               "ASName": "DFS",
               "DDRole": "FIL64GB",
@@ -926,7 +926,7 @@
           ],
           "AppServersFoo": [
             {
-              "VMName": "JMP02",
+              "Name": "JMP02",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -942,7 +942,7 @@
               ]
             },
             {
-              "VMName": "JMP03",
+              "Name": "JMP03",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -960,7 +960,7 @@
           ],
           "AppServersLinux": [
             {
-              "VMName": "LIN01",
+              "Name": "LIN01",
               "Role": "LIN",
               "ASName": "LIN",
               "DDRole": "64GB",
@@ -982,7 +982,7 @@
           ],
           "SQLServers": [
             {
-              "VMName": "SQL01",
+              "Name": "SQL01",
               "OSType": "Server2016",
               "ASName": "CLS01",
               "Role": "SQL",
@@ -1019,7 +1019,7 @@
               }
             },
             {
-              "VMName": "SQL02",
+              "Name": "SQL02",
               "OSType": "Server2016",
               "CLNAME": "CLS01",
               "ASName": "CLS01",

@@ -33,7 +33,7 @@
   },
   "resources": [
     {
-      "name": "[concat('dp', parameters('Deployment'), '-nicDeploy', parameters('VM').VMName, copyIndex(1))]",
+      "name": "[concat('dp', parameters('Deployment'), '-nicDeploy', parameters('VM').Name, copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-01-01",
       "copy": {

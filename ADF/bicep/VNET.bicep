@@ -93,6 +93,10 @@ var delegations = {
   ]
 }
 
+resource NSG 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = [for (sn, index) in SubnetInfo : {
+  name: '${Deploymentnsg}-nsg${sn.name}'
+}]
+
 resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: '${Deployment}-vn'
   location: resourceGroup().location
@@ -103,11 +107,14 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
     dhcpOptions: {
       dnsServers: array(DNSServers)
     }
-    subnets: [for sn in SubnetInfo: {
+    subnets: [for (sn,index) in SubnetInfo: {
       name: sn.name
       properties: {
         addressPrefix: '${((sn.name == 'snMT02') ? networkIdUpper : networkId)}.${sn.Prefix}'
-        networkSecurityGroup: ((contains(sn, 'NSG') && (sn.NSG == 1)) ? json('{"id":"${string(resourceId('Microsoft.Network/networkSecurityGroups', '${Deploymentnsg}-nsg${sn.name}'))}"}') : json('null'))
+        networkSecurityGroup: ! (contains(sn, 'NSG') && (sn.NSG == 1)) ? json('null') : /*
+        */  {
+              id: NSG[index].id
+            }
         routeTable: ((contains(sn, 'Route') && (sn.Route == 1)) ? RouteTableGlobal : json('null'))
         privateEndpointNetworkPolicies: 'Disabled'
         delegations: (contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default)

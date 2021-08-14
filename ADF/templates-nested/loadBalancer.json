@@ -65,7 +65,7 @@
             "frontendPortRangeEnd": "[parameters('NATPools')[copyIndex('NATPools')].frontendPortRangeEnd]",
             "backendPort": "[parameters('NATPools')[copyIndex('NATPools')].backendPort]",
             "frontendIPConfiguration": {
-              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/frontendIPConfigurations/',parameters('NATPools')[copyIndex('NATPools')].LBFEName)]"
+              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/frontendIPConfigurations/',parameters('NATPools')[copyIndex('NATPools')].LBFEName)]"
             }
           }
         }
@@ -90,13 +90,13 @@
           "name": "[parameters('Services')[copyIndex('loadBalancingRules')].RuleName]",
           "properties": {
             "frontendIPConfiguration": {
-              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/frontendIPConfigurations/',parameters('Services')[copyIndex('loadBalancingRules')].LBFEName)]"
+              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/frontendIPConfigurations/',parameters('Services')[copyIndex('loadBalancingRules')].LBFEName)]"
             },
             "backendAddressPool": {
-              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/backendAddressPools/',parameters('LB').ASName)]"
+              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/backendAddressPools/',parameters('LB').ASName)]"
             },
             "probe": {
-              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/probes/',parameters('Services')[copyIndex('loadBalancingRules')].ProbeName)]"
+              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/probes/',parameters('Services')[copyIndex('loadBalancingRules')].ProbeName)]"
             },
             "protocol": "[if(contains(parameters('Services')[copyIndex('loadBalancingRules')],'protocol'),parameters('Services')[copyIndex('loadBalancingRules')].Protocol ,'tcp')]",
             "frontendPort": "[parameters('Services')[copyIndex('loadBalancingRules')].LBFEPort]",
@@ -118,11 +118,11 @@
             "idleTimeoutInMinutes": "[parameters('outboundRules')[copyIndex('outboundRules')].idleTimeoutInMinutes]",
             "frontendIPConfigurations": [
               {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/frontendIPConfigurations/',parameters('outboundRules')[copyIndex('outboundRules')].LBFEName)]"
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/frontendIPConfigurations/',parameters('outboundRules')[copyIndex('outboundRules')].LBFEName)]"
               }
             ],
             "backendAddressPool": {
-              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/backendAddressPools/',parameters('outboundRules')[copyIndex('outboundRules')].LBFEName)]"
+              "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/backendAddressPools/',parameters('outboundRules')[copyIndex('outboundRules')].LBFEName)]"
             }
           }
         }
@@ -140,7 +140,7 @@
             "enableFloatingIP": "[parameters('NATRules')[copyIndex('NATRules')].enableFloatingIP]",
             "frontendIPConfiguration": {
               "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations',
-                                  concat(parameters('Deployment'),'-lb',parameters('LB').LBName),
+                                  concat(parameters('Deployment'),'-lb',parameters('LB').Name),
                                   parameters('NATRules')[copyIndex('NATRules')].LBFEName
                                 )]"
             }
@@ -198,7 +198,7 @@
             //                 createArray('1','2','3')
             //                 )]",
             "publicIPAddress": {
-              "id": "[string(resourceid('Microsoft.Network/publicIPAddresses',concat(parameters('Deployment'),'-',parameters('LB').LBName,'-publicip', copyIndex('frontendIPConfigurationsPublic',1))))]"
+              "id": "[string(resourceid('Microsoft.Network/publicIPAddresses',concat(parameters('Deployment'),'-',parameters('LB').Name,'-publicip', copyIndex('frontendIPConfigurationsPublic',1))))]"
             }
           }
         }
@@ -208,7 +208,7 @@
   "resources": [
     {
       "condition": "[equals(length(parameters('NATRules')),0)]",
-      "name": "[concat(parameters('Deployment'),if(equals(length(parameters('NATRules')),0),'-lb',''),parameters('LB').LBName)]",
+      "name": "[concat(parameters('Deployment'),if(equals(length(parameters('NATRules')),0),'-lb',''),parameters('LB').Name)]",
       "type": "Microsoft.Network/loadBalancers",
       "apiVersion": "2020-07-01",
       "location": "[resourceGroup().location]",
@@ -228,7 +228,7 @@
           "type": "providers/diagnosticSettings",
           "name": "Microsoft.Insights/service",
           "dependsOn": [
-            "[concat(parameters('Deployment'),if(equals(length(parameters('NATRules')),0),'-lb',''),parameters('LB').LBName)]"
+            "[concat(parameters('Deployment'),if(equals(length(parameters('NATRules')),0),'-lb',''),parameters('LB').Name)]"
           ],
           "apiVersion": "2015-07-01",
           "properties": {
@@ -259,7 +259,7 @@
     },
     {
       "condition": "[not(equals(length(parameters('NATRules')),0))]",
-      "name": "[concat(parameters('Deployment'),if(equals(length(parameters('NATRules')),0),'','-lb'),parameters('LB').LBName)]",
+      "name": "[concat(parameters('Deployment'),if(equals(length(parameters('NATRules')),0),'','-lb'),parameters('LB').Name)]",
       "type": "Microsoft.Network/loadBalancers",
       "apiVersion": "2020-07-01",
       "location": "[resourceGroup().location]",
@@ -283,7 +283,7 @@
           "type": "providers/diagnosticSettings",
           "name": "Microsoft.Insights/service",
           "dependsOn": [
-            "[concat(parameters('Deployment'),if(not(equals(length(parameters('NATRules')),0)),'-lb',''),parameters('LB').LBName)]"
+            "[concat(parameters('Deployment'),if(not(equals(length(parameters('NATRules')),0)),'-lb',''),parameters('LB').Name)]"
           ],
           "apiVersion": "2015-07-01",
           "properties": {

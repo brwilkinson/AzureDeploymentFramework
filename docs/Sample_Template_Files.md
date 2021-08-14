@@ -89,7 +89,7 @@ The following defines the loadbalaners that are required
 ``` json
     "LBInfo": [
           {
-            "LBName": "FWP",
+            "Name": "FWP",
             "ASName": "FWP",
             "Sku": "Standard",
             "Zone": "0",
@@ -204,7 +204,7 @@ The following defines the loadbalaners that are required
             ]
           },
         {
-            "LBName": "API",
+            "Name": "API",
             "ASName": "API",
             "Sku": "Basic",
             "Type": "Private",
@@ -313,7 +313,7 @@ The following defines the loadbalaners that are required
             ]
           },
           {
-            "LBName": "BUS",
+            "Name": "BUS",
             "ASName": "BUS",
             "Sku": "Basic",
             "Type": "Private",
@@ -430,7 +430,7 @@ The following defines the VM Scale Set
 ```json
     "AppServersVMSS": [
       {
-        "VMName": "API",
+        "Name": "API",
         "Role": "API",
         "ASName": "API",
         "OSType": "Server2016SS",
@@ -456,7 +456,7 @@ The following defines the availabilityset and the AppServers
       ],
       "AppServers": [
       {
-        "VMName": "JMP01",
+        "Name": "JMP01",
         "Role": "JMP",
         "ASName": "JMP",
         "DDRole": "64GB",
@@ -472,7 +472,7 @@ The following defines the availabilityset and the AppServers
         ]
       },
       {
-        "VMName": "BUS01",
+        "Name": "BUS01",
         "Role": "BUS",
         "ASName": "BUS",
         "DDRole": "64GB",
@@ -587,7 +587,7 @@ SQL vm's in a cluster example
     ],
     "SQLServers": [
           {
-            "VMName": "SQL01",
+            "Name": "SQL01",
             "OSType": "Server2016",
             "ASName": "CLS01",
             "Role": "SQL",
@@ -622,7 +622,7 @@ SQL vm's in a cluster example
             }
           },
           {
-            "VMName": "SQL02",
+            "Name": "SQL02",
             "OSType": "Server2016",
             "CLNAME": "CLS01",
             "ASName": "CLS01",

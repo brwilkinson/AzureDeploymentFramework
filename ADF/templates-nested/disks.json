@@ -8,7 +8,7 @@
     "DeploymentID": {
       "type": "string"
     },
-    "VMName" : {
+    "Name" : {
       "type": "string"
     },
     "DATA": {
@@ -46,7 +46,7 @@
         "name": "Data",
         "count": "[if(contains(parameters('Data'),'1'),1,Length(parameters('Data').LUNS))]",
         "input": {
-          "name": "[if(contains(parameters('Data'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Data').LUNS[copyIndex('Data')][0],2,'0')) )]",
+          "name": "[if(contains(parameters('Data'),'1'),1, concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-DATA' , padLeft( parameters('Data').LUNS[copyIndex('Data')][0],2,'0')) )]",
           "lun": "[if(contains(parameters('Data'),'1'),1, int(parameters('Data').LUNS[copyIndex('Data')][0]) )]",
           "caching": "[if(contains(parameters('Data'),'1'),1, parameters('Data').caching )]",
           "diskSizeGB": "[if(contains(parameters('Data'),'1'),1, int(parameters('Data').LUNS[copyIndex('Data')][1]) )]",
@@ -58,7 +58,7 @@
         "name": "Datass",
         "count": "[if(contains(parameters('Datass'),'1'),1,Length(parameters('Datass').LUNS))]",
         "input": {
-          // "name": "[if(contains(parameters('Datass'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-DATA' , padLeft( parameters('Datass').LUNS[copyIndex('Datass')][0],2,'0')) )]",
+          // "name": "[if(contains(parameters('Datass'),'1'),1, concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-DATA' , padLeft( parameters('Datass').LUNS[copyIndex('Datass')][0],2,'0')) )]",
           "lun": "[if(contains(parameters('Datass'),'1'),1, int(parameters('Datass').LUNS[copyIndex('Datass')][0]) )]",
           "caching": "[if(contains(parameters('Datass'),'1'),1, parameters('Datass').caching )]",
           "diskSizeGB": "[if(contains(parameters('Datass'),'1'),1, int(parameters('Datass').LUNS[copyIndex('Datass')][1]) )]",
@@ -70,7 +70,7 @@
         "name": "SOFS",
         "count": "[if(contains(parameters('SOFS'),'1'),1,Length(parameters('SOFS').LUNS))]",
         "input": {
-          "name": "[if(contains(parameters('SOFS'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-SOFS' , padLeft( parameters('SOFS').LUNS[copyIndex('SOFS')][0],2,'0')) )]",
+          "name": "[if(contains(parameters('SOFS'),'1'),1, concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-SOFS' , padLeft( parameters('SOFS').LUNS[copyIndex('SOFS')][0],2,'0')) )]",
           "lun": "[if(contains(parameters('SOFS'),'1'),1, int(parameters('SOFS').LUNS[copyIndex('SOFS')][0]) )]",
           "caching": "[if(contains(parameters('SOFS'),'1'),1, parameters('SOFS').caching )]",
           "diskSizeGB": "[if(contains(parameters('SOFS'),'1'),1, int(parameters('SOFS').LUNS[copyIndex('SOFS')][1]) )]",
@@ -82,7 +82,7 @@
         "name": "LOGS",
         "count": "[if(contains(parameters('LOGS'),'1'),1,Length(parameters('LOGS').LUNS))]",
         "input": {
-          "name": "[if(contains(parameters('LOGS'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-LOGS' , padLeft( parameters('LOGS').LUNS[copyIndex('LOGS')][0],2,'0')) )]",
+          "name": "[if(contains(parameters('LOGS'),'1'),1, concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-LOGS' , padLeft( parameters('LOGS').LUNS[copyIndex('LOGS')][0],2,'0')) )]",
           "lun": "[if(contains(parameters('LOGS'),'1'),1, int(parameters('LOGS').LUNS[copyIndex('LOGS')][0]) )]",
           "caching": "[if(contains(parameters('LOGS'),'1'),1, parameters('LOGS').caching )]",
           "diskSizeGB": "[if(contains(parameters('LOGS'),'1'),1, int(parameters('LOGS').LUNS[copyIndex('LOGS')][1]) )]",
@@ -94,7 +94,7 @@
         "name": "TEMPDB",
         "count": "[if(contains(parameters('TEMPDB'),'1'),1,Length(parameters('TEMPDB').LUNS))]",
         "input": {
-          "name": "[if(contains(parameters('TEMPDB'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-TEMPDB' , padLeft( parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0],2,'0')) )]",
+          "name": "[if(contains(parameters('TEMPDB'),'1'),1, concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-TEMPDB' , padLeft( parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0],2,'0')) )]",
           "lun": "[if(contains(parameters('TEMPDB'),'1'),1, int(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][0]) )]",
           "caching": "[if(contains(parameters('TEMPDB'),'1'),1, parameters('TEMPDB').caching )]",
           "diskSizeGB": "[if(contains(parameters('TEMPDB'),'1'),1, int(parameters('TEMPDB').LUNS[copyIndex('TEMPDB')][1]) )]",
@@ -106,7 +106,7 @@
         "name": "BACKUP",
         "count": "[if(contains(parameters('BACKUP'),'1'),1,Length(parameters('BACKUP').LUNS))]",
         "input": {
-          "name": "[if(contains(parameters('BACKUP'),'1'),1, concat(parameters('Deployment'),'-', parameters('VMName'),'-DATA-BACKUP' , padLeft( parameters('BACKUP').LUNS[copyIndex('BACKUP')][0],2,'0')) )]",
+          "name": "[if(contains(parameters('BACKUP'),'1'),1, concat(parameters('Deployment'),'-', parameters('Name'),'-DATA-BACKUP' , padLeft( parameters('BACKUP').LUNS[copyIndex('BACKUP')][0],2,'0')) )]",
           "lun": "[if(contains(parameters('BACKUP'),'1'),1, int(parameters('BACKUP').LUNS[copyIndex('BACKUP')][0]) )]",
           "caching": "[if(contains(parameters('BACKUP'),'1'),1, parameters('BACKUP').caching )]",
           "diskSizeGB": "[if(contains(parameters('BACKUP'),'1'),1, int(parameters('BACKUP').LUNS[copyIndex('BACKUP')][1]) )]",

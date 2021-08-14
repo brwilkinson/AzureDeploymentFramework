@@ -554,7 +554,7 @@
         ],
         "LBInfo": [
           {
-            "LBName": "CLS01",
+            "Name": "CLS01",
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
@@ -589,7 +589,7 @@
         "Appservers": {
           "SQLServers": [
             {
-              "VMName": "SQL01",
+              "Name": "SQL01",
               "OSType": "Server2016",
               "ASName": "CLS01",
               "Role": "SQL",
@@ -626,7 +626,7 @@
               }
             },
             {
-              "VMName": "SQL02",
+              "Name": "SQL02",
               "OSType": "Server2016",
               "CLNAME": "CLS01",
               "ASName": "CLS01",
@@ -664,7 +664,7 @@
           ],
           "InitialDOP": [
             {
-              "VMName": "JMP01",
+              "Name": "JMP01",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -684,7 +684,7 @@
               ]
             },
             {
-              "VMName": "JMP02",
+              "Name": "JMP02",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -706,7 +706,7 @@
           ],
           "AppServersLinux": [
             {
-              "VMName": "LIN01",
+              "Name": "LIN01",
               "Role": "LIN",
               "ASName": "LIN",
               "DDRole": "0GB",
@@ -724,7 +724,7 @@
               ]
             },
             {
-              "VMName": "LIN02",
+              "Name": "LIN02",
               "Role": "LIN",
               "ASName": "LIN",
               "DDRole": "0GB",

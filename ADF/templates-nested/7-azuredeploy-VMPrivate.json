@@ -78,7 +78,7 @@
   "resources": [
     
     {
-      "name": "[concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].VMName)]",
+      "name": "[concat('dp', variables('Deployment'), '-diskLookup', variables('AppServers')[copyIndex(0)].Name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-01-01",
       "dependsOn": [],
@@ -99,8 +99,8 @@
           "DeploymentID": {
             "value": "[parameters('DeploymentID')]"
           },
-          "VMName": {
-           "value" : "[variables('AppServers')[copyIndex(0)].VMName]"
+          "Name": {
+           "value" : "[variables('AppServers')[copyIndex(0)].Name]"
           },
           "DATA": {
             "value": "[if(contains(variables('DataDiskInfo')[variables('AppServers')[copyIndex(0)].DDRole],'DATA'),variables('DataDiskInfo')[variables('AppServers')[copyIndex(0)].DDRole].DATA,json('{\"1\":1}'))]"

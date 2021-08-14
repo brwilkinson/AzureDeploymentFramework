@@ -451,7 +451,7 @@
         "Appservers": {
           "ADPrimary": [
             {
-              "VMName": "DC01",
+              "Name": "DC01",
               "Role": "ADp",
               "ASName": "AD",
               "DDRole": "32GB",
@@ -469,7 +469,7 @@
           ],
           "ADSecondary": [
             {
-              "VMName": "DC02",
+              "Name": "DC02",
               "Role": "ADs",
               "ASName": "AD",
               "DDRole": "32GB",
@@ -486,7 +486,7 @@
           ],
           "InitialDOP": [
             {
-              "VMName": "JMP01",
+              "Name": "JMP01",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -505,7 +505,7 @@
           ],
           "VMFile2": [
             {
-              "VMName": "FIL01",
+              "Name": "FIL01",
               "Role": "FIL",
               "ASName": "FIL",
               "DDRole": "FIL64GB",
@@ -546,7 +546,7 @@
               }
             },
             {
-              "VMName": "FIL02",
+              "Name": "FIL02",
               "Role": "FIL",
               "ASName": "FIL",
               "DDRole": "FIL64GB",
@@ -564,7 +564,7 @@
           ],
           "VMFile": [
             {
-              "VMName": "DFS01",
+              "Name": "DFS01",
               "Role": "DFS",
               "ASName": "DFS",
               "DDRole": "FIL64GB",
@@ -606,7 +606,7 @@
               }
             },
             {
-              "VMName": "DFS02",
+              "Name": "DFS02",
               "Role": "DFS",
               "ASName": "DFS",
               "DDRole": "FIL64GB",
@@ -625,7 +625,7 @@
           ],
           "AppServersFoo": [
             {
-              "VMName": "JMP02",
+              "Name": "JMP02",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -641,7 +641,7 @@
               ]
             },
             {
-              "VMName": "JMP03",
+              "Name": "JMP03",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -659,7 +659,7 @@
           ],
           "SQLServers": [
             {
-              "VMName": "SQL01",
+              "Name": "SQL01",
               "OSType": "Server2016",
               "ASName": "CLS01",
               "Role": "SQL",
@@ -696,7 +696,7 @@
               }
             },
             {
-              "VMName": "SQL02",
+              "Name": "SQL02",
               "OSType": "Server2016",
               "CLNAME": "CLS01",
               "ASName": "CLS01",

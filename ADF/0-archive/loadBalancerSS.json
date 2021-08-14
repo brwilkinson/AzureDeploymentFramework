@@ -48,7 +48,7 @@
             "frontendPortRangeEnd": "[if(equals(parameters('NATPools')[0],1),1,parameters('NATPools')[copyIndex('NATPools')].frontendPortRangeEnd)]",
             "backendPort": "[if(equals(parameters('NATPools')[0],1),1,parameters('NATPools')[copyIndex('NATPools')].backendPort)]",
             "frontendIPConfiguration": {
-              "id": "[if(equals(parameters('NATPools')[0],1),1,concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/frontendIPConfigurations/',parameters('NATPools')[copyIndex('NATPools')].LBFEName))]"
+              "id": "[if(equals(parameters('NATPools')[0],1),1,concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/frontendIPConfigurations/',parameters('NATPools')[copyIndex('NATPools')].LBFEName))]"
             }
           }
         }
@@ -75,7 +75,7 @@
   },
   "resources": [
     {
-      "name": "[concat(parameters('Deployment'),'-lb',parameters('LB').LBName)]",
+      "name": "[concat(parameters('Deployment'),'-lb',parameters('LB').Name)]",
       "type": "Microsoft.Network/loadBalancers",
       "apiVersion": "2018-03-01",
       "location": "[resourceGroup().location]",
@@ -98,7 +98,7 @@
                 "privateIPAllocationMethod": "[if( equals(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurations')].Type,'Private'), 'Static',json('null'))]",
                 "privateIPAddress": "[if( equals(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurations')].Type,'Private'), concat(if(equals(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurations')].SNName,'MT02'),variables('networkIdUpper'),variables('networkId')),'.',parameters('LB').FrontEnd[copyIndex('frontendIPConfigurations')].LBFEIP),json('null'))]",
                 "subnet": "[if( equals(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurations')].Type,'Private'), json( concat('{\"id\":\"',concat(variables('VNetID'), '/subnets/sn', parameters('LB').FrontEnd[copyIndex('frontendIPConfigurations')].SNName) ,'\"}')), json('null'))]",
-                "publicIPAddress": "[if( equals(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurations')].Type,'Private'), json('null'), json( concat('{\"id\":\"',string(resourceid('Microsoft.Network/publicIPAddresses',concat(parameters('Deployment'),'-',parameters('LB').LBName,'-publicip', copyIndex('frontendIPConfigurations',1)))),'\"}')))]"
+                "publicIPAddress": "[if( equals(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurations')].Type,'Private'), json('null'), json( concat('{\"id\":\"',string(resourceid('Microsoft.Network/publicIPAddresses',concat(parameters('Deployment'),'-',parameters('LB').Name,'-publicip', copyIndex('frontendIPConfigurations',1)))),'\"}')))]"
               }
             }
           },
@@ -109,13 +109,13 @@
               "name": "[parameters('LB').Services[copyIndex('loadBalancingRules')].RuleName]",
               "properties": {
                 "frontendIPConfiguration": {
-                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/frontendIPConfigurations/',parameters('LB').Services[copyIndex('loadBalancingRules')].LBFEName)]"
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/frontendIPConfigurations/',parameters('LB').Services[copyIndex('loadBalancingRules')].LBFEName)]"
                 },
                 "backendAddressPool": {
-                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/backendAddressPools/',parameters('LB').ASName)]"
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/backendAddressPools/',parameters('LB').ASName)]"
                 },
                 "probe": {
-                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').LBName)),'/probes/',parameters('LB').Services[copyIndex('loadBalancingRules')].ProbeName)]"
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers/',concat(parameters('Deployment'),'-lb',parameters('LB').Name)),'/probes/',parameters('LB').Services[copyIndex('loadBalancingRules')].ProbeName)]"
                 },
                 "protocol": "[if(contains(parameters('LB').Services[copyIndex('loadBalancingRules')],'protocol'),parameters('LB').Services[copyIndex('loadBalancingRules')].Protocol ,'tcp')]",
                 "frontendPort": "[parameters('LB').Services[copyIndex('loadBalancingRules')].LBFEPort]",
@@ -144,7 +144,7 @@
           "type": "providers/diagnosticSettings",
           "name": "Microsoft.Insights/service",
           "dependsOn": [
-            "[concat(parameters('Deployment'),'-lb',parameters('LB').LBName)]"
+            "[concat(parameters('Deployment'),'-lb',parameters('LB').Name)]"
           ],
           "apiVersion": "2015-07-01",
           "properties": {

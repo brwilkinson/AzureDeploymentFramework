@@ -184,7 +184,7 @@
         "Appservers": {
           "AppServers": [ // testing for VM SS images and AA Stage Configuration
             {
-              "VMName": "API01",
+              "Name": "API01",
               "Role": "API",
               "ASName": "API",
               "DDRole": "64GB"

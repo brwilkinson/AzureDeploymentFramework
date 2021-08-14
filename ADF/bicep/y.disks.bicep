@@ -1,6 +1,6 @@
 param Deployment string
 param DeploymentID string
-param VMName string
+param Name string
 param DATA object = {
   '1': 1
 }
@@ -29,7 +29,7 @@ param Global object
 
 
 var Data_var = [for i in range(0, (contains(DATA, '1') ? 1 : length(DATA.LUNS))): {
-  name: (contains(DATA, '1') ? 1 : '${Deployment}-${VMName}-DATA-DATA${padLeft(DATA.LUNS[i][0], 2, '0')}')
+  name: (contains(DATA, '1') ? 1 : '${Deployment}-${Name}-DATA-DATA${padLeft(DATA.LUNS[i][0], 2, '0')}')
   lun: (contains(DATA, '1') ? 1 : int(DATA.LUNS[i][0]))
   caching: (contains(DATA, '1') ? 1 : DATA.caching)
   diskSizeGB: (contains(DATA, '1') ? 1 : int(DATA.LUNS[i][1]))
@@ -44,7 +44,7 @@ var Datass_var = [for i in range(0, (contains(DATASS, '1') ? 1 : length(DATASS.L
   managedDisk: (contains(DATASS, '1') ? 1 : (contains(DATASS, 'saType') ? json('{"storageAccountType":"${DATASS.saType}"}') : json('null')))
 }]
 var SOFS_var = [for i in range(0, (contains(SOFS, '1') ? 1 : length(SOFS.LUNS))): {
-  name: (contains(SOFS, '1') ? 1 : '${Deployment}-${VMName}-DATA-SOFS${padLeft(SOFS.LUNS[i][0], 2, '0')}')
+  name: (contains(SOFS, '1') ? 1 : '${Deployment}-${Name}-DATA-SOFS${padLeft(SOFS.LUNS[i][0], 2, '0')}')
   lun: (contains(SOFS, '1') ? 1 : int(SOFS.LUNS[i][0]))
   caching: (contains(SOFS, '1') ? 1 : SOFS.caching)
   diskSizeGB: (contains(SOFS, '1') ? 1 : int(SOFS.LUNS[i][1]))
@@ -52,7 +52,7 @@ var SOFS_var = [for i in range(0, (contains(SOFS, '1') ? 1 : length(SOFS.LUNS)))
   managedDisk: (contains(SOFS, '1') ? 1 : (contains(SOFS, 'saType') ? json('{"storageAccountType":"${SOFS.saType}"}') : json('null')))
 }]
 var LOGS_var = [for i in range(0, (contains(LOGS, '1') ? 1 : length(LOGS.LUNS))): {
-  name: (contains(LOGS, '1') ? 1 : '${Deployment}-${VMName}-DATA-LOGS${padLeft(LOGS.LUNS[i][0], 2, '0')}')
+  name: (contains(LOGS, '1') ? 1 : '${Deployment}-${Name}-DATA-LOGS${padLeft(LOGS.LUNS[i][0], 2, '0')}')
   lun: (contains(LOGS, '1') ? 1 : int(LOGS.LUNS[i][0]))
   caching: (contains(LOGS, '1') ? 1 : LOGS.caching)
   diskSizeGB: (contains(LOGS, '1') ? 1 : int(LOGS.LUNS[i][1]))
@@ -60,7 +60,7 @@ var LOGS_var = [for i in range(0, (contains(LOGS, '1') ? 1 : length(LOGS.LUNS)))
   managedDisk: (contains(LOGS, '1') ? 1 : (contains(LOGS, 'saType') ? json('{"storageAccountType":"${LOGS.saType}"}') : json('null')))
 }]
 var TEMPDB_var = [for i in range(0, (contains(TEMPDB, '1') ? 1 : length(TEMPDB.LUNS))): {
-  name: (contains(TEMPDB, '1') ? 1 : '${Deployment}-${VMName}-DATA-TEMPDB${padLeft(TEMPDB.LUNS[i][0], 2, '0')}')
+  name: (contains(TEMPDB, '1') ? 1 : '${Deployment}-${Name}-DATA-TEMPDB${padLeft(TEMPDB.LUNS[i][0], 2, '0')}')
   lun: (contains(TEMPDB, '1') ? 1 : int(TEMPDB.LUNS[i][0]))
   caching: (contains(TEMPDB, '1') ? 1 : TEMPDB.caching)
   diskSizeGB: (contains(TEMPDB, '1') ? 1 : int(TEMPDB.LUNS[i][1]))
@@ -68,7 +68,7 @@ var TEMPDB_var = [for i in range(0, (contains(TEMPDB, '1') ? 1 : length(TEMPDB.L
   managedDisk: (contains(TEMPDB, '1') ? 1 : (contains(TEMPDB, 'saType') ? json('{"storageAccountType":"${TEMPDB.saType}"}') : json('null')))
 }]
 var BACKUP_var = [for i in range(0, (contains(BACKUP, '1') ? 1 : length(BACKUP.LUNS))): {
-  name: (contains(BACKUP, '1') ? 1 : '${Deployment}-${VMName}-DATA-BACKUP${padLeft(BACKUP.LUNS[i][0], 2, '0')}')
+  name: (contains(BACKUP, '1') ? 1 : '${Deployment}-${Name}-DATA-BACKUP${padLeft(BACKUP.LUNS[i][0], 2, '0')}')
   lun: (contains(BACKUP, '1') ? 1 : int(BACKUP.LUNS[i][0]))
   caching: (contains(BACKUP, '1') ? 1 : BACKUP.caching)
   diskSizeGB: (contains(BACKUP, '1') ? 1 : int(BACKUP.LUNS[i][1]))

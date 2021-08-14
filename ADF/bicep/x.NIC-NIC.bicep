@@ -18,14 +18,14 @@ var loadBalancerInboundNatRules = [for i in range(0, (contains(NIC, 'NATRules') 
 
 resource NIC1 'Microsoft.Network/networkInterfaces@2021-02-01' = if (!(contains(NIC, 'LB') || (contains(NIC, 'PLB') || (contains(NIC, 'SLB') || contains(NIC, 'ISLB'))))) {
   location: resourceGroup().location
-  name: '${Deployment}-nic${((NICNumber == '1') ? '' : NICNumber)}${VM.VMName}'
+  name: '${Deployment}-nic${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
   properties: {
     enableAcceleratedNetworking: contains(NIC, 'FastNic') ? true : false
     ipConfigurations: [
       {
         name: 'ipconfig1'
         properties: {
-          publicIPAddress: (contains(NIC, 'PublicIP') ? json('{"id":"${string(resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-${VM.VMName}-publicip${NICNumber}'))}"}') : json('null'))
+          publicIPAddress: (contains(NIC, 'PublicIP') ? json('{"id":"${string(resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-vm${VM.Name}-publicip${NICNumber}'))}"}') : json('null'))
           privateIPAllocationMethod: (contains(NIC, 'StaticIP') ? 'Static' : 'Dynamic')
           privateIPAddress: (contains(NIC, 'StaticIP') ? '${((NIC.Subnet == 'MT02') ? networkIdUpper : networkId)}.${NIC.StaticIP}' : json('null'))
           subnet: {
@@ -57,7 +57,7 @@ resource NIC1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = i
 
 resource NICPLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'PLB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicplb${((NICNumber == '1') ? '' : NICNumber)}${VM.VMName}'
+  name: '${Deployment}-nicplb${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
   properties: {
     enableAcceleratedNetworking: contains(NIC, 'FastNic') ? true : false
     ipConfigurations: [
@@ -101,7 +101,7 @@ resource NICPLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =
 
 resource NICLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'LB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicLB${((NICNumber == '1') ? '' : NICNumber)}${VM.VMName}'
+  name: '${Deployment}-nicLB${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
   properties: {
     enableAcceleratedNetworking: contains(NIC, 'FastNic') ? true : false
     ipConfigurations: [
@@ -144,7 +144,7 @@ resource NICLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = 
 
 resource NICSLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'SLB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicSLB${((NICNumber == '1') ? '' : NICNumber)}${VM.VMName}'
+  name: '${Deployment}-nicSLB${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
   tags: {
     displayName: 'vmAZX10X_slbNIC'
   }
@@ -193,7 +193,7 @@ resource NICSLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =
 
 resource NICISLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'ISLB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicISLB${((NICNumber == '1') ? '' : NICNumber)}${VM.VMName}'
+  name: '${Deployment}-nicISLB${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
   tags: {
     displayName: 'vmAZX10X_islbNIC'
   }

@@ -686,7 +686,7 @@
         "Appservers": {
           "AppServers": [
             {
-              "VMName": "JMP02",
+              "Name": "JMP02",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -707,7 +707,7 @@
           ],
           "AppServersLinux": [
             {
-              "VMName": "LIN01",
+              "Name": "LIN01",
               "Role": "LIN",
               "ASName": "LIN",
               "DDRole": "64GB",
@@ -726,7 +726,7 @@
         },
         "LBInfo": [
           {
-            "LBName": "PLB01",
+            "Name": "PLB01",
             "Zone": 1,
             "ASName": "PLB01",
             "Sku": "Standard",
@@ -796,7 +796,7 @@
             ]
           },
           {
-            "LBName": "API",
+            "Name": "API",
             "ASName": "API",
             "Sku": "Standard",
             "Type": "Private",
@@ -859,7 +859,7 @@
         ],
         "AppServersVMSS": [
           {
-            "VMName": "API",
+            "Name": "API",
             "AutoScale": true,
             "PredictiveScale": "Enabled",
             "saname": "data",
@@ -896,7 +896,7 @@
             }
           },
           {
-            "VMName": "API01",
+            "Name": "API01",
             "AutoScale": true,
             "PredictiveScale": "Enabled",
             "saname": "data",
@@ -933,7 +933,7 @@
             }
           },
           {
-            "VMName": "API02",
+            "Name": "API02",
             "AutoScale": true,
             "PredictiveScale": "Enabled",
             "saname": "data",
@@ -970,7 +970,7 @@
             }
           },
           {
-            "VMName": "API03",
+            "Name": "API03",
             "AutoScale": true,
             "PredictiveScale": "Enabled",
             "saname": "data",
