@@ -1,9 +1,9 @@
-trigger: #none 
-  batch: 'true'
-  branches:
-    include: [ dev ]
-  tags:
-    exclude: [ NoBuild ]
+trigger: none 
+  # batch: 'true'
+  # branches:
+  #   include: [ dev ]
+  # tags:
+  #   exclude: [ NoBuild ]
 
 variables:
   ORG:        BRW
