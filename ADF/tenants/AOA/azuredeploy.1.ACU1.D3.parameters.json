@@ -66,11 +66,11 @@
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "ILB": 0, //
+        "ILB": 1, //
         "InitialDOP": 0,
-        "VMApp": 0, //
+        "VMApp": 1, //
         "VMAppLinux": 0,
-        "VMSQL": 0,  //
+        "VMSQL": 1,  //
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 0,
@@ -339,14 +339,14 @@
           //   "NSG": 1,
           //   "Route": 1,
           //   "FlowLogEnabled": true,
-          //   "FlowAnalyticsEnabled": true,
-          //   "delegations": "Microsoft.ContainerInstance/containerGroups"
+          //   "FlowAnalyticsEnabled": true
+          //   // "delegations": "Microsoft.ContainerInstance/containerGroups"
           // },
           {
             "name": "snBE01",
             "prefix": "80/28",
             "NSG": 1,
-            "Route": 1,
+            "Route": 0, // 1
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
@@ -452,7 +452,7 @@
         "Appservers": {
           "AppServers": [
             {
-              "VMName": "JMP01",
+              "Name": "JMP01",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -473,7 +473,7 @@
           ],
           "SQLServers": [
             {
-              "VMName": "SQL01",
+              "Name": "SQL01",
               "OSType": "Server2019",
               "ASName": "CLS01",
               "Role": "SQL",
@@ -510,7 +510,7 @@
               }
             },
             {
-              "VMName": "SQL02",
+              "Name": "SQL02",
               "OSType": "Server2019",
               "CLNAME": "CLS01",
               "ASName": "CLS01",
@@ -549,7 +549,7 @@
         },
         "LBInfo": [
           {
-            "LBName": "CLS01",
+            "Name": "CLS01",
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",

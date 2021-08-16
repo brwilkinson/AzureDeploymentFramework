@@ -284,7 +284,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (v
           storageAccountType: storageAccountType
         }
       }
-      dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${vm.Name}'), '2018-05-01').outputs.DATADisks.value
+      dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-VM-diskLookup${vm.Name}'), '2018-05-01').outputs.DATADisks.value
     }
     networkProfile: {
       networkInterfaces: [for (nic, index) in vm.NICs: {
@@ -722,4 +722,4 @@ output foo2 string = subscription().id
 output foo3 string = resourceGroup().name
 output foo4 string = resourceGroup().id
 output foo6 array = VM
-output Disks object = reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${AppServers[0].Name}'), '2018-05-01').outputs.dataDisks
+output Disks object = reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-VM-diskLookup${AppServers[0].Name}'), '2018-05-01').outputs.dataDisks
