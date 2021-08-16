@@ -66,11 +66,11 @@
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "ILB": 1,
+        "ILB": 0, //
         "InitialDOP": 0,
-        "VMApp": 1,
+        "VMApp": 0, //
         "VMAppLinux": 0,
-        "VMSQL": 1,
+        "VMSQL": 0,  //
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 0,

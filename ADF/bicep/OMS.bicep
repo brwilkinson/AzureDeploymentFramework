@@ -994,6 +994,7 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
     }
 }
 
+/*
 resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
     parent: AA
     name: 'Update-Twice-Weekly-Linux'
@@ -1038,6 +1039,7 @@ resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpda
         }
     }
 }
+*/
 
 resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (Extensions.VMInsights == 1) {
     name: '${DeploymentURI}VMInsights'
