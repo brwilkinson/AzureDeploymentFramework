@@ -111,7 +111,20 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
     httpsOnly: true
     serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
     siteConfig: {
+      // https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
       appSettings: union(myAppConfig,[
+        {
+          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value}'
+        }
+        {
+          name: 'WEBSITE_CONTENTSHARE'
+          value: toLower('${Deployment}-fn${ws.Name}')
+        }
+        {
+          name: 'WEBSITE_CONTENTOVERVNET'
+          value: 1
+        }
         {
           name: 'AzureWebJobsStorage'
           value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value}'

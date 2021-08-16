@@ -74,7 +74,7 @@
         "VMFILE": 0,
         "VMSS": 1,
         "WAFPOLICY": 1,
-        "FRONTDOOR": 0,
+        "FRONTDOOR": 1,
         "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
@@ -246,7 +246,7 @@
         ],
         "SPInfo": [
           {
-            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "Name": "GH_{GHProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "ACRPush"
@@ -257,7 +257,7 @@
             ]
           },
           {
-            "Name": "GH_{GHProject}_{RGNAME}",
+            "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -391,7 +391,17 @@
             "softDeletePolicy": {
               "enabled": 1,
               "days": 7
-            }
+            },
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              },
+              {
+                "Subnet": "snMT02",
+                "groupID": "file"
+              }
+            ]
           },
           {
             "namesuffix": "data",
@@ -464,7 +474,7 @@
             "name": "01",
             "dnsName": "API",
             "apimSku": "Developer",
-            "snName": "BE01",
+            "snName": "snBE01",
             "virtualNetworkType": "Internal",
             "certName": "PSTHING-WildCard",
             "frontDoor": "01"
@@ -605,7 +615,7 @@
           "publicNetworkAccess": "Enabled",
           "PrivateLinkInfo": [
             {
-              "Subnet": "snBE01",
+              "Subnet": "snMT01",
               "groupID": "configurationStores"
             }
           ]
@@ -671,7 +681,7 @@
             "enableAutomaticFailover": true,
             "PrivateLinkInfo": [
               {
-                "Subnet": "snBE01",
+                "Subnet": "snMT02",
                 "groupID": "SQL"
               }
             ],

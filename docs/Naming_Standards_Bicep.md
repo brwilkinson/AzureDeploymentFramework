@@ -17,7 +17,7 @@
 - Currently ALL Bicep files are in the same directory e.g. [bicep](https://github.com/brwilkinson/AzureDeploymentFramework/tree/main/ADF/bicep)
 - Files that begin with 'sub' E.g. sub-XYX.bicep should be deployed into the Subscription Scope.
 - There are some Parent Deployments, one for Subscription Scope and one for the Resource Group Scope.
-    - 00-dp-sub-InitialRG.bicep
+    - 00-ALL-SUB.bicep
     - 01-dp-rg-ALL.bicep
 - The above files will orchestrate full deployments, since they only call child Bicep Modules. These are what you call in your pipelines.
 - Each resource type has a main file to deploy that resource and associated capabilities e.g. storage is SA.bicep

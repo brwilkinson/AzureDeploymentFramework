@@ -6,7 +6,12 @@
     "dockerfile": "Dockerfile",
     // Update 'VARIANT' to pick an Ubuntu version: focal, bionic
     "args": {
-      "VARIANT": "focal"
+      "VARIANT": "5.0",
+      // Options
+      "INSTALL_NODE": "true",
+      "NODE_VERSION": "lts/*",
+      "INSTALL_AZURE_CLI": "true",
+      "INSTALL_AZURE_POWERSHELL": "true"
     }
   },
   // Set *default* container specific settings.json values on container create.
@@ -19,14 +24,13 @@
       "editor.snippetSuggestions": "inline"
     },
     "terminal.integrated.profiles.linux": {
-        "pwsh": {
-            "path": "/usr/bin/pwsh",
-            "icon": "terminal-powershell"
-        }
+      "pwsh": {
+        "path": "/usr/bin/pwsh",
+        "icon": "terminal-powershell"
+      }
     },
     "files.defaultLanguage": "powershell",
     "terminal.integrated.defaultProfile.linux": "pwsh"
-    // "terminal.integrated.shell.linux": "/usr/bin/pwsh"
   },
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [

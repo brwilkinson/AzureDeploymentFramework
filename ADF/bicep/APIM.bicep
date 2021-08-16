@@ -59,7 +59,7 @@ var APIMInfo = contains(DeploymentInfo, 'APIMInfo') ? DeploymentInfo.APIMInfo : 
 var APIMs = [for (apim, index) in APIMInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, apim.name))
   virtualNetworkConfiguration: {
-    subnetResourceId: '${VnetID}/subnets/sn${apim.snName}'
+    subnetResourceId: '${VnetID}/subnets/${apim.snName}'
   }
 }]
 
@@ -118,7 +118,7 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = [for (apim,
     // managementApiUrl: toLower('https://${Deployment}-apim${apim.Name}.management.azure-api.net')
     // scmUrl: toLower('https://${Deployment}-apim${apim.Name}.scm.azure-api.net')
     customProperties: {
-      subnetAddress: reference('${VnetID}/subnets/sn${apim.snName}', '2015-06-15').addressprefix
+      subnetAddress: reference('${VnetID}/subnets/${apim.snName}', '2015-06-15').addressprefix
     }
     virtualNetworkType: apim.VirtualNetworkType
     virtualNetworkConfiguration: ((apim.VirtualNetworkType == 'None') ? json('null') : APIMs[index].virtualNetworkConfiguration)

@@ -1,16 +1,16 @@
-trigger: none 
-  # batch: 'true'
-  # branches:
-  #   include: [ dev ]
-  # tags:
-  #   exclude: [ NoBuild ]
+trigger: #none
+  batch: 'true'
+  branches:
+    include: [ dev ]
+  tags:
+    exclude: [ NoBuild ]
 
 variables:
   ORG:        BRW
   APP :       AOA
   
   PREFIX:     ACU1
-  ENV:        T5
+  ENV:        D3
   
   ADOProject: ADO_ADF
 
