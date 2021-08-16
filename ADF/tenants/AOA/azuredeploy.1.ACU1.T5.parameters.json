@@ -391,7 +391,17 @@
             "softDeletePolicy": {
               "enabled": 1,
               "days": 7
-            }
+            },
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              },
+              {
+                "Subnet": "snMT02",
+                "groupID": "file"
+              }
+            ]
           },
           {
             "namesuffix": "data",

@@ -389,6 +389,11 @@
           },
           {
             "linkDNS": 1,
+            "zone": "privatelink.file.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
             "zone": "privatelink.blob.core.windows.net",
             "Autoregistration": false
           },

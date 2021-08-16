@@ -44,8 +44,8 @@ set-location -path ADF:\
 # Deploy Environment
 
 # Global  sub deploy for $env:Enviro
-AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-dp-sub-InitialRG.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 1
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-dp-sub-InitialRG.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 2
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 1
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 2
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\sub-RBAC.bicep -SubscriptionDeploy
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-mg-ManagementGroups.json   #todo
@@ -53,8 +53,8 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-mg-Managem
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-Test2.json
 
 # $env:Enviro RG deploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-dp-rg-ALLRG.bicep      #<-- Deploys from Pipelines Region 1
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\01-dp-rg-ALLRG.bicep      #<-- Deploys from Pipelines Region 2
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep      #<-- Deploys from Pipelines Region 1
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\01-ALL-RG.bicep      #<-- Deploys from Pipelines Region 2
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\NSG.hub.bicep
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\NSG.hub.bicep

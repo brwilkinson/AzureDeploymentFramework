@@ -356,5 +356,8 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, '
     resourceName: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
     Nics: contains(storageInfo, 'privatelinkinfo') && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
   }
+  dependsOn: [
+    vnetPrivateLink
+  ]
 }
 
