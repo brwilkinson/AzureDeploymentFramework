@@ -197,7 +197,7 @@ Go Home [Documentation Home](./ARM.md)
                         "Tenant": "HUB"
                       },
                       {
-                        "Name": "Log Analytics Contributor",
+                        "Name": "Automation_Account_Contributor",
                         "RG": "P0",
                         "Tenant": "HUB"
                       },

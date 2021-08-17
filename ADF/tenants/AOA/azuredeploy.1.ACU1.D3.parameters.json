@@ -284,7 +284,7 @@
                 "Tenant": "AOA"
               },
               {
-                "Name": "Log Analytics Contributor",
+                "Name": "Automation_Account_Contributor",
                 "RG": "P0",
                 "Tenant": "AOA"
               },
