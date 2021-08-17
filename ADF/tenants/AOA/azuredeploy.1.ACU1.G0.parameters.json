@@ -160,7 +160,6 @@
                   "Microsoft.Support/*"
                 ],
                 "notActions": []
-
           },
           {
             "RoleName": "Key_Vault_Reader",
