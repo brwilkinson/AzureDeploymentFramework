@@ -1051,7 +1051,7 @@ Configuration SQLServers
                         if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
                         Import-Module -Name SQLServer -Verbose:$False
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
                             Where-Object name -match $using:primary | Select-Object *
                         if ($result)
                         {
@@ -1067,7 +1067,7 @@ Configuration SQLServers
                         if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
                         Import-Module SQLServer -Force -Verbose:$False
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
                             Where-Object name -match $using:primary | Select-Object *
 
                         Write-Warning "PATH: $($result.pspath)"
@@ -1079,7 +1079,7 @@ Configuration SQLServers
 
                         Import-Module -Name SQLServer -Force -Verbose:$False
 
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
                             Where-Object name -match $using:primary | Select-Object *
                     
                         Write-Warning "PATH: $($result.pspath)"
@@ -1139,7 +1139,8 @@ Configuration SQLServers
                         $nn = Add-ClusterResource -ResourceType 'Network Name' -Name $AOName -Group $GroupName -ErrorAction SilentlyContinue
                         $ip = Add-ClusterResource -ResourceType 'IP Address' -Name $IPResourceName -Group $GroupName -ErrorAction SilentlyContinue
                         Set-ClusterResourceDependency -Resource $AOName -Dependency "[$IPResourceName]"
-                        Get-ClusterResource -Name $IPResourceName | Set-ClusterParameter -Multiple @{Address = $AOIP; ProbePort = $ProbePort; SubnetMask = '255.255.255.255'; Network = $ClusterNetworkName; EnableDhcp = 0 }
+                        Get-ClusterResource -Name $IPResourceName | 
+                            Set-ClusterParameter -Multiple @{Address = $AOIP; ProbePort = $ProbePort; SubnetMask = '255.255.255.255'; Network = $ClusterNetworkName; EnableDhcp = 0 }
                         Get-ClusterResource -Name $AOName | Set-ClusterParameter -Multiple @{'Name' = "$AOName" }
                         Get-ClusterResource -Name $AOName | Start-ClusterResource -Wait 20
                         Get-ClusterResource -Name $IPResourceName | Start-ClusterResource -Wait 20
@@ -1214,8 +1215,8 @@ Configuration SQLServers
                         if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
                         Import-Module -Name SQLServer -Verbose:$False
-                        
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 | 
+
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
                             Where-Object name -match $using:secondary | Select-Object *
                         Write-Warning "PATH: $($result.pspath)"
                         if ($result)
@@ -1237,7 +1238,7 @@ Configuration SQLServers
                         Write-Warning "PATH: $p1"
                         Grant-SqlAvailabilityGroupCreateAnyDatabase -Path $p1
 
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 | 
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
                             Where-Object name -match $using:secondary | Select-Object *
                         Write-Warning "PATH: $($result.pspath)"
                     
@@ -1249,7 +1250,8 @@ Configuration SQLServers
 
                         Import-Module -Name SQLServer -Force -Verbose:$False
 
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | Where-Object name -match $using:secondary | ForEach-Object SeedingMode
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
+                            Where-Object name -match $using:secondary | ForEach-Object SeedingMode
                         Write-Warning "PATH: $($result.pspath)"
                         
                         if ($result -eq 'Automatic')
