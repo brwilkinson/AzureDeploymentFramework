@@ -476,7 +476,7 @@ Configuration SQLServers
                 SQLUserDBDir         = 'F:\MSSQL\Data'
                 SQLUserDBLogDir      = 'G:\MSSQL\Logs'
                 SQLTempDBDir         = 'H:\MSSQL\Data'
-                SQLTempDBLogDir      = 'H:\MSSQL\Temp' 
+                SQLTempDBLogDir      = 'H:\MSSQL\Temp'
                 SQLBackupDir         = 'I:\MSSQL\Backup'
                 DependsOn            = $dependsonUser
                 UpdateEnabled        = 'true'
@@ -970,7 +970,7 @@ Configuration SQLServers
 
             $AOIP = $NetworkID + $aoinfo.aoip  #'10.144.139.219'
             $ProbePort = $aoinfo.ProbePort          #"59999"
-            $AOName = ('az' + $app + $environment + $GroupName)  
+            $AOName = ($Prefix + $app + $environment + $GroupName)
 
             SqlEndpoint SQLEndPoint
             {
@@ -1052,7 +1052,7 @@ Configuration SQLServers
 
                         Import-Module -Name SQLServer -Verbose:$False
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
-                            Where-Object name -EQ $using:primary\$SQLInstanceName | Select-Object *
+                            Where-Object name -match $using:primary | Select-Object *
                         if ($result)
                         {
                             @{key = $result }
@@ -1068,19 +1068,19 @@ Configuration SQLServers
 
                         Import-Module SQLServer -Force -Verbose:$False
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
-                            Where-Object name -EQ $using:primary\$SQLInstanceName | Select-Object *
+                            Where-Object name -match $using:primary | Select-Object *
 
                         Write-Warning "PATH: $($result.pspath)"
                         Set-SqlAvailabilityReplica -SeedingMode 'Automatic' -Path $result.pspath -Verbose
                     }
                     TestScript           = {
                         $SQLInstanceName = $Using:SQLInstanceName
-                        if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }                    
-					
+                        if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
+
                         Import-Module -Name SQLServer -Force -Verbose:$False
 
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | 
-                            Where-Object name -EQ $using:primary\$SQLInstanceName | Select-Object *
+                            Where-Object name -match $using:primary | Select-Object *
                     
                         Write-Warning "PATH: $($result.pspath)"
                         $result1 = Get-Item -Path $result.pspath -ea silentlycontinue | ForEach-Object SeedingMode
@@ -1205,7 +1205,7 @@ Configuration SQLServers
                     EndpointHostName              = ($computername + ".$DomainName")
                 }
             
-                script ('SeedingMode_' + 'az' + $app + $environment + $aoinfo.GroupName)
+                script ('SeedingMode_' + $prefix + $app + $environment + $aoinfo.GroupName)
                 {
                     DependsOn            = ('[SqlAGReplica]' + $groupname + 'AddReplica')
                     PsDscRunAsCredential = $credlookup['DomainJoin']
@@ -1214,8 +1214,9 @@ Configuration SQLServers
                         if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
                         Import-Module -Name SQLServer -Verbose:$False
-                        #$result = get-item -Path      "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary\$SQLInstanceName" -ea silentlycontinue | select *
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | Where-Object name -EQ $using:secondary\$SQLInstanceName | Select-Object *
+                        
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 | 
+                            Where-Object name -match $using:secondary | Select-Object *
                         Write-Warning "PATH: $($result.pspath)"
                         if ($result)
                         {
@@ -1231,34 +1232,26 @@ Configuration SQLServers
                         if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
                         Import-Module SQLServer -Force -Verbose:$False
-                        #Get-PSProvider -Verbose
-                        #get-psdrive -Verbose
 
                         $p1 = "SQLSERVER:\SQL\$using:secondary\$SQLInstanceName\AvailabilityGroups\$using:groupname"
                         Write-Warning "PATH: $p1"
                         Grant-SqlAvailabilityGroupCreateAnyDatabase -Path $p1
 
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | Where-Object name -EQ $using:secondary\$SQLInstanceName | Select-Object *
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 | 
+                            Where-Object name -match $using:secondary | Select-Object *
                         Write-Warning "PATH: $($result.pspath)"
-
-                        # $p = "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary\$SQLInstanceName"
-                        # write-warning "PATH: $p"
                     
                         Set-SqlAvailabilityReplica -SeedingMode 'Automatic' -Path $result.pspath -Verbose
-                                                                                
-                        #Set-SqlAvailabilityReplica -SeedingMode Automatic -Path "SQLSERVER:\SQL\$env:computername\DEFAULT\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary" 
                     }
                     TestScript           = {
                         $SQLInstanceName = $Using:SQLInstanceName
                         if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
 
                         Import-Module -Name SQLServer -Force -Verbose:$False
-                        #$p = "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary\$SQLInstanceName"
-                        #write-warning "PATH: $p"
-                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | Where-Object name -EQ $using:secondary\$SQLInstanceName | ForEach-Object SeedingMode
+
+                        $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea silentlycontinue | Where-Object name -match $using:secondary | ForEach-Object SeedingMode
                         Write-Warning "PATH: $($result.pspath)"
-                        #$result1 = get-item -Path $p -ea silentlycontinue | foreach SeedingMode
-                        #$result2 = get-item -Path "SQLSERVER:\SQL\$env:computername\DEFAULT\AvailabilityGroups\$using:groupname\AvailabilityReplicas\$using:secondary" -ea silentlycontinue | foreach SeedingMode
+                        
                         if ($result -eq 'Automatic')
                         {
                             $true
