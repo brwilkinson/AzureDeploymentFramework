@@ -1,8 +1,8 @@
 
 # Zip up all files
-break
-[string] $ArtifactStagingDirectory = 'D:\repos\ADF\ADF'
-[string] $DSCSourceFolder = $ArtifactStagingDirectory + '\ext-DSC'
+# break
+[string] $Artifacts = Get-Item -Path $PSScriptRoot\..
+[string] $DSCSourceFolder = $Artifacts + '\ext-DSC'
 
 if (Test-Path $DSCSourceFolder)
 {
