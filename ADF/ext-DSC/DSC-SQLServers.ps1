@@ -1173,11 +1173,12 @@ Configuration SQLServers
             
                 SqlWaitForAG $GroupName
                 {
-                    Name             = $groupname
-                    InstanceName     = $SQLInstanceName
-                    ServerName       = $primary
-                    RetryIntervalSec = 30
-                    RetryCount       = 40
+                    Name                 = $groupname
+                    InstanceName         = $SQLInstanceName
+                    ServerName           = $primary
+                    RetryIntervalSec     = 30
+                    RetryCount           = 40
+                    PsDscRunAsCredential = $credlookup['DomainJoin']
                 }
                 $dependsonwaitAG += @("[SqlWaitForAG]$groupname")
                 
