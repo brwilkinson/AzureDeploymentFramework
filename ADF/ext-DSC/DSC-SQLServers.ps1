@@ -1052,7 +1052,7 @@ Configuration SQLServers
 
                         Import-Module -Name SQLServer -Verbose:$False
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
-                            Where-Object name -match $using:primary | Select-Object *
+                            Where-Object name -Match $using:primary | Select-Object *
                         if ($result)
                         {
                             @{key = $result }
@@ -1068,7 +1068,7 @@ Configuration SQLServers
 
                         Import-Module SQLServer -Force -Verbose:$False
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
-                            Where-Object name -match $using:primary | Select-Object *
+                            Where-Object name -Match $using:primary | Select-Object *
 
                         Write-Warning "PATH: $($result.pspath)"
                         Set-SqlAvailabilityReplica -SeedingMode 'Automatic' -Path $result.pspath -Verbose
@@ -1080,7 +1080,7 @@ Configuration SQLServers
                         Import-Module -Name SQLServer -Force -Verbose:$False
 
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
-                            Where-Object name -match $using:primary | Select-Object *
+                            Where-Object name -Match $using:primary | Select-Object *
                     
                         Write-Warning "PATH: $($result.pspath)"
                         $result1 = Get-Item -Path $result.pspath -ea silentlycontinue | ForEach-Object SeedingMode
@@ -1175,18 +1175,20 @@ Configuration SQLServers
                 {
                     Name             = $groupname
                     InstanceName     = $SQLInstanceName
+                    ServerName       = $primary
                     RetryIntervalSec = 30
                     RetryCount       = 40
                 }
                 $dependsonwaitAG += @("[SqlWaitForAG]$groupname")
-    
-                WaitForAll $GroupName
-                {
-                    NodeName         = $primary
-                    ResourceName     = "[SqlAG]$($GroupName)"
-                    RetryCount       = $RetryCount
-                    RetryIntervalSec = $RetryIntervalSec
-                }
+                
+                # comment out for now, above wait should be fine
+                # WaitForAll $GroupName
+                # {
+                #     NodeName         = $primary
+                #     ResourceName     = "[SqlAG]$($GroupName)"
+                #     RetryCount       = $RetryCount
+                #     RetryIntervalSec = $RetryIntervalSec
+                # }
     
                 SqlAGReplica ($groupname + 'AddReplica')
                 {
@@ -1217,7 +1219,7 @@ Configuration SQLServers
                         Import-Module -Name SQLServer -Verbose:$False
 
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
-                            Where-Object name -match $using:secondary | Select-Object *
+                            Where-Object name -Match $using:secondary | Select-Object *
                         Write-Warning "PATH: $($result.pspath)"
                         if ($result)
                         {
@@ -1239,7 +1241,7 @@ Configuration SQLServers
                         Grant-SqlAvailabilityGroupCreateAnyDatabase -Path $p1
 
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
-                            Where-Object name -match $using:secondary | Select-Object *
+                            Where-Object name -Match $using:secondary | Select-Object *
                         Write-Warning "PATH: $($result.pspath)"
                     
                         Set-SqlAvailabilityReplica -SeedingMode 'Automatic' -Path $result.pspath -Verbose
@@ -1251,7 +1253,7 @@ Configuration SQLServers
                         Import-Module -Name SQLServer -Force -Verbose:$False
 
                         $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:primary\$SQLInstanceName\AvailabilityGroups\$using:groupname\AvailabilityReplicas\" -ea 0 |
-                            Where-Object name -match $using:secondary | ForEach-Object SeedingMode
+                            Where-Object name -Match $using:secondary | ForEach-Object SeedingMode
                         Write-Warning "PATH: $($result.pspath)"
                         
                         if ($result -eq 'Automatic')
