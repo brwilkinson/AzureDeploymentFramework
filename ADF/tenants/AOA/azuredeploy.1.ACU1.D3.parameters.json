@@ -458,7 +458,6 @@
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
-              "_HotPatch": true,
               "Zone": 1,
               "NICs": [
                 {
