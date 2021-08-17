@@ -1192,7 +1192,7 @@ Configuration SQLServers
                 {
                     PsDscRunAsCredential          = $credlookup['DomainJoin']
                     Ensure                        = 'Present'
-                    Name                          = "$computername\$SQLInstanceName"
+                    Name                          = $computername
                     AvailabilityGroupName         = $groupname
                     ServerName                    = $computername
                     InstanceName                  = $SQLInstanceName
