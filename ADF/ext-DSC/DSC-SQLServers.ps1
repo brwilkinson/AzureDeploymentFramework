@@ -48,6 +48,8 @@ Configuration SQLServers
     $Zone = $Compute.zone
     $prefix = $ResourceGroupName.split('-')[0]
     $App = $ResourceGroupName.split('-')[2]
+    $DNSenvironment = 'P0'
+    $DNSServer = ($prefix + $app + $DNSenvironment + 'DC01')
 
 
     Function IIf
@@ -757,10 +759,10 @@ Configuration SQLServers
             {
                 PsDscRunAsCredential = $credlookup['DomainJoin']
                 Name                 = $cname
-                Target               = ($NetworkID + $aoinfo.AOIP)   
+                Target               = ($NetworkID + $aoinfo.AOIP)
                 Type                 = 'ARecord'
                 Zone                 = $DomainName
-                DnsServer            = ($prefix + $app + $environment + 'DC01')
+                DnsServer            = $DNSServer
             }
 
 
