@@ -80,8 +80,12 @@ AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\NetworkWatcher.bicep
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\NetworkFlowLogs.bicep
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\SA.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\SA.bicep -CN logs
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\KV.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\KV.bicep -CN App01,App02
+
+
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\KV.bicep
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\AppServiceFunction.bicep

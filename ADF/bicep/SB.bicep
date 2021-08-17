@@ -50,12 +50,12 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
-var SBInfo = contains(DeploymentInfo, 'SBInfo') ? DeploymentInfo.SBInfo : []
-
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : json('null')
 
+var SBInfo = contains(DeploymentInfo, 'SBInfo') ? DeploymentInfo.SBInfo : []
+
 var SB = [for (sb,index) in SBInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.sb.Name))
+  match: ((Global.CN == '.') || contains(Global.CN, sb.Name))
 }]
 
 module SBs 'SB-ServiceBus.bicep' = [for (sb,index) in SBInfo : if(SB[index].match) {

@@ -66,14 +66,14 @@
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "ILB": 1,
+        "ILB": 1, //
         "InitialDOP": 0,
-        "VMApp": 1,
+        "VMApp": 1, //
         "VMAppLinux": 0,
-        "VMSQL": 1,
+        "VMSQL": 1,  //
         "VMFILE": 0,
         "VMSS": 0,
-        "WAFPOLICY": 1,
+        "WAFPOLICY": 0,
         "FRONTDOOR": 0,
         "WAF": 0,
         "SetExternalDNS": 1,
@@ -81,11 +81,11 @@
         "APPCONFIG": 0,
         "REDIS": 0,
         "APIM": 0,
-        "ACR": 1,
+        "ACR": 0,
         "ACI": 0,
-        "AKS": 1,
+        "AKS": 0,
         "SQLMI": 0,
-        "CosmosDB": 1,
+        "CosmosDB": 0,
         "DASHBOARD": 0,
         "DNSLookup": 0,
         "ServerFarm": 0,
@@ -249,7 +249,7 @@
         ],
         "SPInfo": [
           {
-            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "Name": "GH_{GHProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "ACRPush"
@@ -260,7 +260,7 @@
             ]
           },
           {
-            "Name": "GH_{GHProject}_{RGNAME}",
+            "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -284,7 +284,7 @@
                 "Tenant": "AOA"
               },
               {
-                "Name": "Log Analytics Contributor",
+                "Name": "Automation_Account_Contributor",
                 "RG": "P0",
                 "Tenant": "AOA"
               },
@@ -339,14 +339,14 @@
           //   "NSG": 1,
           //   "Route": 1,
           //   "FlowLogEnabled": true,
-          //   "FlowAnalyticsEnabled": true,
-          //   "delegations": "Microsoft.ContainerInstance/containerGroups"
+          //   "FlowAnalyticsEnabled": true
+          //   // "delegations": "Microsoft.ContainerInstance/containerGroups"
           // },
           {
             "name": "snBE01",
             "prefix": "80/28",
             "NSG": 1,
-            "Route": 1,
+            "Route": 0, // 1
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
@@ -452,7 +452,7 @@
         "Appservers": {
           "AppServers": [
             {
-              "VMName": "JMP01",
+              "Name": "JMP01",
               "Role": "JMP",
               "ASName": "JMP",
               "DDRole": "64GB",
@@ -473,7 +473,7 @@
           ],
           "SQLServers": [
             {
-              "VMName": "SQL01",
+              "Name": "SQL01",
               "OSType": "Server2019",
               "ASName": "CLS01",
               "Role": "SQL",
@@ -510,7 +510,7 @@
               }
             },
             {
-              "VMName": "SQL02",
+              "Name": "SQL02",
               "OSType": "Server2019",
               "CLNAME": "CLS01",
               "ASName": "CLS01",
@@ -549,7 +549,7 @@
         },
         "LBInfo": [
           {
-            "LBName": "CLS01",
+            "Name": "CLS01",
             "ASName": "CLS01",
             "Sku": "Basic",
             "Type": "Private",
