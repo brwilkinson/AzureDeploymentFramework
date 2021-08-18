@@ -1,6 +1,6 @@
-#  Observations on Arm templates # 
+#  Observations on ARM (Bicep) Templates
 
-## - Azure Deployment Framework ## 
+## - Azure Deployment Framework 
 Go Home [Documentation Home](./ARM.md)
 
 ### Azure Deployment Framework (ADF) Features

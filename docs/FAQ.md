@@ -1,4 +1,4 @@
-#  Observations on Arm templates # 
+#  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
 Go Home [Documentation Home](./ARM.md)
@@ -25,11 +25,11 @@ Go Home [Documentation Home](./ARM.md)
     - You can easily export your JSON code via API or Portal, which can assist in your Template build process as you onboard new Resource Types.
         - [Exporting JSON Resource Examples](../ADF/1-PrereqsToDeploy/19-TestResourceHTTP.ps1)
 
-    - Bicep Project is still in Preview. Once this project become production ready, this project will likely apply Bicep where appropriate. Bicep still compiles down to ARM Templates, so they are not going away.
+    - Bicep Project is still in Preview. ~~Once this project become production ready, this project will likely apply Bicep where appropriate. Bicep still compiles down to ARM Templates, so they are not going away.~~ This project now fully supports Bicep for ALL templates, you can choose JSON or Bicep. Bicep us MUCH cleaner and more extensible, so at some point the ARM JSON will be archived from this project.
 
         - [Bicep Project](https://github.com/Azure/bicep/blob/main/README.md)
     
-    - The most compelling reason to use ARM templates is that it's fast, easy and the authoring experience is really great. The VSCode Extension has support for the following
+    - The most compelling reason to use ARM (Bicep) Templates is that it's fast, easy and the authoring experience is really great. The VSCode Extension has support for the following
     
         - Snippets
         - Intellisense
@@ -46,7 +46,7 @@ Go Home [Documentation Home](./ARM.md)
             
         - [Azure Resource Manager (ARM) Tools for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools)
 
-    - ARM Templates provide a flexible deployment capability, where you can deploy locally, from the Cloudshell, Azure DevOps Pipelines, GitHub Workflows, Locally via az cli or az PowerShell.
+    - ARM (Bicep) Templates provide a flexible deployment capability, where you can deploy locally, from the Cloudshell, Azure DevOps Pipelines, GitHub Workflows, Locally via az cli or az PowerShell.
     
     - ARM template deployments support Whatif capabilities
         

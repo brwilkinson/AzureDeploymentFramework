@@ -1,4 +1,4 @@
-#  Observations on Arm templates # 
+#  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
 Go Home [Documentation Home](./ARM.md)
@@ -38,4 +38,4 @@ Go Home [Documentation Home](./ARM.md)
 
 ![Links](./ADF/Slide12.SVG)
 
-- [Documentation - What is ADF, Observations on ARM Templates Etc.](./ARM.md)
+- [Documentation - What is ADF, Observations on ARM (Bicep) Templates Etc.](./ARM.md)

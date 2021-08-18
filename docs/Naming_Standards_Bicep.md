@@ -1,4 +1,4 @@
-#  Observations on Arm templates # 
+#  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./ARM.md)
@@ -32,7 +32,7 @@
 - Use a dot notation for segmenting Resource types into more descriptive categories
     - An example is: SA.bicep for storage OR SA.CDN.bicep for a CDN
     - The dot allows for more specific names to describe the bicep file, however diferentiates the dash used for nested deployments.
-- In the ARM templates, numbers are used on the templates, however no numbering has been implemented here so far, except on the parent deployments mentioned above.
+- In the ARM (Bicep) Templates, numbers are used on the templates, however no numbering has been implemented here so far, except on the parent deployments mentioned above.
 - Any deployment names to Bicep modules will begin with 'dp', these are used for the deployment names e.g. in the Portal.
 - Currently some parameter names that have been migrated from ARM templates will maintain the casing, which is not camel case
     - Where it makes sense camel case will be used for param/variable/resource names, where it doesn't break backwards compatiblity
