@@ -61,6 +61,7 @@ Go Home [Documentation Home](./ARM.md)
         - This allows for a Hub, Plus 7 other Spokes
         - This is actually the default of the project as it is right now, however it's easy to flip it to the above, or even something different all together.
 - When you deploy as listed below the [Enviros](#Enviros) will have a unique number (S1, D2, T3, U4, P5 Etc.), that are used to automatically determine the address space of that Hub or Spoke Environment. This will be caluculated automatically from the /20 Address range that you specified in the Global Config file for the Region.
+
 #### <a name="Enviros"></a> We are used to havin a DEV, TEST and PROD environments, why does it show things like: S1, D2, Q3, Q5, P6 Etc.
 - The 'Enviro' e.g. S1 defines an environment, team members can simply say S1 or D2 and recognize the environment that you are referencing.
 - The 'Enviro' also makes it easy to reference and deploy out to an individual environment in your pipelines or in a manual deployment.
