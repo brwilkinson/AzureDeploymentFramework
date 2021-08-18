@@ -53,7 +53,13 @@ Go Home [Documentation Home](./ARM.md)
         -  [ARM Template deployment what-if operations](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-deploy-what-if?tabs=azure-powershell)
 
 #### <a name="Network"></a> What Network Space should I reserve for Azure Deployment Framework
-- to do.
+- to do, planning to add more detail and diagrams
+- In short, the project defaults to Hub / Spoke and it's recommended to use one of the following
+    - /20 Address Space per Azure Region, Divided into 16 * 256
+        - This allows for a Hub, Plus 15 other Spokes
+    - /20 Address Space per Azure Region, Divided into 8 * 515
+        - This allows for a Hub, Plus 7 other Spokes
+        - This is actually the default of the project as it is right now, however it's easy to flip it to the above, or even something different all together.
 
 #### <a name="Enviros"></a> We are used to havin a DEV, TEST and PROD environments, why does it show things like: S1, D2, Q3, Q5, P6 Etc.
 - The 'Enviro' e.g. S1 defines an environment, team members can simply say S1 or D2 and recognize the environment that you are referencing.
