@@ -366,7 +366,7 @@ resource VMAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2019-03-01'
   }
 }]
 
-resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DomainJoin == 1 && (contains(vm, 'ExcludeDomainJoin') && vm.ExcludeDomainJoin != 1)) {
+resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DomainJoin == 1 && !(contains(vm, 'ExcludeDomainJoin') && vm.ExcludeDomainJoin != 1)) {
   name: 'joindomain'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -480,7 +480,7 @@ resource VMDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [
     }
   }
   dependsOn: [
-    VMDomainJoin
+    VMDomainJoin[index]
   ]
 }]
 
@@ -546,7 +546,7 @@ resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for 
     }
   }
   dependsOn: [
-    VMDomainJoin
+    VMDomainJoin[index]
   ]
 }]
 
