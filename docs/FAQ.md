@@ -62,7 +62,7 @@ Go Home [Documentation Home](./ARM.md)
         - This is actually the default of the project as it is right now, however it's easy to flip it to the above, or even something different all together.
 - When you deploy as listed below the [Enviro](#Enviro) will have a unique number (S1, D2, T3, U4, P5 Etc.), that are used to automatically determine the address space of that Hub or Spoke Environment. This will be caluculated automatically from the /20 Address range that you specified in the Global Config file for the Region.
 
-#### <a name="Enviros"></a> We are used to havin a DEV, TEST and PROD environments, why does it show things like: S1, D2, Q3, Q5, P6 Etc.
+#### <a name="Enviro"></a> We are used to havin a DEV, TEST and PROD environments, why does it show things like: S1, D2, Q3, Q5, P6 Etc.
 - The 'Enviro' e.g. S1 defines an environment, team members can simply say S1 or D2 and recognize the environment that you are referencing.
 - The 'Enviro' also makes it easy to reference and deploy out to an individual environment in your pipelines or in a manual deployment.
 - This project uses dynamic IP Address ranges, so the number that you use determines the network range Address space reservation. This ensure you can always Automatically Peer into the Hub and Spoke Topology.
