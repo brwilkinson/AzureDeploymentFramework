@@ -6,7 +6,7 @@
 Enable-AzureRmAlias
 <# 
 .Synopsis 
-   Deploy ARM Templates in a custom way, to streamline deployments 
+   Deploy ARM (Bicep) Templates in a custom way, to streamline deployments 
 .DESCRIPTION 
    This is a customization of the deployment scripts available on the Quickstart or within Visual Studio Resource group Deployment Solution.
    Some of the efficiencies built into this are:

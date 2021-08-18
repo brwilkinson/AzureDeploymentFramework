@@ -1,4 +1,4 @@
-#  Observations on Arm templates # 
+#  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
 Go Home [Documentation Home](./ARM.md)
