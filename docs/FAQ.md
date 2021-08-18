@@ -8,7 +8,7 @@ Go Home [Documentation Home](./ARM.md)
 #### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 <br/>
 
-#### Why Azure Resource Manager (ARM) Templates:
+#### <a name="ARM"></a> Why Azure Resource Manager (ARM/Bicep) Templates:
 1) Why not Bicep or Terraform?
 
     - All Azure Resources are built on JSON schemas, these are documemented in both the [REST API's] and the [ARM Template Docs]
@@ -52,10 +52,10 @@ Go Home [Documentation Home](./ARM.md)
         
         -  [ARM Template deployment what-if operations](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-deploy-what-if?tabs=azure-powershell)
 
-#### What Network Space should I reserve for Azure Deployment Framework
+#### <a name="Network"></a> What Network Space should I reserve for Azure Deployment Framework
 - to do.
 
-#### We are used to havin a DEV, TEST and PROD environments, why does it show things like: S1, D2, Q3, Q5, P6 Etc.
+#### <a name="Enviros"></a> We are used to havin a DEV, TEST and PROD environments, why does it show things like: S1, D2, Q3, Q5, P6 Etc.
 - The 'Enviro' e.g. S1 defines an environment, team members can simply say S1 or D2 and recognize the environment that you are referencing.
 - The 'Enviro' also makes it easy to reference and deploy out to an individual environment in your pipelines or in a manual deployment.
 - This project uses dynamic IP Address ranges, so the number that you use determines the network range Address space reservation. This ensure you can always Automatically Peer into the Hub and Spoke Topology.
