@@ -4,7 +4,7 @@
   'AEU2'
   'ACU1'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -48,10 +48,10 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 
 module getDeployObjectID 'y.getDeployObjectID.bicep' = {
-  name: 'getDeployObjectID'
+  name: 'getDeployObjectID51'
   params: {
     userAssignedIdentityName: '${Deployment}-uaiMonitoringReader'
-    deployment: 'getDeployObjectID'
+    deployment: 'getDeployObjectID51'
     resourceGroupName: az.resourceGroup().name
   }
 }
