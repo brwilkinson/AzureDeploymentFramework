@@ -3,9 +3,9 @@
 #Requires -Module AZ.Accounts
 
 param (
-    [String[]]$Environments = ('G1'),
+    [String[]]$Environments = ('D2'),
     [String]$Prefix = 'ACU1',
-    [String]$App = 'HAA',
+    [String]$App = 'AOA',
     [String]$OrgName = 'BRW'
 )
 

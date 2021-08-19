@@ -44,7 +44,7 @@ set-location -path ADF:\
 # Deploy Environment
 
 # Global  sub deploy for $env:Enviro
-AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 1
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy -FullUpload     #<-- Deploys from Pipelines Region 1
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 2
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\sub-RBAC.bicep -SubscriptionDeploy
