@@ -47,11 +47,13 @@ param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 
+var deploymentName = 'getDeployObjectID51'
+
 module getDeployObjectID 'y.getDeployObjectID.bicep' = {
-  name: 'getDeployObjectID51'
+  name: deploymentName
   params: {
     userAssignedIdentityName: '${Deployment}-uaiMonitoringReader'
-    deployment: 'getDeployObjectID51'
+    deployment: deploymentName
     resourceGroupName: az.resourceGroup().name
   }
 }
