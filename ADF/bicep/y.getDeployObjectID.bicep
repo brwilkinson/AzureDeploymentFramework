@@ -88,7 +88,6 @@ resource deploymentUser 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
               $content = Get-AzLog -ResourceGroupName $ResourceGroupName -WarningAction SilentlyContinue |
               Where-Object { $_.OperationName.Value -EQ 'Microsoft.Resources/deployments/write' -and
                   ($_.ResourceId | Split-Path -Leaf) -EQ $DeploymentName } |
-              # Sort-Object SubmissionTimestamp -Descending | Select-Object -First 1 -ExpandProperty Caller
               Sort-Object SubmissionTimestamp -Descending | Select-Object -First 1 -ExpandProperty Claims | foreach Content
           
               $caller = $content['http://schemas.microsoft.com/identity/claims/objectidentifier']
