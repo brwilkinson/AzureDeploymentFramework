@@ -223,6 +223,14 @@
                 "Name": "Virtual Machine Contributor"
               }
             ]
+          },
+          {
+            "name": "MonitoringReader",
+            "RBAC": [
+              {
+                "Name": "Monitoring Reader"
+              }
+            ]
           }
         ],
         "rolesInfo": [
