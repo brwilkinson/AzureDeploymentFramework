@@ -1,4 +1,6 @@
-param userAssignedIdentityName string = '1'
+param resourceGroupName string
+param deployment string
+param userAssignedIdentityName string = 'ACU1-BRW-AOA-T5-uaiMonitoringReader'
 param now string = utcNow('F')
 
 resource deploymentUser 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
@@ -13,7 +15,7 @@ resource deploymentUser 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '6.2.1'
-    arguments: ' -ResourceGroupName ${az.resourceGroup().name} -DeploymentName ${az.deployment().name}'
+    arguments: ' -ResourceGroupName ${resourceGroupName} -DeploymentName ${deployment}'
     scriptContent: '''
       param (
         [String] $ResourceGroupName,
