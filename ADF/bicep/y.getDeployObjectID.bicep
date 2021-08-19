@@ -42,7 +42,7 @@ resource deploymentUser 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
               {
                 Start-Sleep -seconds 10
         
-                $content = Get-AzLog -StartTime (Get-Date).AddMinutes(-5) -ResourceGroupName $ResourceGroupName -WarningAction SilentlyContinue |
+                $content = Get-AzLog -StartTime (Get-Date).AddMinutes(-4) -ResourceGroupName $ResourceGroupName -WarningAction SilentlyContinue |
                   Where-Object { $_.OperationName.Value -EQ 'Microsoft.Resources/deployments/write' -and
                       ($_.ResourceId | Split-Path -Leaf) -EQ $DeploymentName } |
                   Sort-Object EventTimestamp -Descending | Select-Object -First 1 -ExpandProperty Claims | foreach Content
