@@ -494,6 +494,62 @@ resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30'
   scope: resourceGroup(RGName)
 }
 
+resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC2 == 1 && vm.Role != 'PULL') {
+  name: 'Microsoft.Powershell.DSC2'
+  parent: virtualMachine[index]
+  location: resourceGroup().location
+  properties: {
+    publisher: ((OSType[vm.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions')
+    type: ((OSType[vm.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux')
+    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '2.24' : '2.0')
+    autoUpgradeMinorVersion: true
+    forceUpdateTag: deploymentTime
+    settings: {
+      wmfVersion: 'latest'
+      configuration: {
+        url: '${Global._artifactsLocation}/ext-DSC/DSC-${(contains(vm, 'DSConfig') ? vm.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : DeploymentName))}.zip'
+        script: 'DSC-${(contains(vm, 'DSConfig') ? vm.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : DeploymentName))}.ps1'
+        function: (contains(vm, 'DSConfig') ? vm.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : DeploymentName))
+      }
+      configurationArguments: {
+        DomainName: Global.ADDomainName
+        // Thumbprint: Global.certificateThumbprint
+        // storageAccountId: saaccountidglobalsource.id
+        // deployment: replace(Deployment, '-', '')
+        // networkid: '${networkId}.'
+        // appInfo: (contains(vm, 'AppInfo') ? string(vm.AppInfo) : '')
+        // DataDiskInfo: string(VM[index].DataDisk)
+        // clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAILocal.properties.clientId
+        // clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAIGlobal.properties.clientId
+      }
+      // configurationData: {
+      //   url: '${Global._artifactsLocation}/ext-CD/${vm.Role}-ConfigurationData.psd1'
+      // }
+    }
+    protectedSettings: {
+      configurationArguments: {
+        AdminCreds: {
+          UserName: Global.vmAdminUserName
+          Password: vmAdminPassword
+        }
+        // sshPublic: {
+        //   UserName: 'ssh'
+        //   Password: sshPublic
+        // }
+        // devOpsPat: {
+        //   UserName: 'pat'
+        //   Password: devOpsPat
+        // }
+      }
+      configurationUrlSasToken: Global._artifactsLocationSasToken
+      configurationDataUrlSasToken: Global._artifactsLocationSasToken
+    }
+  }
+  dependsOn: [
+    VMDomainJoin[index]
+  ]
+}]
+
 resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC == 1 && vm.Role != 'PULL') {
   name: 'Microsoft.Powershell.DSC'
   parent: virtualMachine[index]
