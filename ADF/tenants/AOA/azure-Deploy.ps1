@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'P0',
+    [string]$Enviro = 'D2',
     [string]$App = 'AOA'
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
@@ -23,11 +23,11 @@ break
 # Create Service principal for Env. + add GH secret or AZD Service connections
 # Infra in Github
 set-location -path ADF:\
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments D3, P0, G0, G1, S1, T5, P7
+. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments D2 #D3, P0, G0, G1, S1, T5, P7
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
 # App pipelines in AZD
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix ACU1 -Environments D3, P0, G0, G1, S1, T5, P7
+. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix ACU1 -Environments D2 # D3, P0, G0, G1, S1, T5, P7
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipal.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
 # Bootstrap Hub RGs and Keyvaults
@@ -44,7 +44,7 @@ set-location -path ADF:\
 # Deploy Environment
 
 # Global  sub deploy for $env:Enviro
-AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 1
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy -FullUpload     #<-- Deploys from Pipelines Region 1
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 2
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\sub-RBAC.bicep -SubscriptionDeploy

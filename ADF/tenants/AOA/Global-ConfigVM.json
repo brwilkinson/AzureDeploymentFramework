@@ -817,6 +817,21 @@
         "chefClient": 0
       }
     },
+    "SQLServer2016": {
+      "imageReference": {
+        "publisher": "MicrosoftSQLServer",
+        "Offer": "SQL2016SP2-WS2016",
+        "sku": "Enterprise",
+        "version": "latest"
+      },
+      // "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
     "Server2016": {
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
@@ -949,7 +964,7 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "2019-datacenter-smalldisk-g2",
+        "sku": "2019-datacenter-smalldisk",
         "version": "latest"
       },
       "licenseType": "Windows_Server",

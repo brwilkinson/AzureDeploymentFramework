@@ -12,8 +12,8 @@ param (
         'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 
         'xSmbShare', 'PolicyFileEditor',
         'ComputerManagementDsc', 'NetworkingDSC', 'CertificateDsc',
-        'StorageDsc', 'xActiveDirectory', 'xDFS', 'xDNSServer', 'DSCR_AppxPackage','DSCR_Font',
-        'nxNetworking','nx','nxComputerManagement'
+        'StorageDsc', 'ActiveDirectoryDsc', 'xDFS', 'xDNSServer', 'DSCR_AppxPackage','DSCR_Font',
+        'nxNetworking','nx','nxComputerManagement' #,'xActiveDirectory'
     ),
     [Int32]$DownloadLatest = 0
 )
