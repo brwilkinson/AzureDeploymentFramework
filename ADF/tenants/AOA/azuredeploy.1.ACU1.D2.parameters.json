@@ -59,15 +59,15 @@
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 0,
-        "BastionHost": 0,
+        "BastionHost": 1,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "CreateADPDC": 0,
-        "CreateADBDC": 0,
+        "CreateADPDC": 1,
+        "CreateADBDC": 1,
         "ILB": 1, //
         "InitialDOP": 0,
         "VMApp": 1, //
@@ -101,23 +101,23 @@
     },
     "Extensions": {
       "value": {
-        "MonitoringAgent": 1,
-        "IaaSDiagnostics": 1,
-        "DependencyAgent": 1,
-        "AzureMonitorAgent": 1,
-        "GuestHealthAgent": 1,
-        "VMInsights": 1,
+        "MonitoringAgent": 0,//
+        "IaaSDiagnostics": 0,//
+        "DependencyAgent": 0,//
+        "AzureMonitorAgent": 0,//
+        "GuestHealthAgent": 0, // 
+        "VMInsights": 0, //
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
-        "DSC2": 0,
+        "DSC2": 1,
         "Scripts": 1,
-        "MSI": 1,
+        "MSI": 0,
         "CertMgmt": 0,
         "DomainJoin": 1,
         "AADLogin": 0,
         "WindowsOpenSSH": 0,
-        "Antimalware": 1,
+        "Antimalware": 0,  //
         "VMSSAzureADEnabled": 0,
         "SqlIaasExtension": 0
       }
@@ -380,11 +380,16 @@
             "FlowAnalyticsEnabled": true
           }
         ],
+        "BastionInfo": {
+          "name": "HST01",
+          "PublicIP": "Static",
+          "Zone": true
+        },
         "saInfo": [
           {
             "namesuffix": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Deny",
+            "allNetworks": "Allow",
             "logging": {
               "r": 0,
               "w": 0,
@@ -502,7 +507,7 @@
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
-              "ExcludeDomainJoin": 1,
+              // "ExcludeDomainJoin": 1,
               "Zone": 1,
               "NICs": [
                 {

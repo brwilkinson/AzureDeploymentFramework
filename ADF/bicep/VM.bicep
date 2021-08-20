@@ -494,7 +494,7 @@ resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30'
   scope: resourceGroup(RGName)
 }
 
-resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC2 == 1 && vm.Role != 'PULL') {
+resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC2 == 1 && vm.Role != 'PULL' && (DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC2'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -550,7 +550,7 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
   ]
 }]
 
-resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC == 1 && vm.Role != 'PULL') {
+resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC == 1 && vm.Role != 'PULL' && !(DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC'
   parent: virtualMachine[index]
   location: resourceGroup().location

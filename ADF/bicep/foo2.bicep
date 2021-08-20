@@ -47,7 +47,7 @@ param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 
-var deploymentName = 'getDeployObjectID103'
+var deploymentName = 'getDeployObjectID108'
 
 module getDeployObjectID 'y.getDeployObjectID2.bicep' = {
   name: deploymentName

@@ -1,118 +1,194 @@
-configuration CreateADBDC 
-{ 
+configuration CreateADBDC
+{
     param 
     ( 
         [Parameter(Mandatory)]
         [String]$DomainName,
-        [Parameter(Mandatory)]
-        [System.Management.Automation.PSCredential]$Admincreds,
-        [Int]$RetryCount = 3, # A retry count of 50 may be excessive.
-        [Int]$RetryIntervalSec = 30
-    ) # end param
-    
-    Import-DscResource -ModuleName ActiveDirectoryDsc, StorageDsc, NetworkingDsc, PSDesiredStateConfiguration, ComputerManagementDsc
-    [System.Management.Automation.PSCredential ]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)
-    $Interface = Get-NetAdapter | Where-Object Name -Like "Ethernet*" | Select-Object -First 1
-    $InterfaceAlias = $($Interface.Name)
-    ##    $dnsFilePath = Join-Path $env:systemdrive "xdnsout\dnsIPs.txt"
 
-    Node localhost
+        [Parameter(Mandatory)]
+        [PSCredential]$Admincreds,
+        
+        [Int]$RetryCount = 3,
+        
+        [Int]$RetryIntervalSec = 30
+    )
+    
+    Import-DscResource -ModuleName ActiveDirectoryDsC
+    Import-DscResource -ModuleName StorageDsc
+    Import-DscResource -ModuleName ComputerManagementDsc
+    Import-DscResource -ModuleName NetworkingDsc
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    $NetBios = $(($DomainName -split '\.')[0])
+    $DomainCreds = [PSCredential]::New("$NetBios\$($Admincreds.UserName)", $Admincreds.Password)
+
+    Node localhost #$allNodes.NodeName
     { 
         LocalConfigurationManager 
         {
-            ConfigurationMode  = 'ApplyOnly'
-            RebootNodeIfNeeded = $true
-        } # end LCM
+            ActionAfterReboot    = 'ContinueConfiguration'
+            ConfigurationMode    = 'ApplyAndMonitor'
+            RebootNodeIfNeeded   = $true
+            AllowModuleOverWrite = $true
+        }
 
-        Firewall EnableV4PingIn
-        {
-            Name    = "FPS-ICMP4-ERQ-In"
-            Enabled = "True"
-        } # end resource
+        #-------------------------------------------------------------------
+        $WindowsFeaturePresent = @(
+            'DNS', 'RSAT-DNS-Server', 'AD-Domain-Services',
+            'RSAT-ADDS-Tools', 'RSAT-AD-AdminCenter'
+        )
 
-        Firewall EnableV4PingOut
+        foreach ($Feature in $WindowsFeaturePresent)
         {
-            Name    = "FPS-ICMP4-ERQ-Out"
-            Enabled = "True"
-        } # end resource
+            WindowsFeature $Feature
+            {
+                Name   = $Feature
+                Ensure = 'Present'
+            }
+            $dependsonFeatures += @("[WindowsFeature]$Feature")
+        }
         
-        WaitForDisk Disk2 
-        {
-            DiskId           = "2"
-            RetryIntervalSec = $RetryIntervalSec
-            RetryCount       = $RetryCount
-        } # end resource
+        #-------------------------------------------------------------------
+        # no need to wait for disks
+        #
+        # WaitforDisk Disk2
+        # {
+        #     DiskId           = '2'
+        #     RetryIntervalSec = $RetryIntervalSec
+        #     RetryCount       = $RetryCount
+        # }
 
+        # This service shows a pop-up to format the disk, stopping this disables the pop-up
+        Get-Service -Name ShellHWDetection | Stop-Service -Verbose
         Disk ADDataDisk
         {
-            DiskId      = "2"
-            DriveLetter = "F"
-            DependsOn   = '[WaitforDisk]Disk2'
-        } # end resource
+            DiskId      = '2'
+            DriveLetter = 'F'
+            # DependsOn   = '[WaitforDisk]Disk2'
+        }
 
-        WindowsFeature ADDSInstall 
+        WaitForADDomain DC1Forest
         { 
-            Ensure    = "Present" 
-            Name      = "AD-Domain-Services"
-            DependsOn = "[Disk]ADDataDisk"
-        } # end resource  
-
-        WindowsFeature ADAdminCenter 
-        { 
-            Ensure    = "Present" 
-            Name      = "RSAT-AD-AdminCenter"
-            DependsOn = "[WindowsFeature]ADDSInstall"
-        } # end resource
-		
-        WindowsFeature ADDSTools 
-        { 
-            Ensure    = "Present" 
-            Name      = "RSAT-ADDS-Tools"
-            DependsOn = "[WindowsFeature]ADDSInstall"
-        } # end resource
-
-        WaitForADDomain DscForestWait 
-        { 
-            DomainName       = $DomainName 
-            Credential       = $DomainCreds
-            RestartCount     = 2
+            DomainName              = $DomainName
+            PsDscRunAsCredential    = $DomainCreds
+            RestartCount            = 2
             WaitForValidCredentials = $true # https://github.com/dsccommunity/ActiveDirectoryDsc/issues/478
-            DependsOn        = "[WindowsFeature]ADDSInstall"
-        } # end resource
+            DependsOn               = @('[Disk]ADDataDisk', $dependsonFeatures)
+        }
  
-        ADDomainController ReplicaDC 
+        ADDomainController ReplicaDC
         { 
-            DomainName                    = $DomainName 
-            Credential                    = $DomainCreds 
+            DomainName                    = $DomainName
+            Credential                    = $DomainCreds
             SafemodeAdministratorPassword = $DomainCreds
-            DatabasePath                  = "F:\NTDS"
-            LogPath                       = "F:\NTDS"
-            SysvolPath                    = "F:\SYSVOL"
-            DependsOn                     = "[WaitForADDomain]DScForestWait"
-        } # end resource
+            DatabasePath                  = 'F:\NTDS'
+            LogPath                       = 'F:\NTDS'
+            SysvolPath                    = 'F:\SYSVOL'
+            DependsOn                     = '[WaitForADDomain]DC1Forest'
+        }
         
-        if ((Test-PendingReboot).IsRebootPending)
-        { 
-            Restart-Computer -Force -Verbose 
-        } # end resource
+        #-------------------------------------------------------------------
+        # when the DC is promoted the DNS (static server IP's) are automatically set to localhost (127.0.0.1 and ::1) by DNS
+        # Remove those static entries and just use the Azure Settings for DNS from DHCP
+        # Static IP on OS NIC is not supported in Azure. Static IP on Azure VM NIC is supported.
+        Script ResetDNS
+        {
+            DependsOn  = '[WaitForADDomain]DC1Forest'
+            GetScript  = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | ForEach-Object ServerAddresses } } }
+            SetScript  = { Set-DnsClientServerAddress -InterfaceAlias Ethernet* -ResetServerAddresses -Verbose }
+            TestScript = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* -AddressFamily IPV4 |
+                    ForEach-Object { ! ($_.ServerAddresses -contains '127.0.0.1') } }
+        }
+
+        #-------------------------------------------------------------------
+        # Need to make sure the DC reboots after it is promoted.
+        PendingReboot RebootForPromo
+        {
+            Name      = 'RebootForDJoin'
+            DependsOn = '[Script]ResetDNS'
+        }
+
+        # Reboot outside of DSC, for DNS update, so set scheduled job to run in 5 minutes
+        Script ResetDNSDHCPFlagReboot
+        {
+            PsDscRunAsCredential = $DomainCreds
+            DependsOn            = '[PendingReboot]RebootForPromo'
+            GetScript            = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | ForEach-Object ServerAddresses } } }
+            SetScript            = {
+                $t = New-JobTrigger -Once -At (Get-Date).AddMinutes(5)
+                $o = New-ScheduledJobOption -RunElevated
+                Get-ScheduledJob -Name DNSUpdate -ErrorAction SilentlyContinue | Unregister-ScheduledJob
+                Register-ScheduledJob -ScriptBlock { Restart-Computer -Force } -Trigger $t -Name DNSUpdate -ScheduledJobOption $o
+            }
+            TestScript           = {
+                $Count = Get-DnsClientServerAddress -InterfaceAlias Ethernet* -AddressFamily IPV4 | ForEach-Object ServerAddresses | Measure-Object | ForEach-Object Count
+                if ($Count -eq 1)
+                {
+                    $False
+                }
+                else
+                {
+                    $True
+                }
+            }
+        }
+        #-------------------------------------------------------------------
     } # end node
 } # end configuration
 
-break
+
+# Below is only used for local testing and will NOT be executed via the VM DSC Extension
+# You can leave it as it is without commenting anything, if you need to debug on the 
+# Server you can open it up from C:\Packages\Plugins\Microsoft.Powershell.DSC\2.83.1.0\DSCWork\DSC-CreateADPDC.0
+# Then simply F5 in the Elevated ISE to watch it run, it will simply prompt for the admin credential.
+# Ensure you also use your correct domain name at the very end of this script e.g. line 160.
+if ((whoami) -notmatch 'system')
+{
+    Write-Warning -Message 'no testing in prod !!!'
+    if ($cred)
+    {
+        Write-Warning -Message 'Cred is good'
+    }
+    else
+    {
+        $Cred = Get-Credential localadmin
+    }
+
+    # Set the location to the DSC extension directory
+    if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
+    else { $DSCdir = $psscriptroot }
+    Write-Output "DSCDir: $DSCdir"
+
+    if (Test-Path -Path $DSCdir -ErrorAction SilentlyContinue)
+    {
+        Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
+    }
+}
+else
+{
+    break
+}
 
 # used for troubleshooting
-$AppInfo = "{'SiteName': 'Default-First-Site-Name'}"
-$cred = Get-Credential localadmin
-$Dep = $env:COMPUTERNAME.substring(0, 9)
-$Depid = $env:COMPUTERNAME.substring(8, 1)
-$network = 30 - ([Int]$Depid * 2)
-$Net = "172.16.${network}."
-ADSecondary -AdminCreds $cred -ConfigurationData .\*-ConfigurationData.psd1 -networkid $Net -AppInfo $AppInfo
+$DomainName = 'contoso.com'
+CreateADPDC -AdminCreds $cred -DomainName $DomainName -ConfigurationData $CD
 
-Set-DscLocalConfigurationManager -Path .\ADSecondary -Verbose
+Set-DscLocalConfigurationManager -Path .\CreateADPDC -Verbose 
 
-Start-DscConfiguration -Path .\ADSecondary -Wait -Verbose -Force
+$CD = @{
+    AllNodes = @(
+        @{
+            NodeName                    = 'LocalHost'
+            PSDscAllowPlainTextPassword = $true
+            PSDscAllowDomainUser        = $true
+        }
+    )
+}
+# Save ConfigurationData in a file with .psd1 file extension
 
+Start-DscConfiguration -Path .\CreateADPDC -Wait -Verbose -Force
+
+break
 Get-DscLocalConfigurationManager
 Start-DscConfiguration -UseExisting -Wait -Verbose -Force
 Get-DscConfigurationStatus -All
