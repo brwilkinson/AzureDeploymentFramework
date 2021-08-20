@@ -57,11 +57,11 @@ var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] -
 
 var LBInfo = contains(DeploymentInfo, 'LBInfo') ? DeploymentInfo.LBInfo : []
 
-var LB = [for i in range(0, length(LBInfo)): {
-  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.LBInfo[i].Name))
+var LB = [for (lb,Index) in LBInfo : {
+  match: ((Global.CN == '.') || contains(Global.CN, lb.Name))
 }]
 
-module PublicIP 'x.publicIP.bicep' = [for (lb,index) in LBInfo: {
+module PublicIP 'x.publicIP.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {
   name: 'dp${Deployment}-LB-publicIPDeploy${lb.Name}'
   params: {
     Deployment: Deployment

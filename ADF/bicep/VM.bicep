@@ -366,7 +366,7 @@ resource VMAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2019-03-01'
   }
 }]
 
-resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DomainJoin == 1 && !(contains(vm, 'ExcludeDomainJoin') && vm.ExcludeDomainJoin != 1)) {
+resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DomainJoin == 1 && !(contains(vm, 'ExcludeDomainJoin') && vm.ExcludeDomainJoin == 1)) {
   name: 'joindomain'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -542,7 +542,7 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
         // }
       }
       configurationUrlSasToken: Global._artifactsLocationSasToken
-      configurationDataUrlSasToken: Global._artifactsLocationSasToken
+      // configurationDataUrlSasToken: Global._artifactsLocationSasToken
     }
   }
   dependsOn: [

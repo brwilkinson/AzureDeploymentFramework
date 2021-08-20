@@ -964,7 +964,7 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "2019-datacenter-smalldisk-g2",
+        "sku": "2019-datacenter-smalldisk",
         "version": "latest"
       },
       "licenseType": "Windows_Server",

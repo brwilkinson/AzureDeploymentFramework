@@ -156,8 +156,8 @@
                         if(contains(parameters('SOFS'),'1'),createArray(), variables('SOFS') ),
                         if(contains(parameters('Data'),'1'),createArray(), variables('Data') ),
                         if(contains(parameters('Datass'),'1'),createArray(), variables('Datass') ),
-                        if(contains(parameters('LOGS'),'1'),createArray(), variables('LOGS') ) , 
-                        if(contains(parameters('TEMPDB'),'1'),createArray(), variables('TEMPDB') ), 
+                        if(contains(parameters('LOGS'),'1'),createArray(), variables('LOGS') ) ,
+                        if(contains(parameters('TEMPDB'),'1'),createArray(), variables('TEMPDB') ),
                         if(contains(parameters('BACKUP'),'1'),createArray(), variables('BACKUP') )
                       )]"
     }
