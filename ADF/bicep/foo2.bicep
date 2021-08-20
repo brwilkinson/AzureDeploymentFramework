@@ -49,12 +49,12 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 
 var deploymentName = 'getDeployObjectID103'
 
-module getDeployObjectID 'y.getDeployObjectID.bicep' = {
+module getDeployObjectID 'y.getDeployObjectID2.bicep' = {
   name: deploymentName
   params: {
     userAssignedIdentityName: '${Deployment}-uaiMonitoringReader'
     deployment: deploymentName
-    resourceGroupName: az.resourceGroup().name
+    resourceGroupID: az.resourceGroup().id
     logStartMinsAgo: 10
   }
 }

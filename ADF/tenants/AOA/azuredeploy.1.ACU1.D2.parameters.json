@@ -66,7 +66,7 @@
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "CreateADPDC": 1,
+        "CreateADPDC": 0,
         "CreateADBDC": 0,
         "ILB": 1, //
         "InitialDOP": 0,
@@ -109,8 +109,8 @@
         "VMInsights": 1,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
-        "DSC": 0,
-        "DSC2": 1,
+        "DSC": 1,
+        "DSC2": 0,
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
@@ -502,6 +502,7 @@
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
+              "ExcludeDomainJoin": 1,
               "Zone": 1,
               "NICs": [
                 {

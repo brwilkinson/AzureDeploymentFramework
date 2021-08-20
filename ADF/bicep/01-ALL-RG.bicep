@@ -463,7 +463,7 @@ module dp_Deployment_LB 'LB.bicep' = if (Stage.ILB == 1) {
   ]
 }
 
-module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1 || Stage.CreateADPDC == 1) {
+module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1 || contains(Stage,'CreateADPDC') && Stage.CreateADPDC == 1) {
   name: 'dp${Deployment}-VNETDNSPublic'
   params: {
     Deploymentnsg: Deploymentnsg
@@ -528,7 +528,7 @@ module ADPrimary 'VM.bicep' = if (Stage.ADPrimary == 1) {
   ]
 }
 
-module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1 || Stage.CreateADPDC == 1) {
+module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1 || contains(Stage,'CreateADPDC') && Stage.CreateADPDC == 1) {
   name: 'dp${Deployment}-VNETDNSDC1'
   params: {
     Deploymentnsg: Deploymentnsg
@@ -591,7 +591,7 @@ module ADSecondary 'VM.bicep' = if (Stage.ADSecondary == 1) {
   ]
 }
 
-module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (Stage.ADSecondary == 1 || Stage.CreateADBDC == 1) {
+module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (Stage.ADSecondary == 1 || contains(Stage,'CreateADBDC') && Stage.CreateADBDC == 1) {
   name: 'dp${Deployment}-VNETDNSDC2'
   params: {
     Deploymentnsg: Deploymentnsg
