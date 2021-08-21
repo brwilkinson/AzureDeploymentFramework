@@ -54,7 +54,7 @@ Once you are familiar with those, how do you actually implement, by taking 1 or 
 - This project is for Deploying into Azure and Supports Hybrid scenarios, however does not work in other Clouds.
 - This project does not replace other organizational level capabilities: e.g. Azure Enterprise Scale Landing Zones.
 - This project allows 1 or more applications/platforms to be deployed into Azure using Infrastructure As Code (IaC).
-    - Azure Resource Manager (ARM) Templates
+    - Azure Resource Manager (ARM/Bicep) Templates
     - Desired State Configuration (DSC) Documents
 - I would estimate for new projects, this process will take a minimum of 3, however most likely 6 to 12 months.
 - Since this supports multi-tenant/multi-application, once you complete the first App migration, you can likley do your second App half the time.
@@ -74,7 +74,7 @@ Once you are familiar with those, how do you actually implement, by taking 1 or 
 
 #### Perhaps you just need a Lab environment:
 - If you are looking to build out Lab environments or use this for Demo's Etc, then the ADF will work very nicely.
-    - Most of the work is deploying specific App Components, so if you are just wanted lab environments, you can get up and running with ADF very fast, hopefully within 7 days or less. The DSC components in this project allow for Domain Controller or SQL Server clusters to be deployed relatively easily, so if you are still leveraging IaaS services, this could be very useful.
+    - Most of the work is deploying specific App Components, so if you are just wanted lab environments, you can get up and running with ADF very fast, **hopefully within 1 week**. The DSC components in this project allow for Domain Controller or SQL Server clusters to be deployed relatively easily, so if you are still leveraging IaaS services, this could be very useful.
 
 ### Any Feedback on this project is welcome, please feel free to reach out or ask questions, open a 'Discussions' or 'Issues'.
 #### Once I have more scenarios setup and documented for this Template Project I will remove the 'Preview' Note.

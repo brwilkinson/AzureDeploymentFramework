@@ -47,7 +47,7 @@
             DisableIEESC                   = $True
 
             PowerShellModulesPresent       = @(
-                'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git',
+                'SQLServer', 'AzureAD', 'oh-my-posh', #'posh-git',
                 'Terminal-Icons', 'Az.ManagedServiceIdentity'
             )
 

@@ -1,13 +1,13 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy_AZE2_BRW_HUB_RG_P0
+name: Deploy_AZC1_BRW_HUB_RG_P0
 
 # Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
-  push:
-    branches: [dev]
+  # push:
+  #   branches: [dev]
   pull_request:
     branches: [dev]
 
@@ -17,7 +17,7 @@ on:
 env:
   APP: HUB
   ENV: P0
-  PREFIX: AZE2
+  PREFIX: AZC1
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -49,7 +49,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZE2_BRW_HUB_RG_P0}}
+          creds: ${{secrets.AZC1_BRW_HUB_RG_P0}}
           enable-AzPSSession: true
 
       - name: P0_RG
