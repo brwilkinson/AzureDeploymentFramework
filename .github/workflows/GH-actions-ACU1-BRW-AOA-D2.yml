@@ -47,7 +47,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_AOA_RG_D2}}
+          creds: ${{secrets.ACU1_BRW_AOA_RG_D2}}
           enable-AzPSSession: true
 
       - name: D2_RG
