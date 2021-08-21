@@ -15,7 +15,7 @@ on:
 env:
   APP: AOA
   ENV: D2
-  PREFIX: AZC1
+  PREFIX: ACU1
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
