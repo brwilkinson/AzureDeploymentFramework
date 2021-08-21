@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'D2',
+    [string]$Enviro = 'G0',
     [string]$App = 'AOA'
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
@@ -23,7 +23,7 @@ break
 # Create Service principal for Env. + add GH secret or AZD Service connections
 # Infra in Github
 set-location -path ADF:\
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments D2 #D3, P0, G0, G1, S1, T5, P7
+. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments G0 #D2, D3, P0, G0, G1, S1, T5, P7
 . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
 # App pipelines in AZD
