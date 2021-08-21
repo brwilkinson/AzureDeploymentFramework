@@ -1,4 +1,4 @@
-name: Deploy_AZC1_BRW_AOA_RG_D2
+name: Deploy_ACU1_BRW_AOA_RG_D2
 
 # Controls when the action will run.
 on:
@@ -35,7 +35,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_HUB_RG_G0}}
+          creds: ${{secrets.ACU1_BRW_AOA_RG_G0}}
           enable-AzPSSession: true
 
       - name: G0_Sub
