@@ -1,7 +1,7 @@
 # This is a basic workflow to help you get started with Actions
 
 name:
-  Deploy_AZC1_BRW_PSO_RG_M0
+  Deploy_ACU1_BRW_PSO_RG_M0
   # Triggers the workflow on push or pull request events but only for the main branch
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
 on:
@@ -15,7 +15,7 @@ on:
 env:
   APP: PSO
   ENV: M0
-  PREFIX: AZC1
+  PREFIX: ACU1
 
 jobs:
   EnvironmentDeploy:
@@ -34,7 +34,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_PSO_RG_M0}}
+          creds: ${{secrets.ACU1_BRW_PSO_RG_M0}}
           enable-AzPSSession: true
 
       - name: G0_Sub
@@ -46,7 +46,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_PSO_RG_M0}}
+          creds: ${{secrets.ACU1_BRW_PSO_RG_M0}}
           enable-AzPSSession: true
 
       - name: M0_RG
