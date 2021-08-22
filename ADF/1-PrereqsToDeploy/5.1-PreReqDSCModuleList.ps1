@@ -30,7 +30,7 @@ $Modules | ForEach-Object {
     {
         $ModuleLatest = Test-ModuleManifest -Path $manifest.fullname
 
-        Write-Warning -Message "`n     --> Custom module: [$ModuleName] is [$($ModuleLatest.version)]"
+        Write-Warning -Message "`n     --> Module: [$ModuleName] is [$($ModuleLatest.version)]"
 
         if ($DownloadLatest -eq 1)
         {
