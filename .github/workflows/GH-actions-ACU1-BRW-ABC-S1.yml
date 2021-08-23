@@ -1,4 +1,4 @@
-name: Deploy_AZC1_BRW_ABC_RG_S1
+name: Deploy_ACU1_BRW_ABC_RG_S1
 
 # Controls when the action will run.
 on:
@@ -15,7 +15,7 @@ on:
 env:
   APP: ABC
   ENV: S1
-  PREFIX: AZC1
+  PREFIX: ACU1
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -35,7 +35,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_HUB_RG_G0}}
+          creds: ${{secrets.ACU1_BRW_HUB_RG_G0}}
           enable-AzPSSession: true
 
       - name: G0_Sub
@@ -47,7 +47,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_ABC_RG_S1}}
+          creds: ${{secrets.ACU1_BRW_ABC_RG_S1}}
           enable-AzPSSession: true
 
       - name: S1_RG

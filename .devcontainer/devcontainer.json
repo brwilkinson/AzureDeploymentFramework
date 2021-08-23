@@ -10,8 +10,8 @@
       // Options
       "INSTALL_NODE": "true",
       "NODE_VERSION": "lts/*",
-      "INSTALL_AZURE_CLI": "true",
-      "INSTALL_AZURE_POWERSHELL": "true"
+      "INSTALL_AZURE_CLI": "true"
+      // "INSTALL_AZURE_POWERSHELL": "true"  // do feature request for this ?! 
     }
   },
   // Set *default* container specific settings.json values on container create.

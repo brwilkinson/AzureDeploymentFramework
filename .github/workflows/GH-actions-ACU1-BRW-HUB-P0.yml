@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy_AZC1_BRW_HUB_RG_P0
+name: Deploy_ACU1_BRW_HUB_RG_P0
 
 # Controls when the action will run.
 on:
@@ -17,7 +17,7 @@ on:
 env:
   APP: HUB
   ENV: P0
-  PREFIX: AZC1
+  PREFIX: ACU1
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -37,7 +37,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_HUB_RG_G0}}
+          creds: ${{secrets.ACU1_BRW_HUB_RG_G0}}
           enable-AzPSSession: true
 
       - name: G0_Sub
@@ -49,7 +49,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZC1_BRW_HUB_RG_P0}}
+          creds: ${{secrets.ACU1_BRW_HUB_RG_P0}}
           enable-AzPSSession: true
 
       - name: P0_RG

@@ -283,6 +283,7 @@ gemfile.lock
 ADF/1-PrereqsToDeploy/DSCResources/**
 !ADF/1-PrereqsToDeploy/DSCResources/info.txt
 
+ADF/bicep/foo
 
 ADF/arm-ttk/**
 !ADF/arm-ttk/info.txt
