@@ -121,6 +121,10 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         */  {
               id: NSG[index].id
             }
+        natGateway: ! (contains(sn, 'NGW') && (sn.NGW == 1)) ? json('null') : /*
+        */  {
+              id: resourceId('Microsoft.Network/natGateways','${Deployment}-ngwNAT01')
+            }
         routeTable: contains(sn, 'Route') && (sn.Route == 1) ? RouteTableGlobal : json('null')
         privateEndpointNetworkPolicies: 'Disabled'
         delegations: contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default

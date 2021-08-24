@@ -137,7 +137,7 @@ configuration CreateADBDC
 } # end configuration
 
 
-# Below is only used for local testing and will NOT be executed via the VM DSC Extension
+# Below is only used for local (direct on Server) testing and will NOT be executed via the VM DSC Extension
 # You can leave it as it is without commenting anything, if you need to debug on the 
 # Server you can open it up from C:\Packages\Plugins\Microsoft.Powershell.DSC\2.83.1.0\DSCWork\DSC-CreateADPDC.0
 # Then simply F5 in the Elevated ISE to watch it run, it will simply prompt for the admin credential.
