@@ -317,23 +317,6 @@ configuration ConfigSQLAO
             DependsOn            = $dependsonFeatures
         }
 
-        # SqlLogin SQLDomainUserLogin
-        # {
-        #     InstanceName = $InstanceName
-        #     Name         = $SQLCreds.UserName
-        #     LoginType    = 'WindowsUser'
-        #     DependsOn    = '[ADUser]SQLDomainUser'
-        #     # PsDscRunAsCredential = $Admincreds
-        # }
-
-        # SqlLogin AdminDomainLogin
-        # {
-        #     InstanceName = $InstanceName
-        #     Name         = $DomainCreds.UserName
-        #     LoginType    = 'WindowsUser'
-        #     # PsDscRunAsCredential = $Admincreds
-        # }
-
         #-------------------------------------------------------------------
         $SQLServerLoginsWindows = @(
             @{Name = 'NT SERVICE\ClusSvc' },
@@ -405,13 +388,12 @@ configuration ConfigSQLAO
         {
             SqlDatabaseDefaultLocation ($InstanceName + '_' + $location.Name)
             {
-                InstanceName = $InstanceName
-                Type         = $location.Name
-                Path         = $location.Path
+                InstanceName         = $InstanceName
+                Type                 = $location.Name
+                Path                 = $location.Path
+                PsDscRunAsCredential = $DomainCreds
             }
         }
-
-        # Use $DomainCreds for everything from here.
 
         SQLMemory SetSqlMaxMemory
         {
@@ -643,50 +625,6 @@ configuration ConfigSQLAO
                 PsDscRunAsCredential          = $DomainCreds
             }
 
-            #-------------------------------------------------------------------
-            # Enable the cluster ownership on the Availability Group Cluster Name Object
-            # It will set it to delete protected in AD.
-            script ('ACL_' + $SqlAlwaysOnAvailabilityGroupName)
-            {
-                PsDscRunAsCredential = $DomainCreds
-                GetScript            = {
-                    $computer = Get-ADComputer -Filter { Name -eq $using:SqlAlwaysOnAvailabilityGroupListenerName } -ErrorAction SilentlyContinue
-                    $computerPath = 'AD:\' + $computer.DistinguishedName
-                    $ACL = Get-Acl -Path $computerPath
-                    $result = $ACL.Access | Where-Object { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq 'GenericAll' }
-                    @{
-                        name  = 'ACL'
-                        value = $result
-                    }
-                }#Get
-                SetScript            = {
-                
-                    $clusterSID = Get-ADComputer -Identity $using:ClusterName -ErrorAction Stop | Select-Object -ExpandProperty SID
-                    $computer = Get-ADComputer -Identity $using:SqlAlwaysOnAvailabilityGroupListenerName
-                    $computerPath = 'AD:\' + $computer.DistinguishedName
-                    $ACL = Get-Acl -Path $computerPath
-
-                    $R_W_E = [System.DirectoryServices.ActiveDirectoryAccessRule]::new($clusterSID, 'GenericAll', 'Allow')
-
-                    $ACL.AddAccessRule($R_W_E)
-                    Set-Acl -Path $computerPath -AclObject $ACL -Passthru -Verbose
-                }#Set 
-                TestScript           = {
-                    $computer = Get-ADComputer -Filter { Name -eq $using:SqlAlwaysOnAvailabilityGroupListenerName } -ErrorAction SilentlyContinue
-                    $computerPath = 'AD:\' + $computer.DistinguishedName
-                    $ACL = Get-Acl -Path $computerPath
-                    $result = $ACL.Access | Where-Object { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq 'GenericAll' }
-                    if ($result)
-                    {
-                        $true
-                    }
-                    else
-                    {
-                        $false
-                    }
-                }#Test
-            }#Script ACL
-
             # No resource for automatic seeding right now.
             # https://github.com/dsccommunity/SqlServerDsc/issues/487
             # Enable Automatic Seeding for DataBases
@@ -821,6 +759,50 @@ configuration ConfigSQLAO
                     }
                 }
             }
+
+            #-------------------------------------------------------------------
+            # Enable the cluster ownership on the Availability Group Cluster Name Object
+            # It will set it to delete protected in AD.
+            script ('ACL_' + $SqlAlwaysOnAvailabilityGroupName)
+            {
+                PsDscRunAsCredential = $DomainCreds
+                GetScript            = {
+                    $computer = Get-ADComputer -Filter { Name -eq $using:SqlAlwaysOnAvailabilityGroupListenerName } -ErrorAction SilentlyContinue
+                    $computerPath = 'AD:\' + $computer.DistinguishedName
+                    $ACL = Get-Acl -Path $computerPath
+                    $result = $ACL.Access | Where-Object { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq 'GenericAll' }
+                    @{
+                        name  = 'ACL'
+                        value = $result
+                    }
+                }#Get
+                SetScript            = {
+                
+                    $clusterSID = Get-ADComputer -Identity $using:ClusterName -ErrorAction Stop | Select-Object -ExpandProperty SID
+                    $computer = Get-ADComputer -Identity $using:SqlAlwaysOnAvailabilityGroupListenerName
+                    $computerPath = 'AD:\' + $computer.DistinguishedName
+                    $ACL = Get-Acl -Path $computerPath
+
+                    $R_W_E = [System.DirectoryServices.ActiveDirectoryAccessRule]::new($clusterSID, 'GenericAll', 'Allow')
+
+                    $ACL.AddAccessRule($R_W_E)
+                    Set-Acl -Path $computerPath -AclObject $ACL -Passthru -Verbose
+                }#Set 
+                TestScript           = {
+                    $computer = Get-ADComputer -Filter { Name -eq $using:SqlAlwaysOnAvailabilityGroupListenerName } -ErrorAction SilentlyContinue
+                    $computerPath = 'AD:\' + $computer.DistinguishedName
+                    $ACL = Get-Acl -Path $computerPath
+                    $result = $ACL.Access | Where-Object { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq 'GenericAll' }
+                    if ($result)
+                    {
+                        $true
+                    }
+                    else
+                    {
+                        $false
+                    }
+                }#Test
+            }#Script ACL
         }
         else
         {
