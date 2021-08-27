@@ -15,7 +15,7 @@ configuration ConfigSQLAO
         [String]$ClusterName = 'cls01',
 
         # [Parameter(Mandatory)]
-        [String]$vmNamePrefix = 'ACU1BRWAOASQL0',
+        [String]$vmNamePrefix = 'ACU1AOAD2SQL0',
 
         # [Parameter(Mandatory)]
         [Int]$vmCount = 2,
@@ -24,16 +24,16 @@ configuration ConfigSQLAO
         [String]$SqlAlwaysOnAvailabilityGroupName = 'AG01',
 
         # [Parameter(Mandatory)]
-        [String]$SqlAlwaysOnAvailabilityGroupListenerName = 'abc',
+        [String]$SqlAlwaysOnAvailabilityGroupListenerName = 'AOA01',
 
         # [Parameter(Mandatory)]
-        [String]$ClusterIpAddress = '10.10.140.91',
+        [String]$ClusterIpAddress = '10.10.140.90',
 
         # [Parameter(Mandatory)]
         [String]$AGListenerIpAddress = '10.10.140.110',
 
         # [Parameter(Mandatory)]
-        [String]$SqlAlwaysOnEndpointName = 'abc',
+        [String]$SqlAlwaysOnEndpointName = 'Hadr_endpoint',
 
         # [Parameter(Mandatory)]
         [String]$witnessStorageName = 'acu1brwaoad2sawitness',
@@ -41,17 +41,17 @@ configuration ConfigSQLAO
         [Parameter(Mandatory)]
         [PSCredential]$witnessStorageKey,
 
-        [UInt32]$DatabaseEnginePort = 1433,
+        [Int]$DatabaseEnginePort = 1433,
 
-        [UInt32]$DatabaseMirrorPort = 5022,
+        [Int]$DatabaseMirrorPort = 5022,
 
-        [UInt32]$ProbePortNumber = 59999,
-
-        # [Parameter(Mandatory)]
-        [UInt32]$NumberOfDisks = 1,
+        [Int]$ProbePortNumber = 59999,
 
         # [Parameter(Mandatory)]
-        [String]$WorkloadType = "GENERAL",
+        [Int]$NumberOfDisks = 1,
+
+        # [Parameter(Mandatory)]
+        [String]$WorkloadType = 'GENERAL',
 
         [Int]$RetryCount = 20,
         [Int]$RetryIntervalSec = 30
@@ -64,6 +64,7 @@ configuration ConfigSQLAO
     Import-DscResource -ModuleName NetworkingDsc
     Import-DscResource -ModuleName SqlServerDsc
     Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName SecurityPolicyDSC
 
     
     if ($DomainName)
@@ -91,7 +92,21 @@ configuration ConfigSQLAO
         $Members.Add($vmNamePrefix + $Count.ToString())
     }
 
+    Function IIf
+    {
+        param($If, $IfTrue, $IfFalse)
+        
+        If ($If -IsNot 'Boolean') { $_ = $If }
+        If ($If) { If ($IfTrue -is 'ScriptBlock') { &$IfTrue } Else { $IfTrue } }
+        Else { If ($IfFalse -is 'ScriptBlock') { &$IfFalse } Else { $IfFalse } }
+    }
+
     $PrimaryReplica = $Members[0]
+    $SecondaryReplica = $Members[1..$Members.count]
+    Write-Warning -Message "ComputerName: [$($Env:ComputerName)] & PrimaryReplica: [$PrimaryReplica]"
+    Write-Warning -Message "ComputerName equals PrimaryReplica: [$($Env:ComputerName -eq $PrimaryReplica)]"
+    Write-Warning -Message "SecondaryReplica: [$SecondaryReplica]"
+
 
     Node localhost #$allNodes.NodeName
     {
@@ -105,8 +120,8 @@ configuration ConfigSQLAO
 
         #-------------------------------------------------------------------
         $WindowsFeaturePresent = @(
-            'Failover-Clustering', 'RSAT-Clustering-Mgmt',
-            'RSAT-Clustering-PowerShell', 'RSAT-AD-PowerShell', 'RSAT-AD-AdminCenter'
+            'Failover-Clustering', 'RSAT-Clustering-Mgmt', 'RSAT-Clustering-PowerShell',
+            'RSAT-AD-PowerShell', 'RSAT-AD-AdminCenter'
         )
         
         foreach ($Feature in $WindowsFeaturePresent)
@@ -119,6 +134,58 @@ configuration ConfigSQLAO
             $dependsonFeatures += @("[WindowsFeature]$Feature")
         }
 
+        #-------------------------------------------------------------
+        $RegistryKeyPresent = @(
+            @{ Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced';
+                ValueName = 'DontUsePowerShellOnWinX'; ValueData = 0 ; ValueType = 'Dword'
+            },
+
+            @{ Key = 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced';
+                ValueName = 'TaskbarGlomLevel'; ValueData = 1 ; ValueType = 'Dword'
+            },
+
+            # https://docs.microsoft.com/en-us/mem/configmgr/core/plan-design/security/enable-tls-1-2-client
+
+            @{ Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319';
+                ValueName = 'SchUseStrongCrypto'; ValueData = 1 ; ValueType = 'Dword'
+            },
+
+            @{ Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319';
+                ValueName = 'SystemDefaultTlsVersions'; ValueData = 1 ; ValueType = 'Dword'
+            },
+
+            @{ Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NETFramework\v4.0.30319';
+                ValueName = 'SchUseStrongCrypto'; ValueData = 1 ; ValueType = 'Dword'
+            },
+
+            @{ Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NETFramework\v4.0.30319';
+                ValueName = 'SystemDefaultTlsVersions'; ValueData = 1 ; ValueType = 'Dword'
+            }
+        )
+
+        # used to remove non-word chars for the resource name
+        $StringFilter = '\W', '-'
+        
+        foreach ($RegistryKey in $RegistryKeyPresent)
+        {
+            $key = $RegistryKey.Key -replace $StringFilter
+            
+            Registry ($RegistryKey.ValueName + '_' + $key)
+            {
+                Key                  = $RegistryKey.Key
+                ValueName            = $RegistryKey.ValueName
+                Ensure               = 'Present'
+                ValueData            = $RegistryKey.ValueData
+                ValueType            = $RegistryKey.ValueType
+                Force                = $true
+                PsDscRunAsCredential = $DomainCreds
+            }
+        
+            $dependsonRegistryKey += @("[Registry]$($RegistryKey.ValueName)")
+        }
+
+        #-------------------------------------------------------------------
+
         # xSqlCreateVirtualDataDisk NewVirtualDisk
         # {
         #     NumberOfDisks        = $NumberOfDisks
@@ -129,21 +196,53 @@ configuration ConfigSQLAO
         #     RebootVirtualMachine = $RebootVirtualMachine
         # }
 
-        # Consider moving to storage pools
+        # Consider moving to storage pools, using single disk for now F: Drive.
+
+        #-------------------------------------------------------------------
         # This service shows a pop-up to format the disk, stopping this disables the pop-up
         Get-Service -Name ShellHWDetection | Stop-Service -Verbose
-        Disk ADDataDisk
+
+        $DisksPresent = @(
+            @{DriveLetter = 'F'; DiskID = '2' }
+        )
+
+        foreach ($disk in $DisksPresent)
         {
-            DiskId      = '2'
-            DriveLetter = 'F'
-            # DependsOn   = '[WaitforDisk]Disk2'
+            Disk $disk.DriveLetter
+            {
+                DiskID             = $disk.DiskID
+                DriveLetter        = $disk.DriveLetter
+                AllocationUnitSize = 64KB
+            }
+            $dependsonDisksPresent += @("[Disk]$($disk.DriveLetter)")
         }
 
+        #-------------------------------------------------------------------
+        $DirectoryPresent = @(
+            'F:\Data',
+            'F:\Logs',
+            'F:\Backup'
+        )
+        
+        foreach ($Dir in $DirectoryPresent)
+        {
+            $Name = $Dir -replace $StringFilter
+            File $Name
+            {
+                DestinationPath      = $Dir
+                Type                 = 'Directory'
+                PsDscRunAsCredential = $DomainCreds
+                DependsOn            = $dependsonDisksPresent
+            }
+            $dependsonDir += @("[File]$Name")
+        }
+
+        #-------------------------------------------------------------------
         Script SqlServerPowerShell
         {
             SetScript  = {
                 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                Install-PackageProvider -Name NuGet -Force
+                Install-PackageProvider -Name NuGet -Force -ForceBootstrap
                 Install-Module -Name SqlServer -AllowClobber -Force
                 Import-Module -Name SqlServer -ErrorAction SilentlyContinue
             }
@@ -179,7 +278,7 @@ configuration ConfigSQLAO
             Enabled     = 'True'
             Action      = 'Allow'
             Protocol    = 'TCP'
-            LocalPort   = $DatabaseEnginePort -as [String]
+            LocalPort   = $DatabaseEnginePort
         }
 
         Firewall DatabaseMirroringFirewallRule
@@ -192,7 +291,7 @@ configuration ConfigSQLAO
             Enabled     = 'True'
             Action      = 'Allow'
             Protocol    = 'TCP'
-            LocalPort   = $DatabaseMirrorPort -as [String]
+            LocalPort   = $DatabaseMirrorPort
         }
 
         Firewall LoadBalancerProbePortFirewallRule
@@ -205,7 +304,7 @@ configuration ConfigSQLAO
             Enabled     = 'True'
             Action      = 'Allow'
             Protocol    = 'TCP'
-            LocalPort   = $ProbePortNumber -as [String]
+            LocalPort   = $ProbePortNumber
         }
 
         ADUser SQLDomainUser
@@ -218,132 +317,605 @@ configuration ConfigSQLAO
             DependsOn            = $dependsonFeatures
         }
 
-        SqlLogin SQLDomainUserLogin
+        # SqlLogin SQLDomainUserLogin
+        # {
+        #     InstanceName = $InstanceName
+        #     Name         = $SQLCreds.UserName
+        #     LoginType    = 'WindowsUser'
+        #     DependsOn    = '[ADUser]SQLDomainUser'
+        #     # PsDscRunAsCredential = $Admincreds
+        # }
+
+        # SqlLogin AdminDomainLogin
+        # {
+        #     InstanceName = $InstanceName
+        #     Name         = $DomainCreds.UserName
+        #     LoginType    = 'WindowsUser'
+        #     # PsDscRunAsCredential = $Admincreds
+        # }
+
+        #-------------------------------------------------------------------
+        $SQLServerLoginsWindows = @(
+            @{Name = 'NT SERVICE\ClusSvc' },
+            @{Name = 'NT AUTHORITY\SYSTEM' },
+            @{Name = $DomainCreds.UserName },
+            @{Name = $SQLCreds.UserName }
+        )
+
+        $i = 0
+        foreach ($userLogin in $SQLServerLoginsWindows)
         {
-            InstanceName         = $InstanceName
-            Name                 = $SQLCreds.UserName
-            LoginType            = 'WindowsUser'
-            PsDscRunAsCredential = $Admincreds
-            DependsOn            = '[ADUser]SQLDomainUser'
+            
+            $SQLlogin = ($userLogin.Name + '_' + $InstanceName + '_' + (++$i))
+            SqlLogin $SQLlogin
+            {
+                Ensure       = 'Present'
+                Name         = ($userLogin.Name)
+                LoginType    = IIF $userLogin.logintype $userLogin.logintype 'WindowsUser'
+                Disabled     = IIF $userlogin.Disabled $userlogin.Disabled $false
+                ServerName   = $computername
+                InstanceName = $InstanceName
+                DependsOn    = $dependsonFeatures
+                # PsDscRunAsCredential = $AdminCreds
+            }
+            $dependsonuserLogin += @("[SqlLogin]$SQLlogin")
         }
 
-        SqlLogin AdminDomainLogin
-        {
-            InstanceName         = $InstanceName
-            Name                 = $DomainCreds.UserName
-            LoginType            = 'WindowsUser'
-            PsDscRunAsCredential = $Admincreds
-        }
-
+        #-------------------------------------------------------------------
         SqlRole DomainSQLAdmins
         {
             InstanceName         = $InstanceName
             ServerRoleName       = 'sysadmin'
             MembersToInclude     = @($SQLCreds.UserName, $DomainCreds.UserName)
             PsDscRunAsCredential = $Admincreds
-            DependsOn            = @('[SqlLogin]SQLDomainUserLogin', '[SqlLogin]AdminDomainLogin')
+            DependsOn            = $dependsonuserLogin
         }
 
-        ## Use $DomainCreds for everthing from here.
+        #-------------------------------------------------------------------
+        $ServiceStatus = @(
+            @{Name = 'SQLSERVERAGENT' }
+        )
+        
+        foreach ($Service in $ServiceStatus)
+        {
+            Service $Service.Name
+            {
+                Name        = $Service.Name
+                State       = IIF $Service.State $Service.State 'Running'
+                StartupType = IIF $Service.StartupType $Service.StartupType 'Automatic'
+            }
+        }
+
+        SqlServiceAccount $InstanceName
+        {
+            InstanceName   = $InstanceName
+            ServiceType    = 'DatabaseEngine'
+            ServiceAccount = $SQLCreds
+            RestartService = $true
+        }
+
+        #-------------------------------------------------------------------
+        $DataBaseLocations = @(
+            @{Name = 'Data'; Path = 'F:\Data' },
+            @{Name = 'Log' ; Path = 'F:\Logs' },
+            @{Name = 'Backup'; Path = 'F:\Backup' }
+        )
+
+        foreach ($location in $DataBaseLocations)
+        {
+            SqlDatabaseDefaultLocation ($InstanceName + '_' + $location.Name)
+            {
+                InstanceName = $InstanceName
+                Type         = $location.Name
+                Path         = $location.Path
+            }
+        }
+
+        # Use $DomainCreds for everything from here.
+
+        SQLMemory SetSqlMaxMemory
+        {
+            InstanceName         = $InstanceName
+            Ensure               = 'Present'
+            DynamicAlloc         = $true
+            PsDscRunAsCredential = $DomainCreds
+        }
+
+        SqlMaxDop SetSqlMaxDopToAuto
+        {
+            InstanceName = $InstanceName
+            Ensure       = 'Present'
+            DynamicAlloc = $true
+            #MaxDop      = 8
+        }
+
+        #-------------------------------------------------------------------
+        # Add the required permissions to the cluster service login
+        $SQLServerPermissions = @(
+            @{
+                Name       = 'NT SERVICE\ClusSvc'
+                Permission = 'AlterAnyAvailabilityGroup', 'ViewServerState', 'ConnectSql'
+            },
+
+            @{
+                Name       = 'NT AUTHORITY\SYSTEM'
+                Permission = 'AlterAnyAvailabilityGroup', 'ViewServerState', 'ConnectSql'
+            }
+        )
+        foreach ($userPermission in $SQLServerPermissions)
+        {
+            SqlPermission $userPermission.Name
+            {
+                Ensure               = 'Present'
+                InstanceName         = $InstanceName
+                Principal            = $userPermission.Name
+                Permission           = $userPermission.Permission
+                PsDscRunAsCredential = $DomainCreds
+                DependsOn            = $dependsonuserLogin
+            }
+            $dependsonSqlPermissions += @("[SqlPermission]$($userPermission.Name)")
+        }
+
+        SqlEndpoint SQLEndPoint
+        {
+            Ensure               = 'Present'
+            Port                 = $DatabaseMirrorPort
+            EndPointName         = $SqlAlwaysOnEndpointName
+            EndpointType         = 'DatabaseMirroring'
+            InstanceName         = $InstanceName
+            DependsOn            = $dependsonSqlPermissions
+            PsDscRunAsCredential = $DomainCreds
+        }
+
+        SqlServerEndpointState StartEndpoint
+        {
+            InstanceName         = $InstanceName
+            Name                 = $SqlAlwaysOnEndpointName
+            State                = 'Started'
+            DependsOn            = '[SqlEndpoint]SQLEndPoint'
+            PsDscRunAsCredential = $DomainCreds
+        }
+
+        SqlEndpointPermission DatabaseMirroring
+        {
+            InstanceName         = $InstanceName
+            Name                 = $SqlAlwaysOnEndpointName
+            Permission           = 'CONNECT'
+            Principal            = $SQLCreds.UserName
+            DependsOn            = '[SqlEndpoint]SQLEndPoint'
+            PsDscRunAsCredential = $DomainCreds
+        }
+
+        SqlAlwaysOnService SQLCluster
+        {
+            Ensure               = 'Present'
+            InstanceName         = $InstanceName
+            RestartTimeout       = 360
+            DependsOn            = '[SqlServerEndpointState]StartEndpoint'
+            PsDscRunAsCredential = $DomainCreds
+        }
+
+        #-------------------------------------------------------------------
+        $UserRightsAssignmentPresent = @(
+            @{
+                identity = "NT SERVICE\MSSQL`${0}"
+                policy   = 'Perform_volume_maintenance_tasks'
+            },
+
+            @{
+                identity = "NT SERVICE\MSSQL`${0}"
+                policy   = 'Lock_pages_in_memory'
+            }
+        )
+        foreach ($UserRightsAssignment in $UserRightsAssignmentPresent)
+        {
+            $uraid = $UserRightsAssignment.identity | ForEach-Object { $_ -f $InstanceName }
+
+            UserRightsAssignment (($UserRightsAssignment.policy -replace $StringFilter) + ($uraid -replace $StringFilter))
+            {
+                Identity             = $uraid
+                Policy               = $UserRightsAssignment.policy
+                PsDscRunAsCredential = $DomainCreds
+            }
+            $dependsonUserRightsAssignment += @("[UserRightsAssignment]$($UserRightsAssignment.policy)")
+        }
 
         #-------------------------------------------------------------------
         ## prepare the cluster next
-
-        foreach ($Member in $Members)
+        Write-Warning -Message "ComputerName: [$($Env:ComputerName)] & PrimaryReplica: [$PrimaryReplica]"
+        Write-Warning -Message "ComputerName equals PrimaryReplica: [$($Env:ComputerName -eq $PrimaryReplica)]"
+        If ($Env:ComputerName -eq $PrimaryReplica)
         {
-            
-            If ($Member -eq $PrimaryReplica)
+            script MoveToPrimary
             {
-                script MoveToPrimary
+                PsDscRunAsCredential = $DomainCreds
+                GetScript            = {
+                    $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | ForEach-Object OwnerNode
+                    @{Owner = $Owner }
+                }#Get
+                TestScript           = {
+                    try
+                    {
+                        $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | ForEach-Object OwnerNode | ForEach-Object Name
+        
+                        if ($Owner -eq $env:ComputerName)
+                        {
+                            Write-Warning -Message 'Cluster running on Correct Node, continue'
+                            $True
+                        }
+                        else
+                        {
+                            $False
+                        }
+                    }#Try
+                    Catch
+                    {
+                        Write-Warning -Message 'Cluster not yet enabled, continue'
+                        $True
+                    }#Catch
+                }#Test
+                SetScript            = {
+                        
+                    Get-ClusterGroup -Name 'Cluster Group' -EA Stop | Move-ClusterGroup -Node $env:ComputerName -Wait 60
+                }#Set
+            }#MoveToPrimary
+        
+            #-------------------------------------------------------------------
+            xCluster SQLCluster
+            {
+                PsDscRunAsCredential          = $DomainCreds
+                Name                          = $ClusterName
+                StaticIPAddress               = $ClusterIpAddress
+                DomainAdministratorCredential = $DomainCreds
+                DependsOn                     = '[script]MoveToPrimary'
+            }
+        
+            xClusterQuorum CloudWitness
+            {
+                PsDscRunAsCredential    = $DomainCreds
+                IsSingleInstance        = 'Yes'
+                type                    = 'NodeAndCloudMajority'
+                Resource                = $witnessStorageName
+                StorageAccountAccessKey = $witnessStorageKey.GetNetworkCredential().Password
+                DependsOn               = '[xCluster]SQLCluster'
+            }
+
+            foreach ($clusterserver in $SecondaryReplica)
+            {
+                script "AddNodeToCluster_$clusterserver"
                 {
+                    DependsOn            = '[xCluster]SQLCluster'
                     PsDscRunAsCredential = $DomainCreds
                     GetScript            = {
-                        $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | ForEach-Object OwnerNode
-                        @{Owner = $Owner }
-                    }#Get
-                    TestScript           = {
-                        try
-                        {
-                            $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | ForEach-Object OwnerNode | ForEach-Object Name
-        
-                            if ($Owner -eq $env:ComputerName)
-                            {
-                                Write-Warning -Message 'Cluster running on Correct Node, continue'
-                                $True
-                            }
-                            else
-                            {
-                                $False
-                            }
-                        }#Try
-                        Catch
-                        {
-                            Write-Warning -Message 'Cluster not yet enabled, continue'
-                            $True
-                        }#Catch
-                    }#Test
+                        $result = Get-ClusterNode
+                        @{key = $result }
+                    }
                     SetScript            = {
-                        
-                        Get-ClusterGroup -Name 'Cluster Group' -EA Stop | Move-ClusterGroup -Node $env:ComputerName -Wait 60
-                    }#Set
-                }#MoveToPrimary
-        
-                xCluster SQLCluster
-                {
-                    PsDscRunAsCredential          = $DomainCreds
-                    Name                          = $ClusterName
-                    StaticIPAddress               = $ClusterIpAddresses
-                    DomainAdministratorCredential = $DomainCreds
-                    DependsOn                     = '[script]MoveToPrimary'
-                }
-        
-                xClusterQuorum CloudWitness
-                {
-                    PsDscRunAsCredential    = $DomainCreds
-                    IsSingleInstance        = 'Yes'
-                    type                    = 'NodeAndCloudMajority'
-                    Resource                = $witnessStorageName
-                    StorageAccountAccessKey = $witnessStorageKey.GetNetworkCredential().Password
-                }
-
-                foreach ($Secondary in $ClusterInfo.Secondary)
-                {
-                    $clusterserver = $ClusterName
-                    script "AddNodeToCluster_$clusterserver"
-                    {
-                        PsDscRunAsCredential = $DomainCreds
-                        GetScript            = {
-                            $result = Get-ClusterNode
-                            @{key = $result }
-                        }
-                        SetScript            = {
-                            Write-Verbose ('Adding Cluster Node: ' + $using:clusterserver) -Verbose
-                            Add-ClusterNode -Name $using:clusterserver -NoStorage 
-                        }
-                        TestScript           = {
+                        Write-Verbose ('Adding Cluster Node: ' + $using:clusterserver) -Verbose
+                        Add-ClusterNode -Name $using:clusterserver -NoStorage 
+                    }
+                    TestScript           = {
                             
-                            $result = Get-ClusterNode -Name $using:clusterserver -ea SilentlyContinue
-                            if ($result)
-                            {
-                                $true
-                            }
-                            else
-                            {
-                                $false
-                            }
+                        $result = Get-ClusterNode -Name $using:clusterserver -ea SilentlyContinue
+                        if ($result)
+                        {
+                            $true
+                        }
+                        else
+                        {
+                            $false
                         }
                     }
-                    $dependsonAddNodeToCluster += @("[script]$("AddNodeToCluster_$clusterserver")")
                 }
-            }
-            else 
-            {
-                # No action required here, the Primary Cluster can add all other Nodes from the Primary.
-                # This saves additonal waits on any Secondary
+                $dependsonAddNodeToCluster += @("[script]$("AddNodeToCluster_$clusterserver")")
             }
         }
+        else 
+        {
+            # No action required here, the Primary Cluster can add all other Nodes from the Primary.
+            # This saves additonal waits on any Secondary
+        }
 
-        #-------------------------------------------------------------------
+        If ($Env:ComputerName -eq $PrimaryReplica)
+        {
+            SqlDatabase $SqlAlwaysOnAvailabilityGroupName
+            {
+                Ensure       = 'Present'
+                InstanceName = $InstanceName
+                Name         = $SqlAlwaysOnAvailabilityGroupName
+            }
+
+            SqlAG $SqlAlwaysOnAvailabilityGroupName
+            {
+                ServerName                    = $Env:ComputerName
+                InstanceName                  = $InstanceName
+                Name                          = $SqlAlwaysOnAvailabilityGroupName
+                AutomatedBackupPreference     = 'Secondary'
+                FailureConditionLevel         = 'OnCriticalServerErrors'
+                HealthCheckTimeout            = 600000
+
+                AvailabilityMode              = 'SynchronousCommit'
+                FailOverMode                  = 'Automatic'
+                ConnectionModeInPrimaryRole   = 'AllowReadWriteConnections'
+                ConnectionModeInSecondaryRole = 'AllowReadIntentConnectionsOnly'
+                BackupPriority                = 30
+                EndpointHostName              = ($Env:ComputerName + ".$DomainName")
+                PsDscRunAsCredential          = $DomainCreds
+            }
+
+            #-------------------------------------------------------------------
+            # Enable the cluster ownership on the Availability Group Cluster Name Object
+            # It will set it to delete protected in AD.
+            script ('ACL_' + $SqlAlwaysOnAvailabilityGroupName)
+            {
+                PsDscRunAsCredential = $DomainCreds
+                GetScript            = {
+                    $computer = Get-ADComputer -Filter { Name -eq $using:SqlAlwaysOnAvailabilityGroupListenerName } -ErrorAction SilentlyContinue
+                    $computerPath = 'AD:\' + $computer.DistinguishedName
+                    $ACL = Get-Acl -Path $computerPath
+                    $result = $ACL.Access | Where-Object { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq 'GenericAll' }
+                    @{
+                        name  = 'ACL'
+                        value = $result
+                    }
+                }#Get
+                SetScript            = {
+                
+                    $clusterSID = Get-ADComputer -Identity $using:ClusterName -ErrorAction Stop | Select-Object -ExpandProperty SID
+                    $computer = Get-ADComputer -Identity $using:SqlAlwaysOnAvailabilityGroupListenerName
+                    $computerPath = 'AD:\' + $computer.DistinguishedName
+                    $ACL = Get-Acl -Path $computerPath
+
+                    $R_W_E = [System.DirectoryServices.ActiveDirectoryAccessRule]::new($clusterSID, 'GenericAll', 'Allow')
+
+                    $ACL.AddAccessRule($R_W_E)
+                    Set-Acl -Path $computerPath -AclObject $ACL -Passthru -Verbose
+                }#Set 
+                TestScript           = {
+                    $computer = Get-ADComputer -Filter { Name -eq $using:SqlAlwaysOnAvailabilityGroupListenerName } -ErrorAction SilentlyContinue
+                    $computerPath = 'AD:\' + $computer.DistinguishedName
+                    $ACL = Get-Acl -Path $computerPath
+                    $result = $ACL.Access | Where-Object { $_.IdentityReference -match $using:ClusterName -and $_.ActiveDirectoryRights -eq 'GenericAll' }
+                    if ($result)
+                    {
+                        $true
+                    }
+                    else
+                    {
+                        $false
+                    }
+                }#Test
+            }#Script ACL
+
+            # No resource for automatic seeding right now.
+            # https://github.com/dsccommunity/SqlServerDsc/issues/487
+            # Enable Automatic Seeding for DataBases
+            script ('SeedingMode_' + $SqlAlwaysOnAvailabilityGroupName)
+            {
+                PsDscRunAsCredential = $DomainCreds
+                GetScript            = {
+                    $SQLInstanceName = $Using:InstanceName
+                    if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
+
+                    Import-Module -Name SQLServer -Verbose:$False
+                    $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:PrimaryReplica\$SQLInstanceName\AvailabilityGroups\$using:SqlAlwaysOnAvailabilityGroupName\AvailabilityReplicas\" -ea 0 |
+                        Where-Object name -Match $using:PrimaryReplica | Select-Object *
+                    if ($result)
+                    {
+                        @{key = $result }
+                    }
+                    else
+                    {
+                        @{key = 'Not available' }
+                    }
+                }
+                SetScript            = {
+                    $SQLInstanceName = $Using:InstanceName
+                    if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
+
+                    Import-Module SQLServer -Force -Verbose:$False
+                    $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:PrimaryReplica\$SQLInstanceName\AvailabilityGroups\$using:SqlAlwaysOnAvailabilityGroupName\AvailabilityReplicas\" -ea 0 |
+                        Where-Object name -Match $using:PrimaryReplica | Select-Object *
+
+                    Write-Warning "PATH: $($result.pspath)"
+                    Set-SqlAvailabilityReplica -SeedingMode 'Automatic' -Path $result.pspath -Verbose
+                }
+                TestScript           = {
+                    $SQLInstanceName = $Using:InstanceName
+                    if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
+
+                    Import-Module -Name SQLServer -Force -Verbose:$False
+
+                    $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:PrimaryReplica\$SQLInstanceName\AvailabilityGroups\$using:SqlAlwaysOnAvailabilityGroupName\AvailabilityReplicas\" -ea 0 |
+                        Where-Object name -Match $using:PrimaryReplica | Select-Object *
+                
+                    Write-Warning "PATH: $($result.pspath)"
+                    $result1 = Get-Item -Path $result.pspath -ea silentlycontinue | ForEach-Object SeedingMode
+
+                    if ($result1 -eq 'Automatic')
+                    {
+                        $true
+                    }
+                    else
+                    {
+                        $false
+                    }
+                }
+            }
+
+            # Add DB to AOG, requires backup
+            SqlAGDatabase ($SqlAlwaysOnAvailabilityGroupName + 'DB')
+            {
+                AvailabilityGroupName   = $SqlAlwaysOnAvailabilityGroupName
+                BackupPath              = 'F:\Backup'
+                DatabaseName            = $SqlAlwaysOnAvailabilityGroupName
+                InstanceName            = $InstanceName
+                ServerName              = $Env:ComputerName
+                Ensure                  = 'Present'
+                ProcessOnlyOnActiveNode = $true
+                PsDscRunAsCredential    = $DomainCreds
+            }
+
+            <#
+            # Recommend not to use this: https://github.com/dsccommunity/SqlServerDsc/issues?q=is%3Aissue+is%3Aopen+sqlaglistener+
+            # many open issues, the Below custom script resource is he way to go as the replacement.
+            SqlAGListener 'AvailabilityGroupListenerWithSameNameAsVCO'
+            {
+                Ensure               = 'Present'
+                ServerName           = $env:COMPUTERNAME
+                InstanceName         = $InstanceName
+                AvailabilityGroup    = $SqlAlwaysOnAvailabilityGroupName
+                Name                 = $SqlAlwaysOnAvailabilityGroupName
+                IpAddress            = $AGListenerIpAddress
+                Port                 = $ProbePortNumber
+                PsDscRunAsCredential = $SqlAdministratorCredential
+            }
+            #>
+
+            # Create the AO Listener for the ILB Probe (Final Step on Primary AG)
+            script ('AAListener' + $SqlAlwaysOnAvailabilityGroupName)
+            {
+                PsDscRunAsCredential = $DomainCreds
+                DependsOn            = $dependsonSQLServerAOScripts
+                GetScript            = {
+                    $AOName = $using:SqlAlwaysOnAvailabilityGroupListenerName
+                    $result = Get-ClusterResource -Name $AOName -ea SilentlyContinue
+                    @{key = $result }
+                }
+                SetScript            = {
+                    $AOIP = $using:AGListenerIpAddress
+                    $ProbePort = $using:ProbePortNumber
+                    $GroupName = $using:SqlAlwaysOnAvailabilityGroupName
+                    $AOName = $using:SqlAlwaysOnAvailabilityGroupListenerName
+                    $IPResourceName = "${AOName}_IP"
+                    $ClusterNetworkName = 'Cluster Network 1'
+                    Write-Warning "AOIP $AOIP"
+                    Write-Warning "ProbePort $ProbePort"
+                    Write-Warning "GroupName $GroupName"
+                    Write-Warning "AOName $AOName"
+                    Write-Warning "IPResourceName $IPResourceName"
+                                
+                    $nn = Get-ClusterResource -Name $AOName -ErrorAction SilentlyContinue | Stop-ClusterResource -Wait 20
+                                
+                    $nn = Add-ClusterResource -ResourceType 'Network Name' -Name $AOName -Group $GroupName -ErrorAction SilentlyContinue
+                    $ip = Add-ClusterResource -ResourceType 'IP Address' -Name $IPResourceName -Group $GroupName -ErrorAction SilentlyContinue
+                    Set-ClusterResourceDependency -Resource $AOName -Dependency "[$IPResourceName]"
+                    Get-ClusterResource -Name $IPResourceName | 
+                        Set-ClusterParameter -Multiple @{Address = $AOIP; ProbePort = $ProbePort; SubnetMask = '255.255.255.255'; Network = $ClusterNetworkName; EnableDhcp = 0 }
+                    Get-ClusterResource -Name $AOName | Set-ClusterParameter -Multiple @{'Name' = "$AOName" }
+                    Get-ClusterResource -Name $AOName | Start-ClusterResource -Wait 20
+                    Get-ClusterResource -Name $IPResourceName | Start-ClusterResource -Wait 20
+                }
+                TestScript           = {
+                    $AOName = ($using:SqlAlwaysOnAvailabilityGroupListenerName)
+                    Write-Warning "Cluster Resource Name Is ${AOName}_IP"
+                    $n = Get-ClusterResource -Name "${AOName}_IP" -ea SilentlyContinue
+                                            
+                    if ($n.Name -eq "${AOName}_IP" -and $n.state -eq 'Online')
+                    {
+                        $true
+                    }
+                    else
+                    {
+                        $false
+                    }
+                }
+            }
+        }
+        else
+        {
+            SqlWaitForAG $SqlAlwaysOnAvailabilityGroupName
+            {
+                Name                 = $SqlAlwaysOnAvailabilityGroupName
+                InstanceName         = $InstanceName
+                ServerName           = $PrimaryReplica
+                RetryIntervalSec     = 30
+                RetryCount           = 40
+                PsDscRunAsCredential = $DomainCreds
+            }
+            $dependsonwaitAG += @("[SqlWaitForAG]$groupname")
+
+            SqlAGReplica ($SqlAlwaysOnAvailabilityGroupName + 'AddReplica')
+            {
+                PsDscRunAsCredential          = $DomainCreds
+                Ensure                        = 'Present'
+                Name                          = $Env:ComputerName
+                AvailabilityGroupName         = $SqlAlwaysOnAvailabilityGroupName
+                ServerName                    = $Env:ComputerName
+                InstanceName                  = $InstanceName
+                PrimaryReplicaServerName      = $PrimaryReplica
+                PrimaryReplicaInstanceName    = $InstanceName
+                AvailabilityMode              = 'SynchronousCommit'
+                FailOverMode                  = 'Automatic'
+                ConnectionModeInPrimaryRole   = 'AllowReadWriteConnections'
+                ConnectionModeInSecondaryRole = 'AllowReadIntentConnectionsOnly'
+                BackupPriority                = 30
+                EndpointHostName              = ($Env:ComputerName + ".$DomainName")
+            }
+
+            # No resource for automatic seeding right now.
+            # https://github.com/dsccommunity/SqlServerDsc/issues/487
+            # Enable Automatic Seeding for DataBases
+            $Secondary = $Env:ComputerName
+            script ('SeedingMode_' + $SqlAlwaysOnAvailabilityGroupName)
+            {
+                DependsOn            = ('[SqlAGReplica]' + $SqlAlwaysOnAvailabilityGroupName + 'AddReplica')
+                PsDscRunAsCredential = $DomainCreds
+                GetScript            = {
+                    $SQLInstanceName = $Using:InstanceName
+                    if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
+
+                    Import-Module -Name SQLServer -Verbose:$False
+
+                    $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:PrimaryReplica\$SQLInstanceName\AvailabilityGroups\$using:SqlAlwaysOnAvailabilityGroupName\AvailabilityReplicas\" -ea 0 |
+                        Where-Object name -Match $using:secondary | Select-Object *
+                    Write-Warning "PATH: $($result.pspath)"
+                    if ($result)
+                    {
+                        @{key = $result }
+                    }
+                    else
+                    {
+                        @{key = 'Not available' }
+                    }
+                }
+                SetScript            = {
+                    $SQLInstanceName = $Using:InstanceName
+                    if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
+
+                    Import-Module SQLServer -Force -Verbose:$False
+
+                    $p1 = "SQLSERVER:\SQL\$using:Secondary\$SQLInstanceName\AvailabilityGroups\$using:SqlAlwaysOnAvailabilityGroupName"
+                    Write-Warning "PATH: $p1"
+                    Grant-SqlAvailabilityGroupCreateAnyDatabase -Path $p1
+
+                    $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:PrimaryReplica\$SQLInstanceName\AvailabilityGroups\$using:SqlAlwaysOnAvailabilityGroupName\AvailabilityReplicas\" -ea 0 |
+                        Where-Object name -Match $using:Secondary | Select-Object *
+                    Write-Warning "PATH: $($result.pspath)"
+                    
+                    Set-SqlAvailabilityReplica -SeedingMode 'Automatic' -Path $result.pspath -Verbose
+                }
+                TestScript           = {
+                    $SQLInstanceName = $Using:InstanceName
+                    if ($SQLInstanceName -eq 'MSSQLServer') { $SQLInstanceName = 'Default' }
+
+                    Import-Module -Name SQLServer -Force -Verbose:$False
+
+                    $result = Get-ChildItem -Path "SQLSERVER:\SQL\$using:PrimaryReplica\$SQLInstanceName\AvailabilityGroups\$using:SqlAlwaysOnAvailabilityGroupName\AvailabilityReplicas\" -ea 0 |
+                        Where-Object name -Match $using:Secondary | ForEach-Object SeedingMode
+                    Write-Warning "PATH: $($result.pspath)"
+                        
+                    if ($result -eq 'Automatic')
+                    {
+                        $true
+                    }
+                    else
+                    {
+                        $false
+                    }
+                }
+            }#Script
+        }
 
         <#
         xSqlTsqlEndpoint AddSqlServerEndpoint

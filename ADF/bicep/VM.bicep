@@ -46,6 +46,10 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
+@secure()
+param saKey string = newGuid()
+
+
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
@@ -534,7 +538,7 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
         }
         witnessStorageKey: {
           UserName: 'sakey'
-          Password: 'xBjy7oiAnpvD6O5xopTQAnL8C8ZzZ6G8jBApQWkRbcFYlc5p3/f5QV6uCo4sOQ6YBSjefrPTHACaEXPLATWCPQ=='
+          Password: saKey
         }
         // devOpsPat: {
         //   UserName: 'pat'
@@ -716,8 +720,8 @@ resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2019-0
     protectedSettings: {
       PrivateKeyVaultCredentialSettings: {
         AzureKeyVaultUrl: KVUrl
-        ServicePrincipalName: Global.sqlBackupservicePrincipalName
-        ServicePrincipalSecret: Global.sqlBackupservicePrincipalSecret
+        // ServicePrincipalName: Global.sqlBackupservicePrincipalName
+        // ServicePrincipalSecret: Global.sqlBackupservicePrincipalSecret
         StorageUrl: reference(resourceId('Microsoft.Storage/storageAccounts', ((vm.Role == 'SQL') ? saSQLBackupName : SADiagName)), '2015-06-15').primaryEndpoints.blob
         StorageAccessKey: listKeys(resourceId('Microsoft.Storage/storageAccounts', ((vm.Role == 'SQL') ? saSQLBackupName : SADiagName)), '2016-01-01').keys[0].value
         Password: vmAdminPassword

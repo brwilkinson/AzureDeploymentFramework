@@ -575,7 +575,7 @@ Configuration SQLServers
                     Ensure               = 'Present'
                     Name                 = ($userLogin.Name -f $NetBios)  # added the ability to add domain users
                     LoginType            = IIF $userLogin.logintype $userLogin.logintype 'WindowsUser'
-                    Disabled             = IIF $userlogin.Disabled $userlogin.Disabled $false  
+                    Disabled             = IIF $userlogin.Disabled $userlogin.Disabled $false
                     ServerName           = $computername
                     InstanceName         = $SQLInstanceName
                     DependsOn            = '[SqlSetup]xSqlInstall'
@@ -699,7 +699,7 @@ Configuration SQLServers
         {
             Write-Verbose $Nodename.GetType().Fullname
             [string]$computername = $Nodename
-        } 
+        }
  
         Write-Warning -Message 'PrimaryClusterNode'
         Write-Verbose -Message "Node is: [$($computername)]" -Verbose
@@ -1002,7 +1002,7 @@ Configuration SQLServers
                 RestartTimeout       = 360
                 DependsOn            = '[SqlServerEndpointState]StartEndpoint'
                 PsDscRunAsCredential = $credlookup['DomainJoin']
-            } 
+            }
 
 
             if ($computername -match $aoinfo.PrimaryAG)

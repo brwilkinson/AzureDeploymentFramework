@@ -67,6 +67,8 @@ configuration CreateADBDC
             # DependsOn   = '[WaitforDisk]Disk2'
         }
 
+        
+
         WaitForADDomain DC1Forest
         { 
             DomainName              = $DomainName
