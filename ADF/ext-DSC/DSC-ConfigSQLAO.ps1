@@ -65,6 +65,7 @@ configuration ConfigSQLAO
     Import-DscResource -ModuleName SqlServerDsc
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName SecurityPolicyDSC
+    Import-DscResource -ModuleName AccessControlDsc
 
     
     if ($DomainName)
@@ -218,6 +219,8 @@ configuration ConfigSQLAO
         }
 
         #-------------------------------------------------------------------
+        # Create the Directories used for SQL and provide access for the SQL Service Account
+        # SQL Service account is not a local admin.
         $DirectoryPresent = @(
             'F:\Data',
             'F:\Logs',
@@ -235,6 +238,35 @@ configuration ConfigSQLAO
                 DependsOn            = $dependsonDisksPresent
             }
             $dependsonDir += @("[File]$Name")
+            
+            $NTFSPermissions = @(
+                @{ Principal = $DomainCreds.UserName; FileSystemRights = 'FullControl' },
+                @{ Principal = $SQLCreds.UserName   ; FileSystemRights = 'FullControl' }
+            )
+
+            NtfsAccessEntry $Name
+            {
+                Path              = $Dir
+                AccessControlList = @(
+                    foreach ($NTFSpermission in $NTFSPermissions)
+                    {
+                        NTFSAccessControlList
+                        {
+                            Principal          = $NTFSpermission.Principal
+                            ForcePrincipal     = $false
+                            AccessControlEntry = @(
+                                NTFSAccessControlEntry
+                                {
+                                    AccessControlType = 'Allow'
+                                    FileSystemRights  = $NTFSpermission.FileSystemRights
+                                    Inheritance       = 'This folder subfolders and files'
+                                    Ensure            = 'Present'
+                                }
+                            )
+                        }
+                    }
+                )
+            }
         }
 
         #-------------------------------------------------------------------
