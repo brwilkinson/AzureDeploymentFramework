@@ -1,5 +1,5 @@
 param (
-    [string]$Enviro = 'G0',
+    [string]$Enviro = 'D2',
     [string]$App = 'AOA'
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
@@ -108,6 +108,8 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName AppServer
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName AppServersLinux
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName SQLServers
+
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName ConfigSQLAO
 
 ##########################################################
 # Stage and Upload DSC Resource Modules for AA

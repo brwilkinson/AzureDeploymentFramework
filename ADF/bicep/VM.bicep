@@ -46,6 +46,10 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
+@secure()
+param saKey string = newGuid()
+
+
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
@@ -494,7 +498,7 @@ resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30'
   scope: resourceGroup(RGName)
 }
 
-resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC2 == 1 && vm.Role != 'PULL' && (DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
+resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC2 == 1 && vm.Role != 'PULL' && (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC2'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -532,10 +536,10 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
           UserName: Global.vmAdminUserName
           Password: vmAdminPassword
         }
-        // sshPublic: {
-        //   UserName: 'ssh'
-        //   Password: sshPublic
-        // }
+        witnessStorageKey: {
+          UserName: 'sakey'
+          Password: saKey
+        }
         // devOpsPat: {
         //   UserName: 'pat'
         //   Password: devOpsPat
@@ -550,7 +554,7 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
   ]
 }]
 
-resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC == 1 && vm.Role != 'PULL' && !(DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
+resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC == 1 && vm.Role != 'PULL' && ! (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -716,8 +720,8 @@ resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2019-0
     protectedSettings: {
       PrivateKeyVaultCredentialSettings: {
         AzureKeyVaultUrl: KVUrl
-        ServicePrincipalName: Global.sqlBackupservicePrincipalName
-        ServicePrincipalSecret: Global.sqlBackupservicePrincipalSecret
+        // ServicePrincipalName: Global.sqlBackupservicePrincipalName
+        // ServicePrincipalSecret: Global.sqlBackupservicePrincipalSecret
         StorageUrl: reference(resourceId('Microsoft.Storage/storageAccounts', ((vm.Role == 'SQL') ? saSQLBackupName : SADiagName)), '2015-06-15').primaryEndpoints.blob
         StorageAccessKey: listKeys(resourceId('Microsoft.Storage/storageAccounts', ((vm.Role == 'SQL') ? saSQLBackupName : SADiagName)), '2016-01-01').keys[0].value
         Password: vmAdminPassword

@@ -35,6 +35,14 @@
         "secretName": "devOpsPat"
       }
     },
+    "saKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "saKey"
+      }
+    },
     "Stage": {
       "value": {
         "RG": 1,
@@ -352,6 +360,7 @@
             "name": "snBE01",
             "prefix": "80/28",
             "NSG": 1,
+            "NGW": 1,
             "Route": 0, // 1
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
@@ -385,6 +394,13 @@
           "PublicIP": "Static",
           "Zone": true
         },
+        "NGWInfo": [
+          {
+            "Name": "NAT01",
+            "PublicIP": "Static",
+            "Zone": true
+          }
+        ],
         "saInfo": [
           {
             "namesuffix": "diag",
@@ -520,13 +536,13 @@
               ]
             }
           ],
-          "SQLServers": [
+          "ConfigSQLAO": [
             {
               "Name": "SQL01",
               "OSType": "SQLServer2016",
               "ASName": "CLS01",
               "Role": "SQL",
-              "DDRole": "SQL64GB",
+              "DDRole": "64GB", //SQL64GB
               "Zone": 1,
               "NICs": [
                 {
@@ -564,7 +580,7 @@
               "CLNAME": "CLS01",
               "ASName": "CLS01",
               "Role": "SQL",
-              "DDRole": "SQL64GB",
+              "DDRole": "64GB", //SQL64GB
               "Zone": 2,
               "NICs": [
                 {
