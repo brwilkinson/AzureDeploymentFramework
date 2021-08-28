@@ -554,7 +554,7 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
     }
   }
   dependsOn: [
-    VMDomainJoin[index]
+    VMDomainJoin
   ]
 }]
 
@@ -610,7 +610,7 @@ resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for 
     }
   }
   dependsOn: [
-    VMDomainJoin
+    VMDomainJoin[index]
   ]
 }]
 

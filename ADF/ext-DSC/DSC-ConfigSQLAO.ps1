@@ -140,7 +140,6 @@ configuration ConfigSQLAO
         $DisksPresent = @(
             @{DriveLetter = 'F'; DiskID = '2' }
         )
-
         foreach ($disk in $DisksPresent)
         {
             Disk $disk.DriveLetter
@@ -152,8 +151,59 @@ configuration ConfigSQLAO
             $dependsonDisksPresent += @("[Disk]$($disk.DriveLetter)")
         }
 
+        #-------------------------------------------------------------------
+        $WindowsFeaturePresent = @(
+            'Failover-Clustering', 'RSAT-Clustering-Mgmt', 'RSAT-Clustering-PowerShell',
+            'RSAT-AD-PowerShell', 'RSAT-AD-AdminCenter'
+        )
+        foreach ($Feature in $WindowsFeaturePresent)
+        {
+            WindowsFeature $Feature
+            {
+                Name   = $Feature
+                Ensure = 'Present'
+            }
+            $dependsonFeatures += @("[WindowsFeature]$Feature")
+        }
+
+        #-------------------------------------------------------------
+        # Recommend to move this to the DC1 Config.
+        # That way you don't have to remove the computer or AG spn's first
+        # This is required for Kerberos to work
+        #-------------------------------------------------------------
+        $spnAccounts = @(
+            $SqlAlwaysOnAvailabilityGroupListenerName
+            $PrimaryReplica,
+            @(
+                $SecondaryReplica
+            )
+        )
+        $spnList = $spnAccounts | ForEach-Object {
+
+            $current = $_
+            Write-Verbose "current: [$current]" -Verbose
+            @(
+                "MSSQLSvc/${current}", 
+                "MSSQLSvc/${current}:1433",
+                "MSSQLSvc/${current}.${DomainName}", 
+                "MSSQLSvc/${current}.${DomainName}:1433"
+            )
+        }
+        ADUser SQLDomainUser
+        {
+            PsDscRunAsCredential  = $DomainCreds
+            DomainName            = $DomainName
+            UserName              = $SQLServicecreds.UserName
+            Password              = $SQLServicecreds
+            Description           = 'SQL Server Service Account AlwaysOn'
+            Ensure                = 'Present'
+            DependsOn             = $dependsonFeatures
+            # ServicePrincipalNames = $spnList    #<---- Need this for Kerberos to work
+        }
+        #-------------------------------------------------------------
+
         # used to remove non-word chars for the resource name
-        $StringFilter = '\W','-'
+        $StringFilter = '\W', '-'
 
         #-------------------------------------------------------------------
         # Create the Directories used for SQL and provide access for the SQL Service Account
@@ -205,22 +255,6 @@ configuration ConfigSQLAO
                     }
                 )
             }
-        }
-
-        #-------------------------------------------------------------------
-        $WindowsFeaturePresent = @(
-            'Failover-Clustering', 'RSAT-Clustering-Mgmt', 'RSAT-Clustering-PowerShell',
-            'RSAT-AD-PowerShell', 'RSAT-AD-AdminCenter'
-        )
-        
-        foreach ($Feature in $WindowsFeaturePresent)
-        {
-            WindowsFeature $Feature
-            {
-                Name   = $Feature
-                Ensure = 'Present'
-            }
-            $dependsonFeatures += @("[WindowsFeature]$Feature")
         }
 
         #-------------------------------------------------------------
@@ -279,7 +313,7 @@ configuration ConfigSQLAO
                 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
                 Install-PackageProvider -Name NuGet -Force -ForceBootstrap
                 Install-Module -Name SqlServer -AllowClobber -Force
-                Import-Module -Name SqlServer -ErrorAction SilentlyContinue
+                Import-Module -Name SqlServer -ErrorAction SilentlyContinue -Verbose:$false
             }
             TestScript = 'Import-Module -Name SqlServer -ErrorAction SilentlyContinue; if (Get-Module -Name SqlServer) { $True } else { $False }'
             GetScript  = 'Import-Module -Name SqlServer -ErrorAction SilentlyContinue; @{Ensure = if (Get-Module -Name SqlServer) {"Present"} else {"Absent"}}'
@@ -322,18 +356,6 @@ configuration ConfigSQLAO
             }
         }
         #>
-        # Recommend to move this to the DC1 Config.
-        ADUser SQLDomainUser
-        {
-            PsDscRunAsCredential = $DomainCreds
-            DomainName           = $DomainName
-            UserName             = $SQLServicecreds.UserName
-            Password             = $SQLServicecreds
-            Description          = 'SQL Server Service Account AlwaysOn'
-            Ensure               = 'Present'
-            DependsOn            = $dependsonFeatures
-        }
-        #-------------------------------------------------------------
 
         #-------------------------------------------------------------
         Firewall DatabaseEngineFirewallRule
@@ -439,43 +461,46 @@ configuration ConfigSQLAO
         }
 
         #-------------------------------------------------------------------
-        SqlEndpoint SQLEndPoint
+        $DataBaseLocations = @(
+            @{Name = 'Data'; Path = 'F:\Data'; Restart = $False },
+            @{Name = 'Log' ; Path = 'F:\Logs'; Restart = $False },
+            @{Name = 'Backup'; Path = 'F:\Backup'; Restart = $False }
+        )
+        foreach ($location in $DataBaseLocations)
         {
-            Ensure               = 'Present'
-            Port                 = $DatabaseMirrorPort
-            EndPointName         = $SqlAlwaysOnEndpointName
-            EndpointType         = 'DatabaseMirroring'
-            InstanceName         = $InstanceName
-            DependsOn            = $dependsonSqlPermissions
-            PsDscRunAsCredential = $DomainCreds
+            SqlDatabaseDefaultLocation ($InstanceName + '_' + $location.Name)
+            {
+                InstanceName         = $InstanceName
+                Type                 = $location.Name
+                Path                 = $location.Path
+                RestartService       = $location.Restart
+                PsDscRunAsCredential = $DomainCreds
+            }
+            $dependsonDBLocations += @("[SqlDatabaseDefaultLocation]$($InstanceName + '_' + $location.Name)")
         }
 
-        SqlServerEndpointState StartEndpoint
+        #-------------------------------------------------------------------
+        SqlServiceAccount DatabaseEngine
         {
-            InstanceName         = $InstanceName
-            Name                 = $SqlAlwaysOnEndpointName
-            State                = 'Started'
-            DependsOn            = '[SqlEndpoint]SQLEndPoint'
-            PsDscRunAsCredential = $DomainCreds
+            InstanceName   = $InstanceName
+            ServiceType    = 'DatabaseEngine'
+            ServiceAccount = $SQLCreds
+            RestartService = $true
         }
 
-        SqlEndpointPermission DatabaseMirroring
+        #-------------------------------------------------------------------
+        $ServiceStatus = @(
+            @{Name = 'SQLSERVERAGENT' },
+            @{Name = 'MSSQLSERVER' }
+        )
+        foreach ($Service in $ServiceStatus)
         {
-            InstanceName         = $InstanceName
-            Name                 = $SqlAlwaysOnEndpointName
-            Permission           = 'CONNECT'
-            Principal            = $SQLCreds.UserName
-            DependsOn            = '[SqlEndpoint]SQLEndPoint'
-            PsDscRunAsCredential = $DomainCreds
-        }
-
-        SqlAlwaysOnService SQLCluster
-        {
-            Ensure               = 'Present'
-            InstanceName         = $InstanceName
-            RestartTimeout       = 360
-            DependsOn            = '[SqlServerEndpointState]StartEndpoint'
-            PsDscRunAsCredential = $DomainCreds
+            Service $Service.Name
+            {
+                Name        = $Service.Name
+                State       = IIF $Service.State $Service.State 'Running'
+                StartupType = IIF $Service.StartupType $Service.StartupType 'Automatic'
+            }
         }
 
         SQLMemory SetSqlMaxMemory
@@ -616,59 +641,40 @@ configuration ConfigSQLAO
         }
 
         #-------------------------------------------------------------------
-        SqlServiceAccount DatabaseEngine
+        SqlEndpoint SQLEndPoint
         {
-            InstanceName   = $InstanceName
-            ServiceType    = 'DatabaseEngine'
-            ServiceAccount = $SQLCreds
-            RestartService = $false
+            Ensure               = 'Present'
+            Port                 = $DatabaseMirrorPort
+            EndPointName         = $SqlAlwaysOnEndpointName
+            EndpointType         = 'DatabaseMirroring'
+            InstanceName         = $InstanceName
+            DependsOn            = $dependsonSqlPermissions
+            PsDscRunAsCredential = $DomainCreds
+            ServerName           = $Env:ComputerName
+        }
+
+        SqlServerEndpointState StartEndpoint
+        {
+            InstanceName         = $InstanceName
+            Name                 = $SqlAlwaysOnEndpointName
+            State                = 'Started'
+            DependsOn            = '[SqlEndpoint]SQLEndPoint'
+            PsDscRunAsCredential = $DomainCreds
+            ServerName           = $Env:ComputerName
         }
 
         #-------------------------------------------------------------------
-        $DataBaseLocations = @(
-            @{Name = 'Data'; Path = 'F:\Data'; Restart = $False },
-            @{Name = 'Log' ; Path = 'F:\Logs'; Restart = $False },
-            @{Name = 'Backup'; Path = 'F:\Backup'; Restart = $True }
-        )
-        foreach ($location in $DataBaseLocations)
+        If ($Env:ComputerName -eq $PrimaryReplica)
         {
-            SqlDatabaseDefaultLocation ($InstanceName + '_' + $location.Name)
+            SqlAlwaysOnService SQLCluster
             {
-                DependsOn      = '[SqlServiceAccount]DatabaseEngine'
-                InstanceName   = $InstanceName
-                Type           = $location.Name
-                Path           = $location.Path
-                RestartService = $location.Restart
+                Ensure               = 'Present'
+                InstanceName         = $InstanceName
+                RestartTimeout       = 360
+                DependsOn            = '[SqlServerEndpointState]StartEndpoint'
+                PsDscRunAsCredential = $DomainCreds
             }
-            $dependsonDBLocations += @("[SqlDatabaseDefaultLocation]$($InstanceName + '_' + $location.Name)")
-        }
-
-        #-------------------------------------------------------------------
-        $ServiceStatus = @(
-            @{Name = 'SQLSERVERAGENT' },
-            @{Name = 'MSSQLSERVER' }
-        )
-        foreach ($Service in $ServiceStatus)
-        {
-            Service $Service.Name
-            {
-                Name        = $Service.Name
-                State       = IIF $Service.State $Service.State 'Running'
-                StartupType = IIF $Service.StartupType $Service.StartupType 'Automatic'
-            }
-        }
-
-        # PendingReboot SQLConfigChanges
-        # {
-        #     Name                        = 'SQLConfigChanges'
-        #     DependsOn                   = $dependsonDBLocations
-        #     SkipComponentBasedServicing = $true
-        #     SkipWindowsUpdate           = $true
-        # }
-
-        #-------------------------------------------------------------------
-        If ($Env:ComputerName -eq $PrimaryReplica2)
-        {
+            
             SqlDatabase $SqlAlwaysOnAvailabilityGroupName
             {
                 Ensure               = 'Present'
@@ -878,7 +884,7 @@ configuration ConfigSQLAO
                 }#Test
             }#Script ACL
         }
-        elseif($env:COMPUTERNAME -in $SecondaryReplica2)
+        elseif ($env:COMPUTERNAME -in $SecondaryReplica)
         {
             SqlWaitForAG $SqlAlwaysOnAvailabilityGroupName
             {
@@ -889,7 +895,15 @@ configuration ConfigSQLAO
                 RetryCount           = 40
                 PsDscRunAsCredential = $DomainCreds
             }
-            $dependsonwaitAG += @("[SqlWaitForAG]$groupname")
+
+            SqlAlwaysOnService SQLCluster
+            {
+                Ensure               = 'Present'
+                InstanceName         = $InstanceName
+                RestartTimeout       = 360
+                DependsOn            = "[SqlWaitForAG]$SqlAlwaysOnAvailabilityGroupName"
+                PsDscRunAsCredential = $DomainCreds
+            }
 
             SqlAGReplica ($SqlAlwaysOnAvailabilityGroupName + 'AddReplica')
             {
