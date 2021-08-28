@@ -10,7 +10,10 @@ configuration CreateADPDC
 
         [Int]$RetryCount = 3,
 
-        [Int]$RetryIntervalSec = 30
+        [Int]$RetryIntervalSec = 30,
+
+        $witnessStorageKey = '',
+        $SQLServiceCreds = ''
     )
     
     Import-DscResource -ModuleName ActiveDirectoryDsC

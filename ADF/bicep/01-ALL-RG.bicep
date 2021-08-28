@@ -45,6 +45,9 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
+@secure()
+param saKey string = newGuid()
+
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-'
@@ -633,6 +636,33 @@ module AppServers 'VM.bicep' = if (Stage.VMApp == 1) {
     devOpsPat: devOpsPat
     sshPublic: sshPublic
     vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_VNETDNSDC1
+    dp_Deployment_VNETDNSDC2
+    dp_Deployment_OMS
+    dp_Deployment_LB
+    // DNSLookup
+    dp_Deployment_SA
+  ]
+}
+
+
+module ConfigSQLAO 'VM.bicep' = if (Stage.ConfigSQLAO == 1) {
+  name: 'ConfigSQLAO'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+    saKey: saKey
   }
   dependsOn: [
     dp_Deployment_VNETDNSDC1

@@ -536,6 +536,10 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
           UserName: Global.vmAdminUserName
           Password: vmAdminPassword
         }
+        SQLServiceCreds: {
+          UserName: 'sqladmin'
+          Password: vmAdminPassword
+        }
         witnessStorageKey: {
           UserName: 'sakey'
           Password: saKey
@@ -606,7 +610,7 @@ resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for 
     }
   }
   dependsOn: [
-    VMDomainJoin[index]
+    VMDomainJoin
   ]
 }]
 

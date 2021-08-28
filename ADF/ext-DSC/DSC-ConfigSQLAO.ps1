@@ -8,8 +8,8 @@ configuration ConfigSQLAO
         [Parameter(Mandatory)]
         [PSCredential]$Admincreds,
 
-        # [Parameter(Mandatory)]
-        [PSCredential]$SQLServiceCreds = $Admincreds,
+        [Parameter(Mandatory)]
+        [PSCredential]$SQLServiceCreds,
 
         # [Parameter(Mandatory)]
         [String]$ClusterName = 'cls01',
@@ -120,6 +120,94 @@ configuration ConfigSQLAO
         }
 
         #-------------------------------------------------------------------
+        # xSqlCreateVirtualDataDisk NewVirtualDisk
+        # {
+        #     NumberOfDisks        = $NumberOfDisks
+        #     NumberOfColumns      = $NumberOfDisks
+        #     DiskLetter           = $NextAvailableDiskLetter
+        #     OptimizationType     = $WorkloadType
+        #     StartingDeviceID     = 2
+        #     RebootVirtualMachine = $RebootVirtualMachine
+        # }
+
+        # Consider moving to storage pools, using single disk for now F: Drive.
+        #-------------------------------------------------------------------
+
+        #-------------------------------------------------------------------
+        # This service shows a pop-up to format the disk, stopping this disables the pop-up
+        Get-Service -Name ShellHWDetection | Stop-Service -Verbose
+
+        $DisksPresent = @(
+            @{DriveLetter = 'F'; DiskID = '2' }
+        )
+
+        foreach ($disk in $DisksPresent)
+        {
+            Disk $disk.DriveLetter
+            {
+                DiskID             = $disk.DiskID
+                DriveLetter        = $disk.DriveLetter
+                AllocationUnitSize = 64KB
+            }
+            $dependsonDisksPresent += @("[Disk]$($disk.DriveLetter)")
+        }
+
+        # used to remove non-word chars for the resource name
+        $StringFilter = '\W','-'
+
+        #-------------------------------------------------------------------
+        # Create the Directories used for SQL and provide access for the SQL Service Account
+        # SQL Service account is not a local admin.
+        $DirectoryPresent = @(
+            'F:\Data',
+            'F:\Logs',
+            'F:\Backup'
+        )
+        
+        foreach ($Dir in $DirectoryPresent)
+        {
+            $Name = $Dir -replace $StringFilter
+            File $Name
+            {
+                DestinationPath      = $Dir
+                Type                 = 'Directory'
+                PsDscRunAsCredential = $Admincreds
+                DependsOn            = $dependsonDisksPresent
+            }
+            $dependsonDir += @("[File]$Name")
+            
+            $NTFSPermissions = @(
+                @{ Principal = $DomainCreds.UserName; FileSystemRights = 'FullControl' },
+                @{ Principal = $SQLCreds.UserName   ; FileSystemRights = 'FullControl' }
+            )
+
+            NtfsAccessEntry $Name
+            {
+                PsDscRunAsCredential = $DomainCreds
+                Path                 = $Dir
+                AccessControlList    = @(
+                    foreach ($NTFSpermission in $NTFSPermissions)
+                    {
+                        NTFSAccessControlList
+                        {
+                            Principal          = $NTFSpermission.Principal
+                            ForcePrincipal     = $false
+                            AccessControlEntry = @(
+                                NTFSAccessControlEntry
+                                {
+                                    AccessControlType = 'Allow'
+                                    FileSystemRights  = $NTFSpermission.FileSystemRights
+                                    Inheritance       = 'This folder subfolders and files'
+                                    Ensure            = 'Present'
+                                }
+                            )
+                        }
+                    }
+                )
+            }
+        }
+
+        #-------------------------------------------------------------------
         $WindowsFeaturePresent = @(
             'Failover-Clustering', 'RSAT-Clustering-Mgmt', 'RSAT-Clustering-PowerShell',
             'RSAT-AD-PowerShell', 'RSAT-AD-AdminCenter'
@@ -185,91 +273,6 @@ configuration ConfigSQLAO
             $dependsonRegistryKey += @("[Registry]$($RegistryKey.ValueName)")
         }
 
-        #-------------------------------------------------------------------
-
-        # xSqlCreateVirtualDataDisk NewVirtualDisk
-        # {
-        #     NumberOfDisks        = $NumberOfDisks
-        #     NumberOfColumns      = $NumberOfDisks
-        #     DiskLetter           = $NextAvailableDiskLetter
-        #     OptimizationType     = $WorkloadType
-        #     StartingDeviceID     = 2
-        #     RebootVirtualMachine = $RebootVirtualMachine
-        # }
-
-        # Consider moving to storage pools, using single disk for now F: Drive.
-
-        #-------------------------------------------------------------------
-        # This service shows a pop-up to format the disk, stopping this disables the pop-up
-        Get-Service -Name ShellHWDetection | Stop-Service -Verbose
-
-        $DisksPresent = @(
-            @{DriveLetter = 'F'; DiskID = '2' }
-        )
-
-        foreach ($disk in $DisksPresent)
-        {
-            Disk $disk.DriveLetter
-            {
-                DiskID             = $disk.DiskID
-                DriveLetter        = $disk.DriveLetter
-                AllocationUnitSize = 64KB
-            }
-            $dependsonDisksPresent += @("[Disk]$($disk.DriveLetter)")
-        }
-
-        #-------------------------------------------------------------------
-        # Create the Directories used for SQL and provide access for the SQL Service Account
-        # SQL Service account is not a local admin.
-        $DirectoryPresent = @(
-            'F:\Data',
-            'F:\Logs',
-            'F:\Backup'
-        )
-        
-        foreach ($Dir in $DirectoryPresent)
-        {
-            $Name = $Dir -replace $StringFilter
-            File $Name
-            {
-                DestinationPath      = $Dir
-                Type                 = 'Directory'
-                PsDscRunAsCredential = $DomainCreds
-                DependsOn            = $dependsonDisksPresent
-            }
-            $dependsonDir += @("[File]$Name")
-            
-            $NTFSPermissions = @(
-                @{ Principal = $DomainCreds.UserName; FileSystemRights = 'FullControl' },
-                @{ Principal = $SQLCreds.UserName   ; FileSystemRights = 'FullControl' }
-            )
-
-            NtfsAccessEntry $Name
-            {
-                Path              = $Dir
-                AccessControlList = @(
-                    foreach ($NTFSpermission in $NTFSPermissions)
-                    {
-                        NTFSAccessControlList
-                        {
-                            Principal          = $NTFSpermission.Principal
-                            ForcePrincipal     = $false
-                            AccessControlEntry = @(
-                                NTFSAccessControlEntry
-                                {
-                                    AccessControlType = 'Allow'
-                                    FileSystemRights  = $NTFSpermission.FileSystemRights
-                                    Inheritance       = 'This folder subfolders and files'
-                                    Ensure            = 'Present'
-                                }
-                            )
-                        }
-                    }
-                )
-            }
-        }
-
-        #-------------------------------------------------------------------
         Script SqlServerPowerShell
         {
             SetScript  = {
@@ -282,6 +285,7 @@ configuration ConfigSQLAO
             GetScript  = 'Import-Module -Name SqlServer -ErrorAction SilentlyContinue; @{Ensure = if (Get-Module -Name SqlServer) {"Present"} else {"Absent"}}'
         }
 
+        #-------------------------------------------------------------
         # Remove these and use the Domain Join extension
         # xWaitForADDomain DscForestWait 
         # { 
@@ -300,6 +304,38 @@ configuration ConfigSQLAO
         #     DependsOn  = '[xWaitForADDomain]DscForestWait'
         # }
 
+        <# Precreate the Cluster Name Object Accounts disabled in AD, 
+        # this helps with replication of the objects
+        If ($Env:ComputerName -eq $PrimaryReplica)
+        {
+            foreach ($CNO in @($ClusterName, $SqlAlwaysOnAvailabilityGroupListenerName))
+            {
+                ADComputer $CNO
+                {
+                    PsDscRunAsCredential = $DomainCreds
+                    ComputerName         = $CNO
+                    Description          = 'Cluster SQL Availability Group'
+                    EnabledOnCreation    = $false
+                    Ensure               = 'Present'
+                    DependsOn            = $dependsonFeatures
+                }
+            }
+        }
+        #>
+        # Recommend to move this to the DC1 Config.
+        ADUser SQLDomainUser
+        {
+            PsDscRunAsCredential = $DomainCreds
+            DomainName           = $DomainName
+            UserName             = $SQLServicecreds.UserName
+            Password             = $SQLServicecreds
+            Description          = 'SQL Server Service Account AlwaysOn'
+            Ensure               = 'Present'
+            DependsOn            = $dependsonFeatures
+        }
+        #-------------------------------------------------------------
+
+        #-------------------------------------------------------------
         Firewall DatabaseEngineFirewallRule
         {
             Direction   = 'Inbound'
@@ -339,16 +375,6 @@ configuration ConfigSQLAO
             LocalPort   = $ProbePortNumber
         }
 
-        ADUser SQLDomainUser
-        {
-            PsDscRunAsCredential = $DomainCreds
-            DomainName           = $DomainName
-            UserName             = $SQLServicecreds.UserName
-            Password             = $SQLServicecreds
-            Ensure               = 'Present'
-            DependsOn            = $dependsonFeatures
-        }
-
         #-------------------------------------------------------------------
         $SQLServerLoginsWindows = @(
             @{Name = 'NT SERVICE\ClusSvc' },
@@ -371,76 +397,18 @@ configuration ConfigSQLAO
                 ServerName   = $computername
                 InstanceName = $InstanceName
                 DependsOn    = $dependsonFeatures
-                # PsDscRunAsCredential = $AdminCreds
             }
             $dependsonuserLogin += @("[SqlLogin]$SQLlogin")
         }
 
         #-------------------------------------------------------------------
-        SqlRole DomainSQLAdmins
+        SqlRole SQLAdmins
         {
-            InstanceName         = $InstanceName
-            ServerRoleName       = 'sysadmin'
-            MembersToInclude     = @($SQLCreds.UserName, $DomainCreds.UserName)
-            PsDscRunAsCredential = $Admincreds
-            DependsOn            = $dependsonuserLogin
-        }
-
-        #-------------------------------------------------------------------
-        $ServiceStatus = @(
-            @{Name = 'SQLSERVERAGENT' }
-        )
-        
-        foreach ($Service in $ServiceStatus)
-        {
-            Service $Service.Name
-            {
-                Name        = $Service.Name
-                State       = IIF $Service.State $Service.State 'Running'
-                StartupType = IIF $Service.StartupType $Service.StartupType 'Automatic'
-            }
-        }
-
-        SqlServiceAccount $InstanceName
-        {
-            InstanceName   = $InstanceName
-            ServiceType    = 'DatabaseEngine'
-            ServiceAccount = $SQLCreds
-            RestartService = $true
-        }
-
-        #-------------------------------------------------------------------
-        $DataBaseLocations = @(
-            @{Name = 'Data'; Path = 'F:\Data' },
-            @{Name = 'Log' ; Path = 'F:\Logs' },
-            @{Name = 'Backup'; Path = 'F:\Backup' }
-        )
-
-        foreach ($location in $DataBaseLocations)
-        {
-            SqlDatabaseDefaultLocation ($InstanceName + '_' + $location.Name)
-            {
-                InstanceName         = $InstanceName
-                Type                 = $location.Name
-                Path                 = $location.Path
-                PsDscRunAsCredential = $DomainCreds
-            }
-        }
-
-        SQLMemory SetSqlMaxMemory
-        {
-            InstanceName         = $InstanceName
-            Ensure               = 'Present'
-            DynamicAlloc         = $true
-            PsDscRunAsCredential = $DomainCreds
-        }
-
-        SqlMaxDop SetSqlMaxDopToAuto
-        {
-            InstanceName = $InstanceName
-            Ensure       = 'Present'
-            DynamicAlloc = $true
-            #MaxDop      = 8
+            InstanceName     = $InstanceName
+            ServerRoleName   = 'sysadmin'
+            MembersToInclude = @($SQLCreds.UserName, $DomainCreds.UserName)
+            # PsDscRunAsCredential = $Admincreds
+            DependsOn        = $dependsonuserLogin
         }
 
         #-------------------------------------------------------------------
@@ -460,16 +428,17 @@ configuration ConfigSQLAO
         {
             SqlPermission $userPermission.Name
             {
-                Ensure               = 'Present'
-                InstanceName         = $InstanceName
-                Principal            = $userPermission.Name
-                Permission           = $userPermission.Permission
-                PsDscRunAsCredential = $DomainCreds
-                DependsOn            = $dependsonuserLogin
+                Ensure       = 'Present'
+                InstanceName = $InstanceName
+                Principal    = $userPermission.Name
+                Permission   = $userPermission.Permission
+                # PsDscRunAsCredential = $DomainCreds
+                DependsOn    = $dependsonuserLogin
             }
             $dependsonSqlPermissions += @("[SqlPermission]$($userPermission.Name)")
         }
 
+        #-------------------------------------------------------------------
         SqlEndpoint SQLEndPoint
         {
             Ensure               = 'Present'
@@ -509,6 +478,22 @@ configuration ConfigSQLAO
             PsDscRunAsCredential = $DomainCreds
         }
 
+        SQLMemory SetSqlMaxMemory
+        {
+            InstanceName = $InstanceName
+            Ensure       = 'Present'
+            DynamicAlloc = $true
+            # PsDscRunAsCredential = $DomainCreds
+        }
+
+        SqlMaxDop SetSqlMaxDopToAuto
+        {
+            InstanceName = $InstanceName
+            Ensure       = 'Present'
+            DynamicAlloc = $true
+            #MaxDop      = 8
+        }
+
         #-------------------------------------------------------------------
         $UserRightsAssignmentPresent = @(
             @{
@@ -535,7 +520,7 @@ configuration ConfigSQLAO
         }
 
         #-------------------------------------------------------------------
-        ## prepare the cluster next
+        # prepare the cluster
         Write-Warning -Message "ComputerName: [$($Env:ComputerName)] & PrimaryReplica: [$PrimaryReplica]"
         Write-Warning -Message "ComputerName equals PrimaryReplica: [$($Env:ComputerName -eq $PrimaryReplica)]"
         If ($Env:ComputerName -eq $PrimaryReplica)
@@ -551,7 +536,7 @@ configuration ConfigSQLAO
                     try
                     {
                         $Owner = Get-ClusterGroup -Name 'Cluster Group' -EA Stop | ForEach-Object OwnerNode | ForEach-Object Name
-        
+                        
                         if ($Owner -eq $env:ComputerName)
                         {
                             Write-Warning -Message 'Cluster running on Correct Node, continue'
@@ -630,13 +615,66 @@ configuration ConfigSQLAO
             # This saves additonal waits on any Secondary
         }
 
-        If ($Env:ComputerName -eq $PrimaryReplica)
+        #-------------------------------------------------------------------
+        SqlServiceAccount DatabaseEngine
+        {
+            InstanceName   = $InstanceName
+            ServiceType    = 'DatabaseEngine'
+            ServiceAccount = $SQLCreds
+            RestartService = $false
+        }
+
+        #-------------------------------------------------------------------
+        $DataBaseLocations = @(
+            @{Name = 'Data'; Path = 'F:\Data'; Restart = $False },
+            @{Name = 'Log' ; Path = 'F:\Logs'; Restart = $False },
+            @{Name = 'Backup'; Path = 'F:\Backup'; Restart = $True }
+        )
+        foreach ($location in $DataBaseLocations)
+        {
+            SqlDatabaseDefaultLocation ($InstanceName + '_' + $location.Name)
+            {
+                DependsOn      = '[SqlServiceAccount]DatabaseEngine'
+                InstanceName   = $InstanceName
+                Type           = $location.Name
+                Path           = $location.Path
+                RestartService = $location.Restart
+            }
+            $dependsonDBLocations += @("[SqlDatabaseDefaultLocation]$($InstanceName + '_' + $location.Name)")
+        }
+
+        #-------------------------------------------------------------------
+        $ServiceStatus = @(
+            @{Name = 'SQLSERVERAGENT' },
+            @{Name = 'MSSQLSERVER' }
+        )
+        foreach ($Service in $ServiceStatus)
+        {
+            Service $Service.Name
+            {
+                Name        = $Service.Name
+                State       = IIF $Service.State $Service.State 'Running'
+                StartupType = IIF $Service.StartupType $Service.StartupType 'Automatic'
+            }
+        }
+
+        # PendingReboot SQLConfigChanges
+        # {
+        #     Name                        = 'SQLConfigChanges'
+        #     DependsOn                   = $dependsonDBLocations
+        #     SkipComponentBasedServicing = $true
+        #     SkipWindowsUpdate           = $true
+        # }
+
+        #-------------------------------------------------------------------
+        If ($Env:ComputerName -eq $PrimaryReplica2)
         {
             SqlDatabase $SqlAlwaysOnAvailabilityGroupName
             {
-                Ensure       = 'Present'
-                InstanceName = $InstanceName
-                Name         = $SqlAlwaysOnAvailabilityGroupName
+                Ensure               = 'Present'
+                InstanceName         = $InstanceName
+                Name                 = $SqlAlwaysOnAvailabilityGroupName
+                PsDscRunAsCredential = $DomainCreds
             }
 
             SqlAG $SqlAlwaysOnAvailabilityGroupName
@@ -655,11 +693,12 @@ configuration ConfigSQLAO
                 BackupPriority                = 30
                 EndpointHostName              = ($Env:ComputerName + ".$DomainName")
                 PsDscRunAsCredential          = $DomainCreds
+                DependsOn                     = '[SqlAlwaysOnService]SQLCluster'
             }
 
+            # Enable Automatic Seeding for DataBases
             # No resource for automatic seeding right now.
             # https://github.com/dsccommunity/SqlServerDsc/issues/487
-            # Enable Automatic Seeding for DataBases
             script ('SeedingMode_' + $SqlAlwaysOnAvailabilityGroupName)
             {
                 PsDscRunAsCredential = $DomainCreds
@@ -728,7 +767,7 @@ configuration ConfigSQLAO
 
             <#
             # Recommend not to use this: https://github.com/dsccommunity/SqlServerDsc/issues?q=is%3Aissue+is%3Aopen+sqlaglistener+
-            # many open issues, the Below custom script resource is he way to go as the replacement.
+            # many open issues, the Below custom script resource is recommended.
             SqlAGListener 'AvailabilityGroupListenerWithSameNameAsVCO'
             {
                 Ensure               = 'Present'
@@ -753,6 +792,7 @@ configuration ConfigSQLAO
                     @{key = $result }
                 }
                 SetScript            = {
+                    Start-Sleep -Seconds 60
                     $AOIP = $using:AGListenerIpAddress
                     $ProbePort = $using:ProbePortNumber
                     $GroupName = $using:SqlAlwaysOnAvailabilityGroupName
@@ -780,7 +820,7 @@ configuration ConfigSQLAO
                     $AOName = ($using:SqlAlwaysOnAvailabilityGroupListenerName)
                     Write-Warning "Cluster Resource Name Is ${AOName}_IP"
                     $n = Get-ClusterResource -Name "${AOName}_IP" -ea SilentlyContinue
-                                            
+                    
                     if ($n.Name -eq "${AOName}_IP" -and $n.state -eq 'Online')
                     {
                         $true
@@ -794,9 +834,10 @@ configuration ConfigSQLAO
 
             #-------------------------------------------------------------------
             # Enable the cluster ownership on the Availability Group Cluster Name Object
-            # It will set it to delete protected in AD.
+            # Cluster will set AG CNO with delete protection on object in AD.
             script ('ACL_' + $SqlAlwaysOnAvailabilityGroupName)
             {
+                DependsOn            = "[script]$('AAListener' + $SqlAlwaysOnAvailabilityGroupName)"
                 PsDscRunAsCredential = $DomainCreds
                 GetScript            = {
                     $computer = Get-ADComputer -Filter { Name -eq $using:SqlAlwaysOnAvailabilityGroupListenerName } -ErrorAction SilentlyContinue
@@ -809,7 +850,7 @@ configuration ConfigSQLAO
                     }
                 }#Get
                 SetScript            = {
-                
+                    Start-Sleep -Seconds 60
                     $clusterSID = Get-ADComputer -Identity $using:ClusterName -ErrorAction Stop | Select-Object -ExpandProperty SID
                     $computer = Get-ADComputer -Identity $using:SqlAlwaysOnAvailabilityGroupListenerName
                     $computerPath = 'AD:\' + $computer.DistinguishedName
@@ -821,6 +862,7 @@ configuration ConfigSQLAO
                     Set-Acl -Path $computerPath -AclObject $ACL -Passthru -Verbose
                 }#Set 
                 TestScript           = {
+                    
                     $computer = Get-ADComputer -Filter { Name -eq $using:SqlAlwaysOnAvailabilityGroupListenerName } -ErrorAction SilentlyContinue
                     $computerPath = 'AD:\' + $computer.DistinguishedName
                     $ACL = Get-Acl -Path $computerPath
@@ -836,7 +878,7 @@ configuration ConfigSQLAO
                 }#Test
             }#Script ACL
         }
-        else
+        elseif($env:COMPUTERNAME -in $SecondaryReplica2)
         {
             SqlWaitForAG $SqlAlwaysOnAvailabilityGroupName
             {
@@ -1060,6 +1102,14 @@ if ((whoami) -notmatch 'system')
     {
         $saCred = Get-Credential enterSAKey
     }
+    if ($sqlcred)
+    {
+        Write-Warning -Message 'sqlCred is good'
+    }
+    else
+    {
+        $sqlCred = Get-Credential sqladminuser
+    }
     # Set the location to the DSC extension directory
     if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
     else { $DSCdir = $psscriptroot }
@@ -1077,9 +1127,17 @@ else
 
 # used for troubleshooting
 $DomainName = 'contoso.com'
-ConfigSQLAO -witnessStorageKey $saCred -SQLServiceCreds $cred -AdminCreds $cred -DomainName $DomainName -ConfigurationData $CD
 
-Set-DscLocalConfigurationManager -Path .\ConfigSQLAO -Verbose 
+$Params = @{
+    witnessStorageKey = $saCred
+    SQLServiceCreds   = $sqlCred
+    AdminCreds        = $cred
+    DomainName        = $DomainName
+    ConfigurationData = $CD
+}
+ConfigSQLAO @Params
+
+Set-DscLocalConfigurationManager -Path .\ConfigSQLAO -Verbose
 
 $CD = @{
     AllNodes = @(
