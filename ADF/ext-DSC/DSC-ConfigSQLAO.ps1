@@ -519,6 +519,8 @@ configuration ConfigSQLAO
             #MaxDop      = 8
         }
 
+        # above are the steps that don't rely on the Cluster
+
         #-------------------------------------------------------------------
         $UserRightsAssignmentPresent = @(
             @{
