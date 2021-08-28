@@ -10,7 +10,10 @@ configuration CreateADBDC
         
         [Int]$RetryCount = 3,
         
-        [Int]$RetryIntervalSec = 30
+        [Int]$RetryIntervalSec = 30,
+
+        $witnessStorageKey = '',
+        $SQLServiceCreds = ''
     )
     
     Import-DscResource -ModuleName ActiveDirectoryDsC
@@ -66,8 +69,6 @@ configuration CreateADBDC
             DriveLetter = 'F'
             # DependsOn   = '[WaitforDisk]Disk2'
         }
-
-        
 
         WaitForADDomain DC1Forest
         { 

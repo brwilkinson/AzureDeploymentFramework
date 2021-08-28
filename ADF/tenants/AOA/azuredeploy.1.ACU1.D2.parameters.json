@@ -78,7 +78,8 @@
         "CreateADBDC": 1,
         "ILB": 1, //
         "InitialDOP": 0,
-        "VMApp": 1, //
+        "VMApp": 0, //
+        "ConfigSQLAO": 1,
         "VMAppLinux": 0,
         "VMSQL": 0,  //
         "VMFILE": 0,

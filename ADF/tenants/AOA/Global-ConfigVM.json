@@ -927,14 +927,14 @@
     "Server2022": {
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
-        "Offer": "microsoftserveroperatingsystems-previews",
-        "sku": "windows-server-2022",
+        "Offer": "WindowsServer",
+        "sku": "2022-Datacenter-g2",
         "version": "latest"
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",
       "OSDiskGB": 127,
-      "plan": {
+      "_plan": {
         "name": "windows-server-2022",
         "publisher": "microsoftwindowsserver",
         "product": "microsoftserveroperatingsystems-previews"
