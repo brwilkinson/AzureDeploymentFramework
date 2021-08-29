@@ -672,7 +672,7 @@ configuration ConfigSQLAO
             {
                 Ensure               = 'Present'
                 InstanceName         = $InstanceName
-                RestartTimeout       = 360
+                # RestartTimeout       = 360
                 DependsOn            = '[SqlServerEndpointState]StartEndpoint'
                 PsDscRunAsCredential = $DomainCreds
             }
@@ -902,7 +902,7 @@ configuration ConfigSQLAO
             {
                 Ensure               = 'Present'
                 InstanceName         = $InstanceName
-                RestartTimeout       = 360
+                # RestartTimeout       = 360
                 DependsOn            = "[SqlWaitForAG]$SqlAlwaysOnAvailabilityGroupName"
                 PsDscRunAsCredential = $DomainCreds
             }
