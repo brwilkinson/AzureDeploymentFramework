@@ -19,8 +19,19 @@ param sshPublic string
 
 var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
 var Enviro = '${Environment}${DeploymentID}'
+
+// os config now shared across subscriptions
+var computeGlobal = json(loadTextContent('./global/Global-ConfigVM.json'))
+var OSType = computeGlobal.OSType
+var WadCfg = computeGlobal.WadCfg
+var ladCfg = computeGlobal.ladCfg
+var DataDiskInfo = computeGlobal.DataDiskInfo
+var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
+
+// roles are unique per subscription leave this as runtime parameters
 var RolesGroupsLookup = json(Global.RolesGroupsLookup)
 var RolesLookup = json(Global.RolesLookup)
+
 var IngressGreenfields = {
   effectiveApplicationGatewayId: '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5-b/providers/Microsoft.Network/applicationGateways/${Deployment}-waf${AKSInfo.WAFName}'
   applicationGatewayName: '${Deployment}-waf${AKSInfo.WAFName}'
@@ -65,11 +76,7 @@ var VMSizeLookup = {
   P: 'P'
   S: 'D'
 }
-var OSType = json(Global.OSType)
-var computeSizeLookupOptions = json(Global.computeSizeLookupOptions)
-var WadCfg = json(Global.WadCfg)
-var ladCfg = json(Global.ladCfg)
-var DataDiskInfo = json(Global.DataDiskInfo)
+
 var MSILookup = {
   SQL: 'Cluster'
   UTL: 'DefaultKeyVault'

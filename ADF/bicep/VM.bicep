@@ -52,6 +52,15 @@ param saKey string = newGuid()
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
+// os config now shared across subscriptions
+var computeGlobal = json(loadTextContent('./global/Global-ConfigVM.json'))
+var OSType = computeGlobal.OSType
+var WadCfg = computeGlobal.WadCfg
+var ladCfg = computeGlobal.ladCfg
+var DataDiskInfo = computeGlobal.DataDiskInfo
+var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
+
 var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
 var GlobalRGName = Global.GlobalRGName
 var AAResourceGroup = '${Prefix}-${Global.OrgName}-${Global.Appname}-RG-P0'
@@ -110,11 +119,7 @@ var secrets = [
     ]
   }
 ]
-var OSType = json(Global.OSType)
-var WadCfg = json(Global.WadCfg)
-var ladCfg = json(Global.ladCfg)
-var DataDiskInfo = json(Global.DataDiskInfo)
-var computeSizeLookupOptions = json(Global.computeSizeLookupOptions)
+
 var DeploymentName = (contains(toLower(deployment().name), 'vmapp') ? 'AppServers' : replace(deployment().name, 'dp${Deployment}-', ''))
 var AppServers = DeploymentInfo.AppServers[DeploymentName]
 var DSCConfigLookup = {
