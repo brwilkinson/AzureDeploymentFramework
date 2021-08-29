@@ -236,21 +236,6 @@ Function Start-AzDeploy
     $RolesGroupsLookup = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Config.json | ConvertFrom-Json -Depth 10 | ForEach-Object RolesGroupsLookup
     $Global.Add('RolesGroupsLookup', ($RolesGroupsLookup | ConvertTo-Json -Compress -Depth 10))
 
-    $DataDiskInfo = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object DataDiskInfo
-    $Global.Add('DataDiskInfo', ($DataDiskInfo | ConvertTo-Json -Compress -Depth 10))
-
-    $WadCfg = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object WadCfg
-    $Global.Add('WadCfg', ($WadCfg | ConvertTo-Json -Compress -Depth 10))
-
-    $ladCfg = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object ladCfg
-    $Global.Add('ladCfg', ($ladCfg | ConvertTo-Json -Compress -Depth 10))
-
-    $OSType = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object OSType
-    $Global.Add('OSType', ($OSType | ConvertTo-Json -Compress -Depth 10))
-
-    $computeSizeLookupOptions = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object computeSizeLookupOptions
-    $Global.Add('computeSizeLookupOptions', ($computeSizeLookupOptions | ConvertTo-Json -Compress -Depth 10))
-
     $StorageAccountName = $Global.SAName
     Write-Verbose "Storage Account is: $StorageAccountName"
 
