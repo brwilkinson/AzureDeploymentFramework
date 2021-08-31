@@ -1,7 +1,7 @@
 #  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
-- Go Home [Documentation Home](./ARM.md)
+- Go Home [Documentation Home](./index.md)
 - Go Home [Naming Standards](./Naming_Standards.md)
 
 ### Naming Standards Bicep - These are a work in progress.

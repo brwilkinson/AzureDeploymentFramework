@@ -1,7 +1,7 @@
 #  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
-Go Home [Documentation Home](./ARM.md)
+Go Home [Documentation Home](./index.md)
 
 ### Tools and Setup
 

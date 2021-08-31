@@ -1,7 +1,7 @@
 #  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
-Go Home [Documentation Home](./ARM.md)
+Go Home [Documentation Home](./index.md)
 
 ### Getting Started - Deploy your First App
 - [Documentation - Getting Started - Deploy your Second App](./Getting_Started2.md)
