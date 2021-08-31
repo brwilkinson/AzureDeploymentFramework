@@ -129,7 +129,6 @@
           "OMSworkspaceID": {
             "value": "[variables('OMSworkspaceID')]"
           },
-,
           "vmAdminPassword": {
             "value": "[parameters('vmAdminPassword')]"
           },

@@ -1,0 +1,675 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "P"
+    },
+    "DeploymentID": {
+      "value": "0"
+    },
+    "vmAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "localadmin"
+      }
+    },
+    "sshPublic": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "sshPublic"
+      }
+    },
+    "devOpsPat": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "devOpsPat"
+      }
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "UAI": 1,
+        "SP": 0,
+        "KV": 1,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "SA": 1,
+        "CDN": 0,
+        "StorageSync": 0,
+        "RSV": 1,
+        "NSGHUB": 1,
+        "NSGSPOKE": 0,
+        "NetworkWatcher": 1,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetPeering": 0,
+        "DNSPrivateZone": 0,
+        "DNSPublicZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 1,
+        "BastionHost": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "ERGW": 0,
+        "ADPrimary": 1,
+        "ADSecondary": 1,
+        "ILB": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0,
+        "VMSS": 0,
+        "WAFPOLICY": 0,
+        "FRONTDOOR": 0,
+        "WAF": 0,
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 0,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 1,
+        "DNSLookup": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "AzureSQL": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 1,
+        "AdminCenter": 1,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "AADLogin": 0,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 1,
+        "SqlIaasExtension": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperator",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Blob Data Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              }
+            ]
+          },
+          {
+            "name": "AzureServiceBusDataOwner",
+            "RBAC": [
+              {
+                "Name": "Azure Service Bus Data Owner"
+              },
+              {
+                "Name": "Azure Service Bus Data Sender"
+              },
+              {
+                "Name": "Azure Service Bus Data Receiver"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "Microsoft.Azure.Frontdoor",
+            "RBAC": [
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "ACRPush"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "User Access Administrator"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Automation_Account_Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA",
+                "PREFIX": "AEU2"
+              }
+            ]
+          }
+        ],
+        "SubnetInfo": [
+          {
+            "name": "snWAF01",
+            "prefix": "0/27",
+            "NSG": 1,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snFE01",
+            "prefix": "32/27",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snAD01",
+            "prefix": "64/28",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snBE01",
+            "prefix": "80/28",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "AzureFirewallSubnet",
+            "prefix": "128/26",
+            "NSG": 0
+          },
+          {
+            "name": "GatewaySubnet",
+            "prefix": "192/27",
+            "NSG": 0
+          },
+          {
+            "name": "snMT01",
+            "prefix": "224/27",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          }
+        ],
+        "networkWatcherInfo": {
+          "name": "networkwatcher"
+        },
+        "DNSPrivateZoneInfo": [
+          {
+            "linkDNS": 1,
+            "zone": "psthing.com",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.vaultcore.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.azurewebsites.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.file.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.blob.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.queue.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.afs.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.servicebus.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.database.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.azconfig.io",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.azurecr.io",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.centralus.azmk8s.io",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.mongo.cosmos.azure.com",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.documents.azure.com",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.redis.cache.windows.net",
+            "Autoregistration": false
+          }
+        ],
+        "saInfo": [
+          {
+            "nameSuffix": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Deny",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "VLT01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "allNetworks": "Allow",
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "vault"
+              }
+            ]
+          }
+        ],
+        "azRelayInfo": [
+          {
+            "Name": "CS01"
+          }
+        ],
+        "VNGWInfo": [
+          {
+            "Name": "VNGW01",
+            "skuname": "VpnGw2",
+            "skutier": "VpnGw2",
+            "gatewayType": "VPN",
+            "vpnType": "RouteBased",
+            "vpnGen": "Generation2",
+            "localNetworkGateway": {
+              "name": "PSO",
+              "gatewayIpAddress": "52.154.217.25",
+              "addressPrefixes": [
+                "10.0.128.0/20"
+              ],
+              "bgpEnabled": 1,
+              "bgpSettings": {
+                "asn": 65514,
+                "bgpPeeringAddress": "10.0.144.222",
+                "peerWeight": 0
+              }
+            },
+            "ConnectionOptions": {
+              "EnableConnection": 1,
+              "sharedKey": "ApplesForBreakfast" // you likely want a param for this from KV
+            }
+          }
+        ],
+        "RTInfo": [
+          {
+            "Name": "Hub",
+            "Routes": [
+              {
+                "Name": "Default-Azure-FW",
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopIpAddress": "FW01",
+                "nextHopType": "VirtualAppliance"
+              }
+            ]
+          }
+        ],
+        "ERGWInfo": [
+          {
+            "Name": "ERGW",
+            "skuname": "ErGw2AZ",
+            "skutier": "ErGw2AZ",
+            "skucapacity": 2,
+            "gatewayType": "ExpressRoute",
+            "vpnType": "PolicyBased",
+            "ERConnectionOptions": {
+              "EREnableConnection": false,
+              "peerid": "/subscriptions/e17fe3b9-caf3-4e15-9437-30089ea78f1e/resourceGroups/PROD_Azure_EUS_Network_RG/providers/Microsoft.Network/expressRouteCircuits/PROD_Azure_ER_EUS",
+              "authorizationKeyold": "[parameters('ERAuthKey')]",
+              "authorizationKey": "abc",
+              "connectionType": "ExpressRoute"
+            }
+          }
+        ],
+        "FWPolicyInfo": [
+          {
+            "name": "Policy01",
+            "sku": "Standard",
+            "threatIntelMode": "Alert",
+            "natRules": [
+              {
+                "Name": "JMP01",
+                "priority": "20000",
+                "actionType": "DNAT",
+                "rule": {
+                  "name": "JMP01-RDP-Allow",
+                  "sourceAddresses": [
+                    "73.157.100.227"
+                  ],
+                  "destinationPorts": [
+                    "3389"
+                  ],
+                  "protocols": [
+                    "Any"
+                  ],
+                  "translatedAddress": "172.16.137.62"
+                }
+              },
+              {
+                "Name": "API01",
+                "priority": "20001",
+                "actionType": "DNAT",
+                "rule": {
+                  "name": "WEB-API-Allow",
+                  "sourceAddresses": [
+                    "*"
+                  ],
+                  "destinationPorts": [
+                    "443"
+                  ],
+                  "protocols": [
+                    "Any"
+                  ],
+                  "translatedAddress": "10.10.139.254"
+                }
+              }
+            ]
+          }
+        ],
+        "FWInfo": [
+          {
+            "Name": "FW01",
+            "PublicIP": "Static",
+            "Zone": true
+          }
+        ],
+        "Appservers": {
+          "ADPrimary": [
+            // {
+            //   "Name": "DNS01",
+            //   "Role": "DNS",
+            //   "ASName": "DNS",
+            //   "DSConfig": "AppServers",
+            //   "DDRole": "32GB",
+            //   "OSType": "Server2019CoreContainerssmall",
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "AD01",
+            //       "Primary": 1,
+            //       "StaticIP": "75"
+            //     }
+            //   ]
+            // }
+            // move back to AD Domain because of conditional access policies
+            {
+              "Name": "DC01",
+              "Role": "ADp",
+              "ASName": "AD",
+              "DDRole": "32GB",
+              "OSType": "Server2016Coresmall",
+              "ExcludeDomainJoin": 1,
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "AD01",
+                  "Primary": 1,
+                  "StaticIP": "75"
+                }
+              ]
+            }
+          ],
+          "ADSecondary": [
+            // {
+            //   "Name": "DNS02",
+            //   "Role": "DNS",
+            //   "ASName": "DNS",
+            //   "DSConfig": "AppServers",
+            //   "DDRole": "32GB",
+            //   "OSType": "Server2019CoreContainerssmall",
+            //   "Zone": 2,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "AD01",
+            //       "Primary": 1,
+            //       "StaticIP": "76"
+            //     }
+            //   ]
+            // }
+            // move back to AD Domain because of conditional access policies
+            {
+              "Name": "DC02",
+              "Role": "ADs",
+              "ASName": "AD",
+              "DDRole": "32GB",
+              "OSType": "Server2016Coresmall",
+              "Zone": 2,
+              "NICs": [
+                {
+                  "Subnet": "AD01",
+                  "Primary": 1,
+                  "StaticIP": "76"
+                }
+              ],
+              "AppInfo": {
+                "SiteName": "Default-First-Site-Name"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

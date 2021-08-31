@@ -604,6 +604,7 @@ configuration ConfigSQLAO
                 Resource                = $witnessStorageName
                 StorageAccountAccessKey = $witnessStorageKey.GetNetworkCredential().Password
                 DependsOn               = '[xCluster]SQLCluster'
+                
             }
 
             foreach ($clusterserver in $SecondaryReplica)

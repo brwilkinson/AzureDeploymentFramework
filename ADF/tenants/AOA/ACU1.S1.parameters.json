@@ -1,0 +1,882 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "S"
+    },
+    "DeploymentID": {
+      "value": "1"
+    },
+    "vmAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "localadmin"
+      }
+    },
+    "sshPublic": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "sshPublic"
+      }
+    },
+    "devOpsPat": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "devOpsPat"
+      }
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "UAI": 1,
+        "SP": 1,
+        "KV": 1,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "SA": 1,
+        "CDN": 1,
+        "StorageSync": 0,
+        "RSV": 1,
+        "NSGHUB": 0,
+        "NSGSPOKE": 1,
+        "NetworkWatcher": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetPeering": 1,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 1,
+        "BastionHost": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "ERGW": 0,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "ILB": 0,
+        "InitialDOP": 0,
+        "VMApp": 1,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0,
+        "VMSS": 0,
+        "WAFPOLICY": 1,
+        "FRONTDOOR": 1,
+        "WAF": 1,
+        "SetExternalDNS": 1,
+        "SetInternalDNS": 1,
+        "APPCONFIG": 1,
+        "REDIS": 1,
+        "APIM": 1,
+        "ACR": 1,
+        "ACI": 0,
+        "AKS": 1,
+        "SQLMI": 0,
+        "CosmosDB": 1,
+        "DASHBOARD": 1,
+        "DNSLookup": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "AzureSQL": 1
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 1,
+        "AdminCenter": 1,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "AADLogin": 0,
+        "WindowsOpenSSH": 0,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 1,
+        "SqlIaasExtension": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "IngressApplicationGateway",
+            "RBAC": [
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          },
+          {
+            "name": "NetworkContributor",
+            "RBAC": [
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperator",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Blob Data Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "ACRPush"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "User Access Administrator"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Automation_Account_Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA",
+                "PREFIX": "AEU2"
+              }
+            ]
+          }
+        ],
+        "SubnetInfo": [
+          {
+            "name": "snWAF01",
+            "prefix": "0/27",
+            "NSG": 1,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snFE01",
+            "prefix": "32/27",
+            "NSG": 1,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snBE02",
+            "prefix": "64/28",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snBE01", // APIM Dedicated
+            "prefix": "80/28",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snMT01",
+            "prefix": "128/25",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          }
+        ],
+        "saInfo": [
+          {
+            "nameaddress": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Deny",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
+          },
+          {
+            "nameaddress": "catalog",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
+          }
+        ],
+        "CDNInfo": [
+          {
+            "Name": "eshopcatalog",
+            "saname": "catalog",
+            "endpoint": "catalog-endpoint"
+          }
+        ],
+        "LogicInfo": [
+          {
+            "Name": "SMTPTEST02"
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "App01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": "Deny",
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ]
+          }
+        ],
+        "AzSQLInfo": [
+          {
+            "Name": "ESHOPSQL",
+            "administratorLogin": "brw",
+            "AdminName": "AZ_SQL_Admins",
+            "publicNetworkAccess": "Enabled",
+            "allNetworks": "Deny",
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snBE02",
+                "groupID": "sqlServer"
+              }
+            ],
+            "DBInfo": [
+              {
+                "Name": "catalogdb",
+                "skuName": "S1"
+              },
+              {
+                "Name": "identitydb",
+                "skuName": "S1"
+              },
+              {
+                "Name": "orderingdb",
+                "skuName": "S1"
+              }
+            ]
+          }
+        ],
+        "cosmosDBInfo": [
+          {
+            "Name": "eshop-nosql",
+            "Kind": "MongoDB", //GlobalDocumentDB, MongoDB, Parse
+            "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
+            "enableMultipleWriteLocations": true,
+            "enableAutomaticFailover": true,
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snBE02",
+                "groupID": "MongoDB"
+              }
+            ],
+            "locations": [
+              {
+                "location": "PrimaryLocation",
+                "failoverPriority": 0,
+                "isZoneRedundant": true
+              },
+              {
+                "location": "SecondaryLocation",
+                "failoverPriority": 1,
+                "isZoneRedundant": true
+              }
+            ],
+            "databases": [
+              {
+                "databaseName": "customers",
+                "containerName": "Info"
+              }
+            ]
+          }
+        ],
+        "SBInfo": [
+          {
+            "Name": "ESHOPSB",
+            "sku": "Premium",
+            "skuCapacity": 1,
+            "zoneRedundant": true,
+            "topics": [
+              {
+                "Name": "eshop_event_bus",
+                "subscriptions": [
+                  {
+                    "Name": "Basket"
+                  },
+                  {
+                    "Name": "Catalog"
+                  }
+                ]
+              }
+            ],
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snBE02",
+                "groupID": "namespace"
+              }
+            ]
+          }
+        ],
+        "appConfigurationInfo": {
+          "name": "01",
+          "sku": "standard",
+          "publicNetworkAccess": "Enabled",
+          "PrivateLinkInfo": [
+            {
+              "Subnet": "snBE02",
+              "groupID": "configurationStores"
+            }
+          ]
+        },
+        "RedisInfo": [
+          {
+            "Name": "APIM01",
+            "sku": "C1"
+          },
+          {
+            "Name": "eshopredis",
+            "sku": "C1",
+            "enableNonSslPort": true
+          }
+          // {
+          //   "Name": "APIM01",
+          //   "sku": "P1"
+          // },
+          // {
+          //   "Name": "APIM03",
+          //   "sku": "C0"
+          // },
+          // {
+          //   "Name": "APIM04",
+          //   "sku": "B0"
+          // },
+          // {
+          //   "Name": "APIM05",
+          //   "sku": "B1"
+          // }
+        ],
+        "ContainerRegistry": [
+          {
+            "Name": "01",
+            "SKU": "Standard",
+            "adminUserEnabled": true
+          }
+        ],
+        "APIMInfo": [
+          {
+            "name": "01",
+            "dnsName": "API",
+            "apimSku": "Developer",
+            "snName": "BE01",
+            "virtualNetworkType": "Internal",
+            "certName": "PSTHING-WildCard",
+            "frontDoor": "01"
+          }
+        ],
+        "frontDoorInfo": [
+          {
+            "name": "01",
+            "_afdverify": "AOA",
+            "services": [
+              {
+                "Name": "APIM01", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim01.azure-api.net",
+                    "hostheader": "{Deployment}-afd01-apim01.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                "Name": "APIM01-Developer",
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim01.azure-api.net",
+                    "hostheader": "{Deployment}-afd01-apim01-developer.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                "Name": "APIM01-Scm", // acu1-BRW-AOA-s1-afd 01 - apim01-scm .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim01.azure-api.net",
+                    "hostheader": "{Deployment}-afd01-apim01-scm.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                // Default (front end) Service is Required, add backend as well for ability to test FE.
+                "Name": "Default",
+                "BEAddress": [
+                  {
+                    "address": "portal.azure.com"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
+            ]
+          }
+        ],
+        "AKSInfo": [
+          {
+            "Name": "01",
+            "Version": "1.20.2", // "1.20.2","1.19.7","1.19.6", "1.18.14"
+            "skuTier": "Paid", //Free
+            "enableRBAC": true, //true, false
+            "podIdentity": true, //true, false
+            "privateCluster": true, //true, false
+            "AgentPoolsSN": "snMT02",
+            "WAFName": "01",
+            "loadBalancer": "standard", //"basic","standard"
+            "BrownFields": 1,
+            "aksAADAdminGroups": [
+              "AKS_Admins"
+            ],
+            "AgentPools": [
+              {
+                "name": "linctr",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 16,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "System"
+              },
+              // {
+              //   "name": "winctr",
+              //   "count": 2,
+              //   "osDiskSizeGb": 30,
+              //   "osType": "Linux",
+              //   "maxPods": 50,
+              //   "storageProfile": "ManagedDisks",
+              //   "_vmSize": "Standard_D1_v2",
+              //   "ASName": "JMP",
+              //   "mode": "User"
+              // }
+              {
+                "name": "linctr2",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 50,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "User"
+              }
+            ]
+          }
+        ],
+        "Appservers": {
+          "AppServers": [
+            {
+              "Name": "JMP01",
+              "Role": "JMP",
+              "ASName": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Server2022",
+              "ExcludeAdminCenter": 1,
+              "_HotPatch": true,
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "62"
+                }
+              ]
+            }
+            // {
+            //   "Name": "JMP02",
+            //   "Role": "JMP",
+            //   "ASName": "JMP",
+            //   "DDRole": "64GB",
+            //   "OSType": "Server2022",
+            //   "ExcludeAdminCenter": 1,
+            //   // "ExcludeAADLogin": 1,
+            //   "_HotPatch": true,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "FE01",
+            //       "Primary": 1,
+            //       "FastNic": 1,
+            //       "PublicIP": "Static",
+            //       "StaticIP": "61"
+            //     }
+            //   ]
+            // },
+            // {
+            //   "Name": "JMP03",
+            //   "Role": "JMP",
+            //   "ASName": "JMP",
+            //   "DDRole": "64GB",
+            //   "OSType": "Server2022",
+            //   "ExcludeAdminCenter": 1,
+            //   // "ExcludeAADLogin": 1,
+            //   "_HotPatch": true,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "FE01",
+            //       "Primary": 1,
+            //       "FastNic": 1,
+            //       "PublicIP": "Static",
+            //       "StaticIP": "60"
+            //     }
+            //   ]
+            // },
+            // {
+            //   "Name": "JMP04",
+            //   "Role": "JMP",
+            //   "ASName": "JMP",
+            //   "DDRole": "64GB",
+            //   "OSType": "Server2019small",
+            //   "ExcludeAdminCenter": 1,
+            //   // "ExcludeAADLogin": 1,
+            //   "_HotPatch": true,
+            //   "Zone": 1,
+            //   "NICs": [
+            //     {
+            //       "Subnet": "FE01",
+            //       "Primary": 1,
+            //       "FastNic": 1,
+            //       "PublicIP": "Static",
+            //       "StaticIP": "58"
+            //     }
+            //   ]
+            // }
+          ],
+          "AppServersLinux": [
+            {
+              "Name": "LIN01",
+              "Role": "LIN",
+              "ASName": "LIN",
+              "DDRole": "64GB",
+              "OSType": "CentOS75",
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "StaticIP": "59",
+                  "PublicIP": "Static"
+                }
+              ]
+            }
+          ]
+        },
+        "WAFInfo": [
+          {
+            "WAFName": "01",
+            "WAFEnabled": true,
+            "ISAGIC": true,
+            "WAFMode": "Detection",
+            "WAFPolicyAttached": true,
+            "WAFPolicyName": "API",
+            "WAFSize": "WAF_v2",
+            "WAFTier": "WAF_v2",
+            "WAFCapacity": 2,
+            "PrivateIP": "29",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "BEIPs": [], //"useAGIC"
+            "pathRules": [
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Enabled",
+                "RequestTimeout": 600,
+                "probePath": "/"
+              },
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Enabled",
+                "RequestTimeout": 600,
+                "probePath": "/"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "waf",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "waf",
+                "Interface": "Public",
+                "httpsRedirect": 0
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

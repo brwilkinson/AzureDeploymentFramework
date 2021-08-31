@@ -1,0 +1,733 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "AZE2"
+    },
+    "Environment": {
+      "value": "P"
+    },
+    "DeploymentID": {
+      "value": "0"
+    },
+    "vmAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-ADF-P0-kvVault01"
+        },
+        "secretName": "localadmin"
+      }
+    },
+    "sshPublic": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-ADF-P0-kvVault01"
+        },
+        "secretName": "sshPublic"
+      }
+    },
+    "devOpsPat": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZC1-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZC1-BRW-ADF-P0-kvVault01"
+        },
+        "secretName": "devOpsPat"
+      }
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "KV": 0,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "SA": 1,
+        "CDN": 0,
+        "StorageSync": 0,
+        "RSV": 0,
+        "NSGHUB": 1,
+        "NSGSPOKE": 0,
+        "NetworkWatcher": 1,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetPeering": 0,
+        "DNSPrivateZone": 1,
+        "LinkPrivateDns": 1,
+        "RT": 1,
+        "FW": 0,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "ILB": 0,
+        "PLB": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0,
+        "VMSS": 0,
+        "WAFPOLICY": 0,
+        "FRONTDOOR": 0,
+        "WAF": 0,
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 0,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "DNSLookup": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "MySQLDB": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "AdminCenter": 0,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 1,
+        "SqlIaasExtension": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "rolesInfo": [
+          {
+            "Name": "Contributor",
+            "Member": "benwilk@Microsoft.com"
+          }
+        ],
+        "SubnetInfo": [
+          {
+            "name": "snWAF01",
+            "prefix": "0/27",
+            "NSG": 1
+          },
+          {
+            "name": "snFE01",
+            "prefix": "32/27",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "snAD01",
+            "prefix": "64/28",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "snBE01",
+            "prefix": "80/28",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "AzureFirewallSubnet",
+            "prefix": "128/26",
+            "NSG": 0
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": false
+          }
+        ],
+        "networkWatcherInfo" : {
+          "name":"networkwatcher"
+        },
+        "DNSPrivateZoneInfo": [
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.vaultcore.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.azurewebsites.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.blob.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.queue.core.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.afs.azure.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "Contoso.com",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "Fabrikam.com",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "PSObject.com",
+            "Autoregistration": false
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "Vault01",
+            "skuName": "standard",
+            "softDelete": true,
+            "AllNetworks": "Deny",
+            "accessPolicies": [
+              {
+                "objectId": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+                "Permissions": "All"
+              }
+            ]
+          }
+        ],
+        "saInfo": [
+          {
+            "nameSuffix": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow"
+          }
+        ],
+        "RTInfo": [
+          {
+            "Name": "Contoso-Hub",
+            "Routes": [
+              {
+                "Name": "Default-FW-Egress",
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopIpAddress": "172.16.134.132",
+                "nextHopType": "VirtualAppliance"
+              }
+            ]
+          }
+        ],
+        "PolicyInfo": [
+          {
+            "Name": "Audit-allowed-locations",
+            "Description": "Audit allowed locations",
+            "parameters": {
+              "allowedLocations": {
+                "type": "Array",
+                "metadata": {
+                  "description": "The list of allowed locations for resources.",
+                  "displayName": "Allowed locations",
+                  "strongType": "location"
+                }
+              }
+            },
+            "policyRule": {
+              "if": {
+                "not": {
+                  "field": "location",
+                  "in": "[parameters('allowedLocations')]"
+                }
+              },
+              "then": {
+                "effect": "audit"
+              }
+            }
+          },
+          {
+            "name": "Audit-allowed-role-definitions2",
+            "description": "Audit role definitions that can be used in IAM",
+            "parameters": {
+              "roleDefinitionId": {
+                "type": "string",
+                "metadata": {
+                  "description": "The list of role definition Ids",
+                  "displayName": "Approved Role Definitions"
+                }
+              }
+            },
+            "policyRule": {
+              "if": {
+                "anyOf": [
+                  {
+                    "allof": [
+                      {
+                        "field": "type",
+                        "equals": "Microsoft.Authorization/roleAssignments"
+                      }
+                    ]
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "not": {
+                          "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
+                          "match": "./058aae05-414d-5198-812b-6f4401cd86bb"
+                        }
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
+                          "match": "[parameter('roleDefinitionId')]"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "effect": "audit"
+              }
+            }
+          }
+        ],
+        "ERGWInfo": [
+          {
+            "Name": "ERGW",
+            "skuname": "ErGw2AZ",
+            "skutier": "ErGw2AZ",
+            "skucapacity": 2,
+            "gatewayType": "ExpressRoute",
+            "vpnType": "PolicyBased",
+            "ERConnectionOptions": {
+              "EREnableConnection": false,
+              "peerid": "/subscriptions/e17fe3b9-caf3-4e15-9437-30089ea78f1e/resourceGroups/PROD_Azure_EUS_Network_RG/providers/Microsoft.Network/expressRouteCircuits/PROD_Azure_ER_EUS",
+              "authorizationKeyold": "[parameters('ERAuthKey')]",
+              "authorizationKey": "abc",
+              "connectionType": "ExpressRoute"
+            }
+          }
+        ],
+        "FWInfo": [
+          {
+            "Name": "FW01",
+            "threatIntelMode": "Alert"
+          }
+        ],
+        "natRulesInfo": [
+          {
+            "Name": "JMP01",
+            "priority": "20000",
+            "actionType": "DNAT",
+            "rule": {
+              "name": "JMP01-RDP-Allow",
+              "sourceAddresses": [
+                "75.166.19.36"
+              ],
+              "destinationPorts": [
+                "3389"
+              ],
+              "protocols": [
+                "Any"
+              ],
+              "translatedAddress": "172.16.134.62"
+            }
+          }
+        ],
+        "LBInfo2": [
+          {
+            "Name": "API",
+            "ASName": "API",
+            "Sku": "Basic",
+            "Type": "Private",
+            "BackEnd": ["API"],
+            "FrontEnd": [
+              {
+                "SNName": "MT02",
+                "LBFEName": "API",
+                "LBFEIP": "254"
+              }
+            ],
+            "NATPools": [
+              {
+                "Name": "RDP",
+                "frontendPortRangeStart": 3389,
+                "frontendPortRangeEnd": 4500,
+                "enableFloatingIP": false,
+                "backendPort": 3389,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "LBFEName": "API"
+              }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "19000",
+                "LBBEProbePort": 19000
+              },
+              {
+                "ProbeName": "19080",
+                "LBBEProbePort": 19080
+              },
+              {
+                "ProbeName": "19081",
+                "LBBEProbePort": 19081
+              },
+              {
+                "ProbeName": "8988",
+                "LBBEProbePort": 8988
+              },
+              {
+                "ProbeName": "8989",
+                "LBBEProbePort": 8989
+              },
+              {
+                "ProbeName": "8990",
+                "LBBEProbePort": 8990
+              }
+            ],
+            "Services": [
+              {
+                "LBFEName": "API",
+                "LBBEName": "API",
+                "RuleName": "API-19000",
+                "LBFEPort": 19000,
+                "LBBEPort": 19000,
+                "ProbeName": 19000,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "LBBEName": "API",
+                "RuleName": "API-19080",
+                "LBFEPort": 19080,
+                "LBBEPort": 19080,
+                "ProbeName": 19080,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "LBBEName": "API",
+                "RuleName": "API-19081",
+                "LBFEPort": 19081,
+                "LBBEPort": 19081,
+                "ProbeName": 19081,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "LBBEName": "API",
+                "RuleName": "API-8988",
+                "LBFEPort": 8988,
+                "LBBEPort": 8988,
+                "ProbeName": 8988,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "LBBEName": "API",
+                "RuleName": "API-8989",
+                "LBFEPort": 8989,
+                "LBBEPort": 8989,
+                "ProbeName": 8989,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "API",
+                "LBBEName": "API",
+                "RuleName": "API-8990",
+                "LBFEPort": 8990,
+                "LBBEPort": 8990,
+                "ProbeName": 8990,
+                "DirectReturn": false
+              }
+            ]
+          },
+          {
+            "Name": "SF",
+            "ASName": "SF",
+            "Sku": "Basic",
+            "Type": "Private",
+            "BackEnd": ["SF"],
+            "FrontEnd": [
+              {
+                "SNName": "MT02",
+                "LBFEName": "SF",
+                "LBFEIP": "253"
+              }
+            ],
+            "NATPools": [
+              {
+                "Name": "RDP",
+                "frontendPortRangeStart": 3389,
+                "frontendPortRangeEnd": 4500,
+                "enableFloatingIP": false,
+                "backendPort": 3389,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "LBFEName": "SF"
+              }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "19000",
+                "LBBEProbePort": 19000
+              },
+              {
+                "ProbeName": "19080",
+                "LBBEProbePort": 19080
+              },
+              {
+                "ProbeName": "19081",
+                "LBBEProbePort": 19081
+              },
+              {
+                "ProbeName": "8988",
+                "LBBEProbePort": 8988
+              },
+              {
+                "ProbeName": "8989",
+                "LBBEProbePort": 8989
+              },
+              {
+                "ProbeName": "8990",
+                "LBBEProbePort": 8990
+              }
+            ],
+            "Services": [
+              {
+                "LBFEName": "SF",
+                "LBBEName": "SF",
+                "RuleName": "SF-19000",
+                "LBFEPort": 19000,
+                "LBBEPort": 19000,
+                "ProbeName": 19000,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "SF",
+                "LBBEName": "SF",
+                "RuleName": "SF-19080",
+                "LBFEPort": 19080,
+                "LBBEPort": 19080,
+                "ProbeName": 19080,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "SF",
+                "LBBEName": "SF",
+                "RuleName": "SF-19081",
+                "LBFEPort": 19081,
+                "LBBEPort": 19081,
+                "ProbeName": 19081,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "SF",
+                "LBBEName": "SF",
+                "RuleName": "SF-8988",
+                "LBFEPort": 8988,
+                "LBBEPort": 8988,
+                "ProbeName": 8988,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "SF",
+                "LBBEName": "SF",
+                "RuleName": "SF-8989",
+                "LBFEPort": 8989,
+                "LBBEPort": 8989,
+                "ProbeName": 8989,
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "SF",
+                "LBBEName": "SF",
+                "RuleName": "SF-8990",
+                "LBFEPort": 8990,
+                "LBBEPort": 8990,
+                "ProbeName": 8990,
+                "DirectReturn": false
+              }
+            ]
+          }
+        ],
+        "LBInfo": [
+          {
+            "Name": "PLB01",
+            "Zone": 1,
+            "ASName": "PLB01",
+            "Sku": "Standard",
+            "Type": "Public",
+            "BackEnd": ["PLB01"],
+            "FrontEnd": [
+              {
+                "Type": "Public",
+                "LBFEName": "PLB01",
+                "PublicIP": "Static"
+              }
+            ],
+            "outboundRules": [
+              {
+                "LBFEName": "PLB01",
+                "allocatedOutboundPorts": 1024,
+                "idleTimeoutInMinutes": 4,
+                "enableTcpReset": true,
+                "protocol": "All"
+              }
+            ]
+          },
+          {
+            "Name": "FIL",
+            "ASName": "FIL",
+            "Sku": "Standard",
+            "Type": "Private",
+            "BackEnd": ["FIL"],
+            "FrontEnd": [
+              {
+                "SNName": "MT02",
+                "LBFEName": "FIL",
+                "LBFEIP": "254"
+              }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "FIL-MQ",
+                "LBBEProbePort": 5672
+              },
+              {
+                "ProbeName": "FIL-MQ-ADMIN",
+                "LBBEProbePort": 15672
+              }
+            ],
+            "Services": [
+              {
+                "LBFEName": "FIL",
+                "LBBEName": "FIL",
+                "RuleName": "FIL-MQ",
+                "LBFEPort": 5672,
+                "LBBEPort": 5672,
+                "ProbeName": "FIL-MQ",
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "FIL",
+                "LBBEName": "FIL",
+                "RuleName": "FIL-MQ-ADMIN",
+                "LBFEPort": 15672,
+                "LBBEPort": 15672,
+                "ProbeName": "FIL-MQ-ADMIN",
+                "DirectReturn": false
+              }
+            ]
+          },
+          {
+            "Name": "CLS01",
+            "ASName": "CLS01",
+            "Sku": "Basic",
+            "Type": "Private",
+            "BackEnd": ["CLS01"],
+            "FrontEnd": [
+              {
+                "SNName": "BE02",
+                "Type": "Private",
+                "LBFEName": "AG01",
+                "LBFEIP": "110"
+              }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "AO-59999",
+                "LBBEProbePort": 59999
+              }
+            ],
+            "Services": [
+              {
+                "RuleName": "AG01",
+                "LBFEName": "AG01",
+                "LBFEPort": 1433,
+                "LBBEPort": 1433,
+                "ProbeName": "AO-59999",
+                "DirectReturn": true
+              }
+            ]
+          }
+        ],
+        "Appservers": {
+          "ADPrimary": [
+            {
+              "Name": "DC01",
+              "Role": "ADp",
+              "ASName": "AD",
+              "DDRole": "32GB",
+              "OSType": "Server2016Coresmall",
+              "ExcludeDomainJoin": 1,
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "AD01",
+                  "Primary": 1,
+                  "StaticIP": "75"
+                }
+              ]
+            }
+          ],
+          "ADSecondary": [
+            {
+              "Name": "DC02",
+              "Role": "ADs",
+              "ASName": "AD",
+              "DDRole": "32GB",
+              "OSType": "Server2016Coresmall",
+              "Zone": 2,
+              "NICs": [
+                {
+                  "Subnet": "AD01",
+                  "Primary": 1,
+                  "StaticIP": "76"
+                }
+              ]
+            }
+          ],
+          "InitialDOP": [
+            {
+              "Name": "JMP01",
+              "Role": "JMP",
+              "ASName": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Server2016small",
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "62"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

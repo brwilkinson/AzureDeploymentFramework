@@ -1,6 +1,6 @@
 Configuration ADPrimary
 {
-    Param ( 
+    Param (
         [String]$DomainName,
         [PSCredential]$AdminCreds,
         [PSCredential]$sshPublic,
