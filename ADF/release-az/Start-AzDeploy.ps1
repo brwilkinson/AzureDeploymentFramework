@@ -145,28 +145,26 @@ Function global:Start-AzDeploy
             "$Artifacts\ext-DSC\"
         )
         # Create DSC configuration archive only for the files that changed
-        git -C $DSCSourceFolder diff --diff-filter d --name-only $Include | Where-Object { $_ -match 'ps1$' } | ForEach-Object {
+        git -C $DSCSourceFolder diff --diff-filter d --name-only $Include |
+            Where-Object { $_ -match 'ps1$' } | ForEach-Object {
                 
-            # ignore errors on git diff for deleted files
-            $File = Get-Item -EA Ignore -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $Artifacts))
-            if ($File)
-            {
-                $DSCArchiveFilePath = $File.FullName.Substring(0, $File.FullName.Length - 4) + '.zip'
-                Publish-AzVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+                # ignore errors on git diff for deleted files
+                $File = Get-Item -EA Ignore -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $Artifacts))
+                if ($File)
+                {
+                    $DSCArchiveFilePath = $File.FullName.Substring(0, $File.FullName.Length - 4) + '.zip'
+                    Publish-AzVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+                }
+                else 
+                {
+                    Write-Verbose -Message "File not found, assume deleted, will not upload [$_]"
+                }
             }
-            else 
-            {
-                Write-Verbose -Message "File not found, assume deleted, will not upload [$_]"
-            }
-        }
 
-        # Upload only files that changes since last git add, i.e. only for the files that changed, use -fullupload to upload ALL files
+        # Upload only files that changes since last git add, i.e. only for the files that changed, 
+        # use -fullupload to upload ALL files
         # only look in the 3 templates directories for uploading files
         $Include = @(
-            # no longer check ARM template directories for uploads
-            # "$Artifacts\templates-base\",
-            # "$Artifacts\templates-deploy\",
-            # "$Artifacts\templates-nested\",
             "$Artifacts\ext-DSC\",
             "$Artifacts\ext-CD\",
             "$Artifacts\ext-Scripts\"
@@ -207,7 +205,7 @@ Function global:Start-AzDeploy
             
         $Include = @(
             # no longer uploading any templates only extensions
-            'ext-DSC', 'ext-CD', 'ext-Scripts' # 'templates-deploy', 'templates-base', 'templates-nested',
+            'ext-DSC', 'ext-CD', 'ext-Scripts'
         )
         Get-ChildItem -Path $Artifacts -Include $Include -Recurse -Directory |
             Get-ChildItem -File -Include *.json, *.zip, *.psd1, *.sh, *.ps1 | ForEach-Object {
@@ -222,6 +220,7 @@ Function global:Start-AzDeploy
                 Set-AzStorageBlobContent @StorageParams
             } | Select-Object Name, Length, LastModified
     }
+    #endregion
 
     $TemplateArgs = @{ }
     $OptionalParameters = @{ }
@@ -274,7 +273,7 @@ Function global:Start-AzDeploy
         }
 
         # ManagementGroup
-        'M0' 
+        'M0'
         {
             Write-Output 'M0'
             if ($WhatIf)
@@ -289,7 +288,7 @@ Function global:Start-AzDeploy
             }
         }
 
-        Default 
+        Default
         {
             # Subscription
             if ($SubscriptionDeploy -OR $Deployment -eq 'G0')
@@ -323,6 +322,6 @@ Function global:Start-AzDeploy
             }
         }
     }
-} # Start-AzDeploy 
+} # Start-AzDeploy
 
 New-Alias -Name AzDeploy -Value Start-AzDeploy -Force -Scope global
