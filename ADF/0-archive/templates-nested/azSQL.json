@@ -51,7 +51,7 @@
   },
   "resources": [
     {
-      "name": "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name)]",
+      "name": "[toLower(concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name))]",
       "type": "Microsoft.Sql/servers",
       "apiVersion": "2020-11-01-preview",
       "location": "[resourceGroup().location]",
@@ -106,7 +106,7 @@
       ]
     },
     {
-      "name": "[concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/',parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name)]",
+      "name": "[toLower(concat(parameters('Deployment'),'-azsql',parameters('azSQLInfo').Name,'/',parameters('azSQLInfo').DBInfo[CopyIndex(0)].Name))]",
       "type": "Microsoft.Sql/servers/databases",
       "apiVersion": "2020-11-01-preview",
       "location": "[resourceGroup().location]",
