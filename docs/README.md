@@ -81,9 +81,9 @@ Once you are familiar with those, how do you actually implement, by taking 1 or 
 
 <br/>
 
-![How](./ADF/Slide5.SVG)
+![How](./Slides_ADF/Slide5.SVG)
 
-[Documentation - What is ADF?](./ADF.md)
+[Documentation - What is ADF?](https://brwilkinson.github.io/AzureDeploymentFramework/)
 
 
 
