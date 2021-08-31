@@ -1,0 +1,153 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "G"
+    },
+    "DeploymentID": {
+      "value": "0"
+    },
+    "vmAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "localadmin"
+      }
+    },
+    "sshPublic": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "sshPublic"
+      }
+    },
+    "devOpsPat": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01"
+        },
+        "secretName": "devOpsPat"
+      }
+    },
+    "Stage": {
+      "value": {
+        "RG": 0,
+        "RoleDefinition": 1,
+        "RBAC": 1,
+        "UAI": 0,
+        "SP": 0,
+        "KV": 0,
+        "OMS": 0,
+        "OMSSolutions": 0,
+        "OMSDataSources": 0,
+        "SA": 0,
+        "StorageSync": 0,
+        "RSV": 0,
+        "NSGHUB": 0,
+        "NSGSPOKE": 0,
+        "NetworkWatcher": 0,
+        "FlowLogs": 0,
+        "VNet": 0,
+        "VNetPeering": 0,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 0,
+        "BastionHost": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "ERGW": 0,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "ILB": 0,
+        "PLB": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0,
+        "VMSS": 0,
+        "WAFPOLICY": 0,
+        "FRONTDOOR": 0,
+        "WAF": 0,
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 0,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "DNSLookup": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "MySQLDB": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "AdminCenter": 0,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "AADLogin": 1,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 1,
+        "SqlIaasExtension": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
+          }
+        ],
+        "RoleDefinitionsInfo": [
+          {
+            "RoleName": "Key_Vault_Reader",
+            "description": "Lets you run deployments from the KeyVault",
+            "notActions": [],
+            "actions": [
+              "MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION"
+            ]
+          }
+        ],
+        "mgInfo" : [
+          {
+            "DisplayName": "Global",
+            "Parent": "Tenant Root Group"
+          },
+          {
+            "DisplayName": "PSO",
+            "Parent": "Global"
+          }
+        ]
+      }
+    }
+  }
+}

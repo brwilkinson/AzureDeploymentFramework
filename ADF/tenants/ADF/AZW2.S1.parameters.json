@@ -1,0 +1,500 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "AZW2"
+    },
+    "Environment": {
+      "value": "S"
+    },
+    "DeploymentID": {
+      "value": "1"
+    },
+    "vmAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZW2-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZW2-BRW-ADF-P0-kvVault01"
+        },
+        "secretName": "localadmin"
+      }
+    },
+    "sshPublic": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZW2-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZW2-BRW-ADF-P0-kvVault01"
+        },
+        "secretName": "sshPublic"
+      }
+    },
+    "devOpsPat": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AZW2-BRW-ADF-RG-P0/providers/Microsoft.KeyVault/vaults/AZW2-BRW-ADF-P0-kvVault01"
+        },
+        "secretName": "devOpsPat"
+      }
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "KV": 1,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "SA": 1,
+        "CDN": 0,
+        "StorageSync": 1,
+        "RSV": 0,
+        "NSGHUB": 0,
+        "NSGSPOKE": 1,
+        "NetworkWatcher": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetPeering": 1,
+        "RT": 1,
+        "FW": 0,
+        "LinkPrivateDns": 0,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "PrivateLink": 1,
+        "ILB": 0,
+        "PLB": 0,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "InitialDOP": 1,
+        "VMApp": 0,
+        "VMAppLinux": 1,
+        "VMSQL": 0,
+        "VMFILE": 0,
+        "VMSS": 0,
+        "WAFPOLICY": 0,
+        "FRONTDOOR": 0,
+        "WAF": 1,
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 0,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "DNSLookup": 0,
+        "ServerFarm": 1,
+        "WebSite": 1,
+        "WebSiteContainer": 0,
+        "MySQLDB": 1,
+        "Function":1
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "AdminCenter": 0,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "Scripts": 1,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 1,
+        "SqlIaasExtension": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "rolesInfo": [
+          {
+            "Name": "Contributor",
+            "Member": "benwilk@Microsoft.com"
+          }
+        ],
+        "SubnetInfo": [
+          {
+            "name": "snWAF01",
+            "prefix": "0/27",
+            "NSG": 1
+          },
+          {
+            "name": "snFE01",
+            "prefix": "32/27",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "snAD01",
+            "prefix": "64/28",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "snBE01",
+            "prefix": "80/28",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
+            "Route": false
+          },
+          {
+            "name": "AzureFirewallSubnet",
+            "prefix": "128/26",
+            "NSG": 0
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": false
+          }
+        ],
+        "saInfo": [
+          {
+            "nameSuffix": "naslfse",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "largeFileSharesState": "Enabled"
+          },
+          {
+            "nameSuffix": "naslfsd",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "largeFileSharesState": "Disabled"
+          },
+          {
+            "nameSuffix": "naslfsn",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "largeFileSharesState2": "Enabled"
+          },
+          {
+            "nameSuffix": "nas",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "largeFileSharesState": "Enabled"
+          },
+          {
+            "nameSuffix": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow"
+          },
+          {
+            "nameSuffix": "witness",
+            "skuName": "Standard_ZRS",
+            "allNetworks": "Allow"
+          },
+          {
+            "nameSuffix": "dis01",
+            "skuName": "Standard_ZRS",
+            "allNetworks": "Allow",
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              },
+              {
+                "Subnet": "snMT02",
+                "groupID": "queue"
+              }
+            ]
+          },
+          {
+            "nameSuffix": "sqlbackup",
+            "skuName": "Standard_ZRS",
+            "allNetworks": "Allow"
+          }
+        ],
+        "StorageSyncInfo": [
+          {
+            "Name": "NAS",
+            "sasuffix": "nas",
+            "ShareQuota": 102400,
+            "SyncGroups": [
+              "NAS"
+            ]
+          }
+        ],
+        "RTInfo": [
+          {
+            "Name": "Contoso-Hub",
+            "Routes": [
+              {
+                "Name": "Default-Azure-FW",
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopIpAddress": "172.16.142.132",
+                "nextHopType": "VirtualAppliance"
+              }
+            ]
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "AppVault",
+            "skuName": "standard",
+            "softDelete": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "accessPolicies": [
+              {
+                "objectId": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+                "Permissions": "All"
+              }
+            ],
+            "allNetworks": "Deny",
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "vault"
+              }
+            ]
+          }
+        ],
+        "appServiceplanInfo2": [
+          {
+            "Name": "WPS01",
+            "perSiteScaling": true,
+            "reserved": false,
+            "skuname": "S2",
+            "skutier": "Standard",
+            "skucapacity": 1
+          },
+          {
+            "Name": "DIS01",
+            "kind": "functionapp",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "Y1",
+            "skutier": "Dynamic",
+            "skucapacity": 0
+          }
+        ],
+          "appServiceplanInfo": [
+          {
+            "Name": "DIS03",
+            "kind": "functionapp",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skucapacity": 1
+          }
+        ],
+        "WebSiteInfo": [
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "saname": "wps01"
+          }
+        ],
+        "FunctionInfo": [
+          {
+            "Name": "DIS01",
+            "kind": "functionapp",
+            "AppSVCPlan": "DIS01",
+            "saname": "dis01",
+            "runtime": "dotnet"
+          }
+        ],
+        "APIMInfo": [
+          {
+            "name": "01",
+            "dnsName": "API",
+            "apimSku": "Developer",
+            "snName": "BE01"
+          }
+        ],
+        "MYSQLInfo": [
+          {
+            "Name": "WPS01",
+            "skuTier": "GeneralPurpose",
+            "skuCoreCount": 2,
+            "skuFamily": "Gen5",
+            "MySQLVersion": "5.7",
+            "backupRetentionDays": 7,
+            "StorageMB": 5120,
+            "dbUserName": "localadmin"
+          }
+        ],
+        "ASRInfo": [
+          {
+            "SourceRG": "S1",
+            "SourceRegion": "AZW2",
+            "SourceSasuffix": "cache",
+            "DestinationRG": "S2",
+            "DestinationRegion": "AZE1",
+            "DestinationRSVName": "ASRRecoveryVault",
+            "DestinationLogAnalytics": "LogAnalytics",
+            "RSVSkuName": "RS0",
+            "RSVSkuTier": "Standard",
+            "ReplicationPolicyName": "24-hour-retention-policy",
+            "RecoveryPlanName": "Failover"
+          }
+        ],
+        "Appservers": {
+          "InitialDOP": [
+            {
+              "Name": "JMP01",
+              "Role": "JMP",
+              "ASName": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Server2019small",
+              "Zone": 1,
+              "IncludeDevOpsAgent": 0,
+              "ExcludeDomainJoin": 0,
+              "ASR": 1,
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "62"
+                }
+              ]
+            }
+          ],
+          "AppServersLinux": [
+            {
+              "Name": "LIN01",
+              "Role": "LIN",
+              "ASName": "LIN",
+              "DDRole": "0GB",
+              "OSType": "cbld10",
+              "Zone": 1,
+              "AdminUser": "localadmin",
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "StaticIP": "59",
+                  "PublicIP": "Static"
+                }
+              ]
+            }
+          ]
+        },
+        "WAFInfo": [
+          {
+            "WAFName": "API",
+            "WAFEnabled": true,
+            "WAFMode": "Detection",
+            "WAFSize": "WAF_v2",
+            "WAFTier": "WAF_v2",
+            "WAFCapacity": 2,
+            "PrivateIP": "30",
+            "SSLCerts": [
+              "WildcardCert"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "FQDNs": [
+              "JMP01"
+            ],
+            "pathRules": [
+              {
+                "Name": "Policy3",
+                "Protocol": "https",
+                "paths": [
+                  "/admin/maintenance/phraseCheckRTF.cfm",
+                  "/contoso/OrderTasks/FinalizeOrder/new_FinalizeOrder.cfm"
+                ]
+              },
+              {
+                "Name": "Policy4",
+                "Protocol": "https",
+                "paths": [
+                  "/contoso/tabqa/new_spellCheck.cfm"
+                ]
+              }
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "Cert": "WildcardCert",
+                "hostname": "PSObject.com"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "443",
+                "Protocol": "https",
+                "Cert": "WildcardCert",
+                "Domain": "PSObject.com",
+                "Hostname": "web01",
+                "Interface": "Public"
+              },
+              {
+                "Port": 443,
+                "BackendPort": "443",
+                "Protocol": "https",
+                "Cert": "WildcardCert",
+                "Domain": "PSObject.com",
+                "Hostname": "web02",
+                "Interface": "Public"
+              },
+              {
+                "Port": 443,
+                "BackendPort": "443",
+                "Protocol": "https",
+                "Cert": "WildcardCert",
+                "Domain": "PSObject.com",
+                "Hostname": "web03",
+                "Interface": "Public",
+                "pathRules": "Policy3"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "PSObject.com",
+                "Hostname": "web01",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "PSObject.com",
+                "Hostname": "web02",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "PSObject.com",
+                "Hostname": "web03",
+                "Interface": "Public",
+                "pathRules": "Policy3"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
