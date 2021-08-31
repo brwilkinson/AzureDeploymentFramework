@@ -1,14 +1,14 @@
 
-## Azure Deployment Framework [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/). 
+## Azure Deployment Framework [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/).
 #### This project is currently in Preview. [[ADF Source]](https://github.com/brwilkinson/AzureDeploymentFramework)
 ---
 ### - Declarative Infrastructure
 
-- [Documentation - What is ADF, Observations on ARM (Bicep) Templates Etc.](./docs/index.md)
-- [Documentation - Ready to Deploy? Getting Started Steps](./docs/Getting_Started.md)
+- [Documentation - What is ADF, Observations on ARM (Bicep) Templates Etc.](./index.md)
+- [Documentation - Ready to Deploy? Getting Started Steps](./Getting_Started.md)
 
-    - [Status - Deployment Workflows GitHub](./docs/Deployment_Pipelines_GitHub.md)
-    - [Status - Deployment Pipelines Azure DevOps](./docs/Deployment_Pipelines_DevOps.md)
+    - [Status - Deployment Workflows GitHub](./Deployment_Pipelines_GitHub.md)
+    - [Status - Deployment Pipelines Azure DevOps](./Deployment_Pipelines_DevOps.md)
 
 ---
 
@@ -81,9 +81,9 @@ Once you are familiar with those, how do you actually implement, by taking 1 or 
 
 <br/>
 
-![How](./docs/ADF/Slide5.SVG)
+![How](./ADF/Slide5.SVG)
 
-[Documentation - What is ADF?](./docs/ADF.md)
+[Documentation - What is ADF?](./ADF.md)
 
 
 

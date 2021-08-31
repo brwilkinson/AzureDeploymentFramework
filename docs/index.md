@@ -1,7 +1,7 @@
 #  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
-Go Readme [README](../README.md)
+Go Readme [README](./README.md)
 
 [Documentation - What is ADF](./ADF.md)
 
