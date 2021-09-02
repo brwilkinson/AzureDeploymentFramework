@@ -1,0 +1,621 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.4.613.9944",
+      "templateHash": "18176018399163870876"
+    }
+  },
+  "parameters": {
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "AZE2",
+      "allowedValues": [
+        "AZE2",
+        "AZC1",
+        "AEU2",
+        "ACU1"
+      ]
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "T",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "vmAdminPassword": {
+      "type": "secureString"
+    },
+    "devOpsPat": {
+      "type": "secureString"
+    },
+    "sshPublic": {
+      "type": "secureString"
+    }
+  },
+  "functions": [],
+  "variables": {
+    "copy": [
+      {
+        "name": "LB",
+        "count": "[length(variables('LBInfo'))]",
+        "input": {
+          "match": "[or(equals(parameters('Global').CN, '.'), contains(parameters('Global').CN, variables('LBInfo')[copyIndex('LB')].Name))]"
+        }
+      }
+    ],
+    "Deployment": "[format('{0}-{1}-{2}-{3}{4}', parameters('Prefix'), parameters('Global').OrgName, parameters('Global').Appname, parameters('Environment'), parameters('DeploymentID'))]",
+    "subscriptionId": "[subscription().subscriptionId]",
+    "Domain": "[split(parameters('Global').DomainName, '.')[0]]",
+    "resourceGroupName": "[resourceGroup().name]",
+    "OMSworkspaceName": "[replace(format('{0}LogAnalytics', variables('Deployment')), '-', '')]",
+    "OMSworkspaceID": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('OMSworkspaceName'))]",
+    "VNetID": "[resourceId(variables('subscriptionId'), variables('resourceGroupName'), 'Microsoft.Network/VirtualNetworks', format('{0}-vn', variables('Deployment')))]",
+    "networkId": "[format('{0}{1}', parameters('Global').networkid[0], string(sub(parameters('Global').networkid[1], mul(2, int(parameters('DeploymentID'))))))]",
+    "networkIdUpper": "[format('{0}{1}', parameters('Global').networkid[0], string(add(1, sub(parameters('Global').networkid[1], mul(2, int(parameters('DeploymentID')))))))]",
+    "LBInfo": "[if(contains(parameters('DeploymentInfo'), 'LBInfo'), parameters('DeploymentInfo').LBInfo, createArray())]"
+  },
+  "resources": [
+    {
+      "condition": "[variables('LB')[copyIndex()].match]",
+      "copy": {
+        "name": "PublicIP",
+        "count": "[length(variables('LBInfo'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "[format('dp{0}-LB-publicIPDeploy{1}', variables('Deployment'), variables('LBInfo')[copyIndex()].Name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "NICs": {
+            "value": "[variables('LBInfo')[copyIndex()].FrontEnd]"
+          },
+          "VM": {
+            "value": "[variables('LBInfo')[copyIndex()]]"
+          },
+          "PIPprefix": {
+            "value": "lb"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "OMSworkspaceID": {
+            "value": "[variables('OMSworkspaceID')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.613.9944",
+              "templateHash": "14396870348066192995"
+            }
+          },
+          "parameters": {
+            "Deployment": {
+              "type": "string"
+            },
+            "DeploymentID": {
+              "type": "string"
+            },
+            "PIPprefix": {
+              "type": "string"
+            },
+            "NICs": {
+              "type": "array"
+            },
+            "VM": {
+              "type": "object"
+            },
+            "Global": {
+              "type": "object"
+            },
+            "OMSworkspaceID": {
+              "type": "string"
+            }
+          },
+          "functions": [],
+          "resources": [
+            {
+              "condition": "[contains(parameters('NICs')[copyIndex()], 'PublicIP')]",
+              "copy": {
+                "name": "PublicIP",
+                "count": "[length(parameters('NICs'))]"
+              },
+              "type": "Microsoft.Network/publicIPAddresses",
+              "apiVersion": "2021-02-01",
+              "name": "[format('{0}-{1}{2}-publicip{3}', parameters('Deployment'), parameters('PIPprefix'), parameters('VM').Name, add(copyIndex(), 1))]",
+              "location": "[resourceGroup().location]",
+              "sku": {
+                "name": "[if(contains(parameters('VM'), 'Zone'), 'Standard', 'Basic')]"
+              },
+              "properties": {
+                "publicIPAllocationMethod": "[parameters('NICs')[copyIndex()].PublicIP]",
+                "dnsSettings": {
+                  "domainNameLabel": "[toLower(format('{0}-{1}{2}-{3}', parameters('Deployment'), parameters('PIPprefix'), parameters('VM').Name, add(copyIndex(), 1)))]"
+                }
+              }
+            },
+            {
+              "condition": "[contains(parameters('NICs')[copyIndex()], 'PublicIP')]",
+              "copy": {
+                "name": "PublicIPDiag",
+                "count": "[length(parameters('NICs'))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2017-05-01-preview",
+              "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', format('{0}-{1}{2}-publicip{3}', parameters('Deployment'), parameters('PIPprefix'), parameters('VM').Name, add(copyIndex(), 1)))]",
+              "name": "service",
+              "properties": {
+                "workspaceId": "[parameters('OMSworkspaceID')]",
+                "logs": [
+                  {
+                    "category": "DDoSProtectionNotifications",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "timeGrain": "PT5M",
+                    "enabled": true,
+                    "retentionPolicy": {
+                      "enabled": false,
+                      "days": 0
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-{1}{2}-publicip{3}', parameters('Deployment'), parameters('PIPprefix'), parameters('VM').Name, add(copyIndex(), 1)))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "PIPID": {
+              "type": "array",
+              "copy": {
+                "count": "[length(parameters('NICs'))]",
+                "input": "[if(contains(parameters('NICs')[copyIndex()], 'PublicIP'), resourceId('Microsoft.Network/publicIPAddresses', format('{0}-{1}{2}-publicip{3}', parameters('Deployment'), parameters('PIPprefix'), parameters('VM').Name, add(copyIndex(), 1))), '')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[variables('LB')[copyIndex()].match]",
+      "copy": {
+        "name": "LBs",
+        "count": "[length(variables('LBInfo'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "[format('dp{0}-LB-Deploy{1}', variables('Deployment'), variables('LBInfo')[copyIndex()].Name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "backEndPools": {
+            "value": "[if(contains(variables('LBInfo')[copyIndex()], 'BackEnd'), variables('LBInfo')[copyIndex()].BackEnd, json('[]'))]"
+          },
+          "NATRules": {
+            "value": "[if(contains(variables('LBInfo')[copyIndex()], 'NATRules'), variables('LBInfo')[copyIndex()].NATRules, json('[]'))]"
+          },
+          "NATPools": {
+            "value": "[if(contains(variables('LBInfo')[copyIndex()], 'NATPools'), variables('LBInfo')[copyIndex()].NATPools, json('[]'))]"
+          },
+          "outboundRules": {
+            "value": "[if(contains(variables('LBInfo')[copyIndex()], 'outboundRules'), variables('LBInfo')[copyIndex()].outboundRules, json('[]'))]"
+          },
+          "Services": {
+            "value": "[if(contains(variables('LBInfo')[copyIndex()], 'Services'), variables('LBInfo')[copyIndex()].Services, json('[]'))]"
+          },
+          "probes": {
+            "value": "[if(contains(variables('LBInfo')[copyIndex()], 'probes'), variables('LBInfo')[copyIndex()].probes, json('[]'))]"
+          },
+          "LB": {
+            "value": "[variables('LBInfo')[copyIndex()]]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "OMSworkspaceID": {
+            "value": "[variables('OMSworkspaceID')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.613.9944",
+              "templateHash": "10038364855476677710"
+            }
+          },
+          "parameters": {
+            "Deployment": {
+              "type": "string"
+            },
+            "DeploymentID": {
+              "type": "string"
+            },
+            "backEndPools": {
+              "type": "array",
+              "defaultValue": []
+            },
+            "NATRules": {
+              "type": "array",
+              "defaultValue": []
+            },
+            "NATPools": {
+              "type": "array",
+              "defaultValue": []
+            },
+            "outboundRules": {
+              "type": "array",
+              "defaultValue": []
+            },
+            "Services": {
+              "type": "array",
+              "defaultValue": []
+            },
+            "probes": {
+              "type": "array",
+              "defaultValue": []
+            },
+            "LB": {
+              "type": "object"
+            },
+            "Global": {
+              "type": "object"
+            },
+            "OMSworkspaceID": {
+              "type": "string"
+            }
+          },
+          "functions": [],
+          "variables": {
+            "copy": [
+              {
+                "name": "backEndPools_var",
+                "count": "[length(parameters('backEndPools'))]",
+                "input": {
+                  "name": "[parameters('backEndPools')[copyIndex('backEndPools_var')]]"
+                }
+              },
+              {
+                "name": "NATPools_var",
+                "count": "[length(parameters('NATPools'))]",
+                "input": {
+                  "name": "[parameters('NATPools')[copyIndex('NATPools_var')].Name]",
+                  "properties": {
+                    "protocol": "[parameters('NATPools')[copyIndex('NATPools_var')].protocol]",
+                    "frontendPortRangeStart": "[parameters('NATPools')[copyIndex('NATPools_var')].frontendPortRangeStart]",
+                    "frontendPortRangeEnd": "[parameters('NATPools')[copyIndex('NATPools_var')].frontendPortRangeEnd]",
+                    "backendPort": "[parameters('NATPools')[copyIndex('NATPools_var')].backendPort]",
+                    "frontendIPConfiguration": {
+                      "name": "[parameters('NATPools')[copyIndex('NATPools_var')].LBFEName]"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "probes_var",
+                "count": "[length(parameters('probes'))]",
+                "input": {
+                  "name": "[parameters('probes')[copyIndex('probes_var')].ProbeName]",
+                  "properties": {
+                    "protocol": "Tcp",
+                    "port": "[parameters('probes')[copyIndex('probes_var')].LBBEProbePort]",
+                    "intervalInSeconds": 5,
+                    "numberOfProbes": 2
+                  }
+                }
+              },
+              {
+                "name": "loadBalancingRules",
+                "count": "[length(parameters('Services'))]",
+                "input": {
+                  "name": "[parameters('Services')[copyIndex('loadBalancingRules')].RuleName]",
+                  "properties": {
+                    "frontendIPConfiguration": {
+                      "name": "[parameters('Services')[copyIndex('loadBalancingRules')].LBFEName]"
+                    },
+                    "backendAddressPool": {
+                      "name": "[parameters('LB').ASName]"
+                    },
+                    "probe": {
+                      "name": "[parameters('Services')[copyIndex('loadBalancingRules')].ProbeName]"
+                    },
+                    "protocol": "[if(contains(parameters('Services')[copyIndex('loadBalancingRules')], 'protocol'), parameters('Services')[copyIndex('loadBalancingRules')].Protocol, 'tcp')]",
+                    "frontendPort": "[parameters('Services')[copyIndex('loadBalancingRules')].LBFEPort]",
+                    "backendPort": "[parameters('Services')[copyIndex('loadBalancingRules')].LBBEPort]",
+                    "enableFloatingIP": "[if(and(contains(parameters('Services')[copyIndex('loadBalancingRules')], 'DirectReturn'), equals(parameters('Services')[copyIndex('loadBalancingRules')].DirectReturn, bool('true'))), parameters('Services')[copyIndex('loadBalancingRules')].DirectReturn, bool('false'))]",
+                    "loadDistribution": "[if(contains(parameters('Services')[copyIndex('loadBalancingRules')], 'Persistance'), parameters('Services')[copyIndex('loadBalancingRules')].Persistance, 'Default')]",
+                    "disableOutboundSnat": false
+                  }
+                }
+              },
+              {
+                "name": "loadBalancingRulesName",
+                "count": "[length(parameters('Services'))]",
+                "input": {
+                  "name": "[parameters('Services')[copyIndex('loadBalancingRulesName')].RuleName]",
+                  "properties": {
+                    "frontendIPConfiguration": {
+                      "name": "[parameters('Services')[copyIndex('loadBalancingRulesName')].LBFEName]"
+                    },
+                    "backendAddressPool": {
+                      "name": "[parameters('LB').ASName]"
+                    },
+                    "probe": {
+                      "name": "[parameters('Services')[copyIndex('loadBalancingRulesName')].ProbeName]"
+                    },
+                    "protocol": "tcp",
+                    "frontendPort": "[parameters('Services')[copyIndex('loadBalancingRulesName')].LBFEPort]",
+                    "backendPort": "[parameters('Services')[copyIndex('loadBalancingRulesName')].LBBEPort]"
+                  }
+                }
+              },
+              {
+                "name": "loadBalancingRulesID",
+                "count": "[length(parameters('Services'))]",
+                "input": {
+                  "name": "[parameters('Services')[copyIndex('loadBalancingRulesID')].RuleName]",
+                  "properties": {
+                    "frontendIPConfiguration": {
+                      "id": "[format('{0}/frontendIPConfigurations/{1}', resourceId('Microsoft.Network/loadBalancers/', format('{0}-lb{1}', parameters('Deployment'), parameters('LB').Name)), parameters('Services')[copyIndex('loadBalancingRulesID')].LBFEName)]"
+                    },
+                    "backendAddressPool": {
+                      "id": "[format('{0}/backendAddressPools/{1}', resourceId('Microsoft.Network/loadBalancers/', format('{0}-lb{1}', parameters('Deployment'), parameters('LB').Name)), parameters('LB').ASName)]"
+                    },
+                    "probe": {
+                      "id": "[format('{0}/probes/{1}', resourceId('Microsoft.Network/loadBalancers/', format('{0}-lb{1}', parameters('Deployment'), parameters('LB').Name)), parameters('Services')[copyIndex('loadBalancingRulesID')].ProbeName)]"
+                    },
+                    "protocol": "tcp",
+                    "frontendPort": "[parameters('Services')[copyIndex('loadBalancingRulesID')].LBFEPort]",
+                    "backendPort": "[parameters('Services')[copyIndex('loadBalancingRulesID')].LBBEPort]"
+                  }
+                }
+              },
+              {
+                "name": "outboundRules_var",
+                "count": "[length(parameters('outboundRules'))]",
+                "input": {
+                  "name": "[parameters('outboundRules')[copyIndex('outboundRules_var')].LBFEName]",
+                  "properties": {
+                    "protocol": "[parameters('outboundRules')[copyIndex('outboundRules_var')].protocol]",
+                    "enableTcpReset": "[parameters('outboundRules')[copyIndex('outboundRules_var')].enableTcpReset]",
+                    "idleTimeoutInMinutes": "[parameters('outboundRules')[copyIndex('outboundRules_var')].idleTimeoutInMinutes]",
+                    "frontendIPConfigurations": [
+                      {
+                        "name": "[parameters('outboundRules')[copyIndex('outboundRules_var')].LBFEName]"
+                      }
+                    ],
+                    "backendAddressPool": {
+                      "name": "[parameters('outboundRules')[copyIndex('outboundRules_var')].LBFEName]"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "NATRules_var",
+                "count": "[length(parameters('NATRules'))]",
+                "input": {
+                  "name": "[parameters('NATRules')[copyIndex('NATRules_var')].Name]",
+                  "properties": {
+                    "protocol": "[parameters('NATRules')[copyIndex('NATRules_var')].protocol]",
+                    "frontendPort": "[parameters('NATRules')[copyIndex('NATRules_var')].frontendPort]",
+                    "backendPort": "[parameters('NATRules')[copyIndex('NATRules_var')].backendPort]",
+                    "idleTimeoutInMinutes": "[parameters('NATRules')[copyIndex('NATRules_var')].idleTimeoutInMinutes]",
+                    "enableFloatingIP": "[parameters('NATRules')[copyIndex('NATRules_var')].enableFloatingIP]",
+                    "frontendIPConfiguration": {
+                      "name": "[parameters('NATRules')[copyIndex('NATRules_var')].LBFEName]"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "frontendIPConfigurationsPrivate",
+                "count": "[length(parameters('LB').FrontEnd)]",
+                "input": {
+                  "name": "[parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')].LBFEName]",
+                  "properties": {
+                    "privateIPAllocationMethod": "Static",
+                    "privateIPAddress": "[format('{0}.{1}', if(and(contains(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')], 'SNName'), equals(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')].SNName, 'MT02')), variables('networkIdUpper'), variables('networkId')), if(contains(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')], 'LBFEIP'), parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')].LBFEIP, 'NA'))]",
+                    "subnet": {
+                      "id": "[format('{0}/subnets/sn{1}', resourceId('Microsoft.Network/virtualNetworks', format('{0}-vn', parameters('Deployment'))), if(contains(parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')], 'SNName'), parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPrivate')].SNName, 'NA'))]"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "frontendIPConfigurationsPublic",
+                "count": "[length(parameters('LB').FrontEnd)]",
+                "input": {
+                  "name": "[parameters('LB').FrontEnd[copyIndex('frontendIPConfigurationsPublic')].LBFEName]",
+                  "properties": {
+                    "publicIPAddress": {
+                      "id": "[string(resourceId('Microsoft.Network/publicIPAddresses', format('{0}-lb{1}-publicip{2}', parameters('Deployment'), parameters('LB').Name, add(copyIndex('frontendIPConfigurationsPublic'), 1))))]"
+                    }
+                  }
+                }
+              }
+            ],
+            "networkId": "[format('{0}{1}', parameters('Global').networkid[0], string(sub(parameters('Global').networkid[1], mul(2, int(parameters('DeploymentID'))))))]",
+            "networkIdUpper": "[format('{0}{1}', parameters('Global').networkid[0], string(add(1, sub(parameters('Global').networkid[1], mul(2, int(parameters('DeploymentID')))))))]"
+          },
+          "resources": [
+            {
+              "condition": "[equals(length(parameters('NATRules')), 0)]",
+              "type": "Microsoft.Network/loadBalancers",
+              "apiVersion": "2021-02-01",
+              "name": "[format('{0}{1}{2}', parameters('Deployment'), if(equals(length(parameters('NATRules')), 0), '-lb', 'na'), parameters('LB').Name)]",
+              "location": "[resourceGroup().location]",
+              "sku": "[if(contains(parameters('LB'), 'Sku'), json(format('{{\"name\":\"{0}\"}}', parameters('LB').Sku)), json('null'))]",
+              "properties": {
+                "backendAddressPools": "[variables('backEndPools_var')]",
+                "inboundNatPools": "[variables('NATPools_var')]",
+                "outboundRules": "[variables('outboundRules_var')]",
+                "loadBalancingRules": "[variables('loadBalancingRules')]",
+                "probes": "[variables('probes_var')]",
+                "frontendIPConfigurations": "[if(equals(parameters('LB').Type, 'Private'), variables('frontendIPConfigurationsPrivate'), variables('frontendIPConfigurationsPublic'))]"
+              }
+            },
+            {
+              "condition": "[equals(length(parameters('NATRules')), 0)]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2017-05-01-preview",
+              "scope": "[format('Microsoft.Network/loadBalancers/{0}', format('{0}{1}{2}', parameters('Deployment'), if(equals(length(parameters('NATRules')), 0), '-lb', 'na'), parameters('LB').Name))]",
+              "name": "service",
+              "properties": {
+                "workspaceId": "[parameters('OMSworkspaceID')]",
+                "logs": [
+                  {
+                    "category": "LoadBalancerAlertEvent",
+                    "enabled": true
+                  },
+                  {
+                    "category": "LoadBalancerProbeHealthStatus",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "timeGrain": "PT5M",
+                    "enabled": true,
+                    "retentionPolicy": {
+                      "enabled": false,
+                      "days": 0
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/loadBalancers', format('{0}{1}{2}', parameters('Deployment'), if(equals(length(parameters('NATRules')), 0), '-lb', 'na'), parameters('LB').Name))]"
+              ]
+            },
+            {
+              "condition": "[not(equals(length(parameters('NATRules')), 0))]",
+              "type": "Microsoft.Network/loadBalancers",
+              "apiVersion": "2020-07-01",
+              "name": "[format('{0}{1}{2}', parameters('Deployment'), if(not(equals(length(parameters('NATRules')), 0)), '-lb', 'na'), parameters('LB').Name)]",
+              "location": "[resourceGroup().location]",
+              "sku": "[if(contains(parameters('LB'), 'Sku'), json(format('{{\"name\":\"{0}\"}}', parameters('LB').Sku)), json('null'))]",
+              "properties": {
+                "backendAddressPools": [
+                  {
+                    "name": "[parameters('LB').ASName]"
+                  }
+                ],
+                "inboundNatRules": "[variables('NATRules_var')]",
+                "outboundRules": "[variables('outboundRules_var')]",
+                "loadBalancingRules": "[variables('loadBalancingRules')]",
+                "probes": "[variables('probes_var')]",
+                "frontendIPConfigurations": "[if(equals(parameters('LB').Type, 'Public'), variables('frontendIPConfigurationsPublic'), variables('frontendIPConfigurationsPrivate'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(length(parameters('NATRules')), 0))]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2017-05-01-preview",
+              "scope": "[format('Microsoft.Network/loadBalancers/{0}', format('{0}{1}{2}', parameters('Deployment'), if(not(equals(length(parameters('NATRules')), 0)), '-lb', 'na'), parameters('LB').Name))]",
+              "name": "service",
+              "properties": {
+                "workspaceId": "[parameters('OMSworkspaceID')]",
+                "logs": [
+                  {
+                    "category": "LoadBalancerAlertEvent",
+                    "enabled": true
+                  },
+                  {
+                    "category": "LoadBalancerProbeHealthStatus",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "timeGrain": "PT5M",
+                    "enabled": true,
+                    "retentionPolicy": {
+                      "enabled": false,
+                      "days": 0
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/loadBalancers', format('{0}{1}{2}', parameters('Deployment'), if(not(equals(length(parameters('NATRules')), 0)), '-lb', 'na'), parameters('LB').Name))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "foo": {
+              "type": "array",
+              "value": "[parameters('NATRules')]"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
