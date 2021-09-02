@@ -139,7 +139,7 @@ Function Deploy
             {
                 $Separator = ':'
             }
-            elseif ($IsWindows)
+            else
             {
                 $Separator = ';'
             }
