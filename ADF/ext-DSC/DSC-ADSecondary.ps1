@@ -142,7 +142,6 @@ Configuration ADSecondary
             DependsOn                     = '[Disk]FDrive'
             PsDscRunAsCredential          = $DomainCreds
             SiteName                      = $SiteName
-            
         }
 
         # Reboot outside of DSC, for DNS update, so set scheduled job to run in 5 minutes
