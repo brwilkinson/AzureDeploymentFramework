@@ -30,7 +30,7 @@ configuration ConfigSQLAO
         [String]$ClusterIpAddress = '10.10.140.90',
 
         # [Parameter(Mandatory)]
-        [String]$AGListenerIpAddress = '10.10.140.110',
+        [String]$AGListenerIpAddress = '10.10.140.92',
 
         # [Parameter(Mandatory)]
         [String]$SqlAlwaysOnEndpointName = 'Hadr_endpoint',
