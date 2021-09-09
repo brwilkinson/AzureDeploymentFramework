@@ -500,79 +500,79 @@
                                     }
                                 }
                             },
-                            // {
-                            //     "name": "Microsoft.Powershell.DSC",
-                            //     "properties": {
-                            //         "provisionAfterExtensions": [
-                            //             "joindomain"
-                            //         ],
-                            //         "publisher": "Microsoft.Powershell",
-                            //         "type": "DSC",
-                            //         "typeHandlerVersion": "2.24",
-                            //         "autoUpgradeMinorVersion": true,
-                            //         "forceUpdateTag": "[parameters('deploymentTime')]",
-                            //         "settings": {
-                            //             "wmfVersion": "latest",
-                            //             "configuration": {
-                            //                 "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-',if(contains(parameters('AppServer'),'DSConfig'),
-                            //                                                             parameters('AppServer').DSConfig,
-                            //                                                             if(
-                            //                                                                 contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                            //                                                                         variables('DSCConfigLookup')[variables('DeploymentName')],
-                            //                                                                         'AppServers'
-                            //                                                             )),
-                            //                                                             '.zip')]",
-                            //                 "script": "[concat('DSC-',if(contains(parameters('AppServer'),'DSConfig'),
-                            //                                                             parameters('AppServer').DSConfig,
-                            //                                                             if(
-                            //                                                             contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                            //                                                                         variables('DSCConfigLookup')[variables('DeploymentName')],
-                            //                                                                         'AppServers'
-                            //                                                             )),'.ps1')]",
-                            //                 "function": "[if(contains(parameters('AppServer'),'DSConfig'),
-                            //                                                             parameters('AppServer').DSConfig,
-                            //                                                             if(
-                            //                                                             contains(variables('DSCConfigLookup'),variables('DeploymentName')),
-                            //                                                                         variables('DSCConfigLookup')[variables('DeploymentName')],
-                            //                                                                         'AppServers'
-                            //                                                             ))]"
-                            //             },
-                            //             "configurationArguments": {
-                            //                 "DomainName": "[parameters('Global').ADDomainName]",
-                            //                 "Thumbprint": "[parameters('Global').certificateThumbprint]",
-                            //                 "storageAccountId": "[variables('saaccountidglobalsource')]",
-                            //                 "deployment": "[replace(variables('Deployment'),'-','')]",
-                            //                 "networkid": "[concat(variables('networkId'),'.')]",
-                            //                 "appInfo": "[if(contains(parameters('AppServer'),'AppInfo'),string(parameters('AppServer').AppInfo),'')]",
-                            //                 "DataDiskInfo": "[string(parameters('VM').DataDisk)]",
-                            //                 "clientIDLocal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperator'),'2018-11-30').ClientId)]",
-                            //                 "clientIDGlobal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',variables('RGName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountFileContributor'),'2018-11-30').ClientId)]"
+                            {
+                                "name": "Microsoft.Powershell.DSC",
+                                "properties": {
+                                    "provisionAfterExtensions": [
+                                        "joindomain"
+                                    ],
+                                    "publisher": "Microsoft.Powershell",
+                                    "type": "DSC",
+                                    "typeHandlerVersion": "2.24",
+                                    "autoUpgradeMinorVersion": true,
+                                    "forceUpdateTag": "[parameters('deploymentTime')]",
+                                    "settings": {
+                                        "wmfVersion": "latest",
+                                        "configuration": {
+                                            "url": "[concat(parameters('global')._artifactsLocation, '/ext-DSC/DSC-',if(contains(parameters('AppServer'),'DSConfig'),
+                                                                                        parameters('AppServer').DSConfig,
+                                                                                        if(
+                                                                                            contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
+                                                                                                    'AppServers'
+                                                                                        )),
+                                                                                        '.zip')]",
+                                            "script": "[concat('DSC-',if(contains(parameters('AppServer'),'DSConfig'),
+                                                                                        parameters('AppServer').DSConfig,
+                                                                                        if(
+                                                                                        contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
+                                                                                                    'AppServers'
+                                                                                        )),'.ps1')]",
+                                            "function": "[if(contains(parameters('AppServer'),'DSConfig'),
+                                                                                        parameters('AppServer').DSConfig,
+                                                                                        if(
+                                                                                        contains(variables('DSCConfigLookup'),variables('DeploymentName')),
+                                                                                                    variables('DSCConfigLookup')[variables('DeploymentName')],
+                                                                                                    'AppServers'
+                                                                                        ))]"
+                                        },
+                                        "configurationArguments": {
+                                            "DomainName": "[parameters('Global').ADDomainName]",
+                                            "Thumbprint": "[parameters('Global').certificateThumbprint]",
+                                            "storageAccountId": "[variables('saaccountidglobalsource')]",
+                                            "deployment": "[replace(variables('Deployment'),'-','')]",
+                                            "networkid": "[concat(variables('networkId'),'.')]",
+                                            "appInfo": "[if(contains(parameters('AppServer'),'AppInfo'),string(parameters('AppServer').AppInfo),'')]",
+                                            "DataDiskInfo": "[string(parameters('VM').DataDisk)]",
+                                            "clientIDLocal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',resourceGroup().name, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountOperator'),'2018-11-30').ClientId)]",
+                                            "clientIDGlobal": "[if(equals(concat(parameters('Environment'),parameters('DeploymentID')),'G0') ,'',reference(concat(subscription().Id,'/resourceGroups/',resourceGroup().name, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',variables('Deployment'),'-uaiStorageAccountFileContributor'),'2018-11-30').ClientId)]"
 
-                            //             },
-                            //             "configurationData": {
-                            //                 "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',parameters('AppServer').Role,'-ConfigurationData.psd1')]"
-                            //             }
-                            //         },
-                            //         "protectedSettings": {
-                            //             "configurationArguments": {
-                            //                 "AdminCreds": {
-                            //                     "UserName": "[parameters('Global').vmAdminUserName]",
-                            //                     "Password": "[parameters('vmAdminPassword')]"
-                            //                 },
-                            //                 "sshPublic": {
-                            //                     "UserName": "ssh",
-                            //                     "Password": "[parameters('sshPublic')]"
-                            //                 },
-                            //                 "devOpsPat": {
-                            //                     "UserName": "pat",
-                            //                     "Password": "[parameters('devOpsPat')]"
-                            //                 }
-                            //             },
-                            //             "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
-                            //             "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
-                            //         }
-                            //     }
-                            // },
+                                        },
+                                        "configurationData": {
+                                            "url": "[concat(parameters('global')._artifactsLocation, '/ext-CD/',parameters('AppServer').Role,'-ConfigurationData.psd1')]"
+                                        }
+                                    },
+                                    "protectedSettings": {
+                                        "configurationArguments": {
+                                            "AdminCreds": {
+                                                "UserName": "[parameters('Global').vmAdminUserName]",
+                                                "Password": "[parameters('vmAdminPassword')]"
+                                            },
+                                            "sshPublic": {
+                                                "UserName": "ssh",
+                                                "Password": "[parameters('sshPublic')]"
+                                            },
+                                            "devOpsPat": {
+                                                "UserName": "pat",
+                                                "Password": "[parameters('devOpsPat')]"
+                                            }
+                                        },
+                                        "configurationUrlSasToken": "[parameters('global')._artifactsLocationSasToken]",
+                                        "configurationDataUrlSasToken": "[parameters('global')._artifactsLocationSasToken]"
+                                    }
+                                }
+                            },
                             {
                                 "name": "HealthExtension",
                                 "properties": {
@@ -588,43 +588,43 @@
                 }
             },
             "resources": [
-                {
-                    "condition": "[equals(parameters('VM').Extensions.MSI,1)]",
-                    "apiVersion": "2019-05-01",
-                    "type": "Microsoft.Resources/deployments",
-                    "name": "[concat('nested-roleAssignmentsGlobal',parameters('AppServer').Name)]",
-                    "resourceGroup": "[parameters('Global').HubRGName]",
-                    "subscriptionId": "[variables('SubscriptionID')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', parameters('AppServer').Name))]"
-                    ],
-                    "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                            "contentVersion": "1.0.0.0",
-                            "parameters": {
-                            },
-                            "variables": {
-                            },
-                            "resources": [
-                                {
-                                    "type": "Microsoft.Authorization/roleAssignments",
-                                    // Unique guid for the role assignment type, the resource group where it's assigned and the unique guid of the vm principalid
-                                    "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',parameters('Global').HubRGName,reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',parameters('AppServer').Name)),'2017-12-01','Full').identity.principalId )]",
-                                    "apiVersion": "2018-01-01-preview",
-                                    "properties": {
-                                        "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/81a9662b-bebf-436f-a333-f67b29880f12')]",
-                                        "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',parameters('AppServer').Name)),'2017-12-01','Full').identity.principalId]",
-                                        "scope": "[concat(Subscription().id,'/resourceGroups/',parameters('Global').HubRGName)]"
-                                    }
-                                }
-                            ]
-                        },
-                        "parameters": {
-                        }
-                    }
-                },
+                // {
+                //     "condition": "[equals(parameters('VM').Extensions.MSI,1)]",
+                //     "apiVersion": "2019-05-01",
+                //     "type": "Microsoft.Resources/deployments",
+                //     "name": "[concat('nested-roleAssignmentsGlobal',parameters('AppServer').Name)]",
+                //     "resourceGroup": "[parameters('Global').HubRGName]",
+                //     "subscriptionId": "[variables('SubscriptionID')]",
+                //     "dependsOn": [
+                //         "[resourceId('Microsoft.Compute/virtualMachineScaleSets', concat(variables('Deployment'),'-ss', parameters('AppServer').Name))]"
+                //     ],
+                //     "properties": {
+                //         "mode": "Incremental",
+                //         "template": {
+                //             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                //             "contentVersion": "1.0.0.0",
+                //             "parameters": {
+                //             },
+                //             "variables": {
+                //             },
+                //             "resources": [
+                //                 {
+                //                     "type": "Microsoft.Authorization/roleAssignments",
+                //                     // Unique guid for the role assignment type, the resource group where it's assigned and the unique guid of the vm principalid
+                //                     "name": "[guid('81a9662b-bebf-436f-a333-f67b29880f12',parameters('Global').HubRGName,reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',parameters('AppServer').Name)),'2017-12-01','Full').identity.principalId )]",
+                //                     "apiVersion": "2018-01-01-preview",
+                //                     "properties": {
+                //                         "roleDefinitionId": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/81a9662b-bebf-436f-a333-f67b29880f12')]",
+                //                         "principalId": "[reference(resourceid('Microsoft.Compute/virtualMachineScaleSets',concat(variables('Deployment'),'-ss',parameters('AppServer').Name)),'2017-12-01','Full').identity.principalId]",
+                //                         "scope": "[concat(Subscription().id,'/resourceGroups/',parameters('Global').HubRGName)]"
+                //                     }
+                //                 }
+                //             ]
+                //         },
+                //         "parameters": {
+                //         }
+                //     }
+                // },
                 {
                     "name": "[concat(variables('Deployment'), '-ss', parameters('AppServer').Name,'-Autoscale')]",
                     "apiVersion": "2015-04-01",

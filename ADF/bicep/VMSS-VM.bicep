@@ -1,4 +1,3 @@
-param Deployment string
 param Prefix string
 param DeploymentID string
 param Environment string
@@ -6,7 +5,6 @@ param AppServer object
 param VM object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param deploymentTime string = utcNow()
 
 @secure()
@@ -18,7 +16,7 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
-var Deployment_var = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
 // os config now shared across subscriptions
@@ -37,22 +35,24 @@ var VMSizeLookup = {
   P: 'P'
   S: 'S'
 }
-var DeploymentName = deployment().name
-var subscriptionId = subscription().subscriptionId
-var resourceGroupName = resourceGroup().name
-var storageAccountType = ((Environment == 'P') ? 'Premium_LRS' : 'Standard_LRS')
+var DeploymentName = 'AppServers'
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
+var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces', OMSworkspaceName)
+var GlobalRGName = Global.GlobalRGName
+var storageAccountType = Environment == 'P' ? 'Premium_LRS' : 'Standard_LRS'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var VNetID = resourceId(subscriptionId, resourceGroupName, 'Microsoft.Network/VirtualNetworks', '${Deployment_var}-vn')
-var OMSworkspaceName = replace('${Deployment_var}LogAnalytics', '-', '')
-var OMSworkspaceID_var = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var AppInsightsName = replace('${Deployment_var}AppInsights', '-', '')
-var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
-var SADiagName = toLower('${replace(Deployment_var, '-', '')}sadiag')
-var SAAppDataName = toLower('${replace(Deployment_var, '-', '')}sadata')
-var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts/', SADiagName)
-var saaccountidglobalsource = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${Global.HubRGName}/providers/Microsoft.Storage/storageAccounts/${Global.SAName}'
-var Domain = split(Global.DomainName, '.')[0]
+// var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+var VNetID = resourceId('Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
+
+
+var SADiagName = '${DeploymentURI}sadiag'
+var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts', SADiagName)
+
+resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: Global.SAName
+  scope: resourceGroup(GlobalRGName)
+}
+
 var DSCConfigLookup = {
   AppServers: 'AppServers'
   InitialDOP: 'AppServers'
@@ -107,32 +107,32 @@ var secrets = [
 
 var userAssignedIdentities = {
   Cluster: {
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment_var}-uaiKeyVaultSecretsGet')}': {}
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment_var}-uaiStorageAccountOperator')}': {}
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment_var}-uaiStorageAccountOperatorGlobal')}': {}
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment_var}-uaiStorageAccountFileContributor')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperatorGlobal')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountFileContributor')}': {}
   }
   Default: {
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment_var}-uaiKeyVaultSecretsGet')}': {}
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment_var}-uaiStorageAccountOperatorGlobal')}': {}
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment_var}-uaiStorageAccountFileContributor')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperatorGlobal')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountFileContributor')}': {}
   }
 }
 
-var applicationGatewayBackendAddressPools = [for i in range(0, length(WAFBE)): {
-  id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', '${Deployment}-waf${AppServer.WAFBE[i]}', 'appGatewayBackendPool')
+var applicationGatewayBackendAddressPools = [for (be,index) in WAFBE : {
+  id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', '${Deployment}-waf${be}', 'appGatewayBackendPool')
 }]
 
-var loadBalancerBackendAddressPools = [for i in range(0, length(LBBE)): {
-  id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lb${AppServer.LBBE[i]}', AppServer.LBBE[i])
+var loadBalancerBackendAddressPools = [for (be,index) in LBBE : {
+  id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lb${be}', be)
 }]
 
-var loadBalancerInboundNatPools = [for i in range(0, length(LBBE)): {
-  id: resourceId('Microsoft.Network/loadBalancers/inboundNatPools', '${Deployment}-lb${AppServer.LBBE[i]}', (contains(AppServer, 'NATName') ? AppServer.NATName : 'NA'))
+var loadBalancerInboundNatPools = [for (be,index) in LBBE : {
+  id: resourceId('Microsoft.Network/loadBalancers/inboundNatPools', '${Deployment}-lb${be}', contains(AppServer, 'NATName') ? AppServer.NATName : 'NA')
 }]
 
 resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
-  name: '${Deployment_var}-ss${AppServer.Name}'
+  name: '${Deployment}-ss${AppServer.Name}'
   location: resourceGroup().location
   identity: {
     type: 'SystemAssigned, UserAssigned'
@@ -159,7 +159,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
       }
     }
     virtualMachineProfile: {
-      licenseType: (contains(OSType[AppServer.OSType], 'licenseType') ? OSType[AppServer.OSType].licenseType : json('null'))
+      licenseType: contains(OSType[AppServer.OSType], 'licenseType') ? OSType[AppServer.OSType].licenseType : null
       osProfile: {
         computerNamePrefix: VM.vmHostName
         adminUsername: Global.vmAdminUserName
@@ -168,7 +168,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
           provisionVMAgent: true
           enableAutomaticUpdates: true
         }
-        secrets: ((OSType[AppServer.OSType].OS == 'Windows') ? secrets : json('null'))
+        secrets: OSType[AppServer.OSType].OS == 'Windows' ? secrets : null
       }
       storageProfile: {
         osDisk: {
@@ -178,7 +178,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
             storageAccountType: storageAccountType
           }
         }
-        dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment_var}-diskLookup${AppServer.Name}'), '2018-05-01').outputs.DATADisks.value
+        dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${AppServer.Name}'), '2018-05-01').outputs.DATADisks.value
         imageReference: OSType[AppServer.OSType].imageReference
       }
       diagnosticsProfile: {
@@ -199,7 +199,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
               }
               ipConfigurations: [
                 {
-                  name: '${Deployment_var}-${AppServer.Name}-nic0'
+                  name: '${Deployment}-${AppServer.Name}-nic0'
                   properties: {
                     subnet: {
                       id: '${VNetID}/subnets/sn${AppServer.Subnet}'
@@ -226,7 +226,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
               autoUpgradeMinorVersion: true
               settings: {
                 Name: Global.ADDomainName
-                OUPath: (contains(AppServer, 'OUPath') ? AppServer.OUPath : '')
+                OUPath:contains(AppServer, 'OUPath') ? AppServer.OUPath : ''
                 User: '${Global.vmAdminUserName}@${Global.ADDomainName}'
                 Restart: 'true'
                 Options: 3
@@ -240,19 +240,19 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
             name: 'VMDiagnostics'
             properties: {
               publisher: 'Microsoft.Azure.Diagnostics'
-              type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'IaaSDiagnostics' : 'LinuxDiagnostic')
-              typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.9' : '3.0')
+              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'IaaSDiagnostics' : 'LinuxDiagnostic'
+              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.9' : '3.0'
               autoUpgradeMinorVersion: true
               settings: {
-                WadCfg: ((OSType[AppServer.OSType].OS == 'Windows') ? WadCfg : json('null'))
-                ladCfg: ((OSType[AppServer.OSType].OS == 'Windows') ? json('null') : ladCfg)
+                WadCfg: (OSType[AppServer.OSType].OS == 'Windows') ? WadCfg : null
+                ladCfg: (OSType[AppServer.OSType].OS == 'Windows') ? null : ladCfg
                 StorageAccount: saaccountiddiag
                 StorageType: 'TableAndBlob'
               }
               protectedSettings: {
                 storageAccountName: SADiagName
                 storageAccountKey: listKeys(saaccountiddiag, '2016-01-01').keys[0].value
-                storageAccountEndPoint: 'https://core.windows.net/'
+                storageAccountEndPoint: 'https://${environment().suffixes.storage}/'
               }
             }
           }
@@ -260,50 +260,50 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
             name: 'DependencyAgent'
             properties: {
               publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-              type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'DependencyAgentWindows' : 'DependencyAgentLinux')
+              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
               typeHandlerVersion: '9.5'
               autoUpgradeMinorVersion: true
             }
           }
           {
-            name: ((OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
+            name: (OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
             properties: {
               autoUpgradeMinorVersion: true
               publisher: 'Microsoft.Azure.Monitor'
-              type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
-              typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.5')
+              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
+              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.5'
             }
           }
           {
             name: 'MonitoringAgent'
             properties: {
               publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-              type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux')
-              typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4')
+              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
+              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4'
               autoUpgradeMinorVersion: true
               settings: {
-                workspaceId: reference(OMSworkspaceID_var, '2017-04-26-preview').CustomerId
+                workspaceId: reference(OMSworkspaceID, '2017-04-26-preview').CustomerId
               }
               protectedSettings: {
-                workspaceKey: listKeys(OMSworkspaceID_var, '2015-11-01-preview').primarySharedKey
+                workspaceKey: listKeys(OMSworkspaceID, '2015-11-01-preview').primarySharedKey
               }
             }
           }
           {
-            name: ((OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
+            name: (OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
             properties: {
               autoUpgradeMinorVersion: true
               publisher: 'Microsoft.Azure.Monitor.VirtualMachines.GuestHealth'
-              type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
-              typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.0')
+              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
+              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.0'
             }
           }
           {
             name: 'Microsoft.Powershell.DSC.Pull'
             properties: {
-              publisher: ((OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions')
-              type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux')
-              typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '2.77' : '2.0')
+              publisher: (OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions'
+              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux'
+              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '2.77' : '2.0'
               autoUpgradeMinorVersion: true
               protectedSettings: {
                 Items: {
@@ -368,10 +368,63 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
             }
           }
           {
+            name: 'Microsoft.Powershell.DSC'
+            properties: {
+              provisionAfterExtensions: [
+                'joindomain'
+              ]
+              publisher: 'Microsoft.Powershell'
+              type: 'DSC'
+              typeHandlerVersion: '2.24'
+              autoUpgradeMinorVersion: true
+              forceUpdateTag: deploymentTime
+              settings: {
+                wmfVersion: 'latest'
+                configuration: {
+                  url: '${Global._artifactsLocation}/ext-DSC/DSC-${(contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'))}.zip'
+                  script: 'DSC-${(contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'))}.ps1'
+                  function: contains(AppServer, 'DSConfig') ? AppServer.DSConfig : contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'
+                }
+                configurationArguments: {
+                  DomainName: Global.ADDomainName
+                  Thumbprint: Global.certificateThumbprint
+                  storageAccountId: saaccountidglobalsource
+                  deployment: DeploymentURI
+                  networkid: '${networkId}.'
+                  appInfo: contains(AppServer, 'AppInfo') ? string(AppServer.AppInfo) : ''
+                  DataDiskInfo: string(VM.DataDisk)
+                  clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : reference('${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${Deployment}-uaiStorageAccountOperator', '2018-11-30').ClientId
+                  clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : reference('${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${Deployment}-uaiStorageAccountFileContributor', '2018-11-30').ClientId
+                }
+                configurationData: {
+                  url: '${Global._artifactsLocation}/ext-CD/${AppServer.Role}-ConfigurationData.psd1'
+                }
+              }
+              protectedSettings: {
+                configurationArguments: {
+                  AdminCreds: {
+                    UserName: Global.vmAdminUserName
+                    Password: vmAdminPassword
+                  }
+                  sshPublic: {
+                    UserName: 'ssh'
+                    Password: sshPublic
+                  }
+                  devOpsPat: {
+                    UserName: 'pat'
+                    Password: devOpsPat
+                  }
+                }
+                configurationUrlSasToken: Global._artifactsLocationSasToken
+                configurationDataUrlSasToken: Global._artifactsLocationSasToken
+              }
+            }
+          }
+          {
             name: 'HealthExtension'
             properties: {
               publisher: 'Microsoft.ManagedServices'
-              type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
+              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux'
               autoUpgradeMinorVersion: true
               typeHandlerVersion: '1.0'
               settings: AppServer.Health
@@ -384,10 +437,10 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
 }
 
 resource VMSSAutoscale 'Microsoft.Insights/autoscalesettings@2015-04-01' = {
-  name: '${Deployment_var}-ss${AppServer.Name}-Autoscale'
+  name: '${Deployment}-ss${AppServer.Name}-Autoscale'
   location: 'centralus'
   properties: {
-    name: '${Deployment_var}-ss${AppServer.Name}-Autoscale'
+    name: '${Deployment}-ss${AppServer.Name}-Autoscale'
     enabled: AppServer.AutoScale
     predictiveAutoscalePolicy: {
       scaleMode: AppServer.PredictiveScale
@@ -421,7 +474,7 @@ resource VMSSAutoscale 'Microsoft.Insights/autoscalesettings@2015-04-01' = {
               timeAggregation: 'Average'
               timeGrain: 'PT1M'
               timeWindow: 'PT6M'
-              Dimensions: []
+              dimensions: []
               dividePerInstance: false
             }
           }

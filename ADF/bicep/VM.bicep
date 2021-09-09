@@ -128,11 +128,11 @@ var DSCConfigLookup = {
   WVDServers: 'AppServers'
 }
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
+var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 var storageAccountType = ((Environment == 'P') ? 'Premium_LRS' : 'Standard_LRS')
-var saSQLBackupName = toLower(replace('${Deployment}sasqlbackup', '-', ''))
-var SADiagName = toLower('${replace(Deployment, '-', '')}sadiag')
+var saSQLBackupName = '${DeploymentURI}sasqlbackup'
+var SADiagName = '${DeploymentURI}sadiag'
 var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts/', SADiagName)
 
 resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
@@ -147,6 +147,7 @@ var MSILookup = {
   OCR: 'Storage'
   WVD: 'WVD'
 }
+
 var userAssignedIdentities = {
   Cluster: {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
@@ -175,6 +176,7 @@ var userAssignedIdentities = {
   }
   None: {}
 }
+
 var VM = [for (vm, index) in AppServers: {
   name: vm.Name
   match: ((Global.CN == '.') || contains(Global.CN, vm.Name)) ? bool('true') : bool('false')
@@ -199,6 +201,7 @@ var VM = [for (vm, index) in AppServers: {
     }
   }
 }]
+
 var ASNAME = [for (vm, index) in AppServers: (contains(vm, 'Zone') ? 'usingZones' : vm.ASNAME)]
 
 resource AS 'Microsoft.Compute/availabilitySets@2021-03-01' = [for (as, index) in union(ASNAME, []): if (as != 'usingZones') {
