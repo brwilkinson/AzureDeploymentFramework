@@ -568,7 +568,7 @@
                     "GroupName": "AG01",
                     "PrimaryAG": "SQL01",
                     "SecondaryAG": "SQL02",
-                    "AOIP": "110",
+                    "AOIP": "92",
                     "ProbePort": "59999",
                     "InstanceName": "MSSQLServer"
                   }
@@ -594,7 +594,7 @@
               ],
               "AppInfo": {
                 "ClusterInfo": {
-                  "CLIP": "109",
+                  "CLIP": "90",
                   "CLNAME": "CLS01",
                   "Primary": "SQL01",
                   "Secondary": [
@@ -617,7 +617,7 @@
           {
             "Name": "CLS01",
             "ASName": "CLS01",
-            "Sku": "Basic",
+            "Sku": "Standard",
             "Type": "Private",
             "BackEnd": ["CLS01"],
             "FrontEnd": [
