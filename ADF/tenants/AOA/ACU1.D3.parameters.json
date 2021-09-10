@@ -481,7 +481,7 @@
               "NICs": [
                 {
                   "Subnet": "BE01",
-                  "SLB2": "CLS01",
+                  "SLB": "CLS01",
                   "FastNic": 1,
                   "Primary": 1,
                   "StaticIP": "91"
@@ -519,7 +519,7 @@
               "NICs": [
                 {
                   "Subnet": "BE01",
-                  "SLB2": "CLS01",
+                  "SLB": "CLS01",
                   "FastNic": 1,
                   "Primary": 1,
                   "StaticIP": "89"
@@ -550,7 +550,7 @@
           {
             "Name": "CLS01",
             "ASName": "CLS01",
-            "Sku": "Basic",
+            "Sku": "Standard",
             "Type": "Private",
             "BackEnd": ["CLS01"],
             "FrontEnd": [

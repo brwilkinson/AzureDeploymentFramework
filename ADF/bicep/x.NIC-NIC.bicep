@@ -9,27 +9,37 @@ var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var subscriptionId = subscription().subscriptionId
-var resourceGroupName = resourceGroup().name
-var VNetID = resourceId(subscriptionId, resourceGroupName, 'Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
-var loadBalancerInboundNatRules = [for i in range(0, (contains(NIC, 'NATRules') ? length(NIC.NatRules) : 1)): {
-  id: '${resourceGroup().id}/providers/Microsoft.Network/loadBalancers/${Deployment}-lb${(contains(NIC, 'PLB') ? NIC.PLB : 'none')}/inboundNatRules/${(contains(NIC, 'NATRules') ? NIC.NATRules[i] : 'none')}'
+var VNetID = resourceId('Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
+
+var subnetID = '${VNetID}/subnets/sn${NIC.Subnet}'
+var acceleratedNetworking = contains(NIC, 'FastNic') ? true : false
+var NICSuffix = NICNumber == '1' ? '' : NICNumber
+var IPAllocation = contains(NIC, 'StaticIP') ? 'Static' : 'Dynamic'
+var privateIPAddress = contains(NIC, 'StaticIP') ? '${((NIC.Subnet == 'MT02') ? networkIdUpper : networkId)}.${NIC.StaticIP}' : null
+
+var publicIPAddress = ! contains(NIC, 'PublicIP') ? null : {
+  id: resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-vm${VM.Name}-publicip${NICNumber}')
+}
+
+var rules = contains(NIC,'NatRules') ? NIC.NatRules : []
+var loadBalancerInboundNatRules = [for (nat,index) in  rules : {
+  id: '${resourceGroup().id}/providers/Microsoft.Network/loadBalancers/${Deployment}-lb${(contains(NIC, 'PLB') ? NIC.PLB : 'none')}/inboundNatRules/${(contains(NIC, 'NATRules') ? nat : 'none')}'
 }]
 
 resource NIC1 'Microsoft.Network/networkInterfaces@2021-02-01' = if (!(contains(NIC, 'LB') || (contains(NIC, 'PLB') || (contains(NIC, 'SLB') || contains(NIC, 'ISLB'))))) {
   location: resourceGroup().location
-  name: '${Deployment}-nic${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
+  name: '${Deployment}-nic${NICSuffix}${VM.Name}'
   properties: {
-    enableAcceleratedNetworking: contains(NIC, 'FastNic') ? true : false
+    enableAcceleratedNetworking: acceleratedNetworking
     ipConfigurations: [
       {
         name: 'ipconfig1'
         properties: {
-          publicIPAddress: (contains(NIC, 'PublicIP') ? json('{"id":"${string(resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-vm${VM.Name}-publicip${NICNumber}'))}"}') : json('null'))
-          privateIPAllocationMethod: (contains(NIC, 'StaticIP') ? 'Static' : 'Dynamic')
-          privateIPAddress: (contains(NIC, 'StaticIP') ? '${((NIC.Subnet == 'MT02') ? networkIdUpper : networkId)}.${NIC.StaticIP}' : json('null'))
+          publicIPAddress: publicIPAddress
+          privateIPAllocationMethod: IPAllocation
+          privateIPAddress: privateIPAddress
           subnet: {
-            id: '${VNetID}/subnets/sn${NIC.Subnet}'
+            id: subnetID
           }
         }
       }
@@ -57,9 +67,9 @@ resource NIC1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = i
 
 resource NICPLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'PLB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicplb${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
+  name: '${Deployment}-nicplb${NICSuffix}${VM.Name}'
   properties: {
-    enableAcceleratedNetworking: contains(NIC, 'FastNic') ? true : false
+    enableAcceleratedNetworking: acceleratedNetworking
     ipConfigurations: [
       {
         name: 'ipconfig1'
@@ -69,11 +79,11 @@ resource NICPLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(
               id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lb${NIC.PLB}', NIC.PLB)
             }
           ]
-          loadBalancerInboundNatRules: contains(NIC, 'NATRules') ? loadBalancerInboundNatRules : json('null')
-          privateIPAllocationMethod: contains(NIC, 'StaticIP') ? 'Static' : 'Dynamic'
-          privateIPAddress: contains(NIC, 'StaticIP') ? '${((NIC.Subnet == 'MT02') ? networkIdUpper : networkId)}.${NIC.StaticIP}' : json('null')
+          loadBalancerInboundNatRules: contains(NIC, 'NATRules') ? loadBalancerInboundNatRules : null
+          privateIPAllocationMethod: IPAllocation
+          privateIPAddress: privateIPAddress
           subnet: {
-            id: '${VNetID}/subnets/sn${NIC.Subnet}'
+            id: subnetID
           }
         }
       }
@@ -101,9 +111,9 @@ resource NICPLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =
 
 resource NICLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'LB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicLB${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
+  name: '${Deployment}-niclb${NICSuffix}${VM.Name}'
   properties: {
-    enableAcceleratedNetworking: contains(NIC, 'FastNic') ? true : false
+    enableAcceleratedNetworking: acceleratedNetworking
     ipConfigurations: [
       {
         name: 'ipconfig1'
@@ -113,10 +123,10 @@ resource NICLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(N
               id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-ilb${NIC.LB}', NIC.LB)
             }
           ]
-          privateIPAllocationMethod: (contains(NIC, 'StaticIP') ? 'Static' : 'Dynamic')
-          privateIPAddress: (contains(NIC, 'StaticIP') ? '${((NIC.Subnet == 'MT02') ? networkIdUpper : networkId)}.${NIC.StaticIP}' : json('null'))
+          privateIPAllocationMethod: IPAllocation
+          privateIPAddress: privateIPAddress
           subnet: {
-            id: '${VNetID}/subnets/sn${NIC.Subnet}'
+            id: subnetID
           }
         }
       }
@@ -144,28 +154,26 @@ resource NICLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = 
 
 resource NICSLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'SLB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicSLB${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
-  tags: {
-    displayName: 'vmAZX10X_slbNIC'
-  }
+  name: '${Deployment}-nicslb${NICSuffix}${VM.Name}'
   properties: {
-    enableAcceleratedNetworking: contains(NIC, 'FastNic') ? true : false
+    enableAcceleratedNetworking: acceleratedNetworking
     ipConfigurations: [
       {
         name: 'ipconfig1'
         properties: {
           loadBalancerBackendAddressPools: [
+            // use Azure NATGW instead
+            // {
+            //   id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lbPLB01', 'PLB01')
+            // }
             {
-              id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-slbPLB01', 'PLB01')
-            }
-            {
-              id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-slb${NIC.SLB}', NIC.SLB)
+              id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lb${NIC.SLB}', NIC.SLB)
             }
           ]
-          privateIPAllocationMethod: (contains(NIC, 'StaticIP') ? 'Static' : 'Dynamic')
-          privateIPAddress: (contains(NIC, 'StaticIP') ? '${((NIC.Subnet == 'MT02') ? networkIdUpper : networkId)}.${NIC.StaticIP}' : json('null'))
+          privateIPAllocationMethod: IPAllocation
+          privateIPAddress: privateIPAddress
           subnet: {
-            id: '${VNetID}/subnets/sn${NIC.Subnet}'
+            id: subnetID
           }
         }
       }
@@ -176,52 +184,6 @@ resource NICSLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(
 resource NICSLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (contains(NIC, 'SLB')) {
   name: 'service'
   scope: NICSLB
-  properties: {
-    workspaceId: OMSworkspaceID
-    metrics: [
-      {
-        timeGrain: 'PT5M'
-        enabled: true
-        retentionPolicy: {
-          enabled: false
-          days: 0
-        }
-      }
-    ]
-  }
-}
-
-resource NICISLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'ISLB')) {
-  location: resourceGroup().location
-  name: '${Deployment}-nicISLB${((NICNumber == '1') ? '' : NICNumber)}${VM.Name}'
-  tags: {
-    displayName: 'vmAZX10X_islbNIC'
-  }
-  properties: {
-    enableAcceleratedNetworking: contains(NIC, 'FastNic') ? true : false
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          loadBalancerBackendAddressPools: [
-            {
-              id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-slb${NIC.ISLB}', NIC.ISLB)
-            }
-          ]
-          privateIPAllocationMethod: (contains(NIC, 'StaticIP') ? 'Static' : 'Dynamic')
-          privateIPAddress: (contains(NIC, 'StaticIP') ? '${((NIC.Subnet == 'MT02') ? networkIdUpper : networkId)}.${NIC.StaticIP}' : json('null'))
-          subnet: {
-            id: '${VNetID}/subnets/sn${NIC.Subnet}'
-          }
-        }
-      }
-    ]
-  }
-}
-
-resource NICISLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (contains(NIC, 'ISLB')) {
-  name: 'service'
-  scope: NICISLB
   properties: {
     workspaceId: OMSworkspaceID
     metrics: [

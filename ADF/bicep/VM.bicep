@@ -296,7 +296,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (v
           storageAccountType: storageAccountType
         }
       }
-      dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-VM-diskLookup${vm.Name}'), '2018-05-01').outputs.DATADisks.value
+      dataDisks: DISKLOOKUP[index].outputs.DATADisks
     }
     networkProfile: {
       networkInterfaces: [for (nic, index) in vm.NICs: {
@@ -314,7 +314,6 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (v
     }
   }
   dependsOn: [
-    DISKLOOKUP
     AS
     VMNIC
   ]
@@ -506,7 +505,7 @@ resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30'
   scope: resourceGroup(RGName)
 }
 
-resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC2 == 1 && vm.Role != 'PULL' && (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
+resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && (contains(VM[index].Extensions,'DSC2') && VM[index].Extensions.DSC2 == 1) && vm.Role != 'PULL' && (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC2'
   parent: virtualMachine[index]
   location: resourceGroup().location
