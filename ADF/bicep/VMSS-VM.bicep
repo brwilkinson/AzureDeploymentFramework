@@ -4,7 +4,6 @@ param Environment string
 param AppServer object
 param VM object
 param Global object
-param Stage object
 param deploymentTime string = utcNow()
 
 @secure()

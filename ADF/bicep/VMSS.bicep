@@ -55,10 +55,10 @@ var DataDiskInfo = computeGlobal.DataDiskInfo
 var AppServers = contains(DeploymentInfo, 'AppServersVMSS') ? DeploymentInfo.AppServersVMSS : []
 
 var VM = [for (vm, index) in AppServers: {
-  match: ((Global.CN == '.') || contains(Global.CN, vm.Name))
+  match: Global.CN == '.' || contains(Global.CN, vm.Name)
   name: vm.Name
-  Extensions: (contains(OSType[vm.OSType], 'RoleExtensions') ? union(Extensions, OSType[vm.OSType].RoleExtensions) : Extensions)
-  DataDisk: (contains(vm, 'DDRole') ? DataDiskInfo[vm.DDRole] : json('null'))
+  Extensions: contains(OSType[vm.OSType], 'RoleExtensions') ? union(Extensions, OSType[vm.OSType].RoleExtensions) : Extensions
+  DataDisk: contains(vm, 'DDRole') ? DataDiskInfo[vm.DDRole] : json('null')
   NodeType: toLower(concat(Global.AppName, vm.Name))
   vmHostName: toLower('${Environment}${DeploymentID}${vm.Name}')
   Name: '${Prefix}${Global.AppName}-${Environment}${DeploymentID}-${vm.Name}'
@@ -87,7 +87,6 @@ module VMSS 'VMSS-VM.bicep' = [for (vm,index) in AppServers: if (VM[index].match
     AppServer: vm
     VM: VM[index]
     Global: Global
-    Stage: Stage
     vmAdminPassword: vmAdminPassword
     devOpsPat: devOpsPat
     sshPublic: sshPublic
