@@ -1,19 +1,19 @@
 param Deployment string
 param DeploymentID string
 param Environment string
-param NGWInfo object
+param NATGWInfo object
 param Global object
 param Stage object
 param OMSworkspaceID string
 param now string = utcNow('F')
 
 module PublicIP 'x.publicIP.bicep' = {
-  name: 'dp${Deployment}-NATGW-publicIPDeploy${NGWInfo.Name}'
+  name: 'dp${Deployment}-NATGW-publicIPDeploy${NATGWInfo.Name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
-    NICs: array(NGWInfo)
-    VM: NGWInfo
+    NICs: array(NATGWInfo)
+    VM: NATGWInfo
     PIPprefix: 'ngw'
     Global: Global
     OMSworkspaceID: OMSworkspaceID
@@ -21,7 +21,7 @@ module PublicIP 'x.publicIP.bicep' = {
 }
 
 resource NGW 'Microsoft.Network/natGateways@2021-02-01' = {
-  name: '${Deployment}-ngw${NGWInfo.Name}'
+  name: '${Deployment}-ngw${NATGWInfo.Name}'
   location: resourceGroup().location
   sku: {
     name: 'Standard'

@@ -190,6 +190,26 @@ module dp_Deployment_RSV 'RSV.bicep' = if (Stage.RSV == 1) {
   ]
 }
 
+module dp_Deployment_NATGW 'NATGW.bicep' = if (Stage.NATGW == 1) {
+  name: 'dp${Deployment}-NATGW'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+  dependsOn: [
+    dp_Deployment_OMS
+  ]
+}
+
 module dp_Deployment_NSGHUB 'NSG.hub.bicep' = if (Stage.NSGHUB == 1) {
   name: 'dp${Deployment}-NSGHUB'
   params: {
@@ -313,6 +333,7 @@ module dp_Deployment_VNET 'VNET.bicep' = if (Stage.VNET == 1) {
   dependsOn: [
     dp_Deployment_NSGSPOKE
     dp_Deployment_NSGHUB
+    dp_Deployment_NATGW
   ]
 }
 
@@ -487,7 +508,7 @@ module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (Stage.ADPrimary ==
   ]
 }
 
-module CreateADPDC 'VM.bicep' = if (Stage.CreateADPDC == 1) {
+module CreateADPDC 'VM.bicep' = if (contains(Stage,'CreateADPDC') && Stage.CreateADPDC == 1) {
   name: 'CreateADPDC'
   params: {
     // move these to Splatting later
@@ -550,7 +571,7 @@ module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1 
   ]
 }
 
-module CreateADBDC 'VM.bicep' = if (Stage.CreateADBDC == 1) {
+module CreateADBDC 'VM.bicep' = if (contains(Stage,'CreateADBDC') && Stage.CreateADBDC == 1) {
   name: 'CreateADBDC'
   params: {
     // move these to Splatting later
@@ -648,7 +669,7 @@ module AppServers 'VM.bicep' = if (Stage.VMApp == 1) {
 }
 
 
-module ConfigSQLAO 'VM.bicep' = if (Stage.ConfigSQLAO == 1) {
+module ConfigSQLAO 'VM.bicep' = if (contains(Stage,'ConfigSQLAO') && Stage.ConfigSQLAO == 1) {
   name: 'ConfigSQLAO'
   params: {
     // move these to Splatting later

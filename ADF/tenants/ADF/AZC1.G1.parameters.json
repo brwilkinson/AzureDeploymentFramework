@@ -56,6 +56,7 @@
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
+        "NATGW": 0,
         "ERGW": 0,
         "LinkPrivateDns": 0,
         "DNSPublicZone": 0,
