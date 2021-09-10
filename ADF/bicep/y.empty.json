@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.4.613.9944",
+      "templateHash": "44247855824918289"
+    }
+  },
+  "functions": [],
+  "resources": [],
+  "outputs": {
+    "test": {
+      "type": "string",
+      "value": "helloworld from empty"
+    }
+  }
+}
