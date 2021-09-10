@@ -43,7 +43,9 @@ Function global:Start-AzDeploy
         # When deploying VM's, this is a subset of AppServers e.g. AppServers, SQLServers, ADPrimary
         [string] $DeploymentName = ($Prefix + '-' + $App + '-' + $Deployment + '-' + (Get-ChildItem $TemplateFile).BaseName),
 
-        [Switch] $SubscriptionDeploy,
+        [switch] $SubscriptionDeploy,
+
+        [switch] $FullUpload,
 
         [switch] $WhatIf,
 
@@ -113,7 +115,7 @@ Function global:Start-AzDeploy
     Write-Verbose "Storage Account is: [$StorageAccountName] and container is: [$StorageContainerName]" -Verbose
 
     # Do not create the Resource Groups in this file anymore, only validate that it exists.
-    if (-not $Subscription)
+    if (-not $SubscriptionDeploy)
     {
         if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
@@ -321,6 +323,12 @@ Function global:Start-AzDeploy
                 }
             }
         }
+    }
+
+    # Add Error Reporting back in
+    if (!$?)
+    {
+        Get-Error
     }
 } # Start-AzDeploy
 

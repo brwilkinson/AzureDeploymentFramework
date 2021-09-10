@@ -63,6 +63,7 @@
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
+        "NATGW": 0,
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,

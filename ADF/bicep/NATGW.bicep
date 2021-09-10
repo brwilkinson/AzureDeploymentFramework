@@ -52,19 +52,19 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
-var NGWInfo = contains(DeploymentInfo, 'NGWInfo') ? DeploymentInfo.NGWInfo : []
+var NATGWInfo = contains(DeploymentInfo, 'NATGWInfo') ? DeploymentInfo.NATGWInfo : []
 
-var NGW = [for (ngw, index) in NGWInfo: {
+var NGW = [for (ngw, index) in NATGWInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, ngw.Name))
 }]
 
-module FireWall 'NATGW-NGW.bicep' = [for (ngw, index) in NGWInfo: if(NGW[index].match) {
+module FireWall 'NATGW-NGW.bicep' = [for (ngw, index) in NATGWInfo: if(NGW[index].match) {
   name: 'dp${Deployment}-NATGW-Deploy${ngw.name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
     Environment: Environment
-    NGWInfo: ngw
+    NATGWInfo: ngw
     Global: Global
     Stage: Stage
     OMSworkspaceID: OMSworkspaceID

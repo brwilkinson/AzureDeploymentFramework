@@ -865,7 +865,7 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
-                includedUpdateClassifications: 'Critical | Security | UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
+                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
                 rebootSetting: 'IfRequired'
