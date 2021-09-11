@@ -26,7 +26,7 @@ var loadBalancerInboundNatRules = [for (nat,index) in  rules : {
   id: '${resourceGroup().id}/providers/Microsoft.Network/loadBalancers/${Deployment}-lb${(contains(NIC, 'PLB') ? NIC.PLB : 'none')}/inboundNatRules/${(contains(NIC, 'NATRules') ? nat : 'none')}'
 }]
 
-resource NIC1 'Microsoft.Network/networkInterfaces@2021-02-01' = if (!(contains(NIC, 'LB') || (contains(NIC, 'PLB') || (contains(NIC, 'SLB') || contains(NIC, 'ISLB'))))) {
+resource NIC1 'Microsoft.Network/networkInterfaces@2021-02-01' = if ( !( contains(NIC, 'LB') || contains(NIC, 'PLB') || contains(NIC, 'SLB') || contains(NIC, 'ISLB')) ) {
   location: resourceGroup().location
   name: '${Deployment}-nic${NICSuffix}${VM.Name}'
   properties: {
@@ -35,7 +35,7 @@ resource NIC1 'Microsoft.Network/networkInterfaces@2021-02-01' = if (!(contains(
       {
         name: 'ipconfig1'
         properties: {
-          publicIPAddress: publicIPAddress
+          publicIPAddress: contains(NIC, 'PublicIP') ? publicIPAddress : null
           privateIPAllocationMethod: IPAllocation
           privateIPAddress: privateIPAddress
           subnet: {
