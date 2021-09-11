@@ -10,7 +10,7 @@
             PSDscAllowDomainUser        = $true
 
             # IncludesAllSubfeatures
-            WindowsFeaturePresent       = 'RSAT', 'DNS', 'FS-DFS-Namespace' #'RSAT-ADDS'
+            WindowsFeaturePresent       = 'RSAT', 'DNS', 'FS-DFS-Namespace', 'RSAT-ADDS', 'RSAT-DNS-Server'
 
             # Blob copy with Managed Identity - Oauth2
             AZCOPYDSCDirPresentSource   = @(

@@ -327,7 +327,8 @@ Function global:Start-AzDeploy
         }
     }
 
-    $r | Select-Object -Property * -ExcludeProperty ParametersString
+    $Properties = 'ResourceGroupName','DeploymentName','ProvisioningState','Timestamp','Mode','CorrelationId'
+    $r | Select-Object -Property $Properties | Format-Table -AutoSize
     $e
 } # Start-AzDeploy
 

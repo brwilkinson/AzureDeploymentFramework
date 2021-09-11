@@ -6,8 +6,8 @@
 # This is our Master list of Modules in the project
 param (
     $Modules = @(
-        'xPSDesiredStateConfiguration', 'xPendingReboot', 'SQLServerDsc',
-        'xWebAdministration', 'xFailoverCluster', 'xnetworking', 'AccessControlDsc',
+        'xPSDesiredStateConfiguration','DnsServerDsc', 'SQLServerDsc',
+        'xWebAdministration', 'xFailoverCluster', 'AccessControlDsc',
         'SecurityPolicyDSC', 'xTimeZone', 'xSystemSecurity', 'xRemoteDesktopSessionHost',
         'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 
         'xSmbShare', 'PolicyFileEditor',
@@ -28,7 +28,9 @@ $Modules | ForEach-Object {
     $manifest = Get-ChildItem -Path $ModulePath -Depth 1 -Filter ($ModuleName + '.psd1') -ErrorAction SilentlyContinue
     if ($manifest)
     {
-        $ModuleLatest = Test-ModuleManifest -Path $manifest.fullname
+        $ModuleLatest = $manifest | foreach {
+            Test-ModuleManifest -Path $_.fullname
+        } | sort -Property Version -Descending -Top 1
 
         Write-Warning -Message "`n     --> Module: [$ModuleName] is [$($ModuleLatest.version)]"
 

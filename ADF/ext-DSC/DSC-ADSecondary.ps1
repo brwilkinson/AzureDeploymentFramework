@@ -1,6 +1,7 @@
-Configuration ADSecondary
+$Configuration = 'ADSecondary'
+Configuration $Configuration
 {
-    Param ( 
+    Param (
         [String]$DomainName,
         [PSCredential]$AdminCreds,
         [PSCredential]$sshPublic,
@@ -17,13 +18,12 @@ Configuration ADSecondary
         [String]$clientIDGlobal
     )
 
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration
-    Import-DscResource -ModuleName xActiveDirectory 
+    Import-DscResource -ModuleName ComputerManagementDsc
+    Import-DscResource -ModuleName ActiveDirectoryDsc
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName StorageDsc
-    Import-DscResource -ModuleName xPendingReboot 
-    Import-DscResource -ModuleName xTimeZone 
-    Import-DscResource -ModuleName xDnsServer
-    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC    
+    Import-DscResource -ModuleName DnsServerDsc
+    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
 
     Function IIf
     {
@@ -37,31 +37,6 @@ Configuration ADSecondary
     $AppInfo = ConvertFrom-Json $AppInfo
     $SiteName = $AppInfo.SiteName
     $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-
-    # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-    # $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
-    # $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
-    # $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
-
-    <#
-        # moved away from using storage account keys to Oauth2 based authentication via AZCOPYDSCDir
-        try
-        {
-            # Global assets to download files
-            $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-            $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
-            $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
-            Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
-
-            # Create the Cred to access the storage account
-            Write-Verbose -Message "User is: [$StorageAccountName]"
-            $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force -ErrorAction stop)) 
-        }
-        catch
-        {
-            Write-Warning $_
-        }
-    #> 
 
     $NetBios = $(($DomainName -split '\.')[0])
     [PSCredential]$DomainCreds = [PSCredential]::New($NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password)
@@ -90,7 +65,7 @@ Configuration ADSecondary
             AllowModuleOverWrite = $true
         }
 
-        xTimeZone EasternStandardTime
+        TimeZone EasternStandardTime
         { 
             IsSingleInstance = 'Yes'
             TimeZone         = iif $Node.TimeZone $Node.TimeZone 'Eastern Standard Time' 
@@ -118,7 +93,7 @@ Configuration ADSecondary
         #-------------------------------------------------------------------
         if ($Node.WindowsFeatureSetAbsent)
         {
-            xWindowsFeatureSet WindowsFeatureSetAbsent
+            WindowsFeatureSet WindowsFeatureSetAbsent
             {
                 Ensure = 'Absent'
                 Name   = $Node.WindowsFeatureSetAbsent
@@ -131,10 +106,10 @@ Configuration ADSecondary
             DriveLetter = 'F'
         }
 
-        xADDomainController DC2
+        ADDomainController DC2
         {   
             DomainName                    = $DomainName
-            DomainAdministratorCredential = $DomainCreds
+            Credential                    = $DomainCreds
             SafemodeAdministratorPassword = $DomainCreds
             DatabasePath                  = 'F:\NTDS'
             LogPath                       = 'F:\NTDS'
@@ -147,7 +122,7 @@ Configuration ADSecondary
         # Reboot outside of DSC, for DNS update, so set scheduled job to run in 5 minutes
         Script ResetDNS
         {
-            DependsOn  = '[xADDomainController]DC2'
+            DependsOn  = '[ADDomainController]DC2'
             GetScript  = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | ForEach-Object ServerAddresses } } }
             SetScript  = { Set-DnsClientServerAddress -InterfaceAlias Ethernet* -ResetServerAddresses -Verbose }
             TestScript = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* -AddressFamily IPV4 | 
@@ -203,7 +178,7 @@ Configuration ADSecondary
         foreach ($Package in $Node.SoftwarePackagePresent)
         {
             $Name = $Package.Name -replace $StringFilter
-            xPackage $Name
+            Package $Name
             {
                 Name                 = $Package.Name
                 Path                 = $Package.Path
@@ -213,11 +188,11 @@ Configuration ADSecondary
                 DependsOn            = $dependsonDirectory
                 Arguments            = $Package.Arguments
             }
-            $dependsonPackage += @("[xPackage]$($Name)")
+            $dependsonPackage += @("[Package]$($Name)")
         }
 
         # Need to make sure the DC reboots after it is promoted.
-        xPendingReboot RebootForPromo
+        PendingReboot RebootForPromo
         {
             Name      = 'RebootForDJoin'
             DependsOn = '[Script]ResetDNS'
@@ -227,7 +202,7 @@ Configuration ADSecondary
         Script ResetDNSDHCPFlagReboot
         {
             PsDscRunAsCredential = $DomainCreds
-            DependsOn            = '[xPendingReboot]RebootForPromo'
+            DependsOn            = '[PendingReboot]RebootForPromo'
             GetScript            = { @{Name = 'DNSServers'; Address = { Get-DnsClientServerAddress -InterfaceAlias Ethernet* | ForEach-Object ServerAddresses } } }
             SetScript            = {
                 $t = New-JobTrigger -Once -At (Get-Date).AddMinutes(5)
@@ -250,21 +225,53 @@ Configuration ADSecondary
     }
 }#ADSecondary
 
-break
+# Below is only used for local (direct on Server) testing and will NOT be executed via the VM DSC Extension
+# You can leave it as it is without commenting anything, if you need to debug on the 
+# Server you can open it up from C:\Packages\Plugins\Microsoft.Powershell.DSC\2.83.1.0\DSCWork\DSC-ConfigSQLAO.0
+# Then simply F5 in the Elevated ISE to watch it run, it will simply prompt for the admin credential.
+# Ensure you also use your correct domain name at the very end of this script e.g. line 160.
+if ((whoami) -notmatch 'system')
+{
+    # Set the location to the DSC extension directory
+    if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
+    else { $DSCdir = $psscriptroot }
+    Write-Output "DSCDir: $DSCdir"
 
-# used for troubleshooting
-$AppInfo = "{'SiteName': 'Default-First-Site-Name'}"
-$cred = Get-Credential localadmin
-$Dep = $env:COMPUTERNAME.substring(0, 9)
-$Depid = $env:COMPUTERNAME.substring(8, 1)
-$network = 30 - ([Int]$Depid * 2)
-$Net = "172.16.${network}."
-ADSecondary -AdminCreds $cred -ConfigurationData .\*-ConfigurationData.psd1 -networkid $Net -AppInfo $AppInfo
+    if (Test-Path -Path $DSCdir -ErrorAction SilentlyContinue)
+    {
+        Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
+    }
+}
+else
+{
+    break
+}
 
-Set-DscLocalConfigurationManager -Path .\ADSecondary -Verbose
+Import-Module $psscriptroot\..\..\bin\DscExtensionHandlerSettingManager.psm1
+$ConfigurationArguments = Get-DscExtensionHandlerSettings | foreach ConfigurationArguments
 
-Start-DscConfiguration -Path .\ADSecondary -Wait -Verbose -Force
+$sshPublicPW = ConvertTo-SecureString -String $ConfigurationArguments['sshPublic'].Password -AsPlainText -Force
+$devOpsPatPW = ConvertTo-SecureString -String $ConfigurationArguments['devOpsPat'].Password -AsPlainText -Force
+$AdminCredsPW = ConvertTo-SecureString -String $ConfigurationArguments['AdminCreds'].Password -AsPlainText -Force
 
-Get-DscLocalConfigurationManager
-Start-DscConfiguration -UseExisting -Wait -Verbose -Force
-Get-DscConfigurationStatus -All
+$ConfigurationArguments['sshPublic'] = [pscredential]::new($ConfigurationArguments['sshPublic'].UserName,$sshPublicPW)
+$ConfigurationArguments['devOpsPat'] = [pscredential]::new($ConfigurationArguments['devOpsPat'].UserName,$devOpsPatPW)
+$ConfigurationArguments['AdminCreds'] = [pscredential]::new($ConfigurationArguments['AdminCreds'].UserName,$AdminCredsPW)
+
+$Params = @{
+    ConfigurationData = '.\*-ConfigurationData.psd1'
+    Verbose           = $true
+}
+
+# Compile the MOFs
+& $Configuration @Params @ConfigurationArguments
+
+# Set the LCM to reboot
+Set-DscLocalConfigurationManager -Path .\$Configuration -Force 
+
+# Push the configuration
+Start-DscConfiguration -Path .\$Configuration -Wait -Verbose -Force
+
+# delete mofs after push
+Get-ChildItem .\$Configuration -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
+

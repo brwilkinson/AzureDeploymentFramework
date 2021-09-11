@@ -6,17 +6,17 @@
 @{ 
     AllNodes = @( 
         @{ 
-            NodeName                    = "LocalHost" 
+            NodeName                    = 'LocalHost' 
             PSDscAllowPlainTextPassword = $true
             PSDscAllowDomainUser        = $true
             
             # IncludesAllSubfeatures
-            WindowsFeaturePresent       = 'RSAT','DNS','FS-DFS-Namespace' #'RSAT-ADDS'
+            WindowsFeaturePresent       = 'RSAT', 'DNS', 'FS-DFS-Namespace', 'RSAT-ADDS', 'RSAT-DNS-Server'
 
             DirectoryPresent            = 'F:\Source'
 
             # Blob copy with Managed Identity - Oauth2
-            AZCOPYDSCDirPresentSource2   = @(
+            AZCOPYDSCDirPresentSource2  = @(
 
                 @{
                     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/PSModules/'
@@ -32,20 +32,20 @@
 
             ADGroupPresent              = @(
                 @{
-                    GroupName        = "Domain Admins"
-                    Groupscope       = "Global"
-                    MembersToInclude = "Ben.Wilkinson","WebUser"
+                    GroupName        = 'Domain Admins'
+                    Groupscope       = 'Global'
+                    MembersToInclude = 'Ben.Wilkinson', 'WebUser'
                 }
             ) 
 
             ADUserPresent               = @(
                 @{
-                    UserName    = "WebUser"
-                    Description = "Web User"
+                    UserName    = 'WebUser'
+                    Description = 'Web User'
                 },
                 @{
-                    UserName    = "Ben.Wilkinson"
-                    Description = "Ben.Wilkinson"
+                    UserName    = 'Ben.Wilkinson'
+                    Description = 'Ben.Wilkinson'
                 }
             )
 
@@ -62,15 +62,15 @@
             )
 
             
-            DNSRecords2                 = @(
+            DNSRecords                 = @(
                 # Internal IP's Sample A record
-                @{Name = "lb{2}cls01"; Target = "{0}109"; Type = "ARecord" }
+                @{Name = 'lb{2}cls01'; Target = '{0}109'; Type = 'ARecord' }
 
                 # sample CNAME
-                #@{Name = "{0}www";Target = "{0}fe.contoso.com"; Type="CName"}
+                @{Name = "{0}www";Target = "{0}fe.contoso.com"; Type="CName"}
             )
             
-            SoftwarePackagePresent2      = @(
+            SoftwarePackagePresent2     = @(
                 
                 @{
                     Name      = 'PowerShell 7-x64'
