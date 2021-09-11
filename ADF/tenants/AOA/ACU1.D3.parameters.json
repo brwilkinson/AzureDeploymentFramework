@@ -348,6 +348,7 @@
             "prefix": "80/28",
             "NSG": 1,
             "Route": 0, // 1
+            "NGW": 1,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
