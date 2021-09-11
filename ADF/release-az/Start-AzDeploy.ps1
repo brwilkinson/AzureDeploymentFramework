@@ -251,9 +251,11 @@ Function global:Start-AzDeploy
     }
 
     $Common = @{
-        Name     = $DeploymentName
-        Location = $ResourceGroupLocation
-        Verbose  = $true
+        Name          = $DeploymentName
+        Location      = $ResourceGroupLocation
+        Verbose       = $true
+        ErrorAction   = 'SilentlyContinue'
+        ErrorVariable = 'e'
     }
 
     switch ($Deployment)
@@ -270,7 +272,7 @@ Function global:Start-AzDeploy
             }
             else 
             {
-                New-AzTenantDeployment @Common @TemplateArgs @OptionalParameters
+                $global:r = New-AzTenantDeployment @Common @TemplateArgs @OptionalParameters
             }
         }
 
@@ -286,7 +288,7 @@ Function global:Start-AzDeploy
             }
             else 
             {
-                New-AzManagementGroupDeployment @Common @TemplateArgs @OptionalParameters
+                $global:r = New-AzManagementGroupDeployment @Common @TemplateArgs @OptionalParameters
             }
         }
 
@@ -303,7 +305,7 @@ Function global:Start-AzDeploy
                 }
                 else 
                 {
-                    New-AzSubscriptionDeployment @Common @TemplateArgs @OptionalParameters
+                    $global:r = New-AzSubscriptionDeployment @Common @TemplateArgs @OptionalParameters
                 }
             }
             # ResourceGroup
@@ -319,17 +321,14 @@ Function global:Start-AzDeploy
                 }
                 else 
                 {
-                    New-AzResourceGroupDeployment @Common @TemplateArgs @OptionalParameters
+                    $global:r = New-AzResourceGroupDeployment @Common @TemplateArgs @OptionalParameters
                 }
             }
         }
     }
 
-    # Add Error Reporting back in
-    if (!$?)
-    {
-        Get-Error
-    }
+    $r | Select-Object -Property * -ExcludeProperty ParametersString
+    $e
 } # Start-AzDeploy
 
 New-Alias -Name AzDeploy -Value Start-AzDeploy -Force -Scope global

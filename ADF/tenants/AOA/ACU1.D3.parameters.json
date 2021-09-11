@@ -380,7 +380,7 @@
           "PublicIP": "Static",
           "Zone": true
         },
-        "NGWInfo": [
+        "NatGWInfo": [
           {
             "Name": "NAT01",
             "PublicIP": "Static",
