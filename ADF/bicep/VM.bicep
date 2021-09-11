@@ -188,7 +188,7 @@ var VM = [for (vm, index) in AppServers: {
     enableAutomaticUpdates: true
     provisionVmAgent: true
     patchSettings: {
-      enableHotpatching: contains(vm, 'HotPatch') ? vm.HotPatch : json('null')
+      enableHotpatching: contains(OSType[vm.OSType], 'HotPatch') ? OSType[vm.OSType].HotPatch : false
       patchMode: contains(OSType[vm.OSType], 'patchMode') ? OSType[vm.OSType].patchMode : 'AutomaticByOS'
     }
   }
@@ -196,7 +196,7 @@ var VM = [for (vm, index) in AppServers: {
     enableAutomaticUpdates: true
     provisionVmAgent: true
     patchSettings: {
-      enableHotpatching: contains(vm, 'HotPatch') ? vm.HotPatch : json('null')
+      enableHotpatching: contains(OSType[vm.OSType], 'HotPatch') ? OSType[vm.OSType].HotPatch : false
       patchMode: contains(OSType[vm.OSType], 'patchMode') ? OSType[vm.OSType].patchMode : 'AutomaticByOS' //'AutomaticByPlatform' https://docs.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching
     }
   }

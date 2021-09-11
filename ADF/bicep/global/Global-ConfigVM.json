@@ -856,6 +856,7 @@
         "version": "latest"
       },
       "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
       "OS": "Windows",
       "OSDiskGB": 64,
       "RoleExtensions": {
@@ -901,6 +902,7 @@
         "version": "latest"
       },
       "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
       "OS": "Windows",
       "OSDiskGB": 127,
       "RoleExtensions": {
