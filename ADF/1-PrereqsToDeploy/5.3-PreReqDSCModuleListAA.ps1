@@ -25,7 +25,7 @@ $CommonAAModule = @{
 # This is our Master list of Modules in the project
 
 $Modules = @(
-    'xPSDesiredStateConfiguration', 'xPendingReboot', 'SQLServerDsc',
+    'xPSDesiredStateConfiguration', 'SQLServerDsc',
     'xWebAdministration', 'xFailoverCluster', 'xnetworking', 'AccessControlDsc',
     'SecurityPolicyDSC', 'xTimeZone', 'xSystemSecurity', 'xRemoteDesktopSessionHost',
     'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 

@@ -1,4 +1,5 @@
-Configuration AppServersLinux
+$Configuration = 'AppServersLinux'
+Configuration $Configuration
 {
     Param (
         [String]$DomainName,
@@ -171,27 +172,8 @@ Configuration AppServersLinux
 # F5 loads the configuration and starts the push
 
 #region The following is used for manually running the script, breaks when running as system
-if ((whoami) -notmatch 'system')
+if ((whoami) -notmatch 'system' -and $NotAA)
 {
-    Write-Warning -Message 'no testing in prod !!!'
-    if ($cred)
-    {
-        Write-Warning -Message 'Cred is good'
-    }
-    else
-    {
-        $Cred = Get-Credential localadmin
-    }
-
-    if ($devOpsPat)
-    {
-        Write-Warning -Message "devOpsPat is good"
-    }
-    else
-    {
-        $devOpsPat = Get-Credential devOpsPat
-    }
-
     # Set the location to the DSC extension directory
     if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
     else { $DSCdir = $psscriptroot }
@@ -202,124 +184,44 @@ if ((whoami) -notmatch 'system')
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
     }
 }
-else
+elseif ($NotAA)
 {
     Write-Warning -Message 'running as system'
     break
 }
+else
+{
+    Write-Warning -Message 'running as mof upload'
+    return 'configuration loaded'
+}
 #endregion
 
-Get-ChildItem -Path .\AppServersLinux -Filter *.mof -ea 0 | Remove-Item
+Import-Module $psscriptroot\..\..\bin\DscExtensionHandlerSettingManager.psm1
+$ConfigurationArguments = Get-DscExtensionHandlerSettings | foreach ConfigurationArguments
 
-# AZC1 ADF D 1
+$sshPublicPW = ConvertTo-SecureString -String $ConfigurationArguments['sshPublic'].Password -AsPlainText -Force
+$devOpsPatPW = ConvertTo-SecureString -String $ConfigurationArguments['devOpsPat'].Password -AsPlainText -Force
+$AdminCredsPW = ConvertTo-SecureString -String $ConfigurationArguments['AdminCreds'].Password -AsPlainText -Force
 
-# D2    (1 chars)
-if ($env:computername -match 'ABC')
-{
-    $depname = $env:computername.substring(7, 2)  # D1
-    $SAID = '/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-HUB-RG-G1/providers/Microsoft.Storage/storageAccounts/azc1brwhubg1saglobal'
-    $App = 'ABC'
-    $Domain = 'psthing.com'
-    $prefix = $env:computername.substring(0, 4)  # AZC1
-    $org = 'BRW'
-}
-if ($env:computername -match 'AOA')
-{
-    $depname = $env:computername.substring(7, 2)  # D1
-    $SAID = '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Storage/storageAccounts/acu1brwaoag1saglobal'
-    $App = 'AOA'
-    $Domain = 'psthing.com'
-    $prefix = $env:computername.substring(0, 4)  # AZC1
-    $org = 'BRW'
-}
-if ($env:computername -match 'HAA')
-{
-    $depname = $env:computername.substring(7, 2)  # D1
-    $SAID = '/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Storage/storageAccounts/acu1brwhaag1saglobal'
-    $App = 'HAA'
-    $Domain = 'haapp.net'
-    $prefix = $env:computername.substring(0, 4)  # AZC1
-    $org = 'BRW'
-}
-
-$depid = $depname.substring(1, 1)
-
-# Network
-$network = 144 - ([Int]$Depid * 2)
-$Net = "10.10.${network}."
-
-# Azure resource names (for storage account) E.g. AZE2ADFd2
-$dep = '{0}{1}{2}{3}' -f $prefix, $org, $app, $depname
-
-$ClientId = @{
-    S1 = '5438d30f-e71c-4e9c-b0d9-117f5d154d82'
-    P0 = 'ac061a4c-ef53-4397-abcb-d3c72329d53c'
-    D3 = '7628bb94-4636-4fe4-802f-a4241a015134'
-}
+$ConfigurationArguments['sshPublic'] = [pscredential]::new($ConfigurationArguments['sshPublic'].UserName,$sshPublicPW)
+$ConfigurationArguments['devOpsPat'] = [pscredential]::new($ConfigurationArguments['devOpsPat'].UserName,$devOpsPatPW)
+$ConfigurationArguments['AdminCreds'] = [pscredential]::new($ConfigurationArguments['AdminCreds'].UserName,$AdminCredsPW)
 
 $Params = @{
-    ClientIDGlobal    = $ClientId[$depname]
-    StorageAccountId  = $SAID
-    DomainName        = $Domain
-    networkID         = $Net
-    ConfigurationData = '.\*-ConfigurationData.psd1' 
-    AdminCreds        = $cred
-    DevOpsPat         = $cred 
-    Deployment        = $dep  #AZE2ADFD5 (AZE2ADFD5JMP01)
+    ConfigurationData = '.\*-ConfigurationData.psd1'
     Verbose           = $true
-    #DNSInfo           = '{"APIM":"104.46.120.132","APIMDEV":"104.46.102.64","WAF":"c0a1dcd4-dbab-4bba-a581-29ae2ff8ce00.cloudapp.net","WAFDEV":"46eb8888-5986-4783-bb19-cab76935978b.cloudapp.net"}'
 }
 
 # Compile the MOFs
-AppServersLinux @Params
+& $Configuration @Params @ConfigurationArguments
 
 # Set the LCM to reboot
-Set-DscLocalConfigurationManager -Path .\AppServersLinux -Force 
+Set-DscLocalConfigurationManager -Path .\$Configuration -Force 
 
 # Push the configuration
-Start-DscConfiguration -Path .\AppServersLinux -Wait -Verbose -Force
+Start-DscConfiguration -Path .\$Configuration -Wait -Verbose -Force
 
-# Delete the mofs directly after the push
-Get-ChildItem -Path .\AppServersLinux -Filter *.mof -ea 0 | Remove-Item 
-break
-
-Get-DscLocalConfigurationManager
-
-Start-DscConfiguration -UseExisting -Wait -Verbose -Force
-
-Get-DscConfigurationStatus -All
-
-Test-DscConfiguration
-Test-DscConfiguration -ReferenceConfiguration .\main\LocalHost.mof
-
-$r = Test-DscConfiguration -Detailed
-$r.ResourcesNotInDesiredState
-$r.ResourcesInDesiredState
-
-
-Install-Module -Name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC -Force
-
-$ComputerName = $env:computerName
-
-Invoke-Command $ComputerName {
-    Get-Module -ListAvailable -Name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC | ForEach-Object {
-        $_.ModuleBase | Remove-Item -Recurse -Force
-    }
-    Find-Package -ForceBootstrap -Name xComputerManagement
-    Install-Module -Name xComputerManagement, xActiveDirectory, xStorage, xPendingReboot, xWebAdministration, xPSDesiredStateConfiguration, SecurityPolicyDSC -Force -Verbose
-}
-
-#test-wsman
-#get-service winrm | restart-service -PassThru
-#enable-psremoting -force
-#ipconfig /all
-#ping azgateway200 -4
-#ipconfig /flushdns
-#Install-Module -Name xDSCFirewall,xWindowsUpdate
-#Install-module -name xnetworking 
-
-
-
-
+# delete mofs after push
+Get-ChildItem .\$Configuration -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
 
 

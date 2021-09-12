@@ -1,6 +1,7 @@
-Configuration SQLServers
+$Configuration = 'SQLServers'
+Configuration $Configuration
 {
-    Param ( 
+    Param (
         [String]$DomainName,
         [PSCredential]$AdminCreds,
         [PSCredential]$sshPublic,
@@ -20,17 +21,15 @@ Configuration SQLServers
         [switch]$NoDomainJoin
     )
 
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName ComputerManagementDsc
-    Import-DscResource -ModuleName xActiveDirectory
+    Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
-    Import-DscResource -ModuleName xPendingReboot
     Import-DscResource -ModuleName xWebAdministration
     Import-DscResource -ModuleName SQLServerDsc
-    Import-DscResource -ModuleName xDNSServer
+    Import-DscResource -ModuleName DNSServerDSC
     Import-DscResource -ModuleName xFailoverCluster
     Import-DscResource -ModuleName NetworkingDSC
-    Import-DscResource -ModuleName xTimeZone
     Import-DscResource -ModuleName PackageManagementProviderResource
     Import-DscResource -ModuleName StoragePoolCustom
     Import-DscResource -ModuleName SecurityPolicyDSC
@@ -75,40 +74,12 @@ Configuration SQLServers
     $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
     $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
 
-    # # Cloud Witness
-    # $SubscriptionGuid = $StorageAccountId -split "/" | where { $_ -as [Guid] }
-
+    # # Cloud Witness, still needs Storage Account Key
     $SaName = ('{0}sawitness' -f $Deployment ).toLower()
     $resource = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Storage/storageAccounts/{2}' -f $SubscriptionId, $ResourceGroupName, $SaName
     $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $resource, 'listKeys'
     $sakwitness = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
     Write-Verbose "SAK Witness: $sakwitness" -Verbose
-
-    <#
-    try
-    {
-        # Global assets to download files
-
-        # -------- MSI lookup for storage account keys to download files and set Cloud Witness
-        $response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
-        $ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
-        $Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
-
-        
-        $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
-        $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
-        Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
-    
-        # Create the Cred to access the storage account
-        $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-        Write-Verbose -Message "User is: [$StorageAccountName]"
-        $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force -ErrorAction stop)) 
-    }
-    catch
-    {
-        Write-Warning $_
-    }
-    #>
 
     if ($NoDomainJoin)
     {
@@ -273,7 +244,7 @@ Configuration SQLServers
         }
 
         #-------------------------------------------------------------------
-        xTimeZone EasternStandardTime
+        TimeZone EasternStandardTime
         { 
             IsSingleInstance = 'Yes'
             TimeZone         = 'Eastern Standard Time' 
@@ -384,7 +355,7 @@ Configuration SQLServers
         #-------------------------------------------------------------
         if ($Node.WindowsFeatureSetPresent)
         {
-            xWindowsFeatureSet WindowsFeatureSetPresent
+            WindowsFeatureSet WindowsFeatureSetPresent
             {
                 Ensure = 'Present'
                 Name   = $Node.WindowsFeatureSetPresent
@@ -664,7 +635,7 @@ Configuration SQLServers
         {
             $Name = $Package.Name -replace $StringFilter
 
-            xPackage $Name
+            Package $Name
             {
                 Name                 = $Package.Name
                 Path                 = $Package.Path
@@ -675,11 +646,11 @@ Configuration SQLServers
                 Arguments            = $Package.Arguments
             }
 
-            $dependsonPackage += @("[xPackage]$($Name)")
+            $dependsonPackage += @("[Package]$($Name)")
         }
 
         # reboots after PackageInstall
-        xPendingReboot PackageInstall
+        PendingReboot PackageInstall
         {
             Name                        = 'PackageInstall'
             DependsOn                   = $dependsonPackage
@@ -1276,141 +1247,56 @@ Configuration SQLServers
 # F5 loads the configuration and starts the push
 
 #region The following is used for manually running the script, breaks when running as system
-if ((whoami) -notmatch 'system')
+if ((whoami) -notmatch 'system' -and $NotAA)
 {
-    Write-Warning -Message 'no testing in prod !!!'
-    if ($cred)
-    {
-        Write-Warning -Message 'Cred is good'
-    }
-    else
-    {
-        $Cred = Get-Credential localadmin
-    }
-
-    #  if ($sak)
-    #  {
-    #      Write-Warning -Message "StorageAccountKey is good"
-    #  }
-    #  else
-    #  {
-    #      $sak = Read-Host -prompt "Enter the StorageAccountKey to download files"
-    #  }
-
-    # if($djcred) {
-    # 	Write-Warning -Message "Domain Join Cred is good"
-    # }
-    # else {
-    # 	$a = Read-Host -AsSecureString -prompt "DomainJoinUser pass:"
-    # 	$djcred = [pscredential]::new('consoso\localadmin',$a)
-    # }
-
-    # if($sqlcred) {
-    # 	Write-Warning -Message "SQL Account Cred is good"
-    # }
-    # else {
-    # 	$a = Read-Host -AsSecureString -prompt "DomainSQLUser pass:"
-    # 	$sqlcred = [pscredential]::new('Contoso\Localadmin',$a)
-    # }
-
     # Set the location to the DSC extension directory
-    $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path)
+    if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
+    else { $DSCdir = $psscriptroot }
+    Write-Output "DSCDir: $DSCdir"
+
     if (Test-Path -Path $DSCdir -ErrorAction SilentlyContinue)
     {
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
     }
 }
-else
+elseif ($NotAA)
 {
     Write-Warning -Message 'running as system'
     break
 }
+else
+{
+    Write-Warning -Message 'running as mof upload'
+    return 'configuration loaded'
+}
 #endregion
 
-Get-ChildItem .\SQLServers -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
+Import-Module $psscriptroot\..\..\bin\DscExtensionHandlerSettingManager.psm1
+$ConfigurationArguments = Get-DscExtensionHandlerSettings | foreach ConfigurationArguments
 
-$aoinfo = @{
-    SQL01 = "[{'InstanceName':'CTO_1','GroupName':'AG01','PrimaryAG':'SQL01','SecondaryAG':'SQL02', 'AOIP':'110','ProbePort':'59999'}]"
-    SQL02 = "[{'InstanceName':'CTO_1','GroupName':'AG01','PrimaryAG':'SQL01','SecondaryAG':'SQL02'}]"
-    # SQL03 = "[{'InstanceName':'ADF_2','GroupName':'AG02','PrimaryAG':'SQL03','SecondaryAG':'SQL04', 'AOIP':'213','ProbePort':'59999'}]"
-    # SQL04 = "[{'InstanceName':'ADF_2','GroupName':'AG02','PrimaryAG':'SQL03','SecondaryAG':'SQL04'}]"
-}
+$sshPublicPW = ConvertTo-SecureString -String $ConfigurationArguments['sshPublic'].Password -AsPlainText -Force
+$devOpsPatPW = ConvertTo-SecureString -String $ConfigurationArguments['devOpsPat'].Password -AsPlainText -Force
+$AdminCredsPW = ConvertTo-SecureString -String $ConfigurationArguments['AdminCreds'].Password -AsPlainText -Force
 
-$ClusterInfo = @{
-    SQL01 = "{'CLNAME':'CLS01','CLIP':'109','Primary':'SQL01','Secondary':['SQL02']}"
-    SQL02 = "{'CLNAME':'CLS01','CLIP':'109','Primary':'SQL01','Secondary':['SQL02']}"
-    # SQL03 = "{'CLNAME':'CLS02','CLIP':'214','Primary':'SQL03','Secondary':['SQL04']}"
-    # SQL04 = "{'CLNAME':'CLS02','CLIP':'214','Primary':'SQL03','Secondary':['SQL04']}"
-}
-
-# AZE2 ADF D 1
-
-# D2    (1 chars)
-if ($env:computername -match 'ADF')
-{
-    $depname = $env:computername.substring(7, 2)  # D1
-    $SAID = '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/rgglobal/providers/Microsoft.Storage/storageAccounts/saeastus2'
-    $Domain = 'psobject.com'
-    $app = $env:computername.substring(4, 3)
-    $prefix = $env:computername.substring(0, 4)  # AZC1
-}
-
-$depid = $depname.substring(1, 1)
-
-# Azure resource names (for storage account) E.g. AZE2ADFd2
-$dep = '{0}-ORG-{1}-{2}' -f $prefix, $app, $depname
-
-# Azure hostnames E.g. azADFd2
-$cn = '{0}{1}{2}' -f $prefix, $app, $depname
- 
-# Computer short name e.g. SQL01
-$cmp = $env:computername -replace $cn, ''
-
-$network = 30 - ([int]$Depid * 2)
-$Net = "172.16.${network}."
-$a = $aoinfo[$cmp]
-$b = $ClusterInfo[$cmp]
-$AO = "{'aoinfo': $a , 'ClusterInfo': $b}"
+$ConfigurationArguments['sshPublic'] = [pscredential]::new($ConfigurationArguments['sshPublic'].UserName,$sshPublicPW)
+$ConfigurationArguments['devOpsPat'] = [pscredential]::new($ConfigurationArguments['devOpsPat'].UserName,$devOpsPatPW)
+$ConfigurationArguments['AdminCreds'] = [pscredential]::new($ConfigurationArguments['AdminCreds'].UserName,$AdminCredsPW)
 
 $Params = @{
-    StorageAccountId  = $SAID
-    DomainName        = $Domain
     ConfigurationData = '.\*-ConfigurationData.psd1'
-    AppInfo           = $AO
-    AdminCreds        = $cred
-    #DomainJoinCreds         = $djcred
-    #DomainSQLCreds          = $sqlcred
-    #StorageAccountKeySource = $sak
-    Deployment        = $dep
-    networkID         = $Net 
     Verbose           = $true
 }
 
 # Compile the MOFs
-SQLServers @Params
+& $Configuration @Params @ConfigurationArguments
 
 # Set the LCM to reboot
-Set-DscLocalConfigurationManager -Path .\SQLServers -Force 
+Set-DscLocalConfigurationManager -Path .\$Configuration -Force 
 
 # Push the configuration
-Start-DscConfiguration -Path .\SQLServers -Wait -Verbose -Force
+Start-DscConfiguration -Path .\$Configuration -Wait -Verbose -Force
 
 # delete mofs after push
-Get-ChildItem .\SQLServers -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
-
-break
-
-Get-DscLocalConfigurationManager
-
-Start-DscConfiguration -UseExisting -Wait -Verbose -Force
-
-Get-DscConfigurationStatus -All
-
-$result = Test-DscConfiguration -Detailed
-$result.resourcesnotindesiredstate
-$result.resourcesindesiredstate
-
-
-
+Get-ChildItem .\$Configuration -Filter *.mof -ea SilentlyContinue | Remove-Item -ea SilentlyContinue
 
 
