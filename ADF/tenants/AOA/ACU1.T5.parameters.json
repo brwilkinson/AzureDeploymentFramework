@@ -1133,7 +1133,7 @@
             "AutoScale": true,
             "PredictiveScale": "Enabled",
             "saname": "data",
-            "Role": "Pull",
+            "Role": "API",
             "ASNAME": "API",
             "DDRole": "64GBSS",
             "OSType": "Server2019SSIMG",
