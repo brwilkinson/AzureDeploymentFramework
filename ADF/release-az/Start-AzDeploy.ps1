@@ -138,6 +138,13 @@ Function global:Start-AzDeploy
     $queryString = (New-AzStorageContainerSASToken @SASParams).Substring(1)
     $Global.Add('_artifactsLocation', $TemplateURIBase)
     $Global.Add('_artifactsLocationSasToken', "?${queryString}")
+
+    # Create the storage container only if it doesn't already exist
+    if ( -not (Get-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -Verbose -ErrorAction SilentlyContinue))
+    {
+        # Copy files from the local storage staging location to the storage account container
+        New-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
+    }
     #endregion
 
     #region upload artifacts for DSC/Script extension
@@ -327,7 +334,7 @@ Function global:Start-AzDeploy
         }
     }
 
-    $Properties = 'ResourceGroupName','DeploymentName','ProvisioningState','Timestamp','Mode','CorrelationId'
+    $Properties = 'ResourceGroupName', 'DeploymentName', 'ProvisioningState', 'Timestamp', 'Mode', 'CorrelationId'
     $r | Select-Object -Property $Properties | Format-Table -AutoSize
     $e
 } # Start-AzDeploy
