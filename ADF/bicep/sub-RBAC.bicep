@@ -72,7 +72,7 @@ var sps = [for sp in SPInfo: {
     name: replace(replace(replace(sp.Name, '{GHProject}', Global.GHProject), '{ADOProject}', Global.ADOProject), '{RGNAME}', rg)
 }]
 
-module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
+module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: if (Stage.UAI == 1) {
     name: 'dp-rbac-uai-${Prefix}-${length(uaiinfo) == 0 ? 'na' : uai.name}'
     params: {
         Deployment: deployment
@@ -90,7 +90,7 @@ module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: {
     }
 }]
 
-module ROLES 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
+module RBAC 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: if (Stage.RBAC == 1) {
     name: 'dp-rbac-role-${Prefix}-${length(rolesInfo) == 0 ? 'na' : role.name}'
     params: {
         Deployment: deployment
@@ -107,7 +107,7 @@ module ROLES 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
     }
 }]
 
-module SP 'sub-RBAC-ALL.bicep' = [for sp in sps: {
+module SP 'sub-RBAC-ALL.bicep' = [for sp in sps: if (Stage.SP == 1) {
     name: 'dp-rbac-sp-${Prefix}-${length(sps) == 0 ? 'na' : sp.name}'
     params: {
         Deployment: deployment

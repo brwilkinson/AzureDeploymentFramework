@@ -29,6 +29,7 @@ var AAResourceGroup = '${Prefix}-${Global.OrgName}-${Global.Appname}-RG-P0'
 var AAName = '${Prefix}${Global.OrgName}${Global.Appname}P0OMSAutomation'
 var VMSizeLookup = {
   D: 'D'
+  T: 'D'
   I: 'D'
   U: 'P'
   P: 'P'
@@ -177,7 +178,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
             storageAccountType: storageAccountType
           }
         }
-        dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-diskLookup${AppServer.Name}'), '2018-05-01').outputs.DATADisks.value
+        dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-VMSS-diskLookup${AppServer.Name}'), '2018-05-01').outputs.DATADisks.value
         imageReference: OSType[AppServer.OSType].imageReference
       }
       diagnosticsProfile: {
@@ -297,75 +298,75 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
               typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.0'
             }
           }
-          {
-            name: 'Microsoft.Powershell.DSC.Pull'
-            properties: {
-              publisher: (OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions'
-              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux'
-              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '2.77' : '2.0'
-              autoUpgradeMinorVersion: true
-              protectedSettings: {
-                Items: {
-                  registrationKeyPrivate: listKeys(resourceId(AAResourceGroup, 'Microsoft.Automation/automationAccounts', AAName), '2020-01-13-preview').keys[0].value
-                }
-              }
-              settings: {
-                advancedOptions: {
-                  forcePullAndApply: true
-                }
-                Properties: [
-                  {
-                    Name: 'RegistrationKey'
-                    Value: {
-                      UserName: 'PLACEHOLDER_DONOTUSE'
-                      Password: 'PrivateSettingsRef:registrationKeyPrivate'
-                    }
-                    TypeName: 'System.Management.Automation.PSCredential'
-                  }
-                  {
-                    Name: 'RegistrationUrl'
-                    Value: reference(resourceId(AAResourceGroup, 'Microsoft.Automation/automationAccounts', AAName), '2020-01-13-preview').RegistrationUrl
-                    TypeName: 'System.String'
-                  }
-                  {
-                    Name: 'NodeConfigurationName'
-                    Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${AppServer.ASName}_${Environment}${DeploymentID}'
-                    TypeName: 'System.String'
-                  }
-                  {
-                    Name: 'ConfigurationMode'
-                    Value: ConfigurationMode[Environment]
-                    TypeName: 'System.String'
-                  }
-                  {
-                    Name: 'RebootNodeIfNeeded'
-                    Value: RebootNodeLookup[Environment]
-                    TypeName: 'System.Boolean'
-                  }
-                  {
-                    Name: 'ConfigurationModeFrequencyMins'
-                    Value: DSCConfigurationModeFrequencyMins
-                    TypeName: 'System.Int32'
-                  }
-                  {
-                    Name: 'RefreshFrequencyMins'
-                    Value: 30
-                    TypeName: 'System.Int32'
-                  }
-                  {
-                    Name: 'ActionAfterReboot'
-                    Value: 'ContinueConfiguration'
-                    TypeName: 'System.String'
-                  }
-                  {
-                    Name: 'AllowModuleOverwrite'
-                    Value: true
-                    TypeName: 'System.Boolean'
-                  }
-                ]
-              }
-            }
-          }
+          // {
+          //   name: 'Microsoft.Powershell.DSC.Pull'
+          //   properties: {
+          //     publisher: (OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions'
+          //     type: (OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux'
+          //     typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '2.24' : '2.0'
+          //     autoUpgradeMinorVersion: true
+          //     protectedSettings: {
+          //       Items: {
+          //         registrationKeyPrivate: listKeys(resourceId(AAResourceGroup, 'Microsoft.Automation/automationAccounts', AAName), '2020-01-13-preview').keys[0].value
+          //       }
+          //     }
+          //     settings: {
+          //       advancedOptions: {
+          //         forcePullAndApply: true
+          //       }
+          //       Properties: [
+          //         {
+          //           Name: 'RegistrationKey'
+          //           Value: {
+          //             UserName: 'PLACEHOLDER_DONOTUSE'
+          //             Password: 'PrivateSettingsRef:registrationKeyPrivate'
+          //           }
+          //           TypeName: 'System.Management.Automation.PSCredential'
+          //         }
+          //         {
+          //           Name: 'RegistrationUrl'
+          //           Value: reference(resourceId(AAResourceGroup, 'Microsoft.Automation/automationAccounts', AAName), '2020-01-13-preview').RegistrationUrl
+          //           TypeName: 'System.String'
+          //         }
+          //         {
+          //           Name: 'NodeConfigurationName'
+          //           Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${AppServer.ASName}_${Environment}${DeploymentID}'
+          //           TypeName: 'System.String'
+          //         }
+          //         {
+          //           Name: 'ConfigurationMode'
+          //           Value: ConfigurationMode[Environment]
+          //           TypeName: 'System.String'
+          //         }
+          //         {
+          //           Name: 'RebootNodeIfNeeded'
+          //           Value: RebootNodeLookup[Environment]
+          //           TypeName: 'System.Boolean'
+          //         }
+          //         {
+          //           Name: 'ConfigurationModeFrequencyMins'
+          //           Value: DSCConfigurationModeFrequencyMins
+          //           TypeName: 'System.Int32'
+          //         }
+          //         {
+          //           Name: 'RefreshFrequencyMins'
+          //           Value: 30
+          //           TypeName: 'System.Int32'
+          //         }
+          //         {
+          //           Name: 'ActionAfterReboot'
+          //           Value: 'ContinueConfiguration'
+          //           TypeName: 'System.String'
+          //         }
+          //         {
+          //           Name: 'AllowModuleOverwrite'
+          //           Value: true
+          //           TypeName: 'System.Boolean'
+          //         }
+          //       ]
+          //     }
+          //   }
+          // }
           {
             name: 'Microsoft.Powershell.DSC'
             properties: {

@@ -53,8 +53,9 @@ var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
 // Allow override of DNS for a standalone environment, simply provide the 'DNSServers' array value in the parameter file
-var DC1PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[0]}' : Global.DNSServers[0]
-var DC2PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[1]}' : Global.DNSServers[1]
+// Also allow the local file to override the DNS with a single Azure DNS server
+var DC1PrivateIPAddress = ! contains(DeploymentInfo,'DNSServers') ? Global.DNSServers[0] : length(DeploymentInfo.DNSServers[0]) <= 3 ? '${networkId}.${DeploymentInfo.DNSServers[0]}' : DeploymentInfo.DNSServers[0]
+var DC2PrivateIPAddress = ! contains(DeploymentInfo,'DNSServers') ? Global.DNSServers[1] : length(DeploymentInfo.DNSServers[1]) == 0 ? null : '${networkId}.${DeploymentInfo.DNSServers[0]}'
 var DNSServers = [
   DC1PrivateIPAddress
   DC2PrivateIPAddress

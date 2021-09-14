@@ -726,13 +726,12 @@ Configuration $Configuration
 
             # Prestage boht Computer Account and also DNS Record
 
-            xDnsRecord $aoinfo.GroupName
+            DnsRecordA $aoinfo.GroupName
             {
                 PsDscRunAsCredential = $credlookup['DomainJoin']
                 Name                 = $cname
-                Target               = ($NetworkID + $aoinfo.AOIP)
-                Type                 = 'ARecord'
-                Zone                 = $DomainName
+                IPv4Address          = ($NetworkID + $aoinfo.AOIP)
+                ZoneName             = $DomainName
                 DnsServer            = $DNSServer
             }
 
