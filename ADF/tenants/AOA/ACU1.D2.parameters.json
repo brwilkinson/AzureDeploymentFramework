@@ -330,6 +330,8 @@
             ]
           }
         ],
+        "_DNSServers": [], // Leave Empty to use AzureDNS
+
         "DNSServers": [
           "75",
           "76"
@@ -396,7 +398,7 @@
           "PublicIP": "Static",
           "Zone": true
         },
-        "NGWInfo": [
+        "NatGWInfo": [
           {
             "Name": "NAT01",
             "PublicIP": "Static",
