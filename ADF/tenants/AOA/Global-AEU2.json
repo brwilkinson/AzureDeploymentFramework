@@ -13,6 +13,7 @@
       "172.16.144.75",
       "172.16.144.76"
     ],
+    "_DNSServers": [], // Leave Empty to use AzureDNS
     "AALocation": "EastUS",
     "nsgRGName": "AEU2-BRW-AOA-RG-P0",
     "RTRGName": "AEU2-BRW-AOA-RG-P0",

@@ -54,12 +54,15 @@ var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMS
 
 // Allow override of DNS for a standalone environment, simply provide the 'DNSServers' array value in the parameter file
 // Also allow the local file to override the DNS with a single Azure DNS server
-var DC1PrivateIPAddress = ! contains(DeploymentInfo,'DNSServers') ? Global.DNSServers[0] : length(DeploymentInfo.DNSServers[0]) <= 3 ? '${networkId}.${DeploymentInfo.DNSServers[0]}' : DeploymentInfo.DNSServers[0]
-var DC2PrivateIPAddress = ! contains(DeploymentInfo,'DNSServers') ? Global.DNSServers[1] : length(DeploymentInfo.DNSServers[1]) == 0 ? null : '${networkId}.${DeploymentInfo.DNSServers[0]}'
-var DNSServers = [
-  DC1PrivateIPAddress
-  DC2PrivateIPAddress
-]
+// var DC1PrivateIPAddress = ! contains(DeploymentInfo,'DNSServers') ? Global.DNSServers[0] : length(DeploymentInfo.DNSServers[0]) <= 3 ? '${networkId}.${DeploymentInfo.DNSServers[0]}' : DeploymentInfo.DNSServers[0]
+// var DC2PrivateIPAddress = ! contains(DeploymentInfo,'DNSServers') ? Global.DNSServers[1] : length(DeploymentInfo.DNSServers[1]) == 0 ? null : '${networkId}.${DeploymentInfo.DNSServers[0]}'
+// var DNSServers = [
+//   DC1PrivateIPAddress
+//   DC2PrivateIPAddress
+// ]
+
+var DNSServerList = contains(DeploymentInfo,'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
+var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
 
 var hubVNetName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubVNetName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubVNetName)
 var hubVNetResourceGroupName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubRGName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubRGName)

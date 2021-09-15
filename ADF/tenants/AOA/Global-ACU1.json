@@ -13,6 +13,7 @@
       "10.10.144.75",
       "10.10.144.76"
     ],
+    "_DNSServers": [], // Leave Empty to use AzureDNS
     "nsgRGName": "ACU1-BRW-AOA-RG-P0",
     "RTRGName": "ACU1-BRW-AOA-RG-P0",
     "RTName": "Hub",

@@ -142,12 +142,9 @@ Function global:Start-AzDeploy
     # Create the storage container only if it doesn't already exist
     if ( -not (Get-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -Verbose -ErrorAction SilentlyContinue))
     {
-        # Copy files from the local storage staging location to the storage account container
         New-AzStorageContainer -Name $StorageContainerName -Context $StorageAccount.Context -ErrorAction SilentlyContinue *>&1
     }
-    #endregion
 
-    #region upload artifacts for DSC/Script extension
     if ( -not $FullUpload )
     {
         $Include = @(
