@@ -38,7 +38,7 @@ Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readm
 
 ### Using Parameter file per environment
 
-- [Parameter File Per Environment](./Parameter_File_Per_Environment.md)
+- [Parameter File Per Environment](./Parameter_Files_Per_Environment.md)
 
 ### How does (Role Based Access Control) RBAC work
 
