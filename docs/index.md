@@ -92,13 +92,13 @@ Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readm
 
 - [Pipeline Deployments](./Pipeline_Deployments.md)
 
-### Deploying Template Specs (Preview)
+<!-- ### Deploying Template Specs (Preview)
 
-- [Pipeline Deployments](./Template_Specs.md)
+- [Template Specs](./Template_Specs.md)
 
 ### Consuming Template Specs (Preview)
 
-- [Pipeline Deployments](./Template_Specs_Client.md)
+- [Comsuming Template Specs](./Template_Specs_Client.md) -->
 
 
 What's Next? - Documentation: [Ready to Deploy? Getting Started Steps](./Getting_Started.md)
