@@ -50,7 +50,7 @@ Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readm
 
 ### Using Base templates
 
-- [Base Templates](./Orchestration_Templates.md)
+- [Base Templates](./Base_Templates.md)
 
 ### Using orchestration templates
 
@@ -58,7 +58,7 @@ Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readm
 
 ### Using nested templates
 
-- [Nested Templates](./Orchestration_Templates.md)
+- [Nested Templates/Modules](./Nested_Templates.md)
 
 ### Deploying from PowerShell
 
