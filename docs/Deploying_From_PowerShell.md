@@ -5,5 +5,4 @@ Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readm
 
 [Documentation - What is ADF](./ADF.md)
 
-####  Role Based Access Control (RBAC)
-
+####  Deploying from PowerShell
