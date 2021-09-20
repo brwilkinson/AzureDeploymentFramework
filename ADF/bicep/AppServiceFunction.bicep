@@ -115,7 +115,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
       appSettings: union(myAppConfig,[
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
         }
         {
           name: 'WEBSITE_CONTENTSHARE'
@@ -127,11 +127,11 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: 
         }
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
         }
         {
           name: 'Storage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${SADiag.name};AccountKey=${SADiag.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'

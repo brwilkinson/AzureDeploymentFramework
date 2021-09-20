@@ -888,7 +888,16 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
                 ]
             }
         }
-        tasks: {}
+        tasks: {
+            // postTask: {
+            //     parameters:
+            //     source:
+            // }
+            // preTask: {
+            //     parameters:
+            //     source:
+            // }
+        }
         scheduleInfo: {
             isEnabled: patchingEnabled.windowsMonthly
             frequency: 'Month'
