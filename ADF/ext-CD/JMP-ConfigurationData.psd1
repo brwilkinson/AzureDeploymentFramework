@@ -85,7 +85,7 @@
             AppxProvisionedPackagePresent  = @(
                 @{
                     Name       = 'Microsoft.DesktopAppInstaller'
-                    Path       = 'F:\Source\Tools\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle'
+                    Path       = 'F:\Source\Tools\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
                     Dependency = 'F:\Source\Tools\Microsoft.VCLibs.x64.14.00.Desktop.appx'
                 },
 
