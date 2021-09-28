@@ -589,7 +589,7 @@ resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for 
         DomainName: Global.ADDomainName
         Thumbprint: Global.certificateThumbprint
         storageAccountId: saaccountidglobalsource.id
-        deployment: replace(Deployment, '-', '')
+        deployment: Deployment
         networkid: '${networkId}.'
         appInfo: (contains(vm, 'AppInfo') ? string(vm.AppInfo) : '')
         DataDiskInfo: string(VM[index].DataDisk)
