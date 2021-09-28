@@ -388,7 +388,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
                 configurationArguments: {
                   DomainName: Global.ADDomainName
                   Thumbprint: Global.certificateThumbprint
-                  storageAccountId: saaccountidglobalsource
+                  storageAccountId: saaccountidglobalsource.id
                   deployment: DeploymentURI
                   networkid: '${networkId}.'
                   appInfo: contains(AppServer, 'AppInfo') ? string(AppServer.AppInfo) : ''

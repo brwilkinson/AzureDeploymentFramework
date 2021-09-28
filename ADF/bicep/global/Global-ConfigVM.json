@@ -807,7 +807,7 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsDesktop",
         "offer": "Windows-10",
-        "sku": "rs5-pro",
+        "sku": "21h1-pro-g2",
         "version": "latest"
       },
       "licenseType": "Windows_Client",

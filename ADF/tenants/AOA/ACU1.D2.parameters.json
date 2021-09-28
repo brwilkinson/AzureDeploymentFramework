@@ -330,9 +330,9 @@
             ]
           }
         ],
-        "_DNSServers": [], // Leave Empty to use AzureDNS
+        "DNSServers": [], // Leave Empty to use AzureDNS
 
-        "DNSServers": [
+        "_DNSServers": [
           "75",
           "76"
         ],
@@ -528,6 +528,25 @@
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
               // "ExcludeDomainJoin": 1,
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "62"
+                }
+              ]
+            },
+            {
+              "Name": "JMP02",
+              "Role": "JMP",
+              "ASName": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Win10",
+              "ExcludeAdminCenter": 1,
+              "ExcludeDomainJoin": 1,
               "Zone": 1,
               "NICs": [
                 {
