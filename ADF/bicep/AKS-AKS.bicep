@@ -107,15 +107,15 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2020-12-01' = {
     nodeResourceGroup: '${resourceGroup().name}-b'
     enableRBAC: AKSInfo.enableRBAC
     dnsPrefix: toLower('${Deployment}-aks${AKSInfo.Name}')
-    agentPoolProfiles: [for j in range(0, length(AKSInfo.agentPools)): {
-      name: AKSInfo.agentPools[j].name
-      mode: AKSInfo.agentPools[j].mode
-      count: AKSInfo.agentPools[j].count
-      osDiskSizeGB: AKSInfo.agentPools[j].osDiskSizeGb
-      osType: AKSInfo.agentPools[j].osType
-      maxPods: AKSInfo.agentPools[j].maxPods
+    agentPoolProfiles: [for (agentpool,index) in AKSInfo.agentPools : {
+      name: agentpool.name
+      mode: agentpool.mode
+      count: agentpool.count
+      osDiskSizeGB: agentpool.osDiskSizeGb
+      osType: agentpool.osType
+      maxPods: agentpool.maxPods
       vmSize: 'Standard_DS2_v2'
-      vnetSubnetID: (contains(AKSInfo.agentPools[j], 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', AKSInfo.agentPools[j].Subnet) : resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', AKSInfo.AgentPoolsSN))
+      vnetSubnetID: (contains(agentpool, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', agentpool.Subnet) : resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', AKSInfo.AgentPoolsSN))
       type: 'VirtualMachineScaleSets'
       availabilityZones: ((AKSInfo.loadBalancer == 'basic') ? json('null') : availabilityZones)
       storageProfile: 'ManagedDisks'
