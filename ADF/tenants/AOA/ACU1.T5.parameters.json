@@ -1138,7 +1138,7 @@
             "DDRole": "64GBSS",
             "OSType": "Server2019SSIMG",
             "Subnet": "MT02",
-            "NATName": "RDP",
+            "_NATName": "RDP",
             "zones": [
               "1",
               "2",
@@ -1149,6 +1149,14 @@
             ],
             "_WAFBE": [
               "API02"
+            ],
+            "NICs": [
+              {
+                "Subnet": "FE01",
+                "Primary": 1,
+                "FastNic": 1,
+                "PublicIP": 1
+              }
             ],
             "AutoScalecapacity": {
               "minimum": "3",

@@ -776,7 +776,7 @@
             "Name": "APIM01"
           }
         ],
-        "AppServersVMSS": [
+        "AppServersVMSS_oldconfig": [
           {
             "Name": "API",
             "SFName": "contoso",

@@ -821,7 +821,7 @@
             "snName": "BE03"
           }
         ],
-        "AppServersVMSS": [
+        "AppServersVMSS_oldconfig": [
           {
             "Name": "API",
             "SFName": "contoso",
