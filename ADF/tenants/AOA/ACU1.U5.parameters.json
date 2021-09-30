@@ -887,6 +887,14 @@
             "_WAFBE": [
               "API02"
             ],
+            "NICs": [
+              {
+                "Subnet": "FE01",
+                "Primary": 1,
+                "FastNic": 1,
+                "PublicIP": 0
+              }
+            ],
             "AutoScalecapacity": {
               "minimum": "3",
               "maximum": "9",
@@ -923,6 +931,14 @@
             ],
             "_WAFBE": [
               "API02"
+            ],
+            "NICs": [
+              {
+                "Subnet": "FE01",
+                "Primary": 1,
+                "FastNic": 1,
+                "PublicIP": 0
+              }
             ],
             "AutoScalecapacity": {
               "minimum": "3",
@@ -961,6 +977,14 @@
             "WAFBE": [
               "API02"
             ],
+            "NICs": [
+              {
+                "Subnet": "FE01",
+                "Primary": 1,
+                "FastNic": 1,
+                "PublicIP": 0
+              }
+            ],
             "AutoScalecapacity": {
               "minimum": "3",
               "maximum": "9",
@@ -997,6 +1021,14 @@
             ],
             "WAFBE": [
               "API03"
+            ],
+            "NICs": [
+              {
+                "Subnet": "FE01",
+                "Primary": 1,
+                "FastNic": 1,
+                "PublicIP": 0
+              }
             ],
             "AutoScalecapacity": {
               "minimum": "3",

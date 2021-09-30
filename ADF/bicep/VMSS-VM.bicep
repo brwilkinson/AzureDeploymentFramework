@@ -187,33 +187,41 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
           storageUri: 'https://${SADiagName}.blob.${environment().suffixes.storage}'
         }
       }
+      //   networkInterfaceConfigurations: [for (nic, index) in vm.NICs: {
+      //     id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${contains(nic,'LB') ? '-niclb' : contains(nic,'PLB') ? '-nicplb' : contains(nic,'SLB') ? '-nicslb' : '-nic'}${index == 0 ? '' : index + 1}${vm.Name}')
+      //     properties: {
+      //       primary: contains(nic, 'Primary')
+      //       deleteOption: 'Delete'
+      //     }
+      //   }]
       networkProfile: {
-        networkInterfaceConfigurations: [
-          {
-            name: 'NIC-0'
+        networkInterfaceConfigurations: [for (nic, index) in AppServer.NICs: {
+            name: 'NIC-${ -index }'
             properties: {
-              primary: true
-              enableAcceleratedNetworking: false
+              primary: contains(nic, 'Primary')
+              enableAcceleratedNetworking: contains(nic, 'FastNic') && nic.FastNic == 1 ? true : false
               dnsSettings: {
                 dnsServers: []
               }
               ipConfigurations: [
                 {
-                  name: '${Deployment}-${AppServer.Name}-nic0'
+                  name: '${Deployment}-${AppServer.Name}-nic${ -index }'
                   properties: {
                     subnet: {
-                      id: '${VNetID}/subnets/sn${AppServer.Subnet}'
+                      id: '${VNetID}/subnets/sn${nic.Subnet}'
+                    }
+                    publicIPAddressConfiguration: ! (contains(nic, 'PublicIP') && nic.PublicIP ==1) ? null : {
+                      name: 'pub1'
                     }
                     privateIPAddressVersion: 'IPv4'
                     applicationGatewayBackendAddressPools: applicationGatewayBackendAddressPools
                     loadBalancerBackendAddressPools: loadBalancerBackendAddressPools
-                    loadBalancerInboundNatPools: loadBalancerInboundNatPools
+                    loadBalancerInboundNatPools: contains(AppServer, 'NATName') ? loadBalancerInboundNatPools : null
                   }
                 }
               ]
             }
-          }
-        ]
+          }]
       }
       extensionProfile: {
         extensions: [
