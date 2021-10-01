@@ -62,56 +62,6 @@ var DC1PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.
 var DC2PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[1]}' : Global.DNSServers[1]
 var AzureDNS = '168.63.129.16'
 
-//  remove below after they are migrated each stage to Bicep
-// will just hard code the bicep file paths, not do a lookup
-
-var DeploymentInfoObject = {
-  KV: '../templates-base/00-azuredeploy-KV.json'
-  OMS: '../templates-base/01-azuredeploy-OMS.json'
-  SA: '../templates-base/01-azuredeploy-Storage.json'
-  CDN: '../templates-base/01-azuredeploy-StorageCDN.json'
-  RSV: '../templates-base/02-azuredeploy-RSV.json'
-  NSGHUB: '../templates-base/02-azuredeploy-NSG.hub.json'
-  NSGSPOKE: '../templates-base/02-azuredeploy-NSG.spoke.json'
-  NetworkWatcher: '../templates-base/02-azuredeploy-NetworkWatcher.json'
-  FlowLogs: '../templates-base/02-azuredeploy-NetworkFlowLogs.json'
-  VNET: '../templates-base/03-azuredeploy-VNet.json'
-  DNSPrivateZone: '../templates-base/03-azuredeploy-DNSPrivate.json'
-  BastionHost: '../templates-base/02-azuredeploy-BastionHost.json'
-  FW: '../templates-base/12-azuredeploy-FW.json'
-  RT: '../templates-base/02-azuredeploy-RT.json'
-  ERGW: '../templates-base/12-azuredeploy-ERGW.json'
-  ILB: '../templates-base/04-azuredeploy-ILBalancer.json'
-  VNetDNS: '../templates-nested/SetvNetDNS.json'
-  ADPrimary: '../templates-base/05-azuredeploy-VMApp.json'
-  ADSecondary: '../templates-base/05-azuredeploy-VMApp.json'
-  VMSS: '../templates-base/05-azuredeploy-VMAppSS.json'
-  InitialDOP: '../templates-base/05-azuredeploy-VMApp.json'
-  VMApp: '../templates-base/05-azuredeploy-VMApp.json'
-  VMAppLinux: '../templates-base/05-azuredeploy-VMApp.json'
-  VMSQL: '../templates-base/05-azuredeploy-VMApp.json'
-  VMFILE: '../templates-base/05-azuredeploy-VMApp.json'
-  APPCONFIG: '../templates-base/18-azuredeploy-AppConfiguration.json'
-  WAF: '../templates-base/06-azuredeploy-WAF.json'
-  FRONTDOOR: '../templates-base/02-azuredeploy-FrontDoor.json'
-  WAFPOLICY: '../templates-base/06-azuredeploy-WAFPolicy.json'
-  REDIS: '../templates-base/20-azuredeploy-Redis.json'
-  APIM: '../templates-base/09-azuredeploy-APIM.json'
-  ACR: '../templates-base/13-azuredeploy-ContainerRegistry.json'
-  AKS: '../templates-base/14-azuredeploy-AKS.json'
-  ServerFarm: '../templates-base/18-azuredeploy-AppServiceplan.json'
-  WebSite: '../templates-base/19-azuredeploy-AppServiceWebSite.json'
-  Function: '../templates-base/19-azuredeploy-AppServiceFunction.json'
-  MySQLDB: '../templates-base/20-azuredeploy-DBforMySQL.json'
-  DNSLookup: '../templates-base/12-azuredeploy-DNSLookup.json'
-  CosmosDB: '../templates-base/10-azuredeploy-CosmosDB.json'
-  SQLMI: '../templates-base/11-azuredeploy-SQLManaged.json'
-  DASHBOARD: '../templates-base/23-azuredeploy-Dashboard.json'
-  SB: '../templates-base/24-azuredeploy-ServiceBus.json'
-  AzureSQL: '../templates-base/26-azuredeploy-AzureSQL.json'
-  ACI: '../templates-base/30-azuredeploy-ContainerGroups.json'
-}
-
 module dp_Deployment_OMS 'OMS.bicep' = if (Stage.OMS == 1) {
   name: 'dp${Deployment}-OMS'
   params: {

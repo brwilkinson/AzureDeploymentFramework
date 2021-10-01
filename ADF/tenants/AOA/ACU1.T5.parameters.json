@@ -1155,7 +1155,7 @@
                 "Subnet": "FE01",
                 "Primary": 1,
                 "FastNic": 1,
-                "PublicIP": 1
+                "PublicIP": 0
               }
             ],
             "AutoScalecapacity": {
