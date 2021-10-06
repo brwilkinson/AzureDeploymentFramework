@@ -484,9 +484,9 @@
             "dnsName": "API",
             "apimSku": "Developer",
             "snName": "snBE01",
-            "virtualNetworkType": "Internal",
+            "virtualNetworkType": "External",
             "certName": "PSTHING-WildCard",
-            "frontDoor": "01"
+            "_frontDoor": "01"
           }
         ],
         "AzSQLInfo": [
