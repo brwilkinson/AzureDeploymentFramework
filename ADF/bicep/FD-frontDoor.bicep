@@ -7,6 +7,8 @@ param Stage object
 param OMSworkspaceID string
 param now string = utcNow('F')
 
+var FDName = '${Deployment}-afd${frontDoorInfo.Name}'
+
 var DefaultFrontEnd = [
   {
     name: 'default${frontDoorInfo.name}-azurefd-net'
@@ -19,7 +21,7 @@ var DefaultFrontEnd = [
   }
 ]
 
-var frontendEndpoints = [for service in frontDoorInfo.services : {
+var frontendEndpoints = [for service in frontDoorInfo.services: {
   name: concat(service.name)
   properties: {
     hostName: toLower('${Deployment}-afd${frontDoorInfo.name}${((service.Name == 'Default') ? '.azurefd.net' : '-${service.Name}.${Global.DomainNameExt}')}')
@@ -28,7 +30,7 @@ var frontendEndpoints = [for service in frontDoorInfo.services : {
   }
 }]
 
-var healthProbeSettings = [for (probe,index) in frontDoorInfo.probes : {
+var healthProbeSettings = [for (probe, index) in frontDoorInfo.probes: {
   name: probe.name
   properties: {
     path: probe.ProbePath
@@ -39,7 +41,7 @@ var healthProbeSettings = [for (probe,index) in frontDoorInfo.probes : {
   }
 }]
 
-var loadBalancingSettings = [for (lb,index) in frontDoorInfo.LBSettings : {
+var loadBalancingSettings = [for (lb, index) in frontDoorInfo.LBSettings: {
   name: lb.name
   properties: {
     sampleSize: lb.sampleSize
@@ -48,12 +50,12 @@ var loadBalancingSettings = [for (lb,index) in frontDoorInfo.LBSettings : {
   }
 }]
 
-var routingRules = [for service in frontDoorInfo.services : {
+var routingRules = [for service in frontDoorInfo.services: {
   name: service.Name
   properties: {
     frontendEndpoints: [
       {
-        id: resourceId('Microsoft.Network/frontdoors/frontendEndpoints', '${Deployment}-afd${frontDoorInfo.Name}', service.Name)
+        id: resourceId('Microsoft.Network/frontdoors/frontendEndpoints', FDName, service.Name)
       }
     ]
     acceptedProtocols: [
@@ -67,14 +69,18 @@ var routingRules = [for service in frontDoorInfo.services : {
       customForwardingPath: null
       forwardingProtocol: 'HttpsOnly'
       backendPool: {
-        id: resourceId('Microsoft.Network/frontdoors/backendPools', '${Deployment}-afd${frontDoorInfo.Name}', service.Name)
+        id: resourceId('Microsoft.Network/frontdoors/backendPools', FDName, service.Name)
       }
     }
+    rulesEngine: !(contains(service, 'rulesEngine') && (contains(frontDoorInfo, 'rulesEngineDetached') && frontDoorInfo.rulesEngineDetached == 0)) ? null : /*
+    */ {
+          id: resourceId('Microsoft.Network/frontDoors/rulesEngines', FDName,  service.rulesEngine)
+       }
   }
 }]
 
-module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.services : {
-  name: 'dp${Deployment}-FD-BEDeploy-${frontDoorInfo.Name}-${service.Name}'
+module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.services: {
+  name: 'dp${Deployment}-FD-BE-Deploy-${frontDoorInfo.Name}-${service.Name}'
   params: {
     Deployment: Deployment
     AFDService: service
@@ -82,19 +88,7 @@ module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.servi
   }
 }]
 
-//  moved to x.DNS.CNAME generic module
-// module setdnsFDServices 'FD-frontDoor-DNS.bicep' = [for service in frontDoorInfo.services : {
-//   name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
-//   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
-//   params: {
-//     Deployment: Deployment
-//     global: Global
-//     frontDoorInfo: frontDoorInfo
-//     service: service
-//   }
-// }]
-
-module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services : {
+module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services: {
   name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
@@ -105,7 +99,7 @@ module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services : {
 }]
 
 resource FD 'Microsoft.Network/frontdoors@2020-05-01' = {
-  name: '${Deployment}-afd${frontDoorInfo.name}'
+  name: FDName
   location: 'global'
   properties: {
     friendlyName: frontDoorInfo.name
@@ -118,15 +112,15 @@ resource FD 'Microsoft.Network/frontdoors@2020-05-01' = {
       enforceCertificateNameCheck: 'Enabled'
       sendRecvTimeoutSeconds: 30
     }
-    backendPools: [for (service,index) in frontDoorInfo.services: {
+    backendPools: [for (service, index) in frontDoorInfo.services: {
       name: service.Name
       properties: {
         backends: FDServiceBE[index].outputs.backends
         loadBalancingSettings: {
-          id: resourceId('Microsoft.Network/frontdoors/loadBalancingSettings', '${Deployment}-afd${frontDoorInfo.name}', service.LBSettings)
+          id: resourceId('Microsoft.Network/frontdoors/loadBalancingSettings', FDName, service.LBSettings)
         }
         healthProbeSettings: {
-          id: resourceId('Microsoft.Network/frontdoors/healthProbeSettings', '${Deployment}-afd${frontDoorInfo.name}', service.ProbeName)
+          id: resourceId('Microsoft.Network/frontdoors/healthProbeSettings', FDName, service.ProbeName)
         }
       }
     }]
@@ -135,6 +129,17 @@ resource FD 'Microsoft.Network/frontdoors@2020-05-01' = {
     DNSCNAME
   ]
 }
+
+module FDServiceRE 'FD-frontDoor-RE.bicep' = [for service in frontDoorInfo.services: if (contains(service, 'rulesEngine')) {
+  name: 'dp${Deployment}-FD-RE-Deploy-${FD.name}-${service.Name}'
+  params: {
+    Deployment: Deployment
+    AFDService: service
+    Global: Global
+    FDInfo: frontDoorInfo
+    rules: frontDoorInfo.rules
+  }
+}]
 
 resource FDDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
@@ -164,7 +169,7 @@ resource FDDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
-resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (service,index) in frontDoorInfo.services : if (contains(service, 'EnableSSL') && (service.EnableSSL == 1)) {
+resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (service, index) in frontDoorInfo.services: if (contains(service, 'EnableSSL') && (service.EnableSSL == 1)) {
   name: 'SetServicesCertificates${index + 1}-${frontDoorInfo.name}'
   identity: {
     type: 'UserAssigned'
@@ -233,4 +238,3 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
     FD
   ]
 }]
-

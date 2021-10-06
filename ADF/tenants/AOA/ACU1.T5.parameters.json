@@ -888,8 +888,37 @@
         ],
         "frontDoorInfo": [
           {
-            "name": "03",
+            "name": "05",
             "_afdverify": "AOA",
+            "rulesEngineDetached": 1,
+            "rules": [
+              {
+                "name": "Rule1",
+                "priority": 0,
+                "action": {
+                  "requestHeaderActions": [],
+                  "responseHeaderActions": [
+                    {
+                      "headerActionType": "Append",
+                      "headerName": "Content-Security-Policy",
+                      "value": "\"script-src 'self' https://apiphany.portal.azure-api.net.\""
+                    }
+                  ]
+                },
+                "matchConditions": [
+                  {
+                    "rulesEngineMatchValue": [
+                      "AQ"
+                    ],
+                    "negateCondition": false,
+                    "rulesEngineMatchVariable": "RemoteAddr",
+                    "rulesEngineOperator": "GeoMatch",
+                    "transforms": []
+                  }
+                ],
+                "matchProcessingBehavior": "Continue"
+              }
+            ],
             "services": [
               {
                 "Name": "APIM03", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
@@ -905,7 +934,8 @@
                 "EnableSSL": 1, // _ to rename to disable after initial deployment
                 "patternsToMatch": [
                   "/*"
-                ]
+                ],
+                "rulesEngine": "Rule1"
               },
               {
                 "Name": "APIM03-Developer",
