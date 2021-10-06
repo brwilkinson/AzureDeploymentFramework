@@ -121,15 +121,15 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
       name: sn.name
       properties: {
         addressPrefix: '${((sn.name == 'snMT02') ? networkIdUpper : networkId)}.${sn.Prefix}'
-        networkSecurityGroup: ! (contains(sn, 'NSG') && (sn.NSG == 1)) ? json('null') : /*
+        networkSecurityGroup: ! (contains(sn, 'NSG') && (sn.NSG == 1)) ? null : /*
         */  {
               id: NSG[index].id
             }
-        natGateway: ! (contains(sn, 'NGW') && (sn.NGW == 1)) ? json('null') : /*
+        natGateway: ! (contains(sn, 'NGW') && (sn.NGW == 1)) ? null : /*
         */  {
               id: resourceId('Microsoft.Network/natGateways','${Deployment}-ngwNAT01')
             }
-        routeTable: contains(sn, 'Route') && (sn.Route == 1) ? RouteTableGlobal : json('null')
+        routeTable: contains(sn, 'Route') && (sn.Route == 1) ? RouteTableGlobal : null
         privateEndpointNetworkPolicies: 'Disabled'
         delegations: contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default
       }
