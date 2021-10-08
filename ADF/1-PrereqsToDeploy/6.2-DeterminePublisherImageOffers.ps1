@@ -30,12 +30,14 @@ $pubname = 'Microsoft.Powershell'   # Ext
 $pubname = 'Microsoft.Azure.ActiveDirectory.LinuxSSH'  # ext
 $pubname = 'Microsoft.Azure.ActiveDirectory' # ext
 $pubname = 'Microsoft.Azure.OpenSSH' #Ext
+$pubname = 'Microsoft.Azure.Monitoring.DependencyAgent'  # ext
 Get-AzVMImageOffer -Location $location -Publisher $pubName | Select-Object Offer
 
 # Extensions
 $ExtType = 'DSC'
 $ExtType = 'LinuxDiagnostic'
 $ExtType = 'IaaSDiagnostic'
+$ExtType = 'DependencyAgentWindows'
 Get-AzVMExtensionImage -Location $location -PublisherName $pubname -Type $ExtType | Select-Object PublisherName, Type, Version
 
 # 3 retrieve the SKUs of the offering

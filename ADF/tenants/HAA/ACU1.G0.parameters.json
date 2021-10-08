@@ -137,11 +137,39 @@
         ],
         "RoleDefinitionsInfo": [
           {
+            "roleName": "Automation_Account_Contributor",
+            "description": "Allows access to manage Azure Automation and its resources",
+                "actions": [
+                  "Microsoft.Authorization/*/read",
+                  "Microsoft.Insights/alertRules/*",
+                  "Microsoft.Insights/metrics/read",
+                  "Microsoft.Insights/diagnosticSettings/*",
+                  "Microsoft.Resources/deployments/*",
+                  "Microsoft.Resources/subscriptions/resourceGroups/read",
+                  "Microsoft.Automation/automationAccounts/*",
+                  "Microsoft.Support/*"
+                ],
+                "notActions": []
+          },
+          {
             "RoleName": "Key_Vault_Reader",
             "description": "Lets you run deployments from the KeyVault",
             "notActions": [],
             "actions": [
               "MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION"
+            ]
+          },
+          {
+            "RoleName": "Image_Builder",
+            "description": "Lets you deploy vm images",
+            "notActions": [],
+            "actions": [
+              "Microsoft.Compute/galleries/read",
+              "Microsoft.Compute/galleries/read",
+              "Microsoft.Compute/galleries/images/read",
+              "Microsoft.Compute/galleries/images/versions/read",
+              "Microsoft.Network/virtualNetworks/read",
+              "Microsoft.Network/virtualNetworks/subnets/join/action"
             ]
           }
         ]

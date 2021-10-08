@@ -46,7 +46,7 @@
         "OMSSolutions": 1,
         "OMSDataSources": 1,
         "SA": 1,
-        "CDN": 1,
+        "CDN": 0,
         "StorageSync": 0,
         "RSV": 1,
         "NSGHUB": 0,
@@ -69,33 +69,33 @@
         "ADSecondary": 0,
         "ILB": 0,
         "InitialDOP": 0,
-        "VMApp": 1,
+        "VMApp": 0,
         "VMAppLinux": 0,
         "VMSQL": 0,
         "VMFILE": 0,
         "VMSS": 0,
-        "WAFPOLICY": 1,
-        "FRONTDOOR": 1,
-        "WAF": 1,
+        "WAFPOLICY": 0,
+        "FRONTDOOR": 0,
+        "WAF": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
-        "APPCONFIG": 1,
-        "REDIS": 1,
+        "APPCONFIG": 0,
+        "REDIS": 0,
         "APIM": 1,
-        "ACR": 1,
+        "ACR": 0,
         "ACI": 0,
-        "AKS": 1,
+        "AKS": 0,
         "SQLMI": 0,
-        "CosmosDB": 1,
+        "CosmosDB": 0,
         "DASHBOARD": 1,
         "DNSLookup": 0,
-        "ServerFarm": 0,
-        "WebSite": 0,
+        "ServerFarm": 1,
+        "WebSite": 1,
         "WebSiteContainer": 0,
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,
-        "AzureSQL": 1
+        "AzureSQL": 10
       }
     },
     "Extensions": {
@@ -324,11 +324,12 @@
         ],
         "SubnetInfo": [
           {
-            "name": "snWAF01",
+            "name": "snMT01",
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": true,
+            "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",
@@ -341,15 +342,16 @@
             "name": "snBE02",
             "prefix": "64/28",
             "NSG": 1,
-            "Route": 0,
+            "Route": 0, //1
             "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowAnalyticsEnabled": true,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
             "name": "snBE01", // APIM Dedicated
             "prefix": "80/28",
             "NSG": 1,
-            "Route": 0,
+            "Route": 0, //1
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
@@ -357,24 +359,22 @@
             "name": "AzureBastionSubnet",
             "prefix": "96/27",
             "NSG": 1,
+            "FlowLogEnabled": true,
+            "FlowAnalyticsEnabled": true
+          },
+          {
+            "name": "snWAF01",
+            "prefix": "128/25",
+            "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           },
           {
-            "name": "snMT01",
-            "prefix": "128/25",
-            "NSG": 1,
-            "Route": 0,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true,
-            "delegations": "Microsoft.ContainerInstance/containerGroups"
-          },
-          {
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
-            "Route": 0,
+            "Route": 0, //1
             "FlowLogEnabled": true,
             "FlowAnalyticsEnabled": true
           }
@@ -579,15 +579,35 @@
             "adminUserEnabled": true
           }
         ],
+        "appServiceplanInfo": [
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "S1",
+            "skutier": "Standard",
+            "skucapacity": 1,
+            "deploy": 1
+          }
+        ],
+        "WebSiteInfo": [
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "saname": "wps01"
+          }
+        ],
         "APIMInfo": [
           {
             "name": "01",
             "dnsName": "API",
             "apimSku": "Developer",
-            "snName": "BE01",
-            "virtualNetworkType": "Internal",
+            "snName": "snBE01",
+            "virtualNetworkType": "External",
             "certName": "HAAPP-WildCard",
-            "frontDoor": "01"
+            "_frontDoor": "01"
           }
         ],
         "frontDoorInfo": [

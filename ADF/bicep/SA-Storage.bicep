@@ -79,6 +79,17 @@ resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2020-08-0
   parent: SA
 }
 
+// resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2020-08-01-preview' = {
+//   name: 'default'
+//   parent: SA
+//   properties: {
+//     shareDeleteRetentionPolicy: {
+//       days: 7
+//       enabled: false
+//     }
+//   }
+// }
+
 resource SAQueueService 'Microsoft.Storage/storageAccounts/queueServices@2021-02-01' existing = {
   name: 'default'
   parent: SA

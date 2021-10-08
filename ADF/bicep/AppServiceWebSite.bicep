@@ -130,14 +130,15 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [f
           enabled: false
         }
       }
-      {
-        category: 'AppServiceFileAuditLogs'
-        enabled: true
-        retentionPolicy: {
-          days: 30
-          enabled: false
-        }
-      }
+// supported on premium
+      // {
+      //   category: 'AppServiceFileAuditLogs'
+      //   enabled: true
+      //   retentionPolicy: {
+      //     days: 30
+      //     enabled: false
+      //   }
+      // }
       {
         category: 'AppServiceAuditLogs'
         enabled: true
