@@ -15,10 +15,11 @@ Get-AzVM -ResourceGroupName ACU1-BRW-AOA-RG-P0 | ForEach-Object {
     }
 
     Invoke-AzRestMethod -Path ($vm.id + '/instanceView?api-version=2017-03-30') -Method GET |
-        ForEach-Object content | ConvertFrom-Json | ForEach-Object vmagent | 
-        ForEach-Object extensionHandlers | 
-        Select-Object @{n = 'vmName'; e = { $vm.name } }, type,
-        @{n = 'extensionVersion'; e = { $extensionHash[$_.type] } }, 
-        @{n = 'latestAvailableVersion'; e = { $extensionLatest[$_.type] } },
-        typeHandlerVersion
+        ForEach-Object content | ConvertFrom-Json | ForEach-Object vmagent |
+        ForEach-Object extensionHandlers |
+        Select-Object `
+            @{n = 'vmName'; e = { $vm.name } }, type,
+            @{n = 'extensionVersion'; e = { $extensionHash[$_.type] } },
+            @{n = 'latestAvailableVersion'; e = { $extensionLatest[$_.type] } },
+            typeHandlerVersion
 } | ft -AutoSize
