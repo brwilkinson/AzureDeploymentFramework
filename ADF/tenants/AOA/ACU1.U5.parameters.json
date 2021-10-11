@@ -877,7 +877,10 @@
             "DDRole": "64GBSS",
             "OSType": "Server2019Containerssmall",
             "Subnet": "MT02",
-            "NATName": "RDP",
+            "LB": "API",
+            "NATName": [
+              "RDP"
+            ],
             "zones": [
               "1"
             ],

@@ -47,14 +47,18 @@ Configuration $Configuration
     # PowerShell Modules that you want deployed, comment out if not needed
     Import-DscResource -ModuleName BRWAzure
 
-    <# Azure VM Metadata service
-    $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2019-02-01 -Method get
+    # Azure VM Metadata service
+    $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2020-10-01 -Method get
     $Compute = $VMMeta.compute
+    $Zone = $Compute.zone
     $NetworkInt = $VMMeta.network.interface
     $SubscriptionId = $Compute.subscriptionId
-    $Zone = $Compute.zone
     $ResourceGroupName = $Compute.resourceGroupName
-    #>
+    
+
+    # Azure VM Metadata service
+    $LBMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/loadbalancer?api-version=2020-10-01 -Method get
+    $LB = $LBMeta.loadbalancer
     
     $prefix = $Deployment.split('-')[0]
     $OrgName = $Deployment.split('-')[1]

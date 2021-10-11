@@ -60,8 +60,9 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   dependsOn: []
 }
 
-resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-02-01' = {
-  name: '${toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')}/default'
+resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-04-01' = {
+  name: 'default'
+  parent: SA
   properties: {
     isVersioningEnabled: (contains(storageInfo, 'blobVersioning') ? storageInfo.blobVersioning : bool('false'))
     changeFeed: {
@@ -69,9 +70,6 @@ resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-02-0
     }
     deleteRetentionPolicy: (contains(storageInfo, 'softDeletePolicy') ? storageInfo.softDeletePolicy : json('null'))
   }
-  dependsOn: [
-    SA
-  ]
 }
 
 resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2020-08-01-preview' existing = {
@@ -334,15 +332,21 @@ resource SATableDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
   }
 }
 
-resource SAFileShares 'Microsoft.Storage/storageAccounts/fileServices/shares@2019-04-01' = [for i in range(0, (contains(storageInfo, 'fileShares') ? length(storageInfo.fileShares) : 0)): if (contains(storageInfo, 'fileShares')) {
-  name: toLower('${DeploymentURI}sa${storageInfo.namesuffix}/default/${(contains(storageInfo, 'fileShares') ? storageInfo.fileShares[i].name : 'na')}')
+resource SAFileShares 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-04-01' = [for (share,index) in storageInfo.fileShares : if (contains(storageInfo, 'fileShares')) {
+  name: toLower('${share.name}')
+  parent: SAFileService
   properties: {
-    shareQuota: storageInfo.fileShares[(i + 0)].quota
+    shareQuota: share.quota
     metadata: {}
   }
-  dependsOn: [
-    SA
-  ]
+}]
+
+resource SAContainers 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = [for (container,index) in storageInfo.containers : if (contains(storageInfo, 'containers')) {
+  name: toLower('${container.name}')
+  parent: SABlobService
+  properties: {
+    metadata: {}
+  }
 }]
 
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {

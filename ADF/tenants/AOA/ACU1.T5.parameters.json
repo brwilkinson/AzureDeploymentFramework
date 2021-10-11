@@ -431,10 +431,16 @@
               {
                 "name": "locust",
                 "quota": 5120
+              },
+              {
+                "name": "function",
+                "quota": 5120
               }
             ],
             "containers": [
-              "locust"
+              {
+                "name": "locust"
+              }
             ]
           }
         ],
@@ -612,7 +618,7 @@
             "Name": "WPS01",
             "kind": "app",
             "AppSVCPlan": "WPS01",
-            "saname": "wps01"
+            "saname": "diag"
           }
         ],
         "WebSiteContainerInfo": [
@@ -630,17 +636,17 @@
             "Name": "DIS01",
             "kind": "functionapp",
             "AppSVCPlan": "ASP01",
-            "saname": "dis01",
+            "saname": "data",
             "runtime": "dotnet",
             "subnet": "snMT01",
             "preWarmedCount": 1,
             "deploy": 0
           },
           {
-            "Name": "PS01",
+            "Name": "PS02",
             "kind": "functionapp",
             "AppSVCPlan": "ASP01",
-            "saname": "dis01",
+            "saname": "data",
             "runtime": "powershell",
             "subnet": "snMT01",
             "preWarmedCount": 1,
@@ -1062,6 +1068,16 @@
                 "idleTimeoutInMinutes": 4,
                 "protocol": "Tcp",
                 "LBFEName": "PLB01"
+              },
+              {
+                "Name": "RTC",
+                "frontendPortRangeStart": 6000,
+                "frontendPortRangeEnd": 6500,
+                "enableFloatingIP": false,
+                "backendPort": 6000,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "LBFEName": "PLB01"
               }
             ],
             "Probes": [
@@ -1168,7 +1184,11 @@
             "DDRole": "64GBSS",
             "OSType": "Server2019SSIMG",
             "Subnet": "MT02",
-            "_NATName": "RDP",
+            "LB": "PLB01",
+            "NATName": [
+              "RDP",
+              "RTC"
+            ],
             "zones": [
               "1",
               "2",
