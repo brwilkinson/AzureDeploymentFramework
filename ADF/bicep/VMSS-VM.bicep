@@ -76,6 +76,8 @@ var ConfigurationMode = {
 var DSCConfigurationModeFrequencyMins = 15
 var WAFBE = contains(AppServer, 'WAFBE') ? AppServer.WAFBE : []
 var LBBE = contains(AppServer, 'LBBE') ? AppServer.LBBE : []
+var NATPools = contains(AppServer, 'NATName') ? AppServer.NATName : []
+var LB = contains(AppServer, 'LB') ? AppServer.LB : null
 
 var azureActiveDirectory = {
   clientApplication: Global.clientApplication
@@ -120,15 +122,15 @@ var userAssignedIdentities = {
 }
 
 var applicationGatewayBackendAddressPools = [for (be,index) in WAFBE : {
-  id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', '${Deployment}-waf${be}', 'appGatewayBackendPool')
+  id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', '${Deployment}-waf${LB}', 'appGatewayBackendPool')
 }]
 
 var loadBalancerBackendAddressPools = [for (be,index) in LBBE : {
-  id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lb${be}', be)
+  id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lb${LB}', be)
 }]
 
-var loadBalancerInboundNatPools = [for (be,index) in LBBE : {
-  id: resourceId('Microsoft.Network/loadBalancers/inboundNatPools', '${Deployment}-lb${be}', contains(AppServer, 'NATName') ? AppServer.NATName : 'NA')
+var loadBalancerInboundNatPools = [for (nat,index) in NATPools : {
+  id: resourceId('Microsoft.Network/loadBalancers/inboundNatPools', '${Deployment}-lb${LB}', nat)
 }]
 
 resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
