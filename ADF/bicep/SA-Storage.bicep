@@ -27,6 +27,9 @@ var azureFilesIdentityBasedAuthentication = {
   }
 }
 
+var fileShares = contains(storageInfo, 'fileShares') ? storageInfo.fileShares : []
+var containers = contains(storageInfo, 'containers') ? storageInfo.containers : []
+
 resource SA 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
   location: resourceGroup().location
@@ -37,8 +40,8 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   properties: {
     allowBlobPublicAccess: false
     supportsBlobContainerRetention: true
-    azureFilesIdentityBasedAuthentication: ((contains(storageInfo, 'ADDS') && (storageInfo.ADDS == 1)) ? azureFilesIdentityBasedAuthentication : json('null'))
-    largeFileSharesState: (contains(storageInfo, 'largeFileSharesState') ? storageInfo.largeFileSharesState : json('null'))
+    azureFilesIdentityBasedAuthentication: ((contains(storageInfo, 'ADDS') && (storageInfo.ADDS == 1)) ? azureFilesIdentityBasedAuthentication : null)
+    largeFileSharesState: (contains(storageInfo, 'largeFileSharesState') ? storageInfo.largeFileSharesState : null)
     networkAcls: {
       bypass: 'Logging, Metrics, AzureServices'
       defaultAction: (contains(storageInfo, 'allNetworks') ? storageInfo.allNetworks : 'Allow')
@@ -64,29 +67,31 @@ resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-04-0
   name: 'default'
   parent: SA
   properties: {
-    isVersioningEnabled: (contains(storageInfo, 'blobVersioning') ? storageInfo.blobVersioning : bool('false'))
+    isVersioningEnabled: (contains(storageInfo, 'blobVersioning') ? storageInfo.blobVersioning : false)
     changeFeed: {
-      enabled: (contains(storageInfo, 'changeFeed') ? storageInfo.changeFeed : bool('false'))
+      enabled: (contains(storageInfo, 'changeFeed') ? storageInfo.changeFeed : false)
     }
-    deleteRetentionPolicy: (contains(storageInfo, 'softDeletePolicy') ? storageInfo.softDeletePolicy : json('null'))
+    deleteRetentionPolicy: contains(storageInfo, 'softDeletePolicy') ? storageInfo.softDeletePolicy : null
   }
 }
 
-resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2020-08-01-preview' existing = {
+// https://docs.microsoft.com/en-us/azure/storage/files/files-smb-protocol?tabs=azure-powershell
+resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2020-08-01-preview' = {
   name: 'default'
   parent: SA
+  properties: {
+    shareDeleteRetentionPolicy: contains(storageInfo, 'softDeletePolicy') ? storageInfo.softDeletePolicy : null
+    protocolSettings: {
+      smb: {
+        versions: 'SMB3.0;SMB3.1.1' // remove SMB2.1
+        kerberosTicketEncryption: 'AES-256' // remove RC4-HMAC
+        multichannel: ! contains(storageInfo, 'multichannel') ? null : {
+          enabled: bool(storageInfo.multichannel)
+        }
+      }
+    }
+  }
 }
-
-// resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2020-08-01-preview' = {
-//   name: 'default'
-//   parent: SA
-//   properties: {
-//     shareDeleteRetentionPolicy: {
-//       days: 7
-//       enabled: false
-//     }
-//   }
-// }
 
 resource SAQueueService 'Microsoft.Storage/storageAccounts/queueServices@2021-02-01' existing = {
   name: 'default'
@@ -150,7 +155,7 @@ resource SABlobDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pre
     logs: [
       {
         category: 'StorageRead'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.r) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.r) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -158,7 +163,7 @@ resource SABlobDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pre
       }
       {
         category: 'StorageWrite'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.w) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.w) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -166,7 +171,7 @@ resource SABlobDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pre
       }
       {
         category: 'StorageDelete'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.d) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.d) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -202,7 +207,7 @@ resource SAFileDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pre
     logs: [
       {
         category: 'StorageRead'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.r) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.r) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -210,7 +215,7 @@ resource SAFileDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pre
       }
       {
         category: 'StorageWrite'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.w) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.w) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -218,7 +223,7 @@ resource SAFileDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pre
       }
       {
         category: 'StorageDelete'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.d) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.d) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -254,7 +259,7 @@ resource SAQueueDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
     logs: [
       {
         category: 'StorageRead'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.r) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.r) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -262,7 +267,7 @@ resource SAQueueDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
       }
       {
         category: 'StorageWrite'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.w) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.w) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -270,7 +275,7 @@ resource SAQueueDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
       }
       {
         category: 'StorageDelete'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.d) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.d) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -306,7 +311,7 @@ resource SATableDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
     logs: [
       {
         category: 'StorageRead'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.r) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.r) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -314,7 +319,7 @@ resource SATableDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
       }
       {
         category: 'StorageWrite'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.w) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.w) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -322,7 +327,7 @@ resource SATableDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
       }
       {
         category: 'StorageDelete'
-        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.d) : bool('false'))
+        enabled: (contains(storageInfo, 'logging') ? bool(storageInfo.logging.d) : false)
         retentionPolicy: {
           enabled: false
           days: 0
@@ -332,20 +337,19 @@ resource SATableDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
   }
 }
 
-resource SAFileShares 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-04-01' = [for (share,index) in storageInfo.fileShares : if (contains(storageInfo, 'fileShares')) {
-  name: toLower('${share.name}')
-  parent: SAFileService
-  properties: {
-    shareQuota: share.quota
-    metadata: {}
+module SAFileShares 'x.storageFileShare.bicep' = [for (share,index) in fileShares : {
+  name: 'dp${Deployment}-SA-${storageInfo.nameSuffix}-FileShare-${share.name}'
+  params: {
+    SAName: SA.name
+    fileShare: share
   }
 }]
 
-resource SAContainers 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = [for (container,index) in storageInfo.containers : if (contains(storageInfo, 'containers')) {
-  name: toLower('${container.name}')
-  parent: SABlobService
-  properties: {
-    metadata: {}
+module SAContainers 'x.storageContainer.bicep' = [for (container,index) in containers : {
+  name: 'dp${Deployment}-SA-${storageInfo.nameSuffix}-Container-${container.name}'
+  params: {
+    SAName: SA.name
+    container: container
   }
 }]
 
@@ -355,11 +359,8 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'pr
     Deployment: Deployment
     PrivateLinkInfo: storageInfo.privateLinkInfo
     providerType: 'Microsoft.Storage/storageAccounts'
-    resourceName: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
+    resourceName: SA.name
   }
-  dependsOn: [
-    SA
-  ]
 }
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
@@ -367,8 +368,8 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, '
   scope: resourceGroup(hubRG)
   params: {
     PrivateLinkInfo: storageInfo.privateLinkInfo
-    providerURL: '.${environment().suffixes.storage}/'   // '.core.windows.net/' 
-    resourceName: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
+    providerURL: '.${environment().suffixes.storage}/' // '.core.windows.net/' 
+    resourceName: SA.name
     Nics: contains(storageInfo, 'privatelinkinfo') && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
   }
 }

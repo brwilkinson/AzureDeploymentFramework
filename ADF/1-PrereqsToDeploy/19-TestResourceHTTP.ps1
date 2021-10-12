@@ -107,8 +107,12 @@ $type = 'Microsoft.ContainerInstance/containerGroups'
 
 # View vm json
 $rgName = 'ACU1-BRW-AOA-RG-T5'
-$Name = 'ACU1-BRW-AOA-T5-vmJMP02'
+$Name = 'ACU1-BRW-AOA-T5-vmJMP01'
 $type = 'Microsoft.Compute/virtualMachines'
+
+$rgName = 'ACU1-BRW-AOA-RG-T5'
+$Name = 'acu1-brw-aoa-t5-cosmos-eshop-sql'
+$type = 'Microsoft.DocumentDB/databaseAccounts'
 
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 

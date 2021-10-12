@@ -639,8 +639,7 @@
             "saname": "data",
             "runtime": "dotnet",
             "subnet": "snMT01",
-            "preWarmedCount": 1,
-            "deploy": 0
+            "preWarmedCount": 1
           },
           {
             "Name": "PS02",
@@ -649,8 +648,7 @@
             "saname": "data",
             "runtime": "powershell",
             "subnet": "snMT01",
-            "preWarmedCount": 1,
-            "deploy": 1
+            "preWarmedCount": 1
           }
         ],
         "appConfigurationInfo": {
