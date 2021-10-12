@@ -50,14 +50,14 @@
   var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
   var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
-  var storageInfo = (contains(DeploymentInfo, 'saInfo') ? DeploymentInfo.saInfo : [])
+  var storageInfo = contains(DeploymentInfo, 'saInfo') ? DeploymentInfo.saInfo : []
   
   var SAInfo = [for (sa, index) in storageInfo: {
     match: ((Global.CN == '.') || contains(Global.CN, sa.nameSuffix))
   }]
   
   module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: if (SAInfo[index].match) {
-    name: 'dp${Deployment}-SA-Deploy${((length(storageInfo) == 0) ? 'na' : sa.nameSuffix)}'
+    name: 'dp${Deployment}-SA-${sa.nameSuffix}'
     params: {
       Deployment: Deployment
       DeploymentURI: DeploymentURI
