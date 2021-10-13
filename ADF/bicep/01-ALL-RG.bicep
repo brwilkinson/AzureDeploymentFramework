@@ -58,9 +58,12 @@ var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMS
 var addressPrefixes = [
   '${networkId}.0/23'
 ]
-var DC1PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[0]}' : Global.DNSServers[0]
-var DC2PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[1]}' : Global.DNSServers[1]
+// var DC1PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[0]}' : Global.DNSServers[0]
+// var DC2PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[1]}' : Global.DNSServers[1]
+
 var AzureDNS = '168.63.129.16'
+var DNSServerList = contains(DeploymentInfo,'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
+var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
 
 module dp_Deployment_OMS 'OMS.bicep' = if (Stage.OMS == 1) {
   name: 'dp${Deployment}-OMS'
@@ -446,7 +449,7 @@ module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (Stage.ADPrimary ==
     Prefix: Prefix
     DeploymentInfo: DeploymentInfo
     DNSServers: [
-      DC1PrivateIPAddress
+      DNSServers[0]
       AzureDNS
     ]
     Global: Global
@@ -511,7 +514,7 @@ module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (Stage.ADPrimary == 1 
     Prefix: Prefix
     DeploymentInfo: DeploymentInfo
     DNSServers: [
-      DC1PrivateIPAddress
+      DNSServers[0]
     ]
     Global: Global
   }
@@ -574,8 +577,8 @@ module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (Stage.ADSecondary == 
     DeploymentInfo: DeploymentInfo
     Prefix: Prefix
     DNSServers: [
-      DC1PrivateIPAddress
-      DC2PrivateIPAddress
+      DNSServers[0]
+      DNSServers[1]
     ]
     Global: Global
   }
