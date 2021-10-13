@@ -54,6 +54,11 @@ var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMS
 var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
 
+var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var AzureDNS = '168.63.129.16'
+var DNSServerList = contains(DeploymentInfo,'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
+var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
+
 // FunctionInfo
 var WebSiteInfo = (contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : [])
 
@@ -115,7 +120,7 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
       Storage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       WEBSITE_CONTENTSHARE: replace(toLower('${ws.name}'),'-','')
       WEBSITE_CONTENTOVERVNET: 1
-      WEBSITE_DNS_SERVER: Global.DNSServers[0]
+      WEBSITE_DNS_SERVER: empty(DNSServers[0]) ? AzureDNS : DNSServers[0]
       WEBSITE_VNET_ROUTE_ALL: 1
       FUNCTIONS_WORKER_RUNTIME: ws.runtime
       FUNCTIONS_EXTENSION_VERSION: '~3'
