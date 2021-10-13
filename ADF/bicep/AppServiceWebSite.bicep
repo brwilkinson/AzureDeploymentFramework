@@ -48,8 +48,6 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var SADiagName = '${DeploymentURI}sadiag'
-
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
@@ -57,55 +55,31 @@ var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
 
 var WebSiteInfo = (contains(DeploymentInfo, 'WebSiteInfo') ? DeploymentInfo.WebSiteInfo : [])
-  
+
 var WSInfo = [for (ws, index) in WebSiteInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, ws.name))
   saName: toLower('${DeploymentURI}sa${ws.saname}')
 }]
 
 // merge appConfig, move this to the websiteInfo as a property to pass in these from the param file
-var myAppConfig = [
-  { 
-    name: 'abc'
-    value: 'value'
-  }
-  { 
-    name: 'def' 
-    value: 'value'
-  }
-]
+var myAppConfig = {
+  abc: 'value'
+  def: 'value'
+}
 
-resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: '${Deployment}-ws${ws.Name}'
-  kind: ws.kind
-  location: resourceGroup().location
-  properties: {
-    enabled: true
-    httpsOnly: true
-    serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
-
-    siteConfig: {
-      appSettings: union(myAppConfig,[
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: reference(AppInsightsID, '2015-05-01').InstrumentationKey
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: 'InstrumentationKey=${reference(AppInsightsID, '2015-05-01').InstrumentationKey}'
-        }
-      ])
-    }
-    
-  }
+resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-01-15' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: '${Deployment}-ws${ws.Name}/appsettings'
 }]
 
-resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: 'service'
-  scope: WS[index]
-  properties: {
-    workspaceId: OMSworkspaceID
-    logs: [
+module website 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: 'dp${Deployment}-ws${ws.Name}'
+  params: {
+    ws: ws
+    appprefix: 'ws'
+    Deployment: Deployment
+    DeploymentURI: DeploymentURI
+    OMSworkspaceID: OMSworkspaceID
+    diagLogs: [
       {
         category: 'AppServiceHTTPLogs'
         enabled: true
@@ -130,7 +104,7 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [f
           enabled: false
         }
       }
-// supported on premium
+      // supported on premium
       // {
       //   category: 'AppServiceFileAuditLogs'
       //   enabled: true
@@ -148,16 +122,23 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [f
         }
       }
     ]
-    metrics: [
-      {
-        timeGrain: 'PT5M'
-        enabled: true
-        retentionPolicy: {
-          enabled: false
-          days: 0
-        }
-      }
-    ]
   }
 }]
 
+module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: 'dp${Deployment}-ws${ws.Name}-settings'
+  params: {
+    ws: ws
+    appprefix: 'ws'
+    Deployment: Deployment
+    appConfigCustom: myAppConfig
+    appConfigCurrent: appsettingsCurrent[index].list().properties
+    appConfigNew: {
+      APPINSIGHTS_INSTRUMENTATIONKEY: reference(AppInsightsID, '2015-05-01').InstrumentationKey
+      APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(AppInsightsID, '2015-05-01').InstrumentationKey}'
+    }
+  }
+  dependsOn: [
+    website[index]
+  ]
+}]

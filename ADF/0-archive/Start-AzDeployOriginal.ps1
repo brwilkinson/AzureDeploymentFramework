@@ -119,7 +119,7 @@ Function global:Start-AzDeploy
     $Global = @{ }
 
     # Read in the Prefix Lookup for the Region.
-    $PrefixLookup = Get-Content $Artifacts\release\prefix.json | ConvertFrom-Json
+    $PrefixLookup = Get-Content $Artifacts\bicep\global\prefix.json | ConvertFrom-Json
     $Global.Add('PrefixLookup', ($PrefixLookup | ConvertTo-Json -Compress -Depth 10))
 
     $ResourceGroupLocation = $PrefixLookup | Foreach $Prefix | ForEach-Object location
