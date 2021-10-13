@@ -25,7 +25,7 @@ Get-AzLocation | ForEach-Object {
         PREFIX       = if ($manualOverrides[$location]) { 'A' + $manualOverrides[$location] } else { $Prefix } 
     }
 }
-$PrefixLookup | ConvertTo-Json | Set-Content -Path $PSScriptRoot\..\release-az\prefix.json
+$PrefixLookup | ConvertTo-Json | Set-Content -Path $PSScriptRoot\..\bicep\global\prefix.json
 
 # Documentation for this is available here:
 # https://brwilkinson.github.io/AzureDeploymentFramework/docs/Naming_Standards_Prefix.html

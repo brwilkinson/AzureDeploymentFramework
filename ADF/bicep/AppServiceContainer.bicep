@@ -45,13 +45,9 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
-param now string = utcNow('F')
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var ENV = '${Environment}${DeploymentID}'
-
-var SADiagName = '${DeploymentURI}sadiag'
 
 var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
 var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
@@ -61,7 +57,13 @@ var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName
 
 // WebSiteContainerInfo
 var WebSiteInfo = (contains(DeploymentInfo, 'WebSiteContainerInfo') ? DeploymentInfo.WebSiteContainerInfo : [])
-  
+
+// merge appConfig, move this to the websiteInfo as a property to pass in these from the param file
+var myAppConfig = {
+  abc: 'value'
+  def: 'value'
+}
+
 var WSInfo = [for (ws, index) in WebSiteInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, ws.name))
   saName: toLower('${DeploymentURI}sa${ws.saname}')
@@ -84,72 +86,31 @@ var WSInfo = [for (ws, index) in WebSiteInfo: {
         REDIS: azure-vote-back
       ports:
           - "8080:80"
-  ''',toLower('${contains(ws,'registryENV') ? replace(DeploymentURI,ENV,ws.registryENV) : DeploymentURI}registry${ws.registry}')))
+  ''', toLower('${contains(ws, 'registryENV') ? replace(DeploymentURI, ENV, ws.registryENV) : DeploymentURI}registry${ws.registry}')))
 }]
-
-// merge appConfig, move this to the websiteInfo as a property to pass in these from the param file
-var myAppConfig = [
-  { 
-    name: 'abc'
-    value: 'value'
-  }
-  { 
-    name: 'def' 
-    value: 'value'
-  }
-]
 
 resource ACR 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: toLower('${contains(ws,'registryENV') ? replace(DeploymentURI,ENV,ws.registryENV) : DeploymentURI}registry${ws.registry}')
+  name: toLower('${contains(ws, 'registryENV') ? replace(DeploymentURI, ENV, ws.registryENV) : DeploymentURI}registry${ws.registry}')
 }]
 
-resource WS 'Microsoft.Web/sites@2021-01-01' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: '${Deployment}-ws${ws.Name}'
-  kind: ws.kind
-  location: resourceGroup().location
-  properties: {
-    enabled: true
-    httpsOnly: true
-    serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
-    siteConfig: {
-      linuxFxVersion: 'COMPOSE|${WSInfo[index].compose}'
-      
-      appSettings: union(myAppConfig,[
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: reference(AppInsightsID, '2015-05-01').InstrumentationKey
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: 'InstrumentationKey=${reference(AppInsightsID, '2015-05-01').InstrumentationKey}'
-        }
-        {
-          name: 'DOCKER_ENABLE_CI'
-          value: 'true'
-        }
-        {
-          name: 'DOCKER_REGISTRY_SERVER_PASSWORD'
-          value: listCredentials(ACR[index].id, ACR[index].apiVersion).passwords[0].value
-        }
-        {
-          name: 'DOCKER_REGISTRY_SERVER_URL'
-          value: ACR[index].properties.loginServer
-        }
-        {
-          name: 'DOCKER_REGISTRY_SERVER_USERNAME'
-          value: ACR[index].name
-        }
-      ])
-    }
-  }
+resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-01-15' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: '${Deployment}-ws${ws.Name}/appsettings'
 }]
 
-resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: 'service'
-  scope: WS[index]
-  properties: {
-    workspaceId: OMSworkspaceID
-    logs: [
+resource publishingcreds 'Microsoft.Web/sites/config@2021-01-01' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: '${Deployment}-ws${ws.Name}/publishingcredentials'
+}]
+
+module container 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: 'dp${Deployment}-ws${ws.Name}'
+  params: {
+    ws: ws
+    appprefix: 'ws'
+    Deployment: Deployment
+    DeploymentURI: DeploymentURI
+    OMSworkspaceID: OMSworkspaceID
+    linuxFxVersion: 'COMPOSE|${WSInfo[index].compose}'
+    diagLogs: [
       {
         category: 'AppServiceHTTPLogs'
         enabled: true
@@ -174,14 +135,15 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [f
           enabled: false
         }
       }
-      {
-        category: 'AppServiceFileAuditLogs'
-        enabled: true
-        retentionPolicy: {
-          days: 30
-          enabled: false
-        }
-      }
+      // supported on premium
+      // {
+      //   category: 'AppServiceFileAuditLogs'
+      //   enabled: true
+      //   retentionPolicy: {
+      //     days: 30
+      //     enabled: false
+      //   }
+      // }
       {
         category: 'AppServiceAuditLogs'
         enabled: true
@@ -191,35 +153,44 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [f
         }
       }
     ]
-    metrics: [
-      {
-        timeGrain: 'PT5M'
-        enabled: true
-        retentionPolicy: {
-          enabled: false
-          days: 0
-        }
-      }
-    ]
   }
 }]
 
-resource publishingcreds 'Microsoft.Web/sites/config@2021-01-01' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: '${WS[index].name}/publishingcredentials'
+module containerSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: 'dp${Deployment}-ws${ws.Name}-settings'
+  params: {
+    ws: ws
+    appprefix: 'ws'
+    Deployment: Deployment
+    appConfigCustom: myAppConfig
+    appConfigCurrent: appsettingsCurrent[index].list().properties
+    appConfigNew: {
+      APPINSIGHTS_INSTRUMENTATIONKEY: reference(AppInsightsID, '2015-05-01').InstrumentationKey
+      APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(AppInsightsID, '2015-05-01').InstrumentationKey}'
+      DOCKER_ENABLE_CI: 'true'
+      DOCKER_REGISTRY_SERVER_PASSWORD: listCredentials(ACR[index].id, ACR[index].apiVersion).passwords[0].value
+      DOCKER_REGISTRY_SERVER_URL: ACR[index].properties.loginServer
+      DOCKER_REGISTRY_SERVER_USERNAME: ACR[index].name
+    }
+  }
+  dependsOn: [
+    container[index]
+  ]
 }]
 
 resource ACRWebhook 'Microsoft.ContainerRegistry/registries/webhooks@2020-11-01-preview' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: '${Deployment}-wswh${ws.Name}'
+  name: '${DeploymentURI}wswh${ws.Name}'
   parent: ACR[index]
   location: resourceGroup().location
   properties: {
-    serviceUri: '${list(publishingcreds[index].id,'2021-01-01').properties.scmUri}/docker/hook'
+    serviceUri: '${list(publishingcreds[index].id, '2021-01-01').properties.scmUri}/docker/hook'
     status: 'enabled'
     actions: [
       'push'
     ]
   }
+  dependsOn: [
+    container[index]
+  ]
 }]
 
-var locationLookup = json(loadTextContent('prefix.json'))
-output myLocation string = locationLookup[Prefix].location

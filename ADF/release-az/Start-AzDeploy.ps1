@@ -60,7 +60,7 @@ Function global:Start-AzDeploy
     $Global.Add('RolesGroupsLookup', ($RolesGroupsLookup | ConvertTo-Json -Compress -Depth 10))
 
     # Read in the Prefix Lookup for the Region.
-    $PrefixLookup = Get-Content $Artifacts\release-az\prefix.json | ConvertFrom-Json
+    $PrefixLookup = Get-Content $Artifacts\bicep\global\prefix.json | ConvertFrom-Json
     $Global.Add('PrefixLookup', ($PrefixLookup | ConvertTo-Json -Compress -Depth 10))
 
     $ResourceGroupLocation = $PrefixLookup | ForEach-Object $Prefix | ForEach-Object location

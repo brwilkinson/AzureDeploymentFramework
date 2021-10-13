@@ -626,7 +626,7 @@
             "Name": "CTR01",
             "kind": "app,linux,container",
             "AppSVCPlan": "CTR01",
-            "saname": "wps01",
+            "saname": "data",
             "registry": "01"
             // "registryENV": "t5"
           }
