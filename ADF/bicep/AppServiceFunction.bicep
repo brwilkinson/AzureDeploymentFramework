@@ -106,6 +106,8 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
     appConfigCustom: myAppConfig
     appConfigCurrent: appsettingsCurrent[index].list().properties
     appConfigNew: {
+      // https://docs.microsoft.com/en-us/azure/azure-functions/configure-networking-how-to
+      // https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
       APPINSIGHTS_INSTRUMENTATIONKEY: reference(AppInsightsID, '2015-05-01').InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(AppInsightsID, '2015-05-01').InstrumentationKey}'
       WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
