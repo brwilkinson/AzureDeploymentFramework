@@ -72,28 +72,7 @@
     "TenantID": "[parameters('Global').TenantID]"
   },
   "resources": [
-    {
-      "name": "[replace(concat(variables('mgInfo')[copyIndex()].displayName),' ','_')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-01-01",
-      "scope": "/",
-      "location": "[variables('primaryLocation')]",
-      "copy": {
-        "name": "mgCopy",
-        "count": "[length(variables('mgInfo'))]"
-      },
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "outer"
-        },
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "parameters": {},
-          "variables": {},
-          "resources": [
-            {
+                {
               "name": "[variables('TenantID')]",
               "type": "Microsoft.Management/managementGroups",
               "apiVersion": "2020-10-01",
@@ -106,11 +85,45 @@
                 }
               }
             }
-          ],
-          "outputs": {}
-        }
-      }
-    }
+    // {
+    //   "name": "[replace(concat(variables('mgInfo')[copyIndex()].displayName),' ','_')]",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2020-01-01",
+    //   // "scope": "/",
+    //   "location": "[variables('primaryLocation')]",
+    //   "copy": {
+    //     "name": "mgCopy",
+    //     "count": "[length(variables('mgInfo'))]"
+    //   },
+    //   "properties": {
+    //     "expressionEvaluationOptions": {
+    //       "scope": "outer"
+    //     },
+    //     "mode": "Incremental",
+    //     "template": {
+    //       "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+    //       "contentVersion": "1.0.0.0",
+    //       "parameters": {},
+    //       "variables": {},
+    //       "resources": [
+    //         {
+    //           "name": "[variables('TenantID')]",
+    //           "type": "Microsoft.Management/managementGroups",
+    //           "apiVersion": "2020-10-01",
+    //           "properties": {
+    //             "displayName": "[concat(variables('mgInfo')[copyIndex()].displayName)]",
+    //             "details": {
+    //               "parent": {
+    //                 "id": "/providers/Microsoft.Management/managementGroups/3254f91d-4657-40df-962d-c8e6dad75963"
+    //               }
+    //             }
+    //           }
+    //         }
+    //       ],
+    //       "outputs": {}
+    //     }
+    //   }
+    // }
   ],
   "outputs": {}
 }

@@ -115,6 +115,27 @@ module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(S
   ]
 }
 
+// module dp_Deployment_ManagementGroups 'sub-MG.bicep' = if (contains(Stage, 'mgInfo') && (Stage.mgInfo == 1)) {
+//   name: 'dp${Deployment}-RoleDefinition'
+//   scope: tenant().tenantId
+//   params: {
+//     // move these to Splatting later
+//     DeploymentID: DeploymentID
+//     DeploymentInfo: DeploymentInfo
+//     Environment: Environment
+//     Extensions: Extensions
+//     Global: Global
+//     Prefix: Prefix
+//     Stage: Stage
+//     devOpsPat: devOpsPat
+//     sshPublic: sshPublic
+//     vmAdminPassword: vmAdminPassword
+//   }
+//   dependsOn: [
+//     dp_Deployment_RG
+//   ]
+// }
+
 // module dp_Deployment_Policy 'sub-Polic.bicep' = if (contains(Stage, 'Policy') && (Stage.Policy == 1)) {
 //   name: 'dp${Deployment}-Policy'
 //   params: {}
