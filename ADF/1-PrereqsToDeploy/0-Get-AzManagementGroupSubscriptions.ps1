@@ -12,4 +12,4 @@ Get-AzManagementGroup -WarningAction SilentlyContinue |
             parentName    = $_.ParentName
             subscriptions = @($Subscriptions)
         }
-    } | convertto-json | clip
+    } | ConvertTo-Json | clip

@@ -160,15 +160,15 @@
           {
             "displayName": "HA-APP-landingzones",
             "name": "HA-APP-landingzones",
-            "parentName": "HA-APP",
-            "subscriptions": []
+            "parentName": "HA-APP"
+            // "subscriptions": []
           },
           {
             "displayName": "HA-APP-management",
             "name": "HA-APP-management",
             "parentName": "HA-APP-platform",
             "subscriptions": [
-              "855c22ce-7a6c-468b-ac72-1d1ef4355acf"
+              
             ]
           },
           {
@@ -176,7 +176,7 @@
             "name": "HA-APP-online",
             "parentName": "HA-APP-landingzones",
             "subscriptions": [
-              
+              "855c22ce-7a6c-468b-ac72-1d1ef4355acf"
             ]
           },
           {
@@ -190,6 +190,12 @@
           {
             "displayName": "HA-APP-sandboxes",
             "name": "HA-APP-sandboxes",
+            "parentName": "HA-APP",
+            "subscriptions": []
+          },
+          {
+            "displayName": "HA-APP-sandboxesweb",
+            "name": "HA-APP-sandboxesweb",
             "parentName": "HA-APP",
             "subscriptions": []
           }

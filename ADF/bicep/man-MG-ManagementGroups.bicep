@@ -21,11 +21,12 @@ resource MG 'Microsoft.Management/managementGroups@2021-04-01' = {
   }
 }
 
-resource subscriptions 'Microsoft.Management/managementGroups/subscriptions@2021-04-01' = [for (sub, index) in mgInfo.subscriptions: {
+var subs = contains(mgInfo, 'subscriptions') ? mgInfo.subscriptions : []
+
+resource subscriptions 'Microsoft.Management/managementGroups/subscriptions@2021-04-01' = [for (sub, index) in subs : {
   name: sub
   parent: MG
 }]
 
-//  if(!empty(mgInfo.subscriptions))
 
 
