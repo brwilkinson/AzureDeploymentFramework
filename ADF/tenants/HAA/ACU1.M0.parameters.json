@@ -192,12 +192,6 @@
             "name": "HA-APP-sandboxes",
             "parentName": "HA-APP",
             "subscriptions": []
-          },
-          {
-            "displayName": "HA-APP-sandboxesweb",
-            "name": "HA-APP-sandboxesweb",
-            "parentName": "HA-APP",
-            "subscriptions": []
           }
         ]
         
