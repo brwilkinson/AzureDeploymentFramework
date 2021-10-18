@@ -20,3 +20,12 @@ resource MG 'Microsoft.Management/managementGroups@2021-04-01' = {
     }
   }
 }
+
+resource subscriptions 'Microsoft.Management/managementGroups/subscriptions@2021-04-01' = [for (sub, index) in mgInfo.subscriptions: {
+  name: sub
+  parent: MG
+}]
+
+//  if(!empty(mgInfo.subscriptions))
+
+
