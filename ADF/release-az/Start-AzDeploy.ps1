@@ -27,7 +27,7 @@ Function global:Start-AzDeploy
         
         [parameter(mandatory)]
         [alias('DP')]
-        [validateset('P0', 'S1', 'S2', 'S3', 'D2', 'D3', 'D4', 'T5', 'U6', 'P7', 'G0', 'G1', 'M0', 'A0')]
+        [validateset('T0', 'P0', 'S1', 'S2', 'S3', 'D2', 'D3', 'D4', 'T5', 'U6', 'P7', 'G0', 'G1', 'M0', 'A0')]
         [string] $Deployment,
 
         [validateset('ADF', 'PSO', 'HUB', 'ABC', 'AOA', 'HAA')]
@@ -115,7 +115,7 @@ Function global:Start-AzDeploy
     Write-Verbose "Storage Account is: [$StorageAccountName] and container is: [$StorageContainerName]" -Verbose
 
     # Do not create the Resource Groups in this file anymore, only validate that it exists.
-    if (-not $SubscriptionDeploy)
+    if (-not ($SubscriptionDeploy -or $Deployment -match 'T0|M0|G0'))
     {
         if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
@@ -265,9 +265,9 @@ Function global:Start-AzDeploy
     switch ($Deployment)
     {
         # Tenant
-        'A0'
+        'T0'
         {
-            Write-Output 'A0'
+            Write-Output 'T0'
             if ($WhatIf)
             {
                 $Common.Remove('Name')
@@ -284,15 +284,16 @@ Function global:Start-AzDeploy
         'M0'
         {
             Write-Output 'M0'
+            $MGName = Get-AzManagementGroup | where displayname -eq 'Root Management Group' | foreach Name
             if ($WhatIf)
             {
                 $Common.Remove('Name')
                 $Common['ResultFormat'] = $WhatIfFormat
-                Get-AzManagementGroupDeploymentWhatIfResult @Common @TemplateArgs @OptionalParameters
+                Get-AzManagementGroupDeploymentWhatIfResult @Common @TemplateArgs @OptionalParameters -ManagementGroupId $MGName
             }
             else 
             {
-                $global:r = New-AzManagementGroupDeployment @Common @TemplateArgs @OptionalParameters
+                $global:r = New-AzManagementGroupDeployment @Common @TemplateArgs @OptionalParameters -ManagementGroupId $MGName
             }
         }
 
@@ -305,11 +306,11 @@ Function global:Start-AzDeploy
                 {
                     $Common.Remove('Name')
                     $Common['ResultFormat'] = $WhatIfFormat
-                    Get-AzSubscriptionDeploymentWhatIfResult @Common @TemplateArgs @OptionalParameters
+                    Get-AzDeploymentWhatIfResult @Common @TemplateArgs @OptionalParameters
                 }
                 else 
                 {
-                    $global:r = New-AzSubscriptionDeployment @Common @TemplateArgs @OptionalParameters
+                    $global:r = New-AzDeployment @Common @TemplateArgs @OptionalParameters
                 }
             }
             # ResourceGroup

@@ -14,7 +14,9 @@ Get-AzLocation | ForEach-Object {
         'westeurope'      = 'WEU'
     }
 
-    $PrefixLookup[$Prefix] = [pscustomobject]@{
+    $UsablePrefix = if ($manualOverrides[$location]) { 'A' + $manualOverrides[$location] } else { $Prefix }
+    
+    $PrefixLookup[$UsablePrefix] = [pscustomobject]@{
         displayname  = $_.displayname
         location     = $location
         first        = $Parts[0]
@@ -22,7 +24,7 @@ Get-AzLocation | ForEach-Object {
         third        = $parts[2]
         Name         = $NameFormat
         NameOverRide = $manualOverrides[$location]
-        PREFIX       = if ($manualOverrides[$location]) { 'A' + $manualOverrides[$location] } else { $Prefix } 
+        PREFIX       = $UsablePrefix
     }
 }
 $PrefixLookup | ConvertTo-Json | Set-Content -Path $PSScriptRoot\..\bicep\global\prefix.json

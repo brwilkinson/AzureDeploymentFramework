@@ -6,7 +6,7 @@
       "value": "ACU1"
     },
     "Environment": {
-      "value": "G"
+      "value": "M"
     },
     "DeploymentID": {
       "value": "0"
@@ -37,6 +37,7 @@
     },
     "Stage": {
       "value": {
+        "MG": 1,
         "RG": 0,
         "RoleDefinition": 1,
         "RBAC": 1,
@@ -119,10 +120,10 @@
       "value": {
         "rolesInfo": [
           {
-            "Name": "BW",
+            "name": "BW",
             "RBAC": [
               {
-                "Name": "Owner"
+                "name": "Owner"
               }
             ]
           }
@@ -139,12 +140,44 @@
         ],
         "mgInfo" : [
           {
-            "DisplayName": "Global",
-            "Parent": "Tenant Root Group"
+            "name": "11cb9e1b-bd08-4f80-bb8f-f71940c39079",
+            "displayName": "Root Management Group",
+            "parentName": null
           },
           {
-            "DisplayName": "PSO",
-            "Parent": "Global"
+            "name": "HA-APP",
+            "displayName": "HA-APP",
+            "parentName": "11cb9e1b-bd08-4f80-bb8f-f71940c39079"
+          },
+          {
+            "name": "HA-APP-decommissioned",
+            "displayName": "HA-APP-decommissioned",
+            "parentName": "HA-APP"
+          },
+          {
+            "name": "HA-APP-landingzones",
+            "displayName": "HA-APP-landingzones",
+            "parentName": "HA-APP"
+          },
+          {
+            "name": "HA-APP-management",
+            "displayName": "HA-APP-management",
+            "parentName": "HA-APP-platform"
+          },
+          {
+            "name": "HA-APP-online",
+            "displayName": "HA-APP-online",
+            "parentName": "HA-APP-landingzones"
+          },
+          {
+            "name": "HA-APP-platform",
+            "displayName": "HA-APP-platform",
+            "parentName": "HA-APP"
+          },
+          {
+            "name": "HA-APP-sandboxes",
+            "displayName": "HA-APP-sandboxes",
+            "parentName": "HA-APP"
           }
         ]
       }
