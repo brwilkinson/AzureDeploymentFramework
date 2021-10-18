@@ -1,16 +1,48 @@
 {
-    "analyzers": {
-      "core": {
-        "verbose": false,
-        "enabled": true,
-        "rules": {
-          "no-unused-params": {
-            "level": "info"
-          },
-          "no-unused-vars": {
-            "level": "info"
-          }
-        }
+  "cloud": {
+    "currentProfile": "AzureCloud",
+    "credentialPrecedence": [
+      // "AzureCLI"
+      "AzurePowerShell"
+    ]
+  },
+  "moduleAliases": {
+    "br": {
+      "CoreModules": {
+        "registry": "acu1brwaoat5registry01.azurecr.io",
+        "modulePath": "bicep/core"
       }
     }
   }
+  // // "moduleAliases": {
+  // //   "br": {
+  // //     // "contosoregistry": {
+  // //     //   "registry": "acu1brwaoat5registry01.azurecr.io"
+  // //     // },
+  // //     "CoreModules": {
+  // //       "registry": "acu1brwaoat5registry01.azurecr.io",
+  // //       "modulePath": "bicep/modules/core"
+  // //     }
+  // //   },
+  // //   "ts": {
+  // //     "CoreSpecs": {
+  // //       "subscription": "00000000-0000-0000-0000-000000000000",
+  // //       "resourceGroup": "CoreSpecsRG"
+  // //     }
+  // //   }
+  // // },
+  // "analyzers": {
+  //   "core": {
+  //     "verbose": false,
+  //     "enabled": true,
+  //     "rules": {
+  //       "no-unused-params": {
+  //         "level": "info"
+  //       },
+  //       "no-unused-vars": {
+  //         "level": "info"
+  //       }
+  //     }
+  //   }
+  // }
+}

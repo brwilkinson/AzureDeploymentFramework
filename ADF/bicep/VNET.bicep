@@ -182,3 +182,4 @@ module VNETPeeringHUB 'VNET-Peering.bicep' = if (Stage.VNetPeering == 1) {
 }
 
 output VNetID string = networkId
+output subnetIdArray array = [for (item, index) in SubnetInfo: VNET.properties.subnets[index].id]

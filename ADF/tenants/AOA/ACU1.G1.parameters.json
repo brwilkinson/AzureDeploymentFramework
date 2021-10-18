@@ -135,6 +135,24 @@
             ]
           }
         ],
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+            ]
+          },
+          {
+            "Name": "Microsoft.Azure.CertificateRegistration",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+            ]
+          }
+        ],
         "SPInfo": [
           {
             "Name": "ADO_{ADOProject}_{RGNAME}",
@@ -215,6 +233,22 @@
               "offer": "WindowsServer",
               "sku": "Win2019"
             }
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "Global",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "allNetworks": "Allow",
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "vault"
+              }
+            ]
           }
         ],
         "saInfo": [
