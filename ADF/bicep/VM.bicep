@@ -322,6 +322,26 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = [for (v
   ]
 }]
 
+resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = [for (vm, index) in AppServers: if (VM[index].match && contains(vm,'shutdown')) {
+  name: 'shutdown-computevm-${Deployment}-vm${vm.Name}'
+  location: resourceGroup().location
+  properties: {
+    dailyRecurrence: {
+      time: vm.shutdown.time // "time": "2100"
+    }
+    notificationSettings: {
+      status: contains(vm.shutdown,'notification') && bool(vm.shutdown.notification) ? 'Enabled' : 'Disabled'
+      emailRecipient: Global.alertRecipients
+      notificationLocale: 'en'
+      timeInMinutes: 30
+    }
+    status: ! contains(vm.shutdown,'status') || (contains(vm.shutdown,'status') && bool(vm.shutdown.status)) ? 'Enabled' : 'Disabled'
+    targetResourceId: virtualMachine[index].id
+    taskType: 'ComputeVmShutdownTask'
+    timeZoneId: Global.shutdownSchedulerTimeZone // "Pacific Standard Time"
+  }
+}]
+
 resource VMKVVMExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.CertMgmt == 1) {
   name: 'KVVMExtensionForWindows'
   parent: virtualMachine[index]

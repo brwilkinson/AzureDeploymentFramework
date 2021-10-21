@@ -387,32 +387,6 @@
         },
         "saInfo": [
           {
-            "namesuffix": "diag",
-            "skuName": "Standard_LRS",
-            "allNetworks": "Deny",
-            "logging": {
-              "r": 0,
-              "w": 0,
-              "d": 1
-            },
-            "blobVersioning": 1,
-            "changeFeed": 1,
-            "softDeletePolicy": {
-              "enabled": 1,
-              "days": 7
-            },
-            "PrivateLinkInfo": [
-              {
-                "Subnet": "snMT02",
-                "groupID": "blob"
-              },
-              {
-                "Subnet": "snMT02",
-                "groupID": "file"
-              }
-            ]
-          },
-          {
             "namesuffix": "data",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",

@@ -16,6 +16,7 @@
     "nsgRGName": "AEU2-BRW-HAA-RG-P0",
     "RTRGName": "AEU2-BRW-HAA-RG-P0",
     "RTName": "Hub",
-    "__dnsZoneRGName": "AEU2-BRW-HAA-RG-P0"
+    "__dnsZoneRGName": "AEU2-BRW-HAA-RG-P0",
+    "shutdownSchedulerTimeZone": "Eastern Standard Time"
   }
 }

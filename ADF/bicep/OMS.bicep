@@ -879,10 +879,14 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
                         scope: [
                             resourceGroup().id
                         ]
-                        tagSettings: {
-                            tags: {}
-                            filterOperator: 'All'
-                        }
+tagSettings: {
+    tags: {
+        zone:[
+            '1'
+        ]
+    }
+    filterOperator: 'All'
+}
                         locations: []
                     }
                 ]
