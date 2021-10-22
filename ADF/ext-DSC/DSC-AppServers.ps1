@@ -286,7 +286,7 @@ Configuration $Configuration
         #-------------------------------------------------------------------
         if ($Node.ServiceSetStopped)
         {
-            xServiceSet ServiceSetStopped
+            ServiceSet ServiceSetStopped
             {
                 Name  = $Node.ServiceSetStopped
                 State = 'Stopped'
@@ -611,7 +611,7 @@ Configuration $Configuration
                 Name                  = ($AppPool.Name -f $environment)
                 State                 = 'Started'
                 autoStart             = $true
-                DependsOn             = '[xServiceSet]ServiceSetStarted'
+                DependsOn             = '[ServiceSet]ServiceSetStarted'
                 managedRuntimeVersion = $AppPool.Version
                 identityType          = 'SpecificUser'
                 Credential            = $credlookup['DomainCreds']
@@ -841,7 +841,7 @@ Configuration $Configuration
         foreach ($NewService in $Node.NewServicePresent)
         {
             $Name = $NewService.Name -replace $StringFilter
-            xService $Name
+            Service $Name
             {
                 Name        = $NewService.Name
                 Path        = $NewService.Path
@@ -852,13 +852,13 @@ Configuration $Configuration
                 State       = $NewService.State
                 DependsOn   = $apps 
             }
-            $dependsonService += @("[xService]$($Name)")
+            $dependsonService += @("[Service]$($Name)")
         }
 
         #-------------------------------------------------------------------
         if ($Node.ServiceSetStarted)
         {
-            xServiceSet ServiceSetStarted
+            ServiceSet ServiceSetStarted
             {
                 Name        = $Node.ServiceSetStarted
                 State       = 'Running'
