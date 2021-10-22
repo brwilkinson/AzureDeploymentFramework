@@ -19,14 +19,13 @@ Configuration $Configuration
         [switch]$NoDomainJoin
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration #-ModuleVersion 2.0.5
+    Import-DscResource -ModuleName PSDscResources
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xWebAdministration
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration
+    # Import-DscResource -ModuleName xPSDesiredStateConfiguration
     Import-DscResource -ModuleName SecurityPolicyDSC
-    Import-DscResource -ModuleName xTimeZone
     Import-DscResource -ModuleName xWindowsUpdate
     Import-DscResource -ModuleName xDSCFirewall
     Import-DscResource -ModuleName NetworkingDSC
@@ -178,7 +177,7 @@ Configuration $Configuration
         # }
 
         #-------------------------------------------------------------------
-        xTimeZone timezone
+        TimeZone timezone
         { 
             IsSingleInstance = 'Yes'
             TimeZone         = iif $Node.timezone $Node.timezone 'Eastern Standard Time'
@@ -674,7 +673,7 @@ Configuration $Configuration
             $Domain	= $credlookup['DomainCreds'].GetNetworkCredential().Domain
             $UserName = $credlookup['DomainCreds'].GetNetworkCredential().UserName
 
-            script $vdname
+            Script $vdname
             {
                 DependsOn  = $dependsonWebVirtualDirectory 
                 
@@ -789,7 +788,7 @@ Configuration $Configuration
         foreach ($Package in $Node.SoftwarePackagePresent)
         {
             $Name = $Package.Name -replace $StringFilter
-            xPackage $Name
+            Package $Name
             {
                 Name                 = $Package.Name
                 Path                 = $Package.Path

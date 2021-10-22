@@ -5,19 +5,22 @@
 @{
     AllNodes = @(
         @{
-            NodeName                         = 'LocalHost'
-            PSDscAllowPlainTextPassword      = $true
-            PSDscAllowDomainUser             = $true
+            NodeName                          = 'LocalHost'
+            PSDscAllowPlainTextPassword       = $true
+            PSDscAllowDomainUser              = $true
 
-            DisksPresent                     = @{DriveLetter = 'F'; DiskID = '2' }
+            DisksPresent                      = @{DriveLetter = 'F'; DiskID = '2' }
 
-            ServiceSetStopped                = 'ShellHWDetection'
+            ServiceSetStopped                 = 'ShellHWDetection'
 
             # IncludesAllSubfeatures
-            WindowsOptionalFeaturePresent    = 'RSAT' 
+            WindowsOptionalFeaturePresent     = 'RSAT'
+
+            # Single set of features
+            WindowsOptionalFeatureSetPresent2 = 'NET-Framework-Core'
 
             # Current version too low to support Azure AD auth.
-            WindowsCapabilitySourcePresent   = @(
+            WindowsCapabilitySourcePresent    = @(
                 @{
                     Name   = 'OpenSSH.Server~~~~0.0.1.0'
                     Source = 'F:\Source\FOD\LanguagesAndOptionalFeatures'
@@ -35,28 +38,28 @@
             #     }
             # )
 
-            ServiceSetStarted                = @('sshd')
+            ServiceSetStarted                 = @('sshd')
 
-            FontsPresent                     = @(
+            FontsPresent                      = @(
                 @{
                     Name = 'Fira Code Light Nerd Font Complete'
                     Path = 'F:\Source\Tools\Fira Code Light Nerd Font Complete.ttf'
                 }
             )
 
-            DisableIEESC                     = $True
+            DisableIEESC                      = $True
 
-            PowerShellModulesPresent         = @(
+            PowerShellModulesPresent          = @(
                 'SQLServer', 'AzureAD', 'oh-my-posh', #'posh-git',
                 'Terminal-Icons', 'Az.ManagedServiceIdentity'
             )
 
-            DevOpsAgentPoolPresent2          = @(
+            DevOpsAgentPoolPresent2           = @(
                 @{poolName = '{0}-{1}-{2}-{3}-Apps1' ; orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/' },
                 @{poolName = '{0}-{1}-{2}-{3}-Infra01' ; orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/' }
             )
 
-            DevOpsAgentPresent2              = @(
+            DevOpsAgentPresent2               = @(
                 @{
                     name = '{0}-{1}-{2}-{3}-Apps101'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Absent';
                     Credlookup = 'DomainCreds' ; AgentBase = 'F:\vsts-agent' ; AgentVersion = '2.184.2'
@@ -82,7 +85,7 @@
             #     @{Name = 'Az.Tools.Predictor'}
             # )
 
-            AppxProvisionedPackagePresent    = @(
+            AppxProvisionedPackagePresent     = @(
                 @{
                     Name       = 'Microsoft.DesktopAppInstaller'
                     Path       = 'F:\Source\Tools\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
@@ -108,12 +111,9 @@
                 }
             )
 
-            # Single set of features
-            WindowsOptionalFeatureSetPresent = 'GPMC', 'NET-Framework-Core'
+            DirectoryPresent                  = @('F:\Source\InstallLogs', 'F:\Repos', 'c:\program files\powershell\7')
 
-            DirectoryPresent                 = @('F:\Source\InstallLogs', 'F:\Repos', 'c:\program files\powershell\7')
-
-            EnvironmentPathPresent           = @(
+            EnvironmentPathPresent            = @(
                 'F:\Source\Tools\SysInternals',
                 'F:\Source\Tools\',
                 'F:\Source\Tools\.vs-kubernetes\tools\helm\windows-amd64',
@@ -122,14 +122,14 @@
                 'F:\Source\Tools\.vs-kubernetes\tools\draft\windows-amd64'
             )
 
-            FWRules                          = @(
+            FWRules                           = @(
                 @{
                     Name      = 'SSH TCP Inbound'
                     LocalPort = '22'
                 }
             )
 
-            RegistryKeyPresent               = @(
+            RegistryKeyPresent                = @(
                 @{ 
                     # enable developer mode to sideload appx packages, including winget
                     Key = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock';
@@ -157,7 +157,7 @@
                 }
             )
 
-            LocalPolicyPresent               = @(
+            LocalPolicyPresent                = @(
                 @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarGlomLevel'; PolicyType = 'User'; Data = '1'; Type = 'DWord' }
                 # @{KeyValueName = 'SOFTWARE\Microsoft\Internet Explorer\Main\NoProtectedModeBanner'; PolicyType = 'User'; Data = '1'; Type = 'DWord' },
                 # @{KeyValueName = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\EscDomains\contoso.com\*'; PolicyType = 'User'; Data = '2'; Type = 'DWord' },
@@ -166,7 +166,7 @@
             )
 
             # Blob copy with Managed Identity - Oauth2
-            AZCOPYDSCDirPresentSource        = @(
+            AZCOPYDSCDirPresentSource         = @(
                 @{  
                     SourcePathBlobURI = 'https://{0}.blob.core.windows.net/source/SQLClient/'
                     DestinationPath   = 'F:\Source\SQLClient\'
@@ -228,7 +228,7 @@
                 }
             )
 
-            DirectoryPresentSource           = @(
+            DirectoryPresentSource            = @(
 
                 @{
                     SourcePath      = 'F:\Source\PSModules\PackageManagement\'
@@ -263,7 +263,7 @@
                 }
             )
 
-            SoftwarePackagePresent           = @(
+            SoftwarePackagePresent            = @(
 
                 # @{
                 #     Name      = 'AzurePortalInstaller'

@@ -423,24 +423,6 @@ resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' 
   }
 }]
 
-resource VMMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.MonitoringAgent == 1) {
-  name: 'MonitoringAgent'
-  parent: virtualMachine[index]
-  location: resourceGroup().location
-  properties: {
-    publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-    type: ((OSType[vm.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux')
-    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '1.0.0' : '1.4')
-    autoUpgradeMinorVersion: true
-    settings: {
-      workspaceId: reference(OMSworkspaceID, '2017-04-26-preview').CustomerId
-    }
-    protectedSettings: {
-      workspaceKey: listKeys(OMSworkspaceID, '2015-11-01-preview').primarySharedKey
-    }
-  }
-}]
-
 resource VMDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC == 1 && vm.Role == 'PULL') {
   name: 'Microsoft.Powershell.DSC.Pull'
   parent: virtualMachine[index]
@@ -688,7 +670,26 @@ resource VMAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
     autoUpgradeMinorVersion: true
     publisher: 'Microsoft.Azure.Monitor'
     type: ((OSType[vm.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
-    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '1.1.3.1' : '1.5')
+    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '1.0' : '1.5')
+  }
+}]
+
+// Use AzureMonitorAgent instead, leave for now
+resource VMMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.MonitoringAgent == 1) {
+  name: 'MonitoringAgent'
+  parent: virtualMachine[index]
+  location: resourceGroup().location
+  properties: {
+    publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+    type: ((OSType[vm.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux')
+    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '1.0' : '1.4')
+    autoUpgradeMinorVersion: true
+    settings: {
+      workspaceId: reference(OMSworkspaceID, '2017-04-26-preview').CustomerId
+    }
+    protectedSettings: {
+      workspaceKey: listKeys(OMSworkspaceID, '2015-11-01-preview').primarySharedKey
+    }
   }
 }]
 
@@ -709,7 +710,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRuleAssociations@2019-11-0
   scope: virtualMachine[index]
   properties: {
     description: 'Association of data collection rule for VM Insights Health.'
-    dataCollectionRuleId: resourceId('Microsoft.Insights/dataCollectionRules', replace('${Deployment}VMInsights', '-', ''))
+    dataCollectionRuleId: resourceId('Microsoft.Insights/dataCollectionRules', '${DeploymentURI}VMInsights')
   }
 }]
 

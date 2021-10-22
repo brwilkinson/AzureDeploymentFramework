@@ -6,7 +6,7 @@
 # This is our Master list of Modules in the project
 param (
     $Modules = @(
-        'xPSDesiredStateConfiguration','DnsServerDsc', 'SQLServerDsc',
+        'PSDscResources','xPSDesiredStateConfiguration','DnsServerDsc', 'SQLServerDsc',
         'xWebAdministration', 'xFailoverCluster', 'AccessControlDsc',
         'SecurityPolicyDSC', 'xTimeZone', 'xSystemSecurity', 'xRemoteDesktopSessionHost',
         'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 
