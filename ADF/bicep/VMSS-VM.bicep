@@ -141,7 +141,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
     userAssignedIdentities: userAssignedIdentities.Cluster
   }
   sku: {
-    name: computeSizeLookupOptions['${AppServer.ASNAME}-${VMSizeLookup[Environment]}']
+    name: computeSizeLookupOptions['${AppServer.ROLE}-${VMSizeLookup[Environment]}']
     tier: 'Standard'
     capacity: AppServer.AutoScalecapacity.minimum
   }
@@ -340,7 +340,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
           //         }
           //         {
           //           Name: 'NodeConfigurationName'
-          //           Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${AppServer.ASName}_${Environment}${DeploymentID}'
+          //           Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${AppServer.ROLE}_${Environment}${DeploymentID}'
           //           TypeName: 'System.String'
           //         }
           //         {

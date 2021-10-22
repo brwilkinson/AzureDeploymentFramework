@@ -19,7 +19,7 @@ Configuration $Configuration
         [switch]$NoDomainJoin
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
@@ -215,18 +215,6 @@ Configuration $Configuration
                 PolicyType   = $LocalPolicy.PolicyType
                 Data         = $LocalPolicy.Data
                 Type         = $LocalPolicy.Type
-
-            }
-        }
-
-        #-------------------------------------------------------------------
-        if ($Node.Present)
-        {
-            xWindowsFeatureSet WindowsFeatureSetPresent
-            {
-                Ensure = 'Present'
-                Name   = $Node.Present
-                #Source = $Node.SXSPath
             }
         }
 
@@ -242,6 +230,17 @@ Configuration $Configuration
         }
 
         #-------------------------------------------------------------------
+        # Server
+        if ($Node.WindowsFeatureSetPresent)
+        {
+            WindowsFeatureSet WindowsFeatureSetPresent
+            {
+                Ensure = 'Present'
+                Name   = $Node.Present
+                #Source = $Node.SXSPath
+            }
+        }
+
         foreach ($Feature in $Node.WindowsFeaturePresent)
         {
             WindowsFeature $Feature
@@ -249,6 +248,28 @@ Configuration $Configuration
                 Name                 = $Feature
                 Ensure               = 'Present'
                 IncludeAllSubFeature = $true
+            }
+            $dependsonFeatures += @("[WindowsFeature]$Feature")
+        }
+
+        #-------------------------------------------------------------------
+        # Client
+        if ($Node.WindowsOptionalFeatureSetPresent)
+        {
+            WindowsOptionalFeatureSet WindowsOptionalFeatureSet
+            {
+                Ensure = 'Present'
+                Name   = $Node.WindowsOptionalFeatureSetPresent
+                #Source = $Node.SXSPath
+            }
+        }
+
+        foreach ($Feature in $Node.WindowsOptionalFeaturePresent)
+        {
+            WindowsOptionalFeature $Feature
+            {
+                Name   = $Feature
+                Ensure = 'Present'
             }
             $dependsonFeatures += @("[WindowsFeature]$Feature")
         }
@@ -922,15 +943,15 @@ else
 #endregion
 
 Import-Module $psscriptroot\..\..\bin\DscExtensionHandlerSettingManager.psm1
-$ConfigurationArguments = Get-DscExtensionHandlerSettings | foreach ConfigurationArguments
+$ConfigurationArguments = Get-DscExtensionHandlerSettings | ForEach-Object ConfigurationArguments
 
 $sshPublicPW = ConvertTo-SecureString -String $ConfigurationArguments['sshPublic'].Password -AsPlainText -Force
 $devOpsPatPW = ConvertTo-SecureString -String $ConfigurationArguments['devOpsPat'].Password -AsPlainText -Force
 $AdminCredsPW = ConvertTo-SecureString -String $ConfigurationArguments['AdminCreds'].Password -AsPlainText -Force
 
-$ConfigurationArguments['sshPublic'] = [pscredential]::new($ConfigurationArguments['sshPublic'].UserName,$sshPublicPW)
-$ConfigurationArguments['devOpsPat'] = [pscredential]::new($ConfigurationArguments['devOpsPat'].UserName,$devOpsPatPW)
-$ConfigurationArguments['AdminCreds'] = [pscredential]::new($ConfigurationArguments['AdminCreds'].UserName,$AdminCredsPW)
+$ConfigurationArguments['sshPublic'] = [pscredential]::new($ConfigurationArguments['sshPublic'].UserName, $sshPublicPW)
+$ConfigurationArguments['devOpsPat'] = [pscredential]::new($ConfigurationArguments['devOpsPat'].UserName, $devOpsPatPW)
+$ConfigurationArguments['AdminCreds'] = [pscredential]::new($ConfigurationArguments['AdminCreds'].UserName, $AdminCredsPW)
 
 $Params = @{
     ConfigurationData = '.\*-ConfigurationData.psd1'

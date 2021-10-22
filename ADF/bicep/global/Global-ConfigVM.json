@@ -1317,6 +1317,8 @@
     "DFS-D": "Standard_D4s_v3",
     "JMP-P": "Standard_D4s_v3",
     "JMP-D": "Standard_D4s_v3",
+    "CLT-P": "Standard_D4s_v3",
+    "CLT-D": "Standard_D4s_v3",
     "PXY-P": "Standard_D4s_v3",
     "PXY-D": "Standard_D2s_v3",
     "CLS01-D": "Standard_D4s_v3",

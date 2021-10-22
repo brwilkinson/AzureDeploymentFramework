@@ -179,7 +179,7 @@ var userAssignedIdentities = {
 
 var VM = [for (vm, index) in AppServers: {
   name: vm.Name
-  match: ((Global.CN == '.') || contains(Global.CN, vm.Name)) ? bool('true') : bool('false')
+  match: ((Global.CN == '.') || contains(Global.CN, vm.Name)) ? true : false
   Extensions: contains(OSType[vm.OSType], 'RoleExtensions') ? union(Extensions, OSType[vm.OSType].RoleExtensions) : Extensions
   DataDisk: contains(vm, 'DDRole') ? DataDiskInfo[vm.DDRole] : null
   vmHostName: toLower('${Prefix}${Global.AppName}${Environment}${DeploymentID}${vm.Name}')
@@ -263,10 +263,11 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = [for (v
   location: resourceGroup().location
   identity: {
     type: 'SystemAssigned, UserAssigned'
-    userAssignedIdentities: contains(MSILookup, vm.ASNAME) ? userAssignedIdentities[MSILookup[vm.ASNAME]] : userAssignedIdentities.Default
+    userAssignedIdentities: contains(MSILookup, vm.ROLE) ? userAssignedIdentities[MSILookup[vm.ROLE]] : userAssignedIdentities.Default
   }
   tags: {
     Environment: EnvironmentLookup[Environment]
+    Zone: contains(vm, 'Zone') ? vm.Zone : null
   }
   zones: contains(vm, 'Zone') ? array(vm.Zone) : null
   plan: contains(OSType[vm.OSType], 'plan') ? OSType[vm.OSType].plan : null
@@ -276,7 +277,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = [for (v
       id: '${resourceId('Microsoft.Compute/availabilitySets', '${Deployment}-as${vm.ASName}')}'
     }
     hardwareProfile: {
-      vmSize: computeSizeLookupOptions['${vm.ASNAME}-${VMSizeLookup[Environment]}']
+      vmSize: computeSizeLookupOptions['${vm.ROLE}-${VMSizeLookup[Environment]}']
     }
     osProfile: {
       computerName: VM[index].vmHostName
@@ -298,7 +299,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = [for (v
           storageAccountType: storageAccountType
         }
       }
-      dataDisks: DISKLOOKUP[index].outputs.DATADisks
+      dataDisks: VM[index].match ? DISKLOOKUP[index].outputs.DATADisks : null
     }
     networkProfile: {
       networkInterfaces: [for (nic, index) in vm.NICs: {
@@ -331,11 +332,11 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = [fo
     }
     notificationSettings: {
       status: contains(vm.shutdown,'notification') && bool(vm.shutdown.notification) ? 'Enabled' : 'Disabled'
-      emailRecipient: Global.alertRecipients
+      emailRecipient: Global.alertRecipients[0] // currently array, needs a string with ; separation.
       notificationLocale: 'en'
       timeInMinutes: 30
     }
-    status: ! contains(vm.shutdown,'status') || (contains(vm.shutdown,'status') && bool(vm.shutdown.status)) ? 'Enabled' : 'Disabled'
+    status: ! contains(vm.shutdown,'enabled') || (contains(vm.shutdown,'enabled') && bool(vm.shutdown.enabled)) ? 'Enabled' : 'Disabled'
     targetResourceId: virtualMachine[index].id
     taskType: 'ComputeVmShutdownTask'
     timeZoneId: Global.shutdownSchedulerTimeZone // "Pacific Standard Time"
@@ -429,7 +430,7 @@ resource VMMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12
   properties: {
     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
     type: ((OSType[vm.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux')
-    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '1.0' : '1.4')
+    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '1.0.0' : '1.4')
     autoUpgradeMinorVersion: true
     settings: {
       workspaceId: reference(OMSworkspaceID, '2017-04-26-preview').CustomerId
@@ -477,7 +478,7 @@ resource VMDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [
         }
         {
           Name: 'NodeConfigurationName'
-          Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${vm.ASName}_${Environment}${DeploymentID}'
+          Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${vm.ROLE}_${Environment}${DeploymentID}'
           TypeName: 'System.String'
         }
         {
@@ -687,7 +688,7 @@ resource VMAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
     autoUpgradeMinorVersion: true
     publisher: 'Microsoft.Azure.Monitor'
     type: ((OSType[vm.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
-    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '1.0' : '1.5')
+    typeHandlerVersion: ((OSType[vm.OSType].OS == 'Windows') ? '1.1.3.1' : '1.5')
   }
 }]
 
@@ -816,4 +817,4 @@ output foo2 string = subscription().id
 output foo3 string = resourceGroup().name
 output foo4 string = resourceGroup().id
 output foo6 array = VM
-output Disks object = reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-VM-diskLookup${AppServers[0].Name}'), '2018-05-01').outputs.dataDisks
+output Disks array = [for (vm, index) in AppServers: VM[index].match ? DISKLOOKUP[index].outputs.DATADisks : null]

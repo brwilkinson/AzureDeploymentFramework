@@ -989,6 +989,10 @@
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
               "_HotPatch": true,
+              "shutdown": {
+                "time": "2100",
+                "enabled": 0
+              },
               "Zone": 1,
               "NICs": [
                 {
