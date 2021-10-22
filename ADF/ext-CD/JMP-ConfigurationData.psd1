@@ -109,7 +109,7 @@
             )
 
             # Single set of features
-            WindowsFeatureSetPresent       = 'GPMC', 'NET-Framework-Core'
+            WindowsFeatureSetPresent2       = 'GPMC', 'NET-Framework-Core'
 
             DirectoryPresent               = @('F:\Source\InstallLogs', 'F:\Repos', 'c:\program files\powershell\7')
 
