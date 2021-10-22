@@ -49,6 +49,8 @@ Function global:Start-AzDeploy
 
         [switch] $WhatIf,
 
+        [switch] $NoPackage,
+
         [validateset('ResourceIdOnly', 'FullResourcePayloads')]
         [String] $WhatIfFormat = 'ResourceIdOnly'
     )
@@ -200,7 +202,7 @@ Function global:Start-AzDeploy
     }
     else
     {
-        if ((Test-Path $DSCSourceFolder) -and ($VSTS -NE $true))
+        if ((Test-Path $DSCSourceFolder) -and ($NoPackage -NE $true))
         {
             Get-ChildItem $DSCSourceFolder -File -Filter '*.ps1' | ForEach-Object {
 

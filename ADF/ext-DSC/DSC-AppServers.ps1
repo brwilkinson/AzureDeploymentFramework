@@ -19,7 +19,7 @@ Configuration $Configuration
         [switch]$NoDomainJoin
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 2.0.5
+    Import-DscResource -ModuleName PSDesiredStateConfiguration #-ModuleVersion 2.0.5
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
