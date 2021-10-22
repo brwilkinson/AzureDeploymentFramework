@@ -20,7 +20,7 @@ configuration CreateADPDC
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName NetworkingDsc
-    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName PSDscResources
 
     $NetBios = $(($DomainName -split '\.')[0])
     $DomainCreds = [PSCredential]::New("$NetBios\$($Admincreds.UserName)", $Admincreds.Password)

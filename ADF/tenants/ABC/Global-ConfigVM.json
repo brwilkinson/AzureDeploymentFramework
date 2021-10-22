@@ -759,7 +759,7 @@
       "OS": "Linux",
       "OSDiskGB": 32,
       "RoleExtensions": {
-        "MonitoringAgent": 1,
+        "MonitoringAgent": 0, // use AzureMonitorAgent instead,
         "IaaSDiagnostics": 1,
         "Antimalware": 0,
         "DependencyAgent": 1,

@@ -141,7 +141,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
     userAssignedIdentities: userAssignedIdentities.Cluster
   }
   sku: {
-    name: computeSizeLookupOptions['${AppServer.ASNAME}-${VMSizeLookup[Environment]}']
+    name: computeSizeLookupOptions['${AppServer.ROLE}-${VMSizeLookup[Environment]}']
     tier: 'Standard'
     capacity: AppServer.AutoScalecapacity.minimum
   }
@@ -284,21 +284,21 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
               typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.5'
             }
           }
-          {
-            name: 'MonitoringAgent'
-            properties: {
-              publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
-              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4'
-              autoUpgradeMinorVersion: true
-              settings: {
-                workspaceId: reference(OMSworkspaceID, '2017-04-26-preview').CustomerId
-              }
-              protectedSettings: {
-                workspaceKey: listKeys(OMSworkspaceID, '2015-11-01-preview').primarySharedKey
-              }
-            }
-          }
+          // {
+          //   name: 'MonitoringAgent'
+          //   properties: {
+          //     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+          //     type: (OSType[AppServer.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
+          //     typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4'
+          //     autoUpgradeMinorVersion: true
+          //     settings: {
+          //       workspaceId: reference(OMSworkspaceID, '2017-04-26-preview').CustomerId
+          //     }
+          //     protectedSettings: {
+          //       workspaceKey: listKeys(OMSworkspaceID, '2015-11-01-preview').primarySharedKey
+          //     }
+          //   }
+          // }
           {
             name: (OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
             properties: {
@@ -340,7 +340,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
           //         }
           //         {
           //           Name: 'NodeConfigurationName'
-          //           Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${AppServer.ASName}_${Environment}${DeploymentID}'
+          //           Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${AppServer.ROLE}_${Environment}${DeploymentID}'
           //           TypeName: 'System.String'
           //         }
           //         {

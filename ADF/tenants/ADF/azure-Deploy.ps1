@@ -46,12 +46,12 @@ AzDeploy -App $App -Prefix AZW2 -DP $Enviro -TF ADF:\templates-deploy\0-azuredep
 
 # $Enviro RG deploy
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-deploy\0-azuredeploy-ALL.json -TestWhatIf
-AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ADF:\templates-deploy\0-azuredeploy-ALL.json # -FullUpload -VSTS
+AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ADF:\templates-deploy\0-azuredeploy-ALL.json # -FullUpload -NoPackage
 
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\0-azuredeploy-Test.json
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\0-azuredeploy-DeploymentScripts.json
 
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\1-azuredeploy-Storage.json #-FullUpload -VSTS
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\1-azuredeploy-Storage.json #-FullUpload -NoPackage
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\0-azuredeploy-KV.json -TestWhatIf
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\3-azuredeploy-VNet.json -FullUpload
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\3-azuredeploy-DNSPrivate.json

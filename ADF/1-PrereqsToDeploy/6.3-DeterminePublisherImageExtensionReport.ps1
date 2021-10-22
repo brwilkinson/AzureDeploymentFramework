@@ -1,4 +1,4 @@
-Get-AzVM -ResourceGroupName ACU1-BRW-AOA-RG-P0 | ForEach-Object {
+Get-AzVM -ResourceGroupName ACU1-BRW-AOA-RG-D2 | ForEach-Object {
     $vm = $_
     
     $extensionHash = @{}

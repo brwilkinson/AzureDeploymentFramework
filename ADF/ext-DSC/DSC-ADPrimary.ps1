@@ -20,7 +20,7 @@ Configuration $Configuration
 
     Import-DscResource -ModuleName ComputerManagementDsc
     Import-DscResource -ModuleName ActiveDirectoryDsc
-    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName PSDscResources
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName DnsServerDsc
     Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC

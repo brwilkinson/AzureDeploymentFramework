@@ -63,7 +63,7 @@ configuration ConfigSQLAO
     Import-DscResource -ModuleName ActiveDirectoryDsc
     Import-DscResource -ModuleName NetworkingDsc
     Import-DscResource -ModuleName SqlServerDsc
-    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName PSDscResources
     Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName AccessControlDsc
 

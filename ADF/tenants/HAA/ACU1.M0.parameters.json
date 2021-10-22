@@ -98,7 +98,7 @@
     },
     "Extensions": {
       "value": {
-        "MonitoringAgent": 1,
+        "MonitoringAgent": 0, // use AzureMonitorAgent instead,
         "IaaSDiagnostics": 1,
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
@@ -167,9 +167,7 @@
             "displayName": "HA-APP-management",
             "name": "HA-APP-management",
             "parentName": "HA-APP-platform",
-            "subscriptions": [
-              
-            ]
+            "subscriptions": []
           },
           {
             "displayName": "HA-APP-online",
@@ -183,9 +181,7 @@
             "displayName": "HA-APP-platform",
             "name": "HA-APP-platform",
             "parentName": "HA-APP",
-            "subscriptions": [
-              
-            ]
+            "subscriptions": []
           },
           {
             "displayName": "HA-APP-sandboxes",

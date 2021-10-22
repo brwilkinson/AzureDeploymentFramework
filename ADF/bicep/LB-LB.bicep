@@ -73,7 +73,7 @@ var loadBalancingRules = [for service in Services: {
       id: '${resourceId('Microsoft.Network/loadBalancers/', lbname)}/frontendIPConfigurations/${service.LBFEName}'
     }
     backendAddressPool: {
-      id: '${resourceId('Microsoft.Network/loadBalancers/', lbname)}/backendAddressPools/${LB.ASName}'
+      id: '${resourceId('Microsoft.Network/loadBalancers/', lbname)}/backendAddressPools/${service.LBBEName}'
     }
     probe: {
       id: '${resourceId('Microsoft.Network/loadBalancers/', lbname)}/probes/${service.ProbeName}'

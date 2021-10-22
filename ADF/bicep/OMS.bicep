@@ -62,9 +62,14 @@ var dataRetention = 31
 var serviceTier = 'PerNode'
 var AAserviceTier = 'Basic' // 'Free'
 
+var patchingZones = [
+    '1'
+    '2'
+    '3'
+]
 var patchingEnabled = {
     linuxWeekly: false
-    
+
     windowsNOW: false
     windowsWeekly: true
     windowsMonthly: true
@@ -858,9 +863,9 @@ resource OMSworkspaceName_Automation 'Microsoft.OperationalInsights/workspaces/l
     }
 }
 
-resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
+resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
     parent: AA
-    name: 'Update-Third-Saturday-Windows'
+    name: 'Update-Third-Saturday-Windows-Zone${zone}'
     properties: {
         updateConfiguration: {
             operatingSystem: 'Windows'
@@ -880,8 +885,12 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
                             resourceGroup().id
                         ]
                         tagSettings: {
-                            tags: {}
-                            filterOperator: 'All'
+                            tags: {
+                                zone: [
+                                    zone
+                                ]
+                            }
+                            filterOperator: 'Any'
                         }
                         locations: []
                     }
@@ -903,7 +912,7 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
             frequency: 'Month'
             timeZone: 'America/Los_Angeles'
             interval: 1
-            startTime: dateTimeAdd('20:00', 'P1D')
+            startTime: dateTimeAdd('${20 + int(zone)}:00', 'P1D') // offset the start time based on the zone
             advancedSchedule: {
                 monthlyOccurrences: [
                     {
@@ -914,11 +923,11 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
             }
         }
     }
-}
+}]
 
-resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
+resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
     parent: AA
-    name: 'Update-NOW-Windows'
+    name: 'Update-NOW-Windows-Zone${zone}'
     properties: {
         updateConfiguration: {
             operatingSystem: 'Windows'
@@ -938,8 +947,12 @@ resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwar
                             resourceGroup().id
                         ]
                         tagSettings: {
-                            tags: {}
-                            filterOperator: 'All'
+                            tags: {
+                                zone: [
+                                    zone
+                                ]
+                            }
+                            filterOperator: 'Any'
                         }
                         locations: []
                     }
@@ -951,19 +964,19 @@ resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwar
             isEnabled: patchingEnabled.windowsNOW
             frequency: 'OneTime'
             interval: 1
-            nextRunOffsetMinutes: 15
+            nextRunOffsetMinutes: 15 * int(zone) // offset the start time based on the zone
         }
     }
-}
+}]
 
-resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
+resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
     parent: AA
-    name: 'Update-Twice-Weekly-Windows'
+    name: 'Update-Twice-Weekly-Windows-Zone${zone}'
     properties: {
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
-                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
+                includedUpdateClassifications: 'Critical,Security,UpdateRollup,FeaturePack,ServicePack,Definition,Tools,Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
                 rebootSetting: 'IfRequired'
@@ -978,8 +991,12 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
                             resourceGroup().id
                         ]
                         tagSettings: {
-                            tags: {}
-                            filterOperator: 'All'
+                            tags: {
+                                zone: [
+                                    zone
+                                ]
+                            }
+                            filterOperator: 'Any'
                         }
                         locations: []
                     }
@@ -992,7 +1009,7 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
             frequency: 'Week'
             interval: 1
             timeZone: 'America/Los_Angeles'
-            startTime: dateTimeAdd('12:00', 'P1D')
+            startTime: dateTimeAdd('${12 + int(zone)}:00', 'P1D') // offset the start time based on the zone
             advancedSchedule: {
                 weekDays: [
                     'Wednesday'
@@ -1001,7 +1018,7 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
             }
         }
     }
-}
+}]
 
 /*
 resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {

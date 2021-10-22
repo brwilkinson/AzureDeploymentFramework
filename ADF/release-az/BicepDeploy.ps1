@@ -40,4 +40,4 @@ gmo az.resources -list
 $env:Path += ";$home\.azure\bin\"
 #>
 
-Start-AzDeploy @Params -FullUpload:$FullUpload -VSTS -SubscriptionDeploy:$SubscriptionDeploy # -LogAzDebug:$LogAzDebug
+Start-AzDeploy @Params -FullUpload:$FullUpload -NoPackage -SubscriptionDeploy:$SubscriptionDeploy # -LogAzDebug:$LogAzDebug

@@ -16,6 +16,7 @@
     "nsgRGName": "ACU1-BRW-HAA-RG-P0",
     "RTRGName": "ACU1-BRW-HAA-RG-P0",
     "RTName": "Hub",
-    "dnsZoneRGName": "ACU1-BRW-HAA-RG-P0"
+    "dnsZoneRGName": "ACU1-BRW-HAA-RG-P0",
+    "shutdownSchedulerTimeZone": "Pacific Standard Time"
   }
 }

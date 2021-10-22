@@ -774,7 +774,7 @@
       "OS": "Linux",
       "OSDiskGB": 32,
       "RoleExtensions": {
-        "MonitoringAgent": 1,
+        "MonitoringAgent": 0, // use AzureMonitorAgent instead,
         "IaaSDiagnostics": 1,
         "Antimalware": 0,
         "DependencyAgent": 1,
@@ -1317,6 +1317,8 @@
     "DFS-D": "Standard_D4s_v3",
     "JMP-P": "Standard_D4s_v3",
     "JMP-D": "Standard_D4s_v3",
+    "CLT-P": "Standard_D4s_v3",
+    "CLT-D": "Standard_D4s_v3",
     "PXY-P": "Standard_D4s_v3",
     "PXY-D": "Standard_D2s_v3",
     "CLS01-D": "Standard_D4s_v3",

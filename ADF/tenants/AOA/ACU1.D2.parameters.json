@@ -111,12 +111,12 @@
     },
     "Extensions": {
       "value": {
-        "MonitoringAgent": 0,//
-        "IaaSDiagnostics": 0,//
-        "DependencyAgent": 0,//
-        "AzureMonitorAgent": 0,//
-        "GuestHealthAgent": 0, // 
-        "VMInsights": 0, //
+        "MonitoringAgent": 0, // use AzureMonitorAgent instead
+        "AzureMonitorAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 1,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
@@ -127,7 +127,7 @@
         "DomainJoin": 1,
         "AADLogin": 0,
         "WindowsOpenSSH": 0,
-        "Antimalware": 0,  //
+        "Antimalware": 1,
         "VMSSAzureADEnabled": 0,
         "SqlIaasExtension": 0
       }
@@ -523,11 +523,11 @@
             {
               "Name": "JMP01",
               "Role": "JMP",
-              "ASName": "JMP",
+              // "ASName": "JMP",
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
-              // "ExcludeDomainJoin": 1,
+              "ExcludeDomainJoin": 1,
               "Zone": 1,
               "NICs": [
                 {
@@ -541,13 +541,17 @@
             },
             {
               "Name": "JMP02",
-              "Role": "JMP",
-              "ASName": "JMP",
+              "Role": "CLT",
+              // "ASName": "JMP",
               "DDRole": "64GB",
               "OSType": "Win10",
               "ExcludeAdminCenter": 1,
               "ExcludeDomainJoin": 1,
               "Zone": 1,
+              "shutdown": {
+                "time": "2100",
+                "enabled": 0
+              },
               "NICs": [
                 {
                   "Subnet": "FE01",

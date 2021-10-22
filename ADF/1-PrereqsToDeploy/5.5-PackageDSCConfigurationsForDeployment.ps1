@@ -9,7 +9,7 @@ if (Test-Path $DSCSourceFolder)
     Get-ChildItem $DSCSourceFolder -File -Filter '*.ps1' | ForEach-Object {
 
         $DSCArchiveFilePath = $_.FullName.Substring(0, $_.FullName.Length - 4) + '.zip'
-        Publish-AzVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+        Publish-AzVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose -AdditionalPath
     }
 }
 
