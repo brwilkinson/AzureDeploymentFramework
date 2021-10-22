@@ -1,7 +1,7 @@
 # Helper script for VSTS Releases
 param (
     [String[]]$enviros = ("S1"),
-    [String]$Config = "API",
+    [String]$Config = "API|JMP",
     [String]$prefix = "AZE2"
 )
 . $PSScriptRoot\Start-AzMofUpload.ps1
