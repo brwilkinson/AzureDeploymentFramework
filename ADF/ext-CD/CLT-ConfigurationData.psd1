@@ -14,7 +14,7 @@
             ServiceSetStopped                 = 'ShellHWDetection'
 
             # IncludesAllSubfeatures
-            WindowsOptionalFeaturePresent     = 'RSAT'
+            WindowsOptionalFeaturePresent2     = 'RSAT'
 
             # Single set of features
             WindowsOptionalFeatureSetPresent2 = 'NET-Framework-Core'
@@ -263,7 +263,7 @@
                 }
             )
 
-            SoftwarePackagePresent            = @(
+            SoftwarePackagePresent2            = @(
 
                 # @{
                 #     Name      = 'AzurePortalInstaller'

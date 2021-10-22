@@ -392,7 +392,7 @@ Configuration $Configuration
         }
 
         #-------------------------------------------------------------------
-        #To clean up resource names use a regular expression to remove spaces, slashes an colons Etc.
+        #To clean up resource names use a regular expression to remove spaces, slashes and colons Etc.
         $StringFilter = '\W', ''
 
         foreach ($Group in $Node.GroupMemberPresent)
@@ -788,7 +788,7 @@ Configuration $Configuration
         foreach ($Package in $Node.SoftwarePackagePresent)
         {
             $Name = $Package.Name -replace $StringFilter
-            Package $Name
+            Get-Package $Name
             {
                 Name                 = $Package.Name
                 Path                 = $Package.Path
@@ -813,7 +813,7 @@ Configuration $Configuration
                 Path                       = $Package.Path
                 Ensure                     = 'Present'
                 ProductId                  = $Package.ProductId
-                DependsOn                  = $dependsonDirectory + $dependsonArchive
+                DependsOn = $dependsonDirectory + $dependsonArchive
                 Arguments                  = $Package.Arguments
                 RunAsCredential            = $credlookup['DomainCreds'] 
                 CreateCheckRegValue        = $true 
