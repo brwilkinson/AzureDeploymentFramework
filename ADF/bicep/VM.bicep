@@ -674,7 +674,6 @@ resource VMAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
   }
 }]
 
-// Use AzureMonitorAgent instead, leave for now
 resource VMMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.MonitoringAgent == 1) {
   name: 'MonitoringAgent'
   parent: virtualMachine[index]

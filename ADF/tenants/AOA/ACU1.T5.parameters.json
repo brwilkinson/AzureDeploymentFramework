@@ -100,7 +100,7 @@
     },
     "Extensions": {
       "value": {
-        "MonitoringAgent": 0, // use AzureMonitorAgent instead,
+        "MonitoringAgent": 1,
         "IaaSDiagnostics": 1,
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
@@ -988,7 +988,7 @@
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
-              "_HotPatch": true,
+              "HotPatch": true,
               "shutdown": {
                 "time": "2100",
                 "enabled": 0

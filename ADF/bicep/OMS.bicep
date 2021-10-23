@@ -910,7 +910,7 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
         scheduleInfo: {
             isEnabled: patchingEnabled.windowsMonthly
             frequency: 'Month'
-            timeZone: 'America/Los_Angeles'
+            timeZone: Global.patchSchedulerTimeZone
             interval: 1
             startTime: dateTimeAdd('${20 + int(zone)}:00', 'P1D') // offset the start time based on the zone
             advancedSchedule: {
@@ -964,7 +964,7 @@ resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwar
             isEnabled: patchingEnabled.windowsNOW
             frequency: 'OneTime'
             interval: 1
-            nextRunOffsetMinutes: 15 * int(zone) // offset the start time based on the zone
+            startTime: dateTimeAdd(now, 'PT${int(zone) * 15}M') // 15, 30, 45 mins from now, zones 1,2,3
         }
     }
 }]
@@ -1008,7 +1008,7 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
             isEnabled: patchingEnabled.windowsWeekly
             frequency: 'Week'
             interval: 1
-            timeZone: 'America/Los_Angeles'
+            timeZone: Global.patchSchedulerTimeZone
             startTime: dateTimeAdd('${12 + int(zone)}:00', 'P1D') // offset the start time based on the zone
             advancedSchedule: {
                 weekDays: [
@@ -1054,7 +1054,7 @@ resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpda
             isEnabled: patchingEnabled.linuxWeekly
             frequency: 'Week'
             interval: 1
-            timeZone: 'America/Los_Angeles'
+            timeZone: Global.patchSchedulerTimeZone
             startTime: dateTimeAdd('12:00', 'P1D')
             advancedSchedule: {
                 weekDays: [

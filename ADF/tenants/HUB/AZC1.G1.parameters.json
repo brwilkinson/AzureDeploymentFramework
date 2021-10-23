@@ -101,7 +101,7 @@
     },
     "Extensions": {
       "value": {
-        "MonitoringAgent": 0, // use AzureMonitorAgent instead,
+        "MonitoringAgent": 1,
         "IaaSDiagnostics": 1,
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
