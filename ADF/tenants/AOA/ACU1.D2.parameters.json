@@ -51,7 +51,7 @@
         "SP": 1,
         "KV": 1,
         "OMS": 1,
-        "OMSSolutions": 0,
+        "OMSSolutions": 1,
         "OMSDataSources": 1,
         "SA": 1,
         "CDN": 0,
@@ -111,7 +111,7 @@
     },
     "Extensions": {
       "value": {
-        "MonitoringAgent": 0, // use AzureMonitorAgent instead
+        "MonitoringAgent": 1, // use AzureMonitorAgent instead
         "AzureMonitorAgent": 1,
         "IaaSDiagnostics": 1,
         "DependencyAgent": 1,
@@ -119,8 +119,8 @@
         "VMInsights": 1,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
-        "DSC": 1,
-        "DSC2": 1,
+        "DSC": 0,
+        "DSC2": 0,
         "Scripts": 1,
         "MSI": 0,
         "CertMgmt": 0,

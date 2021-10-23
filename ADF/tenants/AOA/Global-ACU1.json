@@ -18,6 +18,7 @@
     "RTRGName": "ACU1-BRW-AOA-RG-P0",
     "RTName": "Hub",
     "dnsZoneRGName": "ACU1-BRW-AOA-RG-P0",
-    "shutdownSchedulerTimeZone": "Pacific Standard Time"
+    "shutdownSchedulerTimeZone": "Pacific Standard Time",
+    "patchSchedulerTimeZone": "America/Los_Angeles"
   }
 }

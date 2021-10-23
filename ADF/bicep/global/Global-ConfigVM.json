@@ -27,6 +27,582 @@
         "BACKUP" : { "DriveLetter" : "I", "caching": "None",    "LUNS" : [ [15,64] ], "saType" : "StandardSSD_LRS" }
       }
   },
+  "computeSizeLookupOptions": {
+    "API-P": "Standard_D4s_v3",
+    "API-D": "Standard_D4s_v3",
+    "API-S": "Standard_D2s_v3",
+    "SF-P": "Standard_D4s_v3",
+    "SF-D": "Standard_D4s_v3",
+    "SF-S": "Standard_D2s_v3",
+    "CTNR-P": "Standard_D4s_v3",
+    "CTNR-D": "Standard_D2s_v3",
+    "ADp-P": "Standard_D2s_v3",
+    "ADp-D": "Standard_A2m_v2",
+    "ADs-P": "Standard_D2s_v3",
+    "ADs-D": "Standard_A2m_v2",
+    "AAP-P": "Standard_D2s_v3",
+    "AAP-D": "Standard_D2s_v3",
+    "DNS-P": "Standard_D2s_v3",
+    "DNS-D": "Standard_D2s_v3",
+    "BUS-P": "Standard_DS2_v2",
+    "BUS-D": "Standard_DS2_v2",
+    "LIN-P": "Standard_DS2_v2",
+    "LIN-D": "Standard_DS2_v2",
+    "FIL-P": "Standard_D4s_v3",
+    "FIL-D": "Standard_D4s_v3",
+    "DFS-P": "Standard_D4s_v3",
+    "DFS-D": "Standard_D4s_v3",
+    "JMP-P": "Standard_D4s_v3",
+    "JMP-D": "Standard_D4s_v3",
+    "CLT-P": "Standard_D4s_v3",
+    "CLT-D": "Standard_D4s_v3",
+    "PXY-P": "Standard_D4s_v3",
+    "PXY-D": "Standard_D2s_v3",
+    "CLS01-D": "Standard_D4s_v3",
+    "CLS02-D": "Standard_D4s_v3",
+    "CLS01-P": "Standard_D4s_v3",
+    "CLS02-P": "Standard_D4s_v3",
+    "FW-P": "Standard_F4",
+    "FW-D": "Standard_F2"
+  },
+  "OSType": {
+    "Server2019SSIMG": {
+      "imageReference": {
+        "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore27"
+      },
+    "licenseType": "Windows_Server",
+    "OS": "Windows",
+    "OSDiskGB": 127,
+    "RoleExtensions": {
+      "Scripts": 0,
+      "chefClient": 0
+    }
+  },
+    "cbld10": {
+      "imageReference": {
+        "id": "/subscriptions/27b750cd-ed43-42fd-9044-8d75e124ae55/resourceGroups/SBID-Build-Test/providers/Microsoft.Compute/galleries/cbldtest/images/cbld10-ext"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "RoleExtensions": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "Antimalware": 0,
+        "DependencyAgent": 1,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
+    "Win10O365": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "rs5-evd-o365pp",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Client",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "chefClient": 0
+      }
+    },
+    "Win10": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-10",
+        "sku": "21h1-pro-g2",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Client",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "chefClient": 0
+      }
+    },
+    "SQLServer2016": {
+      "imageReference": {
+        "publisher": "MicrosoftSQLServer",
+        "Offer": "SQL2016SP2-WS2016",
+        "sku": "Enterprise",
+        "version": "latest"
+      },
+      // "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2016": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2016-Datacenter",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2016Core": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2016-Datacenter-Server-Core",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
+      "OS": "Windows",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2016small": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2016-Datacenter-smalldisk",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2016Coresmall": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2016-Datacenter-Server-Core-smalldisk",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019-gen2": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "windowsserver-gen2preview",
+        "sku": "2019-Datacenter-gen2",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2019-Datacenter",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2022": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2022-Datacenter-g2",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "_plan": {
+        "name": "windows-server-2022",
+        "publisher": "microsoftwindowsserver",
+        "product": "microsoftserveroperatingsystems-previews"
+      },
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019Core": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2019-Datacenter-Core",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
+      "OS": "Windows",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019small": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2019-datacenter-smalldisk",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019Coresmall": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2019-Datacenter-Server-Core-smalldisk",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019Containerssmall": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2019-Datacenter-with-Containers-smalldisk",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019CoreContainerssmall": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2019-datacenter-core-with-containers-smalldisk-g2",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2016SS": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2016-Datacenter-with-Containers",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2019SS": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2019-Datacenter-with-Containers",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "NetScaler": {
+      "imageReference": {
+        "publisher": "citrix",
+        "Offer": "netscalervpx-120",
+        "Sku": "netscalerbyol",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "plan": {
+        "name": "netscalerbyol",
+        "publisher": "citrix",
+        "product": "netscalervpx-120"
+      },
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
+    "MaxLoadBalancer": {
+      "imageReference": {
+        "publisher": "loadbalancer",
+        "offer": "loadbalancer-org-load-balancer-for-azure",
+        "sku": "max_load_balancer",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "plan": {
+        "name": "max_load_balancer",
+        "publisher": "loadbalancer",
+        "product": "loadbalancer-org-load-balancer-for-azure"
+      },
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
+    "Fortigate": {
+      "imageReference": {
+        "publisher": "fortinet",
+        "offer": "fortinet_fortigate-vm_v5",
+        "sku": "fortinet_fg-vm",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "plan": {
+        "name": "fortinet_fg-vm",
+        "publisher": "fortinet",
+        "product": "fortinet_fortigate-vm_v5"
+      },
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
+    "Fortigatepayg": {
+      "imageReference": {
+        "publisher": "fortinet",
+        "offer": "fortinet_fortigate-vm_v5",
+        "sku": "fortinet_fg-vm_payg",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "plan": {
+        "name": "fortinet_fg-vm_payg",
+        "publisher": "fortinet",
+        "product": "fortinet_fortigate-vm_v5"
+      },
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
+    "Fortimngr": {
+      "imageReference": {
+        "publisher": "fortinet",
+        "offer": "fortinet-fortimanager",
+        "sku": "fortinet-fortimanager",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 3,
+      "plan": {
+        "name": "fortinet-fortimanager",
+        "publisher": "fortinet",
+        "product": "fortinet-fortimanager"
+      },
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
+    "UbuntuServer1904": {
+      "imageReference": {
+        "publisher": "canonical",
+        "offer": "UbuntuServer",
+        "sku": "19.04",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "Antimalware": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 1,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0
+      }
+    },
+    "Bus-debian": {
+      "imageReference": {
+        "publisher": "credativ",
+        "offer": "Debian",
+        "sku": "8",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 1,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
+    "PROXY-UBUNTU": {
+      "imageReference": {
+        "publisher": "Canonical",
+        "offer": "UbuntuServer",
+        "sku": "16.04-LTS",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "fileUris": "[concat(parameters('global')._artifactsLocation, '/scripts/pxy.zip",
+      "commandToExecute": "[concat('sudo apt-get update && sudo apt-get install unzip && unzip Proxy.zip && sudo bash -x haproxyvm-configure.sh ', ' -a ', 'ilbIPAddress', ' -r ', 'ilbRabbitMqPort', ' -m ', 'ilbRabbitMqMgmtPort', ' -b ', 'dnsName', '.', 'location', '.cloudapp.azure.com -p ', 'vmNamePrefix', '0 -s ', 'vmNamePrefix', '1')]",
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
+    "CentOS75": {
+      "imageReference": {
+        "publisher": "OpenLogic",
+        "Offer": "CentOS",
+        "sku": "7.5",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 64,
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "Antimalware": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    }
+  },
   "ladCfg": {
     "diagnosticMonitorConfiguration": {
       "eventVolume": "Medium",
@@ -753,579 +1329,5 @@
         ]
       }
     }
-  },
-  "OSType": {
-    "Server2019SSIMG": {
-      "imageReference": {
-        "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore27"
-      },
-    "licenseType": "Windows_Server",
-    "OS": "Windows",
-    "OSDiskGB": 127,
-    "RoleExtensions": {
-      "Scripts": 0,
-      "chefClient": 0
-    }
-  },
-    "cbld10": {
-      "imageReference": {
-        "id": "/subscriptions/27b750cd-ed43-42fd-9044-8d75e124ae55/resourceGroups/SBID-Build-Test/providers/Microsoft.Compute/galleries/cbldtest/images/cbld10-ext"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 32,
-      "RoleExtensions": {
-        "MonitoringAgent": 0, // use AzureMonitorAgent instead,
-        "IaaSDiagnostics": 1,
-        "Antimalware": 0,
-        "DependencyAgent": 1,
-        "DSC": 0,
-        "Scripts": 0,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    },
-    "Win10O365": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "rs5-evd-o365pp",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Client",
-      "OS": "Windows",
-      "OSDiskGB": 127,
-      "RoleExtensions": {
-        "chefClient": 0
-      }
-    },
-    "Win10": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "Windows-10",
-        "sku": "21h1-pro-g2",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Client",
-      "OS": "Windows",
-      "OSDiskGB": 127,
-      "RoleExtensions": {
-        "chefClient": 0
-      }
-    },
-    "SQLServer2016": {
-      "imageReference": {
-        "publisher": "MicrosoftSQLServer",
-        "Offer": "SQL2016SP2-WS2016",
-        "sku": "Enterprise",
-        "version": "latest"
-      },
-      // "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "OSDiskGB": 127,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2016": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2016-Datacenter",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "patchMode": "AutomaticByPlatform",
-      "OS": "Windows",
-      "OSDiskGB": 127,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2016Core": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2016-Datacenter-Server-Core",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "patchMode": "AutomaticByPlatform",
-      "OS": "Windows",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2016small": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2016-Datacenter-smalldisk",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2016Coresmall": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2016-Datacenter-Server-Core-smalldisk",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2019-gen2": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "windowsserver-gen2preview",
-        "sku": "2019-Datacenter-gen2",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "patchMode": "AutomaticByPlatform",
-      "OS": "Windows",
-      "OSDiskGB": 127,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2019": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2019-Datacenter",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "patchMode": "AutomaticByPlatform",
-      "OS": "Windows",
-      "OSDiskGB": 127,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2022": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2022-Datacenter-g2",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "OSDiskGB": 127,
-      "_plan": {
-        "name": "windows-server-2022",
-        "publisher": "microsoftwindowsserver",
-        "product": "microsoftserveroperatingsystems-previews"
-      },
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2019Core": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2019-Datacenter-Core",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "patchMode": "AutomaticByPlatform",
-      "OS": "Windows",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2019small": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2019-datacenter-smalldisk",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2019Coresmall": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2019-Datacenter-Server-Core-smalldisk",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2019Containerssmall": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2019-Datacenter-with-Containers-smalldisk",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2019CoreContainerssmall": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "Offer": "WindowsServer",
-        "sku": "2019-datacenter-core-with-containers-smalldisk-g2",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2016SS": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2016-Datacenter-with-Containers",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "Server2019SS": {
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2019-Datacenter-with-Containers",
-        "version": "latest"
-      },
-      "licenseType": "Windows_Server",
-      "OS": "Windows",
-      "RoleExtensions": {
-        "Scripts": 0,
-        "chefClient": 0
-      }
-    },
-    "NetScaler": {
-      "imageReference": {
-        "publisher": "citrix",
-        "Offer": "netscalervpx-120",
-        "Sku": "netscalerbyol",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 32,
-      "plan": {
-        "name": "netscalerbyol",
-        "publisher": "citrix",
-        "product": "netscalervpx-120"
-      },
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 0,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    },
-    "MaxLoadBalancer": {
-      "imageReference": {
-        "publisher": "loadbalancer",
-        "offer": "loadbalancer-org-load-balancer-for-azure",
-        "sku": "max_load_balancer",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 32,
-      "plan": {
-        "name": "max_load_balancer",
-        "publisher": "loadbalancer",
-        "product": "loadbalancer-org-load-balancer-for-azure"
-      },
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 0,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    },
-    "Fortigate": {
-      "imageReference": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortigate-vm_v5",
-        "sku": "fortinet_fg-vm",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 32,
-      "plan": {
-        "name": "fortinet_fg-vm",
-        "publisher": "fortinet",
-        "product": "fortinet_fortigate-vm_v5"
-      },
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 0,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    },
-    "Fortigatepayg": {
-      "imageReference": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortigate-vm_v5",
-        "sku": "fortinet_fg-vm_payg",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 32,
-      "plan": {
-        "name": "fortinet_fg-vm_payg",
-        "publisher": "fortinet",
-        "product": "fortinet_fortigate-vm_v5"
-      },
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 0,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    },
-    "Fortimngr": {
-      "imageReference": {
-        "publisher": "fortinet",
-        "offer": "fortinet-fortimanager",
-        "sku": "fortinet-fortimanager",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 3,
-      "plan": {
-        "name": "fortinet-fortimanager",
-        "publisher": "fortinet",
-        "product": "fortinet-fortimanager"
-      },
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 0,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    },
-    "UbuntuServer1904": {
-      "imageReference": {
-        "publisher": "canonical",
-        "offer": "UbuntuServer",
-        "sku": "19.04",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 32,
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "Antimalware": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 1,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0
-      }
-    },
-    "Bus-debian": {
-      "imageReference": {
-        "publisher": "credativ",
-        "offer": "Debian",
-        "sku": "8",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 32,
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 1,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    },
-    "PROXY-UBUNTU": {
-      "imageReference": {
-        "publisher": "Canonical",
-        "offer": "UbuntuServer",
-        "sku": "16.04-LTS",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 32,
-      "fileUris": "[concat(parameters('global')._artifactsLocation, '/scripts/pxy.zip",
-      "commandToExecute": "[concat('sudo apt-get update && sudo apt-get install unzip && unzip Proxy.zip && sudo bash -x haproxyvm-configure.sh ', ' -a ', 'ilbIPAddress', ' -r ', 'ilbRabbitMqPort', ' -m ', 'ilbRabbitMqMgmtPort', ' -b ', 'dnsName', '.', 'location', '.cloudapp.azure.com -p ', 'vmNamePrefix', '0 -s ', 'vmNamePrefix', '1')]",
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 0,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    },
-    "CentOS75": {
-      "imageReference": {
-        "publisher": "OpenLogic",
-        "Offer": "CentOS",
-        "sku": "7.5",
-        "version": "latest"
-      },
-      "OS": "Linux",
-      "OSDiskGB": 64,
-      "RoleExtensions": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "DSC": 0,
-        "Scripts": 0,
-        "MSI": 0,
-        "CertMgmt": 0,
-        "DomainJoin": 0,
-        "Antimalware": 0,
-        "chefClient": 0,
-        "GuestHealthAgent": 0,
-        "AdminCenter": 0,
-        "WindowsOpenSSH": 0
-      }
-    }
-  },
-  "computeSizeLookupOptions": {
-    "API-P": "Standard_D4s_v3",
-    "API-D": "Standard_D4s_v3",
-    "API-S": "Standard_D2s_v3",
-    "SF-P": "Standard_D4s_v3",
-    "SF-D": "Standard_D4s_v3",
-    "SF-S": "Standard_D2s_v3",
-    "CTNR-P": "Standard_D4s_v3",
-    "CTNR-D": "Standard_D2s_v3",
-    "AD-P": "Standard_D2s_v3",
-    "AD-D": "Standard_A2m_v2",
-    "AAP-P": "Standard_D2s_v3",
-    "AAP-D": "Standard_D2s_v3",
-    "DNS-P": "Standard_D2s_v3",
-    "DNS-D": "Standard_D2s_v3",
-    "BUS-P": "Standard_DS2_v2",
-    "BUS-D": "Standard_DS2_v2",
-    "LIN-P": "Standard_DS2_v2",
-    "LIN-D": "Standard_DS2_v2",
-    "FIL-P": "Standard_D4s_v3",
-    "FIL-D": "Standard_D4s_v3",
-    "DFS-P": "Standard_D4s_v3",
-    "DFS-D": "Standard_D4s_v3",
-    "JMP-P": "Standard_D4s_v3",
-    "JMP-D": "Standard_D4s_v3",
-    "CLT-P": "Standard_D4s_v3",
-    "CLT-D": "Standard_D4s_v3",
-    "PXY-P": "Standard_D4s_v3",
-    "PXY-D": "Standard_D2s_v3",
-    "CLS01-D": "Standard_D4s_v3",
-    "CLS02-D": "Standard_D4s_v3",
-    "CLS01-P": "Standard_D4s_v3",
-    "CLS02-P": "Standard_D4s_v3",
-    "FW-P": "Standard_F4",
-    "FW-D": "Standard_F2"
   }
 }
