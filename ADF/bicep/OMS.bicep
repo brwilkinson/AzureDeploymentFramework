@@ -70,7 +70,7 @@ var patchingZones = [
 var patchingEnabled = {
     linuxWeekly: false
 
-    windowsNOW: false
+    windowsNOW: true
     windowsWeekly: true
     windowsMonthly: true
 }
@@ -921,50 +921,6 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
                     }
                 ]
             }
-        }
-    }
-}]
-
-resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
-    parent: AA
-    name: 'Update-NOW-Windows-Zone${zone}'
-    properties: {
-        updateConfiguration: {
-            operatingSystem: 'Windows'
-            windows: {
-                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
-                excludedKbNumbers: []
-                includedKbNumbers: []
-                rebootSetting: 'IfRequired'
-            }
-            duration: 'PT2H'
-            // azureVirtualMachines: []
-            // nonAzureComputerNames: []
-            targets: {
-                azureQueries: [
-                    {
-                        scope: [
-                            resourceGroup().id
-                        ]
-                        tagSettings: {
-                            tags: {
-                                zone: [
-                                    zone
-                                ]
-                            }
-                            filterOperator: 'Any'
-                        }
-                        locations: []
-                    }
-                ]
-            }
-        }
-        tasks: {}
-        scheduleInfo: {
-            isEnabled: patchingEnabled.windowsNOW
-            frequency: 'OneTime'
-            interval: 1
-            startTime: dateTimeAdd(now, 'PT${int(zone) * 15}M') // 15, 30, 45 mins from now, zones 1,2,3
         }
     }
 }]
