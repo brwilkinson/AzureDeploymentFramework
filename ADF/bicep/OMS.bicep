@@ -870,7 +870,7 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
-                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
+                includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
                 rebootSetting: 'IfRequired'
@@ -932,7 +932,7 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
-                includedUpdateClassifications: 'Critical,Security,UpdateRollup,FeaturePack,ServicePack,Definition,Tools,Updates'
+                includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
                 rebootSetting: 'IfRequired'

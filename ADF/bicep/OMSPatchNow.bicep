@@ -83,7 +83,7 @@ resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwar
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
-                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
+                includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
                 rebootSetting: 'IfRequired'
