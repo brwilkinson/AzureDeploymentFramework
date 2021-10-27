@@ -60,7 +60,7 @@ var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment
 var SubnetInfo = contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : []
 
 // Call the module once per subnet
-module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if ( contains(sn,'NSG') && sn.NSG == 1 ) {
+module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if ( contains(sn,'NSG') && bool(sn.NSG) ) {
   name: '${Deployment}-fl-${sn.Name}'
   scope: resourceGroup(hubRG)
   params: {

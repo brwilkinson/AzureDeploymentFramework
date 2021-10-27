@@ -57,7 +57,7 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 // }
 // var location = Locationlookup[Prefix]
 
-module dp_Deployment_RG 'sub-RG.bicep' = if ((Stage.RG == 1) && (!('${DeploymentID}${Environment}' == 'G0'))) {
+module dp_Deployment_RG 'sub-RG.bicep' = if (bool(Stage.RG) && (!('${DeploymentID}${Environment}' == 'G0'))) {
   name: 'dp${Deployment}-RG'
   params: {
     // move these to Splatting later
@@ -75,7 +75,7 @@ module dp_Deployment_RG 'sub-RG.bicep' = if ((Stage.RG == 1) && (!('${Deployment
   dependsOn: []
 }
 
-module dp_Deployment_RBAC 'sub-RBAC.bicep' = if (Stage.RBAC == 1) {
+module dp_Deployment_RBAC 'sub-RBAC.bicep' = if (bool(Stage.RBAC)) {
   name: 'dp${Deployment}-RBAC'
   params: {
     // move these to Splatting later
@@ -95,7 +95,7 @@ module dp_Deployment_RBAC 'sub-RBAC.bicep' = if (Stage.RBAC == 1) {
   ]
 }
 
-module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(Stage, 'RoleDefinition') && (Stage.RoleDefinition == 1)) {
+module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(Stage, 'RoleDefinition') && bool(Stage.RoleDefinition)) {
   name: 'dp${Deployment}-RoleDefinition'
   params: {
     // move these to Splatting later
@@ -115,7 +115,7 @@ module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(S
   ]
 }
 
-// module dp_Deployment_ManagementGroups 'sub-MG.bicep' = if (contains(Stage, 'mgInfo') && (Stage.mgInfo == 1)) {
+// module dp_Deployment_ManagementGroups 'sub-MG.bicep' = if (contains(Stage, 'mgInfo') && bool(Stage.mgInfo)) {
 //   name: 'dp${Deployment}-RoleDefinition'
 //   scope: tenant().tenantId
 //   params: {
@@ -136,7 +136,7 @@ module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(S
 //   ]
 // }
 
-// module dp_Deployment_Policy 'sub-Polic.bicep' = if (contains(Stage, 'Policy') && (Stage.Policy == 1)) {
+// module dp_Deployment_Policy 'sub-Polic.bicep' = if (contains(Stage, 'Policy') && bool(Stage.Policy)) {
 //   name: 'dp${Deployment}-Policy'
 //   params: {}
 //   dependsOn: []

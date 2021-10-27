@@ -209,7 +209,7 @@ resource APIMPublic 'Microsoft.ApiManagement/service/products@2020-06-01-preview
   }
 }]
 
-module DNS 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && Stage.SetExternalDNS == 1) {
+module DNS 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
@@ -222,7 +222,7 @@ module DNS 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index
   ]
 }]
 
-module DNSscm 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && Stage.SetExternalDNS == 1) {
+module DNSscm 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-scm'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
@@ -235,7 +235,7 @@ module DNSscm 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[in
   ]
 }]
 
-module DNSdeveloper 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && Stage.SetExternalDNS == 1) {
+module DNSdeveloper 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-developer'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
@@ -248,7 +248,7 @@ module DNSdeveloper 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (AP
   ]
 }]
 
-module DNSproxy 'x.DNS.private.A.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && Stage.SetInternalDNS == 1) {
+module DNSproxy 'x.DNS.private.A.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-A-${Deployment}-apim-${apim.name}-${Global.DomainName}-proxy'
   scope: resourceGroup(Global.SubscriptionID, Global.HubRGName)
   params: {
@@ -261,7 +261,7 @@ module DNSproxy 'x.DNS.private.A.bicep' = [for (apim,index) in APIMInfo : if (AP
   ]
 }]
 
-module DNSprivate 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && Stage.SetInternalDNS == 1) {
+module DNSprivate 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-CNAME-${Deployment}-apim-${apim.name}-${Global.DomainName}'
   scope: resourceGroup(Global.SubscriptionID, Global.HubRGName)
   params: {
@@ -274,7 +274,7 @@ module DNSprivate 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : 
   ]
 }]
 
-module DNSprivatedeveloper 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && Stage.SetInternalDNS == 1) {
+module DNSprivatedeveloper 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-CNAME-${Deployment}-apim-${apim.name}-${Global.DomainName}-developer'
   scope: resourceGroup(Global.SubscriptionID, Global.HubRGName)
   params: {
@@ -287,7 +287,7 @@ module DNSprivatedeveloper 'x.DNS.private.CNAME.bicep' = [for (apim,index) in AP
   ]
 }]
 
-module DNSprivatescm 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && Stage.SetInternalDNS == 1) {
+module DNSprivatescm 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-CNAME-${Deployment}-apim-${apim.name}-${Global.DomainName}-scm'
   scope: resourceGroup(Global.SubscriptionID, Global.HubRGName)
   params: {

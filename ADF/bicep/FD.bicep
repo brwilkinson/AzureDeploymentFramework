@@ -56,7 +56,7 @@ var frontDoor = [for i in range(0, length(frontDoorInfo)): {
 }]
 
 module FD 'FD-frontDoor.bicep'= [for (fd,index) in frontDoorInfo: if (frontDoor[index].match) {
-  name: 'dp${Deployment}-FD-Deploy${((length(frontDoorInfo) == 0) ? 'na' : fd.name)}'
+  name: 'dp${Deployment}-FD-Deploy${fd.name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID

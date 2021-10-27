@@ -201,7 +201,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
             name: 'NIC-${ -index }'
             properties: {
               primary: contains(nic, 'Primary')
-              enableAcceleratedNetworking: contains(nic, 'FastNic') && nic.FastNic == 1 ? true : false
+              enableAcceleratedNetworking: contains(nic, 'FastNic') && bool(nic.FastNic) ? true : false
               dnsSettings: {
                 dnsServers: []
               }

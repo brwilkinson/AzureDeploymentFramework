@@ -58,7 +58,7 @@ var AKS = [for i in range(0, length(AKSInfo)): {
 }]
 
 module AKSAll 'AKS-AKS.bicep' = [for (aks, index) in AKSInfo: if (AKS[index].match) {
-  name: 'dp${Deployment}-AKS-Deploy${((length(AKS) == 0) ? 'na' : aks.name)}'
+  name: 'dp${Deployment}-AKS-Deploy${aks.name}'
   params: {
     Deployment: Deployment
     Prefix: Prefix

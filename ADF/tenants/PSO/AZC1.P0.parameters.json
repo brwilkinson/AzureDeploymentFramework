@@ -116,24 +116,24 @@
             "prefix": "0/27",
             "Route": true,
             "NSG": 0,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "snBE01",
             "prefix": "32/28",
             "Route": true,
             "NSG": 0,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "snBE02",
             "prefix": "48/28",
             "Route": true,
             "NSG": 0,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "AzureFirewallSubnet",
@@ -144,8 +144,8 @@
             "prefix": "128/26",
             "Route": false,
             "NSG": 0,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "GatewaySubnet",
@@ -156,8 +156,8 @@
             "prefix": "224/27",
             "Route": false,
             "NSG": 0,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           }
           // {
           //   "name": "snMT02",
@@ -165,8 +165,8 @@
           //   "NSG": 0,
           //   "serviceEndpoints2": false,
           //   "Route": false,
-          //   "FlowLogEnabled": true,
-          //   "FlowAnalyticsEnabled": true
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
           // }
         ],
         "saInfo": [

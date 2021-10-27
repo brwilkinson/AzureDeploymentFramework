@@ -57,18 +57,13 @@ var KVInfo = [for (kv, index) in KeyVaultInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, kv.name))
 }]
 
-//  Role assignments all in subscription deployment, not on KV deployment.
-// resource KVUAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = [for (kv, index) in KeyVaultInfo: if (length(KeyVaultInfo) == 0 && KVInfo[index].match && contains(kv, 'UserAssignedIdentity')) {
-//   name: '${Deployment}-uai${(contains(kv, 'UserAssignedIdentity') ? kv.UserAssignedIdentity.name : 'na')}'
-//   location: resourceGroup().location
-// }]
-
 module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match) {
-  name: 'dp${Deployment}-KV-Deploy${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
+  name: 'dp${Deployment}-KV-${kv.name}'
   params: {
     Deployment: Deployment
     DeploymentID: DeploymentID
     Environment: Environment
+    Prefix: Prefix
     KVInfo: kv
     Global: Global
     OMSworkspaceID: OMSworkspaceID
@@ -76,17 +71,17 @@ module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVI
 }]
 
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-KV-privatelinkloop${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
+  name: 'dp${Deployment}-KV-privatelinkloop${kv.name}'
   params: {
     Deployment: Deployment
     PrivateLinkInfo: kv.privateLinkInfo
     providerType: 'Microsoft.KeyVault/vaults'
-    resourceName: '${Deployment}-kv${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
+    resourceName: '${Deployment}-kv${kv.name}'
   }
 }]
 
 module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-KV-registerPrivateDNS${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
+  name: 'dp${Deployment}-KV-registerPrivateDNS${kv.name}'
   scope: resourceGroup(hubRG)
   params: {
     PrivateLinkInfo: kv.privateLinkInfo

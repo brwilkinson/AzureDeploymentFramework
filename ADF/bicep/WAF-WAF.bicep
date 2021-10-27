@@ -196,9 +196,9 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
         httpListener: {
           id: '${WAFID}/httpListeners/httpListener-${(contains(list, 'pathRules') ? 'PathBasedRouting' : 'Basic')}-${list.Hostname}-${list.Port}'
         }
-        backendAddressPool: ((contains(list, 'httpsRedirect') && (list.httpsRedirect == 1)) ? json('null') : Listeners[index].backendAddressPool)
-        backendHttpSettings: ((contains(list, 'httpsRedirect') && (list.httpsRedirect == 1)) ? json('null') : Listeners[index].backendHttpSettings)
-        redirectConfiguration: ((contains(list, 'httpsRedirect') && (list.httpsRedirect == 1)) ? Listeners[index].redirectConfiguration : json('null'))
+        backendAddressPool: ((contains(list, 'httpsRedirect') && bool(list.httpsRedirect)) ? json('null') : Listeners[index].backendAddressPool)
+        backendHttpSettings: ((contains(list, 'httpsRedirect') && bool(list.httpsRedirect)) ? json('null') : Listeners[index].backendHttpSettings)
+        redirectConfiguration: ((contains(list, 'httpsRedirect') && bool(list.httpsRedirect)) ? Listeners[index].redirectConfiguration : json('null'))
         urlPathMap: (contains(list, 'pathRules') ? Listeners[index].urlPathMap : json('null'))
       }
     }]
@@ -280,7 +280,7 @@ resource WAFDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
-module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in waf.Listeners: if ((list.Interface == 'Public') && ((Stage.SetExternalDNS == 1) && (list.Protocol == 'https'))) {
+module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in waf.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
   name: 'setdns-public-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
@@ -290,7 +290,7 @@ module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in waf.Listeners: 
   }
 }]
 
-module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list,index) in waf.Listeners: if ((Stage.SetExternalDNS == 1) && (list.Protocol == 'https')) {
+module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list,index) in waf.Listeners: if (bool(Stage.SetExternalDNS) && (list.Protocol == 'https')) {
   name: 'setdns-private-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
   scope: resourceGroup(Global.SubscriptionID, Global.HubRGName)
   params: {

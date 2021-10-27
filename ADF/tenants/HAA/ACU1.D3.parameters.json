@@ -356,46 +356,46 @@
             "name": "snWAF01",
             "prefix": "0/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0
           },
           {
             "name": "snBE02",
             "prefix": "64/28",
             "NSG": 1,
             "Route": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0
           },
           {
             "name": "snBE01", // APIM Dedicated
             "prefix": "80/28",
             "NSG": 1,
             "Route": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0
           },
           {
             "name": "AzureBastionSubnet",
             "prefix": "96/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0
           },
           {
             "name": "snMT01",
             "prefix": "128/25",
             "NSG": 1,
             "Route": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0,
             "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
@@ -403,8 +403,8 @@
             "prefix": "0/24",
             "NSG": 1,
             "Route": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": false
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0
           }
         ],
         "saInfo": [

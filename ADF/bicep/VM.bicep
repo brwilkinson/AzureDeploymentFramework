@@ -343,7 +343,7 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = [fo
   }
 }]
 
-resource VMKVVMExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.CertMgmt == 1) {
+resource VMKVVMExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.CertMgmt)) {
   name: 'KVVMExtensionForWindows'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -365,7 +365,7 @@ resource VMKVVMExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions
   }
 }]
 
-resource VMAADLogin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.AADLogin == 1 && (contains(vm, 'ExcludeAADLogin') && vm.ExcludeAADLogin != 1)) {
+resource VMAADLogin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.AADLogin) && (contains(vm, 'ExcludeAADLogin') && vm.ExcludeAADLogin != 1)) {
   name: 'AADLogin'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -377,7 +377,7 @@ resource VMAADLogin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = 
   }
 }]
 
-resource VMAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.AdminCenter == 1 && (contains(vm, 'ExcludeAdminCenter') && vm.ExcludeAdminCenter != 1)) {
+resource VMAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.AdminCenter) && (contains(vm, 'ExcludeAdminCenter') && vm.ExcludeAdminCenter != 1)) {
   name: 'AdminCenter'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -401,7 +401,7 @@ resource VMAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2019-03-01'
   }
 }]
 
-resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DomainJoin == 1 && !(contains(vm, 'ExcludeDomainJoin') && vm.ExcludeDomainJoin == 1)) {
+resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.DomainJoin) && !(contains(vm, 'ExcludeDomainJoin') && bool(vm.ExcludeDomainJoin))) {
   name: 'joindomain'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -423,7 +423,7 @@ resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' 
   }
 }]
 
-resource VMDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC == 1 && vm.Role == 'PULL') {
+resource VMDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.DSC) && vm.Role == 'PULL') {
   name: 'Microsoft.Powershell.DSC.Pull'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -511,7 +511,7 @@ resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30'
   scope: resourceGroup(RGName)
 }
 
-resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && (contains(VM[index].Extensions,'DSC2') && VM[index].Extensions.DSC2 == 1) && vm.Role != 'PULL' && (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
+resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && (contains(VM[index].Extensions,'DSC2') && bool(VM[index].Extensions.DSC2)) && vm.Role != 'PULL' && (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC2'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -571,7 +571,7 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
   ]
 }]
 
-resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DSC == 1 && vm.Role != 'PULL' && ! (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
+resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.DSC) && vm.Role != 'PULL' && ! (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -627,7 +627,7 @@ resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for 
   ]
 }]
 
-resource VMDiags 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.IaaSDiagnostics == 1) {
+resource VMDiags 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.IaaSDiagnostics)) {
   name: 'VMDiagnostics'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -650,7 +650,7 @@ resource VMDiags 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [fo
   }
 }]
 
-resource VMDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.DependencyAgent == 1) {
+resource VMDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.DependencyAgent)) {
   name: 'DependencyAgent'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -662,7 +662,7 @@ resource VMDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12
   }
 }]
 
-resource VMAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.AzureMonitorAgent == 1) {
+resource VMAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.AzureMonitorAgent)) {
   name: '${((OSType[vm.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')}'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -674,7 +674,7 @@ resource VMAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
   }
 }]
 
-resource VMMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.MonitoringAgent == 1) {
+resource VMMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.MonitoringAgent)) {
   name: 'MonitoringAgent'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -692,7 +692,7 @@ resource VMMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12
   }
 }]
 
-resource VMGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.GuestHealthAgent == 1) {
+resource VMGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.GuestHealthAgent)) {
   name: '${((OSType[vm.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')}'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -713,7 +713,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRuleAssociations@2019-11-0
   }
 }]
 
-resource VMChefClient 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.chefClient == 1) {
+resource VMChefClient 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.chefClient)) {
   name: 'chefClient'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -734,7 +734,7 @@ resource VMChefClient 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' 
   }
 }]
 
-resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && vm.role == 'SQL' && VM[index].Extensions.SqlIaasExtension == 1) {
+resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && vm.role == 'SQL' && bool(VM[index].Extensions.SqlIaasExtension)) {
   name: 'SqlIaasExtension'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -765,7 +765,7 @@ resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2019-0
   }
 }]
 
-resource VMAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && vm.role == 'SQL' && VM[index].Extensions.BackupWindowsWorkloadSQL == 1) {
+resource VMAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && vm.role == 'SQL' && bool(VM[index].Extensions.BackupWindowsWorkloadSQL)) {
   name: 'AzureBackupWindowsWorkload'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -781,7 +781,7 @@ resource VMAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/extensi
   }
 }]
 
-resource VMIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && VM[index].Extensions.Antimalware == 1) {
+resource VMIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.Antimalware)) {
   name: 'IaaSAntimalware'
   parent: virtualMachine[index]
   location: resourceGroup().location

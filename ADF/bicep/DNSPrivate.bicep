@@ -59,8 +59,8 @@ resource DNSPrivateZone 'Microsoft.Network/privateDnsZones@2020-06-01' = [for (p
   properties: {}
 }]
 
-resource DNSPrivateZoneVNETLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (pdns, index) in DNSPrivateZoneInfo: if(pdns.linkDNS == 1 && Stage.LinkPrivateDns == 1) {
-  name: '${Deployment}-vn-${pdns.linkDNS == 1 && Stage.LinkPrivateDns == 1 ? pdns.zone : 'na'}'
+resource DNSPrivateZoneVNETLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (pdns, index) in DNSPrivateZoneInfo: if(bool(pdns.linkDNS) && bool(Stage.LinkPrivateDns)) {
+  name: '${Deployment}-vn-${pdns.zone}'
   parent: DNSPrivateZone[index]
   location: 'global'
   properties: {

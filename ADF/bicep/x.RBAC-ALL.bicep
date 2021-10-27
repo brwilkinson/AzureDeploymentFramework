@@ -10,8 +10,7 @@ param providerPath string
 param namePrefix string
 param providerAPI string
 param principalType string = ''
-
-targetScope = 'subscription'
+// param rbacresource resource
 
 // Role Assignments can be very difficult to troubleshoot, once a role assignment exists, it can only be redeployed if it has the same GUID for the name
 // This code and outputs will ensure it's easy to troubleshoot and also that you have consistency in Deployments
@@ -43,53 +42,21 @@ var roleAssignment = [for rbac in roleInfo.RBAC : {
     FriendlyName: 'source: ${rgName} --> ${roleInfo.Name} --> ${rbac.Name} --> destination: ${(contains(rbac, 'Prefix') ? rbac.Prefix : Prefix)}-${(contains(rbac, 'RG') ? rbac.RG : Enviro)}-${(contains(rbac, 'Tenant') ? rbac.Tenant : Global.AppName)}'
 }]
 
-// // todo for MG
-// resource mg 'Microsoft.Management/managementGroups@2021-04-01' existing = [for (rbac, index) in roleAssignment: if (Enviro == 'M0') {
-//     name: rbac.DestManagementGroup
-//     scope: tenant()
-// }]
-
-// module RBACRAMG 'sub-RBAC-ALL-RA-MG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro == 'M0') {
+// module RBACRAResource 'x.RBAC-ALL-RA-Resource.bicep' = [for (rbac, index) in roleAssignment: if (Enviro != 'G0' && Enviro != 'M0') {
 //     name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
-//     scope: managementGroup(rbac.DestManagementGroup)
+//     scope: resourceGroup(rbac.DestSubscriptionID,'${rbac.DestPrefix}-${Global.OrgName}-${rbac.DestApp}-RG-${rbac.DestRG}')
 //     params:{
 //         description: roleInfo.name
 //         name: rbac.GUID
 //         roledescription: rbac.RoleName
-//         roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
+//         roleDefinitionId: '${rbac.DestSubscription}/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
 //         principalType: rbac.principalType
 //         principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
 //               */ reference('${rbac.DestSubscription}/resourceGroups/${rbac.SourceRG}/providers/${providerPath}/${Deployment}${namePrefix}${roleInfo.Name}',providerAPI).principalId
 //     }
 // }]
 
-module RBACRASUB 'sub-RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment: if (Enviro == 'G0') {
-    name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
-    scope: subscription()
-    params:{
-        description: roleInfo.name
-        name: rbac.GUID
-        roledescription: rbac.RoleName
-        roleDefinitionId: '${rbac.DestSubscription}/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
-        principalType: rbac.principalType
-        principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
-              */ reference('${rbac.DestSubscription}/resourceGroups/${rbac.SourceRG}/providers/${providerPath}/${Deployment}${namePrefix}${roleInfo.Name}',providerAPI).principalId
-    }
-}]
-
-module RBACRARG 'sub-RBAC-ALL-RA-RG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro != 'G0' && Enviro != 'M0') {
-    name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
-    scope: resourceGroup(rbac.DestSubscriptionID,'${rbac.DestPrefix}-${Global.OrgName}-${rbac.DestApp}-RG-${rbac.DestRG}')
-    params:{
-        description: roleInfo.name
-        name: rbac.GUID
-        roledescription: rbac.RoleName
-        roleDefinitionId: '${rbac.DestSubscription}/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
-        principalType: rbac.principalType
-        principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
-              */ reference('${rbac.DestSubscription}/resourceGroups/${rbac.SourceRG}/providers/${providerPath}/${Deployment}${namePrefix}${roleInfo.Name}',providerAPI).principalId
-    }
-}]
 
 output RoleAssignments array = roleAssignment
+output resourceRBACout resource = 
 

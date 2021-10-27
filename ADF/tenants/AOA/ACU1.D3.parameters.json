@@ -323,24 +323,24 @@
             "name": "snMT01",
             "prefix": "0/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
             // "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           // {
           //   "name": "snBE02",
           //   "prefix": "64/28",
           //   "NSG": 1,
           //   "Route": 1,
-          //   "FlowLogEnabled": true,
-          //   "FlowAnalyticsEnabled": true
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
           //   // "delegations": "Microsoft.ContainerInstance/containerGroups"
           // },
           {
@@ -349,31 +349,31 @@
             "NSG": 1,
             "Route": 0, // 1
             "NGW": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "AzureBastionSubnet",
             "prefix": "96/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "snWAF01",
             "prefix": "128/25",
             "NSG": 1,
             "Route": 0,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
             "Route": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           }
         ],
         "BastionInfo": {

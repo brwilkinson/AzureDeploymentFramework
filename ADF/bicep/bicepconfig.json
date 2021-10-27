@@ -1,4 +1,18 @@
 {
+  "analyzers": {
+    "core": {
+      "verbose": false,
+      "enabled": true,
+      "rules": {
+        "no-unused-params": {
+          "level": "info"
+        },
+        "no-unused-vars": {
+          "level": "info"
+        }
+      }
+    }
+  },
   "cloud": {
     "currentProfile": "AzureCloud",
     "credentialPrecedence": [
@@ -30,19 +44,5 @@
   // //       "resourceGroup": "CoreSpecsRG"
   // //     }
   // //   }
-  // // },
-  // "analyzers": {
-  //   "core": {
-  //     "verbose": false,
-  //     "enabled": true,
-  //     "rules": {
-  //       "no-unused-params": {
-  //         "level": "info"
-  //       },
-  //       "no-unused-vars": {
-  //         "level": "info"
-  //       }
-  //     }
-  //   }
-  // }
+  // // }
 }
