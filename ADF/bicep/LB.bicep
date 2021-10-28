@@ -89,4 +89,7 @@ module LBs 'LB-LB.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {
     Global: Global
     OMSworkspaceID: OMSworkspaceID
   }
+  dependsOn: [
+    PublicIP
+  ]
 }]
