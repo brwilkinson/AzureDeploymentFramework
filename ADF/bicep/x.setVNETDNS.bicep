@@ -54,7 +54,7 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
       properties: {
         addressPrefix: '${((sn.name == 'snMT02') ? networkIdUpper : networkId)}.${sn.Prefix}'
         networkSecurityGroup: ((contains(sn, 'NSG') && ((sn.NSG == 'Hub') || (sn.NSG == 'Spoke'))) ? json('{"id":"${string(resourceId(Global.HubRGName, 'Microsoft.Network/networkSecurityGroups', '${Deploymentnsg}${sn.NSG}-nsg${sn.name}'))}"}') : json('null'))
-        routeTable: ((contains(sn, 'RT') && (sn.RT == 1)) ? RouteTableGlobal : json('null'))
+        routeTable: ((contains(sn, 'RT') && bool(sn.RT)) ? RouteTableGlobal : json('null'))
         privateEndpointNetworkPolicies: 'Disabled'
         delegations: (contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default)
       }

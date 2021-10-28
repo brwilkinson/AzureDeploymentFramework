@@ -66,7 +66,7 @@ var ASPlanInfo = [for (asp, index) in appServiceplanInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, asp.name))
 }]
 
-resource ASP 'Microsoft.Web/serverfarms@2021-01-01' = [for (item,index) in appServiceplanInfo: if (item.deploy == 1 && ASPlanInfo[index].match) {
+resource ASP 'Microsoft.Web/serverfarms@2021-01-01' = [for (item,index) in appServiceplanInfo: if (bool(item.deploy) && ASPlanInfo[index].match) {
   name: '${Deployment}-asp${item.Name}'
   location: resourceGroup().location
   kind: item.kind

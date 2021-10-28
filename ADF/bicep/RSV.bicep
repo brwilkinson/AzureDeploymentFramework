@@ -57,7 +57,7 @@ var RSVInfo = [
   }
 ]
 
-resource RSV 'Microsoft.RecoveryServices/vaults@2021-01-01' = [for i in range(0, length(RSVInfo)): if (Stage.RSV == 1) {
+resource RSV 'Microsoft.RecoveryServices/vaults@2021-01-01' = [for i in range(0, length(RSVInfo)): if (bool(Stage.RSV)) {
   location: resourceGroup().location
   name: '${DeploymentURI}${RSVInfo[i].Name}'
   sku: {
@@ -67,7 +67,7 @@ resource RSV 'Microsoft.RecoveryServices/vaults@2021-01-01' = [for i in range(0,
   properties: {}
 }]
 
-resource RSVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for i in range(0, length(RSVInfo)): if (Stage.RSV == 1) {
+resource RSVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for i in range(0, length(RSVInfo)): if (bool(Stage.RSV)) {
   name: 'service'
   scope: RSV[i]
   properties: {

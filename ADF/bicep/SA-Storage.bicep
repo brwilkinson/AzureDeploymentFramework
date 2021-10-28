@@ -40,7 +40,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   properties: {
     allowBlobPublicAccess: false
     supportsBlobContainerRetention: true
-    azureFilesIdentityBasedAuthentication: ((contains(storageInfo, 'ADDS') && (storageInfo.ADDS == 1)) ? azureFilesIdentityBasedAuthentication : null)
+    azureFilesIdentityBasedAuthentication: ((contains(storageInfo, 'ADDS') && bool(storageInfo.ADDS)) ? azureFilesIdentityBasedAuthentication : null)
     largeFileSharesState: (contains(storageInfo, 'largeFileSharesState') ? storageInfo.largeFileSharesState : null)
     networkAcls: {
       bypass: 'Logging, Metrics, AzureServices'

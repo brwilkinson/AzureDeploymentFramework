@@ -870,7 +870,7 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
-                includedUpdateClassifications: 'Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates'
+                includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
                 rebootSetting: 'IfRequired'
@@ -932,7 +932,7 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
-                includedUpdateClassifications: 'Critical,Security,UpdateRollup,FeaturePack,ServicePack,Definition,Tools,Updates'
+                includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
                 rebootSetting: 'IfRequired'
@@ -1023,7 +1023,7 @@ resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpda
 }
 */
 
-resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (Extensions.VMInsights == 1) {
+resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bool(Extensions.VMInsights)) {
     name: '${DeploymentURI}VMInsights'
     location: resourceGroup().location
     properties: {
@@ -1243,14 +1243,14 @@ resource AppInsightDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01
     }
 }
 
-resource OMS_dataSources 'Microsoft.OperationalInsights/workspaces/dataSources@2020-08-01' = [for item in dataSources: if (Stage.OMSDataSources == 1) {
+resource OMS_dataSources 'Microsoft.OperationalInsights/workspaces/dataSources@2020-08-01' = [for item in dataSources: if (bool(Stage.OMSDataSources)) {
     name: item.name
     parent: OMS
     kind: item.kind
     properties: item.properties
 }]
 
-resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = [for item in solutions: if (Stage.OMSSolutions == 1) {
+resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = [for item in solutions: if (bool(Stage.OMSSolutions)) {
     name: '${item}(${OMSWorkspaceName})'
     location: resourceGroup().location
     properties: {

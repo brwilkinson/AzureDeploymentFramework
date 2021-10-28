@@ -152,7 +152,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2020-12-01' = {
     addonProfiles: {
       IngressApplicationGateway: {
         enabled: true
-        config: ((AKSInfo.BrownFields == 1) ? IngressBrownfields : IngressGreenfields)
+        config: bool(AKSInfo.BrownFields) ? IngressBrownfields : IngressGreenfields
       }
       httpApplicationRouting: {
         enabled: false

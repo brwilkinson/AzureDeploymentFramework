@@ -73,9 +73,9 @@ var routingRules = [for service in frontDoorInfo.services: {
       }
     }
     rulesEngine: !(contains(service, 'rulesEngine') && (contains(frontDoorInfo, 'rulesEngineDetached') && frontDoorInfo.rulesEngineDetached == 0)) ? null : /*
-    */ {
+    */  {
           id: resourceId('Microsoft.Network/frontDoors/rulesEngines', FDName,  service.rulesEngine)
-       }
+        }
   }
 }]
 
@@ -169,7 +169,7 @@ resource FDDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
-resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (service, index) in frontDoorInfo.services: if (contains(service, 'EnableSSL') && (service.EnableSSL == 1)) {
+resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (service, index) in frontDoorInfo.services: if (contains(service, 'EnableSSL') && bool(service.EnableSSL)) {
   name: 'SetServicesCertificates${index + 1}-${frontDoorInfo.name}'
   identity: {
     type: 'UserAssigned'

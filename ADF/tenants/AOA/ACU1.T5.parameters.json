@@ -328,24 +328,24 @@
             "name": "snMT01",
             "prefix": "0/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
             "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",
             "prefix": "32/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "snBE02",
             "prefix": "64/28",
             "NSG": 1,
             "Route": 0, //1
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
             "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
@@ -353,31 +353,31 @@
             "prefix": "80/28",
             "NSG": 1,
             "Route": 0, //1
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "AzureBastionSubnet",
             "prefix": "96/27",
             "NSG": 1,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "snWAF01",
             "prefix": "128/25",
             "NSG": 1,
             "Route": 0,
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "snMT02",
             "prefix": "0/24",
             "NSG": 1,
             "Route": 0, //1
-            "FlowLogEnabled": true,
-            "FlowAnalyticsEnabled": true
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
           }
         ],
         "BastionInfo": {
@@ -442,6 +442,16 @@
               {
                 "Subnet": "snFE01",
                 "groupID": "vault"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "BW",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
               }
             ]
           }
@@ -592,7 +602,8 @@
             "Name": "WPS01",
             "kind": "app",
             "AppSVCPlan": "WPS01",
-            "saname": "diag"
+            "saname": "diag",
+            "customDNS": 1
           }
         ],
         "WebSiteContainerInfo": [
@@ -601,7 +612,8 @@
             "kind": "app,linux,container",
             "AppSVCPlan": "CTR01",
             "saname": "data",
-            "registry": "01"
+            "registry": "01",
+            "customDNS": 1
             // "registryENV": "t5"
           }
         ],
@@ -613,7 +625,8 @@
             "saname": "data",
             "runtime": "dotnet",
             "subnet": "snMT01",
-            "preWarmedCount": 1
+            "preWarmedCount": 1,
+            "customDNS": 1
           },
           {
             "Name": "PS02",
@@ -622,7 +635,8 @@
             "saname": "data",
             "runtime": "powershell",
             "subnet": "snMT01",
-            "preWarmedCount": 1
+            "preWarmedCount": 1,
+            "customDNS": 1
           }
         ],
         "appConfigurationInfo": {
