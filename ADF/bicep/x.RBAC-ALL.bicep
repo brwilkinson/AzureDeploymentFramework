@@ -58,5 +58,5 @@ var roleAssignment = [for rbac in roleInfo.RBAC : {
 
 
 output RoleAssignments array = roleAssignment
-output resourceRBACout resource = 
+// output resourceRBACout resource = 
 
