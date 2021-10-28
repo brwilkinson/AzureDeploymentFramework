@@ -110,6 +110,7 @@ module container 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSI
     DeploymentURI: DeploymentURI
     OMSworkspaceID: OMSworkspaceID
     linuxFxVersion: 'COMPOSE|${WSInfo[index].compose}'
+    Global: Global
     diagLogs: [
       {
         category: 'AppServiceHTTPLogs'

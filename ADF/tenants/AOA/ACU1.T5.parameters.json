@@ -602,7 +602,8 @@
             "Name": "WPS01",
             "kind": "app",
             "AppSVCPlan": "WPS01",
-            "saname": "diag"
+            "saname": "diag",
+            "customDNS": 1
           }
         ],
         "WebSiteContainerInfo": [
@@ -611,7 +612,8 @@
             "kind": "app,linux,container",
             "AppSVCPlan": "CTR01",
             "saname": "data",
-            "registry": "01"
+            "registry": "01",
+            "customDNS": 1
             // "registryENV": "t5"
           }
         ],
@@ -623,7 +625,8 @@
             "saname": "data",
             "runtime": "dotnet",
             "subnet": "snMT01",
-            "preWarmedCount": 1
+            "preWarmedCount": 1,
+            "customDNS": 1
           },
           {
             "Name": "PS02",
@@ -632,7 +635,8 @@
             "saname": "data",
             "runtime": "powershell",
             "subnet": "snMT01",
-            "preWarmedCount": 1
+            "preWarmedCount": 1,
+            "customDNS": 1
           }
         ],
         "appConfigurationInfo": {

@@ -5,6 +5,7 @@ param DeploymentURI string
 param OMSworkspaceID string
 param diagLogs array
 param linuxFxVersion string = ''
+param Global object
 
 var MSILookup = {
   SQL: 'Cluster'
@@ -28,6 +29,16 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: '${DeploymentURI}sa${ws.saname}'
 }
 
+module WebSiteDNS 'x.DNS.CNAME.bicep' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
+  name: 'setdns-public-${Deployment}-${appprefix}${ws.Name}-${Global.DomainNameExt}'
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  params: {
+    hostname: toLower('${Deployment}-${appprefix}${ws.Name}')
+    cname: '${Deployment}-${appprefix}${ws.Name}.azurewebsites.net'
+    Global: Global
+  }
+}
+
 resource WS 'Microsoft.Web/sites@2021-01-01' = {
   name: '${Deployment}-${appprefix}${ws.Name}'
   identity: {
@@ -43,6 +54,28 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
     siteConfig: {
       linuxFxVersion: empty(linuxFxVersion) ? null : linuxFxVersion
     }
+  }
+}
+
+resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
+  name: toLower('${WS.name}.${Global.DomainNameExt}')
+  location: resourceGroup().location
+  properties: {
+    canonicalName: toLower('${WS.name}.${Global.DomainNameExt}')
+    serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
+    // domainValidationMethod: 'http-token'
+  }
+}
+
+resource extDNSBinding 'Microsoft.Web/sites/hostNameBindings@2021-02-01' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
+  name: toLower('${WS.name}.${Global.DomainNameExt}')
+  parent: WS
+  properties: {
+    siteName: WS.name
+    hostNameType: 'Verified'
+    sslState: 'SniEnabled'
+    customHostNameDnsRecordType: 'CName'
+    thumbprint: certificates.properties.thumbprint
   }
 }
 
@@ -78,7 +111,7 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
 }
 
 resource WSVirtualNetwork 'Microsoft.Web/sites/config@2021-01-15' = if(contains(ws, 'subnet')) {
-  name: '${Deployment}-${appprefix}${ws.Name}/virtualNetwork'
+  name: '${WS.name}/virtualNetwork'
   properties: {
     subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', ws.subnet)
     swiftSupported: true
@@ -92,3 +125,5 @@ resource WSWebConfig 'Microsoft.Web/sites/config@2021-01-01' = if(contains(ws, '
     preWarmedInstanceCount: ws.preWarmedCount
   }
 }
+
+output WebSite resource = WS

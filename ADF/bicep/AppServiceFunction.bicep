@@ -89,6 +89,7 @@ module functionApp 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (W
     Deployment: Deployment
     DeploymentURI: DeploymentURI
     OMSworkspaceID: OMSworkspaceID
+    Global: Global
     diagLogs: [
       {
         category: 'FunctionAppLogs'
@@ -109,7 +110,7 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
     appprefix: 'fn'
     Deployment: Deployment
     appConfigCustom: myAppConfig
-    appConfigCurrent: appsettingsCurrent[index].list().properties
+    appConfigCurrent: WSInfo[index].match ? appsettingsCurrent[index].list().properties : null
     appConfigNew: {
       // https://docs.microsoft.com/en-us/azure/azure-functions/configure-networking-how-to
       // https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
