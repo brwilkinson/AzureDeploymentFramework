@@ -157,10 +157,10 @@ Configuration $Configuration
         }
 
         #-------------------------------------------------------------------
-        xIEEsc DisableIEESC
+        IEEnhancedSecurityConfiguration DisableIEESC
         {
-            UserRole  = 'Administrators'
-            IsEnabled = IIF $Node.DisableIEESC (-Not $Node.DisableIEESC) $True
+            Role    = 'Administrators'
+            Enabled = IIF $Node.DisableIEESC (-Not $Node.DisableIEESC) $True
         }
 
         #-------------------------------------------------------------------
