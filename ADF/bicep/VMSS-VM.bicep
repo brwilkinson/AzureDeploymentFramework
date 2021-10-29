@@ -134,7 +134,7 @@ var loadBalancerInboundNatPools = [for (nat,index) in NATPools : {
 }]
 
 resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
-  name: '${Deployment}-ss${AppServer.Name}'
+  name: '${Deployment}-vmss${AppServer.Name}'
   location: resourceGroup().location
   identity: {
     type: 'SystemAssigned, UserAssigned'
