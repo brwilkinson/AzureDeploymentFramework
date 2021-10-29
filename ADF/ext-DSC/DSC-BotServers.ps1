@@ -141,9 +141,9 @@ Configuration $Configuration
                     }
                     catch
                     {
-                        Throw "Certificate cannot be found with Thumbprint [$($certBinding.CertHash)]"
+                        Write-Warning "Certificate cannot be found with Thumbprint [$($certBinding.CertHash)]"
+                        # Throw "Certificate cannot be found with Thumbprint [$($certBinding.CertHash)]"
                     }
-                    
                 }#Test
             }
         }
