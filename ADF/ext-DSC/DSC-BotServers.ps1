@@ -22,7 +22,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xWebAdministration
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile -ModuleVersion 8.10.0.0
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile,xPackage -ModuleVersion 8.10.0.0
     Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName xWindowsUpdate
     Import-DscResource -ModuleName xDSCFirewall
@@ -602,7 +602,7 @@ Configuration $Configuration
         foreach ($Package in $Node.SoftwarePackagePresent)
         {
             $Name = $Package.Name -replace $StringFilter
-            Get-Package $Name
+            xPackage $Name
             {
                 Name                 = $Package.Name
                 Path                 = $Package.Path
