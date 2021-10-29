@@ -61,7 +61,7 @@
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "PrivateLink": 1,
-        "ILB": 0,
+        "LB": 0,
         "PLB": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,

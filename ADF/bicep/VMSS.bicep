@@ -62,7 +62,7 @@ var VM = [for (vm, index) in AppServers: {
   NodeType: toLower(concat(Global.AppName, vm.Name))
   vmHostName: toLower('${Environment}${DeploymentID}${vm.Name}')
   Name: '${Prefix}${Global.AppName}-${Environment}${DeploymentID}-${vm.Name}'
-  Primary: vm.IsPrimary
+  // Primary: vm.IsPrimary
   durabilityLevel: vm.durabilityLevel
   placementProperties: vm.placementProperties
 }]

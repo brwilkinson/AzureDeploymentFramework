@@ -420,7 +420,7 @@ module dp_Deployment_ERGW 'ERGW.bicep' = if (bool(Stage.ERGW)) {
   ]
 }
 
-module dp_Deployment_LB 'LB.bicep' = if (bool(Stage.ILB)) {
+module dp_Deployment_LB 'LB.bicep' = if (bool(Stage.LB)) {
   name: 'dp${Deployment}-LB'
   params: {
     // move these to Splatting later

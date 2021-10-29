@@ -114,6 +114,11 @@ $rgName = 'ACU1-BRW-AOA-RG-T5'
 $Name = 'acu1-brw-aoa-t5-cosmos-eshop-sql'
 $type = 'Microsoft.DocumentDB/databaseAccounts'
 
+
+$rgName = 'ACU1-BRW-AOA-RG-T5'
+$Name = 'ACU1-BRW-AOA-T5-ac01/Enviro'
+$type = 'Microsoft.AppConfiguration/configurationStores/keyValues'
+
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 
 $n = $type -split '/' | Select-Object -First 1

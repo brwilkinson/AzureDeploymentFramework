@@ -420,7 +420,7 @@
       }
     },
     {
-      "condition": "[equals(parameters('Stage').ILB,1)]",
+      "condition": "[equals(parameters('Stage').LB,1)]",
       "name": "[concat('dp', variables('Deployment'), '-ILB')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-01-01",
@@ -430,7 +430,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "relativePath": "[variables('DeploymentInfoObject').ILB]",
+          "relativePath": "[variables('DeploymentInfoObject').LB]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": "[deployment().properties.parameters]"

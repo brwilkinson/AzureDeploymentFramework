@@ -58,7 +58,7 @@
         "DNSPrivateZone": 0,
         "ADPrimary": 1,
         "ADSecondary": 0,
-        "ILB": 1,
+        "LB": 1,
         "PLB": 1,
         "VMApp": 1,
         "VMAppLinux": 0,
