@@ -84,9 +84,9 @@
                     Arguments = '/VERYSILENT'
                 },
                 @{
-                    Name      = 'Microsoft Visual C++ 2019 X64 Minimum Runtime - 14.29.30133'
+                    Name      = 'Microsoft Visual C++ 2015-2019 Redistributable (x64) - 14.29.30135'
                     Path      = 'F:\Source\dotnet\VC_redist.x64.exe'
-                    ProductId = '{6CD9E9ED-906D-4196-8DC3-F987D2F6615F}'
+                    ProductId = ''
                     Arguments = '/install /q /norestart'
                 }
                 @{  
