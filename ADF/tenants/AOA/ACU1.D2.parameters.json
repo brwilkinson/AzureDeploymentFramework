@@ -77,7 +77,7 @@
         "ADSecondary": 0,
         "CreateADPDC": 1,
         "CreateADBDC": 1,
-        "ILB": 1, //
+        "LB": 1, //
         "InitialDOP": 0,
         "VMApp": 0, //
         "ConfigSQLAO": 1,

@@ -67,7 +67,7 @@
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "ILB": 0,
+        "LB": 0,
         "InitialDOP": 0,
         "VMApp": 1,
         "VMAppLinux": 0,

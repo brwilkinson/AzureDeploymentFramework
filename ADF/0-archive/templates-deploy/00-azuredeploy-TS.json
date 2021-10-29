@@ -604,7 +604,7 @@
     //   }
     // },
     // {
-    //   "condition": "[equals(parameters('Stage').ILB,1)]",
+    //   "condition": "[equals(parameters('Stage').LB,1)]",
     //   "name": "[concat('dp', variables('Deployment'), '-ILB')]",
     //   "type": "Microsoft.Resources/deployments",
     //   "apiVersion": "2021-01-01",
@@ -617,7 +617,7 @@
     //       "id": "[
     //           if(
     //               parameters('Global').TemplateSpec,
-    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').ILB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
+    //               resourceId(parameters('Global').GlobalRGName,'Microsoft.Resources/templateSpecs/versions',replace(last(split(variables('DeploymentInfoObject').LB,'/')),'.json',''),parameters('Global').TemplateSpecVersion),
     //               json('null')
     //             )
     //       ]",
@@ -625,7 +625,7 @@
     //         if(
     //               parameters('Global').TemplateSpec,
     //               json('null'),
-    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').ILB, parameters('global')._artifactsLocationSasToken)
+    //               concat(parameters('global')._artifactsLocation, '/', variables('DeploymentInfoObject').LB, parameters('global')._artifactsLocationSasToken)
     //             )
     //         ]",
     //       "contentVersion": "1.0.0.0"
