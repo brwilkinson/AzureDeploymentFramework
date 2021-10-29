@@ -64,15 +64,15 @@
             RemoteFilePresent           = @(
                 @{
                     Uri             = 'https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/Git-2.33.1-64-bit.exe'
-                    DestinationPath = 'F:\Source\GIT'
+                    DestinationPath = 'F:\Source\GIT\Git-2.33.1-64-bit.exe'
                 },
                 @{
                     Uri             = 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
-                    DestinationPath = 'F:\Source\dotnet'
+                    DestinationPath = 'F:\Source\dotnet\vc_redist.x64.exe'
                 },
                 @{
                     Uri             = 'https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=16#'
-                    DestinationPath = 'F:\Source\VisualStudio'
+                    DestinationPath = 'F:\Source\VisualStudio\vs_enterprise__337181613.1633999746.exe'
                 }
             )
 
