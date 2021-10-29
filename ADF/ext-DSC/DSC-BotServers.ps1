@@ -143,6 +143,7 @@ Configuration $Configuration
                     {
                         Write-Warning "Certificate cannot be found with Thumbprint [$($certBinding.CertHash)]"
                         # Throw "Certificate cannot be found with Thumbprint [$($certBinding.CertHash)]"
+                        $true
                     }
                 }#Test
             }
