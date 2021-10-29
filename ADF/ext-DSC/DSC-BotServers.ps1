@@ -22,7 +22,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xWebAdministration
-    # Import-DscResource -ModuleName xPSDesiredStateConfiguration
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile -ModuleVersion 8.10.0.0
     Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName xWindowsUpdate
     Import-DscResource -ModuleName xDSCFirewall
