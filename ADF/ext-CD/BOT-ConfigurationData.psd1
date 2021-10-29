@@ -79,7 +79,7 @@
             SoftwarePackagePresent      = @(
                 @{
                     Name      = 'Git'
-                    Path      = 'F:\Source\GIT\Git-2.33.0.2-64-bit.exe'
+                    Path      = 'F:\Source\GIT\Git-2.33.1-64-bit.exe'
                     ProductId = ''
                     Arguments = '/VERYSILENT'
                 },
