@@ -14,19 +14,26 @@ if (Test-Path $DSCSourceFolder)
 }
 
 
-
-
 # Zip up only changes
 break
-[string] $ArtifactStagingDirectory = 'D:\repos\ADF\ADF'
-[string] $DSCSourceFolder = $ArtifactStagingDirectory + '\ext-DSC'
-
-if (Test-Path $DSCSourceFolder)
-{
-    git -C $DSCSourceFolder diff --name-only | Where-Object { $_ -match 'ps1$' } | ForEach-Object {
-        $filename = Join-Path -Path (Split-Path -Path $ArtifactStagingDirectory) -ChildPath $_ 
-        $file = Get-Item -Path $filename
-        $DSCArchiveFilePath = $file.FullName.Substring(0, $file.FullName.Length - 4) + '.zip'
-        Publish-AzVMDscConfiguration $file.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+[string] $Artifacts = 'D:\Repos\ADF\ADF'
+[string] $DSCSourceFolder = $Artifacts + '\ext-DSC'
+$Include = @(
+    "$Artifacts\ext-DSC\"
+)
+# Create DSC configuration archive only for the files that changed
+git -C $DSCSourceFolder diff --diff-filter d --name-only $Include |
+    Where-Object { $_ -match 'ps1$' } | ForEach-Object {
+                
+        # ignore errors on git diff for deleted files
+        $File = Get-Item -EA Ignore -Path (Join-Path -ChildPath $_ -Path (Split-Path -Path $Artifacts))
+        if ($File)
+        {
+            $DSCArchiveFilePath = $File.FullName.Substring(0, $File.FullName.Length - 4) + '.zip'
+            Publish-AzVMDscConfiguration $File.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose
+        }
+        else 
+        {
+            Write-Verbose -Message "File not found, assume deleted, will not upload [$_]"
+        }
     }
-}
