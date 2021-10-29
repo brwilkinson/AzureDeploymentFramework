@@ -22,7 +22,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xWebAdministration
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile,xPackage -ModuleVersion 8.10.0.0
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile, xPackage -ModuleVersion 8.10.0.0
     Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName xWindowsUpdate
     Import-DscResource -ModuleName xDSCFirewall
@@ -128,14 +128,22 @@ Configuration $Configuration
                     $certBinding = $using:certBinding
                     $cert = netsh http show sslcert ipport=0.0.0.0:$($certBinding.Port)
                     $result = $cert | Where-Object { $_ -match '(Application ID.+: )(?<AppId>{.+})' }
-                    if ($Matches.AppId -eq $certBinding.AppId)
+                    try
                     {
-                        $true
+                        if ($Matches.AppId -eq $certBinding.AppId)
+                        {
+                            $true
+                        }
+                        else
+                        {
+                            $false
+                        }
                     }
-                    else
+                    catch
                     {
-                        $false
+                        Throw "Certificate cannot be found with Thumbprint [$($certBinding.CertHash)]"
                     }
+                    
                 }#Test
             }
         }
@@ -627,7 +635,7 @@ Configuration $Configuration
                 Path                       = $Package.Path
                 Ensure                     = 'Present'
                 ProductId                  = $Package.ProductId
-                DependsOn = $dependsonDirectory + $dependsonArchive
+                DependsOn                  = $dependsonDirectory + $dependsonArchive
                 Arguments                  = $Package.Arguments
                 RunAsCredential            = $credlookup['DomainCreds'] 
                 CreateCheckRegValue        = $true 
