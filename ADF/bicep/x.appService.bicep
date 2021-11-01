@@ -64,6 +64,7 @@ resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,
     canonicalName: toLower('${WS.name}.${Global.DomainNameExt}')
     serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
     // domainValidationMethod: 'http-token'
+    
   }
 }
 
