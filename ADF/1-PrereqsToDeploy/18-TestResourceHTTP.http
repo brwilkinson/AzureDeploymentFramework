@@ -30,12 +30,12 @@ Authorization: {{Bearer}}
 
 ###
 GET https://management.azure.com/providers/Microsoft.Billing/billingAccounts/8608480/providers/Microsoft.Consumption/usageDetails?api-version=2019-10-01
-Authorization: {{Bearer2}}
+Authorization: {{Bearer}}
 
 ### 
 GET https://management.azure.com/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/providers/Microsoft.CostManagement/exports/test?api-version=2020-06-01
 Authorization: {{Bearer}}
 
 ### 
-GET https://management.azure.com/subscriptions/bad9413a-7721-4788-9790-dc0ca05917dc/providers/Microsoft.CostManagement/exports/coeslalomtest?api-version=2020-06-01
-Authorization: {{Bearer2}}
+GET https://acu1-brw-aoa-t5-kvdata2.vault.azure.net//storage/acu1brwaoat5sadata2?api-version=7.0
+Authorization: {{Bearer}}

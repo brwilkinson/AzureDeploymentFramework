@@ -114,10 +114,18 @@ $rgName = 'ACU1-BRW-AOA-RG-T5'
 $Name = 'acu1-brw-aoa-t5-cosmos-eshop-sql'
 $type = 'Microsoft.DocumentDB/databaseAccounts'
 
-
 $rgName = 'ACU1-BRW-AOA-RG-T5'
 $Name = 'ACU1-BRW-AOA-T5-ac01/Enviro'
 $type = 'Microsoft.AppConfiguration/configurationStores/keyValues'
+
+$rgName = 'ACU1-BRW-AOA-RG-T5'
+$Name = 'acu1brwaoat5sadata2'
+$type = 'Microsoft.Storage/storageAccounts'
+
+$rgName = 'ACU1-BRW-AOA-RG-T5'
+$Name = 'ACU1-BRW-AOA-T5-kvData2/acu1brwaoat5sadata2'
+$type = 'Microsoft.KeyVault/vaults/storage'
+
 
 $ID = Get-MyAzResourceID -rgName $rgName -Name $Name -type $type
 

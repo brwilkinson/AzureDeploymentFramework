@@ -199,15 +199,29 @@
             ]
           },
           {
-            "name": "StorageAccountOperator",
+            "name": "StorageKeyRotation",
             "RBAC": [
               {
+                "Name": "Key Vault Administrator"
+              },
+              {
                 "Name": "Storage Account Key Operator Service Role"
+              },
+              {
+                "Name": "Storage Account Contributor"
               }
             ]
           },
           {
             "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Account Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountDataContributor",
             "RBAC": [
               {
                 "Name": "Storage Blob Data Contributor"
@@ -249,6 +263,14 @@
               },
               {
                 "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "AzureKeyVault",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
               }
             ]
           }
@@ -387,6 +409,40 @@
         },
         "saInfo": [
           {
+            "namesuffix": "data2",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "storageKeyRotation": {
+              "State": "enabled"
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "fileShares": [
+              {
+                "name": "locust",
+                "quota": 5120
+              },
+              {
+                "name": "function",
+                "quota": 5120
+              }
+            ],
+            "containers": [
+              {
+                "name": "locust"
+              }
+            ]
+          },
+          {
             "namesuffix": "data",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
@@ -427,6 +483,34 @@
           }
         ],
         "KVInfo": [
+          {
+            "Name": "Data2",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": "Allow",
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "BW",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              }
+            ]
+          },
           {
             "Name": "App01",
             "skuName": "standard",

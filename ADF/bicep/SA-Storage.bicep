@@ -63,6 +63,31 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   dependsOn: []
 }
 
+module storageKeyRotationKey1 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo,'storageKeyRotation')) {
+  name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}-StorageKeyRotation-key1')
+  params: {
+    keyName: 'key1'
+    regenerationPeriodDays: contains(storageInfo.storageKeyRotation,'regenerationPeriodDays') ? storageInfo.storageKeyRotation.regenerationPeriodDays : 30
+    storageAccountName: SA.name
+    state: contains(storageInfo.storageKeyRotation,'state') ? storageInfo.storageKeyRotation.state : 'enabled'
+    userAssignedIdentityName: '${Deployment}-uaiStorageKeyRotation'
+  }
+}
+
+module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo,'storageKeyRotation')) {
+  name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}-StorageKeyRotation-key2')
+  params: {
+    keyName: 'key2'
+    regenerationPeriodDays: contains(storageInfo.storageKeyRotation,'regenerationPeriodDays') ? storageInfo.storageKeyRotation.regenerationPeriodDays : 30
+    storageAccountName: SA.name
+    state: contains(storageInfo.storageKeyRotation,'state') ? storageInfo.storageKeyRotation.state : 'enabled'
+    userAssignedIdentityName: '${Deployment}-uaiStorageKeyRotation'
+  }
+  dependsOn: [
+    storageKeyRotationKey1
+  ]
+}
+
 resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-04-01' = {
   name: 'default'
   parent: SA
