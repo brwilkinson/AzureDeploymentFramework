@@ -1,5 +1,5 @@
-param keyvaultName string = 'ACU1-BRW-AOA-T5-kvData2'
 param storageAccountName string = 'acu1brwaoat5sadata2'
+param keyvaultName string = 'ACU1-BRW-AOA-T5-kvData2'
 
 @allowed([
   'key1'
