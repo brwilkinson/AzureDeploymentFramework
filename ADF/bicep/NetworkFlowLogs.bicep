@@ -53,8 +53,11 @@ var SADiagName = '${DeploymentURI}sadiag'
 var retentionPolicydays = 29
 var flowLogversion = 1
 var AnalyticsInterval = 10
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${(('${Environment}${DeploymentID}' == 'P0') ? '-Hub' : '-Spoke')}'
 
 var SubnetInfo = contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : []
@@ -71,7 +74,7 @@ module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if
     retentionPolicydays: retentionPolicydays
     flowLogVersion: flowLogversion
     flowLogName: '${Deployment}-fl-${sn.Name}'
-    OMSworkspaceID: OMSworkspaceID
+    DeploymentURI: DeploymentURI
     Analyticsinterval: AnalyticsInterval
   }
 }]

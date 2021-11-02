@@ -36,14 +36,16 @@ var VMSizeLookup = {
   S: 'S'
 }
 var DeploymentName = 'AppServers'
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var GlobalRGName = Global.GlobalRGName
 var storageAccountType = Environment == 'P' ? 'Premium_LRS' : 'Standard_LRS'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 // var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 var VNetID = resourceId('Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
-
 
 var SADiagName = '${DeploymentURI}sadiag'
 var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts', SADiagName)
@@ -292,10 +294,10 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
           //     typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4'
           //     autoUpgradeMinorVersion: true
           //     settings: {
-          //       workspaceId: reference(OMSworkspaceID, '2017-04-26-preview').CustomerId
+          //       workspaceId: OMS.properties.customerId
           //     }
           //     protectedSettings: {
-          //       workspaceKey: listKeys(OMSworkspaceID, '2015-11-01-preview').primarySharedKey
+          //       workspaceKey: OMS.listKeys().primarySharedKey
           //     }
           //   }
           // }

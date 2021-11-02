@@ -1172,10 +1172,10 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
     kind: 'other'
     properties: {
         Application_Type: 'web'
-        Flow_Type: null
+        Flow_Type: 'Redfield'
         Request_Source: 'rest'
-        HockeyAppId: ''
-        SamplingPercentage: null
+        // HockeyAppId: ''
+        // SamplingPercentage: null
     }
 }
 

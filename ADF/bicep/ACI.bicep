@@ -53,8 +53,9 @@ var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - int(Deplo
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var SubnetInfo = DeploymentInfo.SubnetInfo
 
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var ACIInfo = contains(DeploymentInfo, 'ACIInfo') ? DeploymentInfo.ACIInfo : []
 var ACI = [for i in range(0, length(ACIInfo)): {
@@ -78,7 +79,6 @@ module ACG 'ACI-ACI.bicep' = [for (aci,index) in ACIInfo : if (ACI[index].match)
     ACIInfo: aci
     Global: Global
     Stage: Stage
-    OMSworkspaceID: OMSworkspaceID
     WebUser: kv.getSecret('WebUser')
   }
   dependsOn: []

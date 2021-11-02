@@ -49,8 +49,11 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${(('${Environment}${DeploymentID}' == 'P0') ? '-Hub' : '-Spoke')}'
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 
 resource nsgSNAD01 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
@@ -65,7 +68,7 @@ resource nsgSNAD01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   name: 'service'
   scope: nsgSNAD01
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'NetworkSecurityGroupEvent'
@@ -91,7 +94,7 @@ resource nsgSNBE01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   name: 'service'
   scope: nsgSNBE01
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'NetworkSecurityGroupEvent'
@@ -157,7 +160,7 @@ resource nsgSNFE01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   name: 'service'
   scope: nsgSNFE01
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'NetworkSecurityGroupEvent'
@@ -183,7 +186,7 @@ resource nsgSNMT02Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   name: 'service'
   scope: nsgSNMT02
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'NetworkSecurityGroupEvent'
@@ -209,7 +212,7 @@ resource nsgSNMT01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-
   name: 'service'
   scope: nsgSNMT01
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'NetworkSecurityGroupEvent'
@@ -272,7 +275,7 @@ resource nsgSNWAF01Diagnostics 'microsoft.insights/diagnosticSettings@2017-05-01
   name: 'service'
   scope: nsgSNWAF01
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'NetworkSecurityGroupEvent'
@@ -370,7 +373,7 @@ resource nsgAzureBastionSubnetDiagnostics 'microsoft.insights/diagnosticSettings
   name: 'service'
   scope: nsgAzureBastionSubnet
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'NetworkSecurityGroupEvent'

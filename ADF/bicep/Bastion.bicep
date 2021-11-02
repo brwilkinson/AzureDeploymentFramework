@@ -48,8 +48,11 @@ param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var snAzureBastionSubnet = 'AzureBastionSubnet'
 
 var bst = contains(DeploymentInfo, 'BastionInfo') ? DeploymentInfo.BastionInfo : {}
@@ -62,12 +65,11 @@ module PublicIP 'x.publicIP.bicep' = if(contains(bst,'name')) {
   name: 'dp${Deployment}-Bastion-publicIPDeploy${bst.Name}'
   params: {
     Deployment: Deployment
-    DeploymentID: DeploymentID
+    DeploymentURI: DeploymentURI
     NICs: array(bst)
     VM: bst
     PIPprefix: 'bst'
     Global: Global
-    OMSworkspaceID: OMSworkspaceID
   }
 }
 
@@ -97,7 +99,7 @@ resource BastionDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
   name: 'service'
   scope: Bastion
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'BastionAuditLogs'

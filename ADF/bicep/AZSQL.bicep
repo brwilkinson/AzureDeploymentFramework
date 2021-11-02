@@ -48,8 +48,7 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
 var appConfigurationInfo = (contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : json('null'))
 
@@ -65,12 +64,12 @@ module SQL 'AZSQL-SQL.bicep' = [for (sql,index) in azSQLInfo : if(azSQL[index].m
     Deployment: Deployment
     Prefix: Prefix
     DeploymentID: DeploymentID
+    DeploymentURI: DeploymentURI
     Environment: Environment
     azSQLInfo: sql
     appConfigurationInfo: appConfigurationInfo
     Global: Global
     Stage: Stage
-    OMSworkspaceID: OMSworkspaceID
     vmAdminPassword: vmAdminPassword
     sshPublic: sshPublic
     devOpsPat: devOpsPat

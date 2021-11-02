@@ -54,11 +54,13 @@ var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
-var AppInsightsName = '${Deployment}AppInsights'
-var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
+resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: '${DeploymentURI}AppInsights'
+}
 
 var appServiceplanInfo = (contains(DeploymentInfo, 'appServiceplanInfo') ? DeploymentInfo.appServiceplanInfo : [])
   
@@ -82,5 +84,24 @@ resource ASP 'Microsoft.Web/serverfarms@2021-01-01' = [for (item,index) in appSe
     // size: item.skusize
     // family: item.skufamily
     capacity: item.skucapacity
+  }
+}]
+
+resource KEP 'Microsoft.Web/kubeEnvironments@2021-02-01' = [for (item,index) in appServiceplanInfo: if (bool(item.deploy) && ASPlanInfo[index].match) {
+  name: '${Deployment}-kep${item.Name}'
+  location: resourceGroup().location
+  properties: {
+    type: 'managed'
+    internalLoadBalancerEnabled: false
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: OMS.properties.customerId
+        sharedKey: OMS.listKeys().primarySharedKey
+      }
+    }
+    containerAppsConfiguration: {
+      daprAIInstrumentationKey: AppInsights.properties.InstrumentationKey
+    }
   }
 }]

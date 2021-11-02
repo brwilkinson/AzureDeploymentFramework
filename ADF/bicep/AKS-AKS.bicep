@@ -1,11 +1,11 @@
 param Deployment string
+param DeploymentURI string
 param Prefix string
 param DeploymentID string
 param Environment string
 param AKSInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
 
 @secure()
@@ -19,6 +19,10 @@ param sshPublic string
 
 var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
 var Enviro = '${Environment}${DeploymentID}'
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 // os config now shared across subscriptions
 var computeGlobal = json(loadTextContent('./global/Global-ConfigVM.json'))
@@ -163,7 +167,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2020-12-01' = {
       omsAgent: {
         enabled: true
         config: {
-          logAnalyticsWorkspaceResourceID: OMSworkspaceID
+          logAnalyticsWorkspaceResourceID: OMS.id
         }
       }
       aciConnectorLinux: {
@@ -180,7 +184,7 @@ resource AKSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
   scope: AKS
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'kube-apiserver'

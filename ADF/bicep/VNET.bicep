@@ -49,8 +49,10 @@ var subscriptionId = subscription().subscriptionId
 var resourceGroupName = resourceGroup().name
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var hubVNetName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubVNetName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubVNetName)
 var hubVNetResourceGroupName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(Global.hubRGName, Prefix, DeploymentInfo.hubRegionPrefix) : Global.hubRGName)
@@ -131,7 +133,7 @@ resource VNETDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-previ
   name: 'service'
   scope: VNET
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'VMProtectionAlerts'

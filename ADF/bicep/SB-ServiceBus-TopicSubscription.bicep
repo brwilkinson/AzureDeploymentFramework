@@ -5,7 +5,6 @@ param SBInfoTopic object
 param SBTopicName string
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
 
 resource SBTopicName_root 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2017-04-01' = {

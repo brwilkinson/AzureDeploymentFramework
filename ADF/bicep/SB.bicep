@@ -47,8 +47,11 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : json('null')
 
@@ -62,13 +65,13 @@ module SBs 'SB-ServiceBus.bicep' = [for (sb,index) in SBInfo : if(SB[index].matc
   name: 'dp${Deployment}-SB-Deploy${sb.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     DeploymentID: DeploymentID
     Environment: Environment
     SBInfo: sb
     appConfigurationInfo: appConfigurationInfo
     Global: Global
     Stage: Stage
-    OMSworkspaceID: OMSworkspaceID
   }
 }]
 

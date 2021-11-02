@@ -2,7 +2,6 @@ param ws object
 param appprefix string
 param Deployment string
 param DeploymentURI string
-param OMSworkspaceID string
 param diagLogs array
 param linuxFxVersion string = ''
 param Global object
@@ -13,6 +12,10 @@ var MSILookup = {
   FIL: 'Cluster'
   OCR: 'Storage'
   PS01: 'VMOperator'
+}
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
 }
 
 var userAssignedIdentities = {
@@ -96,7 +99,7 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
   scope: WS
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: diagLogs
     metrics: [
       {

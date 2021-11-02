@@ -48,8 +48,9 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var WAFInfo = contains(DeploymentInfo, 'WAFInfo') ? DeploymentInfo.WAFInfo : []
 
@@ -76,7 +77,7 @@ resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
   name: 'service'
   scope: PublicIP[index]
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'DDoSProtectionNotifications'
@@ -100,12 +101,12 @@ module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match)
   name: 'dp${Deployment}-WAFDeploy${((length(WAFInfo) == 0) ? 'na' : waf.WAFName)}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     DeploymentID: DeploymentID
     Environment: Environment
     waf: waf
     Global: Global
     Stage: Stage
-    OMSworkspaceID: OMSworkspaceID
   }
   dependsOn: [
     PublicIP

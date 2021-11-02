@@ -5,7 +5,6 @@ param Environment string
 param ACIInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 
 @secure()
 param WebUser string
@@ -39,6 +38,10 @@ var ports = [for (port,index) in ACIInfo.ports : {
   protocol: 'TCP'
   port: port
 }]
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = [for (aci,index) in Instances : {
   name: '${Deployment}-aci-${aci.name}'
@@ -84,8 +87,8 @@ resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = [for (ac
     osType: 'Linux'
     diagnostics: {
       logAnalytics: {
-        workspaceId: reference(OMSworkspaceID, '2017-04-26-preview').CustomerId
-        workspaceKey: listKeys(OMSworkspaceID, '2015-11-01-preview').primarySharedKey
+        workspaceId: OMS.properties.customerId
+        workspaceKey: OMS.listKeys().primarySharedKey
         logType: 'ContainerInsights'
         metadata: {}
       }

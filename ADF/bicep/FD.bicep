@@ -46,8 +46,11 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var frontDoorInfo = contains(DeploymentInfo, 'frontDoorInfo') ? DeploymentInfo.frontDoorInfo : []
 
@@ -59,11 +62,10 @@ module FD 'FD-frontDoor.bicep'= [for (fd,index) in frontDoorInfo: if (frontDoor[
   name: 'dp${Deployment}-FD-Deploy${fd.name}'
   params: {
     Deployment: Deployment
-    DeploymentID: DeploymentID
+    DeploymentURI: DeploymentURI
     Environment: Environment
     frontDoorInfo: fd
     Global: Global
     Stage: Stage
-    OMSworkspaceID: OMSworkspaceID
   }
 }]

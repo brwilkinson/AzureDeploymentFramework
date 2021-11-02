@@ -1,4 +1,5 @@
 param Deployment string
+param DeploymentURI string
 param DeploymentID string
 param NIC object
 param NICNumber string
@@ -7,8 +8,11 @@ param Global object
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var VNetID = resourceId('Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
 
 var subnetID = '${VNetID}/subnets/sn${NIC.Subnet}'
@@ -51,7 +55,7 @@ resource NIC1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = i
   name: 'service'
   scope: NIC1
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         timeGrain: 'PT5M'
@@ -95,7 +99,7 @@ resource NICPLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =
   name: 'service'
   scope: NICPLB
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         timeGrain: 'PT5M'
@@ -138,7 +142,7 @@ resource NICLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = 
   name: 'service'
   scope: NICLB
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         timeGrain: 'PT5M'
@@ -185,7 +189,7 @@ resource NICSLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =
   name: 'service'
   scope: NICSLB
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         timeGrain: 'PT5M'

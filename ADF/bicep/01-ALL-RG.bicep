@@ -53,8 +53,11 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var addressPrefixes = [
   '${networkId}.0/23'
 ]

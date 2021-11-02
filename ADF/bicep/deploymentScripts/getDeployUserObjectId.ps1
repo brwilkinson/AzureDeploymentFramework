@@ -38,7 +38,6 @@ try
                 $_.Status.Value -NE 'Failed' -and
                 $_.OperationName.Value -EQ 'Microsoft.Resources/deployments/write' -and
                 $DeploymentName -EQ ($_.ResourceId | Split-Path -Leaf)
-            
             } | Sort-Object EventTimestamp -Descending | Select-Object -First 1 -ExpandProperty Claims | ForEach-Object Content
             
             Write-Output $content

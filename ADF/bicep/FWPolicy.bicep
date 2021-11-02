@@ -48,8 +48,10 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var FWInfo = contains(DeploymentInfo, 'FWInfo') ? DeploymentInfo.FWInfo : []
 
@@ -61,11 +63,10 @@ module FireWall 'FWPolicy-Policy.bicep' = [for (fw, index) in FWInfo: if(FW[inde
   name: 'dp${Deployment}-FWPolicy-Deploy${((length(FW) != 0) ? fw.name : 'na')}'
   params: {
     Deployment: Deployment
-    DeploymentID: DeploymentID
+    DeploymentURI: DeploymentURI
     Environment: Environment
-    FWInfo: fw
+    FWPolicyInfo: fw.policy
     Global: Global
     Stage: Stage
-    OMSworkspaceID: OMSworkspaceID
   }
 }]

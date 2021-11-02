@@ -47,8 +47,10 @@
   
   var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
   var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-  var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-  var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+  resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+    name: '${DeploymentURI}LogAnalytics'
+  }
 
   var storageInfo = contains(DeploymentInfo, 'saInfo') ? DeploymentInfo.saInfo : []
   
@@ -66,7 +68,6 @@
       storageInfo: sa
       Global: Global
       Stage: Stage
-      OMSworkspaceID: OMSworkspaceID
     }
     dependsOn: []
   }]

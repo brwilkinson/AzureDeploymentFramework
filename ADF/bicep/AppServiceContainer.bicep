@@ -49,11 +49,14 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var ENV = '${Environment}${DeploymentID}'
 
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
 
-var AppInsightsName = '${DeploymentURI}AppInsights'
-var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
+resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: '${DeploymentURI}AppInsights'
+}
 
 // WebSiteContainerInfo
 var WebSiteInfo = (contains(DeploymentInfo, 'WebSiteContainerInfo') ? DeploymentInfo.WebSiteContainerInfo : [])
@@ -108,7 +111,6 @@ module container 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSI
     appprefix: 'ws'
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    OMSworkspaceID: OMSworkspaceID
     linuxFxVersion: 'COMPOSE|${WSInfo[index].compose}'
     Global: Global
     diagLogs: [
@@ -166,8 +168,8 @@ module containerSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebS
     appConfigCustom: myAppConfig
     appConfigCurrent: appsettingsCurrent[index].list().properties
     appConfigNew: {
-      APPINSIGHTS_INSTRUMENTATIONKEY: reference(AppInsightsID, '2015-05-01').InstrumentationKey
-      APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(AppInsightsID, '2015-05-01').InstrumentationKey}'
+      APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
+      APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
       DOCKER_ENABLE_CI: 'true'
       DOCKER_REGISTRY_SERVER_PASSWORD: listCredentials(ACR[index].id, ACR[index].apiVersion).passwords[0].value
       DOCKER_REGISTRY_SERVER_URL: ACR[index].properties.loginServer

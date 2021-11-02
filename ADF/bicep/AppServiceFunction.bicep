@@ -48,11 +48,13 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
-var AppInsightsName = '${DeploymentURI}AppInsights'
-var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
+resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: '${DeploymentURI}AppInsights'
+}
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var AzureDNS = '168.63.129.16'
@@ -88,7 +90,6 @@ module functionApp 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (W
     appprefix: 'fn'
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    OMSworkspaceID: OMSworkspaceID
     Global: Global
     diagLogs: [
       {
@@ -114,8 +115,8 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
     appConfigNew: {
       // https://docs.microsoft.com/en-us/azure/azure-functions/configure-networking-how-to
       // https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
-      APPINSIGHTS_INSTRUMENTATIONKEY: reference(AppInsightsID, '2015-05-01').InstrumentationKey
-      APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${reference(AppInsightsID, '2015-05-01').InstrumentationKey}'
+      APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
+      APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
       WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       Storage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'

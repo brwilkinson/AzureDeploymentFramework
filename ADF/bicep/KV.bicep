@@ -47,8 +47,11 @@ param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var hubRG = Global.hubRGName
 
 var KeyVaultInfo = contains(DeploymentInfo, 'KVInfo') ? DeploymentInfo.KVInfo : []
@@ -61,12 +64,11 @@ module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVI
   name: 'dp${Deployment}-KV-${kv.name}'
   params: {
     Deployment: Deployment
-    DeploymentID: DeploymentID
+    DeploymentURI: DeploymentURI
     Environment: Environment
     Prefix: Prefix
     KVInfo: kv
     Global: Global
-    OMSworkspaceID: OMSworkspaceID
   }
 }]
 

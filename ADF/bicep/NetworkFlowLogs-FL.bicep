@@ -1,11 +1,11 @@
 param NSGID string
+param DeploymentURI string
 param SADIAGID string
 param subNet object
 param hubDeployment string
 param retentionPolicydays int
 param flowLogVersion int
 param flowLogName string
-param OMSworkspaceID string
 param Analyticsinterval int
 
 var flowLogEnabled = contains(subNet,'FlowLogEnabled') && bool(subNet.FlowLogEnabled)
@@ -13,6 +13,10 @@ var FlowAnalyticsEnabled = contains(subNet,'FlowAnalyticsEnabled') && bool(subNe
 
 resource NetworkWatcher 'Microsoft.Network/networkWatchers@2019-11-01' existing = {
   name: '${hubDeployment}-networkwatcher'
+}
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
 }
 
 resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2020-11-01' = {
@@ -35,7 +39,7 @@ resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2020-11-01' = {
       networkWatcherFlowAnalyticsConfiguration: {
         enabled: FlowAnalyticsEnabled
         trafficAnalyticsInterval: Analyticsinterval
-        workspaceResourceId: OMSworkspaceID
+        workspaceResourceId: OMS.id
       }
     }
   }

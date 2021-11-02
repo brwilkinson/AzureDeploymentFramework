@@ -1,10 +1,9 @@
 param Deployment string
-param DeploymentID string
+param DeploymentURI string
 param Environment string
 param FWPolicyInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
 
 var FWSubnetName = 'AzureFirewallSubnet'
@@ -14,7 +13,9 @@ resource FWSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existin
   name: '${Deployment}-vn/${FWSubnetName}'
 }
 
-
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 resource FWPolicy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
   name: '${Deployment}-vnFW${FWPolicyInfo.Name}'
@@ -36,7 +37,7 @@ resource FWPolicy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
       isEnabled:true
       logAnalyticsResources:{
         defaultWorkspaceId: {
-              id: OMSworkspaceID
+              id: OMS.id
           }
       }
     }
@@ -87,7 +88,7 @@ resource FWPolicyDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-p
   name: 'service'
   scope: FWPolicy
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'AzureFirewallApplicationRule'
