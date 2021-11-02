@@ -166,28 +166,8 @@ module dp_Deployment_NATGW 'NATGW.bicep' = if (bool(Stage.NATGW)) {
   ]
 }
 
-module dp_Deployment_NSGHUB 'NSG.hub.bicep' = if (bool(Stage.NSGHUB)) {
-  name: 'dp${Deployment}-NSGHUB'
-  params: {
-    // move these to Splatting later
-    DeploymentID: DeploymentID
-    DeploymentInfo: DeploymentInfo
-    Environment: Environment
-    Extensions: Extensions
-    Global: Global
-    Prefix: Prefix
-    Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
-  }
-  dependsOn: [
-    dp_Deployment_OMS
-  ]
-}
-
-module dp_Deployment_NSGSPOKE 'NSG.spoke.bicep' = if (bool(Stage.NSGSPOKE)) {
-  name: 'dp${Deployment}-NSGSPOKE'
+module dp_Deployment_NSG 'NSG.bicep' = if (bool(Stage.NSG)) {
+  name: 'dp${Deployment}-NSG'
   params: {
     // move these to Splatting later
     DeploymentID: DeploymentID
@@ -244,8 +224,7 @@ module dp_Deployment_FlowLogs 'NetworkFlowLogs.bicep' = if (bool(Stage.FlowLogs)
   dependsOn: [
     dp_Deployment_OMS
     dp_Deployment_NetworkWatcher
-    dp_Deployment_NSGSPOKE
-    dp_Deployment_NSGHUB
+    dp_Deployment_NSG
     dp_Deployment_SA
   ]
 }
@@ -287,8 +266,7 @@ module dp_Deployment_VNET 'VNET.bicep' = if (bool(Stage.VNET)) {
     vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
-    dp_Deployment_NSGSPOKE
-    dp_Deployment_NSGHUB
+    dp_Deployment_NSG
     dp_Deployment_NATGW
   ]
 }
