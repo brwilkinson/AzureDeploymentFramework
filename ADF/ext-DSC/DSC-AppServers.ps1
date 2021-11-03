@@ -36,7 +36,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName xSystemSecurity
     Import-DscResource -ModuleName DNSServerDSC
     Import-DscResource -ModuleName PackageManagementProviderResource
-    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
+    Import-DscResource -ModuleName AZCOPYDSCDir             # https://github.com/brwilkinson/AZCOPYDSC
     Import-DscResource -ModuleName WVDDSC               # https://github.com/brwilkinson/WVDDSC
     Import-DscResource -ModuleName AppReleaseDSC        # https://github.com/brwilkinson/AppReleaseDSC
     Import-DscResource -ModuleName DevOpsAgentDSC       # https://github.com/brwilkinson/DevOpsAgentDSC
