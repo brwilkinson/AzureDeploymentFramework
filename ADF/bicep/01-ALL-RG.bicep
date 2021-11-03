@@ -50,7 +50,7 @@ param saKey string = newGuid()
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-'
+
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 
@@ -424,7 +424,6 @@ module dp_Deployment_LB 'LB.bicep' = if (bool(Stage.LB)) {
 module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary) || contains(Stage,'CreateADPDC') && bool(Stage.CreateADPDC)) {
   name: 'dp${Deployment}-VNETDNSPublic'
   params: {
-    Deploymentnsg: Deploymentnsg
     Deployment: Deployment
     DeploymentID: DeploymentID
     Prefix: Prefix
@@ -489,7 +488,6 @@ module ADPrimary 'VM.bicep' = if (bool(Stage.ADPrimary)) {
 module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary) || contains(Stage,'CreateADPDC') && bool(Stage.CreateADPDC)) {
   name: 'dp${Deployment}-VNETDNSDC1'
   params: {
-    Deploymentnsg: Deploymentnsg
     Deployment: Deployment
     DeploymentID: DeploymentID
     Prefix: Prefix
@@ -552,7 +550,6 @@ module ADSecondary 'VM.bicep' = if (bool(Stage.ADSecondary)) {
 module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (bool(Stage.ADSecondary) || contains(Stage,'CreateADBDC') && bool(Stage.CreateADBDC)) {
   name: 'dp${Deployment}-VNETDNSDC2'
   params: {
-    Deploymentnsg: Deploymentnsg
     Deployment: Deployment
     DeploymentID: DeploymentID
     DeploymentInfo: DeploymentInfo

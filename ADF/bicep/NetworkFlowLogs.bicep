@@ -58,8 +58,6 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${(('${Environment}${DeploymentID}' == 'P0') ? '-Hub' : '-Spoke')}'
-
 var SubnetInfo = contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : []
 
 // Call the module once per subnet
@@ -67,7 +65,7 @@ module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if
   name: '${Deployment}-fl-${sn.Name}'
   scope: resourceGroup(hubRG)
   params: {
-    NSGID : resourceId('Microsoft.Network/networkSecurityGroups', '${Deploymentnsg}-nsg${sn.Name}')
+    NSGID : resourceId('Microsoft.Network/networkSecurityGroups', '${Deployment}-nsg${sn.Name}')
     SADIAGID: resourceId('Microsoft.Storage/storageAccounts', SADiagName)
     subNet: sn
     hubDeployment: hubDeployment

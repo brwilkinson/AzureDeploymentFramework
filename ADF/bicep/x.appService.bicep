@@ -58,6 +58,9 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
       linuxFxVersion: empty(linuxFxVersion) ? null : linuxFxVersion
     }
   }
+  dependsOn: [
+    WebSiteDNS
+  ]
 }
 
 resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
@@ -66,8 +69,6 @@ resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,
   properties: {
     canonicalName: toLower('${WS.name}.${Global.DomainNameExt}')
     serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
-    // domainValidationMethod: 'http-token'
-    
   }
 }
 

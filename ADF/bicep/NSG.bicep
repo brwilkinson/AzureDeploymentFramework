@@ -47,7 +47,7 @@ param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${(('${Environment}${DeploymentID}' == 'P0') ? '-Hub' : '-Spoke')}'
+
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
@@ -218,7 +218,7 @@ var NSGDefault = {
 }
 
 resource NSG 'Microsoft.Network/networkSecurityGroups@2021-03-01' = [for (subnet, index) in subnetInfo: {
-  name: '${Deploymentnsg}-nsg${toUpper(subnet.name)}'
+  name: '${Deployment}-nsg${toUpper(subnet.name)}'
   location: resourceGroup().location
   properties:{
     securityRules: union(NSGInfo[index].subnetNSGParam, NSGInfo[index].subnetNSGDefault)

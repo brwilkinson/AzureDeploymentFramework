@@ -1,21 +1,7 @@
 
-# Zip up all files
-# break
-[string] $Artifacts = Get-Item -Path $PSScriptRoot\..
-[string] $DSCSourceFolder = $Artifacts + '\ext-DSC'
-
-if (Test-Path $DSCSourceFolder)
-{
-    Get-ChildItem $DSCSourceFolder -File -Filter '*.ps1' | ForEach-Object {
-
-        $DSCArchiveFilePath = $_.FullName.Substring(0, $_.FullName.Length - 4) + '.zip'
-        Publish-AzVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose -AdditionalPath
-    }
-}
-
 
 # Zip up only changes
-break
+
 [string] $Artifacts = 'D:\Repos\ADF\ADF'
 [string] $DSCSourceFolder = $Artifacts + '\ext-DSC'
 $Include = @(
@@ -37,3 +23,20 @@ git -C $DSCSourceFolder diff --diff-filter d --name-only $Include |
             Write-Verbose -Message "File not found, assume deleted, will not upload [$_]"
         }
     }
+
+break
+
+
+# Zip up all files
+# break
+[string] $Artifacts = Get-Item -Path $PSScriptRoot\..
+[string] $DSCSourceFolder = $Artifacts + '\ext-DSC'
+
+if (Test-Path $DSCSourceFolder)
+{
+    Get-ChildItem $DSCSourceFolder -File -Filter '*.ps1' | ForEach-Object {
+
+        $DSCArchiveFilePath = $_.FullName.Substring(0, $_.FullName.Length - 4) + '.zip'
+        Publish-AzVMDscConfiguration $_.FullName -OutputArchivePath $DSCArchiveFilePath -Force -Verbose -AdditionalPath
+    }
+}

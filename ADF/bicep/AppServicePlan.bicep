@@ -87,21 +87,4 @@ resource ASP 'Microsoft.Web/serverfarms@2021-01-01' = [for (item,index) in appSe
   }
 }]
 
-resource KEP 'Microsoft.Web/kubeEnvironments@2021-02-01' = [for (item,index) in appServiceplanInfo: if (bool(item.deploy) && ASPlanInfo[index].match) {
-  name: '${Deployment}-kep${item.Name}'
-  location: resourceGroup().location
-  properties: {
-    type: 'managed'
-    internalLoadBalancerEnabled: false
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: OMS.properties.customerId
-        sharedKey: OMS.listKeys().primarySharedKey
-      }
-    }
-    containerAppsConfiguration: {
-      daprAIInstrumentationKey: AppInsights.properties.InstrumentationKey
-    }
-  }
-}]
+

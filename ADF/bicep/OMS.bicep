@@ -50,8 +50,8 @@ param now string = utcNow('F')
 targetScope = 'resourceGroup'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
 var OMSWorkspaceName = '${DeploymentURI}LogAnalytics'
 var AAName = '${DeploymentURI}OMSAutomation'
 var appInsightsName = '${DeploymentURI}AppInsights'
@@ -863,7 +863,8 @@ resource OMSworkspaceName_Automation 'Microsoft.OperationalInsights/workspaces/l
     }
 }
 
-resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
+@batchSize(1)
+resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: if (bool(Stage.OMSUpdateMonthly)) {
     parent: AA
     name: 'Update-Third-Saturday-Windows-Zone${zone}'
     properties: {
@@ -925,7 +926,8 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
     }
 }]
 
-resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
+@batchSize(1)
+resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: if (bool(Stage.OMSUpdateWeekly)) {
     parent: AA
     name: 'Update-Twice-Weekly-Windows-Zone${zone}'
     properties: {

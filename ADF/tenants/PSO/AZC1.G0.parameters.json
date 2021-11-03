@@ -46,6 +46,8 @@
         "StorageSync": 0,
         "OMSSolutions": 1,
         "OMSDataSources": 1,
+        "OMSUpdateWeekly": 0,
+        "OMSUpdateMonthly": 0,
         "RSV": 1,
         "NSG": 0,
         "VNet": 1,
