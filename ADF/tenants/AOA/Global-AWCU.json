@@ -1,0 +1,24 @@
+{
+  "Global": {
+    "HubRGName": "ACU1-BRW-AOA-RG-P0",
+    "hubVnetName": "ACU1-BRW-AOA-P0-vn",
+    "KVName": "ACU1-BRW-AOA-P0-kvVLT01",
+    "KVUrl": "https://acu1-brw-aoa-p0-kvvlt01.vault.azure.net/",
+    "certificateUrl": "https://acu1-brw-aoa-p0-kvvlt01.vault.azure.net/secrets/PSTHING-WildCard/9dcd38f08b30403eaf35fa61f665697f",
+    "networkId": [
+      "10.11.",
+      144
+    ],
+    "DNSServers": [
+      "10.11.144.75",
+      "10.11.144.76"
+    ],
+    "_DNSServers": [], // Leave Empty to use AzureDNS
+    "nsgRGName": "ACU1-BRW-AOA-RG-P0",
+    "RTRGName": "ACU1-BRW-AOA-RG-P0",
+    "RTName": "Hub",
+    "dnsZoneRGName": "ACU1-BRW-AOA-RG-P0",
+    "shutdownSchedulerTimeZone": "Pacific Standard Time",
+    "patchSchedulerTimeZone": "America/Los_Angeles"
+  }
+}

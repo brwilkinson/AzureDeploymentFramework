@@ -99,7 +99,7 @@ if (! $appID)
     $secret
 
     #  https://cli.github.com/manual/
-    $Secret | gh secret set $SecretName
+    $Secret | gh secret set $SecretName -R $repo
 }
 else
 {

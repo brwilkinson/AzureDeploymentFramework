@@ -686,7 +686,7 @@
         "appServiceKubeEnvInfo": [
           {
             "Name": "KUBE01",
-            "location": "westcentralus"
+            "location": "northcentralusstage"
           }
         ],
         "WebSiteInfo": [

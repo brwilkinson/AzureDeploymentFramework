@@ -235,7 +235,7 @@ Configuration $Configuration
             WindowsFeatureSet WindowsFeatureSetPresent
             {
                 Ensure = 'Present'
-                Name   = $Node.Present
+                Name   = $Node.WindowsFeatureSetPresent
                 #Source = $Node.SXSPath
             }
         }

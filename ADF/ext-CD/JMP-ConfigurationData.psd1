@@ -47,16 +47,16 @@
             DisableIEESC                   = $True
 
             PowerShellModulesPresent       = @(
-                'SQLServer', 'AzureAD', 'oh-my-posh', #'posh-git',
+                'SQLServer', 'AzureAD', 'oh-my-posh', 'posh-git',
                 'Terminal-Icons', 'Az.ManagedServiceIdentity'
             )
 
-            DevOpsAgentPoolPresent2         = @(
+            DevOpsAgentPoolPresent2        = @(
                 @{poolName = '{0}-{1}-{2}-{3}-Apps1' ; orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/' },
                 @{poolName = '{0}-{1}-{2}-{3}-Infra01' ; orgUrl = 'https://dev.azure.com/AzureDeploymentFramework/' }
             )
 
-            DevOpsAgentPresent2             = @(
+            DevOpsAgentPresent2            = @(
                 @{
                     name = '{0}-{1}-{2}-{3}-Apps101'; pool = '{0}-{1}-{2}-{3}-Apps1'; Ensure = 'Absent';
                     Credlookup = 'DomainCreds' ; AgentBase = 'F:\vsts-agent' ; AgentVersion = '2.184.2'
@@ -109,7 +109,7 @@
             )
 
             # Single set of features
-            WindowsFeatureSetPresent2       = 'GPMC', 'NET-Framework-Core'
+            WindowsFeatureSetPresent2      = 'GPMC', 'NET-Framework-Core'
 
             DirectoryPresent               = @('F:\Source\InstallLogs', 'F:\Repos', 'c:\program files\powershell\7')
 
