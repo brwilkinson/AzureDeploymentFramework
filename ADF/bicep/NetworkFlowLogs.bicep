@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -53,9 +54,10 @@ var SADiagName = '${DeploymentURI}sadiag'
 var retentionPolicydays = 29
 var flowLogversion = 1
 var AnalyticsInterval = 10
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
-var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-${Environment}${DeploymentID}${(('${Environment}${DeploymentID}' == 'P0') ? '-Hub' : '-Spoke')}'
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var SubnetInfo = contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : []
 
@@ -64,14 +66,14 @@ module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if
   name: '${Deployment}-fl-${sn.Name}'
   scope: resourceGroup(hubRG)
   params: {
-    NSGID : resourceId('Microsoft.Network/networkSecurityGroups', '${Deploymentnsg}-nsg${sn.Name}')
+    NSGID : resourceId('Microsoft.Network/networkSecurityGroups', '${Deployment}-nsg${sn.Name}')
     SADIAGID: resourceId('Microsoft.Storage/storageAccounts', SADiagName)
     subNet: sn
     hubDeployment: hubDeployment
     retentionPolicydays: retentionPolicydays
     flowLogVersion: flowLogversion
     flowLogName: '${Deployment}-fl-${sn.Name}'
-    OMSworkspaceID: OMSworkspaceID
+    DeploymentURI: DeploymentURI
     Analyticsinterval: AnalyticsInterval
   }
 }]

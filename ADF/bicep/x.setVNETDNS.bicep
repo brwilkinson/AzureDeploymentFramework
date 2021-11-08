@@ -1,4 +1,3 @@
-param Deploymentnsg string
 param Deployment string
 param DeploymentID string
 param DeploymentInfo object
@@ -18,6 +17,10 @@ var Domain = split(Global.DomainName, '.')[0]
 var RouteTableGlobal = {
   id: resourceId(Global.HubRGName, 'Microsoft.Network/routeTables/', '${replace(Global.hubVNetName, 'vn', 'rt')}${Domain}${Global.RTName}')
 }
+
+resource NSG 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = [for (sn, index) in SubnetInfo : {
+  name: '${Deployment}-nsg${sn.name}'
+}]
 
 var delegations = {
   default: []
@@ -49,14 +52,21 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
     dhcpOptions: {
       dnsServers: array(DNSServers)
     }
-    subnets: [for sn in SubnetInfo: {
+    subnets: [for (sn,index) in SubnetInfo: {
       name: sn.name
       properties: {
         addressPrefix: '${((sn.name == 'snMT02') ? networkIdUpper : networkId)}.${sn.Prefix}'
-        networkSecurityGroup: ((contains(sn, 'NSG') && ((sn.NSG == 'Hub') || (sn.NSG == 'Spoke'))) ? json('{"id":"${string(resourceId(Global.HubRGName, 'Microsoft.Network/networkSecurityGroups', '${Deploymentnsg}${sn.NSG}-nsg${sn.name}'))}"}') : json('null'))
-        routeTable: ((contains(sn, 'RT') && bool(sn.RT)) ? RouteTableGlobal : json('null'))
+        networkSecurityGroup: ! (contains(sn, 'NSG') && bool(sn.NSG)) ? null : /*
+        */  {
+              id: NSG[index].id
+            }
+        natGateway: ! (contains(sn, 'NGW') && bool(sn.NGW)) ? null : /*
+        */  {
+              id: resourceId('Microsoft.Network/natGateways','${Deployment}-ngwNAT01')
+            }
+        routeTable: contains(sn, 'Route') && bool(sn.Route) ? RouteTableGlobal : null
         privateEndpointNetworkPolicies: 'Disabled'
-        delegations: (contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default)
+        delegations: contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default
       }
     }]
   }

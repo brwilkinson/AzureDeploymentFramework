@@ -71,8 +71,8 @@
                     DestinationPath = 'F:\Source\dotnet\vc_redist.x64.exe'
                 },
                 @{
-                    Uri             = 'https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=16#'
-                    DestinationPath = 'F:\Source\VisualStudio\vs_enterprise__337181613.1633999746.exe'
+                    Uri             = 'https://download.visualstudio.microsoft.com/download/pr/5a50b8ac-2c22-47f1-ba60-70d4257a78fa/d662d2f23b4b523f30e24cbd7e5e651c7c6a712f21f48e032f942dc678f08beb/vs_Community.exe'
+                    DestinationPath = 'F:\Source\VisualStudio\vs_community.exe'
                 }
             )
 
@@ -91,9 +91,9 @@
                 }
                 @{  
                     Name      = 'Visual Studio Enterprise 2019'
-                    Path      = 'F:\Source\VisualStudio\vs_enterprise__337181613.1633999746.exe'
+                    Path      = 'F:\Source\VisualStudio\vs_community.exe'
                     ProductId = ''
-                    Arguments = '--installPath F:\VisualStudio\2019\Enterprise --addProductLang en-US  --includeRecommended --config "F:\Source\VisualStudio\.vsconfig" --quiet --wait --norestart'
+                    Arguments = '--installPath F:\VisualStudio\2019\Community --addProductLang en-US  --includeRecommended --quiet --wait --norestart' #--config "F:\Source\VisualStudio\.vsconfig"
                 }
             )
 

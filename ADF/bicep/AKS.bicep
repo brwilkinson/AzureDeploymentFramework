@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -48,8 +49,7 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
 var AKSInfo = contains(DeploymentInfo, 'AKSInfo') ? DeploymentInfo.AKSInfo : []
 
@@ -61,13 +61,13 @@ module AKSAll 'AKS-AKS.bicep' = [for (aks, index) in AKSInfo: if (AKS[index].mat
   name: 'dp${Deployment}-AKS-Deploy${aks.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     Prefix: Prefix
     DeploymentID: DeploymentID
     Environment: Environment
     AKSInfo: aks
     Global: Global
     Stage: Stage
-    OMSworkspaceID: OMSworkspaceID
     vmAdminPassword: vmAdminPassword
     sshPublic: sshPublic
     devOpsPat: devOpsPat

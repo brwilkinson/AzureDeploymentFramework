@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -48,8 +49,9 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var cosmosDBInfo = contains(DeploymentInfo, 'cosmosDBInfo') ? DeploymentInfo.cosmosDBInfo : []
 
@@ -61,9 +63,9 @@ module CosmosDB 'Cosmos-Account.bicep' = [for (account, index) in cosmosDBInfo :
   name: 'dp${Deployment}-Cosmos-Deploy${((length(cosmosDBInfo) != 0) ? account.name : 'na')}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     cosmosAccount: account
     Global: Global
-    OMSworkspaceID: OMSworkspaceID
   }
 }]
 

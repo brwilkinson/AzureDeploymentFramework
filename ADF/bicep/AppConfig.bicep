@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -46,13 +47,17 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var snWAF01Name = 'snWAF01'
 var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
 
@@ -75,8 +80,6 @@ resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
     encryption: {}
   }
 }
-
-
 
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfigurationInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-privatelinkloopAC${appConfigurationInfo.name}'

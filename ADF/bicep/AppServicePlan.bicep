@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -54,11 +55,13 @@ var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
-var AppInsightsName = '${Deployment}AppInsights'
-var AppInsightsID = resourceId('Microsoft.insights/components/', AppInsightsName)
+resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: '${DeploymentURI}AppInsights'
+}
 
 var appServiceplanInfo = (contains(DeploymentInfo, 'appServiceplanInfo') ? DeploymentInfo.appServiceplanInfo : [])
   
@@ -84,3 +87,5 @@ resource ASP 'Microsoft.Web/serverfarms@2021-01-01' = [for (item,index) in appSe
     capacity: item.skucapacity
   }
 }]
+
+

@@ -1,10 +1,9 @@
 param Deployment string
-param DeploymentID string
+param DeploymentURI string
 param Environment string
 param FWInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
 
 var FWSubnetName = 'AzureFirewallSubnet'
@@ -18,12 +17,11 @@ module PublicIP 'x.publicIP.bicep' = {
   name: 'dp${Deployment}-FW-publicIPDeploy${FWInfo.Name}'
   params: {
     Deployment: Deployment
-    DeploymentID: DeploymentID
+    DeploymentURI: DeploymentURI
     NICs: array(FWInfo)
     VM: FWInfo
     PIPprefix: 'fw'
     Global: Global
-    OMSworkspaceID: OMSworkspaceID
   }
 }
 
@@ -114,7 +112,7 @@ resource FWDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
   name: 'service'
   scope: FW
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'AzureFirewallApplicationRule'

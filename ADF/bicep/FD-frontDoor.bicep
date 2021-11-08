@@ -1,13 +1,16 @@
 param Deployment string
-param DeploymentID string
+param DeploymentURI string
 param Environment string
 param frontDoorInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
 
 var FDName = '${Deployment}-afd${frontDoorInfo.Name}'
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var DefaultFrontEnd = [
   {
@@ -145,7 +148,7 @@ resource FDDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
   scope: FD
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'FrontdoorAccessLog'

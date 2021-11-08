@@ -1,22 +1,20 @@
 param Deployment string
-param DeploymentID string
+param DeploymentURI string
 param Environment string
 param NATGWInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
 
 module PublicIP 'x.publicIP.bicep' = {
   name: 'dp${Deployment}-NATGW-publicIPDeploy${NATGWInfo.Name}'
   params: {
     Deployment: Deployment
-    DeploymentID: DeploymentID
+    DeploymentURI: DeploymentURI
     NICs: array(NATGWInfo)
     VM: NATGWInfo
     PIPprefix: 'ngw'
     Global: Global
-    OMSworkspaceID: OMSworkspaceID
   }
 }
 

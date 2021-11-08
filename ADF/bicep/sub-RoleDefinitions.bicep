@@ -3,6 +3,7 @@
     'ACU1'
     'AWU2'
     'AEU1'
+    'AWCU'
 ])
 param Prefix string
 
@@ -51,16 +52,8 @@ var Enviro = '${Environment}${DeploymentID}' // D1
 var Deployment = '${Prefix}-${Global.orgname}-${Global.Appname}-${Enviro}' // AZE2-BRW-HUB-D1
 var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${Enviro}' // AZE2-BRW-HUB-D1
 
-// move location lookup to include file referencing this table: 
-// https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/docs/Naming_Standards_Prefix.md
-
-var locationlookup = {
-    AZE2: 'eastus2'
-    AZC1: 'centralus'
-    AEU2: 'eastus2'
-    ACU1: 'centralus'
-}
-var location = locationlookup[Prefix]
+var locationlookup = json(loadTextContent('./global/prefix.json'))
+var location = locationlookup[Prefix].location
 
 var roleDefinitionsInfo = DeploymentInfo.RoleDefinitionsInfo
 

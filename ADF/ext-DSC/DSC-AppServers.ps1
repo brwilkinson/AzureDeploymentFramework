@@ -24,7 +24,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xWebAdministration
-    # Import-DscResource -ModuleName xPSDesiredStateConfiguration
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile, xPackage -ModuleVersion 8.10.0.0
     Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName xWindowsUpdate
     Import-DscResource -ModuleName xDSCFirewall
@@ -36,7 +36,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName xSystemSecurity
     Import-DscResource -ModuleName DNSServerDSC
     Import-DscResource -ModuleName PackageManagementProviderResource
-    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
+    Import-DscResource -ModuleName AZCOPYDSCDir             # https://github.com/brwilkinson/AZCOPYDSC
     Import-DscResource -ModuleName WVDDSC               # https://github.com/brwilkinson/WVDDSC
     Import-DscResource -ModuleName AppReleaseDSC        # https://github.com/brwilkinson/AppReleaseDSC
     Import-DscResource -ModuleName DevOpsAgentDSC       # https://github.com/brwilkinson/DevOpsAgentDSC
@@ -235,7 +235,7 @@ Configuration $Configuration
             WindowsFeatureSet WindowsFeatureSetPresent
             {
                 Ensure = 'Present'
-                Name   = $Node.Present
+                Name   = $Node.WindowsFeatureSetPresent
                 #Source = $Node.SXSPath
             }
         }
@@ -276,7 +276,7 @@ Configuration $Configuration
         #-------------------------------------------------------------------
         if ($Node.Absent)
         {
-            xWindowsFeatureSet WindowsFeatureSetAbsent
+            WindowsFeatureSet WindowsFeatureSetAbsent
             {
                 Ensure = 'Absent'
                 Name   = $Node.WindowsFeatureSetAbsent
@@ -307,7 +307,7 @@ Configuration $Configuration
         #-------------------------------------------------------------------
         if ($Node.DNSForwarder)
         {
-            xDnsServerForwarder AzureDNS
+            DnsServerForwarder AzureDNS
             {
                 IsSingleInstance = 'yes'
                 IPAddresses      = $Node.DNSForwarder
@@ -317,7 +317,7 @@ Configuration $Configuration
         #-------------------------------------------------------------------
         foreach ($Zone in $Node.ConditionalForwarderPresent)
         {
-            xDnsServerConditionalForwarder $Zone.Name
+            DnsServerConditionalForwarder $Zone.Name
             {
                 Name             = $Zone.Name
                 MasterServers    = $Zone.MasterServers
@@ -367,15 +367,15 @@ Configuration $Configuration
         #-------------------------------------------------------------------
         foreach ($User in $Node.ADUserPresent)
         {
-            xADUser $User.UserName
+            ADUser $User.UserName
             {
-                DomainName                    = $User.DomainName
-                UserName                      = $User.Username
-                Description                   = $User.Description
-                Enabled                       = $True
-                Password                      = $UserCreds
+                DomainName           = $User.DomainName
+                UserName             = $User.Username
+                Description          = $User.Description
+                Enabled              = $True
+                Password             = $UserCreds
                 #DomainController = $User.DomainController
-                DomainAdministratorCredential = $credlookup['DomainJoin']
+                PsDscRunAsCredential = $credlookup['DomainJoin']
             }
             $dependsonUser += @("[xADUser]$($User.Username)")
         }
@@ -398,10 +398,10 @@ Configuration $Configuration
         foreach ($Group in $Node.GroupMemberPresent)
         {
             $Name = $Group.MemberstoInclude -replace $StringFilter
-            xGroup $Name
+            Group $Name
             {
                 GroupName        = $Group.GroupName
-                MemberstoInclude = $Group.MemberstoInclude       
+                MemberstoInclude = $Group.MemberstoInclude
             }
             $dependsonGroup += @("[xGroup]$($Group.GroupName)")
         }
@@ -512,7 +512,7 @@ Configuration $Configuration
         #-------------------------------------------------------------------
         foreach ($userLogin in $Node.SQLServerLogins)
         {
-            SQLServerLogin $userLogin.Name
+            SQLLogin $userLogin.Name
             {
                 Ensure               = 'Present'
                 Name                 = $userLogin.Name
@@ -522,13 +522,13 @@ Configuration $Configuration
                 DependsOn            = $dependsonPowerShellModule
                 PsDscRunAsCredential = $SQLSvcAccountCreds
             }
-            $dependsonuserLogin += @("[xSQLServerLogin]$($userLogin.Name)")
+            $dependsonuserLogin += @("[xSQLLogin]$($userLogin.Name)")
         }
 
         #-------------------------------------------------------------------
         foreach ($userRole in $Node.SQLServerRoles)
         {
-            SQLServerRole $userRole.ServerRoleName
+            SQLRole $userRole.ServerRoleName
             {
                 Ensure               = 'Present'
                 ServerRoleName       = $userRole.ServerRoleName
@@ -538,14 +538,14 @@ Configuration $Configuration
                 DependsOn            = $dependsonPowerShellModule
                 PsDscRunAsCredential = $SQLSvcAccountCreds
             }
-            $dependsonuserRoles += @("[xSQLServerRole]$($userRole.ServerRoleName)")
+            $dependsonuserRoles += @("[xSQLRole]$($userRole.ServerRoleName)")
         }
 
         #-------------------------------------------------------------------
         foreach ($userPermission in $Node.SQLServerPermissions)
         {
             # Add the required permissions to the cluster service login
-            SQLServerPermission $userPermission.Name
+            SQLPermission $userPermission.Name
             {
                 Ensure               = 'Present'
                 ServerName           = $Node.SQLServer
@@ -555,7 +555,7 @@ Configuration $Configuration
                 DependsOn            = $dependsonPowerShellModule
                 PsDscRunAsCredential = $SQLSvcAccountCreds
             }
-            $dependsonSQLServerPermissions += @("[xSQLServerPermission]$($userPermission.Name)")
+            $dependsonSQLPermissions += @("[xSQLPermission]$($userPermission.Name)")
         }
 
         #Set environment path variables
@@ -737,7 +737,7 @@ Configuration $Configuration
                 PsDscRunAsCredential = $credlookup['SQLService']
             }
 
-            $dependsonSQLServerScripts += @("[xSQLServerScript]$($Name)")
+            $dependsonSQLScripts += @("[xSQLScript]$($Name)")
         }
 
         #-------------------------------------------------------------------
@@ -788,7 +788,7 @@ Configuration $Configuration
         foreach ($Package in $Node.SoftwarePackagePresent)
         {
             $Name = $Package.Name -replace $StringFilter
-            Get-Package $Name
+            xPackage $Name
             {
                 Name                 = $Package.Name
                 Path                 = $Package.Path
@@ -917,7 +917,7 @@ Configuration $Configuration
 # F5 loads the configuration and starts the push
 
 #region The following is used for manually running the script, breaks when running as system
-if ((whoami) -notmatch 'system' -and $NotAA)
+if ((whoami) -notmatch 'system' -and !$NotAA)
 {
     # Set the location to the DSC extension directory
     if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
@@ -929,7 +929,7 @@ if ((whoami) -notmatch 'system' -and $NotAA)
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
     }
 }
-elseif ($NotAA)
+elseif (!$NotAA)
 {
     Write-Warning -Message 'running as system'
     break

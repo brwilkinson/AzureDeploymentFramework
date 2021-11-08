@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -50,11 +51,14 @@ param saKey string = newGuid()
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-var Deploymentnsg = '${Prefix}-${Global.OrgName}-${Global.AppName}-'
+
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var addressPrefixes = [
   '${networkId}.0/23'
 ]
@@ -163,28 +167,8 @@ module dp_Deployment_NATGW 'NATGW.bicep' = if (bool(Stage.NATGW)) {
   ]
 }
 
-module dp_Deployment_NSGHUB 'NSG.hub.bicep' = if (bool(Stage.NSGHUB)) {
-  name: 'dp${Deployment}-NSGHUB'
-  params: {
-    // move these to Splatting later
-    DeploymentID: DeploymentID
-    DeploymentInfo: DeploymentInfo
-    Environment: Environment
-    Extensions: Extensions
-    Global: Global
-    Prefix: Prefix
-    Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
-  }
-  dependsOn: [
-    dp_Deployment_OMS
-  ]
-}
-
-module dp_Deployment_NSGSPOKE 'NSG.spoke.bicep' = if (bool(Stage.NSGSPOKE)) {
-  name: 'dp${Deployment}-NSGSPOKE'
+module dp_Deployment_NSG 'NSG.bicep' = if (bool(Stage.NSG)) {
+  name: 'dp${Deployment}-NSG'
   params: {
     // move these to Splatting later
     DeploymentID: DeploymentID
@@ -241,8 +225,7 @@ module dp_Deployment_FlowLogs 'NetworkFlowLogs.bicep' = if (bool(Stage.FlowLogs)
   dependsOn: [
     dp_Deployment_OMS
     dp_Deployment_NetworkWatcher
-    dp_Deployment_NSGSPOKE
-    dp_Deployment_NSGHUB
+    dp_Deployment_NSG
     dp_Deployment_SA
   ]
 }
@@ -284,8 +267,7 @@ module dp_Deployment_VNET 'VNET.bicep' = if (bool(Stage.VNET)) {
     vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
-    dp_Deployment_NSGSPOKE
-    dp_Deployment_NSGHUB
+    dp_Deployment_NSG
     dp_Deployment_NATGW
   ]
 }
@@ -443,7 +425,6 @@ module dp_Deployment_LB 'LB.bicep' = if (bool(Stage.LB)) {
 module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary) || contains(Stage,'CreateADPDC') && bool(Stage.CreateADPDC)) {
   name: 'dp${Deployment}-VNETDNSPublic'
   params: {
-    Deploymentnsg: Deploymentnsg
     Deployment: Deployment
     DeploymentID: DeploymentID
     Prefix: Prefix
@@ -508,7 +489,6 @@ module ADPrimary 'VM.bicep' = if (bool(Stage.ADPrimary)) {
 module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary) || contains(Stage,'CreateADPDC') && bool(Stage.CreateADPDC)) {
   name: 'dp${Deployment}-VNETDNSDC1'
   params: {
-    Deploymentnsg: Deploymentnsg
     Deployment: Deployment
     DeploymentID: DeploymentID
     Prefix: Prefix
@@ -571,7 +551,6 @@ module ADSecondary 'VM.bicep' = if (bool(Stage.ADSecondary)) {
 module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (bool(Stage.ADSecondary) || contains(Stage,'CreateADBDC') && bool(Stage.CreateADBDC)) {
   name: 'dp${Deployment}-VNETDNSDC2'
   params: {
-    Deploymentnsg: Deploymentnsg
     Deployment: Deployment
     DeploymentID: DeploymentID
     DeploymentInfo: DeploymentInfo

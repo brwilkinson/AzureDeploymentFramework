@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -53,8 +54,10 @@ var snWAF01Name = 'snWAF01'
 var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var hubRG = Global.hubRGName
 
@@ -129,7 +132,7 @@ resource RCDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [fo
   name: 'service'
   scope: RC[index]
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         timeGrain: 'PT5M'

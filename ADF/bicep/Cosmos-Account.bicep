@@ -1,7 +1,11 @@
 param Deployment string
+param DeploymentURI string
 param cosmosAccount object
 param Global object
-param OMSworkspaceID string
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var locations = [for (cdb,index) in cosmosAccount.locations: {
   failoverPriority: cdb.failoverPriority
@@ -30,7 +34,7 @@ resource CosmosDBDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
   name: 'service'
   scope: CosmosAccount
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'DataPlaneRequests'

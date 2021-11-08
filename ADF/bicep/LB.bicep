@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -46,11 +47,15 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
 var subscriptionId = subscription().subscriptionId
 var Domain = split(Global.DomainName, '.')[0]
 var resourceGroupName = resourceGroup().name
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 var VNetID = resourceId(subscriptionId, resourceGroupName, 'Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
@@ -65,12 +70,11 @@ module PublicIP 'x.publicIP.bicep' = [for (lb,index) in LBInfo: if(LB[index].mat
   name: 'dp${Deployment}-LB-publicIPDeploy${lb.Name}'
   params: {
     Deployment: Deployment
-    DeploymentID: DeploymentID
+    DeploymentURI: DeploymentURI
     NICs: lb.FrontEnd
     VM: lb
     PIPprefix: 'lb'
     Global: Global
-    OMSworkspaceID: OMSworkspaceID
   }
 }]
 
@@ -78,6 +82,7 @@ module LBs 'LB-LB.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {
   name: 'dp${Deployment}-LB-Deploy${lb.Name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     DeploymentID: DeploymentID
     backEndPools: (contains(lb, 'BackEnd') ? lb.BackEnd : json('[]'))
     NATRules: (contains(lb, 'NATRules') ? lb.NATRules : json('[]'))
@@ -87,7 +92,6 @@ module LBs 'LB-LB.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {
     probes: (contains(lb, 'probes') ? lb.probes : json('[]'))
     LB: lb
     Global: Global
-    OMSworkspaceID: OMSworkspaceID
   }
   dependsOn: [
     PublicIP

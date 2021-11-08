@@ -3,6 +3,7 @@
     'ACU1'
     'AWU2'
     'AEU1'
+    'AWCU'
 ])
 param Prefix string = 'ACU1'
 
@@ -54,13 +55,8 @@ targetScope = 'subscription'
 // move location lookup to include file referencing this table: 
 // https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/docs/Naming_Standards_Prefix.md
 
-var locationlookup = {
-    AZE2: 'eastus2'
-    AZC1: 'centralus'
-    AEU2: 'eastus2'
-    ACU1: 'centralus'
-}
-var location = locationlookup[Prefix]
+var locationlookup = json(loadTextContent('./global/prefix.json'))
+var location = locationlookup[Prefix].location
 
 var uaiInfo = (contains(DeploymentInfo, 'uaiInfo') ? DeploymentInfo.uaiInfo : [])
 
@@ -72,7 +68,7 @@ var identity = [for uai in uaiInfo: {
 resource RG 'Microsoft.Resources/resourceGroups@2021-01-01' = {
     name: rg
     location: location
-    properties:{}
+    properties: {}
 }
 
 module UAI 'sub-RG-UAI.bicep' = [for (uai, index) in identity: if (uai.match) {

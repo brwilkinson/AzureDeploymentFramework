@@ -1,12 +1,16 @@
 param Deployment string
+param DeploymentURI string
 param DeploymentID string
 param Environment string
 param SBInfo object
 param appConfigurationInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 resource SB 'Microsoft.ServiceBus/namespaces@2018-01-01-preview' = {
   name: '${Deployment}-sb${SBInfo.Name}'
@@ -25,7 +29,7 @@ resource SBDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'service'
   scope: SB
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'OperationalLogs'
@@ -72,7 +76,6 @@ module ServiceBus_TopicSubscriptions 'SB-ServiceBus-TopicSubscription.bicep' = [
     SBTopicName: '${Deployment}-sb${SBInfo.Name}/${topic.Name}'
     Global: Global
     Stage: Stage
-    OMSworkspaceID: OMSworkspaceID
   }
   dependsOn: [
     SBTopic

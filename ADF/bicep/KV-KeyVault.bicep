@@ -1,15 +1,18 @@
 param Deployment string
-param DeploymentID string
+param DeploymentURI string
 param Environment string
 param Prefix string
 param KVInfo object
 param Global object
-param OMSworkspaceID string
 
 var Defaults = {
   enabledForDeployment: true
   enabledForDiskEncryption: true
   enabledForTemplateDeployment: true
+}
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
 }
 
 var keyVaultPermissions = {
@@ -109,7 +112,7 @@ resource KVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
   name: 'service'
   scope: KV
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'AuditEvent'

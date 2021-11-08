@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -49,8 +50,11 @@ param sshPublic string
 var Deployment = '${Prefix}-${Environment}${DeploymentID}-${Global.AppName}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 
 var GatewaySubnetName = 'gatewaySubnet'
 
@@ -87,7 +91,7 @@ resource ERGWPublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-prev
   name: 'service'
   scope: ERGWPublicIP[index]
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'DDoSProtectionNotifications'

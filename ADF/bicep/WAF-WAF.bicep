@@ -1,10 +1,10 @@
 param Deployment string
+param DeploymentURI string
 param DeploymentID string
 param Environment string
 param waf object
 param Global object
 param Stage object
-param OMSworkspaceID string
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
@@ -18,6 +18,10 @@ resource FWPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPol
 
 var firewallPolicy = {
   id: FWPolicy.id
+}
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
 }
 
 var WAFName = '${Deployment}-waf${waf.WAFName}'
@@ -240,7 +244,7 @@ resource WAFDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
   scope: WAF
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'ApplicationGatewayAccessLog'
@@ -285,7 +289,7 @@ module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in waf.Listeners: 
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
     hostname: toLower('${Deployment}-${list.Hostname}')
-    cname: reference(resourceId('Microsoft.network/publicipaddresses', '${Deployment}-waf${waf.WAFName}-publicip1'), '2017-08-01', 'Full').properties.dnsSettings.fqdn
+    cname: PublicIP.properties.dnsSettings.fqdn
     Global: Global
   }
 }]

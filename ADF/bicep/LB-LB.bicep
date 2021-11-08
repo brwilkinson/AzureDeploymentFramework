@@ -1,4 +1,5 @@
 param Deployment string
+param DeploymentURI string
 param DeploymentID string
 param backEndPools array = []
 param NATRules array = []
@@ -8,9 +9,12 @@ param Services array = []
 param probes array = []
 param LB object
 param Global object
-param OMSworkspaceID string
 
 var lbname = '${Deployment}-lb${LB.Name}'
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
@@ -140,7 +144,7 @@ resource LBalancerDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview
   name: 'service'
   scope: LBalancer
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'LoadBalancerAlertEvent'

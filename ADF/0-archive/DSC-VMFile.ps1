@@ -700,7 +700,7 @@ Configuration VMFile
     # F5 loads the configuration and starts the push
 
     #region The following is used for manually running the script, breaks when running as system
-    if ((whoami) -notmatch 'system' -and $NotAA)
+    if ((whoami) -notmatch 'system' -and !$NotAA)
     {
         # Set the location to the DSC extension directory
         if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
@@ -712,7 +712,7 @@ Configuration VMFile
             Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
         }
     }
-    elseif ($NotAA)
+    elseif (!$NotAA)
     {
         Write-Warning -Message 'running as system'
         break

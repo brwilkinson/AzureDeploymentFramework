@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -64,8 +65,10 @@ var ACRInfo = [for (acr, index) in ContainerRegistry: {
 var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('microsoft.insights/components', AppInsightsName)
 
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 // var storageInfo = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
   //   nameSuffix: toLower('reg${cr.Name}')
@@ -94,7 +97,7 @@ var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMS
   //     storageInfo: sa
   //     Global: Global
   //     Stage: Stage
-  //     OMSworkspaceID: OMSworkspaceID
+  //     OMSworkspaceId: OMS.id
   //   }
   //   dependsOn: []
   // }]
@@ -116,7 +119,7 @@ resource ACRDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-previe
   name: 'service'
   scope: ACR[index]
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'ContainerRegistryRepositoryEvents'

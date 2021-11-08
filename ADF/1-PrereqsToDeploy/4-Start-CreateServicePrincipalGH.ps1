@@ -50,6 +50,26 @@ $OrgName = $Global.Global.OrgName
 $RolesLookup = $Global.Global.RolesLookup
 $StartLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
 
+if (Get-Command gh)
+{
+    gh --version | Select-Object -First 1
+}
+else 
+{
+    throw 'please install GH.exe to create GH secret [https://github.com/cli/cli/releases/latest]'
+}
+
+$repo = git config --get remote.origin.url
+if ($repo)
+{
+    Write-Output "Your local repo is: $($repo)"
+    $GHProject = ( $repo | Split-Path -Leaf ) -replace '.git', ''
+}
+else 
+{
+    throw 'please set location to a Git repo for which to create the secret'
+}
+
 Foreach ($Environment in $Environments)
 {
     $EnvironmentName = "$($Prefix)-$($OrgName)-$($AppName)-RG-$Environment"
@@ -83,7 +103,7 @@ Foreach ($Environment in $Environments)
         $secret
 
         #  https://cli.github.com/manual/
-        $Secret | gh secret set $SecretName
+        $Secret | gh secret set $SecretName -R $repo
     }
     else
     {

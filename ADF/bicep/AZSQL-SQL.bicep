@@ -1,4 +1,5 @@
 param Deployment string
+param DeploymentURI string
 param Prefix string
 param DeploymentID string
 param Environment string
@@ -6,7 +7,6 @@ param azSQLInfo object
 param appConfigurationInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
 
 @secure()
@@ -19,6 +19,10 @@ param devOpsPat string
 param sshPublic string
 
 var RolesLookup = json(Global.RolesLookup)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 resource SQL 'Microsoft.Sql/servers@2020-11-01-preview' = {
   name: toLower('${Deployment}-azsql${azSQLInfo.Name}')
@@ -77,7 +81,7 @@ resource SQLDBDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =
   name: 'service'
   scope: SQLDB[index]
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         enabled: true

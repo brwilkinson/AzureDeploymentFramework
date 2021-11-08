@@ -739,10 +739,9 @@ Configuration $Configuration
 # used for troubleshooting
 # F5 loads the configuration and starts the push
 
-$NotAA = $True
 
 #region The following is used for manually running the script, breaks when running as system
-if ((whoami) -notmatch 'system' -and $NotAA)
+if ((whoami) -notmatch 'system' -and !$NotAA)
 {
     # Set the location to the DSC extension directory
     if ($psise) { $DSCdir = ($psISE.CurrentFile.FullPath | Split-Path) }
@@ -754,7 +753,7 @@ if ((whoami) -notmatch 'system' -and $NotAA)
         Set-Location -Path $DSCdir -ErrorAction SilentlyContinue
     }
 }
-elseif ($NotAA)
+elseif (!$NotAA)
 {
     Write-Warning -Message 'running as system'
     break
@@ -771,8 +770,6 @@ $ConfigurationArguments = Get-DscExtensionHandlerSettings | ForEach-Object Confi
 
 $AdminCredsPW = ConvertTo-SecureString -String $ConfigurationArguments['AdminCreds'].Password -AsPlainText -Force
 
-$ConfigurationArguments['sshPublic'] = [pscredential]::new($ConfigurationArguments['sshPublic'].UserName, $sshPublicPW)
-$ConfigurationArguments['devOpsPat'] = [pscredential]::new($ConfigurationArguments['devOpsPat'].UserName, $devOpsPatPW)
 $ConfigurationArguments['AdminCreds'] = [pscredential]::new($ConfigurationArguments['AdminCreds'].UserName, $AdminCredsPW)
 
 $Params = @{

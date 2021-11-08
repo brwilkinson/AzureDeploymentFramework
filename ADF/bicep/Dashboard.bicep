@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -46,8 +47,12 @@ param devOpsPat string
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var rgName_Monitoring = resourceGroup().name
 var prefix_var = '${Prefix}${Global.AppName}${Environment}${DeploymentID}'
 var ApplicationList = [
@@ -81,7 +86,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                   value: {
                     SubscriptionId: subscription().subscriptionId
                     ResourceGroup: rgName_Monitoring
-                    Name: OMSworkspaceName
+                    Name: OMS.name
                   }
                 }
                 {
@@ -131,7 +136,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                 }
                 {
                   name: 'PartSubTitle'
-                  value: OMSworkspaceName
+                  value: OMS.name
                 }
                 {
                   name: 'resourceTypeMode'
@@ -142,7 +147,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
               settings: {
                 content: {
                   dashboardPartTitle: '${item.AppName} App Server CPU'
-                  dashboardPartSubTitle: OMSworkspaceName
+                  dashboardPartSubTitle: OMS.name
                 }
               }
               asset: {
@@ -165,7 +170,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                   value: {
                     SubscriptionId: subscription().subscriptionId
                     ResourceGroup: rgName_Monitoring
-                    Name: OMSworkspaceName
+                    Name: OMS.name
                   }
                 }
                 {
@@ -215,7 +220,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                 }
                 {
                   name: 'PartSubTitle'
-                  value: OMSworkspaceName
+                  value: OMS.name
                 }
                 {
                   name: 'resourceTypeMode'
@@ -226,7 +231,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
               settings: {
                 content: {
                   dashboardPartTitle: '${item.AppName} Available Memory in MB'
-                  dashboardPartSubTitle: OMSworkspaceName
+                  dashboardPartSubTitle: OMS.name
                 }
               }
               asset: {
@@ -249,7 +254,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                   value: {
                     SubscriptionId: subscription().subscriptionId
                     ResourceGroup: rgName_Monitoring
-                    Name: OMSworkspaceName
+                    Name: OMS.name
                   }
                 }
                 {
@@ -292,7 +297,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                 }
                 {
                   name: 'PartSubTitle'
-                  value: OMSworkspaceName
+                  value: OMS.name
                 }
                 {
                   name: 'resourceTypeMode'
@@ -303,7 +308,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
               settings: {
                 content: {
                   dashboardPartTitle: '${item.AppName} Logical Disk I/O Total'
-                  dashboardPartSubTitle: OMSworkspaceName
+                  dashboardPartSubTitle: OMS.name
                 }
               }
               asset: {
@@ -326,7 +331,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                   value: {
                     SubscriptionId: subscription().subscriptionId
                     ResourceGroup: rgName_Monitoring
-                    Name: OMSworkspaceName
+                    Name: OMS.name
                   }
                 }
                 {
@@ -369,7 +374,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                 }
                 {
                   name: 'PartSubTitle'
-                  value: OMSworkspaceName
+                  value: OMS.name
                 }
                 {
                   name: 'resourceTypeMode'
@@ -380,7 +385,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
               settings: {
                 content: {
                   dashboardPartTitle: '${item.AppName} Disk Queue Length'
-                  dashboardPartSubTitle: OMSworkspaceName
+                  dashboardPartSubTitle: OMS.name
                 }
               }
               asset: {
@@ -403,7 +408,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                   value: {
                     SubscriptionId: subscription().subscriptionId
                     ResourceGroup: rgName_Monitoring
-                    Name: OMSworkspaceName
+                    Name: OMS.name
                   }
                 }
                 {
@@ -446,7 +451,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                 }
                 {
                   name: 'PartSubTitle'
-                  value: OMSworkspaceName
+                  value: OMS.name
                 }
                 {
                   name: 'resourceTypeMode'
@@ -457,7 +462,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
               settings: {
                 content: {
                   dashboardPartTitle: '${item.AppName} Top Network Utilization Servers'
-                  dashboardPartSubTitle: OMSworkspaceName
+                  dashboardPartSubTitle: OMS.name
                 }
               }
               asset: {
@@ -480,7 +485,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                   value: {
                     SubscriptionId: subscription().subscriptionId
                     ResourceGroup: rgName_Monitoring
-                    Name: OMSworkspaceName
+                    Name: OMS.name
                   }
                 }
                 {
@@ -518,7 +523,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                 }
                 {
                   name: 'PartSubTitle'
-                  value: OMSworkspaceName
+                  value: OMS.name
                 }
                 {
                   name: 'resourceTypeMode'
@@ -529,7 +534,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
               settings: {
                 content: {
                   dashboardPartTitle: '${item.AppName} Top Network Utilization Servers'
-                  dashboardPartSubTitle: OMSworkspaceName
+                  dashboardPartSubTitle: OMS.name
                 }
               }
               asset: {
@@ -741,7 +746,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
               inputs: [
                 {
                   name: 'id'
-                  value: '${OMSworkspaceID}/views/Updates(${OMSworkspaceName})'
+                  value: '${OMS.id}/views/Updates(${OMS.name})'
                 }
                 {
                   name: 'solutionId'

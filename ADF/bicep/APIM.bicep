@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -50,8 +51,11 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
-var OMSworkspaceName = '${DeploymentURI}LogAnalytics'
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
 var AppInsightsName = '${DeploymentURI}AppInsights'
 
 var APIMInfo = contains(DeploymentInfo, 'APIMInfo') ? DeploymentInfo.APIMInfo : []
@@ -164,7 +168,7 @@ resource APIMDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = 
   name: 'service'
   scope: APIM[index]
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     logs: [
       {
         category: 'GatewayLogs'

@@ -3,8 +3,9 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
   'I'
@@ -88,8 +89,9 @@ var eventHubInfo = [
     location: 'EastUS2'
   }
 ]
-var OMSworkspaceName = replace('${Deployment}LogAnalytics', '-', '')
-var OMSworkspaceID = resourceId('Microsoft.OperationalInsights/workspaces/', OMSworkspaceName)
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 resource EventHub 'Microsoft.EventHub/namespaces@2021-06-01-preview' = [for item in eventHubInfo: {
   name: '${Deployment}-eh${item.name}'

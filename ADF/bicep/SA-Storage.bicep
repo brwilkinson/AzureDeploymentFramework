@@ -5,8 +5,11 @@ param Environment string
 param storageInfo object
 param Global object
 param Stage object
-param OMSworkspaceID string
 param now string = utcNow('F')
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
 
 var hubRG = Global.hubRGName
 var storageLoggingAbstractions = [
@@ -132,7 +135,7 @@ resource SADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
   name: 'service'
   scope: SA
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         category: 'Capacity'
@@ -158,7 +161,7 @@ resource SABlobDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pre
   name: 'service'
   scope: SABlobService
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         category: 'Capacity'
@@ -210,7 +213,7 @@ resource SAFileDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pre
   name: 'service'
   scope: SAFileService
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         category: 'Capacity'
@@ -262,7 +265,7 @@ resource SAQueueDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
   name: 'service'
   scope: SAQueueService
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         category: 'Capacity'
@@ -314,7 +317,7 @@ resource SATableDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
   name: 'service'
   scope: SATableService
   properties: {
-    workspaceId: OMSworkspaceID
+    workspaceId: OMS.id
     metrics: [
       {
         category: 'Capacity'

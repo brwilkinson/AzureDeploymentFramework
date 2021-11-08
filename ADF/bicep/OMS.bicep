@@ -3,8 +3,9 @@
     'AZC1'
     'AEU2'
     'ACU1'
+    'AWCU'
 ])
-param Prefix string = 'AZE2'
+param Prefix string = 'ACU1'
 
 @allowed([
     'I'
@@ -50,8 +51,8 @@ param now string = utcNow('F')
 targetScope = 'resourceGroup'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
-
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
 var OMSWorkspaceName = '${DeploymentURI}LogAnalytics'
 var AAName = '${DeploymentURI}OMSAutomation'
 var appInsightsName = '${DeploymentURI}AppInsights'
@@ -863,7 +864,8 @@ resource OMSworkspaceName_Automation 'Microsoft.OperationalInsights/workspaces/l
     }
 }
 
-resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
+@batchSize(1)
+resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: if (bool(Stage.OMSUpdateMonthly)) {
     parent: AA
     name: 'Update-Third-Saturday-Windows-Zone${zone}'
     properties: {
@@ -925,7 +927,8 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
     }
 }]
 
-resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
+@batchSize(1)
+resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: if (bool(Stage.OMSUpdateWeekly)) {
     parent: AA
     name: 'Update-Twice-Weekly-Windows-Zone${zone}'
     properties: {
@@ -1168,14 +1171,14 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
 
 resource AppInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
     name: appInsightsName
-    location: resourceGroup().location
+    location: contains(Global,'AppInsightsRegion') ? Global.AppInsightsRegion : resourceGroup().location
     kind: 'other'
     properties: {
         Application_Type: 'web'
-        Flow_Type: null
+        Flow_Type: 'Redfield'
         Request_Source: 'rest'
-        HockeyAppId: ''
-        SamplingPercentage: null
+        // HockeyAppId: ''
+        // SamplingPercentage: null
     }
 }
 
