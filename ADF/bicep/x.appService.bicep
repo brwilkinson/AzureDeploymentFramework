@@ -63,6 +63,15 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
   ]
 }
 
+module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws,'initialDeploy') && bool(ws.initialDeploy) && contains(ws,'customDNS') && bool(ws.customDNS)) {
+  name: 'dp-binding-${ws.name}'
+  params: {
+    externalDNS: Global.DomainNameExt
+    siteName: WS.name
+    sslState: 'Disabled'
+  }
+}
+
 resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
   name: toLower('${WS.name}.${Global.DomainNameExt}')
   location: resourceGroup().location
@@ -70,19 +79,32 @@ resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,
     canonicalName: toLower('${WS.name}.${Global.DomainNameExt}')
     serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
   }
+  dependsOn: [
+    wsBinding
+  ]
 }
 
-resource extDNSBinding 'Microsoft.Web/sites/hostNameBindings@2021-02-01' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
-  name: toLower('${WS.name}.${Global.DomainNameExt}')
-  parent: WS
-  properties: {
+module wsBindingSNI 'x.appServiceBinding.bicep' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
+  name: 'dp-binding-sni-${ws.name}'
+  params: {
+    externalDNS: Global.DomainNameExt
     siteName: WS.name
-    hostNameType: 'Verified'
     sslState: 'SniEnabled'
-    customHostNameDnsRecordType: 'CName'
     thumbprint: certificates.properties.thumbprint
   }
 }
+
+// resource extDNSBinding 'Microsoft.Web/sites/hostNameBindings@2021-02-01' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
+//   name: toLower('${WS.name}.${Global.DomainNameExt}')
+//   parent: WS
+//   properties: {
+//     siteName: WS.name
+//     hostNameType: 'Verified'
+//     sslState: 'SniEnabled'
+//     customHostNameDnsRecordType: 'CName'
+//     thumbprint: certificates.properties.thumbprint
+//   }
+// }
 
 // Create File share used for Function WEBSITE_CONTENTSHARE
 module SAFileShares 'x.storageFileShare.bicep' = {

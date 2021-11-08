@@ -711,14 +711,15 @@
         ],
         "FunctionInfo": [
           {
-            "Name": "DIS01",
+            "Name": "DIS02",
             "kind": "functionapp",
             "AppSVCPlan": "ASP01",
             "saname": "data",
             "runtime": "dotnet",
             "subnet": "snMT01",
             "preWarmedCount": 1,
-            "customDNS": 1
+            "customDNS": 1,
+            "initialDeploy": 0
           },
           {
             "Name": "PS02",
