@@ -19,6 +19,7 @@
     "RTName": "Hub",
     "dnsZoneRGName": "ACU1-BRW-AOA-RG-P0",
     "shutdownSchedulerTimeZone": "Pacific Standard Time",
-    "patchSchedulerTimeZone": "America/Los_Angeles"
+    "patchSchedulerTimeZone": "America/Los_Angeles",
+    "AppInsightsRegion": "westus2"
   }
 }

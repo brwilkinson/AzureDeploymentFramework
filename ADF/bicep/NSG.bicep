@@ -3,6 +3,7 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
 param Prefix string = 'ACU1'
 
@@ -70,15 +71,11 @@ var NSGDefault = {
         protocol: '*'
         sourcePortRange: '*'
         destinationPortRange: '443'
-        sourceAddressPrefix: '*'
+        sourceAddressPrefix: 'Internet'
         destinationAddressPrefix: '*'
         access: 'Allow'
         priority: 100
         direction: 'Inbound'
-        sourcePortRanges: []
-        destinationPortRanges: []
-        sourceAddressPrefixes: []
-        destinationAddressPrefixes: []
       }
     }
     {
@@ -87,52 +84,98 @@ var NSGDefault = {
         protocol: '*'
         sourcePortRange: '*'
         sourceAddressPrefix: 'GatewayManager'
+        destinationPortRange: '443'
         destinationAddressPrefix: '*'
         access: 'Allow'
         priority: 110
         direction: 'Inbound'
-        sourcePortRanges: []
-        destinationPortRanges: [
-          '443'
-          '4443'
-        ]
-        sourceAddressPrefixes: []
-        destinationAddressPrefixes: []
       }
     }
     {
-      name: 'Outbound_Bastion_AzureCloud_443'
+      name: 'Inbound_Bastion_DataPlane'
       properties: {
         protocol: '*'
         sourcePortRange: '*'
-        destinationPortRange: '443'
-        sourceAddressPrefix: '*'
-        destinationAddressPrefix: 'AzureCloud'
+        sourceAddressPrefix: 'VirtualNetwork'
+        destinationAddressPrefix: 'VirtualNetwork'
         access: 'Allow'
-        priority: 100
-        direction: 'Outbound'
-        sourcePortRanges: []
-        destinationPortRanges: []
-        sourceAddressPrefixes: []
-        destinationAddressPrefixes: []
+        priority: 120
+        direction: 'Inbound'
+        destinationPortRanges: [
+          '8080'
+          '5701'
+        ]
+      }
+    }
+    {
+      name: 'Inbound_Bastion_AzureLoadBalancer'
+      properties: {
+        protocol: '*'
+        sourcePortRange: '*'
+        sourceAddressPrefix: 'AzureLoadBalancer'
+        destinationPortRange: '443'
+        destinationAddressPrefix: '*'
+        access: 'Allow'
+        priority: 130
+        direction: 'Inbound'
       }
     }
     {
       name: 'Outbound_Bastion_FE01_3389_22'
       properties: {
-        protocol: 'Tcp'
+        protocol: '*'
         sourcePortRange: '*'
         sourceAddressPrefix: '*'
         access: 'Allow'
-        priority: 110
+        priority: 200
         direction: 'Outbound'
-        sourcePortRanges: []
+        destinationAddressPrefix: 'VirtualNetwork'
         destinationPortRanges: [
           '3389'
           '22'
         ]
+      }
+    }
+    {
+      name: 'Outbound_Bastion_AzureCloud_443'
+      properties: {
+        protocol: 'TCP'
+        sourcePortRange: '*'
+        destinationPortRange: '443'
+        sourceAddressPrefix: '*'
+        destinationAddressPrefix: 'AzureCloud'
+        access: 'Allow'
+        priority: 210
+        direction: 'Outbound'
+      }
+    }
+    {
+      name: 'Outbound_Bastion_DataPlane'
+      properties: {
+        protocol: '*'
+        sourcePortRange: '*'
+        sourceAddressPrefix: 'VirtualNetwork'
         destinationAddressPrefix: 'VirtualNetwork'
-        sourceAddressPrefixes: []
+        access: 'Allow'
+        priority: 220
+        direction: 'Outbound'
+        destinationPortRanges: [
+          '8080'
+          '5701'
+        ]
+      }
+    }
+    {
+      name: 'Outbound_Bastion_Internet_80'
+      properties: {
+        protocol: '*'
+        sourcePortRange: '*'
+        destinationPortRange: '80'
+        sourceAddressPrefix: '*'
+        destinationAddressPrefix: 'Internet'
+        access: 'Allow'
+        priority: 230
+        direction: 'Outbound'
       }
     }
   ]
@@ -176,28 +219,34 @@ var NSGDefault = {
   ]
   SNFE01: [
     {
-      name: 'ALL_JMP_IN_Allow_RDP01'
+      name: 'ALL_Bastion_IN_Allow_RDP_SSH'
       properties: {
         protocol: '*'
         sourcePortRange: '*'
-        destinationPortRange: '3389'
-        sourceAddressPrefixes: Global.PublicIPAddressforRemoteAccess
+        destinationPortRanges: [
+          '3389'
+          '22'
+        ]
+        sourceAddressPrefix: 'VirtualNetwork'
         destinationAddressPrefix: '*'
         access: 'Allow'
-        priority: 1130
+        priority: 1120
         direction: 'Inbound'
       }
     }
     {
-      name: 'ALL_JMP_IN_Allow_SSH01'
+      name: 'ALL_JMP_IN_Allow_RDP_SSH'
       properties: {
         protocol: '*'
         sourcePortRange: '*'
-        destinationPortRange: '22'
-        sourceAddressPrefixes: Global.PublicIPAddressforRemoteAccess
+        destinationPortRanges: [
+          '3389'
+          '22'
+        ]
+        sourceAddressPrefixes: contains(Global, 'PublicIPAddressforRemoteAccess') ? Global.PublicIPAddressforRemoteAccess : []
         destinationAddressPrefix: '*'
         access: 'Allow'
-        priority: 1140
+        priority: 1130
         direction: 'Inbound'
       }
     }
@@ -207,10 +256,10 @@ var NSGDefault = {
         protocol: '*'
         sourcePortRange: '*'
         destinationPortRange: '8080'
-        sourceAddressPrefixes: Global.PublicIPAddressforRemoteAccess
+        sourceAddressPrefixes: contains(Global, 'PublicIPAddressforRemoteAccess') ? Global.PublicIPAddressforRemoteAccess : []
         destinationAddressPrefix: '*'
         access: 'Allow'
-        priority: 1150
+        priority: 1140
         direction: 'Inbound'
       }
     }

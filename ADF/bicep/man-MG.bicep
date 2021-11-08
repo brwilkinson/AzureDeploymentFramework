@@ -3,6 +3,7 @@
   'ACU1'
   'AWU2'
   'AEU1'
+  'AWCU'
 ])
 param Prefix string = 'ACU1'
 

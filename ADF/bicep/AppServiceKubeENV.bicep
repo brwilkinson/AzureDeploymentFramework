@@ -3,6 +3,7 @@
   'AZC1'
   'AEU2'
   'ACU1'
+  'AWCU'
 ])
 param Prefix string = 'ACU1'
 
@@ -68,19 +69,19 @@ var kubeEnvInfo = [for (kubeenv, index) in appServiceKubeEnvInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, kubeenv.name))
 }]
 
-resource KEP 'Microsoft.Web/kubeEnvironments@2021-02-01' = [for (kubeenv,index) in appServiceKubeEnvInfo: if (kubeEnvInfo[index].match) {
-  name: '${Deployment}-kep${kubeenv.Name}'
+resource KEP 'Microsoft.Web/kubeEnvironments@2021-03-01' = [for (kubeenv,index) in appServiceKubeEnvInfo: if (kubeEnvInfo[index].match) {
+  name: toLower('${DeploymentURI}kep${kubeenv.Name}')
   location: contains(kubeenv,'location') ? kubeenv.location : resourceGroup().location
   properties: {
     type: 'Managed'
     internalLoadBalancerEnabled: contains(kubeenv,'internalLoadBalancerEnabled') ? bool(kubeenv.internalLoadBalancerEnabled) : false
-    // appLogsConfiguration: {
-    //   destination: 'log-analytics'
-    //   logAnalyticsConfiguration: {
-    //     customerId: OMS.properties.customerId
-    //     sharedKey: OMS.listKeys().primarySharedKey
-    //   }
-    // }
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      // logAnalyticsConfiguration: {
+      //   customerId: OMS.properties.customerId
+      //   sharedKey: OMS.listKeys().primarySharedKey
+      // }
+    }
     // containerAppsConfiguration: {
     //   daprAIInstrumentationKey: AppInsights.properties.InstrumentationKey
     // }

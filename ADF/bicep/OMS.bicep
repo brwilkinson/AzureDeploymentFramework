@@ -3,6 +3,7 @@
     'AZC1'
     'AEU2'
     'ACU1'
+    'AWCU'
 ])
 param Prefix string = 'ACU1'
 
@@ -1170,7 +1171,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
 
 resource AppInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
     name: appInsightsName
-    location: resourceGroup().location
+    location: contains(Global,'AppInsightsRegion') ? Global.AppInsightsRegion : resourceGroup().location
     kind: 'other'
     properties: {
         Application_Type: 'web'
