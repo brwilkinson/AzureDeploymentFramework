@@ -39,3 +39,8 @@ Authorization: {{Bearer}}
 ### 
 GET https://acu1-brw-aoa-t5-kvdata2.vault.azure.net//storage/acu1brwaoat5sadata2?api-version=7.0
 Authorization: {{Bearer}}
+
+###
+GET https://paste.microsoft.com/
+Authorization: {{Bearer}}
+

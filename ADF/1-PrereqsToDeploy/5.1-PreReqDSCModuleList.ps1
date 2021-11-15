@@ -8,7 +8,7 @@ param (
     $Modules = @(
         'PSDscResources','xPSDesiredStateConfiguration','DnsServerDsc', 'SQLServerDsc',
         'xWebAdministration', 'xFailoverCluster', 'AccessControlDsc',
-        'SecurityPolicyDSC', 'xTimeZone', 'xSystemSecurity', 'xRemoteDesktopSessionHost',
+        'SecurityPolicyDSC', 'xSystemSecurity', 'xRemoteDesktopSessionHost',
         'xRemoteDesktopAdmin', 'xDSCFirewall', 'xWindowsUpdate', 'PackageManagementProviderResource', 
         'xSmbShare', 'PolicyFileEditor',
         'ComputerManagementDsc', 'NetworkingDSC', 'CertificateDsc',
@@ -37,7 +37,7 @@ $Modules | ForEach-Object {
         if ($DownloadLatest -eq 1)
         {
             $Latest = Find-Module -Name $ModuleName 
-            If ($Latest.Version -gt $ModuleLatest.version)
+            If ((! $ModuleLatest.version) -OR $Latest.Version -gt $ModuleLatest.version)
             {
                 Write-Verbose -Message "Installing Module $ModuleName" -Verbose
                 Save-Module -Name $ModuleName -Path $BasePath -Force -Verbose
@@ -64,14 +64,12 @@ $Modules | ForEach-Object {
             else
             {
                 Write-Verbose -Message "`n             --> Module [$ModuleName] not yet installed, copying module ..." -Verbose
-                
             }
             Copy-Item -Path $ModulePath -Destination $ModuleDestination -Recurse -Force
         }
         else
         {
             Write-Verbose -Message "`n          --> The latest version [$ModuleName] installed" -Verbose
-            
         }
     }
     else

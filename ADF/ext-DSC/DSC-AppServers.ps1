@@ -24,7 +24,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xWebAdministration
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile, xPackage -ModuleVersion 8.10.0.0
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile, xPackage -ModuleVersion 9.1.0
     Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName xWindowsUpdate
     Import-DscResource -ModuleName xDSCFirewall
@@ -435,6 +435,19 @@ Configuration $Configuration
         }
 
         #-------------------------------------------------------------------
+        foreach ($RemoteFile in $Node.RemoteFilePresent)
+        {
+            $Name = ($RemoteFile.DestinationPath + '_' + $RemoteFile.Uri) -replace $StringFilter 
+            xRemoteFile $Name
+            {
+                DestinationPath = $RemoteFile.DestinationPath
+                Uri             = $RemoteFile.Uri
+                #UserAgent       = [Microsoft.PowerShell.Commands.PSUserAgent]::InternetExplorer
+                #Headers         = @{ 'Accept-Language' = 'en-US' }
+            }
+        }
+
+        #-------------------------------------------------------------------
         foreach ($AppComponent in $Node.AppReleaseDSCAppPresent)
         {
             AppReleaseDSC $AppComponent.ComponentName
@@ -813,7 +826,7 @@ Configuration $Configuration
                 Path                       = $Package.Path
                 Ensure                     = 'Present'
                 ProductId                  = $Package.ProductId
-                DependsOn = $dependsonDirectory + $dependsonArchive
+                DependsOn                  = $dependsonDirectory + $dependsonArchive
                 Arguments                  = $Package.Arguments
                 RunAsCredential            = $credlookup['DomainCreds'] 
                 CreateCheckRegValue        = $true 

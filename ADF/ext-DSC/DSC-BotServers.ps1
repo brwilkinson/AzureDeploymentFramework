@@ -22,7 +22,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName ActiveDirectoryDSC
     Import-DscResource -ModuleName StorageDsc
     Import-DscResource -ModuleName xWebAdministration
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile, xPackage -ModuleVersion 8.10.0.0
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration -Name xRemoteFile, xPackage -ModuleVersion 9.1.0
     Import-DscResource -ModuleName SecurityPolicyDSC
     Import-DscResource -ModuleName xWindowsUpdate
     Import-DscResource -ModuleName xDSCFirewall
@@ -30,7 +30,8 @@ Configuration $Configuration
     Import-DscResource -ModuleName xSystemSecurity
     Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
     Import-DscResource -ModuleName AppReleaseDSC        # https://github.com/brwilkinson/AppReleaseDSC
-    
+    Import-DscResource -ModuleName EnvironmentDSC       # https://github.com/brwilkinson/EnvironmentDSC
+
     # PowerShell Modules that you want deployed, comment out if not needed
     # Import-DscResource -ModuleName BRWAzure
 
@@ -80,7 +81,7 @@ Configuration $Configuration
         'SQLService'  = $DomainCreds
         'usercreds'   = $AdminCreds
     }
-   
+
     node $AllNodes.NodeName
     {
         [string]$computername = $Nodename
@@ -122,7 +123,7 @@ Configuration $Configuration
                 }#Get
                 SetScript  = {
                     $certBinding = $using:certBinding
-                    netsh http add sslcert ipport=0.0.0.0:$($certBinding.Port) certhash=$($certBinding.CertHash) appid=$($certBinding.AppId)
+                    netsh http add sslcert ipport=0.0.0.0:$($certBinding.Port) certhash=$($using:ThumbPrint) appid=$($certBinding.AppId)
                 }#Set 
                 TestScript = {
                     $certBinding = $using:certBinding
@@ -141,9 +142,8 @@ Configuration $Configuration
                     }
                     catch
                     {
-                        Write-Warning "Certificate cannot be found with Thumbprint [$($certBinding.CertHash)]"
-                        # Throw "Certificate cannot be found with Thumbprint [$($certBinding.CertHash)]"
-                        $true
+                        Write-Warning "Cert binding for app does not exist [$($certBinding.Name)]"
+                        $false
                     }
                 }#Test
             }
@@ -162,6 +162,19 @@ Configuration $Configuration
             Role    = 'Administrators'
             Enabled = IIF $Node.DisableIEESC (-Not $Node.DisableIEESC) $True
         }
+
+        #-------------------------------------------------------------------
+        foreach ($EnvVar in $Node.EnvironmentVarSet)
+        {
+            EnvironmentDSC $EnvVar.Name
+            {
+                Name                    = $EnvVar.Name
+                KeyVaultName            = $EnvVar.KVName -f $Deployment
+                Ensure                  = 'Present'
+                ManagedIdentityClientID = $clientIDLocal
+            }
+            $dependsonEnvironmentDSC += @("[EnvironmentDSC]$($EnvVar.Name)")
+        }        
 
         #-------------------------------------------------------------------
         
@@ -198,7 +211,6 @@ Configuration $Configuration
             {
                 Ensure = 'Present'
                 Name   = $Node.Present
-                #Source = $Node.SXSPath
             }
         }
 
@@ -387,7 +399,7 @@ Configuration $Configuration
                 DestinationPath         = $AppComponent.DestinationPath
                 ValidateFileName        = $AppComponent.ValidateFileName
                 BuildFileName           = $AppComponent.BuildFileName
-                EnvironmentName         = $environment[0]
+                EnvironmentName         = $environment
                 Ensure                  = 'Present'
                 ManagedIdentityClientID = $clientIDGlobal
                 LogDir                  = 'F:\azcopy_logs'
@@ -613,13 +625,13 @@ Configuration $Configuration
             $Name = $Package.Name -replace $StringFilter
             xPackage $Name
             {
-                Name                 = $Package.Name
-                Path                 = $Package.Path
-                Ensure               = 'Present'
-                ProductId            = $Package.ProductId
-                PsDscRunAsCredential = $credlookup['DomainCreds']
-                DependsOn            = $dependsonDirectory
-                Arguments            = $Package.Arguments
+                Name      = $Package.Name
+                Path      = $Package.Path
+                Ensure    = 'Present'
+                ProductId = $Package.ProductId
+                # PsDscRunAsCredential = $credlookup['DomainCreds']
+                DependsOn = $dependsonDirectory
+                Arguments = $Package.Arguments
             }
 
             $dependsonPackage += @("[xPackage]$($Name)")
