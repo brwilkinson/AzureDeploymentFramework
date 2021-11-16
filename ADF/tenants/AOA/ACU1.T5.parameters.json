@@ -746,6 +746,12 @@
             }
           ]
         },
+        "azBOTInfo": [
+          {
+            "Name": "SodaPopBot",
+            "Sku": "S1"
+          }
+        ],
         "AKSInfo": [
           {
             "Name": "01",
