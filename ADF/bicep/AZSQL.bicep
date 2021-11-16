@@ -53,7 +53,7 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 
 var appConfigurationInfo = (contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : json('null'))
 
-var azSQLInfo = contains(DeploymentInfo, 'frontDoorInfo') ? DeploymentInfo.azSQLInfo : []
+var azSQLInfo = contains(DeploymentInfo, 'azSQLInfo') ? DeploymentInfo.azSQLInfo : []
 
 var azSQL = [for (sql,index) in azSQLInfo : {
   match: ((Global.CN == '.') || contains(Global.CN, sql.Name))
