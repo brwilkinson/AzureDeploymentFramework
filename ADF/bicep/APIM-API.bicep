@@ -26,10 +26,6 @@ module getApiCurrent 'APIM-API-Get.bicep' = [for (api, index) in apis: {
   }
 }]
 
-resource APIM 'Microsoft.ApiManagement/service@2021-04-01-preview' existing = {
-  name: apim.name
-}
-
 module setNewRevision 'APIM-API-Clone.bicep' = [for (api, index) in apis: {
   name: 'dpCreateClone-${api.name}-rev${api.cloneto}'
   params: {
@@ -42,4 +38,4 @@ module setNewRevision 'APIM-API-Clone.bicep' = [for (api, index) in apis: {
 }]
 
 output current array = [for (api, index) in apis: getApiCurrent[index]]
-// output newrevision array = [for (api, index) in apis: setNewRevision[index]]
+output newrevision array = [for (api, index) in apis: setNewRevision[index]]
