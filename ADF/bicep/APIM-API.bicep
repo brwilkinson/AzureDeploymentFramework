@@ -4,9 +4,17 @@ param apim object = {
 param apis array = [
   {
     name: 'echo-api'
-    clonefrom: '4'
+    clonefrom: '1'
     cloneto: '5'
     addrevisiondescriptionprefix: 'test new revision'
+    Operations: [
+      'create-resource'
+      'modify-resource'
+      'remove-resource'
+      'retrieve-header-only'
+      'retrieve-resource'
+      'retrieve-resource-cached'
+    ]
   }
 ]
 
@@ -27,9 +35,11 @@ module setNewRevision 'APIM-API-Clone.bicep' = [for (api, index) in apis: {
   params: {
     apim: apim
     api: getApiCurrent[index].outputs.currentapi.properties
+    operations: getApiCurrent[index].outputs.currentapioperations
     apinew: api
+    operationNames: api.Operations
   }
 }]
 
 output current array = [for (api, index) in apis: getApiCurrent[index]]
-output newrevision array = [for (api, index) in apis: setNewRevision[index]]
+// output newrevision array = [for (api, index) in apis: setNewRevision[index]]
