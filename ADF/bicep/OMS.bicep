@@ -772,7 +772,7 @@ resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' = {
     }
 }
 
-resource AADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+resource AADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' =  {
     name: 'service'
     scope: AA
     properties: {

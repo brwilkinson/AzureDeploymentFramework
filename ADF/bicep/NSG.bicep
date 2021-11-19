@@ -264,6 +264,39 @@ var NSGDefault = {
       }
     }
   ]
+  SNBE01: [
+    {
+      name: 'APIM_Management_Inbound'
+      properties: {
+        description: 'APIM_Management_Inbound'
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '3443'
+        sourceAddressPrefix: 'ApiManagement'
+        destinationAddressPrefix: 'VirtualNetwork'
+        access: 'Allow'
+        priority: 1120
+        direction: 'Inbound'
+      }
+    }
+    {
+      name: 'APIM_Client_Inbound'
+      properties: {
+        description: 'APIM_Client_Inbound'
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        sourceAddressPrefix: 'Internet'
+        destinationAddressPrefix: 'VirtualNetwork'
+        access: 'Allow'
+        priority: 1130
+        direction: 'Inbound'
+        destinationPortRanges: [
+          '443'
+          '80'
+        ]
+      }
+    }
+  ]
 }
 
 resource NSG 'Microsoft.Network/networkSecurityGroups@2021-03-01' = [for (subnet, index) in subnetInfo: {

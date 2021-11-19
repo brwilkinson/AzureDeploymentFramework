@@ -82,7 +82,7 @@ resource AzureBOT 'Microsoft.BotService/botServices@2021-05-01-preview' = [for (
     name: bot.Sku
   }
   properties: {
-    displayName: '${Deployment}-bot${bot.Name}'
+    displayName: bot.Name
     msaAppType: 'UserAssignedMSI'
     msaAppId: UAI.properties.principalId
     msaAppTenantId: tenant().tenantId
