@@ -185,53 +185,7 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
   properties: {
     azPowerShellVersion: '5.4'
     arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${resourceId(Global.HubRGName, 'Microsoft.Keyvault/vaults', Global.KVName)} -certificateUrl ${Global.certificateUrl}'
-    scriptContent: ''' 
-                    param ( 
-                        [string]$ResourceGroupName, 
-                        [string]$FrontDoorName, 
-                        [string]$Name, 
-                        [string]$VaultID, 
-                        [string]$certificateUrl 
-                    ) 
-                    
-                    try 
-                    { 
-                        Write-Output "`nUTC is: " 
-                        Get-Date 
-                        $c = Get-AzContext -ErrorAction stop 
-                        if ($c) 
-                        { 
-                            Write-Output "`nContext is: " 
-                            $c | select Account,Subscription,Tenant,Environment | fl | out-string 
-
-                            $EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -Name $Name -ErrorAction stop 
-                            #$EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName ACU1-BRW-AOA-RG-S1 -FrontDoorName ACU1-BRW-AOA-S1-afd01 -Name APIM01-Gateway 
-                            if ($EndPoint.Vault) 
-                            { 
-                                Write-Output 'Provisioning CustomDomainHttp is complete!' 
-                            } 
-                            else 
-                            { 
-                                # /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01 
-                                #  
-                                $SecretVersion = Split-Path -Path $certificateUrl -Leaf 
-                                $Secret = Split-Path -Path $certificateUrl 
-                                $SecretName = Split-Path -Path $Secret -Leaf 
-                              
-                                Enable-AzFrontDoorCustomDomainHttps -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -FrontendEndpointName $Name -VaultId $VaultID -SecretName $SecretName -MinimumTlsVersion 1.2 -SecretVersion $SecretVersion 
-                            } 
-                        } 
-                        else
-                        { 
-                            throw 'Cannot get a context' 
-                        } 
-                    } 
-                    catch 
-                    { 
-                        Write-Warning $_ 
-                        Write-Warning $_.exception 
-                    } 
-                '''
+    scriptContent: loadTextContent('../bicep/deploymentScripts/setServicesCertificates.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
