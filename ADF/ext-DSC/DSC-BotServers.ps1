@@ -169,12 +169,13 @@ Configuration $Configuration
             EnvironmentDSC $EnvVar.Name
             {
                 Name                    = $EnvVar.Name
+                Prefix                  = $EnvVar.Prefix
                 KeyVaultName            = $EnvVar.KVName -f $Deployment
                 Ensure                  = 'Present'
                 ManagedIdentityClientID = $clientIDLocal
             }
             $dependsonEnvironmentDSC += @("[EnvironmentDSC]$($EnvVar.Name)")
-        }        
+        }
 
         #-------------------------------------------------------------------
         
@@ -339,7 +340,7 @@ Configuration $Configuration
             UserRightsAssignment $UserRightsAssignment.policy
             {
                 Identity = $UserRightsAssignment.identity
-                Policy   = $UserRightsAssignment.policy       
+                Policy   = $UserRightsAssignment.policy
             }
             $dependsonUserRightsAssignment += @("[UserRightsAssignment]$($UserRightsAssignment.policy)")
         }
@@ -419,6 +420,19 @@ Configuration $Configuration
                 Value = $EnvironmentVar.Value -f ($LB.inboundRules | Where-Object backendPort -EQ $EnvironmentVar.BackendPortMatch | ForEach-Object frontendPort)
             }
             $dependsonEnvironmentPathVMSS += @("[Environment]$Name")
+        }
+
+        #-------------------------------------------------------------------
+        # Non PATH envs
+        foreach ($EnvironmentVar in $Node.EnvironmentVarPresent)
+        {
+            $Name = $EnvironmentVar.Name -replace $StringFilter
+            Environment $Name
+            {
+                Name  = $EnvironmentVar.Name
+                Value = $EnvironmentVar.Value
+            }
+            $dependsonEnvironmentPath += @("[Environment]$Name")
         }
 
         #-----------------------------------------
