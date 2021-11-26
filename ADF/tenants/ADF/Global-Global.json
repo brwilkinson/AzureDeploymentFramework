@@ -1,7 +1,5 @@
 {
   "Global": {
-    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
-    "SubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "OrgName": "BRW",
     "AppName": "ADF",

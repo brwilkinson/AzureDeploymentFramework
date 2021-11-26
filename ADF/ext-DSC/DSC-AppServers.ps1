@@ -36,10 +36,11 @@ Configuration $Configuration
     Import-DscResource -ModuleName xSystemSecurity
     Import-DscResource -ModuleName DNSServerDSC
     Import-DscResource -ModuleName PackageManagementProviderResource
-    Import-DscResource -ModuleName AZCOPYDSCDir             # https://github.com/brwilkinson/AZCOPYDSC
+    Import-DscResource -ModuleName AZCOPYDSCDir         # https://github.com/brwilkinson/AZCOPYDSC
     Import-DscResource -ModuleName WVDDSC               # https://github.com/brwilkinson/WVDDSC
     Import-DscResource -ModuleName AppReleaseDSC        # https://github.com/brwilkinson/AppReleaseDSC
     Import-DscResource -ModuleName DevOpsAgentDSC       # https://github.com/brwilkinson/DevOpsAgentDSC
+    Import-DscResource -ModuleName EnvironmentDSC       # https://github.com/brwilkinson/EnvironmentDSC
     Import-DscResource -ModuleName DSCR_Font
     Import-DscResource -ModuleName DSCR_AppxPackage
     
@@ -74,31 +75,6 @@ Configuration $Configuration
         If ($If) { If ($IfTrue -is 'ScriptBlock') { &$IfTrue } Else { $IfTrue } }
         Else { If ($IfFalse -is 'ScriptBlock') { &$IfFalse } Else { $IfFalse } }
     }
-    
-
-    # -------- MSI lookup for storage account keys to set Cloud Witness for SQL (if needed)
-    #$response = Invoke-WebRequest -UseBasicParsing -Uri "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=${clientIDGlobal}&resource=https://management.azure.com/" -Method GET -Headers @{Metadata = 'true' }
-    #$ArmToken = $response.Content | ConvertFrom-Json | ForEach-Object access_token
-    #$Params = @{ Method = 'POST'; UseBasicParsing = $true; ContentType = 'application/json'; Headers = @{ Authorization = "Bearer $ArmToken" }; ErrorAction = 'Stop' }
-
-    <#
-        # moved away from using storage account keys to Oauth2 based authentication via AZCOPYDSCDir
-        try
-        {
-            $StorageAccountName = Split-Path -Path $StorageAccountId -Leaf
-            $Params['Uri'] = 'https://management.azure.com{0}/{1}/?api-version=2016-01-01' -f $StorageAccountId, 'listKeys'
-            $storageAccountKeySource = (Invoke-WebRequest @Params).content | ConvertFrom-Json | ForEach-Object Keys | Select-Object -First 1 | ForEach-Object Value
-            Write-Verbose "SAK Global: $storageAccountKeySource" -Verbose
-            
-            # Create the Cred to access the storage account
-            Write-Verbose -Message "User is: [$StorageAccountName]"
-            $StorageCred = [pscredential]::new( $StorageAccountName , (ConvertTo-SecureString -String $StorageAccountKeySource -AsPlainText -Force -ErrorAction stop))
-        }
-        catch
-        {
-            Write-Warning $_
-        }
-    #>
 
     if ($NoDomainJoin)
     {
@@ -133,14 +109,14 @@ Configuration $Configuration
         Write-Warning $DNSInfo.WAFDev
     }
 
+    #To clean up resource names use a regular expression to remove spaces, slashes and colons Etc.
+    $StringFilter = '\W', ''
+
     node $AllNodes.NodeName
     {
         [string]$computername = $Nodename
-
         Write-Verbose -Message $computername -Verbose
-
         Write-Verbose -Message "deployment: $deployment" -Verbose
-
         Write-Verbose -Message "environment: $environment" -Verbose
 
         LocalConfigurationManager
@@ -203,7 +179,6 @@ Configuration $Configuration
         }
 
         #-------------------------------------------------------------------
-        
         #Local Policy
         foreach ($LocalPolicy in $Node.LocalPolicyPresent)
         {     
@@ -346,9 +321,7 @@ Configuration $Configuration
             }
         }
 
-        # base install above - custom role install
         #-------------------------------------------------------------------
-
         foreach ($RegistryKey in $Node.RegistryKeyPresent)
         {
             Registry $RegistryKey.ValueName
@@ -392,9 +365,6 @@ Configuration $Configuration
         }
 
         #-------------------------------------------------------------------
-        #To clean up resource names use a regular expression to remove spaces, slashes and colons Etc.
-        $StringFilter = '\W', ''
-
         foreach ($Group in $Node.GroupMemberPresent)
         {
             $Name = $Group.MemberstoInclude -replace $StringFilter

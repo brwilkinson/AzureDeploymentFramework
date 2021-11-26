@@ -52,7 +52,7 @@ var aadProfile = {
   managed: true
   enableAzureRBAC: AKSInfo.enableRBAC
   adminGroupObjectIDs: (AKSInfo.enableRBAC ? aksAADAdminLookup : json('null'))
-  tenantID: Global.tenantId
+  tenantID: tenant().tenantId
 }
 var podIdentityProfile = {
   enabled: AKSInfo.enableRBAC

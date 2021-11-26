@@ -42,7 +42,7 @@ resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2020-11-01-prev
     administratorType: 'ActiveDirectory'
     login: azSQLInfo.AdminName
     sid: RolesLookup[azSQLInfo.AdminName]
-    tenantId: Global.tenantId
+    tenantId: tenant().tenantId
   }
 }
 

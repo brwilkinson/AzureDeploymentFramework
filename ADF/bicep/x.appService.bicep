@@ -34,7 +34,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
 
 module WebSiteDNS 'x.DNS.CNAME.bicep' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
   name: 'setdns-public-${Deployment}-${appprefix}${ws.Name}-${Global.DomainNameExt}'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
     hostname: toLower('${Deployment}-${appprefix}${ws.Name}')
     cname: '${Deployment}-${appprefix}${ws.Name}.azurewebsites.net'
@@ -153,4 +153,4 @@ resource WSWebConfig 'Microsoft.Web/sites/config@2021-01-01' = if(contains(ws, '
   }
 }
 
-output WebSite resource = WS
+output WebSite object = WS

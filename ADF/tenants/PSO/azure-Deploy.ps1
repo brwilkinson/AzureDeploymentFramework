@@ -9,20 +9,20 @@ break
 
 # Pre-reqs
 # Create Global Storage Account
-. ADF:\1-PrereqsToDeploy\1-CreateStorageAccountGlobal.ps1 -APP $App
+. ADF:\1-prereqs\1-CreateStorageAccountGlobal.ps1 -APP $App
 
 # Export all role defintions
-. ADF:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 -APP $App
+. ADF:\1-prereqs\4.1-getRoleDefinitionTable.ps1 -APP $App
 
 # Create Global Web Create
-. ADF:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
+. ADF:\1-prereqs\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
 
 # Create Service principal for Env.
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments M0,P0,G0,G1,D2,S1
-. ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
+. ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments M0,P0,G0,G1,D2,S1
+. ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
 
 # Sync the keyvault from CentralUS to EastUS2
-. ADF:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
+. ADF:\1-prereqs\3-Start-AzureKVSync.ps1
 
 # Deploy Environment
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\0-azuredeploy-mg-ManagementGroups.json

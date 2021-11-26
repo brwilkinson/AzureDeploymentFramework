@@ -93,7 +93,7 @@ module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.servi
 
 module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services: {
   name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
     hostname: toLower('${Deployment}-afd${frontDoorInfo.name}${((service.Name == 'Default') ? '' : '-${service.Name}')}')
     cname: '${Deployment}-afd${frontDoorInfo.name}.azurefd.net'

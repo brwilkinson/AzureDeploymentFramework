@@ -1,0 +1,46 @@
+
+### blob service is not tracked and will not be listed
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/resources?$filter=resourceType EQ 'Microsoft.Storage/storageAccounts/blobServices'&api-version=2020-01-01
+Authorization: {{Bearer}}
+
+### you can query a specific blob service
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/providers/Microsoft.Storage/storageAccounts/azc1brwabcs1sadiag/blobservices?api-version=2020-08-01-preview
+Authorization: {{Bearer}}
+
+### vm extensions are tracked and will not be listed
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/resources?$filter=resourceType EQ 'Microsoft.Compute/VirtualMachines/extensions'&api-version=2020-01-01
+Authorization: {{Bearer}}
+
+### only tracked resources (from RP manifest)
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/resources?api-version=2020-10-01
+Authorization: {{Bearer}}
+
+###
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/providers?api-version=2020-10-01
+Authorization: {{Bearer}}
+
+###
+GET https://management.azure.com/providers/Microsoft.Resources/operations?api-version=2015-01-01
+Authorization: {{Bearer}}
+
+### filter doesn't work, not sure why as yet?
+GET https://management.azure.com/providers/Microsoft.Resources/operations?$filter=name EQ 'Microsoft.Resources/providers/read'&api-version=2015-01-01
+Authorization: {{Bearer}}
+
+
+###
+GET https://management.azure.com/providers/Microsoft.Billing/billingAccounts/8608480/providers/Microsoft.Consumption/usageDetails?api-version=2019-10-01
+Authorization: {{Bearer}}
+
+### 
+GET https://management.azure.com/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/providers/Microsoft.CostManagement/exports/test?api-version=2020-06-01
+Authorization: {{Bearer}}
+
+### 
+GET https://acu1-brw-aoa-t5-kvdata2.vault.azure.net//storage/acu1brwaoat5sadata2?api-version=7.0
+Authorization: {{Bearer}}
+
+###
+GET https://paste.microsoft.com/
+Authorization: {{Bearer}}
+

@@ -98,7 +98,7 @@ resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = [for (ac
 
 module ACIDNS 'x.DNS.CNAME.bicep' = [for (aci,index) in Instances : {
   name: 'setdns-public-${Deployment}-ACI-${aci.name}-${Global.DomainNameExt}'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
     hostname: toLower(ACI[index].name)
     cname: ACI[index].properties.ipAddress.fqdn

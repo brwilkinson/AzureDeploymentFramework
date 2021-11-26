@@ -272,7 +272,7 @@ resource WAFDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
 
 module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in wafInfo.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
   name: 'setdns-public-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
   params: {
     hostname: toLower('${Deployment}-${list.Hostname}')
     cname: PublicIP.properties.dnsSettings.fqdn
@@ -282,7 +282,7 @@ module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in wafInfo.Listene
 
 module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list,index) in wafInfo.Listeners: if (bool(Stage.SetExternalDNS) && (list.Protocol == 'https')) {
   name: 'setdns-private-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
-  scope: resourceGroup(Global.SubscriptionID, Global.HubRGName)
+  scope: resourceGroup(subscription().subscriptionId, Global.HubRGName)
   params: {
     hostname: toLower('${Deployment}-${list.Hostname}')
     ipv4Address: ((list.Interface == 'Private') ? WAF.properties.frontendIPConfigurations[1].properties.privateIPAddress : PublicIP.properties.ipAddress)

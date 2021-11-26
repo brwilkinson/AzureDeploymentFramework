@@ -23,7 +23,7 @@ Go Home [Documentation Home](./index.md)
         - [Azure Blueprints](https://docs.microsoft.com/en-us/azure/governance/blueprints/overview)
 
     - You can easily export your JSON code via API or Portal, which can assist in your Template build process as you onboard new Resource Types.
-        - [Exporting JSON Resource Examples](../ADF/1-PrereqsToDeploy/19-TestResourceHTTP.ps1)
+        - [Exporting JSON Resource Examples](../ADF/1-prereqs/19-TestResourceHTTP.ps1)
 
     - Bicep Project is still in Preview. ~~Once this project become production ready, this project will likely apply Bicep where appropriate. Bicep still compiles down to ARM Templates, so they are not going away.~~ This project now fully supports Bicep for ALL templates, you can choose JSON or Bicep. Bicep us MUCH cleaner and more extensible, so at some point the ARM JSON will be archived from this project.
 
