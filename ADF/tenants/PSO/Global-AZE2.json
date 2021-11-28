@@ -10,9 +10,7 @@
       142
     ],
     "AALocation": "EastUS",
-    "nsgRGName": "AZE2-PSO-RG-P0",
     "RTRGName": "AZE2-PSO-RG-P0",
-    "RTName": "rtContoso-Hub",
-    "dnsZoneRGName": "AZE2-PSO-RG-P0"
+    "RTName": "rtContoso-Hub"
   }
 }

@@ -75,5 +75,6 @@ module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if
     flowLogName: '${Deployment}-fl-${sn.Name}'
     DeploymentURI: DeploymentURI
     Analyticsinterval: AnalyticsInterval
+    logAnalyticsId: OMS.id
   }
 }]

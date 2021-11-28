@@ -1,6 +1,6 @@
 {
   "Global": {
-    "HubRGName": "ACU1-BRW-AOA-RG-P0",
+    "hubRGName": "ACU1-BRW-AOA-RG-P0",
     "hubVnetName": "ACU1-BRW-AOA-P0-vn",
     "KVName": "ACU1-BRW-AOA-P0-kvVLT01",
     "KVUrl": "https://acu1-brw-aoa-p0-kvvlt01.vault.azure.net/",
@@ -14,10 +14,8 @@
       "10.10.144.76"
     ],
     "_DNSServers": [], // Leave Empty to use AzureDNS
-    "nsgRGName": "ACU1-BRW-AOA-RG-P0",
     "RTRGName": "ACU1-BRW-AOA-RG-P0",
     "RTName": "Hub",
-    "dnsZoneRGName": "ACU1-BRW-AOA-RG-P0",
     "shutdownSchedulerTimeZone": "Pacific Standard Time",
     "patchSchedulerTimeZone": "America/Los_Angeles"
   }

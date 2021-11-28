@@ -984,7 +984,7 @@
           {
             "name": "01",
             "_afdverify": "AOA",
-            "rulesEngineDetached": 0,
+            "rulesEngineDetached": 1,
             "rules": [
               {
                 "name": "Rule1",

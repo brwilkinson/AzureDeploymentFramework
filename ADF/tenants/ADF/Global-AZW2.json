@@ -10,9 +10,7 @@
             "172.18.",
             142
         ],
-        "nsgRGName": "AZW1-BRW-ADF-RG-P0",
         "RTRGName": "AZW1-BRW-ADF-RG-P0",
-        "RTName": "rtContoso-Hub",
-        "dnsZoneRGName": "AZW1-BRW-ADF-RG-P0"
+        "RTName": "rtContoso-Hub"
     }
 }

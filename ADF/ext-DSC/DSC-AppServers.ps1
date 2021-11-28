@@ -83,7 +83,10 @@ Configuration $Configuration
     else
     {
         $NetBios = $(($DomainName -split '\.')[0])
-        [PSCredential]$DomainCreds = [PSCredential]::New( $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]), $AdminCreds.Password )
+        [PSCredential]$DomainCreds = [PSCredential]::New(
+            $NetBios + '\' + $(($AdminCreds.UserName -split '\\')[-1]),
+            $AdminCreds.Password
+        )
     }
 
     $credlookup = @{
@@ -359,7 +362,7 @@ Configuration $Configuration
             UserRightsAssignment $UserRightsAssignment.policy
             {
                 Identity = $UserRightsAssignment.identity
-                Policy   = $UserRightsAssignment.policy       
+                Policy   = $UserRightsAssignment.policy
             }
             $dependsonUserRightsAssignment += @("[UserRightsAssignment]$($UserRightsAssignment.policy)")
         }
@@ -474,7 +477,6 @@ Configuration $Configuration
             {
                 Name   = $Capability.Name
                 Ensure = 'Present'
-                
             }
             $dependsonFeatures += @("[WindowsCapability]$Capability")
         }

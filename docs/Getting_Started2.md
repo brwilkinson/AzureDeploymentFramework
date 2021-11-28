@@ -87,10 +87,8 @@ Go Home [Documentation Home](./index.md)
                 "KVUrl": "https://AZC1-BRW-HUB-P0-kvVault01.vault.azure.net/",
                 "certificateUrl": "https://azc1-brw-hub-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/27a93d1b35ea4c869dae9331c6a0db2b",
                 "networkId": ["10.1.",144],               // update the networkid to use a different /20 Address
-                "nsgRGName": "AZC1-BRW-HUB-RG-P0",
                 "RTRGName": "AZC1-BRW-HUB-RG-P0",
-                "RTName": "rtContoso-Hub",
-                "dnsZoneRGName": "AZC1-BRW-HUB-RG-P0"
+                "RTName": "rtContoso-Hub"
               }
             }
             ````
@@ -107,10 +105,8 @@ Go Home [Documentation Home](./index.md)
             "KVUrl": "https://AZE2-BRW-HUB-P0-kvVault01.vault.azure.net/",
             "certificateUrl": "https://aze2-brw-hub-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/287befc1773d41e7884d3ae12f7d9034",
             "networkId": ["172.19.",142],               // update the networkid to use a different /20 Address
-            "nsgRGName": "AZE2-BRW-HUB-RG-P0",
             "RTRGName": "AZE2-BRW-HUB-RG-P0",
-            "RTName": "rtContoso-Hub",
-            "dnsZoneRGName": "AZE2-BRW-HUB-RG-P0"
+            "RTName": "rtContoso-Hub"
           }
         }
 1. Open up the Helper Script [ADF\tenants\ABC\azure-Deploy.ps1]

@@ -63,10 +63,8 @@ Go Home [Documentation Home](./index.md)
             "KVUrl": "https://AZC1-BRW-HUB-P0-kvVault01.vault.azure.net/",       // Given we haven't deployed this as yet, you will have to update the CertURL later.
             "certificateUrl": "https://azc1-brw-hub-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/e0066997eae945529c84fbf815f7759f",
             "networkId": ["10.0.",144],             // The is the /20 Network Address Space that will be divided up in this region
-            "nsgRGName": "AZC1-BRW-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
             "RTRGName": "AZC1-BRW-HUB-RG-P0",           // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
-            "RTName": "rtContoso-Hub",
-            "dnsZoneRGName": "AZC1-BRW-HUB-RG-P0"      // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+            "RTName": "rtContoso-Hub"
         ````
 1. Open the following File and fill out all of the information ADF\tenants\HUB\AZE2-Global.json
     1. The file name should match your Secondary Azure Region that you will deploy into

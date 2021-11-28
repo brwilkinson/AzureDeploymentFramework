@@ -7,16 +7,13 @@ param retentionPolicydays int
 param flowLogVersion int
 param flowLogName string
 param Analyticsinterval int
+param logAnalyticsId string
 
 var flowLogEnabled = contains(subNet,'FlowLogEnabled') && bool(subNet.FlowLogEnabled)
 var FlowAnalyticsEnabled = contains(subNet,'FlowAnalyticsEnabled') && bool(subNet.FlowAnalyticsEnabled)
 
 resource NetworkWatcher 'Microsoft.Network/networkWatchers@2019-11-01' existing = {
   name: '${hubDeployment}-networkwatcher'
-}
-
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
 }
 
 resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2020-11-01' = {
@@ -39,7 +36,7 @@ resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2020-11-01' = {
       networkWatcherFlowAnalyticsConfiguration: {
         enabled: FlowAnalyticsEnabled
         trafficAnalyticsInterval: Analyticsinterval
-        workspaceResourceId: OMS.id
+        workspaceResourceId: logAnalyticsId
       }
     }
   }

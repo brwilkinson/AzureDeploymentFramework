@@ -13,9 +13,7 @@
       "10.0.144.75",
       "10.0.144.76"
     ],
-    "nsgRGName": "AZC1-BRW-HUB-RG-P0",
     "RTRGName": "AZC1-BRW-HUB-RG-P0",
-    "RTName": "rtContoso-Hub",
-    "dnsZoneRGName": "AZC1-BRW-HUB-RG-P0"
+    "RTName": "rtContoso-Hub"
   }
 }

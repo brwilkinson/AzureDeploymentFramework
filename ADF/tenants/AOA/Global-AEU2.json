@@ -15,10 +15,8 @@
     ],
     "_DNSServers": [], // Leave Empty to use AzureDNS
     "AALocation": "EastUS",
-    "nsgRGName": "AEU2-BRW-AOA-RG-P0",
     "RTRGName": "AEU2-BRW-AOA-RG-P0",
     "RTName": "Hub",
-    "__dnsZoneRGName": "AEU2-BRW-AOA-RG-P0",
     "shutdownSchedulerTimeZone": "Eastern Standard Time",
     "patchSchedulerTimeZone": "America/New_York"
   }

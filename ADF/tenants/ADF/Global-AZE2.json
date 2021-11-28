@@ -15,9 +15,7 @@
             "172.20.142.76"
         ],
         "AALocation": "EastUS",
-        "nsgRGName": "AZE2-BRW-ADF-RG-P0",
         "RTRGName": "AZE2-BRW-ADF-RG-P0",
-        "RTName": "rtContoso-Hub",
-        "dnsZoneRGName": "AZE2-BRW-ADF-RG-P0"
+        "RTName": "rtContoso-Hub"
     }
 }
