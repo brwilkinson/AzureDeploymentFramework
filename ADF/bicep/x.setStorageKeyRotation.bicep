@@ -38,7 +38,7 @@ resource setStorageKeyRotationKV 'Microsoft.Resources/deploymentScripts@2020-10-
   properties: {
     azPowerShellVersion: '6.4.0'
     arguments: ' -VaultName ${keyvaultName} -AccountName ${storageAccountName} -KeyName ${keyName} -RegenerationPeriodDays ${regenerationPeriodDays} -State ${state}'
-    scriptContent: loadTextContent('../bicep/deploymentScripts/setStorageKeyRotationKV.ps1')
+    scriptContent: loadTextContent('../bicep/loadTextContext/setStorageKeyRotationKV.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
