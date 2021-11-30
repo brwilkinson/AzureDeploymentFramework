@@ -257,6 +257,9 @@
               },
               {
                 "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              },
+              {
+                "Name": "Load Test Owner"
               }
             ]
           }
