@@ -148,6 +148,18 @@
       "Id": "5b999177-9696-4545-85c7-50de3797e5a1",
       "Description": "Lets you update everything in cluster/namespace, except (cluster)roles and (cluster)role bindings."
     },
+    "Azure Arc VMware Administrator role ": {
+      "Id": "ddc140ed-e463-4246-9145-7c664192013f",
+      "Description": "Arc VMware VM Contributor has permissions to perform all connected VMwarevSphere actions."
+    },
+    "Azure Arc VMware Private Cloud User": {
+      "Id": "ce551c02-7c42-47e0-9deb-e3b6fc3a9a83",
+      "Description": "Azure Arc VMware Private Cloud User has permissions to use the VMware cloud resources to deploy VMs."
+    },
+    "Azure Arc VMware VM Contributor": {
+      "Id": "b748a06d-6150-4f8a-aaa9-ce3940cd96cb",
+      "Description": "Arc VMware VM Contributor has permissions to perform all VM actions."
+    },
     "Azure Connected Machine Onboarding": {
       "Id": "b64e21ea-ac4e-4cdf-9dc9-5b892992bee7",
       "Description": "Can onboard Azure Connected Machines."
@@ -208,6 +220,10 @@
       "Id": "a7ffa36f-339b-4b5c-8bdf-e2c188b2c0eb",
       "Description": "Allows read/write access to most objects in a namespace.This role does not allow viewing or modifying roles or role bindings. However, this role allows accessing Secrets and running Pods as any ServiceAccount in the namespace, so it can be used to gain the API access levels of any ServiceAccount in the namespace. Applying this role at cluster scope will give access across all namespaces."
     },
+    "Azure Maps Contributor": {
+      "Id": "dba33070-676a-4fb0-87fa-064dc56ff7fb",
+      "Description": "Grants access all Azure Maps resource management."
+    },
     "Azure Maps Data Contributor": {
       "Id": "8f5e0ce6-4f7b-4dcf-bddf-e6f48634a204",
       "Description": "Grants access to read, write, and delete access to map related data from an Azure maps account."
@@ -215,6 +231,10 @@
     "Azure Maps Data Reader": {
       "Id": "423170ca-a8f6-4b0f-8487-9e4eb8f49bfa",
       "Description": "Grants access to read map related data from an Azure maps account."
+    },
+    "Azure Maps Search and Render Data Reader": {
+      "Id": "6be48352-4f82-47c9-ad5e-0acacefdb005",
+      "Description": "Grants access to very limited set of data APIs for common visual web SDK scenarios. Specifically, render and search data APIs."
     },
     "Azure Relay Listener": {
       "Id": "26e0b698-aa6d-4085-9386-aadae190014d",
@@ -227,22 +247,6 @@
     "Azure Relay Sender": {
       "Id": "26baccc8-eea7-41f1-98f4-1762cc7f685d",
       "Description": "Allows for send access to Azure Relay resources."
-    },
-    "Azure Sentinel Automation Contributor": {
-      "Id": "f4c81013-99ee-4d62-a7ee-b3f1f648599a",
-      "Description": "Azure Sentinel Automation Contributor"
-    },
-    "Azure Sentinel Contributor": {
-      "Id": "ab8e14d6-4a74-4a29-9ba8-549422addade",
-      "Description": "Azure Sentinel Contributor"
-    },
-    "Azure Sentinel Reader": {
-      "Id": "8d289c81-5878-46d4-8554-54e1e3d8b5cb",
-      "Description": "Azure Sentinel Reader"
-    },
-    "Azure Sentinel Responder": {
-      "Id": "3e150937-b8fe-4cfb-8069-0eaf05ecd056",
-      "Description": "Azure Sentinel Responder"
     },
     "Azure Service Bus Data Owner": {
       "Id": "090c5cfd-751d-490a-894a-3ce6f1109419",
@@ -260,13 +264,33 @@
       "Id": "21d96096-b162-414a-8302-d8354f9d91b2",
       "Description": "Contributor role for services deploying through Azure Service Deploy."
     },
+    "Azure Spring Cloud Config Server Contributor": {
+      "Id": "a06f5c24-21a7-4e1a-aa2b-f19eb6684f5b",
+      "Description": "Allow read, write and delete access to Azure Spring Cloud Config Server"
+    },
+    "Azure Spring Cloud Config Server Reader": {
+      "Id": "d04c6db6-4947-4782-9e91-30a88feb7be7",
+      "Description": "Allow read access to Azure Spring Cloud Config Server"
+    },
     "Azure Spring Cloud Data Reader": {
       "Id": "b5537268-8956-4941-a8f0-646150406f0c",
       "Description": "Allow read access to Azure Spring Cloud Data"
     },
+    "Azure Spring Cloud Service Registry Contributor": {
+      "Id": "f5880b48-c26d-48be-b172-7927bfa1c8f1",
+      "Description": "Allow read, write and delete access to Azure Spring Cloud Service Registry"
+    },
+    "Azure Spring Cloud Service Registry Reader": {
+      "Id": "cff1b556-2399-4e7e-856d-a8f754be7b65",
+      "Description": "Allow read access to Azure Spring Cloud Service Registry"
+    },
     "Azure Stack Registration Owner": {
       "Id": "6f12a6df-dd06-4f3e-bcb1-ce8be600526a",
       "Description": "Lets you manage Azure Stack registrations."
+    },
+    "Azure VM Managed identities restore Contributor": {
+      "Id": "6ae96244-5829-4925-a7d3-5975537d91dd",
+      "Description": "Azure VM Managed identities restore Contributors are allowed to perform Azure VM Restores with managed identities both user and system"
     },
     "AzureML Data Scientist": {
       "Id": "f6c7c914-8db3-469d-8ca1-694a8f32e121",
@@ -383,6 +407,34 @@
     "Cognitive Services Face Recognizer": {
       "Id": "9894cab4-e18a-44aa-828b-cb588cd6f2d7",
       "Description": "Lets you perform detect, verify, identify, group, and find similar operations on Face API. This role does not allow create or delete operations, which makes it well suited for endpoints that only need inferencing capabilities, following 'least privilege' best practices."
+    },
+    "Cognitive Services Immersive Reader User": {
+      "Id": "b2de6794-95db-4659-8781-7e080d3f2b9d",
+      "Description": "Provides access to create Immersive Reader sessions and call APIs"
+    },
+    "Cognitive Services Language Owner": {
+      "Id": "f07febfe-79bc-46b1-8b37-790e26e6e498",
+      "Description": "Has access to all Read, Test, Write, Deploy and Delete functions under Language portal"
+    },
+    "Cognitive Services Language Reader": {
+      "Id": "7628b7b8-a8b2-4cdc-b46f-e9b35248918e",
+      "Description": "Has access to Read and Test functions under Language portal"
+    },
+    "Cognitive Services Language Writer": {
+      "Id": "f2310ca1-dc64-4889-bb49-c8e0fa3d47a8",
+      "Description": " Has access to all Read, Test, and Write functions under Language Portal"
+    },
+    "Cognitive Services LUIS Owner": {
+      "Id": "f72c8140-2111-481c-87ff-72b910f6e3f8",
+      "Description": " Has access to all Read, Test, Write, Deploy and Delete functions under LUIS"
+    },
+    "Cognitive Services LUIS Reader": {
+      "Id": "18e81cdc-4e98-4e29-a639-e7d10c5a6226",
+      "Description": "Has access to Read and Test functions under LUIS."
+    },
+    "Cognitive Services LUIS Writer": {
+      "Id": "6322a993-d5c9-4bed-b113-e49bbea25b27",
+      "Description": "Has access to all Read, Test, and Write functions under LUIS"
     },
     "Cognitive Services Metrics Advisor Administrator": {
       "Id": "cb43c632-a144-4ec5-977c-e80c4affc34a",
@@ -560,6 +612,10 @@
       "Id": "3e5e47e6-65f7-47ef-90b5-e5dd4d455f24",
       "Description": "Provides permission to backup vault to perform disk backup."
     },
+    "Disk Pool Operator": {
+      "Id": "60fc6e62-5479-42d4-8bf4-67625fcc2840",
+      "Description": "Used by the StoragePool Resource Provider to manage Disks added to a Disk Pool."
+    },
     "Disk Restore Operator": {
       "Id": "b50d9833-a0cb-478e-945f-707fcc997c13",
       "Description": "Provides permission to backup vault to perform disk restore."
@@ -684,10 +740,6 @@
       "Id": "48b40c6e-82e0-4eb3-90d5-19e40f49b624",
       "Description": "Can read, write, delete, and re-onboard Hybrid servers to the Hybrid Resource Provider."
     },
-    "Image_Builder": {
-      "Id": "0ad10259-71c1-50ca-9314-a4960582ad8b",
-      "Description": "Lets you deploy vm images"
-    },
     "Integration Service Environment Contributor": {
       "Id": "a41e2c5b-bd99-4a07-88f4-9bf657a760b8",
       "Description": "Lets you manage integration service environments, but not access to them."
@@ -768,9 +820,41 @@
       "Id": "85cb6faf-e071-4c9b-8136-154b5a04f717",
       "Description": "Can create, update, get, list and delete Kubernetes Extensions, and get extension async operations"
     },
+    "Lab Assistant": {
+      "Id": "ce40b423-cede-4313-a93f-9b28290b72e1",
+      "Description": "The lab assistant role"
+    },
+    "Lab Contributor": {
+      "Id": "5daaa2af-1fe8-407c-9122-bba179798270",
+      "Description": "The lab contributor role"
+    },
     "Lab Creator": {
       "Id": "b97fb8bc-a8b2-4522-a38b-dd33c7e65ead",
       "Description": "Lets you create new labs under your Azure Lab Accounts."
+    },
+    "Lab Operator": {
+      "Id": "a36e6959-b6be-4b12-8e9f-ef4b474d304d",
+      "Description": "The lab operator role"
+    },
+    "Lab Services Contributor": {
+      "Id": "f69b8690-cc87-41d6-b77a-a4bc3c0a966f",
+      "Description": "The lab services contributor role"
+    },
+    "Lab Services Reader": {
+      "Id": "2a5c394f-5eb7-4d4f-9c8e-e8eae39faebc",
+      "Description": "The lab services reader role"
+    },
+    "Load Test Contributor": {
+      "Id": "749a398d-560b-491b-bb21-08924219302e",
+      "Description": "View, create, update, delete and execute load tests. View and list load test resources but can not make any changes."
+    },
+    "Load Test Owner": {
+      "Id": "45bb0b16-2f0c-4e78-afaa-a07599b003f6",
+      "Description": "Execute all operations on load test resources and load tests"
+    },
+    "Load Test Reader": {
+      "Id": "3ae3fb29-0000-4ccd-bf80-542e7b26e081",
+      "Description": "View and list all load tests and load test resources but can not make any changes"
     },
     "Log Analytics Contributor": {
       "Id": "92aaf0da-9dab-42b6-94a3-d43ce8d16293",
@@ -852,6 +936,22 @@
       "Id": "fd1bb084-1503-4bd2-99c0-630220046786",
       "Description": "This role is for Microsoft OneAsset team (CSEO) to track internal security compliance and resource utilization."
     },
+    "Microsoft Sentinel Automation Contributor": {
+      "Id": "f4c81013-99ee-4d62-a7ee-b3f1f648599a",
+      "Description": "Microsoft Sentinel Automation Contributor"
+    },
+    "Microsoft Sentinel Contributor": {
+      "Id": "ab8e14d6-4a74-4a29-9ba8-549422addade",
+      "Description": "Microsoft Sentinel Contributor"
+    },
+    "Microsoft Sentinel Reader": {
+      "Id": "8d289c81-5878-46d4-8554-54e1e3d8b5cb",
+      "Description": "Microsoft Sentinel Reader"
+    },
+    "Microsoft Sentinel Responder": {
+      "Id": "3e150937-b8fe-4cfb-8069-0eaf05ecd056",
+      "Description": "Microsoft Sentinel Responder"
+    },
     "Microsoft.Kubernetes connected cluster role": {
       "Id": "5548b2cf-c94c-4228-90ba-30851930a12f",
       "Description": "Microsoft.Kubernetes connected cluster role."
@@ -900,6 +1000,14 @@
       "Id": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
       "Description": "Grants full access to manage all resources, including the ability to assign roles in Azure RBAC."
     },
+    "PlayFab Contributor": {
+      "Id": "0c8b84dc-067c-4039-9615-fa1a4b77c726",
+      "Description": "Provides contributor access to PlayFab resources"
+    },
+    "PlayFab Reader": {
+      "Id": "a9a19cc5-31f4-447c-901f-56c0bb18fcaf",
+      "Description": "Provides read access to PlayFab resources"
+    },
     "Policy Insights Data Writer (Preview)": {
       "Id": "66bb4e9e-b016-4a94-8249-4c0511c2be84",
       "Description": "Allows read access to resource policies and write access to resource component policy events."
@@ -920,17 +1028,17 @@
       "Id": "05b7651b-dc44-475e-b74d-df3db49fae0f",
       "Description": "The Microsoft.ProjectBabylon data source administrator can manage data sources and data scans. This role is in preview and subject to change."
     },
-    "Purview Data Curator": {
+    "Purview Data Curator (Legacy)": {
       "Id": "8a3c2885-9b38-4fd2-9d99-91af537c1347",
-      "Description": "The Microsoft.Purview data curator can create, read, modify and delete catalog data objects and establish relationships between objects. This role is in preview and subject to change."
+      "Description": "The Microsoft.Purview data curator is a legacy role that can create, read, modify and delete catalog data objects and establish relationships between objects. We have recently deprecated this role from Azure role-based access and introduced a new data curator inside Azure Purview data plane. See https://docs.microsoft.com/azure/purview/catalog-permissions#roles"
     },
-    "Purview Data Reader": {
+    "Purview Data Reader (Legacy)": {
       "Id": "ff100721-1b9d-43d8-af52-42b69c1272db",
-      "Description": "The Microsoft.Purview data reader can read catalog data objects. This role is in preview and subject to change."
+      "Description": "The Microsoft.Purview data reader is a legacy role that can read catalog data objects. We have recently deprecated this role from Azure role-based access and introduced a new data reader inside Azure Purview data plane. See https://docs.microsoft.com/azure/purview/catalog-permissions#roles"
     },
-    "Purview Data Source Administrator": {
+    "Purview Data Source Administrator (Legacy)": {
       "Id": "200bba9e-f0c8-430f-892b-6f0794863803",
-      "Description": "The Microsoft.Purview data source administrator can manage data sources and data scans. This role is in preview and subject to change."
+      "Description": "The Microsoft.Purview data source administrator is a legacy role that can manage data sources and data scans. We have recently deprecated this role from Azure role-based access and introduced a new data source admin inside Azure Purview data plane. See https://docs.microsoft.com/azure/purview/catalog-permissions#roles"
     },
     "Quota Request Operator": {
       "Id": "0e5f05e5-9ab9-446b-b98d-1e2157c94125",
@@ -1028,25 +1136,25 @@
       "Id": "04165923-9d83-45d5-8227-78b77b0a687e",
       "Description": "Read SignalR Service Access Keys"
     },
-    "SignalR App Server (Preview)": {
+    "SignalR App Server": {
       "Id": "420fcaa2-552c-430f-98ca-3264be4806c7",
       "Description": "Lets your app server access SignalR Service with AAD auth options."
     },
-    "SignalR Contributor": {
-      "Id": "8cf5e20a-e4b2-4e9d-b3a1-5ceb692c2761",
-      "Description": "Create, Read, Update, and Delete SignalR service resources"
-    },
-    "SignalR Serverless Contributor (Preview)": {
+    "SignalR REST API Owner": {
       "Id": "fd53cd77-2268-407a-8f46-7e7863d0f521",
-      "Description": "Lets your app access service in serverless mode with AAD auth options."
+      "Description": "Full access to Azure SignalR Service REST APIs"
+    },
+    "SignalR REST API Reader": {
+      "Id": "ddde6b66-c0df-4114-a159-3618637b3035",
+      "Description": "Read-only access to Azure SignalR Service REST APIs"
     },
     "SignalR Service Owner": {
       "Id": "7e4f1700-ea5a-4f59-8f37-079cfe29dce3",
       "Description": "Full access to Azure SignalR Service REST APIs"
     },
-    "SignalR Service Reader (Preview)": {
-      "Id": "ddde6b66-c0df-4114-a159-3618637b3035",
-      "Description": "Read-only access to Azure SignalR Service REST APIs"
+    "SignalR/Web PubSub Contributor": {
+      "Id": "8cf5e20a-e4b2-4e9d-b3a1-5ceb692c2761",
+      "Description": "Create, Read, Update, and Delete SignalR service resources"
     },
     "Site Recovery Contributor": {
       "Id": "6670b86e-a3f7-4917-ac9b-5d6ab1be4567",
