@@ -33,20 +33,27 @@ param Environment string = 'D'
 ])
 param DeploymentID string = '1'
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
+#disable-next-line no-unused-params
 param deploymentTime string = utcNow()
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
 
+var GlobalRGNameJ = json(Global.GlobalRGName)
+var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -215,7 +222,7 @@ resource APIMPublic 'Microsoft.ApiManagement/service/products@2020-06-01-preview
 
 module DNS 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
     hostname: toLower('${Deployment}-apim${apim.name}')
     cname: toLower('${Deployment}-apim${apim.name}.azure-api.net')
@@ -228,7 +235,7 @@ module DNS 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index
 
 module DNSscm 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-scm'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
     hostname: toLower('${Deployment}-apim${apim.name}-scm')
     cname: toLower('${Deployment}-apim${apim.name}.azure-api.net')
@@ -241,7 +248,7 @@ module DNSscm 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[in
 
 module DNSdeveloper 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-developer'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
     hostname: toLower('${Deployment}-apim${apim.name}-developer')
     cname: toLower('${Deployment}-apim${apim.name}.azure-api.net')

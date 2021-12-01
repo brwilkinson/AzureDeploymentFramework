@@ -32,7 +32,9 @@ param Environment string = 'D'
   '9'
 ])
 param DeploymentID string = '1'
+#disable-next-line no-unused-params
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object = {
   n: '1'
@@ -40,12 +42,15 @@ param Global object = {
 param DeploymentInfo object
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -74,7 +79,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
-resource AzureBOT 'Microsoft.BotService/botServices@2021-05-01-preview' = [for (bot, index) in azBOTInfo : {
+resource AzureBOT 'Microsoft.BotService/botServices@2021-05-01-preview' = [for (bot, index) in azBOTInfo : if(azBOT[index].match) {
   name: '${Deployment}-bot${bot.Name}'
   kind: 'azurebot'
   location: 'global'

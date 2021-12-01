@@ -3,6 +3,7 @@ param DeploymentURI string
 param PIPprefix string
 param NICs array
 param VM object
+#disable-next-line no-unused-params
 param Global object
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {

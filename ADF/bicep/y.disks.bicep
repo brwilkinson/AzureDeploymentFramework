@@ -1,4 +1,5 @@
 param Deployment string
+#disable-next-line no-unused-params
 param DeploymentID string
 param Name string
 param DATA object = {
@@ -23,7 +24,7 @@ param BACKUP object = {
 param DISKS object = {
   '1': 1
 }
-
+#disable-next-line no-unused-params
 param Global object
 
 

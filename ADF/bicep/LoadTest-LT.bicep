@@ -1,10 +1,8 @@
 param Deployment string
 param DeploymentURI string
-param DeploymentID string
-param Environment string
 param LoadTestInfo object
 param Global object
-param Stage object
+#disable-next-line no-unused-params
 param now string = utcNow('F')
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {

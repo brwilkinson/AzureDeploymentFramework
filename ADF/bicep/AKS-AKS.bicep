@@ -5,13 +5,16 @@ param DeploymentID string
 param Environment string
 param AKSInfo object
 param Global object
+#disable-next-line no-unused-params
 param Stage object
+#disable-next-line no-unused-params
 param now string = utcNow('F')
 
 @secure()
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()

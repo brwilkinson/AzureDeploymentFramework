@@ -46,7 +46,8 @@ resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existin
   scope: resourceGroup(Par_AaResourceGroupName)
 }
 
-var GlobalRGName = Global.GlobalRGName
+var GlobalRGNameJ = json(Global.GlobalRGName)
+var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
 var storageAccountType = Environment == 'P' ? 'Premium_LRS' : 'Standard_LRS'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 // var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
@@ -57,7 +58,7 @@ var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts', SADiagName
 
 resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: Global.SAName
-  scope: resourceGroup(GlobalRGName)
+  scope: resourceGroup(globalRGName)
 }
 
 var DSCConfigLookup = {

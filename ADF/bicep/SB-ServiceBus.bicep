@@ -3,9 +3,9 @@ param DeploymentURI string
 param DeploymentID string
 param Environment string
 param SBInfo object
-param appConfigurationInfo object
 param Global object
 param Stage object
+#disable-next-line no-unused-params
 param now string = utcNow('F')
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
@@ -69,13 +69,8 @@ resource SBTopic 'Microsoft.ServiceBus/namespaces/topics@2017-04-01' = [for (top
 module ServiceBus_TopicSubscriptions 'SB-ServiceBus-TopicSubscription.bicep' = [for (topic,index) in SBInfo.topics : {
   name: 'dp${Deployment}-SB-TopicSubscriptions-${topic.name}-${index + 1}'
   params: {
-    Deployment: Deployment
-    DeploymentID: DeploymentID
-    Environment: Environment
     SBInfoTopic: topic
     SBTopicName: '${Deployment}-sb${SBInfo.Name}/${topic.Name}'
-    Global: Global
-    Stage: Stage
   }
   dependsOn: [
     SBTopic

@@ -1,5 +1,4 @@
 param NSGID string
-param DeploymentURI string
 param SADIAGID string
 param subNet object
 param hubDeployment string

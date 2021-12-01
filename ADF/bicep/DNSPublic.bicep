@@ -5,6 +5,7 @@
   'ACU1'
   'AWCU'
 ])
+#disable-next-line no-unused-params
 param Prefix string = 'ACU1'
 
 @allowed([
@@ -17,6 +18,7 @@ param Prefix string = 'ACU1'
   'G'
   'A'
 ])
+#disable-next-line no-unused-params
 param Environment string = 'D'
 
 @allowed([
@@ -31,19 +33,25 @@ param Environment string = 'D'
   '8'
   '9'
 ])
+#disable-next-line no-unused-params
 param DeploymentID string = '1'
+#disable-next-line no-unused-params
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
 
 var DNSPublicZoneInfo = contains(DeploymentInfo, 'DNSPublicZoneInfo') ? DeploymentInfo.DNSPublicZoneInfo : []

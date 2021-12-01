@@ -3,11 +3,15 @@ param Prefix string
 param rgName string
 param Enviro string
 param Global object
+#disable-next-line no-unused-params
 param rolesLookup object = {}
 param rolesGroupsLookup object = {}
 param roleInfo object
+#disable-next-line no-unused-params
 param providerPath string
+#disable-next-line no-unused-params
 param namePrefix string
+#disable-next-line no-unused-params
 param providerAPI string
 param principalType string = ''
 // param rbacresource resource

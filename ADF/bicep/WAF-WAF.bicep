@@ -1,9 +1,9 @@
 param Deployment string
 param DeploymentURI string
 param DeploymentID string
-param Environment string
 param waf object
 param Global object
+param globalRGName string
 param Stage object
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
@@ -286,7 +286,7 @@ resource WAFDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
 
 module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in waf.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
   name: 'setdns-public-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
     hostname: toLower('${Deployment}-${list.Hostname}')
     cname: PublicIP.properties.dnsSettings.fqdn

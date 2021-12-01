@@ -32,6 +32,7 @@ param Environment string = 'D'
   '9'
 ])
 param DeploymentID string = '1'
+#disable-next-line no-unused-params
 param Stage object
 param Extensions object
 param Global object
@@ -63,7 +64,8 @@ var DataDiskInfo = computeGlobal.DataDiskInfo
 var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
 
 var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
-var GlobalRGName = Global.GlobalRGName
+var GlobalRGNameJ = json(Global.GlobalRGName)
+var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
 var AAResourceGroup = '${Prefix}-${Global.OrgName}-${Global.Appname}-RG-P0'
 var AAName = '${Prefix}${Global.OrgName}${Global.Appname}P0OMSAutomation'
 
@@ -141,7 +143,7 @@ var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts/', SADiagNam
 
 resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: Global.SAName
-  scope: resourceGroup(GlobalRGName)
+  scope: resourceGroup(globalRGName)
 }
 
 var MSILookup = {
@@ -822,3 +824,6 @@ output foo3 string = resourceGroup().name
 output foo4 string = resourceGroup().id
 output foo6 array = VM
 output Disks array = [for (vm, index) in AppServers: VM[index].match ? DISKLOOKUP[index].outputs.DATADisks : null]
+
+
+

@@ -1,13 +1,19 @@
 param Deployment string
 param DeploymentURI string
+#disable-next-line no-unused-params
 param DeploymentID string
+#disable-next-line no-unused-params
 param Environment string
 param ACIInfo object
 param Global object
+param globalRGName string
+#disable-next-line no-unused-params
 param Stage object
 
 @secure()
 param WebUser string
+
+#disable-next-line no-unused-params
 param now string = utcNow('F')
 
 var userAssignedIdentities = {
@@ -98,7 +104,7 @@ resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = [for (ac
 
 module ACIDNS 'x.DNS.CNAME.bicep' = [for (aci,index) in Instances : {
   name: 'setdns-public-${Deployment}-ACI-${aci.name}-${Global.DomainNameExt}'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
     hostname: toLower(ACI[index].name)
     cname: ACI[index].properties.ipAddress.fqdn

@@ -32,18 +32,23 @@ param Environment string = 'D'
   '9'
 ])
 param DeploymentID string = '1'
+#disable-next-line no-unused-params
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -73,7 +78,6 @@ module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if
     retentionPolicydays: retentionPolicydays
     flowLogVersion: flowLogversion
     flowLogName: '${Deployment}-fl-${sn.Name}'
-    DeploymentURI: DeploymentURI
     Analyticsinterval: AnalyticsInterval
     logAnalyticsId: OMS.id
   }
