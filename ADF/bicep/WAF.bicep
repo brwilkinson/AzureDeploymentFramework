@@ -33,19 +33,25 @@ param Environment string = 'D'
 ])
 param DeploymentID string = '1'
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
 
+var GlobalRGNameJ = json(Global.GlobalRGName)
+var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -104,7 +110,7 @@ module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match)
     Deployment: Deployment
     DeploymentURI: DeploymentURI
     DeploymentID: DeploymentID
-    Environment: Environment
+    globalRGName: globalRGName
     waf: waf
     Global: Global
     Stage: Stage

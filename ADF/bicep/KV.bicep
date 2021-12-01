@@ -32,18 +32,23 @@ param Environment string = 'D'
   '9'
 ])
 param DeploymentID string = '1'
+#disable-next-line no-unused-params
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -66,8 +71,6 @@ module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVI
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    Environment: Environment
-    Prefix: Prefix
     KVInfo: kv
     Global: Global
   }

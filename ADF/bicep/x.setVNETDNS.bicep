@@ -3,6 +3,7 @@ param DeploymentID string
 param DeploymentInfo object
 param DNSServers array
 param Global object
+#disable-next-line no-unused-params
 param Prefix string
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'

@@ -32,18 +32,23 @@ param Environment string
     '9'
 ])
 param DeploymentID string
+#disable-next-line no-unused-params
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
 
 var enviro = '${Environment}${DeploymentID}' // D1

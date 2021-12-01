@@ -1,6 +1,4 @@
 param Deployment string
-param AFDService object
-param Global object
 param FDInfo object
 param rules array
 

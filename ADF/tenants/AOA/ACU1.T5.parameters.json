@@ -97,7 +97,8 @@
         "MySQLDB": 0,
         "Function": 1,
         "SB": 1,
-        "AzureSQL": 0
+        "AzureSQL": 0,
+        "LT": 1
       }
     },
     "Extensions": {
@@ -265,6 +266,9 @@
               },
               {
                 "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              },
+              {
+                "Name": "Load Test Owner"
               }
             ]
           },
@@ -275,6 +279,12 @@
                 "Name": "Storage Account Key Operator Service Role"
               }
             ]
+          }
+        ],
+        "LoadTestInfo": [
+          {
+            "Name": "APIWebTest",
+            "location": "eastus2"
           }
         ],
         "SPInfo": [
@@ -984,7 +994,7 @@
           {
             "name": "01",
             "_afdverify": "AOA",
-            "rulesEngineDetached": 0,
+            "rulesEngineDetached": 1,
             "rules": [
               {
                 "name": "Rule1",

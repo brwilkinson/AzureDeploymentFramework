@@ -32,20 +32,27 @@ param Environment string = 'D'
   '9'
 ])
 param DeploymentID string = '1'
+#disable-next-line no-unused-params
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
 
+var GlobalRGNameJ = json(Global.GlobalRGName)
+var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var ENV = '${Environment}${DeploymentID}'
@@ -114,6 +121,7 @@ module container 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSI
     DeploymentURI: DeploymentURI
     linuxFxVersion: 'COMPOSE|${WSInfo[index].compose}'
     Global: Global
+    globalRGName: globalRGName
     diagLogs: [
       {
         category: 'AppServiceHTTPLogs'

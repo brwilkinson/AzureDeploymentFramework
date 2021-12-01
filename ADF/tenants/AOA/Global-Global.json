@@ -1,12 +1,15 @@
 {
   "Global": {
-    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
-    "SubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "OrgName": "BRW",
     "AppName": "AOA",
     "SAName": "acu1brwaoag1saglobal",
-    "GlobalRGName": "ACU1-BRW-AOA-RG-G1",
+    "GlobalRGName": {
+      "RG": "G1",
+      "Prefix": "ACU1",
+      "_AppName": "AOA",
+      "_OrgName": "BRW"
+    },
     "PrimaryLocation": "CentralUS",
     "PrimaryPrefix": "ACU1",
     "SecondaryLocation": "EastUS2",

@@ -32,6 +32,7 @@ param Environment string = 'D'
   '9'
 ])
 param DeploymentID string = '1'
+#disable-next-line no-unused-params
 param Stage object
 param Extensions object
 param Global object

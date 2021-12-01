@@ -13,10 +13,8 @@
       "172.16.144.75",
       "172.16.144.76"
     ],
-    "nsgRGName": "AEU2-BRW-HAA-RG-P0",
     "RTRGName": "AEU2-BRW-HAA-RG-P0",
     "RTName": "Hub",
-    "__dnsZoneRGName": "AEU2-BRW-HAA-RG-P0",
     "shutdownSchedulerTimeZone": "Eastern Standard Time"
   }
 }

@@ -1,0 +1,8 @@
+These resources are available in github, however not in the psgallery.
+
+    Import-DscResource -ModuleName AZCOPYDSCDir      # https://github.com/brwilkinson/AZCOPYDSCDir
+    Import-DscResource -ModuleName WVDDSC            # https://github.com/brwilkinson/WVDDSC
+    Import-DscResource -ModuleName DevOpsAgentDSC    # https://github.com/brwilkinson/DevOpsAgentDSC
+    Import-DscResource -ModuleName AppReleaseDSC     # https://github.com/brwilkinson/AppReleaseDSC
+    Import-DscResource -ModuleName StoragePoolCustom # https://github.com/brwilkinson/StoragePoolDSC
+Staged in this project so you don't have to get them from GitHub.

@@ -1,9 +1,8 @@
 param Deployment string
 param DeploymentURI string
-param Environment string
 param frontDoorInfo object
 param Global object
-param Stage object
+param globalRGName string
 param now string = utcNow('F')
 
 var FDName = '${Deployment}-afd${frontDoorInfo.Name}'
@@ -93,7 +92,7 @@ module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.servi
 
 module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services: {
   name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
-  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : Global.SubscriptionID), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : Global.GlobalRGName))
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
     hostname: toLower('${Deployment}-afd${frontDoorInfo.name}${((service.Name == 'Default') ? '' : '-${service.Name}')}')
     cname: '${Deployment}-afd${frontDoorInfo.name}.azurefd.net'
@@ -137,8 +136,6 @@ module FDServiceRE 'FD-frontDoor-RE.bicep' = [for service in frontDoorInfo.servi
   name: 'dp${Deployment}-FD-RE-Deploy-${FD.name}-${service.Name}'
   params: {
     Deployment: Deployment
-    AFDService: service
-    Global: Global
     FDInfo: frontDoorInfo
     rules: frontDoorInfo.rules
   }
@@ -185,7 +182,7 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
   properties: {
     azPowerShellVersion: '5.4'
     arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${resourceId(Global.HubRGName, 'Microsoft.Keyvault/vaults', Global.KVName)} -certificateUrl ${Global.certificateUrl}'
-    scriptContent: loadTextContent('../bicep/deploymentScripts/setServicesCertificates.ps1')
+    scriptContent: loadTextContent('../bicep/loadTextContext/setServicesCertificates.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'

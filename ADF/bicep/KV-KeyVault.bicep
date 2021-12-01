@@ -1,7 +1,5 @@
 param Deployment string
 param DeploymentURI string
-param Environment string
-param Prefix string
 param KVInfo object
 param Global object
 

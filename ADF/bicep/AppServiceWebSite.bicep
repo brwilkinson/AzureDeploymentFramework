@@ -46,9 +46,10 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
+var GlobalRGNameJ = json(Global.GlobalRGName)
+var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
@@ -83,6 +84,7 @@ module website 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInf
     Deployment: Deployment
     DeploymentURI: DeploymentURI
     Global: Global
+    globalRGName: globalRGName
     diagLogs: [
       {
         category: 'AppServiceHTTPLogs'

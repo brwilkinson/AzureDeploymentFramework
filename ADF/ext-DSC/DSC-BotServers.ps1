@@ -85,11 +85,8 @@ Configuration $Configuration
     node $AllNodes.NodeName
     {
         [string]$computername = $Nodename
-
         Write-Verbose -Message $computername -Verbose
-
         Write-Verbose -Message "deployment: $deployment" -Verbose
-
         Write-Verbose -Message "environment: $environment" -Verbose
 
         LocalConfigurationManager
@@ -176,22 +173,6 @@ Configuration $Configuration
             }
             $dependsonEnvironmentDSC += @("[EnvironmentDSC]$($EnvVar.Name)")
         }
-
-        #-------------------------------------------------------------------
-        
-        # #Local Policy
-        # foreach ($LocalPolicy in $Node.LocalPolicyPresent)
-        # {     
-        #     $KeyValueName = $LocalPolicy.KeyValueName -replace $StringFilter 
-        #     cAdministrativeTemplateSetting $KeyValueName
-        #     {
-        #         KeyValueName = $LocalPolicy.KeyValueName
-        #         PolicyType   = $LocalPolicy.PolicyType
-        #         # Data = $LocalPolicy.Data
-        #         type         = $LocalPolicy.Type
-
-        #     }
-        # }
 
         #-------------------------------------------------------------------
         foreach ($Capability in $Node.WindowsCapabilityAbsent)

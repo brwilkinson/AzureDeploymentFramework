@@ -2,8 +2,10 @@ param roleDefinitionId string
 param principalId string
 param principalType string
 param name string
-param description string     // leave these for logging in the portal
-param roledescription string // leave these for logging in the portal
+#disable-next-line no-unused-params
+param description string // leave these for loggin in the portal
+#disable-next-line no-unused-params
+param roledescription string // leave these for loggin in the portal
 
 //  remove duplicate template once the following is implemented
 // https://github.com/Azure/bicep/blob/main/docs/spec/resource-scopes.md#declaring-the-target-scope

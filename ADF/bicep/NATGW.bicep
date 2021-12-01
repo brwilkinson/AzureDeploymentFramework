@@ -33,28 +33,29 @@ param Environment string = 'D'
 ])
 param DeploymentID string = '1'
 param Stage object
+#disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
 
 @secure()
+#disable-next-line no-unused-params
 param vmAdminPassword string
 
 @secure()
+#disable-next-line no-unused-params
 param devOpsPat string
 
 @secure()
+#disable-next-line no-unused-params
 param sshPublic string
-
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
-
 
 var NATGWInfo = contains(DeploymentInfo, 'NATGWInfo') ? DeploymentInfo.NATGWInfo : []
 
@@ -67,9 +68,7 @@ module FireWall 'NATGW-NGW.bicep' = [for (ngw, index) in NATGWInfo: if(NGW[index
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    Environment: Environment
     NATGWInfo: ngw
     Global: Global
-    Stage: Stage
   }
 }]

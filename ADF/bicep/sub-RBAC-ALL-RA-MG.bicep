@@ -1,9 +1,12 @@
+
 param roleDefinitionId string
 param principalId string
 param principalType string
 param name string
+#disable-next-line no-unused-params
 param description string // leave these for loggin in the portal
-param roledescription string
+#disable-next-line no-unused-params
+param roledescription string // leave these for loggin in the portal
 
 targetScope = 'managementGroup'
 

@@ -1,22 +1,10 @@
 param Deployment string
 param DeploymentURI string
-param Prefix string
-param DeploymentID string
-param Environment string
 param azSQLInfo object
-param appConfigurationInfo object
 param Global object
-param Stage object
-param now string = utcNow('F')
 
 @secure()
 param vmAdminPassword string
-
-@secure()
-param devOpsPat string
-
-@secure()
-param sshPublic string
 
 var RolesLookup = json(Global.RolesLookup)
 
@@ -42,7 +30,7 @@ resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2020-11-01-prev
     administratorType: 'ActiveDirectory'
     login: azSQLInfo.AdminName
     sid: RolesLookup[azSQLInfo.AdminName]
-    tenantId: Global.tenantId
+    tenantId: tenant().tenantId
   }
 }
 

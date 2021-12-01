@@ -26,7 +26,7 @@ Go Home [Documentation Home](./index.md)
 
 ## Steps
 
-1. There are several setup/management scripts in this directory: ADF\1-PrereqsToDeploy\CustomResources
+1. There are several setup/management scripts in this directory: ADF\1-prereqs\CustomResources
 1. There are several shared metadata files in your Tenant Directory e.g. Global-Global, AZC1-Global, AZE2-Global
 1. We will start with the HUB Tenant, this is the Shared Hub
 1. We will also deploy the HUB Global Resource, this is shared Global resources
@@ -35,8 +35,6 @@ Go Home [Documentation Home](./index.md)
     1. Replace the 3 Characters that map to the Name of your App, in this case HUB, you can leave HUB
         ````
         "Global": {
-            "tenantId": "3254f91d-4657-40df-962d-c8e6dad75963",               // Your Azure AD TenantID
-            "SubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",        // The Subscription ID where your Resource Groups will be deployed
             "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",     // The Subscription ID where your Hub VNET will be deployed
             "OrgName": "BRW",                       // "3-Letter-Company-Name"  e.g. This is required to ensure all public resources deployed have a unique name
                                                         // This should stay the same across ALL Tenants, only the AppName will change
@@ -65,10 +63,8 @@ Go Home [Documentation Home](./index.md)
             "KVUrl": "https://AZC1-BRW-HUB-P0-kvVault01.vault.azure.net/",       // Given we haven't deployed this as yet, you will have to update the CertURL later.
             "certificateUrl": "https://azc1-brw-hub-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/e0066997eae945529c84fbf815f7759f",
             "networkId": ["10.0.",144],             // The is the /20 Network Address Space that will be divided up in this region
-            "nsgRGName": "AZC1-BRW-HUB-RG-P0",          // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
             "RTRGName": "AZC1-BRW-HUB-RG-P0",           // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
-            "RTName": "rtContoso-Hub",
-            "dnsZoneRGName": "AZC1-BRW-HUB-RG-P0"      // "{Primary-Azure-Region-AZXX}-{appname-3-characters-max-upper-case}-RG-P0" P0 is a Hub
+            "RTName": "rtContoso-Hub"
         ````
 1. Open the following File and fill out all of the information ADF\tenants\HUB\AZE2-Global.json
     1. The file name should match your Secondary Azure Region that you will deploy into
@@ -77,8 +73,8 @@ Go Home [Documentation Home](./index.md)
 1. We are now ready to Deploy the initial Storage Account
     1. Make sure you are logged into Azure PowerShell
         1. First make sure you are in the correct Azure Tenant/Subscription
-        1. More info is in this file: [ADF\1-PrereqsToDeploy\0-ConnectToAzureSelectSubscription.ps1]
-    1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.
+        1. More info is in this file: [ADF\1-prereqs\0-ConnectToAzureSelectSubscription.ps1]
+    1. Although these helper scripts live in this directory [ADF\1-prereqs], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. In order to Load some settings into memory, once you open that file you press F5 to load it.
         1. You should see something similar to the following after you run F5
@@ -90,7 +86,7 @@ Go Home [Documentation Home](./index.md)
         ````powershell
         # Pre-reqs
         # Create Global Storage Account
-        . ADF:\1-PrereqsToDeploy\1-CreateStorageAccountGlobal.ps1 -APP $App
+        . ADF:\1-prereqs\1-CreateStorageAccountGlobal.ps1 -APP $App
         ````
         1. You wil see an output similar to below once the RG and Storage are created.
         1. This storage account is used for uploading Assets (for IaaS/VM Deployments) that you may need, such as software installs and also used for your Template Deployments.
@@ -119,7 +115,7 @@ Go Home [Documentation Home](./index.md)
     1. Execute this following line
         ````powershell
         # Export all role defintions
-        . ADF:\1-PrereqsToDeploy\4.1-getRoleDefinitionTable.ps1 -APP $App
+        . ADF:\1-prereqs\4.1-getRoleDefinitionTable.ps1 -APP $App
         ````
     1. This process will actually update the JSON object in the following file [ADF\tenants\HUB\Global-Config.json]
         1. You can open that file and format it if you like and then save it.
@@ -144,8 +140,8 @@ Go Home [Documentation Home](./index.md)
     1. Execute this following line/s (One for each region)
         ````powershell
         # Create Service principal for Env.
-        . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments P0,G0,G1,D2,S1
-        . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
+        . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments P0,G0,G1,D2,S1
+        . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
         ````
         1. Sample Output, this does several things
             1. Create the Application/Service Principal in Azure ActiveDirectory
@@ -176,12 +172,12 @@ Go Home [Documentation Home](./index.md)
             ````
 
 1. BootStrap the Hub Resource Group Creation and also the Keyvaults in the Primary and Secondary Region
-    1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.
+    1. Although these helper scripts live in this directory [ADF\1-prereqs], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. Then execute the following
         ````powershell
         # Bootstrap Hub RGs and Keyvaults
-        . ADF:\1-PrereqsToDeploy\1-CreateHUBKeyVaults.ps1 -APP $App
+        . ADF:\1-prereqs\1-CreateHUBKeyVaults.ps1 -APP $App
         ````
     1. You should see the following output
         ````powershell
@@ -217,12 +213,12 @@ Go Home [Documentation Home](./index.md)
         1. *sshPublic* (any value here, Update this later), consider moving, now this is on GitHub, not azureDevops
 
 1. In order to deploy WebSites, you should create some Web Certs, you can also do this from a Public Provider, however we will use self signed here.
-    1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.
+    1. Although these helper scripts live in this directory [ADF\1-prereqs], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. Then execute the following
         ````powershell
         # Create Global Web Create
-        . ADF:\1-PrereqsToDeploy\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
+        . ADF:\1-prereqs\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
         ````
     1. The cert will be created using the password from your keyvault localadmin secret that you set earlier
     1. The DNS names used on the cert are from the Global-Global.json [CertURLs] property.
@@ -231,12 +227,12 @@ Go Home [Documentation Home](./index.md)
     1. When you deploy websites, this cert will be bound to SSL sites in IIS.
 
 1. Once you have Created the Secrets in the Primary Regional Hub Keyvault, you can sync the secrets to the Secondary Regional Hub Keyvault
-    1. Although these helper scripts live in this directory [ADF\1-PrereqsToDeploy], we deploy them from a helper script from within your Tenant.
+    1. Although these helper scripts live in this directory [ADF\1-prereqs], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. Then execute the following
         ````powershell
         # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
-        . ADF:\1-PrereqsToDeploy\3-Start-AzureKVSync.ps1
+        . ADF:\1-prereqs\3-Start-AzureKVSync.ps1
         ````
     1. The Primary and Secondary KV Name and Region Etc. comes from the Global meta data file that you updated earlier.
         1. i.e. [ADF\tenants\HUB\Global-Global.json]

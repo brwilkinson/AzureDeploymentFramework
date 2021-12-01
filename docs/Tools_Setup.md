@@ -18,8 +18,8 @@ Go Home [Documentation Home](./index.md)
 - Fork the repo, Clone that fork to a private Repo
 
 - Configure VSCode, Import the workspace and install the suggested extensions
-- Review the Scripts in the [1-PrereqsToDeploy](../ADF/1-PrereqsToDeploy)
-    - [ADF\1-PrereqsToDeploy\0-InstallTools.ps1]
+- Review the Scripts in the [1-prereqs](../ADF/1-prereqs)
+    - [ADF\1-prereqs\0-InstallTools.ps1]
 - Before running any of the Scripts Discuss
     - [Naming Standards](./Naming_Standards.md)
     - [App Tenants](./App_Tenants.md)

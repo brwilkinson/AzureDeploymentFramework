@@ -52,7 +52,7 @@ Go Home [Documentation Home](./index.md)
 
 ## Steps
 
-1. There are several setup/management scripts in this directory: ADF\1-PrereqsToDeploy
+1. There are several setup/management scripts in this directory: ADF\1-prereqs
 1. There are several shared metadata files in your Tenant Directory e.g. Global-Global, AZC1-Global, AZE2-Global
 1. We will now move to the ABC Tenant, this is only going to have Spoke Environments
     1. ABC will use the HUB environment for the Spoke e.g. Network and Keyvaults
@@ -87,10 +87,8 @@ Go Home [Documentation Home](./index.md)
                 "KVUrl": "https://AZC1-BRW-HUB-P0-kvVault01.vault.azure.net/",
                 "certificateUrl": "https://azc1-brw-hub-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/27a93d1b35ea4c869dae9331c6a0db2b",
                 "networkId": ["10.1.",144],               // update the networkid to use a different /20 Address
-                "nsgRGName": "AZC1-BRW-HUB-RG-P0",
                 "RTRGName": "AZC1-BRW-HUB-RG-P0",
-                "RTName": "rtContoso-Hub",
-                "dnsZoneRGName": "AZC1-BRW-HUB-RG-P0"
+                "RTName": "rtContoso-Hub"
               }
             }
             ````
@@ -107,10 +105,8 @@ Go Home [Documentation Home](./index.md)
             "KVUrl": "https://AZE2-BRW-HUB-P0-kvVault01.vault.azure.net/",
             "certificateUrl": "https://aze2-brw-hub-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/287befc1773d41e7884d3ae12f7d9034",
             "networkId": ["172.19.",142],               // update the networkid to use a different /20 Address
-            "nsgRGName": "AZE2-BRW-HUB-RG-P0",
             "RTRGName": "AZE2-BRW-HUB-RG-P0",
-            "RTName": "rtContoso-Hub",
-            "dnsZoneRGName": "AZE2-BRW-HUB-RG-P0"
+            "RTName": "rtContoso-Hub"
           }
         }
 1. Open up the Helper Script [ADF\tenants\ABC\azure-Deploy.ps1]
@@ -135,8 +131,8 @@ Go Home [Documentation Home](./index.md)
     1. Execute this following line/s (One for each region)
         ````powershell
         # Create Service principal for Env.
-        . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
-        . ADF:\1-PrereqsToDeploy\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
+        . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
+        . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
         ````
         1. Sample Output, this does several things
             1. Create the Application/Service Principal in Azure ActiveDirectory

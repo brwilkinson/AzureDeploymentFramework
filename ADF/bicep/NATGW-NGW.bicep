@@ -1,9 +1,8 @@
 param Deployment string
 param DeploymentURI string
-param Environment string
 param NATGWInfo object
 param Global object
-param Stage object
+#disable-next-line no-unused-params
 param now string = utcNow('F')
 
 module PublicIP 'x.publicIP.bicep' = {
