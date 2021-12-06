@@ -1,3 +1,7 @@
+param (
+    [string]$PAT
+)
+
 $ErrorActionPreference = "Stop";
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent() ).IsInRole( [Security.Principal.WindowsBuiltInRole] “Administrator”))
 {
@@ -11,7 +15,7 @@ If (-NOT (Test-Path $env:SystemDrive\'azagent'))
 {
     mkdir $env:SystemDrive\'azagent'
 }; 
-cd $env:SystemDrive\'azagent'; 
+cd $env:SystemDrive\'azagent';
 for ($i = 1; $i -lt 100; $i++)
 {
     $destFolder = "A" + $i.ToString();
@@ -36,6 +40,6 @@ if ($DefaultProxy -and (-not $DefaultProxy.IsBypassed($Uri)))
 $WebClient.DownloadFile($Uri, $agentZip);
 Add-Type -AssemblyName System.IO.Compression.FileSystem;
 [System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD");
-.\config.cmd --deploymentgroup --deploymentgroupname "AZC1-ADF-RG-G0" --agent $env:COMPUTERNAME --runasservice --work '_work' --url 'https://dev.azure.com/AzureDeploymentFramework/' --projectname 'AZC1-ADF-RG-G0' --auth PAT --token bofasfdiusrvmsfzevkbusn6h35zthnn4uhenq3sf324bb4y4r4a; 
+.\config.cmd --deploymentgroup --deploymentgroupname "AZC1-ADF-RG-G0" --agent $env:COMPUTERNAME --runasservice --work '_work' --url 'https://dev.azure.com/AzureDeploymentFramework/' --projectname 'AZC1-ADF-RG-G0' --auth PAT --token $PAT 
 
 Remove-Item $agentZip;

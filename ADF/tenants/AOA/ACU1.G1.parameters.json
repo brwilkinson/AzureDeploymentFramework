@@ -219,21 +219,16 @@
         ],
         "ImageInfo": [
           {
-            "imageName": "vmss2019webnetcore30",
             "GalleryName": "01",
-            "description": "vmss windows 2019 web server .Net Core",
-            "osType": "Windows",
-            "vmSize": "Standard_D4s_v3",
-            "osDiskSizeGB": 127,
-            "ibLocation": "WestCentralUS", // current locations https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-json#location
-            "deployTimeoutmin": 360,
-            "deployOnce": 1,
-            "buildNow": 1,
-            "PublishNow": 0,
-            "identifier": {
-              "offer": "WindowsServer",
-              "sku": "Win2019"
-            }
+            "imageName": "vmss2019",
+            "OSType": "Server2019",
+            "vmSize": "Standard_D4s_v3"
+          },
+          {
+            "GalleryName": "01",
+            "imageName": "vmss2022",
+            "OSType": "Server2022",
+            "vmSize": "Standard_D4s_v3"
           }
         ],
         "KVInfo": [
