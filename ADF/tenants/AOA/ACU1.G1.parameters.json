@@ -222,13 +222,15 @@
             "GalleryName": "01",
             "imageName": "vmss2019",
             "OSType": "Server2019",
-            "vmSize": "Standard_D4s_v3"
+            "vmSize": "Standard_D4s_v3",
+            "skipImage": 0
           },
           {
             "GalleryName": "01",
             "imageName": "vmss2022",
             "OSType": "Server2022",
-            "vmSize": "Standard_D4s_v3"
+            "vmSize": "Standard_D4s_v3",
+            "skipImage": 1
           }
         ],
         "KVInfo": [

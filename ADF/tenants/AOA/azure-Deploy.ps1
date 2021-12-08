@@ -4,7 +4,6 @@ param (
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
 AzSet -Enviro $enviro -App $App
-
 break
 # F8 to run individual steps
 

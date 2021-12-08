@@ -163,9 +163,7 @@ The name of any resource is determined via the following method.
     - This information will be static per App Group/Tenant.
     ```json
     "Global": {
-        "tenantId": "3254f91d-4657-40df-962d-c8e6dad75963",
-        "SubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
-        "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
+        "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5", // Optional if different from current
         "OrgName": "FAB",
         "AppName": "HUB",
     ```

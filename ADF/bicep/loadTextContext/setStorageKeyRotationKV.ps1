@@ -15,7 +15,7 @@ param (
 try
 {
     Write-Output "`nUTC is: $(Get-Date)"
-      
+    
     $c = Get-AzContext -ErrorAction stop
     if ($c)
     {

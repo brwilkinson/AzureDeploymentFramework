@@ -10,9 +10,11 @@ param (
     [string]$APP = 'PSO',
     [string]$TempCertPath = ('c:\temp\Certs')
 )
-$ArtifactStagingDirectory = "$PSScriptRoot\.."
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Artifacts = "$PSScriptRoot\.."
+$Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
+
 $DNSNames = $Global.CertURLs
 $LocalAdminUser = $Global.vmAdminUserName
 $DeployPrimary = $true
@@ -24,12 +26,11 @@ $CertExpiry = (Get-Date).AddYears(5)
 
 #--------------------------------------------------------
 
-$GlobalRGName = $Global.GlobalRGName
-
 if ($DeployPrimary)
 {
-    $PrimaryPrefix = $Global.PrimaryPrefix
-    $Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+    $PrimaryLocation = $Global.PrimaryLocation
+    $PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
+    $Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
     $PrimaryLocation = $Global.PrimaryLocation
     $primaryKVName = $Primary.KVName
     $primaryRGName = $Primary.HubRGName
@@ -38,9 +39,9 @@ if ($DeployPrimary)
 
 if ($DeploySecondary)
 {
-    $SecondaryPrefix = $Global.SecondaryPrefix
-    $Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
     $SecondaryLocation = $Global.SecondaryLocation
+    $SecondaryPrefix = $LocationLookup.$SecondaryLocation.Prefix
+    $Secondary = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
     $SecondaryKVName = $Secondary.KVName
     $SecondaryRGName = $Secondary.HubRGName
     Write-Verbose -Message "Secondary Keyvault: $SecondaryKVName in RG: $SecondaryRGName in region: $SecondaryLocation" -Verbose
@@ -56,7 +57,7 @@ if (!(Test-Path -Path $CertFilePath))
     # Create Web cert *.contoso.com
     $CertParams = @{
         NotAfter          = $CertExpiry
-        DnsName           = $DNSNames 
+        DnsName           = $DNSNames
         CertStoreLocation = 'Cert:\LocalMachine\My'
         Provider          = 'Microsoft Enhanced RSA and AES Cryptographic Provider' 
         KeyUsageProperty  = 'All'
@@ -70,26 +71,26 @@ if (!(Test-Path -Path $CertFilePath))
     Export-PfxCertificate -FilePath $CertFilePath -Cert $cert -Password $PW.SecretValue
 
     # Write the Cert and the thumbprint back to the json data  Global-Global.json 
-    $Temp = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json
+    $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json
     $Temp.Global.CertificateThumbprint = $cert.Thumbprint
-    $Temp | ConvertTo-Json | Set-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json
+    $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-Global.json
 }
 
 # Read the keyvault secret, from the Keyvault
 $PW = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name LocalAdmin
-
+return
 if ($DeployPrimary)
 {
     Import-AzKeyVaultCertificate -FilePath $CertFilePath -Name WildcardCert -VaultName $primaryKVName -Password $PW.SecretValue -OutVariable kvcert
-    $Temp = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json
+    $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json
     $Temp.Global.certificateUrl = $kvcert[0].SecretId
-    $Temp | ConvertTo-Json | Set-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json
+    $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json
 }
 
 if ($DeploySecondary)
 {
     Import-AzKeyVaultCertificate -FilePath $CertFilePath -Name WildcardCert -VaultName $secondaryKVName -Password $PW.SecretValue -OutVariable kvcert
-    $Temp = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json
+    $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json
     $Temp.Global.certificateUrl = $kvcert[0].SecretId
-    $Temp | ConvertTo-Json | Set-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json
+    $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json
 }

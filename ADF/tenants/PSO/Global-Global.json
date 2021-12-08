@@ -1,11 +1,15 @@
 {
   "Global": {
-    "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
+    "_hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
     "rootManagementGroupName": "Global",
     "OrgName": "BRW",
     "AppName": "PSO",
-    "SAName": "azc1psog1saglobal",
-    "GlobalRGName": "AZC1-PSO-RG-G1",
+    "GlobalSA": {
+      "namesuffix": "global"
+    },
+    "GlobalRG": {
+      "RG": "G1"
+    },
     "PrimaryLocation": "CentralUS",
     "PrimaryPrefix": "AZC1",
     "SecondaryLocation": "EastUS2",

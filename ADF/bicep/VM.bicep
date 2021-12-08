@@ -51,7 +51,6 @@ param sshPublic string
 @secure()
 param saKey string = newGuid()
 
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -64,10 +63,27 @@ var DataDiskInfo = computeGlobal.DataDiskInfo
 var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
 
 var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
-var GlobalRGNameJ = json(Global.GlobalRGName)
-var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
-var AAResourceGroup = '${Prefix}-${Global.OrgName}-${Global.Appname}-RG-P0'
+
 var AAName = '${Prefix}${Global.OrgName}${Global.Appname}P0OMSAutomation'
+
+resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
+  name: AAName
+  scope: resourceGroup(Global.HubRGName)
+}
+
+var GlobalRGJ = json(Global.GlobalRG)
+var GlobalSAJ = json(Global.GlobalSA)
+
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
+
+var globalRGName = '${contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix}-${contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName}-${contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.Appname}-RG-${contains(GlobalRGJ, 'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}'
+var globalSAName = toLower('${contains(GlobalSAJ, 'Prefix') ? GlobalSAJ.Prefix : primaryPrefix}${contains(GlobalSAJ, 'OrgName') ? GlobalSAJ.OrgName : Global.OrgName}${contains(GlobalSAJ, 'AppName') ? GlobalSAJ.AppName : Global.Appname}${contains(GlobalSAJ, 'RG') ? GlobalSAJ.RG : contains(GlobalRGJ, 'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}')
+
+resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: globalSAName
+  scope: resourceGroup(globalRGName)
+}
 
 var EnvironmentLookup = {
   D: 'Dev'
@@ -140,11 +156,6 @@ var storageAccountType = ((Environment == 'P') ? 'Premium_LRS' : 'Standard_LRS')
 var saSQLBackupName = '${DeploymentURI}sasqlbackup'
 var SADiagName = '${DeploymentURI}sadiag'
 var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts/', SADiagName)
-
-resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
-  name: Global.SAName
-  scope: resourceGroup(globalRGName)
-}
 
 var MSILookup = {
   SQL: 'Cluster'
@@ -309,7 +320,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = [for (v
     }
     networkProfile: {
       networkInterfaces: [for (nic, index) in vm.NICs: {
-        id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${contains(nic,'LB') ? '-niclb' : contains(nic,'PLB') ? '-nicplb' : contains(nic,'SLB') ? '-nicslb' : '-nic'}${index == 0 ? '' : index + 1}${vm.Name}')
+        id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${contains(nic, 'LB') ? '-niclb' : contains(nic, 'PLB') ? '-nicplb' : contains(nic, 'SLB') ? '-nicslb' : '-nic'}${index == 0 ? '' : index + 1}${vm.Name}')
         properties: {
           primary: contains(nic, 'Primary')
           deleteOption: 'Delete'
@@ -329,7 +340,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = [for (v
   ]
 }]
 
-resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = [for (vm, index) in AppServers: if (VM[index].match && contains(vm,'shutdown')) {
+resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = [for (vm, index) in AppServers: if (VM[index].match && contains(vm, 'shutdown')) {
   name: 'shutdown-computevm-${Deployment}-vm${vm.Name}'
   location: resourceGroup().location
   properties: {
@@ -337,12 +348,12 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = [fo
       time: vm.shutdown.time // "time": "2100"
     }
     notificationSettings: {
-      status: contains(vm.shutdown,'notification') && bool(vm.shutdown.notification) ? 'Enabled' : 'Disabled'
+      status: contains(vm.shutdown, 'notification') && bool(vm.shutdown.notification) ? 'Enabled' : 'Disabled'
       emailRecipient: Global.alertRecipients[0] // currently array, needs a string with ; separation.
       notificationLocale: 'en'
       timeInMinutes: 30
     }
-    status: ! contains(vm.shutdown,'enabled') || (contains(vm.shutdown,'enabled') && bool(vm.shutdown.enabled)) ? 'Enabled' : 'Disabled'
+    status: !contains(vm.shutdown, 'enabled') || (contains(vm.shutdown, 'enabled') && bool(vm.shutdown.enabled)) ? 'Enabled' : 'Disabled'
     targetResourceId: virtualMachine[index].id
     taskType: 'ComputeVmShutdownTask'
     timeZoneId: Global.shutdownSchedulerTimeZone // "Pacific Standard Time"
@@ -443,7 +454,7 @@ resource VMDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [
     autoUpgradeMinorVersion: true
     protectedSettings: {
       Items: {
-        registrationKeyPrivate: listKeys(resourceId(AAResourceGroup, 'Microsoft.Automation/automationAccounts', AAName), '2020-01-13-preview').keys[0].value
+        registrationKeyPrivate: AA.listKeys().keys[0].Value
       }
     }
     settings: {
@@ -461,7 +472,8 @@ resource VMDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [
         }
         {
           Name: 'RegistrationUrl'
-          Value: reference(resourceId(AAResourceGroup, 'Microsoft.Automation/automationAccounts', AAName), '2020-01-13-preview').RegistrationUrl
+          #disable-next-line BCP053
+          Value: AA.properties.RegistrationUrl
           TypeName: 'System.String'
         }
         {
@@ -517,7 +529,7 @@ resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30'
   scope: resourceGroup(RGName)
 }
 
-resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && (contains(VM[index].Extensions,'DSC2') && bool(VM[index].Extensions.DSC2)) && vm.Role != 'PULL' && (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
+resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && (contains(VM[index].Extensions, 'DSC2') && bool(VM[index].Extensions.DSC2)) && vm.Role != 'PULL' && (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC2'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -577,7 +589,7 @@ resource VMDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for
   ]
 }]
 
-resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.DSC) && vm.Role != 'PULL' && ! (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
+resource VMDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.DSC) && vm.Role != 'PULL' && !(DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
   name: 'Microsoft.Powershell.DSC'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -824,6 +836,3 @@ output foo3 string = resourceGroup().name
 output foo4 string = resourceGroup().id
 output foo6 array = VM
 output Disks array = [for (vm, index) in AppServers: VM[index].match ? DISKLOOKUP[index].outputs.DATADisks : null]
-
-
-

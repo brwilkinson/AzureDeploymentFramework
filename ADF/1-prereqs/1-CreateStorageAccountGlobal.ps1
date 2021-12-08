@@ -1,17 +1,22 @@
+#requires -PSEdition Core
+
 param (
     [String]$APP = 'HUB'
 )
 
-$ArtifactStagingDirectory = "$PSScriptRoot\.."
-#$PrimaryPrefix = 'AZC1'
-
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-#$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | foreach Global
-#$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | foreach Global
-
-$GlobalRGName = $Global.GlobalRGName
+$Artifacts = "$PSScriptRoot\.."
+$Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
 $PrimaryLocation = $Global.PrimaryLocation
-$StorageAccountName = $Global.SAName
+$PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
+
+$GlobalSA = $Global.GlobalSA
+$GlobalInfo = $Global.GlobalRG
+$saglobalsuffix = $GlobalSA.namesuffix
+
+$GlobalRGName = "{0}-{1}-{2}-RG-$($GlobalInfo.RG)" -f $PrimaryPrefix, ($GlobalInfo.OrgName ?? $Global.OrgName), ($GlobalInfo.AppName ?? $Global.AppName)
+$StorageAccountName = ("{0}{1}{2}{3}sa${saglobalsuffix}" -f ($GlobalSA.Prefix ?? $PrimaryPrefix),
+    ($GlobalSA.OrgName ?? $Global.OrgName), ($GlobalSA.AppName ?? $Global.AppName), ($GlobalSA.RG ?? 'g1')).tolower()
 
 Write-Verbose -Message "Global RGName: $GlobalRGName" -Verbose
 if (! (Get-AzResourceGroup -Name $GlobalRGName -EA SilentlyContinue))
