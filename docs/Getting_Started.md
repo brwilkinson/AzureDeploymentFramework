@@ -35,7 +35,7 @@ Go Home [Documentation Home](./index.md)
     1. Replace the 3 Characters that map to the Name of your App, in this case HUB, you can leave HUB
         ````
         "Global": {
-            "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",     // The Subscription ID where your Hub VNET will be deployed
+            "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5", // Optional if different from current
             "OrgName": "BRW",                       // "3-Letter-Company-Name"  e.g. This is required to ensure all public resources deployed have a unique name
                                                         // This should stay the same across ALL Tenants, only the AppName will change
                                                         // Be sure to keep this consistent

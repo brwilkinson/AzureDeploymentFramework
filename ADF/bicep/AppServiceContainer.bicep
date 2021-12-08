@@ -51,8 +51,10 @@ param devOpsPat string
 #disable-next-line no-unused-params
 param sshPublic string
 
-var GlobalRGNameJ = json(Global.GlobalRGName)
-var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
+var GlobalRGJ = json(Global.GlobalRG)
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
+var globalRGName = '${contains(GlobalRGJ,'Prefix') ? GlobalRGJ.Prefix : primaryPrefix}-${contains(GlobalRGJ,'OrgName') ? GlobalRGJ.OrgName : Global.OrgName}-${contains(GlobalRGJ,'AppName') ? GlobalRGJ.AppName : Global.Appname}-RG-${contains(GlobalRGJ,'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}'
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var ENV = '${Environment}${DeploymentID}'

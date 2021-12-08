@@ -2,23 +2,25 @@ param (
     [String]$APP = 'HAA'
 )
 
-$ArtifactStagingDirectory = "$PSScriptRoot\.."
+$Artifacts = "$PSScriptRoot\.."
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$PrimaryPrefix = $Global.PrimaryPrefix
-$SecondaryPrefix = $Global.SecondaryPrefix
+$Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
+$PrimaryLocation = $Global.PrimaryLocation
+$SecondaryLocation = $Global.SecondaryLocation
+$PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
+$SecondaryPrefix = $LocationLookup.$SecondaryLocation.Prefix
 
 # Primary Region (Hub) Info
-$Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $PrimaryRGName = $Primary.HubRGName
-$PrimaryLocation = $Global.PrimaryLocation
-$PrimaryKvName = $Primary.KVName
+$PrimaryKVName = $Primary.KVName
 
 # Secondary Region (Hub) Info
-$Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Secondary = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $SecondaryRGName = $Secondary.HubRGName
-$SecondaryLocation = $Global.SecondaryLocation
 $SecondaryKvName = $Secondary.KVName
+
 $ServicePrincipalAdmins = $Global.ServicePrincipalAdmins
 $RolesLookup = $Global.RolesLookup
 
@@ -38,12 +40,12 @@ if (! (Get-AzResourceGroup -Name $PrimaryRGName -EA SilentlyContinue))
 }
 
 # Primary KV
-Write-Verbose -Message "Primary KV Name: $PrimaryKvName" -Verbose
-if (! (Get-AzKeyVault -Name $PrimaryKvName -EA SilentlyContinue))
+Write-Verbose -Message "Primary KV Name: $PrimaryKVName" -Verbose
+if (! (Get-AzKeyVault -Name $PrimaryKVName -EA SilentlyContinue))
 {
     try
     {
-        New-AzKeyVault -Name $PrimaryKvName -ResourceGroupName $PrimaryRGName -Location $PrimaryLocation `
+        New-AzKeyVault -Name $PrimaryKVName -ResourceGroupName $PrimaryRGName -Location $PrimaryLocation `
             -EnabledForDeployment -EnabledForTemplateDeployment -EnablePurgeProtection -EnableRbacAuthorization -Sku Standard -ErrorAction Stop
     }
     catch
@@ -54,8 +56,8 @@ if (! (Get-AzKeyVault -Name $PrimaryKvName -EA SilentlyContinue))
 }
 
 # Primary KV RBAC
-Write-Verbose -Message "Primary KV Name: $PrimaryKvName RBAC for KV Contributor" -Verbose
-if (Get-AzKeyVault -Name $PrimaryKvName -EA SilentlyContinue)
+Write-Verbose -Message "Primary KV Name: $PrimaryKVName RBAC for KV Contributor" -Verbose
+if (Get-AzKeyVault -Name $PrimaryKVName -EA SilentlyContinue)
 {
     try
     {
@@ -108,7 +110,7 @@ if (! (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue))
 }
 
 # Secondary KV RBAC
-Write-Verbose -Message "Secondary KV Name: $PrimaryKvName RBAC for KV Contributor" -Verbose
+Write-Verbose -Message "Secondary KV Name: $PrimaryKVName RBAC for KV Contributor" -Verbose
 if (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue)
 {
     try

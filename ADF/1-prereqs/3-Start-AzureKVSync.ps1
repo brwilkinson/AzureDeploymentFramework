@@ -2,18 +2,26 @@ param(
     [string]$TempCertPath = 'c:\temp\Certs',
     [string]$App = 'AOA'
 )
+
 $Artifacts = "$PSScriptRoot\.."
 
 $Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$($Global.PrimaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$Secondary = Get-Content -Path $Artifacts\tenants\$App\Global-$($Global.SecondaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
+$PrimaryLocation = $Global.PrimaryLocation
+$SecondaryLocation = $Global.SecondaryLocation
+$PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
+$SecondaryPrefix = $LocationLookup.$SecondaryLocation.Prefix
 
-$primaryKVName = $Primary.KVName
-$primaryRGName = $Primary.HubRGName
+# Primary Region (Hub) Info
+$Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$PrimaryRGName = $Primary.HubRGName
+$PrimaryKVName = $Primary.KVName
 Write-Verbose -Message "Primary Keyvault: $primaryKVName in RG: $primaryRGName" -Verbose
 
-$SecondaryKVName = $Secondary.KVName
+# Secondary Region (Hub) Info
+$Secondary = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $SecondaryRGName = $Secondary.HubRGName
+$SecondaryKVName = $Secondary.KVName
 Write-Verbose -Message "Secondary Keyvault: $SecondaryKVName in RG: $SecondaryRGName" -Verbose
 
 Get-AzKeyVaultCertificate -VaultName $primaryKVName | ForEach-Object {

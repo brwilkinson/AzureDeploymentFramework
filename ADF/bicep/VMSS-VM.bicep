@@ -24,9 +24,6 @@ var OSType = computeGlobal.OSType
 var WadCfg = computeGlobal.WadCfg
 var ladCfg = computeGlobal.ladCfg
 var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
-
-var AAResourceGroup = '${Prefix}-${Global.OrgName}-${Global.Appname}-RG-P0'
-var AAName = '${Prefix}${Global.OrgName}${Global.Appname}P0OMSAutomation'
 var VMSizeLookup = {
   D: 'D'
   T: 'D'
@@ -41,13 +38,27 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
+var AAName = '${Prefix}${Global.OrgName}${Global.Appname}P0OMSAutomation'
+
 resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
   name: AAName
-  scope: resourceGroup(Par_AaResourceGroupName)
+  scope: resourceGroup(Global.HubRGName)
 }
 
-var GlobalRGNameJ = json(Global.GlobalRGName)
-var globalRGName = '${contains(GlobalRGNameJ,'Prefix') ? GlobalRGNameJ.Prefix : Prefix}-${contains(GlobalRGNameJ,'OrgName') ? GlobalRGNameJ.OrgName : Global.OrgName}-${contains(GlobalRGNameJ,'AppName') ? GlobalRGNameJ.AppName : Global.Appname}-RG-${contains(GlobalRGNameJ,'RG') ? GlobalRGNameJ.RG : '${Environment}${DeploymentID}'}'
+var GlobalRGJ = json(Global.GlobalRG)
+var GlobalSAJ = json(Global.GlobalSA)
+
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
+
+var globalRGName = '${contains(GlobalRGJ,'Prefix') ? GlobalRGJ.Prefix : primaryPrefix}-${contains(GlobalRGJ,'OrgName') ? GlobalRGJ.OrgName : Global.OrgName}-${contains(GlobalRGJ,'AppName') ? GlobalRGJ.AppName : Global.Appname}-RG-${contains(GlobalRGJ,'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}'
+var globalSAName = toLower('${contains(GlobalSAJ,'Prefix') ? GlobalSAJ.Prefix : primaryPrefix}${contains(GlobalSAJ,'OrgName') ? GlobalSAJ.OrgName : Global.OrgName}${contains(GlobalSAJ,'AppName') ? GlobalSAJ.AppName : Global.Appname}${contains(GlobalSAJ,'RG') ? GlobalSAJ.RG : contains(GlobalRGJ,'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}')
+
+resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: globalSAName
+  scope: resourceGroup(globalRGName)
+}
+
 var storageAccountType = Environment == 'P' ? 'Premium_LRS' : 'Standard_LRS'
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 // var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
@@ -55,11 +66,6 @@ var VNetID = resourceId('Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
 
 var SADiagName = '${DeploymentURI}sadiag'
 var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts', SADiagName)
-
-resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
-  name: Global.SAName
-  scope: resourceGroup(globalRGName)
-}
 
 var DSCConfigLookup = {
   AppServers: 'AppServers'
@@ -325,7 +331,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
               autoUpgradeMinorVersion: true
               protectedSettings: {
                 Items: {
-                  registrationKeyPrivate: listKeys(resourceId(AAResourceGroup, 'Microsoft.Automation/automationAccounts', AAName), '2020-01-13-preview').keys[0].value
+                  registrationKeyPrivate: AA.listKeys().keys[0].Value
                 }
               }
               settings: {
@@ -343,7 +349,8 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
                   }
                   {
                     Name: 'RegistrationUrl'
-                    Value: AA.listKeys().keys
+                    #disable-next-line BCP053
+                    Value: AA.properties.RegistrationUrl
                     TypeName: 'System.String'
                   }
                   {

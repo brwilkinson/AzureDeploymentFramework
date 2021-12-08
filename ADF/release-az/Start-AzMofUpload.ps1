@@ -6,7 +6,7 @@ Function global:Start-AzMofUpload
     [cmdletbinding()]
     Param(
         [alias('Dir', 'Path')]
-        [string] $ArtifactStagingDirectory = (Get-Item -Path "$PSScriptRoot\.."),
+        [string] $Artifacts = (Get-Item -Path "$PSScriptRoot\.."),
     
         # [parameter(mandatory)]
         [alias('DP')]
@@ -32,18 +32,26 @@ Function global:Start-AzMofUpload
         [switch]$NoDomain
     )
 
-    $Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-    $Primary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$($Global.PrimaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-    $Secondary = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-$($Global.SecondaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-    $DataDiskInfo = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object DataDiskInfo
+    $Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+    $LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
+    $PrimaryLocation = $Global.PrimaryLocation
+    $SecondaryLocation = $Global.SecondaryLocation
+    $PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
+    $SecondaryPrefix = $LocationLookup.$SecondaryLocation.Prefix
 
-    $primaryKVName = $Primary.KVName
-    $primaryRGName = $Primary.HubRGName
-    Write-Verbose -Message "Primary Keyvault: [$primaryKVName] in RG: [$primaryRGName]" -Verbose
+    $DataDiskInfo = Get-Content -Path $Artifacts\bicep\global\Global-ConfigVM.json | ConvertFrom-Json -Depth 10 | ForEach-Object DataDiskInfo
 
-    $SecondaryKVName = $Secondary.KVName
+    # Primary Region (Hub) Info
+    $Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+    $PrimaryRGName = $Primary.HubRGName
+    $PrimaryKVName = $Primary.KVName
+    Write-Verbose -Message "Primary Keyvault: $primaryKVName in RG: $primaryRGName" -Verbose
+
+    # Secondary Region (Hub) Info
+    $Secondary = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
     $SecondaryRGName = $Secondary.HubRGName
-    Write-Verbose -Message "Secondary Keyvault: [$SecondaryKVName] in RG: [$SecondaryRGName]" -Verbose
+    $SecondaryKVName = $Secondary.KVName
+    Write-Verbose -Message "Secondary Keyvault: $SecondaryKVName in RG: $SecondaryRGName" -Verbose
 
     $Deployment = '{0}-{1}-{2}-{3}' -f $Prefix, $Global.OrgName, $App, $Environment
     $ResourceGroupName = '{0}-{1}-{2}-RG-{3}' -f $Prefix, $Global.OrgName, $App, $Environment
@@ -51,10 +59,10 @@ Function global:Start-AzMofUpload
     $AutomationAccount = '{0}{1}{2}{3}OMSAutomation' -f $Prefix, $Global.OrgName, $App, $AAEnvironment
     $AAResourceGroupName = '{0}-{1}-{2}-RG-{3}' -f $Prefix, $Global.OrgName, $App, $AAEnvironment
     
-    $TemplateParametersFile = "$ArtifactStagingDirectory\tenants\$App\azuredeploy.1.$Prefix.$Environment.parameters.json"
+    $TemplateParametersFile = "$Artifacts\tenants\$App\azuredeploy.1.$Prefix.$Environment.parameters.json"
     $Parameters = Get-Content -Path $TemplateParametersFile | ConvertFrom-Json
     
-    Write-Warning -Message "Using Artifacts Directory: [$ArtifactStagingDirectory]"
+    Write-Warning -Message "Using Artifacts Directory: [$Artifacts]"
     Write-Warning -Message "Using Resource Group:      [$ResourceGroupName]"
     Write-Warning -Message "Using Parameter File:      [$TemplateParametersFile]"
     
@@ -70,7 +78,7 @@ Function global:Start-AzMofUpload
     $clientID = Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name "${Deployment}-uaiStorageAccountOperatorGlobal" | ForEach-Object clientId
     $RGclientID = Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name "${Deployment}-uaiStorageAccountOperator" | ForEach-Object clientId
     
-    $GlobalStorageID = Get-AzStorageAccount | Where-Object StorageAccountName -Match $Global.SAName | ForEach-Object ID
+    $GlobalStorageID = Get-AzStorageAccount | Where-Object StorageAccountName -Match $Global.GlobalSA | ForEach-Object ID
     
     $Network = $Primary.networkId[1] - [Int]$Environment.substring(1)
     $networkID = '{0}{1}' -f $Primary.networkId[0], $Network
@@ -80,7 +88,7 @@ Function global:Start-AzMofUpload
         $role = $_
 
         # All variables passed into foreach parallel must have a $using:var
-        $AFD = $using:ArtifactStagingDirectory
+        $AFD = $using:Artifacts
         $DeploymentName = $using:DeploymentName
         $Parameters = $using:Parameters
         $DataDiskInfo = $using:DataDiskInfo

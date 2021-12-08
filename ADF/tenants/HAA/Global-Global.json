@@ -1,10 +1,14 @@
 {
   "Global": {
-    "hubSubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
+    "_hubSubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
     "OrgName": "BRW",
     "AppName": "HAA",
-    "SAName": "acu1brwhaag1saglobal",
-    "GlobalRGName": "ACU1-BRW-HAA-RG-G1",
+    "GlobalSA": {
+      "namesuffix": "global"
+    },
+    "GlobalRG": {
+      "RG": "G1"
+    },
     "PrimaryLocation": "CentralUS",
     "PrimaryPrefix": "ACU1",
     "SecondaryLocation": "EastUS2",

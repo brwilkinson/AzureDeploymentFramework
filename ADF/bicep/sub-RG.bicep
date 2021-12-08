@@ -70,7 +70,7 @@ var identity = [for uai in uaiInfo: {
     match: Global.cn == '.' || contains(Global.cn, uai.name)
 }]
 
-resource RG 'Microsoft.Resources/resourceGroups@2021-01-01' = {
+resource RG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
     name: rg
     location: location
     properties: {}

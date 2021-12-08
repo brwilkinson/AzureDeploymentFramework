@@ -19,7 +19,7 @@ $Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global
 $AutomationAccount = '{0}{1}{2}{3}OMSAutomation' -f $Prefix, $Global.OrgName, $App, $AAEnvironment
 $AAResourceGroupName = '{0}-{1}-{2}-RG-{3}' -f $Prefix, $Global.OrgName, $App, $AAEnvironment
 
-$StorageAccountName = $Global.SAName
+$StorageAccountName = $Global.GlobalSA
 
 $CommonAAModule = @{
     ResourceGroupName     = $AAResourceGroupName

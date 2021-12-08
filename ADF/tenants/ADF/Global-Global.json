@@ -1,10 +1,14 @@
 {
   "Global": {
-    "hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "OrgName": "BRW",
     "AppName": "ADF",
-    "GlobalRGName": "AZC1-BRW-ADF-RG-G1",
-    "PrimaryLocation": "CentralUS",
+    "GlobalSA": {
+      "namesuffix": "global"
+    },
+    "GlobalRG": {
+      "RG": "G1"
+    },
     "PrimaryPrefix": "AZC1",
     "SecondaryLocation": "EastUS2",
     "SecondaryPrefix": "AZE2",

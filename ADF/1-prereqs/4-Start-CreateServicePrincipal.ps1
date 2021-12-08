@@ -18,10 +18,19 @@ $SubscriptionID = $Context.Subscription.Id
 $Subscription = $Context.Subscription.Name
 $Account = $context.Account.Id
 
-#region Connect to AZDevOps
-$Global = Get-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10
-$Primary = Get-Content -Path $psscriptroot\..\tenants\$App\Global-$($Global.Global.PrimaryPrefix).json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$primaryKVName = $Primary.KVName
+$Artifacts = "$PSScriptRoot\.."
+
+$Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
+$PrimaryLocation = $Global.PrimaryLocation
+$PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
+
+# Primary Region (Hub) Info
+$Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$PrimaryRGName = $Primary.HubRGName
+$PrimaryKVName = $Primary.KVName
+Write-Verbose -Message "Primary Keyvault: $primaryKVName in RG: $primaryRGName" -Verbose
+
 $AZDevOpsToken = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name DevOpsPAT -AsPlainText
 
 $AZDevOpsOrg = $Global.Global.AZDevOpsOrg

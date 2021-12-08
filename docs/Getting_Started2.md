@@ -62,9 +62,6 @@ Go Home [Documentation Home](./index.md)
     1. Replace the 3 Characters that map to the Name of your App, in this case ABC, you can leave ABC (unless you cloned it for a different App Name).
         ````
         "Global": {
-            "tenantId": "3254f91d-4657-40df-962d-c8e6dad75963",
-            "SubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
-            "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
             "OrgName": "BRW",
             "AppName": "ABC",                             // Only the AppName was updated to ABC, instead of HUB
             "SAName": "azc1brwhubg1saglobal",

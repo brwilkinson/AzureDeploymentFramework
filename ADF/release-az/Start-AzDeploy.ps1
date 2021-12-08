@@ -1,3 +1,5 @@
+#Requires -PSEdition Core
+
 <#
 .SYNOPSIS
     Short description
@@ -43,8 +45,6 @@ Function global:Start-AzDeploy
         # When deploying VM's, this is a subset of AppServers e.g. AppServers, SQLServers, ADPrimary
         [string] $DeploymentName = ($Prefix + '-' + $App + '-' + $Deployment + '-' + (Get-ChildItem $TemplateFile).BaseName),
 
-        [switch] $SubscriptionDeploy,
-
         [switch] $FullUpload,
 
         [switch] $WhatIf,
@@ -69,6 +69,12 @@ Function global:Start-AzDeploy
 
     $GlobalGlobal = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
     $Regional = Get-Content -Path $Artifacts\tenants\$App\Global-$Prefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+
+    $PrimaryLocation = $GlobalGlobal.PrimaryLocation
+    $LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
+    $PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
+    $GlobalSA = $GlobalGlobal.GlobalSA
+    $saglobalsuffix = $GlobalSA.namesuffix
 
     $ResourceGroupName = $prefix + '-' + $GlobalGlobal.OrgName + '-' + $App + '-RG-' + $Deployment
 
@@ -110,14 +116,19 @@ Function global:Start-AzDeploy
     # $Global
 
     #region Only needed for extensions such as DSC or Script extension
-    $StorageAccountName = $Global.SAName
+    $StorageAccountName = ("{0}{1}{2}{3}sa${saglobalsuffix}" -f ($GlobalSA.Prefix ?? $PrimaryPrefix),
+        ($GlobalSA.OrgName ?? $Global.OrgName), ($GlobalSA.AppName ?? $Global.AppName), ($GlobalSA.RG ?? 'g1')).tolower()
+
     $StorageAccount = Get-AzStorageAccount | Where-Object { $_.StorageAccountName -eq $StorageAccountName }
     $StorageContainerName = "$Prefix-$App-stageartifacts-$env:USERNAME".ToLowerInvariant()
     $TemplateURIBase = $StorageAccount.Context.BlobEndPoint + $StorageContainerName
     Write-Verbose "Storage Account is: [$StorageAccountName] and container is: [$StorageContainerName]" -Verbose
 
+    $null = (Get-Content -Path $TemplateFile -Raw) -match "targetScope.*=.*'(?<scope>.+)'"
+    $DeploymentScope = $Matches.scope ?? 'resourceGroup'
+
     # Do not create the Resource Groups in this file anymore, only validate that it exists.
-    if (-not ($SubscriptionDeploy -or $Deployment -match 'T0|M0|G0'))
+    if ($DeploymentScope -eq 'ResourceGroup')
     {
         if ( -not (Get-AzResourceGroup -Name $ResourceGroupName -Verbose -ErrorAction SilentlyContinue))
         {
@@ -264,6 +275,7 @@ Function global:Start-AzDeploy
         ErrorVariable = 'e'
     }
 
+    Write-Verbose -Message "Deployment scope is [$DeploymentScope]" -Verbose
     switch ($Deployment)
     {
         # Tenant
@@ -286,7 +298,7 @@ Function global:Start-AzDeploy
         'M0'
         {
             Write-Output 'M0'
-            $MGName = Get-AzManagementGroup | where displayname -eq 'Root Management Group' | foreach Name
+            $MGName = Get-AzManagementGroup | Where-Object displayname -EQ 'Root Management Group' | ForEach-Object Name
             if ($WhatIf)
             {
                 $Common.Remove('Name')
@@ -302,7 +314,7 @@ Function global:Start-AzDeploy
         Default
         {
             # Subscription
-            if ($SubscriptionDeploy -OR $Deployment -eq 'G0')
+            if ($DeploymentScope -eq 'Subscription')
             {
                 if ($WhatIf)
                 {
