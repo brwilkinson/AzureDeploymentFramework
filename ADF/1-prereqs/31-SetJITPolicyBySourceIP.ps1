@@ -2,10 +2,9 @@
 .SYNOPSIS
     Set-JITAccessPolicy
 .DESCRIPTION
-    Long description
+    Set-JITAccessPolicy -VMName . -RGName MyVMAU -SourceIP (Get-WANIPAddress | foreach ip)
 .EXAMPLE
-    PS C:\> <example usage>
-    Explanation of what the example does
+    Set-JITAccessPolicy -VMName . -RGName MyVMAU -SourceIP (Get-WANIPAddress | foreach ip)
 .INPUTS
     Inputs (if any)
 .OUTPUTS
@@ -33,8 +32,8 @@ function Set-JITAccessPolicy
 
         $Params = @{
             #Assume all VM's in same RG in the same location
-            Location          = $VM[0].location
-            ResourceGroupName = $VM[0].ResourceGroupName
+            Location          = $VMs[0].location
+            ResourceGroupName = $VMs[0].ResourceGroupName
             Name              = $JitPolicyName
             Kind              = 'Basic'
             Confirm           = $true
@@ -51,6 +50,18 @@ function Set-JITAccessPolicy
                             },
                             @{
                                 number                     = 22
+                                protocol                   = 'TCP'
+                                AllowedSourceAddressPrefix = $SourceIP
+                                maxRequestAccessDuration   = 'PT3H'
+                            },
+                            @{
+                                number                     = 5985
+                                protocol                   = 'TCP'
+                                AllowedSourceAddressPrefix = $SourceIP
+                                maxRequestAccessDuration   = 'PT3H'
+                            },
+                            @{
+                                number                     = 5986
                                 protocol                   = 'TCP'
                                 AllowedSourceAddressPrefix = $SourceIP
                                 maxRequestAccessDuration   = 'PT3H'
