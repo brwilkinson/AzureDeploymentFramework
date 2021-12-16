@@ -136,11 +136,13 @@
             "Dns",
             "Arm",
             "Containers",
-            "OpenSourceRelationalDatabases"
-          ],
-          "Free": [
+            "OpenSourceRelationalDatabases",
             "KubernetesService",
             "ContainerRegistry"
+          ],
+          "Free": [
+            // "KubernetesService",
+            // "ContainerRegistry"
           ]
         },
         "RoleDefinitionsInfo": [

@@ -289,7 +289,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
     }
     osProfile: {
       computerName: VM.vmHostName
-      adminUsername: contains(AppServer, 'AdminUser') ? AppServer.AdminUser : Global.AppServerAdminUserName
+      adminUsername: contains(AppServer, 'AdminUser') ? AppServer.AdminUser : Global.vmAdminUserName
       adminPassword: vmAdminPassword
       customData: contains(AppServer, 'customData') ? base64(replace(AppServer.customData, '{0}', '${networkId}.')) : null
       secrets: OSType[AppServer.OSType].OS == 'Windows' ? secrets : null
