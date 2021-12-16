@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
@@ -10,30 +10,6 @@
     },
     "DeploymentID": {
       "value": "0"
-    },
-    "vmAdminPassword": {
-      "reference": {
-        "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AEU2-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AEU2-BRW-AOA-P0-kvVLT01"
-        },
-        "secretName": "localadmin"
-      }
-    },
-    "sshPublic": {
-      "reference": {
-        "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AEU2-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AEU2-BRW-AOA-P0-kvVLT01"
-        },
-        "secretName": "sshPublic"
-      }
-    },
-    "devOpsPat": {
-      "reference": {
-        "keyVault": {
-          "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AEU2-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/AEU2-BRW-AOA-P0-kvVLT01"
-        },
-        "secretName": "devOpsPat"
-      }
     },
     "Stage": {
       "value": {

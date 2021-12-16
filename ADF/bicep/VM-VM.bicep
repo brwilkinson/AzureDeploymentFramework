@@ -438,7 +438,7 @@ resource AppServerDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2021-
     settings: {
       Name: Global.ADDomainName
       OUPath: (contains(AppServer, 'OUPath') ? AppServer.OUPath : '')
-      User: '${Global.AppServerAdminUserName}@${Global.ADDomainName}'
+      User: '${Global.vmAdminUserName}@${Global.ADDomainName}'
       Restart: 'true'
       Options: 3
     }
@@ -572,7 +572,7 @@ resource AppServerDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01'
     protectedSettings: {
       configurationArguments: {
         AdminCreds: {
-          UserName: Global.AppServerAdminUserName
+          UserName: Global.vmAdminUserName
           Password: vmAdminPassword
         }
         SQLServiceCreds: {
@@ -632,7 +632,7 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' 
     protectedSettings: {
       configurationArguments: {
         AdminCreds: {
-          UserName: Global.AppServerAdminUserName
+          UserName: Global.vmAdminUserName
           Password: vmAdminPassword
         }
         sshPublic: {
