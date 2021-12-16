@@ -21,7 +21,7 @@ If you only have a single Tenant, you can just deploy the HUB/Spoke Environments
 |:-|:-|:-|:-|:-|:-|
 |ABC|MSDN|PSThing Labs|IaaS Legacy||No|
 |ADF|Microsoft|AIRS|IaaS||No|
-|AOA|Microsoft|AIRS|Cloud Native|Moving to Bicep First|Yes for PaaS|
+|AOA|Microsoft|AIRS|Cloud Native|Most samples are here|Yes for PaaS|
 |HAA|HAAPP|HA App Labs|PaaS||No|
 |HUB|MSDN|PSThing Labs|IaaS Legacy||No|
 |PSO|MSDN|PSThing Labs|IaaS Legacy||No|
