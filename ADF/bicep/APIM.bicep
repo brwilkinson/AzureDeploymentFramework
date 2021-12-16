@@ -52,17 +52,22 @@ param devOpsPat string
 #disable-next-line no-unused-params
 param sshPublic string
 
-var GlobalRGJ = json(Global.GlobalRG)
-var regionLookup = json(loadTextContent('./global/region.json'))
-var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
-var globalRGName = '${contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix}-${contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName}-${contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.Appname}-RG-${contains(GlobalRGJ, 'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}'
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
+
+var GlobalRGJ = json(Global.GlobalRG)
 var HubRGJ = json(Global.hubRG)
 var HubKVJ = json(Global.hubKV)
 
 var gh = {
+  globalRGPrefix: contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix
+  globalRGOrgName: contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName
+  globalRGAppName: contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.AppName
+  globalRGName: contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
   hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
@@ -74,6 +79,7 @@ var gh = {
   hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
 }
 
+var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 
