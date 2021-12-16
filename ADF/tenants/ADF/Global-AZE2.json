@@ -1,11 +1,17 @@
 {
     "Global": {
-        "HubRGName": "AZE2-BRW-ADF-RG-P0",
-        "hubVnetName": "AZE2-BRW-ADF-P0-vn",
-        "KVName": "AZE2-BRW-ADF-P0-kvVault01",
-        "KVUrl": "https://AZE2-BRW-ADF-P0-kvVault01.vault.azure.net/",
-        "SAName": "stagecus1",
-        "certificateUrl": "https://aze2-brw-adf-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/fe9843f772b548868fd160f1a09cdb77",
+        "hubRG": {
+            "name": "P0"
+        },
+        "hubVN": {
+            "name": "vn"
+        },
+        "hubKV": {
+            "name": "VLT01"
+        },
+        "hubAA": {
+            "name": "OMSAutomation"
+        },
         "networkId": [
             "172.20.",
             142

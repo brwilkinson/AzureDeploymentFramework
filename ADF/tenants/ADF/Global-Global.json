@@ -9,9 +9,8 @@
     "GlobalRG": {
       "RG": "G1"
     },
-    "PrimaryPrefix": "AZC1",
+    "PrimaryLocation": "CentralUS",
     "SecondaryLocation": "EastUS2",
-    "SecondaryPrefix": "AZE2",
     "PublicIPAddressforRemoteAccess": [
       "73.157.100.227/32",
       "157.100.170.101/32"
