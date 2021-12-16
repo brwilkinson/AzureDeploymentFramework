@@ -11,10 +11,10 @@
       "RG": "G1"
     },
     "PrimaryLocation": "CentralUS",
-    "PrimaryPrefix": "AZC1",
     "SecondaryLocation": "EastUS2",
-    "SecondaryPrefix": "AZE2",
-    "PublicIPAddressforRemoteAccess": "73.157.100.227/32",
+    "PublicIPAddressforRemoteAccess": [
+      "73.157.100.227/32"
+    ],
     "vmAdminUserName": "brw",
     "DomainName": "psobject.com",
     "DomainNameExt": "psobject.com",

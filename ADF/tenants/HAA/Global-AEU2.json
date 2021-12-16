@@ -1,10 +1,17 @@
 {
   "Global": {
-    "HubRGName": "AEU2-BRW-HAA-RG-P0",
-    "hubVnetName": "AEU2-BRW-HAA-P0-vn",
-    "KVName": "AEU2-BRW-HAA-P0-kvVLT01",
-    "KVUrl": "https://aeu1-brw-haa-p0-kvvlt01.vault.azure.net/",
-    "certificateUrl": "https://aeu2-brw-haa-p0-kvvlt01.vault.azure.net/secrets/haapp-wildcard56d1440f-e1ab-476d-8d47-d1c28d792238/bd06c05d1a5c4fcdbdfa077dbae85836",
+    "hubRG": {
+      "name": "P0"
+    },
+    "hubVN": {
+      "name": "vn"
+    },
+    "hubKV": {
+      "name": "VLT01"
+    },
+    "hubAA": {
+      "name": "OMSAutomation"
+    },
     "networkId": [
       "172.16.",
       144

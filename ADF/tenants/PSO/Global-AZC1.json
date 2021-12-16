@@ -1,10 +1,17 @@
 {
   "Global": {
-    "HubRGName": "AZC1-BRW-HUB-RG-P0",
-    "hubVnetName": "AZC1-HUB-P0-vn",
-    "KVName": "AZC1-HUB-P0-kvVault01",
-    "KVUrl": "https://AZC1-HUB-P0-kvVault01.vault.azure.net/",
-    "certificateUrl": "https://azc1-hub-p0-kvvault01.vault.azure.net:443/secrets/WildcardCert/e0066997eae945529c84fbf815f7759f",
+    "hubRG": {
+      "name": "P0"
+    },
+    "hubVN": {
+      "name": "vn"
+    },
+    "hubKV": {
+      "name": "VLT01"
+    },
+    "hubAA": {
+      "name": "OMSAutomation"
+    },
     "networkId": ["10.0.",144],
     "networkId2": ["172.16.",142],
     "RTRGName": "AZC1-BRW-HUB-RG-P0",
