@@ -82,15 +82,15 @@ return
 if ($DeployPrimary)
 {
     Import-AzKeyVaultCertificate -FilePath $CertFilePath -Name WildcardCert -VaultName $primaryKVName -Password $PW.SecretValue -OutVariable kvcert
-    $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json
-    $Temp.Global.certificateUrl = $kvcert[0].SecretId
-    $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json
+    # $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json
+    # $Temp.Global.certificateUrl = $kvcert[0].SecretId
+    # $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json
 }
 
 if ($DeploySecondary)
 {
     Import-AzKeyVaultCertificate -FilePath $CertFilePath -Name WildcardCert -VaultName $secondaryKVName -Password $PW.SecretValue -OutVariable kvcert
-    $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json
-    $Temp.Global.certificateUrl = $kvcert[0].SecretId
-    $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json
+    # $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json
+    # $Temp.Global.certificateUrl = $kvcert[0].SecretId
+    # $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json
 }

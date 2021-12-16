@@ -9,8 +9,6 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var hubRG = Global.hubRGName
-
 resource LT 'Microsoft.LoadTestService/loadtests@2021-09-01-preview' = {
   name: '${Deployment}-lt${LoadTestInfo.Name}'
   location: LoadTestInfo.location //resourceGroup().location

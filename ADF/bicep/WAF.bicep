@@ -116,6 +116,8 @@ module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match)
     waf: waf
     Global: Global
     Stage: Stage
+    Environment: Environment
+    Prefix: Prefix
   }
   dependsOn: [
     PublicIP

@@ -6,7 +6,7 @@
       "namesuffix": "global"
     },
     "GlobalRG": {
-      "RG": "G1"
+      "name": "G1" // comment out for global in local
     },
     "PrimaryLocation": "CentralUS",
     "SecondaryLocation": "EastUS2",

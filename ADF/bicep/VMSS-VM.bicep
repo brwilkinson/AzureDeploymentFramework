@@ -24,6 +24,72 @@ var OSType = computeGlobal.OSType
 var WadCfg = computeGlobal.WadCfg
 var ladCfg = computeGlobal.ladCfg
 var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
+
+var GlobalRGJ = json(Global.GlobalRG)
+var GlobalSAJ = json(Global.GlobalSA)
+var HubKVJ = json(Global.hubKV)
+var HubRGJ = json(Global.hubRG)
+var HubVNJ = json(Global.hubVN)
+var HubAAJ = json(Global.hubAA)
+
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
+
+var gh = {
+  globalRGPrefix: contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix
+  globalRGOrgName: contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName
+  globalRGAppName: contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.AppName
+  globalRGName: contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
+  globalSAPrefix: contains(GlobalSAJ, 'Prefix') ? GlobalSAJ.Prefix : primaryPrefix
+  globalSAOrgName: contains(GlobalSAJ, 'OrgName') ? GlobalSAJ.OrgName : Global.OrgName
+  globalSAAppName: contains(GlobalSAJ, 'AppName') ? GlobalSAJ.AppName : Global.AppName
+  globalSARGName: contains(GlobalSAJ, 'RG') ? GlobalSAJ.RG : contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  hubVNPrefix: contains(HubVNJ, 'Prefix') ? HubVNJ.Prefix : Prefix
+  hubVNOrgName: contains(HubVNJ, 'OrgName') ? HubVNJ.OrgName : Global.OrgName
+  hubVNAppName: contains(HubVNJ, 'AppName') ? HubVNJ.AppName : Global.AppName
+  hubVNRGName: contains(HubVNJ, 'name') ? HubVNJ.name : HubRGJ.name
+
+  hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
+
+  hubAAPrefix: contains(HubAAJ, 'Prefix') ? HubAAJ.Prefix : Prefix
+  hubAAOrgName: contains(HubAAJ, 'OrgName') ? HubAAJ.OrgName : Global.OrgName
+  hubAAAppName: contains(HubAAJ, 'AppName') ? HubAAJ.AppName : Global.AppName
+  hubAARGName: contains(HubAAJ, 'RG') ? HubAAJ.RG : HubRGJ.name
+}
+
+var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalRGJ.name}')
+var KVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
+var AAName = toLower('${gh.hubAAPrefix}${gh.hubAAOrgName}${gh.hubAAAppName}${gh.hubAARGName}${HubKVJ.name}')
+
+resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
+  name: AAName
+  scope: resourceGroup(HubRGName)
+}
+
+resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: globalSAName
+  scope: resourceGroup(globalRGName)
+}
+
+var DeploymentName = 'AppServers'
+var DSCConfigLookup = {
+  AppServers: 'AppServers'
+  InitialDOP: 'AppServers'
+  WVDServers: 'AppServers'
+  VMAppSS: 'AppServers'
+}
 var VMSizeLookup = {
   D: 'D'
   T: 'D'
@@ -31,47 +97,6 @@ var VMSizeLookup = {
   U: 'P'
   P: 'P'
   S: 'S'
-}
-var DeploymentName = 'AppServers'
-
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
-}
-
-var AAName = '${Prefix}${Global.OrgName}${Global.Appname}P0OMSAutomation'
-
-resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
-  name: AAName
-  scope: resourceGroup(Global.HubRGName)
-}
-
-var GlobalRGJ = json(Global.GlobalRG)
-var GlobalSAJ = json(Global.GlobalSA)
-
-var regionLookup = json(loadTextContent('./global/region.json'))
-var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
-
-var globalRGName = '${contains(GlobalRGJ,'Prefix') ? GlobalRGJ.Prefix : primaryPrefix}-${contains(GlobalRGJ,'OrgName') ? GlobalRGJ.OrgName : Global.OrgName}-${contains(GlobalRGJ,'AppName') ? GlobalRGJ.AppName : Global.Appname}-RG-${contains(GlobalRGJ,'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}'
-var globalSAName = toLower('${contains(GlobalSAJ,'Prefix') ? GlobalSAJ.Prefix : primaryPrefix}${contains(GlobalSAJ,'OrgName') ? GlobalSAJ.OrgName : Global.OrgName}${contains(GlobalSAJ,'AppName') ? GlobalSAJ.AppName : Global.Appname}${contains(GlobalSAJ,'RG') ? GlobalSAJ.RG : contains(GlobalRGJ,'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}')
-
-resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
-  name: globalSAName
-  scope: resourceGroup(globalRGName)
-}
-
-var storageAccountType = Environment == 'P' ? 'Premium_LRS' : 'Standard_LRS'
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-// var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var VNetID = resourceId('Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
-
-var SADiagName = '${DeploymentURI}sadiag'
-var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts', SADiagName)
-
-var DSCConfigLookup = {
-  AppServers: 'AppServers'
-  InitialDOP: 'AppServers'
-  WVDServers: 'AppServers'
-  VMAppSS: 'AppServers'
 }
 var RebootNodeLookup = {
   D: true
@@ -88,38 +113,50 @@ var ConfigurationMode = {
   P: 'ApplyAndMonitor'
 }
 var DSCConfigurationModeFrequencyMins = 15
-var WAFBE = contains(AppServer, 'WAFBE') ? AppServer.WAFBE : []
-var LBBE = contains(AppServer, 'LBBE') ? AppServer.LBBE : []
-var NATPools = contains(AppServer, 'NATName') ? AppServer.NATName : []
-var LB = contains(AppServer, 'LB') ? AppServer.LB : null
 
-var azureActiveDirectory = {
-  clientApplication: Global.clientApplication
-  clusterApplication: Global.clusterApplication
-  tenantId: subscription().tenantId
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: KVName
+  scope: resourceGroup(HubRGName)
+}
+
+resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = {
+  name: 'WildcardCert'
+  parent: KV
 }
 
 var secrets = [
   {
     sourceVault: {
-      id: resourceId(Global.HubRGName, 'Microsoft.KeyVault/vaults', Global.KVName)
+      id: KV.id
     }
     vaultCertificates: [
       {
-        certificateUrl: Global.certificateUrl
+        certificateUrl: cert.properties.secretUriWithVersion
         certificateStore: 'My'
       }
       {
-        certificateUrl: Global.certificateUrl
+        certificateUrl: cert.properties.secretUriWithVersion
         certificateStore: 'Root'
       }
       {
-        certificateUrl: Global.certificateUrl
+        certificateUrl: cert.properties.secretUriWithVersion
         certificateStore: 'CA'
       }
     ]
   }
 ]
+
+var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+
+var storageAccountType = Environment == 'P' ? 'Premium_LRS' : 'Standard_LRS'
+var SADiagName = '${DeploymentURI}sadiag'
+var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts', SADiagName)
+
+var VNetID = resourceId('Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
 
 var userAssignedIdentities = {
   Cluster: {
@@ -135,15 +172,26 @@ var userAssignedIdentities = {
   }
 }
 
-var applicationGatewayBackendAddressPools = [for (be,index) in WAFBE : {
+var azureActiveDirectory = {
+  clientApplication: Global.clientApplication
+  clusterApplication: Global.clusterApplication
+  tenantId: subscription().tenantId
+}
+
+var WAFBE = contains(AppServer, 'WAFBE') ? AppServer.WAFBE : []
+var LBBE = contains(AppServer, 'LBBE') ? AppServer.LBBE : []
+var NATPools = contains(AppServer, 'NATName') ? AppServer.NATName : []
+var LB = contains(AppServer, 'LB') ? AppServer.LB : null
+
+var applicationGatewayBackendAddressPools = [for (be, index) in WAFBE: {
   id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', '${Deployment}-waf${LB}', 'appGatewayBackendPool')
 }]
 
-var loadBalancerBackendAddressPools = [for (be,index) in LBBE : {
+var loadBalancerBackendAddressPools = [for (be, index) in LBBE: {
   id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lb${LB}', be)
 }]
 
-var loadBalancerInboundNatPools = [for (nat,index) in NATPools : {
+var loadBalancerInboundNatPools = [for (nat, index) in NATPools: {
   id: resourceId('Microsoft.Network/loadBalancers/inboundNatPools', '${Deployment}-lb${LB}', nat)
 }]
 
@@ -212,32 +260,32 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
       //   }]
       networkProfile: {
         networkInterfaceConfigurations: [for (nic, index) in AppServer.NICs: {
-            name: 'NIC-${ -index }'
-            properties: {
-              primary: contains(nic, 'Primary')
-              enableAcceleratedNetworking: contains(nic, 'FastNic') && bool(nic.FastNic) ? true : false
-              dnsSettings: {
-                dnsServers: []
-              }
-              ipConfigurations: [
-                {
-                  name: '${Deployment}-${AppServer.Name}-nic${ -index }'
-                  properties: {
-                    subnet: {
-                      id: '${VNetID}/subnets/sn${nic.Subnet}'
-                    }
-                    publicIPAddressConfiguration: ! (contains(nic, 'PublicIP') && nic.PublicIP ==1) ? null : {
-                      name: 'pub1'
-                    }
-                    privateIPAddressVersion: 'IPv4'
-                    applicationGatewayBackendAddressPools: applicationGatewayBackendAddressPools
-                    loadBalancerBackendAddressPools: loadBalancerBackendAddressPools
-                    loadBalancerInboundNatPools: contains(AppServer, 'NATName') ? loadBalancerInboundNatPools : null
-                  }
-                }
-              ]
+          name: 'NIC-${-index}'
+          properties: {
+            primary: contains(nic, 'Primary')
+            enableAcceleratedNetworking: contains(nic, 'FastNic') && bool(nic.FastNic) ? true : false
+            dnsSettings: {
+              dnsServers: []
             }
-          }]
+            ipConfigurations: [
+              {
+                name: '${Deployment}-${AppServer.Name}-nic${-index}'
+                properties: {
+                  subnet: {
+                    id: '${VNetID}/subnets/sn${nic.Subnet}'
+                  }
+                  publicIPAddressConfiguration: !(contains(nic, 'PublicIP') && nic.PublicIP == 1) ? null : {
+                    name: 'pub1'
+                  }
+                  privateIPAddressVersion: 'IPv4'
+                  applicationGatewayBackendAddressPools: applicationGatewayBackendAddressPools
+                  loadBalancerBackendAddressPools: loadBalancerBackendAddressPools
+                  loadBalancerInboundNatPools: contains(AppServer, 'NATName') ? loadBalancerInboundNatPools : null
+                }
+              }
+            ]
+          }
+        }]
       }
       extensionProfile: {
         extensions: [
@@ -250,7 +298,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
               autoUpgradeMinorVersion: true
               settings: {
                 Name: Global.ADDomainName
-                OUPath:contains(AppServer, 'OUPath') ? AppServer.OUPath : ''
+                OUPath: contains(AppServer, 'OUPath') ? AppServer.OUPath : ''
                 User: '${Global.vmAdminUserName}@${Global.ADDomainName}'
                 Restart: 'true'
                 Options: 3

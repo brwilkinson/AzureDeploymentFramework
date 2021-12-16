@@ -71,6 +71,9 @@ module SQL 'AZSQL-SQL.bicep' = [for (sql,index) in azSQLInfo : if(azSQL[index].m
     azSQLInfo: sql
     Global: Global
     vmAdminPassword: vmAdminPassword
+    DeploymentID: DeploymentID
+    Environment: Environment
+    Prefix: Prefix
   }
   dependsOn: []
 }]

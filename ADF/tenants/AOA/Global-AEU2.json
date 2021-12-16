@@ -1,19 +1,25 @@
 {
   "Global": {
-    "HubRGName": "AEU2-BRW-AOA-RG-P0",
-    "hubVnetName": "AEU2-BRW-AOA-P0-vn",
-    "KVName": "AEU2-BRW-AOA-P0-kvVLT01",
-    "KVUrl": "https://aeu2-brw-aoa-p0-kvvlt01.vault.azure.net/",
-    "certificateUrl": "https://aeu2-brw-aoa-p0-kvvlt01.vault.azure.net/secrets/PSTHING-WildCard/343e9dd7d71143ecbad800b1230d6f54",
+    "hubRG": {
+      "name": "P0"
+    },
+    "hubVN": {
+      "name": "vn"
+    },
+    "hubKV": {
+      "name": "VLT01"
+    },
+    "hubAA": {
+      "name": "OMSAutomation"
+    },
     "networkId": [
       "172.16.",
       144
     ],
-    "DNSServers": [
+    "DNSServers": [ // Leave Empty to use AzureDNS
       "172.16.144.75",
       "172.16.144.76"
     ],
-    "_DNSServers": [], // Leave Empty to use AzureDNS
     "AALocation": "EastUS",
     "RTRGName": "AEU2-BRW-AOA-RG-P0",
     "RTName": "Hub",

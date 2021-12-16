@@ -75,5 +75,8 @@ module FD 'FD-frontDoor.bicep'= [for (fd,index) in frontDoorInfo: if (frontDoor[
     globalRGName: globalRGName
     frontDoorInfo: fd
     Global: Global
+    DeploymentID: DeploymentID
+    Environment: Environment
+    Prefix: Prefix
   }
 }]

@@ -55,6 +55,17 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
@@ -63,11 +74,11 @@ var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? De
 
 var SBInfo = contains(DeploymentInfo, 'SBInfo') ? DeploymentInfo.SBInfo : []
 
-var SB = [for (sb,index) in SBInfo : {
+var SB = [for (sb, index) in SBInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, sb.Name))
 }]
 
-module SBs 'SB-ServiceBus.bicep' = [for (sb,index) in SBInfo : if(SB[index].match) {
+module SBs 'SB-ServiceBus.bicep' = [for (sb, index) in SBInfo: if (SB[index].match) {
   name: 'dp${Deployment}-SB-Deploy${sb.name}'
   params: {
     Deployment: Deployment
@@ -80,7 +91,7 @@ module SBs 'SB-ServiceBus.bicep' = [for (sb,index) in SBInfo : if(SB[index].matc
   }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (sb,index) in SBInfo : if(SB[index].match && contains(sb, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (sb, index) in SBInfo: if (SB[index].match && contains(sb, 'privatelinkinfo')) {
   name: 'dp${Deployment}-SB-privatelinkloop${sb.name}'
   params: {
     Deployment: Deployment
@@ -93,9 +104,9 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (sb,index) in SBInfo : i
   ]
 }]
 
-module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (sb,index) in SBInfo : if(SB[index].match && contains(sb, 'privatelinkinfo')) {
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (sb, index) in SBInfo: if (SB[index].match && contains(sb, 'privatelinkinfo')) {
   name: 'dp${Deployment}-SB-registerPrivateDNS${sb.name}'
-  scope: resourceGroup(Global.hubRGName)
+  scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: sb.privateLinkInfo
     providerURL: '.windows.net/'

@@ -604,7 +604,7 @@ var solutions = [
     'DnsAnalytics'
     'ApplicationInsights'
     'AzureWebAppsAnalytics'
-    'KeyVault'
+    // 'KeyVault'
     'AzureNSGAnalytics'
     'AlertManagement'
     'CapacityPerformance'
@@ -616,6 +616,14 @@ var solutions = [
     'InfrastructureInsights'
     'VMInsights'
     'SecurityInsights'
+
+    // testing
+    'SQLAdvancedThreatProtection'
+    'WindowsDefenderATP'
+    'AzureAppGatewayAnalytics'
+    'KeyVaultAnalytics'
+    'AzureSQLAnalytics'
+    'BehaviorAnalyticsInsights'
 ]
 var aaAssets = {
     modules: [
@@ -876,6 +884,7 @@ resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareU
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
+                #disable-next-line BCP036
                 includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
@@ -939,6 +948,7 @@ resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUp
         updateConfiguration: {
             operatingSystem: 'Windows'
             windows: {
+                #disable-next-line BCP036
                 includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
                 excludedKbNumbers: []
                 includedKbNumbers: []
@@ -1042,6 +1052,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
                     streams: [
                         'Microsoft-WindowsEvent'
                     ]
+                    #disable-next-line BCP037
                     scheduledTransferPeriod: 'PT1M'
                     xPathQueries: [
                         'Security!'
@@ -1052,6 +1063,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
                     streams: [
                         'Microsoft-WindowsEvent'
                     ]
+                    #disable-next-line BCP037
                     scheduledTransferPeriod: 'PT5M'
                     xPathQueries: [
                         'System![System[(Level = 1 or Level = 2 or Level = 3)]]'
@@ -1092,6 +1104,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
             performanceCounters: [
                 {
                     name: 'VMHealthPerfCounters'
+                    #disable-next-line BCP037
                     scheduledTransferPeriod: 'PT1M'
                     samplingFrequencyInSeconds: 30
                     counterSpecifiers: [
@@ -1111,6 +1124,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
                     streams: [
                         'Microsoft-Perf'
                     ]
+                    #disable-next-line BCP037
                     scheduledTransferPeriod: 'PT5M'
                     samplingFrequencyInSeconds: 30
                     counterSpecifiers: [
@@ -1179,6 +1193,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
     kind: 'other'
     properties: {
         Application_Type: 'web'
+        #disable-next-line BCP036
         Flow_Type: 'Redfield'
         Request_Source: 'rest'
         // HockeyAppId: ''

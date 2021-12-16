@@ -49,7 +49,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = [for (aci,index) in Instances : {
+resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = [for (aci,index) in Instances : {
   name: '${Deployment}-aci-${aci.name}'
   location: aci.location
   identity: {

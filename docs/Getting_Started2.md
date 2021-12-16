@@ -53,7 +53,7 @@ Go Home [Documentation Home](./index.md)
 ## Steps
 
 1. There are several setup/management scripts in this directory: ADF\1-prereqs
-1. There are several shared metadata files in your Tenant Directory e.g. Global-Global, AZC1-Global, AZE2-Global
+1. There are several shared metadata files in your Tenant Directory e.g. Global-Global.json, Global-ACU1.json, Global-AEU2.json
 1. We will now move to the ABC Tenant, this is only going to have Spoke Environments
     1. ABC will use the HUB environment for the Spoke e.g. Network and Keyvaults
     2. ABC will use the HUB Global Resource, this is shared Global resources e.g. storage accounts.
@@ -61,15 +61,17 @@ Go Home [Documentation Home](./index.md)
     1. All of the info below should be filled out ahead of time
     1. Replace the 3 Characters that map to the Name of your App, in this case ABC, you can leave ABC (unless you cloned it for a different App Name).
         ````
-        "Global": {
+          "Global": {
             "OrgName": "BRW",
-            "AppName": "ABC",                             // Only the AppName was updated to ABC, instead of HUB
-            "SAName": "azc1brwhubg1saglobal",
-            "GlobalRGName": "AZC1-BRW-HUB-RG-G1",
+            "AppName": "AOA",
+            "GlobalSA": {
+              "namesuffix": "global"
+            },
+            "GlobalRG": {
+              "name": "G1" // comment out for global in local
+            },
             "PrimaryLocation": "CentralUS",
-            "PrimaryPrefix": "AZC1",
             "SecondaryLocation": "EastUS2",
-            "SecondaryPrefix": "AZE2",
         ````
 1. Open the following File and fill out all of the information ADF\tenants\ABC\AZC1-Global.json
     1. The file name should match your Primary Azure Region that you will deploy into

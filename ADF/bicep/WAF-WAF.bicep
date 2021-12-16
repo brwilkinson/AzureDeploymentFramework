@@ -1,6 +1,8 @@
 param Deployment string
 param DeploymentURI string
 param DeploymentID string
+param Environment string
+param Prefix string
 param waf object
 param Global object
 param globalRGName string
@@ -11,6 +13,24 @@ var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] -
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var snWAF01Name = 'snWAF01'
 var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
+
+var HubKVJ = json(Global.hubKV)
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 
 resource FWPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2021-02-01' existing = if (contains(waf, 'WAFEnabled') && (waf.WAFEnabled == true)) {
   name: '${Deployment}-wafPolicy${((contains(waf, 'WAFEnabled') && (waf.WAFEnabled == true)) ? waf.WAFPolicyName : 'nopolicy')}'
@@ -24,8 +44,13 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: HubKVName
+  scope: resourceGroup(HubRGName)
+}
+
 var WAFName = '${Deployment}-waf${waf.WAFName}'
-var WAFID = resourceId('Microsoft.Network/applicationGateways',WAFName)
+var WAFID = resourceId('Microsoft.Network/applicationGateways', WAFName)
 
 var SSLpolicyLookup = {
   tls12: {
@@ -42,7 +67,7 @@ var webApplicationFirewallConfiguration = {
   ruleSetVersion: '3.0'
 }
 
-var Listeners = [for listener in waf.Listeners : {
+var Listeners = [for listener in waf.Listeners: {
   name: listener.Port
   backendAddressPool: {
     id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', WAFName, 'appGatewayBackendPool')
@@ -61,7 +86,7 @@ var Listeners = [for listener in waf.Listeners : {
   }
 }]
 
-var BackendHttp = [for be in waf.BackendHttp : {
+var BackendHttp = [for be in waf.BackendHttp: {
   probe: {
     id: resourceId('Microsoft.Network/applicationGateways/probes', WAFName, (contains(be, 'probeName') ? be.probeName : 'na'))
   }
@@ -131,19 +156,19 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
         }
       }
     ]
-    sslCertificates: [for (cert,index) in waf.SSLCerts : {
+    sslCertificates: [for (cert, index) in waf.SSLCerts: {
       name: cert
       properties: {
-        keyVaultSecretId: '${reference(resourceId(Global.HubRGName, 'Microsoft.KeyVault/vaults', Global.KVNAME), '2019-09-01').vaultUri}secrets/${cert}'
+        keyVaultSecretId: '${KV.properties.vaultUri}secrets/${cert}'
       }
     }]
-    frontendPorts: [for (fe,index) in waf.frontendPorts : {
+    frontendPorts: [for (fe, index) in waf.frontendPorts: {
       name: 'appGatewayFrontendPort${fe.Port}'
       properties: {
         port: fe.Port
       }
     }]
-    urlPathMaps: [for (pr,index) in waf.pathRules : {
+    urlPathMaps: [for (pr, index) in waf.pathRules: {
       name: pr.Name
       properties: {
         defaultBackendAddressPool: {
@@ -168,7 +193,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
         ]
       }
     }]
-    backendHttpSettingsCollection: [for (be,index) in waf.BackendHttp : {
+    backendHttpSettingsCollection: [for (be, index) in waf.BackendHttp: {
       name: 'appGatewayBackendHttpSettings${be.Port}'
       properties: {
         port: be.Port
@@ -178,7 +203,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
         probe: (contains(be, 'probeName') ? BackendHttp[index].probe : json('null'))
       }
     }]
-    httpListeners: [for (list,index) in waf.Listeners: {
+    httpListeners: [for (list, index) in waf.Listeners: {
       name: 'httpListener-${(contains(list, 'pathRules') ? 'PathBasedRouting' : 'Basic')}-${list.Hostname}-${list.Port}'
       properties: {
         frontendIPConfiguration: {
@@ -193,7 +218,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
         sslCertificate: ((list.Protocol == 'https') ? Listeners[index].sslCertificate : json('null'))
       }
     }]
-    requestRoutingRules: [for (list,index) in waf.Listeners: {
+    requestRoutingRules: [for (list, index) in waf.Listeners: {
       name: 'requestRoutingRule-${list.Hostname}${list.Port}'
       properties: {
         ruleType: (contains(list, 'pathRules') ? 'PathBasedRouting' : 'Basic')
@@ -206,7 +231,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
         urlPathMap: (contains(list, 'pathRules') ? Listeners[index].urlPathMap : json('null'))
       }
     }]
-    redirectConfigurations: [for (list,index) in waf.Listeners: {
+    redirectConfigurations: [for (list, index) in waf.Listeners: {
       name: 'redirectConfiguration-${list.Hostname}-${list.Port}'
       properties: {
         redirectType: 'Permanent'
@@ -217,7 +242,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
         includeQueryString: true
       }
     }]
-    probes: [for (probe,index) in waf.probes : {
+    probes: [for (probe, index) in waf.probes: {
       name: probe.name
       properties: {
         protocol: probe.protocol
@@ -284,7 +309,7 @@ resource WAFDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
-module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in waf.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
+module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list, index) in waf.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
   name: 'setdns-public-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -294,9 +319,9 @@ module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in waf.Listeners: 
   }
 }]
 
-module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list,index) in waf.Listeners: if (bool(Stage.SetExternalDNS) && (list.Protocol == 'https')) {
+module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list, index) in waf.Listeners: if (bool(Stage.SetExternalDNS) && (list.Protocol == 'https')) {
   name: 'setdns-private-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
-  scope: resourceGroup(subscription().subscriptionId, Global.HubRGName)
+  scope: resourceGroup(subscription().subscriptionId, HubRGName)
   params: {
     hostname: toLower('${Deployment}-${list.Hostname}')
     ipv4Address: ((list.Interface == 'Private') ? WAF.properties.frontendIPConfigurations[1].properties.privateIPAddress : PublicIP.properties.ipAddress)

@@ -107,7 +107,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   //   dependsOn: []
   // }]
 
-resource ACR 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
+resource ACR 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
   name: toLower('${DeploymentURI}registry${cr.Name}')
   location: resourceGroup().location
   sku: {

@@ -55,9 +55,27 @@ param sshPublic string
 var GlobalRGJ = json(Global.GlobalRG)
 var regionLookup = json(loadTextContent('./global/region.json'))
 var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
-var globalRGName = '${contains(GlobalRGJ,'Prefix') ? GlobalRGJ.Prefix : primaryPrefix}-${contains(GlobalRGJ,'OrgName') ? GlobalRGJ.OrgName : Global.OrgName}-${contains(GlobalRGJ,'AppName') ? GlobalRGJ.AppName : Global.Appname}-RG-${contains(GlobalRGJ,'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}'
+var globalRGName = '${contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix}-${contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName}-${contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.Appname}-RG-${contains(GlobalRGJ, 'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}'
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+
+var HubRGJ = json(Global.hubRG)
+var HubKVJ = json(Global.hubKV)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 
@@ -65,10 +83,20 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: HubKVName
+  scope: resourceGroup(HubRGName)
+}
+
+resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = {
+  name: 'WildcardCert'
+  parent: KV
+}
+
 var AppInsightsName = '${DeploymentURI}AppInsights'
 
 var APIMInfo = contains(DeploymentInfo, 'APIMInfo') ? DeploymentInfo.APIMInfo : []
-  
+
 var APIMs = [for (apim, index) in APIMInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, apim.name))
   virtualNetworkConfiguration: {
@@ -86,7 +114,7 @@ var userAssignedIdentities = {
   }
 }
 
-resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = [for (apim,index) in APIMInfo : if (APIMs[index].match) {
+resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = [for (apim, index) in APIMInfo: if (APIMs[index].match) {
   name: '${Deployment}-apim${apim.Name}'
   location: resourceGroup().location
   sku: {
@@ -105,25 +133,25 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = [for (apim,
         type: 'Proxy'
         hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}.${Global.DomainNameExt}'))
         identityClientId: UAI.properties.clientId
-        keyVaultId: '${Global.KVUrl}secrets/${apim.certName}'
+        keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
       }
       {
         type: 'DeveloperPortal'
         hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-developer.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-developer.${Global.DomainNameExt}'))
         identityClientId: UAI.properties.clientId
-        keyVaultId: '${Global.KVUrl}secrets/${apim.certName}'
+        keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
       }
       {
         type: 'Management'
         hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-management.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-management.${Global.DomainNameExt}'))
         identityClientId: UAI.properties.clientId
-        keyVaultId: '${Global.KVUrl}secrets/${apim.certName}'
+        keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
       }
       {
         type: 'Scm'
         hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-scm.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-scm.${Global.DomainNameExt}'))
         identityClientId: UAI.properties.clientId
-        keyVaultId: '${Global.KVUrl}secrets/${apim.certName}'
+        keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
       }
     ]
     // runtimeUrl: toLower('https://${Deployment}-apim${apim.Name}.azure-api.net')
@@ -138,7 +166,7 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = [for (apim,
   }
 }]
 
-resource APIMAppInsights 'Microsoft.ApiManagement/service/loggers@2021-01-01-preview' = [for (apim,index) in APIMInfo : if (APIMs[index].match) {
+resource APIMAppInsights 'Microsoft.ApiManagement/service/loggers@2021-01-01-preview' = [for (apim, index) in APIMInfo: if (APIMs[index].match) {
   name: AppInsightsName
   parent: APIM[index]
   properties: {
@@ -152,7 +180,7 @@ resource APIMAppInsights 'Microsoft.ApiManagement/service/loggers@2021-01-01-pre
   }
 }]
 
-resource APIMservicediags 'Microsoft.ApiManagement/service/diagnostics@2021-01-01-preview' = [for (apim,index) in APIMInfo : if (APIMs[index].match) {
+resource APIMservicediags 'Microsoft.ApiManagement/service/diagnostics@2021-01-01-preview' = [for (apim, index) in APIMInfo: if (APIMs[index].match) {
   name: 'applicationinsights'
   parent: APIM[index]
   properties: {
@@ -164,16 +192,15 @@ resource APIMservicediags 'Microsoft.ApiManagement/service/diagnostics@2021-01-0
       percentage: 100
       samplingType: 'fixed'
     }
-    
   }
 }]
 
-resource APIMservicediagsloggers 'Microsoft.ApiManagement/service/diagnostics/loggers@2018-01-01' = [for (apim,index) in APIMInfo : if (APIMs[index].match) {
+resource APIMservicediagsloggers 'Microsoft.ApiManagement/service/diagnostics/loggers@2018-01-01' = [for (apim, index) in APIMInfo: if (APIMs[index].match) {
   name: APIMAppInsights[index].name
   parent: APIMservicediags[index]
 }]
 
-resource APIMDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (apim,index) in APIMInfo : if (APIMs[index].match) {
+resource APIMDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (apim, index) in APIMInfo: if (APIMs[index].match) {
   name: 'service'
   scope: APIM[index]
   properties: {
@@ -201,18 +228,18 @@ resource APIMDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = 
   }
 }]
 
-resource APIMWildcardCert 'Microsoft.ApiManagement/service/certificates@2020-06-01-preview' = [for (apim,index) in APIMInfo : if (APIMs[index].match) {
+resource APIMWildcardCert 'Microsoft.ApiManagement/service/certificates@2020-06-01-preview' = [for (apim, index) in APIMInfo: if (APIMs[index].match) {
   name: 'WildcardCert'
   parent: APIM[index]
   properties: {
     keyVault: {
-      secretIdentifier: Global.certificateUrl
+      secretIdentifier: cert.properties.secretUriWithVersion
       identityClientId: reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet'), '2018-11-30').clientId
     }
   }
 }]
 
-resource APIMPublic 'Microsoft.ApiManagement/service/products@2020-06-01-preview' = [for (apim,index) in APIMInfo : if (APIMs[index].match) {
+resource APIMPublic 'Microsoft.ApiManagement/service/products@2020-06-01-preview' = [for (apim, index) in APIMInfo: if (APIMs[index].match) {
   name: 'Public'
   parent: APIM[index]
   properties: {
@@ -222,7 +249,7 @@ resource APIMPublic 'Microsoft.ApiManagement/service/products@2020-06-01-preview
   }
 }]
 
-module DNS 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
+module DNS 'x.DNS.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -235,7 +262,7 @@ module DNS 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index
   ]
 }]
 
-module DNSscm 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
+module DNSscm 'x.DNS.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-scm'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -248,7 +275,7 @@ module DNSscm 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[in
   ]
 }]
 
-module DNSdeveloper 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
+module DNSdeveloper 'x.DNS.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-developer'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -261,9 +288,9 @@ module DNSdeveloper 'x.DNS.CNAME.bicep' = [for (apim,index) in APIMInfo : if (AP
   ]
 }]
 
-module DNSproxy 'x.DNS.private.A.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
+module DNSproxy 'x.DNS.private.A.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-A-${Deployment}-apim-${apim.name}-${Global.DomainName}-proxy'
-  scope: resourceGroup(subscription().subscriptionId, Global.HubRGName)
+  scope: resourceGroup(subscription().subscriptionId, HubRGName)
   params: {
     hostname: toLower('${Deployment}-apim${apim.name}-proxy')
     ipv4Address: string(((apim.virtualNetworkType == 'Internal') ? APIM[index].properties.privateIPAddresses[0] : APIM[index].properties.publicIPAddresses[0]))
@@ -274,9 +301,9 @@ module DNSproxy 'x.DNS.private.A.bicep' = [for (apim,index) in APIMInfo : if (AP
   ]
 }]
 
-module DNSprivate 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
+module DNSprivate 'x.DNS.private.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-CNAME-${Deployment}-apim-${apim.name}-${Global.DomainName}'
-  scope: resourceGroup(subscription().subscriptionId, Global.HubRGName)
+  scope: resourceGroup(subscription().subscriptionId, HubRGName)
   params: {
     hostname: toLower('${Deployment}${(contains(apim, 'frontDoor') ? '-afd${apim.frontDoor}' : '')}-apim${apim.name}')
     cname: toLower('${Deployment}-apim${apim.name}-proxy.${Global.DomainName}')
@@ -287,9 +314,9 @@ module DNSprivate 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : 
   ]
 }]
 
-module DNSprivatedeveloper 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
+module DNSprivatedeveloper 'x.DNS.private.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-CNAME-${Deployment}-apim-${apim.name}-${Global.DomainName}-developer'
-  scope: resourceGroup(subscription().subscriptionId, Global.HubRGName)
+  scope: resourceGroup(subscription().subscriptionId, HubRGName)
   params: {
     hostname: toLower('${Deployment}${(contains(apim, 'frontDoor') ? '-afd${apim.frontDoor}' : '')}-apim${apim.name}-developer')
     cname: toLower('${Deployment}-apim${apim.name}-proxy.${Global.DomainName}')
@@ -300,9 +327,9 @@ module DNSprivatedeveloper 'x.DNS.private.CNAME.bicep' = [for (apim,index) in AP
   ]
 }]
 
-module DNSprivatescm 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo : if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
+module DNSprivatescm 'x.DNS.private.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-CNAME-${Deployment}-apim-${apim.name}-${Global.DomainName}-scm'
-  scope: resourceGroup(subscription().subscriptionId, Global.HubRGName)
+  scope: resourceGroup(subscription().subscriptionId, HubRGName)
   params: {
     hostname: toLower('${Deployment}${(contains(apim, 'frontDoor') ? '-afd${apim.frontDoor}' : '')}-apim${apim.name}-scm')
     cname: toLower('${Deployment}-apim${apim.name}-proxy.${Global.DomainName}')
@@ -312,4 +339,3 @@ module DNSprivatescm 'x.DNS.private.CNAME.bicep' = [for (apim,index) in APIMInfo
     APIM[index]
   ]
 }]
-
