@@ -7,61 +7,42 @@ Go Home [Documentation Home](./index.md)
 
     To Deploy all Tiers simply choose the following template
 
-        0-azuredeploy-ALL.json
+        ```powershell
+        azset -Enviro T5 -App AOA
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\00-ALL-SUB.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\01-ALL-RG.bicep
+        ```
 
     Otherwise start with the template that you need, then proceed onto the next one
 
-        1-azuredeploy-OMS.json
-        2-azuredeploy-NSG.json
-        3-azuredeploy-VNet.json
-        4-azuredeploy-ILBalancer.json
-        5-azuredeploy-VMApp.json
-        6-azuredeploy-WAF.json
-        7-azuredeploy-Dashboard.json
-        8-azuredeploy-VMAppSS.json
-        9-azuredeploy-API.json
-        10-azuredeploy-CosmosDB.json
-        11-azuredeploy-SQLManaged.json
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\OMS.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\NSG.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\VNET.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\LB.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\VM.bicep -DeploymentName AppServers
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\VM.bicep -DeploymentName AppServers -CN JMP01
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\VMSS.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\WAF.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\Dashboard.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\APIM.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\Cosmos.bicep
+        AzDeploy @Current -Prefix AWCU -TF ADF:\bicep\AZSQL.bicep
 
-    Define the servers you want to deploy using a table in JSON, so you can create as many servers that you need for your application tiers.
+    Define the server/app services you want to deploy using a table in JSON, so you can create as many resources that you need for your application tiers.
 
     The servers and other services are defined per Environment that you would like to deploy.
 
     As an example you may have the following Environments:
 
-        azuredeploy.1-dev.parameters.json
-        azuredeploy.2-test.parameters.json
-        azuredeploy.3-prod.parameters.json
+        ACU1.D2.parameters.json
+        ACU1.T5.parameters.json
+        ACU1.P0.parameters.json
+        ACU1.G0.parameters.json
+        ACU1.G1.parameters.json
 
-    Within these parameter files you define static things within your environment
+    Within these parameter files you define resources within each regional environment, which maps to a Resource Group.
 
-    An example is below.
-
-``` json
-    "Global": {
-      "value": {
-        "DomainName": "contoso.com",
-        "AppName": "ADF",
-        "NSGGlobal": "AZE2-ADF-nsgDMZ01",
-        "RouteTableGlobal": "AZE2-ADF-rtDMZ01",
-        "SAName": "stagecus1",
-        "KVName": "AZE2-ADF-kvGLOBAL",
-        "KVUrl": "https://AZC1-ADF-P0-kvVault01.vault.azure.net/",
-        "RGName": "rgGlobal",
-        "certificateThumbprint": "01358F6DB7F96BD55F1C92B605E2C50AA8C16D15",
-        "vmAdminUserName": "localadmin",
-        "sqlAutobackupRetentionPeriod": 5,
-        "networkId": [ "10.0.",143 ],
-        "alertRecipients": [ "alerts@contoso.com" ],
-        "apimPublisherEmail":"apim@contoso.com"
-
-      }
-    }
-```
-
-There is also a DeploymentInfo object that defines all of the other resources in a deployment
-
-The Domain Controller and DNS Server Settings:
+There DeploymentInfo object that defines all of the other resources in a deployment
 
 ``` json
   "DeploymentInfo": {
@@ -360,7 +341,7 @@ The following defines the loadbalaners that are required
     ]
 ```
 
-The following defines the compute sizes lookup for P (Prod) and D (Dev)
+There are other lookup tables for SKU and sizing lookups P (Prod) and D (Dev)
 
 ``` json
     "computeSizeLookupOptions": {
@@ -406,11 +387,39 @@ The following defines the compute sizes lookup for P (Prod) and D (Dev)
 The following defines the CosmosDB
 
 ```json
-    "CosmosDB":[
+    "cosmosDBInfo": [
       {
-        "dbName": "DB01"
+        "Name": "eshop-nosql",
+        "Kind": "MongoDB", //GlobalDocumentDB, MongoDB, Parse
+        "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
+        "enableMultipleWriteLocations": true,
+        "enableAutomaticFailover": true,
+        "_PrivateLinkInfo": [
+          {
+            "Subnet": "snBE02",
+            "groupID": "MongoDB"
+          }
+        ],
+        "locations": [
+          {
+            "location": "PrimaryLocation",
+            "failoverPriority": 0,
+            "isZoneRedundant": true
+          },
+          {
+            "location": "SecondaryLocation",
+            "failoverPriority": 1,
+            "isZoneRedundant": true
+          }
+        ],
+        "databases": [
+          {
+            "databaseName": "customers",
+            "containerName": "Info"
+          }
+        ]
       }
-    ],
+    ]
 ```
 
 The following defines the API Management Info
@@ -418,28 +427,73 @@ The following defines the API Management Info
 ```json
     "APIMInfo": [
       {
-        "name":"API01",
+        "name": "01",
+        "dnsName": "API",
         "apimSku": "Developer",
-        "snName":"MT01"
+        "snName": "BE01",
+        "virtualNetworkType": "Internal",
+        "certName": "PSTHING-WildCard",
+        "frontDoor": "01"
       }
-    ],
+    ]
 ```
 
 The following defines the VM Scale Set
 
 ```json
-    "AppServersVMSS": [
-      {
-        "Name": "API",
-        "Role": "API",
-        "ASName": "API",
-        "OSType": "Server2016SS",
-        "Subnet": "MT01",
-        "LB": "API",
-        "NATPort": "3389",
-        "Capacity": 3
-      }
-    ],
+      "AppServersVMSS": [
+        {
+          "Name": "API02",
+          "AutoScale": true,
+          "PredictiveScale": "Enabled",
+          "saname": "data",
+          "Role": "API",
+          "ASNAME": "API",
+          "DDRole": "64GBSS",
+          "OSType": "Server2019SSIMG",
+          "Subnet": "MT02",
+          "LB": "PLB01",
+          "NATName": [
+            "RDP",
+            "RTC"
+          ],
+          "zones": [
+            "1",
+            "2",
+            "3"
+          ],
+          "LBBE": [
+            "PLB01"
+          ],
+          "_WAFBE": [
+            "API02"
+          ],
+          "NICs": [
+            {
+              "Subnet": "FE01",
+              "Primary": 1,
+              "FastNic": 1,
+              "PublicIP": 0
+            }
+          ],
+          "AutoScalecapacity": {
+            "minimum": "3",
+            "maximum": "9",
+            "default": "3"
+          },
+          "Health": {
+            "protocol": "https",
+            "port": "443",
+            "requestPath": "/api/headers"
+          },
+          "IsPrimary": true,
+          "durabilityLevel": "Bronze",
+          "placementProperties": {
+            "OSType": "Server2016SS",
+            "NodeKind": "API01"
+          }
+        }
+      ]
 ```
 
 The following defines the availabilityset and the servers used for SQL
@@ -449,44 +503,33 @@ The Variable (object) AppInfo is passed into the DSC extenson Configuration
 The following defines the availabilityset and the AppServers
 
 ``` json
-     "APPServersAS": [
-        "JMP",
-        "BUS",
-        "FW"
-      ],
+    "Appservers": {
       "AppServers": [
-      {
-        "Name": "JMP01",
-        "Role": "JMP",
-        "ASName": "JMP",
-        "DDRole": "64GB",
-        "OSType": "Server2016small",
-        "ExcludeDomainJoin": "UsingSQLMI",
-        "NICs": [
-          {
-            "Subnet": "FE01",
-            "Primary": 1,
-            "FastNic": 1,
-            "PublicIP": "Static"
-          }
-        ]
-      },
-      {
-        "Name": "BUS01",
-        "Role": "BUS",
-        "ASName": "BUS",
-        "DDRole": "64GB",
-        "OSType": "Bus-debian",
-        "NICs": [
-          {
-            "Subnet": "MT01",
-            "LB": "BUS",
-            "Primary": 1,
-            "FastNic": 1
-          }
-        ]
-      }
-
+        {
+          "Name": "JMP01",
+          "Role": "JMP",
+          "ASName": "JMP",
+          "DDRole": "64GB",
+          "OSType": "Server2022",
+          "ExcludeAdminCenter": 1,
+          "HotPatch": true,
+          "shutdown": {
+            "time": "2100",
+            "enabled": 0
+          },
+          "Zone": 1,
+          "NICs": [
+            {
+              "Subnet": "FE01",
+              "Primary": 1,
+              "FastNic": 1,
+              "PublicIP": "Static",
+              "StaticIP": "62"
+            }
+          ]
+        }
+      ]
+    }
 ```
 
 These can include Linux or Windows or Market Images
@@ -536,47 +579,92 @@ These also support Multi Nics
 Below is a sample of a Web Application Firewall Configuration
 
 ``` json
-      "WAFInfo": [
-        {
-          "WAFName": "API",
-          "WAFEnabled": false,
-          "Sku": "Standard_v2",
-          "WAFMode": "Detection",
-          "WAFSize": "Standard_Large",
-          "WAFTier": "Standard",
-          "WAFCapacity": 2,
-          "PrivateIP": "252",
-          "SSLCerts": [
-            "ContosowildcardBase64"
-          ],
-          "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-          "FQDNs": [
-            "VPX01",
-            "VPX02"
-          ],
-          "BEIPs": [
-            "124"
-          ],
-          "frontEndPorts": [
-            {
-              "Port": 80,
-              "Protocol": "http",
-              "CookieBasedAffinity": "Disabled",
-              "RequestTimeout": 600,
-              "Cert": "contosowildcardBase64",
-              "hostname": "contoso.local"
-            },
-            {
-              "Port": 443,
-              "Protocol": "https",
-              "CookieBasedAffinity": "Disabled",
-              "RequestTimeout": 600,
-              "Cert": "contosowildcardBase64",
-              "hostname": "contoso.local"
-            }
-          ]
-        }
-      ]
+    "WAFInfo": [
+      {
+        "WAFName": "API02",
+        "WAFEnabled": false,
+        // "WAFMode": "Detection",
+        // "WAFPolicyAttached": false,
+        // "WAFPolicyName": "API",
+        "WAFSize": "Standard_v2",
+        "WAFTier": "Standard_v2",
+        "WAFCapacity": 40,
+        "PrivateIP": "253",
+        "SSLCerts": [
+          "PSTHING-WildCard"
+        ],
+        "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+        "BEIPs": [
+          // "254"
+        ],
+        "pathRules": [],
+        "probes": [
+          // {
+          //   "Name": "probe01",
+          //   "Path": "/",
+          //   "Protocol": "http",
+          //   "useBE": true
+          // },
+          {
+            "Name": "probe02",
+            "Path": "/api/headers",
+            "Protocol": "https",
+            "useBE": false
+          },
+          {
+            "Name": "probe03",
+            "Path": "/api/headers",
+            "Protocol": "http",
+            "useBE": false
+          }
+        ],
+        "frontEndPorts": [
+          {
+            "Port": 80
+          },
+          {
+            "Port": 443
+          }
+        ],
+        "BackendHttp": [
+          {
+            "Port": 80,
+            "Protocol": "http",
+            "CookieBasedAffinity": "Disabled",
+            "RequestTimeout": 600,
+            "probeName": "probe03"
+          },
+          {
+            "Port": 443,
+            "Protocol": "https",
+            "CookieBasedAffinity": "Disabled",
+            "RequestTimeout": 600,
+            "probeName": "probe02"
+          }
+        ],
+        "Listeners": [
+          {
+            "Port": 443,
+            "BackendPort": "80",
+            "Protocol": "https",
+            "Cert": "PSTHING-WildCard",
+            "Domain": "psthing.com",
+            "Hostname": "API02",
+            "Interface": "Public"
+            // "pathRules": "map1"
+          },
+          {
+            "Port": 80,
+            "Protocol": "http",
+            "Domain": "psthing.com",
+            "Hostname": "API02",
+            "Interface": "Public",
+            "httpsRedirect": 1
+            // "pathRules": "map1"
+          }
+        ]
+      }
+  ]
 ```
 
 SQL vm's in a cluster example
