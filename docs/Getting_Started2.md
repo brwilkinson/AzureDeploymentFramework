@@ -60,7 +60,7 @@ Go Home [Documentation Home](./index.md)
 1. Open the following File and fill out all of the information ADF\tenants\ABC\Global-Global.json
     1. All of the info below should be filled out ahead of time
     1. Replace the 3 Characters that map to the Name of your App, in this case ABC, you can leave ABC (unless you cloned it for a different App Name).
-        ````
+        ```json
           "Global": {
             "OrgName": "BRW",
             "AppName": "AOA",
@@ -72,55 +72,88 @@ Go Home [Documentation Home](./index.md)
             },
             "PrimaryLocation": "CentralUS",
             "SecondaryLocation": "EastUS2",
-        ````
+        ```
 1. Open the following File and fill out all of the information ADF\tenants\ABC\AZC1-Global.json
     1. The file name should match your Primary Azure Region that you will deploy into
         1. Most settings stay the same, since we will be referencing the HUB
         1. Update the NetworkID to a new /20 range for this tenant/App
-            ````json
+            ```json
             {
               "Global": {
-                "HubRGName": "AZC1-BRW-HUB-RG-P0",
-                "hubVnetName": "AZC1-BRW-HUB-P0-vn",
-                "KVName": "AZC1-BRW-HUB-P0-kvVLT01",
-                "KVUrl": "https://AZC1-BRW-HUB-P0-kvVault01.vault.azure.net/",
-                "certificateUrl": "https://azc1-brw-hub-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/27a93d1b35ea4c869dae9331c6a0db2b",
-                "networkId": ["10.1.",144],               // update the networkid to use a different /20 Address
-                "RTRGName": "AZC1-BRW-HUB-RG-P0",
-                "RTName": "rtContoso-Hub"
+                "hubRG": {
+                  "name": "P0"
+                },
+                "hubVN": {
+                  "name": "vn"
+                },
+                "hubKV": {
+                  "name": "VLT01"
+                },
+                "hubAA": {
+                  "name": "OMSAutomation"
+                },
+                "networkId": [ // A different range for each region
+                  "172.16.",
+                  144
+                ],
+                "DNSServers": [ // Leave Empty to use AzureDNS
+                  "172.16.144.75",
+                  "172.16.144.76"
+                ],
+                "AALocation": "EastUS",
+                "RTName": "Hub",
+                "shutdownSchedulerTimeZone": "Eastern Standard Time",
+                "patchSchedulerTimeZone": "America/New_York"
               }
             }
-            ````
+            ```
 1. Open the following File and fill out all of the information ADF\tenants\ABC\AZE2-Global.json
     1. The file name should match your Secondary Azure Region that you will deploy into
     1. This will have a different network range etc, this is for DR
     1. Fill out the appropriate information, including the Keyvault and RG name references, since we will bootstrap those in both regions.
-        `````json
-        {
-          "Global": {
-            "HubRGName": "AZE2-BRW-HUB-RG-P0",
-            "hubVnetName": "AZE2-BRW-HUB-P0-vn",
-            "KVName": "AZE2-BRW-HUB-P0-kvVLT01",
-            "KVUrl": "https://AZE2-BRW-HUB-P0-kvVault01.vault.azure.net/",
-            "certificateUrl": "https://aze2-brw-hub-p0-kvvlt01.vault.azure.net:443/secrets/WildcardCert/287befc1773d41e7884d3ae12f7d9034",
-            "networkId": ["172.19.",142],               // update the networkid to use a different /20 Address
-            "RTRGName": "AZE2-BRW-HUB-RG-P0",
-            "RTName": "rtContoso-Hub"
+        ```json
+          {
+            "Global": {
+              "hubRG": {
+                "name": "P0"
+              },
+              "hubVN": {
+                "name": "vn"
+              },
+              "hubKV": {
+                "name": "VLT01"
+              },
+              "hubAA": {
+                "name": "OMSAutomation"
+              },
+              "networkId": [ // A different range for each region
+                "172.18.",
+                144
+              ],
+              "DNSServers": [ // Leave Empty to use AzureDNS
+                "172.18.144.75",
+                "172.18.144.76"
+              ],
+              "AALocation": "EastUS",
+              "RTName": "Hub",
+              "shutdownSchedulerTimeZone": "Eastern Standard Time",
+              "patchSchedulerTimeZone": "America/New_York"
+            }
           }
-        }
+        ```
 1. Open up the Helper Script [ADF\tenants\ABC\azure-Deploy.ps1]
     1. Ensure the correct App Name is set and we can set it to S1, our First Environment (Sandbox1)
-        ````powershell
+        ```powershell
         # F5 to load
         $ADF = Get-Item -Path "$PSScriptRoot\..\.."
         $App = 'ABC'
         $Enviro = 'S1'
-        ````
+        ```
     1. In order to Load some settings into memory, once you open that file you press F5 to load it.
     1. You should see something similar to the following after you run F5
-        ````powershell
+        ```powershell
         VERBOSE: ArtifactStagingDirectory is [D:\repos\AzureDeploymentFramework\ADF] and App is [ABC]
-        ````
+        ```
 1. Create your Service Principals (Scripts are provided for GitHub and Azure DevOps), this document assumes GitHub
     1. This will create 1 Principal per Resource Group, Per Application
         1. Lets say we create Sandbox1, Development2 and Test3 Environments in the Primary
@@ -128,16 +161,16 @@ Go Home [Documentation Home](./index.md)
     1. You can go ahead and create all of them ahead of time, if you like
     1. You can always come back add more or also re-run this, it will check if they exist
     1. Execute this following line/s (One for each region)
-        ````powershell
+        ```powershell
         # Create Service principal for Env.
         . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
         . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
-        ````
+        ```
         1. Sample Output, this does several things
             1. Create the Application/Service Principal in Azure ActiveDirectory
             1. Creates the Secret in GitHub, this is used for Deployments (GitHub Workflows/Actions)
             1. Updates the Global-Global.json file to do friendly name lookups for the ServicePrincipal to the objectid
-                ````powershell
+                ```powershell
                 Secret                : System.Security.SecureString
                 ServicePrincipalNames : {7e12ee90-b923-443a-94a0-7defeed41202, http://AzureDeploymentFramework_AZE2-BRW-ABC-RG-S1}
                 ApplicationId         : 7e12ee90-b923-443a-94a0-7defeed41202
@@ -159,7 +192,7 @@ Go Home [Documentation Home](./index.md)
                 AzureDeploymentFramework_AZC1-BRW-ABC-RG-D2 : 494b32a2-888f-42c5-8f44-688c18f7ab04
                 AzureDeploymentFramework_AZC1-BRW-ABC-RG-T3 : 5cf9039b-2c80-4e83-86cf-c3a383e067de
                 AzureDeploymentFramework_AZE2-BRW-ABC-RG-S1 : 29ff09fe-c261-46e9-9566-d4c834d1521f
-                ````
+                ```
 1. That now completes the Setup
     1. however we can now work on ensuring the correct Workflows are present
     1. we can ensure that the correct resources are setup in each Parameter file for the new environments.
@@ -168,7 +201,7 @@ Go Home [Documentation Home](./index.md)
         1. Notice below now, we have to add the Tenant Property on the "SPInfo"
         1. This setup up the RBAC/Role Assignments, since it's across tenants, you just add the HUB tenant in.
         1. Notice Contributor doesn't need that change, since it's going to assign this SP as Contributor on the current Resource Group Scope.
-        ````json
+        ```json
         "SPInfo": [
                   {
                     "Name": "AzureDeploymentFramework_AZC1-BRW-ABC-RG-S1",
@@ -225,7 +258,7 @@ Go Home [Documentation Home](./index.md)
                     ]
                   }
                 ]
-        ````
+        ```
     1. There are some other differences, such as less Network Resources deployed e.g. Gateway/Firewall/Network watcher
     1. Also there are no Private DNS zones deployed in spokes
     1. There will be a KeyVault Deployed, for the individual Application

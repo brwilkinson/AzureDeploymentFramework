@@ -33,7 +33,7 @@ Go Home [Documentation Home](./index.md)
 1. Open the following File and fill out all of the information ADF\tenants\HUB\Global-Global.json
     1. All of the info below should be filled out ahead of time
     1. Replace the 3 Characters that map to the Name of your App, in this case HUB, you can leave HUB
-        ````
+        ```json
         "Global": {
             "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5", // Optional if different from current
             "OrgName": "BRW",                       // "3-Letter-Company-Name"  e.g. This is required to ensure all public resources deployed have a unique name
@@ -46,10 +46,10 @@ Go Home [Documentation Home](./index.md)
             "vmAdminUserName": "brw",               // "Local-Admin-UserName-for-Virtual-Machines"
             "DomainName": "psthing.com",            // "Interntal Active Directory Domain"
             "DomainNameExt": "psthing.com",         // "External Public DNS Name"
-        ````
+        ```
 1. Open and review the regional File/s e.g. ADF\tenants\HUB\AZC1-Global.json
     1. The file name should match your Primary/Secondary Azure Region that you will deploy into
-        ````
+        ```json
           "Global": {
             "hubRG": {
                 "name": "P0"
@@ -71,11 +71,10 @@ Go Home [Documentation Home](./index.md)
                 "10.10.144.75",
                 "10.10.144.76"
             ],
-            "RTRGName": "ACU1-BRW-AOA-RG-P0",
             "RTName": "Hub",
             "shutdownSchedulerTimeZone": "Pacific Standard Time",
             "patchSchedulerTimeZone": "America/Los_Angeles"
-        ````
+        ```
 1. We are now ready to Deploy the initial Storage Account
     1. Make sure you are logged into Azure PowerShell
         1. First make sure you are in the correct Azure Tenant/Subscription
@@ -84,19 +83,19 @@ Go Home [Documentation Home](./index.md)
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. In order to Load some settings into memory, once you open that file you press F5 to load it.
         1. You should see something similar to the following after you run F5
-        ````powershell
+        ```powershell
         VERBOSE: ArtifactStagingDirectory is [D:\repos\AzureDeploymentFramework\ADF] and App is [HUB]
-        ````
+        ```
     1. Then after that you can create the intial Resource Group and Storage Account
     1. You will see the lines below, that you can execute (make sure you did F5 first! and are in your subscription)
-        ````powershell
+        ```powershell
         # Pre-reqs
         # Create Global Storage Account
         . ADF:\1-prereqs\1-CreateStorageAccountGlobal.ps1 -APP $App
-        ````
+        ```
         1. You wil see an output similar to below once the RG and Storage are created.
         1. This storage account is used for uploading Assets (for IaaS/VM Deployments) that you may need, such as software installs and also used for your Template Deployments.
-        ````powershell
+        ```powershell
         VERBOSE: Global RGName: AZC1-BRW-HUB-RG-G1
         
         ResourceGroupName : AZC1-BRW-HUB-RG-G1
@@ -115,18 +114,18 @@ Go Home [Documentation Home](./index.md)
         Encryption                  : Microsoft.Azure.Management.Storage.Models.Encryption
         AccessTier                  : Hot
         CreationTime                : 1/17/2021 8:51:11 PM
-        ````
+        ```
 1. In order to use Friendly Names for our Role Assignments in your configurations we need to do a 1 time export of these from your Subscription.
     1. Working in the same file [ADF\tenants\HUB\azure-Deploy.ps1]
     1. Execute this following line
-        ````powershell
+        ```powershell
         # Export all role defintions
         . ADF:\1-prereqs\4.1-getRoleDefinitionTable.ps1 -APP $App
-        ````
+        ```
     1. This process will actually update the JSON object in the following file [ADF\tenants\HUB\Global-Config.json]
         1. You can open that file and format it if you like and then save it.
         1. Once you format it you will see the Role Definition Friendly names and the associated GUIDs
-            ````json
+            ```json
             "RolesGroupsLookup": {
                 "Storage Blob Delegator": {
                     "Id": "db58b8e5-c6ad-4a2a-8342-4190687cbf4a",
@@ -137,23 +136,23 @@ Go Home [Documentation Home](./index.md)
                     "Description": "Allows for creating managed application resources."
                 },
                 ...
-            ````
+            ```
         1. If you add custom Role definitions in the future, then you should re-run this command to re-export them over the top
 1. Create your Service Principals (Scripts are provided for GitHub and Azure DevOps), this document assumes GitHub
     1. This will create 1 Principal per Resource Group, Per Application
     1. You can go ahead and create all of them ahead of time, if you like
     1. You can always come back add more or also re-run this, it will check if they exist
     1. Execute this following line/s (One for each region)
-        ````powershell
+        ```powershell
         # Create Service principal for Env.
         . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments P0,G0,G1,D2,S1
         . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
-        ````
+        ```
         1. Sample Output, this does several things
             1. Create the Application/Service Principal in Azure ActiveDirectory
             1. Creates the Secret in GitHub, this is used for Deployments (GitHub Workflows/Actions)
             1. Updates the Global-Global.json file to do friendly name lookups for the ServicePrincipal to the objectid
-            ````powershell
+            ```powershell
             Secret                : System.Security.SecureString
             ServicePrincipalNames : {55ec7612-2d3a-43b8-a5b7-4a53fd905655, http://AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0}
             ApplicationId         : 55ec7612-2d3a-43b8-a5b7-4a53fd905655
@@ -175,23 +174,23 @@ Go Home [Documentation Home](./index.md)
             AzureDeploymentFramework_AZC1-BRW-HUB-RG-G1 : a744f350-9757-4943-b42e-f96e88b42f96
             AzureDeploymentFramework_AZC1-BRW-HUB-RG-D2 : 8c1101e5-d23e-4f15-bb4d-9b2156898d8f
             AzureDeploymentFramework_AZC1-BRW-HUB-RG-S1 : 1509358e-331b-44d3-83e1-3a880832328f
-            ````
+            ```
 
 1. BootStrap the Hub Resource Group Creation and also the Keyvaults in the Primary and Secondary Region
     1. Although these helper scripts live in this directory [ADF\1-prereqs], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. Then execute the following
-        ````powershell
+        ```powershell
         # Bootstrap Hub RGs and Keyvaults
         . ADF:\1-prereqs\1-CreateHUBKeyVaults.ps1 -APP $App
-        ````
+        ```
     1. You should see the following output
-        ````powershell
+        ```powershell
         VERBOSE: Primary HUB RGName: AZC1-BRW-HUB-RG-P0
         VERBOSE: Primary KV Name: AZC1-BRW-HUB-P0-kvVLT01
         VERBOSE: Secondary HUB RGName: AZE2-BRW-HUB-RG-P0
         VERBOSE: Secondary KV Name: AZE2-BRW-HUB-P0-kvVLT01
-        ````
+        ```
     1. Following this you can manually create the following 2 Secrets
         1. localadmin, then provide the local admin password for your Virtual Machines
 
@@ -222,10 +221,10 @@ Go Home [Documentation Home](./index.md)
     1. Although these helper scripts live in this directory [ADF\1-prereqs], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. Then execute the following
-        ````powershell
+        ```powershell
         # Create Global Web Create
         . ADF:\1-prereqs\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
-        ````
+        ```
     1. The cert will be created using the password from your keyvault localadmin secret that you set earlier
     1. The DNS names used on the cert are from the Global-Global.json [CertURLs] property.
     1. This certificate will be deploy to all VM's in the Root/Trusted/My root stores
@@ -236,9 +235,9 @@ Go Home [Documentation Home](./index.md)
     1. Although these helper scripts live in this directory [ADF\1-prereqs], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. Then execute the following
-        ````powershell
+        ```powershell
         # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
         . ADF:\1-prereqs\3-Start-AzureKVSync.ps1
-        ````
+        ```
     1. The Primary and Secondary KV Name and Region Etc. comes from the Global meta data file that you updated earlier.
         1. i.e. [ADF\tenants\HUB\Global-Global.json]
