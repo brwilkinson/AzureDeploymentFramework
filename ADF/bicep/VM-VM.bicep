@@ -346,7 +346,7 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
     }
     status: !contains(AppServer.shutdown, 'enabled') || (contains(AppServer.shutdown, 'enabled') && bool(AppServer.shutdown.enabled)) ? 'Enabled' : 'Disabled'
     targetResourceId: virtualMachine.id
-    taskType: 'ComputeAppServerShutdownTask'
+    taskType: 'ComputeVmShutdownTask'
     timeZoneId: Global.shutdownSchedulerTimeZone // "Pacific Standard Time"
   }
 }
@@ -730,12 +730,12 @@ resource AppServerGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020
   }
 }
 
-resource AppServerInsights 'Microsoft.Insights/dataCollectionRuleAssociations@2019-11-01-preview' = {
-  name: '${DeploymentURI}AppServerInsights'
+resource vmInsights 'Microsoft.Insights/dataCollectionRuleAssociations@2019-11-01-preview' = {
+  name: '${DeploymentURI}vmInsights'
   scope: virtualMachine
   properties: {
     description: 'Association of data collection rule for AppServer Insights Health.'
-    dataCollectionRuleId: resourceId('Microsoft.Insights/dataCollectionRules', '${DeploymentURI}AppServerInsights')
+    dataCollectionRuleId: resourceId('Microsoft.Insights/dataCollectionRules', '${DeploymentURI}vmInsights')
   }
 }
 
