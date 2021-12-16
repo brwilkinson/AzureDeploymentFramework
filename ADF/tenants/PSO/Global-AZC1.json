@@ -12,9 +12,10 @@
     "hubAA": {
       "name": "OMSAutomation"
     },
-    "networkId": ["10.0.",144],
-    "networkId2": ["172.16.",142],
-    "RTRGName": "AZC1-BRW-HUB-RG-P0",
+    "networkId": [
+      "10.0.",
+      144
+    ],
     "RTName": "rtContoso-Hub"
   }
 }
