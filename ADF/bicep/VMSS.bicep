@@ -38,15 +38,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-@secure()
-param vmAdminPassword string
-
-@secure()
-param devOpsPat string
-
-@secure()
-param sshPublic string
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 
 // os config now shared across subscriptions
@@ -55,6 +46,29 @@ var OSType = computeGlobal.OSType
 var DataDiskInfo = computeGlobal.DataDiskInfo
 
 var AppServers = contains(DeploymentInfo, 'AppServersVMSS') ? DeploymentInfo.AppServersVMSS : []
+
+var HubRGJ = json(Global.hubRG)
+var HubKVJ = json(Global.hubKV)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
+
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: HubKVName
+  scope: resourceGroup(HubRGName)
+}
 
 var VM = [for (vm, index) in AppServers: {
   match: Global.CN == '.' || contains(Global.CN, vm.Name)
@@ -69,17 +83,6 @@ var VM = [for (vm, index) in AppServers: {
   placementProperties: vm.placementProperties
 }]
 
-module DISKLOOKUP 'y.disks.bicep' = [for (vm,index) in AppServers: if (VM[index].match) {
-  name: 'dp${Deployment}-VMSS-diskLookup${vm.Name}'
-  params: {
-    Deployment: Deployment
-    DeploymentID: DeploymentID
-    Name: vm.Name
-    DATASS: (contains(DataDiskInfo[vm.DDRole], 'DATASS') ? DataDiskInfo[vm.DDRole].DATASS : json('{"1":1}'))
-    Global: Global
-  }
-}]
-
 module VMSS 'VMSS-VM.bicep' = [for (vm,index) in AppServers: if (VM[index].match) {
   name: 'dp${Deployment}-VMSS-Deploy${vm.Name}'
   params: {
@@ -88,9 +91,10 @@ module VMSS 'VMSS-VM.bicep' = [for (vm,index) in AppServers: if (VM[index].match
     Environment: Environment
     AppServer: vm
     VM: VM[index]
+    DeploymentName: 'AppServers'
     Global: Global
-    vmAdminPassword: vmAdminPassword
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
+    vmAdminPassword: KV.getSecret('localadmin')
+    devOpsPat: KV.getSecret('devOpsPat')
+    sshPublic: KV.getSecret('sshPublic')
   }
 }]

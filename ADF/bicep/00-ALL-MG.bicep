@@ -38,15 +38,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-@secure()
-param vmAdminPassword string
-
-@secure()
-param devOpsPat string
-
-@secure()
-param sshPublic string
-
 targetScope = 'managementGroup'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -63,9 +54,6 @@ module dp_Deployment_ManagementGroups 'man-MG.bicep' = if (contains(Stage, 'MG')
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     // dp_Deployment_RG

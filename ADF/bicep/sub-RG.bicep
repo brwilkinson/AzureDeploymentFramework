@@ -39,17 +39,7 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-@secure()
-#disable-next-line no-unused-params
-param vmAdminPassword string
 
-@secure()
-#disable-next-line no-unused-params
-param devOpsPat string
-
-@secure()
-#disable-next-line no-unused-params
-param sshPublic string
 
 var enviro = '${Environment}${DeploymentID}' // D1
 var deployment = '${Prefix}-${Global.orgname}-${Global.AppName}-${enviro}' // AZE2-BRW-HUB-D1

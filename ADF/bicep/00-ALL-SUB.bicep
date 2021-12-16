@@ -37,15 +37,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-@secure()
-param vmAdminPassword string
-
-@secure()
-param devOpsPat string
-
-@secure()
-param sshPublic string
-
 targetScope = 'subscription'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -70,9 +61,6 @@ module dp_Deployment_Security 'sub-Security.bicep' = {//if (contains(Stage, 'Sec
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
 }
 
@@ -87,9 +75,6 @@ module dp_Deployment_RG 'sub-RG.bicep' = if (bool(Stage.RG) && (!('${DeploymentI
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: []
 }
@@ -105,9 +90,6 @@ module dp_Deployment_RBAC 'sub-RBAC.bicep' = if (bool(Stage.RBAC)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_RG
@@ -125,9 +107,6 @@ module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(S
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_RG
@@ -146,9 +125,6 @@ module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(S
 //     Global: Global
 //     Prefix: Prefix
 //     Stage: Stage
-//     devOpsPat: devOpsPat
-//     sshPublic: sshPublic
-//     vmAdminPassword: vmAdminPassword
 //   }
 //   dependsOn: [
 //     dp_Deployment_RG
