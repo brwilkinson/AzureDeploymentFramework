@@ -35,6 +35,17 @@ var ladCfg = computeGlobal.ladCfg
 var DataDiskInfo = computeGlobal.DataDiskInfo
 var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
 
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+
 // roles are unique per subscription leave this as runtime parameters
 var RolesGroupsLookup = json(Global.RolesGroupsLookup)
 var RolesLookup = json(Global.RolesLookup)
@@ -49,7 +60,7 @@ var IngressBrownfields = {
 }
 var enablePrivateCluster = {
   enablePrivateCluster: true
-  privateDNSZone: ((AKSInfo.privateCluster == bool('false')) ? json('null') : resourceId(Global.HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.centralus.azmk8s.io'))
+  privateDNSZone: ((AKSInfo.privateCluster == bool('false')) ? json('null') : resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.centralus.azmk8s.io'))
 }
 var aadProfile = {
   managed: true
@@ -93,7 +104,7 @@ var MSILookup = {
 }
 var aksAADAdminLookup = [for i in range(0, ((!contains(AKSInfo, 'aksAADAdminGroups')) ? 0 : length(AKSInfo.aksAADAdminGroups))): RolesLookup[AKSInfo.aksAADAdminGroups[i]]]
 
-resource AKS 'Microsoft.ContainerService/managedClusters@2020-12-01' = {
+resource AKS 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
   location: resourceGroup().location
   identity: {
@@ -114,7 +125,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2020-12-01' = {
     nodeResourceGroup: '${resourceGroup().name}-b'
     enableRBAC: AKSInfo.enableRBAC
     dnsPrefix: toLower('${Deployment}-aks${AKSInfo.Name}')
-    agentPoolProfiles: [for (agentpool,index) in AKSInfo.agentPools : {
+    agentPoolProfiles: [for (agentpool, index) in AKSInfo.agentPools: {
       name: agentpool.name
       mode: agentpool.mode
       count: agentpool.count
@@ -142,6 +153,12 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2020-12-01' = {
       adminPassword: vmAdminPassword
       licenseType: 'Windows_Server'
       enableCSIProxy: true
+    }
+    securityProfile: {
+      azureDefender: {
+        enabled: true
+        logAnalyticsWorkspaceResourceId: OMS.id
+      }
     }
     aadProfile: (AKSInfo.enableRBAC ? aadProfile : json('null'))
     apiServerAccessProfile: ((!AKSInfo.privateCluster) ? json('null') : enablePrivateCluster)

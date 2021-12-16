@@ -4,12 +4,25 @@ param storageInfo object
 param Global object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
+param Prefix string
+param Environment string
+param DeploymentID string
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var hubRG = Global.hubRGName
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+
 var storageLoggingAbstractions = [
   'blobServices'
   'fileServices'
@@ -391,7 +404,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'pr
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-SA-registerPrivateDNS-${storageInfo.nameSuffix}'
-  scope: resourceGroup(hubRG)
+  scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: storageInfo.privateLinkInfo
     providerURL: '.${environment().suffixes.storage}/' // '.core.windows.net/' 

@@ -429,6 +429,7 @@ module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrima
     DeploymentID: DeploymentID
     Prefix: Prefix
     DeploymentInfo: DeploymentInfo
+    Environment: Environment
     DNSServers: [
       DNSServers[0]
       AzureDNS
@@ -493,6 +494,7 @@ module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary)
     DeploymentID: DeploymentID
     Prefix: Prefix
     DeploymentInfo: DeploymentInfo
+    Environment: Environment
     DNSServers: [
       DNSServers[0]
     ]
@@ -554,6 +556,7 @@ module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (bool(Stage.ADSecondar
     Deployment: Deployment
     DeploymentID: DeploymentID
     DeploymentInfo: DeploymentInfo
+    Environment: Environment
     Prefix: Prefix
     DNSServers: [
       DNSServers[0]

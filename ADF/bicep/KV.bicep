@@ -58,7 +58,16 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var hubRG = Global.hubRGName
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
 var KeyVaultInfo = contains(DeploymentInfo, 'KVInfo') ? DeploymentInfo.KVInfo : []
 
@@ -88,7 +97,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultI
 
 module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
   name: 'dp${Deployment}-KV-registerPrivateDNS${kv.name}'
-  scope: resourceGroup(hubRG)
+  scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: kv.privateLinkInfo
     providerURL: '.azure.net/'

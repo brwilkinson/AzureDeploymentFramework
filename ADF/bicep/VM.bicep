@@ -64,21 +64,58 @@ var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
 
 var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
 
-var AAName = '${Prefix}${Global.OrgName}${Global.Appname}P0OMSAutomation'
-
-resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
-  name: AAName
-  scope: resourceGroup(Global.HubRGName)
-}
-
 var GlobalRGJ = json(Global.GlobalRG)
 var GlobalSAJ = json(Global.GlobalSA)
+var HubKVJ = json(Global.hubKV)
+var HubRGJ = json(Global.hubRG)
+var HubVNJ = json(Global.hubVN)
+var HubAAJ = json(Global.hubAA)
 
 var regionLookup = json(loadTextContent('./global/region.json'))
 var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
 
-var globalRGName = '${contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix}-${contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName}-${contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.Appname}-RG-${contains(GlobalRGJ, 'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}'
-var globalSAName = toLower('${contains(GlobalSAJ, 'Prefix') ? GlobalSAJ.Prefix : primaryPrefix}${contains(GlobalSAJ, 'OrgName') ? GlobalSAJ.OrgName : Global.OrgName}${contains(GlobalSAJ, 'AppName') ? GlobalSAJ.AppName : Global.Appname}${contains(GlobalSAJ, 'RG') ? GlobalSAJ.RG : contains(GlobalRGJ, 'RG') ? GlobalRGJ.RG : '${Environment}${DeploymentID}'}')
+var gh = {
+  globalRGPrefix: contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix
+  globalRGOrgName: contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName
+  globalRGAppName: contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.AppName
+  globalRGName: contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
+  globalSAPrefix: contains(GlobalSAJ, 'Prefix') ? GlobalSAJ.Prefix : primaryPrefix
+  globalSAOrgName: contains(GlobalSAJ, 'OrgName') ? GlobalSAJ.OrgName : Global.OrgName
+  globalSAAppName: contains(GlobalSAJ, 'AppName') ? GlobalSAJ.AppName : Global.AppName
+  globalSARGName: contains(GlobalSAJ, 'RG') ? GlobalSAJ.RG : contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  hubVNPrefix: contains(HubVNJ, 'Prefix') ? HubVNJ.Prefix : Prefix
+  hubVNOrgName: contains(HubVNJ, 'OrgName') ? HubVNJ.OrgName : Global.OrgName
+  hubVNAppName: contains(HubVNJ, 'AppName') ? HubVNJ.AppName : Global.AppName
+  hubVNRGName: contains(HubVNJ, 'name') ? HubVNJ.name : HubRGJ.name
+
+  hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
+
+  hubAAPrefix: contains(HubAAJ, 'Prefix') ? HubAAJ.Prefix : Prefix
+  hubAAOrgName: contains(HubAAJ, 'OrgName') ? HubAAJ.OrgName : Global.OrgName
+  hubAAAppName: contains(HubAAJ, 'AppName') ? HubAAJ.AppName : Global.AppName
+  hubAARGName: contains(HubAAJ, 'RG') ? HubAAJ.RG : HubRGJ.name
+}
+
+var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalRGJ.name}')
+var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
+var AAName = toLower('${gh.hubAAPrefix}${gh.hubAAOrgName}${gh.hubAAAppName}${gh.hubAARGName}${HubKVJ.name}')
+
+resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
+  name: AAName
+  scope: resourceGroup(HubRGName)
+}
 
 resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: globalSAName
@@ -93,6 +130,15 @@ var EnvironmentLookup = {
   P: 'PROD'
   S: 'SBX'
 }
+
+var DeploymentName = (contains(toLower(deployment().name), 'vmapp') ? 'AppServers' : replace(deployment().name, 'dp${Deployment}-', ''))
+var AppServers = DeploymentInfo.AppServers[DeploymentName]
+var DSCConfigLookup = {
+  AppServers: 'AppServers'
+  InitialDOP: 'AppServers'
+  WVDServers: 'AppServers'
+}
+
 var VMSizeLookup = {
   D: 'D'
   T: 'D'
@@ -116,46 +162,50 @@ var ConfigurationMode = {
   P: 'ApplyAndMonitor'
 }
 var DSCConfigurationModeFrequencyMins = 15
-var KVUrl = 'https://${Global.KVName}.${environment().suffixes.keyvaultDns}/'
+
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: HubKVName
+  scope: resourceGroup(HubRGName)
+}
+
+resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = {
+  name: 'WildcardCert'
+  parent: KV
+}
+
 var secrets = [
   {
     sourceVault: {
-      id: resourceId(Global.HubRGName, 'Microsoft.KeyVault/vaults', Global.KVName)
+      id: KV.id
     }
     vaultCertificates: [
       {
-        certificateUrl: Global.certificateUrl
+        certificateUrl: cert.properties.secretUriWithVersion
         certificateStore: 'My'
       }
       {
-        certificateUrl: Global.certificateUrl
+        certificateUrl: cert.properties.secretUriWithVersion
         certificateStore: 'Root'
       }
       {
-        certificateUrl: Global.certificateUrl
+        certificateUrl: cert.properties.secretUriWithVersion
         certificateStore: 'CA'
       }
     ]
   }
 ]
 
-var DeploymentName = (contains(toLower(deployment().name), 'vmapp') ? 'AppServers' : replace(deployment().name, 'dp${Deployment}-', ''))
-var AppServers = DeploymentInfo.AppServers[DeploymentName]
-var DSCConfigLookup = {
-  AppServers: 'AppServers'
-  InitialDOP: 'AppServers'
-  WVDServers: 'AppServers'
-}
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
-}
-
 var storageAccountType = ((Environment == 'P') ? 'Premium_LRS' : 'Standard_LRS')
-var saSQLBackupName = '${DeploymentURI}sasqlbackup'
 var SADiagName = '${DeploymentURI}sadiag'
 var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts/', SADiagName)
+
+var saSQLBackupName = '${DeploymentURI}sasqlbackup'
 
 var MSILookup = {
   SQL: 'Cluster'
@@ -360,7 +410,7 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = [fo
   }
 }]
 
-resource VMKVVMExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.CertMgmt)) {
+resource VMKVVMExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.CertMgmt)) {
   name: 'KVVMExtensionForWindows'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -375,14 +425,14 @@ resource VMKVVMExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions
         certificateStoreName: 'MY'
         certificateStoreLocation: 'LOCAL_MACHINE'
         observedCertificates: [
-          Global.certificateUrl
+          cert.properties.secretUriWithVersion
         ]
       }
     }
   }
 }]
 
-resource VMAADLogin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.AADLogin) && (contains(vm, 'ExcludeAADLogin') && vm.ExcludeAADLogin != 1)) {
+resource VMAADLogin 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.AADLogin) && (contains(vm, 'ExcludeAADLogin') && vm.ExcludeAADLogin != 1)) {
   name: 'AADLogin'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -394,7 +444,24 @@ resource VMAADLogin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = 
   }
 }]
 
-resource VMAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.AdminCenter) && (contains(vm, 'ExcludeAdminCenter') && vm.ExcludeAdminCenter != 1)) {
+resource AzureDefenderForServers 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.AzureDefender)) {
+  name: 'AzureDefenderForServers'
+  parent: virtualMachine[index]
+  location: resourceGroup().location
+  properties: {
+    publisher: 'Microsoft.Azure.AzureDefenderForServers'
+    type: ((OSType[vm.OSType].OS == 'Windows') ? 'MDE.Windows' : 'MDE.Linux')
+    typeHandlerVersion: '1.0'
+    autoUpgradeMinorVersion: true
+    settings: {
+      azureResourceId: virtualMachine[index].id
+      defenderForServersWorkspaceId: OMS.id
+      forceReOnboarding: false
+    }
+  }
+}]
+
+resource VMAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.AdminCenter) && (contains(vm, 'ExcludeAdminCenter') && vm.ExcludeAdminCenter != 1)) {
   name: 'AdminCenter'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -418,7 +485,7 @@ resource VMAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2019-03-01'
   }
 }]
 
-resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.DomainJoin) && !(contains(vm, 'ExcludeDomainJoin') && bool(vm.ExcludeDomainJoin))) {
+resource VMDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.DomainJoin) && !(contains(vm, 'ExcludeDomainJoin') && bool(vm.ExcludeDomainJoin))) {
   name: 'joindomain'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -731,7 +798,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRuleAssociations@2019-11-0
   }
 }]
 
-resource VMChefClient 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.chefClient)) {
+resource VMChefClient 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.chefClient)) {
   name: 'chefClient'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -752,7 +819,7 @@ resource VMChefClient 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' 
   }
 }]
 
-resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && vm.role == 'SQL' && bool(VM[index].Extensions.SqlIaasExtension)) {
+resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && vm.role == 'SQL' && bool(VM[index].Extensions.SqlIaasExtension)) {
   name: 'SqlIaasExtension'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -772,7 +839,7 @@ resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2019-0
     }
     protectedSettings: {
       PrivateKeyVaultCredentialSettings: {
-        AzureKeyVaultUrl: KVUrl
+        AzureKeyVaultUrl: KV.properties.vaultUri
         // ServicePrincipalName: Global.sqlBackupservicePrincipalName
         // ServicePrincipalSecret: Global.sqlBackupservicePrincipalSecret
         StorageUrl: reference(resourceId('Microsoft.Storage/storageAccounts', ((vm.Role == 'SQL') ? saSQLBackupName : SADiagName)), '2015-06-15').primaryEndpoints.blob
@@ -783,7 +850,7 @@ resource VMSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2019-0
   }
 }]
 
-resource VMAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && vm.role == 'SQL' && bool(VM[index].Extensions.BackupWindowsWorkloadSQL)) {
+resource VMAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && vm.role == 'SQL' && bool(VM[index].Extensions.BackupWindowsWorkloadSQL)) {
   name: 'AzureBackupWindowsWorkload'
   parent: virtualMachine[index]
   location: resourceGroup().location
@@ -799,7 +866,7 @@ resource VMAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/extensi
   }
 }]
 
-resource VMIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@2019-03-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.Antimalware)) {
+resource VMIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = [for (vm, index) in AppServers: if (VM[index].match && bool(VM[index].Extensions.Antimalware)) {
   name: 'IaaSAntimalware'
   parent: virtualMachine[index]
   location: resourceGroup().location

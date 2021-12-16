@@ -58,6 +58,24 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 // }
 // var location = Locationlookup[Prefix]
 
+
+module dp_Deployment_Security 'sub-Security.bicep' = {//if (contains(Stage, 'Security') && bool(Stage.Security) && '${DeploymentID}${Environment}' == 'G0') {
+  name: 'dp${Deployment}-Security'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+    devOpsPat: devOpsPat
+    sshPublic: sshPublic
+    vmAdminPassword: vmAdminPassword
+  }
+}
+
 module dp_Deployment_RG 'sub-RG.bicep' = if (bool(Stage.RG) && (!('${DeploymentID}${Environment}' == 'G0'))) {
   name: 'dp${Deployment}-RG'
   params: {

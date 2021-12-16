@@ -1,6 +1,8 @@
 param Deployment string
 param DeploymentURI string
 param DeploymentID string
+param Environment string
+param Prefix string
 param wafInfo object
 param Global object
 param globalRGName string
@@ -10,8 +12,31 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: HubKVName
+  scope: resourceGroup(HubRGName)
+}
+
+var HubKVJ = json(Global.hubKV)
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
+
 var WAFName = '${Deployment}-waf${wafInfo.WAFName}'
-var WAFID = resourceId('Microsoft.Network/applicationGateways',WAFName)
+var WAFID = resourceId('Microsoft.Network/applicationGateways', WAFName)
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
@@ -119,7 +144,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-06-01' = {
     sslCertificates: [for j in range(0, length(wafInfo.SSLCerts)): {
       name: wafInfo.SSLCerts[j]
       properties: {
-        keyVaultSecretId: '${reference(resourceId(Global.HubRGName, 'Microsoft.KeyVault/vaults', Global.KVNAME), '2019-09-01').vaultUri}secrets/${wafInfo.SSLCerts[j]}'
+        keyVaultSecretId: '${KV.properties.vaultUri}secrets/${wafInfo.SSLCerts[j]}'
       }
     }]
     frontendPorts: [for j in range(0, length(wafInfo.frontendPorts)): {
@@ -267,7 +292,7 @@ resource WAFDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   }
 }
 
-module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in wafInfo.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
+module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list, index) in wafInfo.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
   name: 'setdns-public-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -277,9 +302,9 @@ module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list,index) in wafInfo.Listene
   }
 }]
 
-module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list,index) in wafInfo.Listeners: if (bool(Stage.SetExternalDNS) && (list.Protocol == 'https')) {
+module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list, index) in wafInfo.Listeners: if (bool(Stage.SetExternalDNS) && (list.Protocol == 'https')) {
   name: 'setdns-private-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
-  scope: resourceGroup(subscription().subscriptionId, Global.HubRGName)
+  scope: resourceGroup(subscription().subscriptionId, HubRGName)
   params: {
     hostname: toLower('${Deployment}-${list.Hostname}')
     ipv4Address: ((list.Interface == 'Private') ? WAF.properties.frontendIPConfigurations[1].properties.privateIPAddress : PublicIP.properties.ipAddress)

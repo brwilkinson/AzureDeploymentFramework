@@ -54,6 +54,17 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
@@ -89,7 +100,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (account, index) in cosm
 
 module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (account, index) in cosmosDBInfo: if(cosmosDB[index].match && contains(account, 'privatelinkinfo')) {
   name: 'dp${Deployment}-Cosmos-registerPrivateLinkDNS-${((length(cosmosDBInfo) != 0) ? account.name : 'na')}'
-  scope: resourceGroup(Global.HubRGName)
+  scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: account.privateLinkInfo
     resourceName: '${Deployment}-cosmos-${account.Name}'

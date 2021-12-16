@@ -54,19 +54,22 @@ param sshPublic string
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
-var snWAF01Name = 'snWAF01'
-var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
 
-var hubRG = Global.hubRGName
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName =    '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
 resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
   name: '${Deployment}-ac${appConfigurationInfo.Name}'
@@ -98,7 +101,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfiguration
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(appConfigurationInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-registerPrivateDNS${appConfigurationInfo.name}'
-  scope: resourceGroup(hubRG)
+  scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: appConfigurationInfo.privateLinkInfo
     providerURL: '.io/'

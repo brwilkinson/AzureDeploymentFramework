@@ -4,11 +4,42 @@ param frontDoorInfo object
 param Global object
 param globalRGName string
 param now string = utcNow('F')
+param Prefix string
+param Environment string
+param DeploymentID string
+
+var HubKVJ = json(Global.hubKV)
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 
 var FDName = '${Deployment}-afd${frontDoorInfo.Name}'
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
+}
+
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: HubKVName
+  scope: resourceGroup(HubRGName)
+}
+
+resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = {
+  name: 'WildcardCert'
+  parent: KV
 }
 
 var DefaultFrontEnd = [
@@ -75,9 +106,9 @@ var routingRules = [for service in frontDoorInfo.services: {
       }
     }
     rulesEngine: !(contains(service, 'rulesEngine') && (contains(frontDoorInfo, 'rulesEngineDetached') && frontDoorInfo.rulesEngineDetached == 0)) ? null : /*
-    */  {
-          id: resourceId('Microsoft.Network/frontDoors/rulesEngines', FDName,  service.rulesEngine)
-        }
+    */ {
+      id: resourceId('Microsoft.Network/frontDoors/rulesEngines', FDName, service.rulesEngine)
+    }
   }
 }]
 
@@ -181,7 +212,7 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '5.4'
-    arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${resourceId(Global.HubRGName, 'Microsoft.Keyvault/vaults', Global.KVName)} -certificateUrl ${Global.certificateUrl}'
+    arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${KV.id} -certificateUrl ${cert.properties.secretUriWithVersion}'
     scriptContent: loadTextContent('../bicep/loadTextContext/setServicesCertificates.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'

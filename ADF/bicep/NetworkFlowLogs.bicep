@@ -53,8 +53,19 @@ param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-var hubDeployment = replace(Global.hubRGName, '-RG', '')
-var hubRG = Global.hubRGName
+
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var hubDeployment = replace(HubRGName, '-RG', '')
+
 var SADiagName = '${DeploymentURI}sadiag'
 var retentionPolicydays = 29
 var flowLogversion = 1
@@ -69,7 +80,7 @@ var SubnetInfo = contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetI
 // Call the module once per subnet
 module FlowLogs 'NetworkFlowLogs-FL.bicep' = [for (sn, index) in SubnetInfo : if ( contains(sn,'NSG') && bool(sn.NSG) ) {
   name: '${Deployment}-fl-${sn.Name}'
-  scope: resourceGroup(hubRG)
+  scope: resourceGroup(HubRGName)
   params: {
     NSGID : resourceId('Microsoft.Network/networkSecurityGroups', '${Deployment}-nsg${sn.Name}')
     SADIAGID: resourceId('Microsoft.Storage/storageAccounts', SADiagName)

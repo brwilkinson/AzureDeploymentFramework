@@ -118,7 +118,8 @@
         "WindowsOpenSSH": 0,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
-        "SqlIaasExtension": 0
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
       }
     },
     "DeploymentInfo": {

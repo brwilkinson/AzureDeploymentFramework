@@ -39,6 +39,7 @@
       "value": {
         "RG": 0,
         "RoleDefinition": 1,
+        "Security": 1,
         "RBAC": 1,
         "UAI": 0,
         "SP": 1,
@@ -114,7 +115,8 @@
         "AADLogin": 1,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
-        "SqlIaasExtension": 0
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
       }
     },
     "DeploymentInfo": {
@@ -147,21 +149,39 @@
             ]
           }
         ],
+        "SecurityPricingInfo": {
+          "Standard": [
+            "VirtualMachines",
+            "SqlServers",
+            "AppServices",
+            "StorageAccounts",
+            "SqlServerVirtualMachines",
+            "KeyVaults",
+            "Dns",
+            "Arm",
+            "Containers",
+            "OpenSourceRelationalDatabases"
+          ],
+          "Free": [
+            "KubernetesService",
+            "ContainerRegistry"
+          ]
+        },
         "RoleDefinitionsInfo": [
           {
             "roleName": "Automation_Account_Contributor",
             "description": "Allows access to manage Azure Automation and its resources",
-                "actions": [
-                  "Microsoft.Authorization/*/read",
-                  "Microsoft.Insights/alertRules/*",
-                  "Microsoft.Insights/metrics/read",
-                  "Microsoft.Insights/diagnosticSettings/*",
-                  "Microsoft.Resources/deployments/*",
-                  "Microsoft.Resources/subscriptions/resourceGroups/read",
-                  "Microsoft.Automation/automationAccounts/*",
-                  "Microsoft.Support/*"
-                ],
-                "notActions": []
+            "actions": [
+              "Microsoft.Authorization/*/read",
+              "Microsoft.Insights/alertRules/*",
+              "Microsoft.Insights/metrics/read",
+              "Microsoft.Insights/diagnosticSettings/*",
+              "Microsoft.Resources/deployments/*",
+              "Microsoft.Resources/subscriptions/resourceGroups/read",
+              "Microsoft.Automation/automationAccounts/*",
+              "Microsoft.Support/*"
+            ],
+            "notActions": []
           },
           {
             "RoleName": "Key_Vault_Reader",

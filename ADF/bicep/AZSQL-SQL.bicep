@@ -2,11 +2,25 @@ param Deployment string
 param DeploymentURI string
 param azSQLInfo object
 param Global object
+param Prefix string
+param Environment string
+param DeploymentID string
 
 @secure()
 param vmAdminPassword string
 
 var RolesLookup = json(Global.RolesLookup)
+
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
@@ -152,7 +166,7 @@ module SQLPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(azSQLInfo, 'priva
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(azSQLInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-SQL-registerPrivateLinkDNS-${azSQLInfo.name}'
-  scope: resourceGroup(Global.HubRGName)
+  scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: azSQLInfo.privateLinkInfo
     resourceName: '${Deployment}-azsql${azSQLInfo.Name}'

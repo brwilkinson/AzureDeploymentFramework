@@ -70,6 +70,9 @@
       DeploymentURI: DeploymentURI
       storageInfo: sa
       Global: Global
+      DeploymentID: Deployment
+      Environment: Environment
+      Prefix: Prefix
     }
     dependsOn: []
   }]
