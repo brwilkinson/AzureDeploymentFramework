@@ -293,8 +293,8 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
       adminPassword: vmAdminPassword
       customData: contains(AppServer, 'customData') ? base64(replace(AppServer.customData, '{0}', '${networkId}.')) : null
       secrets: OSType[AppServer.OSType].OS == 'Windows' ? secrets : null
-      windowsConfiguration: OSType[AppServer.OSType].OS == 'Windows' ? AppServer.windowsConfiguration : null
-      linuxConfiguration: OSType[AppServer.OSType].OS != 'Windows' ? AppServer.linuxConfiguration : null
+      windowsConfiguration: OSType[AppServer.OSType].OS == 'Windows' ? VM.windowsConfiguration : null
+      linuxConfiguration: OSType[AppServer.OSType].OS != 'Windows' ? VM.linuxConfiguration : null
     }
     storageProfile: {
       imageReference: OSType[AppServer.OSType].imageReference
@@ -560,8 +560,8 @@ resource AppServerDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01'
         // storageAccountId: saaccountidglobalsource.id
         // deployment: replace(Deployment, '-', '')
         // networkid: '${networkId}.'
-        // appInfo: (contains(AppServer, 'AppInfo') ? string(AppServer.AppInfo) : '')
-        // DataDiskInfo: string(AppServer.DataDisk)
+        // appInfo: (contains(AppServer, 'AppInfo') ? string(VM.AppInfo) : '')
+        // DataDiskInfo: string(VMs.DataDisk)
         // clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAILocal.properties.clientId
         // clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAIGlobal.properties.clientId
       }
@@ -620,8 +620,8 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' 
         storageAccountId: saaccountidglobalsource.id
         deployment: Deployment
         networkid: '${networkId}.'
-        appInfo: (contains(AppServer, 'AppInfo') ? string(AppServer.AppInfo) : '')
-        DataDiskInfo: string(AppServer.DataDisk)
+        appInfo: (contains(AppServer, 'AppInfo') ? string(VM.AppInfo) : '')
+        DataDiskInfo: string(VM.DataDisk)
         clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAILocal.properties.clientId
         clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAIGlobal.properties.clientId
       }
