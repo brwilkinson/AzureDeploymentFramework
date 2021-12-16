@@ -37,17 +37,7 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-@secure()
-#disable-next-line no-unused-params
-param vmAdminPassword string
 
-@secure()
-#disable-next-line no-unused-params
-param devOpsPat string
-
-@secure()
-#disable-next-line no-unused-params
-param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')

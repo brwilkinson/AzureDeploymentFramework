@@ -43,17 +43,7 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-@secure()
-#disable-next-line no-unused-params
-param vmAdminPassword string
 
-@secure()
-#disable-next-line no-unused-params
-param devOpsPat string
-
-@secure()
-#disable-next-line no-unused-params
-param sshPublic string
 
 targetScope = 'managementGroup'
 

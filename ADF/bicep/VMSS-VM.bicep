@@ -5,6 +5,7 @@ param AppServer object
 param VM object
 param Global object
 param deploymentTime string = utcNow()
+param DeploymentName string
 
 @secure()
 param vmAdminPassword string
@@ -23,6 +24,7 @@ var computeGlobal = json(loadTextContent('./global/Global-ConfigVM.json'))
 var OSType = computeGlobal.OSType
 var WadCfg = computeGlobal.WadCfg
 var ladCfg = computeGlobal.ladCfg
+var DataDiskInfo = computeGlobal.DataDiskInfo
 var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
 
 var GlobalRGJ = json(Global.GlobalRG)
@@ -83,7 +85,6 @@ resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' 
   scope: resourceGroup(globalRGName)
 }
 
-var DeploymentName = 'AppServers'
 var DSCConfigLookup = {
   AppServers: 'AppServers'
   InitialDOP: 'AppServers'
@@ -195,6 +196,17 @@ var loadBalancerInboundNatPools = [for (nat, index) in NATPools: {
   id: resourceId('Microsoft.Network/loadBalancers/inboundNatPools', '${Deployment}-lb${LB}', nat)
 }]
 
+module DISKLOOKUP 'y.disks.bicep' = {
+  name: 'dp${Deployment}-VMSS-diskLookup${AppServer.Name}'
+  params: {
+    Deployment: Deployment
+    DeploymentID: DeploymentID
+    Name: AppServer.Name
+    DATASS: (contains(DataDiskInfo[AppServer.DDRole], 'DATASS') ? DataDiskInfo[AppServer.DDRole].DATASS : json('{"1":1}'))
+    Global: Global
+  }
+}
+
 resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
   name: '${Deployment}-vmss${AppServer.Name}'
   location: resourceGroup().location
@@ -225,7 +237,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
     virtualMachineProfile: {
       licenseType: contains(OSType[AppServer.OSType], 'licenseType') ? OSType[AppServer.OSType].licenseType : null
       osProfile: {
-        computerNamePrefix: VM.vmHostName
+        computerNamePrefix: AppServer.vmHostName
         adminUsername: Global.vmAdminUserName
         adminPassword: vmAdminPassword
         windowsConfiguration: {
@@ -242,7 +254,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
             storageAccountType: storageAccountType
           }
         }
-        dataDisks: reference(resourceId('Microsoft.Resources/deployments', 'dp${Deployment}-VMSS-diskLookup${AppServer.Name}'), '2018-05-01').outputs.DATADisks.value
+        dataDisks: DISKLOOKUP.outputs.DATADisks
         imageReference: OSType[AppServer.OSType].imageReference
       }
       diagnosticsProfile: {
@@ -251,8 +263,8 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
           storageUri: 'https://${SADiagName}.blob.${environment().suffixes.storage}'
         }
       }
-      //   networkInterfaceConfigurations: [for (nic, index) in vm.NICs: {
-      //     id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${contains(nic,'LB') ? '-niclb' : contains(nic,'PLB') ? '-nicplb' : contains(nic,'SLB') ? '-nicslb' : '-nic'}${index == 0 ? '' : index + 1}${vm.Name}')
+      //   networkInterfaceConfigurations: [for (nic, index) in AppServer.NICs: {
+      //     id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${contains(nic,'LB') ? '-niclb' : contains(nic,'PLB') ? '-nicplb' : contains(nic,'SLB') ? '-nicslb' : '-nic'}${index == 0 ? '' : index + 1}${AppServer.Name}')
       //     properties: {
       //       primary: contains(nic, 'Primary')
       //       deleteOption: 'Delete'
@@ -465,7 +477,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
                   deployment: Deployment
                   networkid: '${networkId}.'
                   appInfo: contains(AppServer, 'AppInfo') ? string(AppServer.AppInfo) : ''
-                  DataDiskInfo: string(VM.DataDisk)
+                  DataDiskInfo: string(AppServer.DataDisk)
                   clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : reference('${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${Deployment}-uaiStorageAccountOperator', '2018-11-30').ClientId
                   clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : reference('${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${Deployment}-uaiStorageAccountFileContributor', '2018-11-30').ClientId
                 }

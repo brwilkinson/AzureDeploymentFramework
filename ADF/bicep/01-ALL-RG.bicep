@@ -37,18 +37,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-@secure()
-param vmAdminPassword string
-
-@secure()
-param devOpsPat string
-
-@secure()
-param sshPublic string
-
-@secure()
-param saKey string = newGuid()
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -62,8 +50,6 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var addressPrefixes = [
   '${networkId}.0/23'
 ]
-// var DC1PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[0]}' : Global.DNSServers[0]
-// var DC2PrivateIPAddress = contains(DeploymentInfo,'DNSServers') ? '${networkId}.${DeploymentInfo.DNSServers[1]}' : Global.DNSServers[1]
 
 var AzureDNS = '168.63.129.16'
 var DNSServerList = contains(DeploymentInfo,'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
@@ -80,9 +66,6 @@ module dp_Deployment_OMS 'OMS.bicep' = if (bool(Stage.OMS)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: []
 }
@@ -98,9 +81,6 @@ module dp_Deployment_SA 'SA.bicep' = if (bool(Stage.SA)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_OMS
@@ -118,9 +98,6 @@ module dp_Deployment_CDN 'SA.CDN.bicep' = if (bool(Stage.CDN)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_SA
@@ -138,9 +115,6 @@ module dp_Deployment_RSV 'RSV.bicep' = if (bool(Stage.RSV)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_OMS
@@ -158,9 +132,6 @@ module dp_Deployment_NATGW 'NATGW.bicep' = if (bool(Stage.NATGW)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_OMS
@@ -178,9 +149,6 @@ module dp_Deployment_NSG 'NSG.bicep' = if (bool(Stage.NSG)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_OMS
@@ -198,9 +166,6 @@ module dp_Deployment_NetworkWatcher 'NetworkWatcher.bicep' = if (bool(Stage.Netw
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_OMS
@@ -218,9 +183,6 @@ module dp_Deployment_FlowLogs 'NetworkFlowLogs.bicep' = if (bool(Stage.FlowLogs)
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_OMS
@@ -241,9 +203,6 @@ module dp_Deployment_RT 'RT.bicep' = if (bool(Stage.RT)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_OMS
@@ -262,9 +221,6 @@ module dp_Deployment_VNET 'VNET.bicep' = if (bool(Stage.VNET)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_NSG
@@ -283,9 +239,6 @@ module dp_Deployment_KV 'KV.bicep' = if (bool(Stage.KV)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -303,9 +256,6 @@ module dp_Deployment_ACR 'ACR.bicep' = if (bool(Stage.ACR)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -323,9 +273,6 @@ module dp_Deployment_BastionHost 'Bastion.bicep' = if (contains(Stage, 'BastionH
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -343,9 +290,6 @@ module dp_Deployment_DNSPrivateZone 'DNSPrivate.bicep' = if (bool(Stage.DNSPriva
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -363,9 +307,6 @@ module dp_Deployment_DNSPublicZone 'DNSPublic.bicep' = if (contains(Stage, 'DNSP
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: []
 }
@@ -392,9 +333,6 @@ module dp_Deployment_ERGW 'ERGW.bicep' = if (bool(Stage.ERGW)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -413,9 +351,6 @@ module dp_Deployment_LB 'LB.bicep' = if (bool(Stage.LB)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -454,9 +389,6 @@ module CreateADPDC 'VM.bicep' = if (contains(Stage,'CreateADPDC') && bool(Stage.
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNETDNSPublic
@@ -476,9 +408,6 @@ module ADPrimary 'VM.bicep' = if (bool(Stage.ADPrimary)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNETDNSPublic
@@ -517,9 +446,6 @@ module CreateADBDC 'VM.bicep' = if (contains(Stage,'CreateADBDC') && bool(Stage.
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNETDNSDC1
@@ -539,9 +465,6 @@ module ADSecondary 'VM.bicep' = if (bool(Stage.ADSecondary)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNETDNSDC1
@@ -589,9 +512,6 @@ module AppServers 'VM.bicep' = if (bool(Stage.VMApp)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNETDNSDC1
@@ -615,10 +535,6 @@ module ConfigSQLAO 'VM.bicep' = if (contains(Stage,'ConfigSQLAO') && bool(Stage.
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
-    saKey: saKey
   }
   dependsOn: [
     dp_Deployment_VNETDNSDC1
@@ -641,9 +557,6 @@ module VMFile 'VM.bicep' = if (bool(Stage.VMFILE)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNETDNSDC1
@@ -666,9 +579,6 @@ module AppServersLinux 'VM.bicep' = if (bool(Stage.VMAppLinux)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -691,9 +601,6 @@ module SQLServers 'VM.bicep' = if (bool(Stage.VMSQL)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNETDNSDC1
@@ -715,9 +622,6 @@ module dp_Deployment_DASHBOARD 'Dashboard.bicep' = if (bool(Stage.DASHBOARD)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: []
 }
@@ -734,9 +638,6 @@ module dp_Deployment_CosmosDB 'Cosmos.bicep' = if (bool(Stage.CosmosDB)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -754,9 +655,6 @@ module dp_Deployment_ServerFarm 'AppServicePlan.bicep' = if (bool(Stage.ServerFa
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -775,9 +673,6 @@ module dp_Deployment_WebSite 'AppServiceWebSite.bicep' = if (bool(Stage.WebSite)
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -797,9 +692,6 @@ module dp_Deployment_Function 'AppServiceFunction.bicep' = if (bool(Stage.Functi
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -819,9 +711,6 @@ module dp_Deployment_Container 'AppServiceContainer.bicep' = if (bool(Stage.WebS
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -841,9 +730,6 @@ module dp_Deployment_ACI 'ACI.bicep' = if (bool(Stage.ACI)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_OMS
@@ -861,9 +747,6 @@ module dp_Deployment_REDIS 'REDIS.bicep' = if (bool(Stage.REDIS)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -882,9 +765,6 @@ module dp_Deployment_APIM 'APIM.bicep' = if (bool(Stage.APIM)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -904,9 +784,6 @@ module dp_Deployment_FRONTDOOR 'FD.bicep' = if (bool(Stage.FRONTDOOR)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     // dp_Deployment_WAF
@@ -925,9 +802,6 @@ module dp_Deployment_SB 'SB.bicep' = if (bool(Stage.SB)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
@@ -946,9 +820,6 @@ module dp_Deployment_APPCONFIG 'AppConfig.bicep' = if (bool(Stage.APPCONFIG)) {
     Global: Global
     Prefix: Prefix
     Stage: Stage
-    devOpsPat: devOpsPat
-    sshPublic: sshPublic
-    vmAdminPassword: vmAdminPassword
   }
   dependsOn: [
     dp_Deployment_VNET
