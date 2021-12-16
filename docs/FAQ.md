@@ -6,28 +6,33 @@ Go Home [Documentation Home](./index.md)
 ### Frequently asked questions (FAQ).
 
 #### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
-<br/>
+#### <a name="ARM"></a> Why Azure Resource Manager (ARM) Bicep:
+1) Why use Bicep?
 
-#### <a name="ARM"></a> Why Azure Resource Manager (ARM/Bicep) Templates:
-1) Why not Bicep or Terraform?
+    - All Azure Resources are built on JSON schemas, these are documemented in both the **REST API's** and the **ARM/Bicep Template Docs**
 
-    - All Azure Resources are built on JSON schemas, these are documemented in both the [REST API's] and the [ARM Template Docs]
+        [REST API's](https://docs.microsoft.com/rest/api/?view=Azure)
 
-        - [REST API's](https://docs.microsoft.com/en-us/rest/api/?view=Azure)
-        - [ARM Template Docs](https://docs.microsoft.com/en-us/azure/templates/)
+        [ARM Bicep Template Docs](https://docs.microsoft.com/azure/templates/)
     
     - Azure Policy, Template Specs and Azure Blue Prints all reference the JSON schema formats.
 
-        - [Azure Policy](https://docs.microsoft.com/en-us/azure/governance/policy/)
-        - [Azure Template Specs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-specs?tabs=azure-powershell)
-        - [Azure Blueprints](https://docs.microsoft.com/en-us/azure/governance/blueprints/overview)
+        [Azure Policy](https://docs.microsoft.com/azure/governance/policy/)
+
+        [Azure Template Specs](https://docs.microsoft.com/azure/azure-resource-manager/templates/template-specs?tabs=azure-powershell)
+
+        [Azure Blueprints](https://docs.microsoft.com/azure/governance/blueprints/overview)
 
     - You can easily export your JSON code via API or Portal, which can assist in your Template build process as you onboard new Resource Types.
-        - [Exporting JSON Resource Examples](../ADF/1-prereqs/19-TestResourceHTTP.ps1)
+    
+        [Exporting JSON Resource Examples](../ADF/1-prereqs/19-TestResourceHTTP.ps1)
 
-    - Bicep Project is still in Preview. ~~Once this project become production ready, this project will likely apply Bicep where appropriate. Bicep still compiles down to ARM Templates, so they are not going away.~~ This project now fully supports Bicep for ALL templates, you can choose JSON or Bicep. Bicep us MUCH cleaner and more extensible, so at some point the ARM JSON will be archived from this project.
+        [Using insert resource in VSCode](https://github.com/Azure/bicep/pull/4945)
+        
 
-        - [Bicep Project](https://github.com/Azure/bicep/blob/main/README.md)
+    - Bicep Project is fully supported
+
+        [Bicep Project](https://github.com/Azure/bicep/blob/main/README.md)
     
     - The most compelling reason to use ARM (Bicep) Templates is that it's fast, easy and the authoring experience is really great. The VSCode Extension has support for the following
     
@@ -40,17 +45,21 @@ Go Home [Documentation Home](./index.md)
         - Orchestration
         - Parameter file support
         - Conditional deployments
-        - Rich error detection and syntax support
+        - Rich Linting, error detection and syntax support
         
         More information available here: 
-            
+
+        - [Azure Bicep Extension](https://docs.microsoft.com/azure/azure-resource-manager/bicep/install#vs-code-and-bicep-extension)
+        
+        - [Bicep Extension VSCode](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep)
+        
         - [Azure Resource Manager (ARM) Tools for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools)
 
     - ARM (Bicep) Templates provide a flexible deployment capability, where you can deploy locally, from the Cloudshell, Azure DevOps Pipelines, GitHub Workflows, Locally via az cli or az PowerShell.
     
     - ARM template deployments support Whatif capabilities
         
-        -  [ARM Template deployment what-if operations](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-deploy-what-if?tabs=azure-powershell)
+        -  [ARM Template deployment what-if operations](https://docs.microsoft.com/azure/azure-resource-manager/templates/template-deploy-what-if?tabs=azure-powershell)
 
 #### <a name="Network"></a> What Network Space should I reserve for Azure Deployment Framework
 - to do, planning to add more detail and diagrams
