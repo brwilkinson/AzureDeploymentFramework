@@ -332,7 +332,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
 }
 
 resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if (VM.match && contains(AppServer, 'shutdown')) {
-  name: 'shutdown-computeAppServer-${Deployment}-AppServer${AppServer.Name}'
+  name: 'shutdown-computevm-${Deployment}-vm${AppServer.Name}'
   location: resourceGroup().location
   properties: {
     dailyRecurrence: {
@@ -654,7 +654,7 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' 
 }
 
 resource AppServerDiags 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.IaaSDiagnostics)) {
-  name: 'AppServerDiagnostics'
+  name: 'vmDiagnostics'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
