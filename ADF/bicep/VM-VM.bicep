@@ -17,6 +17,9 @@ param sshPublic string
 
 @secure()
 param saKey string = newGuid()
+
+
+
 param deploymentTime string = utcNow()
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -236,6 +239,14 @@ module AppServerPIP 'x.publicIP.bicep' = {
   }
 }
 
+module AppServerJITNSG 'x.vmJITNSG.bicep' = {
+  name: 'dp${Deployment}-AppServer-JITNSG-${AppServer.Name}'
+  params: {
+    Deployment: Deployment
+    VM: AppServer
+  }
+}
+
 module AppServerNIC 'x.NIC.bicep' = {
   name: 'dp${Deployment}-AppServer-nicDeployLoop${AppServer.Name}'
   params: {
@@ -331,6 +342,18 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   ]
 }
 
+module AppServerJIT 'x.vmJIT.bicep' = {
+  name: 'dp${Deployment}-AppServer-JIT-${AppServer.Name}'
+  params: {
+    Deployment: Deployment
+    VM: AppServer
+    Global: Global
+  }
+  dependsOn: [
+    virtualMachine
+  ]
+}
+
 resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if (VM.match && contains(AppServer, 'shutdown')) {
   name: 'shutdown-computevm-${Deployment}-vm${AppServer.Name}'
   location: resourceGroup().location
@@ -340,7 +363,7 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
     }
     notificationSettings: {
       status: contains(AppServer.shutdown, 'notification') && bool(AppServer.shutdown.notification) ? 'Enabled' : 'Disabled'
-      emailRecipient: Global.alertRecipients[0] // currently array, needs a string with ; separation.
+      emailRecipient: replace(replace(replace(string(Global.alertRecipients),'","',';'),'["',''),'"]','') // currently no join method
       notificationLocale: 'en'
       timeInMinutes: 30
     }

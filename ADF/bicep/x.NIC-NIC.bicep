@@ -25,8 +25,16 @@ var publicIPAddress = ! contains(NIC, 'PublicIP') ? null : {
   id: resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-vm${VM.Name}-publicip${NICNumber}')
 }
 
+resource NSG 'Microsoft.Network/networkSecurityGroups@2021-05-01' existing = {
+  name: '${Deployment}-vm${VM.Name}-JITNSG'
+}
+
+var JITNSG = {
+  id: NSG.id
+}
+
 var rules = contains(NIC,'NatRules') ? NIC.NatRules : []
-var loadBalancerInboundNatRules = [for (nat,index) in  rules : {
+var loadBalancerInboundNatRules = [for (nat,index) in rules : {
   id: '${resourceGroup().id}/providers/Microsoft.Network/loadBalancers/${Deployment}-lb${(contains(NIC, 'PLB') ? NIC.PLB : 'none')}/inboundNatRules/${(contains(NIC, 'NATRules') ? nat : 'none')}'
 }]
 
@@ -48,6 +56,7 @@ resource NIC1 'Microsoft.Network/networkInterfaces@2021-02-01' = if ( !( contain
         }
       }
     ]
+    networkSecurityGroup: JITNSG
   }
 }
 
@@ -92,6 +101,7 @@ resource NICPLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(
         }
       }
     ]
+    networkSecurityGroup: JITNSG
   }
 }
 
@@ -135,6 +145,7 @@ resource NICLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(N
         }
       }
     ]
+    networkSecurityGroup: JITNSG
   }
 }
 
@@ -182,6 +193,7 @@ resource NICSLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(
         }
       }
     ]
+    networkSecurityGroup: JITNSG
   }
 }
 

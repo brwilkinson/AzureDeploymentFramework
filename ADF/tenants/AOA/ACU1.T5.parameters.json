@@ -1257,11 +1257,12 @@
             "Name": "API02",
             "AutoScale": true,
             "PredictiveScale": "Enabled",
+            "ExcludeDomainJoin": 1,
             "saname": "data",
             "Role": "API",
             "ASNAME": "API",
             "DDRole": "64GBSS",
-            "OSType": "Server2019SSIMG",
+            "OSType": "Server2022SSIMG",
             "Subnet": "MT02",
             "LB": "PLB01",
             "NATName": [
