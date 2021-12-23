@@ -6,7 +6,7 @@
 .DESCRIPTION
     Long description
 .EXAMPLE
-    PS C:\> <example usage>
+    PS C:/> <example usage>
     Explanation of what the example does
 .INPUTS
     Inputs (if any)
@@ -20,12 +20,12 @@ Function global:Start-AzDeploy
 {
     [CmdletBinding()]
     param (
-        [string] $Artifacts = (Get-Item -Path "$PSScriptRoot\.."),
+        [string] $Artifacts = (Get-Item -Path "$PSScriptRoot/.."),
         
-        [string] $DSCSourceFolder = $Artifacts + '\ext-DSC',
+        [string] $DSCSourceFolder = $Artifacts + '/ext-DSC',
 
         [alias('TF')]
-        [string] $TemplateFile = "$Artifacts\01-deploy-ALL.json",
+        [string] $TemplateFile = "$Artifacts/01-deploy-ALL.json",
         
         [parameter(mandatory)]
         [alias('DP')]
@@ -58,20 +58,20 @@ Function global:Start-AzDeploy
     $Global = @{ }
 
     # Read in the Rolegroups Lookup.
-    $RolesGroupsLookup = Get-Content -Path $Artifacts\tenants\$App\Global-Config.json | ConvertFrom-Json -Depth 10 | ForEach-Object RolesGroupsLookup
+    $RolesGroupsLookup = Get-Content -Path $Artifacts/tenants/$App/Global-Config.json | ConvertFrom-Json -Depth 10 | ForEach-Object RolesGroupsLookup
     $Global.Add('RolesGroupsLookup', ($RolesGroupsLookup | ConvertTo-Json -Compress -Depth 10))
 
     # Read in the Prefix Lookup for the Region.
-    $PrefixLookup = Get-Content $Artifacts\bicep\global\prefix.json | ConvertFrom-Json
+    $PrefixLookup = Get-Content $Artifacts/bicep/global/prefix.json | ConvertFrom-Json
     $Global.Add('PrefixLookup', ($PrefixLookup | ConvertTo-Json -Compress -Depth 10))
 
     $ResourceGroupLocation = $PrefixLookup | ForEach-Object $Prefix | ForEach-Object location
 
-    $GlobalGlobal = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-    $Regional = Get-Content -Path $Artifacts\tenants\$App\Global-$Prefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+    $GlobalGlobal = Get-Content -Path $Artifacts/tenants/$App/Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+    $Regional = Get-Content -Path $Artifacts/tenants/$App/Global-$Prefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 
     $PrimaryLocation = $GlobalGlobal.PrimaryLocation
-    $LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
+    $LocationLookup = Get-Content -Path $PSScriptRoot/../bicep/global/region.json | ConvertFrom-Json
     $PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
     $GlobalSA = $GlobalGlobal.GlobalSA
     $saglobalsuffix = $GlobalSA.namesuffix
@@ -120,7 +120,8 @@ Function global:Start-AzDeploy
         ($GlobalSA.OrgName ?? $Global.OrgName), ($GlobalSA.AppName ?? $Global.AppName), ($GlobalSA.RG ?? 'g1')).tolower()
 
     $StorageAccount = Get-AzStorageAccount | Where-Object { $_.StorageAccountName -eq $StorageAccountName }
-    $StorageContainerName = "$Prefix-$App-stageartifacts-$env:USERNAME".ToLowerInvariant()
+    $User = ((Get-AzContext | ForEach-Object account | ForEach-Object id) -split '@')[0]
+    $StorageContainerName = "$Prefix-$App-stageartifacts-$User".ToLowerInvariant()
     $TemplateURIBase = $StorageAccount.Context.BlobEndPoint + $StorageContainerName
     Write-Verbose "Storage Account is: [$StorageAccountName] and container is: [$StorageContainerName]" -Verbose
 
@@ -161,7 +162,7 @@ Function global:Start-AzDeploy
     if ( -not $FullUpload )
     {
         $Include = @(
-            "$Artifacts\ext-DSC\"
+            "$Artifacts/ext-DSC/"
         )
         # Create DSC configuration archive only for the files that changed
         git -C $DSCSourceFolder diff --diff-filter d --name-only $Include |
@@ -184,9 +185,9 @@ Function global:Start-AzDeploy
         # use -fullupload to upload ALL files
         # only look in the 3 templates directories for uploading files
         $Include = @(
-            "$Artifacts\ext-DSC\",
-            "$Artifacts\ext-CD\",
-            "$Artifacts\ext-Scripts\"
+            "$Artifacts/ext-DSC/",
+            "$Artifacts/ext-CD/",
+            "$Artifacts/ext-Scripts/"
         )
         git -C $Artifacts diff --diff-filter d --name-only $Include | ForEach-Object {
                 
@@ -247,7 +248,7 @@ Function global:Start-AzDeploy
     $OptionalParameters['Environment'] = $Deployment.substring(0, 1)
     $OptionalParameters['DeploymentID'] = $Deployment.substring(1, 1)
 
-    $TemplateParametersFile = "$Artifacts\tenants\$App\$Prefix.$Deployment.parameters.json"
+    $TemplateParametersFile = "$Artifacts/tenants/$App/$Prefix.$Deployment.parameters.json"
     Write-Warning -Message "Using parameter file: [$TemplateParametersFile]"
     $TemplateArgs.Add('TemplateParameterFile', $TemplateParametersFile)
 
