@@ -207,7 +207,7 @@ module DISKLOOKUP 'y.disks.bicep' = {
   }
 }
 
-resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
+resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-07-01' = {
   name: '${Deployment}-vmss${AppServer.Name}'
   location: resourceGroup().location
   identity: {
@@ -237,7 +237,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
     virtualMachineProfile: {
       licenseType: contains(OSType[AppServer.OSType], 'licenseType') ? OSType[AppServer.OSType].licenseType : null
       osProfile: {
-        computerNamePrefix: AppServer.vmHostName
+        computerNamePrefix: VM.vmHostName
         adminUsername: Global.vmAdminUserName
         adminPassword: vmAdminPassword
         windowsConfiguration: {
@@ -299,229 +299,388 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
           }
         }]
       }
-      extensionProfile: {
-        extensions: [
-          {
-            name: 'joindomain'
-            properties: {
-              publisher: 'Microsoft.Compute'
-              type: 'JsonADDomainExtension'
-              typeHandlerVersion: '1.3'
-              autoUpgradeMinorVersion: true
-              settings: {
-                Name: Global.ADDomainName
-                OUPath: contains(AppServer, 'OUPath') ? AppServer.OUPath : ''
-                User: '${Global.vmAdminUserName}@${Global.ADDomainName}'
-                Restart: 'true'
-                Options: 3
-              }
-              protectedSettings: {
-                Password: vmAdminPassword
-              }
-            }
-          }
-          {
-            name: 'VMDiagnostics'
-            properties: {
-              publisher: 'Microsoft.Azure.Diagnostics'
-              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'IaaSDiagnostics' : 'LinuxDiagnostic'
-              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.9' : '3.0'
-              autoUpgradeMinorVersion: true
-              settings: {
-                WadCfg: (OSType[AppServer.OSType].OS == 'Windows') ? WadCfg : null
-                ladCfg: (OSType[AppServer.OSType].OS == 'Windows') ? null : ladCfg
-                StorageAccount: saaccountiddiag
-                StorageType: 'TableAndBlob'
-              }
-              protectedSettings: {
-                storageAccountName: SADiagName
-                storageAccountKey: listKeys(saaccountiddiag, '2016-01-01').keys[0].value
-                storageAccountEndPoint: 'https://${environment().suffixes.storage}/'
-              }
-            }
-          }
-          {
-            name: 'DependencyAgent'
-            properties: {
-              publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
-              typeHandlerVersion: '9.5'
-              autoUpgradeMinorVersion: true
-            }
-          }
-          {
-            name: (OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-            properties: {
-              autoUpgradeMinorVersion: true
-              publisher: 'Microsoft.Azure.Monitor'
-              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.5'
-            }
-          }
-          // {
-          //   name: 'MonitoringAgent'
-          //   properties: {
-          //     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-          //     type: (OSType[AppServer.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
-          //     typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4'
-          //     autoUpgradeMinorVersion: true
-          //     settings: {
-          //       workspaceId: OMS.properties.customerId
-          //     }
-          //     protectedSettings: {
-          //       workspaceKey: OMS.listKeys().primarySharedKey
-          //     }
-          //   }
-          // }
-          {
-            name: (OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
-            properties: {
-              autoUpgradeMinorVersion: true
-              publisher: 'Microsoft.Azure.Monitor.VirtualMachines.GuestHealth'
-              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
-              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.0'
-            }
-          }
-          {
-            name: 'Microsoft.Powershell.DSC.Pull'
-            properties: {
-              publisher: (OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions'
-              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux'
-              typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '2.24' : '2.0'
-              autoUpgradeMinorVersion: true
-              protectedSettings: {
-                Items: {
-                  registrationKeyPrivate: AA.listKeys().keys[0].Value
-                }
-              }
-              settings: {
-                advancedOptions: {
-                  forcePullAndApply: true
-                }
-                Properties: [
-                  {
-                    Name: 'RegistrationKey'
-                    Value: {
-                      UserName: 'PLACEHOLDER_DONOTUSE'
-                      Password: 'PrivateSettingsRef:registrationKeyPrivate'
-                    }
-                    TypeName: 'System.Management.Automation.PSCredential'
-                  }
-                  {
-                    Name: 'RegistrationUrl'
-                    #disable-next-line BCP053
-                    Value: AA.properties.RegistrationUrl
-                    TypeName: 'System.String'
-                  }
-                  {
-                    Name: 'NodeConfigurationName'
-                    Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${AppServer.ROLE}_${Environment}${DeploymentID}'
-                    TypeName: 'System.String'
-                  }
-                  {
-                    Name: 'ConfigurationMode'
-                    Value: ConfigurationMode[Environment]
-                    TypeName: 'System.String'
-                  }
-                  {
-                    Name: 'RebootNodeIfNeeded'
-                    Value: RebootNodeLookup[Environment]
-                    TypeName: 'System.Boolean'
-                  }
-                  {
-                    Name: 'ConfigurationModeFrequencyMins'
-                    Value: DSCConfigurationModeFrequencyMins
-                    TypeName: 'System.Int32'
-                  }
-                  {
-                    Name: 'RefreshFrequencyMins'
-                    Value: 30
-                    TypeName: 'System.Int32'
-                  }
-                  {
-                    Name: 'ActionAfterReboot'
-                    Value: 'ContinueConfiguration'
-                    TypeName: 'System.String'
-                  }
-                  {
-                    Name: 'AllowModuleOverwrite'
-                    Value: true
-                    TypeName: 'System.Boolean'
-                  }
-                ]
-              }
-            }
-          }
-          {
-            name: 'Microsoft.Powershell.DSC'
-            properties: {
-              provisionAfterExtensions: [
-                'joindomain'
-              ]
-              publisher: 'Microsoft.Powershell'
-              type: 'DSC'
-              typeHandlerVersion: '2.24'
-              autoUpgradeMinorVersion: true
-              forceUpdateTag: deploymentTime
-              settings: {
-                wmfVersion: 'latest'
-                configuration: {
-                  url: '${Global._artifactsLocation}/ext-DSC/DSC-${(contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'))}.zip'
-                  script: 'DSC-${(contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'))}.ps1'
-                  function: contains(AppServer, 'DSConfig') ? AppServer.DSConfig : contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'
-                }
-                configurationArguments: {
-                  DomainName: Global.ADDomainName
-                  Thumbprint: Global.certificateThumbprint
-                  storageAccountId: saaccountidglobalsource.id
-                  deployment: Deployment
-                  networkid: '${networkId}.'
-                  appInfo: contains(AppServer, 'AppInfo') ? string(AppServer.AppInfo) : ''
-                  DataDiskInfo: string(AppServer.DataDisk)
-                  clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : reference('${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${Deployment}-uaiStorageAccountOperator', '2018-11-30').ClientId
-                  clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : reference('${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${Deployment}-uaiStorageAccountFileContributor', '2018-11-30').ClientId
-                }
-                configurationData: {
-                  url: '${Global._artifactsLocation}/ext-CD/${AppServer.Role}-ConfigurationData.psd1'
-                }
-              }
-              protectedSettings: {
-                configurationArguments: {
-                  AdminCreds: {
-                    UserName: Global.vmAdminUserName
-                    Password: vmAdminPassword
-                  }
-                  sshPublic: {
-                    UserName: 'ssh'
-                    Password: sshPublic
-                  }
-                  devOpsPat: {
-                    UserName: 'pat'
-                    Password: devOpsPat
-                  }
-                }
-                configurationUrlSasToken: Global._artifactsLocationSasToken
-                configurationDataUrlSasToken: Global._artifactsLocationSasToken
-              }
-            }
-          }
-          {
-            name: 'HealthExtension'
-            properties: {
-              publisher: 'Microsoft.ManagedServices'
-              type: (OSType[AppServer.OSType].OS == 'Windows') ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux'
-              autoUpgradeMinorVersion: true
-              typeHandlerVersion: '1.0'
-              settings: AppServer.Health
-            }
-          }
-        ]
-      }
+      // extensionProfile: {
+      // extensions: [
+      //   {
+      //     name: 'joindomain'
+      //     properties: {
+      //       publisher: 'Microsoft.Compute'
+      //       type: 'JsonADDomainExtension'
+      //       typeHandlerVersion: '1.3'
+      //       autoUpgradeMinorVersion: true
+      //       settings: {
+      //         Name: Global.ADDomainName
+      //         OUPath: contains(AppServer, 'OUPath') ? AppServer.OUPath : ''
+      //         User: '${Global.vmAdminUserName}@${Global.ADDomainName}'
+      //         Restart: 'true'
+      //         Options: 3
+      //       }
+      //       protectedSettings: {
+      //         Password: vmAdminPassword
+      //       }
+      //     }
+      //   }
+      //   {
+      //     name: 'VMDiagnostics'
+      //     properties: {
+      //       publisher: 'Microsoft.Azure.Diagnostics'
+      //       type: (OSType[AppServer.OSType].OS == 'Windows') ? 'IaaSDiagnostics' : 'LinuxDiagnostic'
+      //       typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.9' : '3.0'
+      //       autoUpgradeMinorVersion: true
+      //       settings: {
+      //         WadCfg: (OSType[AppServer.OSType].OS == 'Windows') ? WadCfg : null
+      //         ladCfg: (OSType[AppServer.OSType].OS == 'Windows') ? null : ladCfg
+      //         StorageAccount: saaccountiddiag
+      //         StorageType: 'TableAndBlob'
+      //       }
+      //       protectedSettings: {
+      //         storageAccountName: SADiagName
+      //         storageAccountKey: listKeys(saaccountiddiag, '2016-01-01').keys[0].value
+      //         storageAccountEndPoint: 'https://${environment().suffixes.storage}/'
+      //       }
+      //     }
+      //   }
+      //   {
+      //     name: 'DependencyAgent'
+      //     properties: {
+      //       publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+      //       type: (OSType[AppServer.OSType].OS == 'Windows') ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
+      //       typeHandlerVersion: '9.5'
+      //       autoUpgradeMinorVersion: true
+      //     }
+      //   }
+      //   {
+      //     name: (OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
+      //     properties: {
+      //       autoUpgradeMinorVersion: true
+      //       publisher: 'Microsoft.Azure.Monitor'
+      //       type: (OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
+      //       typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.5'
+      //     }
+      //   }
+      //   // {
+      //   //   name: 'MonitoringAgent'
+      //   //   properties: {
+      //   //     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+      //   //     type: (OSType[AppServer.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
+      //   //     typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4'
+      //   //     autoUpgradeMinorVersion: true
+      //   //     settings: {
+      //   //       workspaceId: OMS.properties.customerId
+      //   //     }
+      //   //     protectedSettings: {
+      //   //       workspaceKey: OMS.listKeys().primarySharedKey
+      //   //     }
+      //   //   }
+      //   // }
+      //   {
+      //     name: (OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
+      //     properties: {
+      //       autoUpgradeMinorVersion: true
+      //       publisher: 'Microsoft.Azure.Monitor.VirtualMachines.GuestHealth'
+      //       type: (OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
+      //       typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.0'
+      //     }
+      //   }
+      //   {
+      //     name: 'Microsoft.Powershell.DSC.Pull'
+      //     properties: {
+      //       publisher: (OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions'
+      //       type: (OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux'
+      //       typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows') ? '2.24' : '2.0'
+      //       autoUpgradeMinorVersion: true
+      //       protectedSettings: {
+      //         Items: {
+      //           registrationKeyPrivate: AA.listKeys().keys[0].Value
+      //         }
+      //       }
+      //       settings: {
+      //         advancedOptions: {
+      //           forcePullAndApply: true
+      //         }
+      //         Properties: [
+      //           {
+      //             Name: 'RegistrationKey'
+      //             Value: {
+      //               UserName: 'PLACEHOLDER_DONOTUSE'
+      //               Password: 'PrivateSettingsRef:registrationKeyPrivate'
+      //             }
+      //             TypeName: 'System.Management.Automation.PSCredential'
+      //           }
+      //           {
+      //             Name: 'RegistrationUrl'
+      //             #disable-next-line BCP053
+      //             Value: AA.properties.RegistrationUrl
+      //             TypeName: 'System.String'
+      //           }
+      //           {
+      //             Name: 'NodeConfigurationName'
+      //             Value: '${(contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers')}.${Global.OrgName}_${Global.Appname}_${AppServer.ROLE}_${Environment}${DeploymentID}'
+      //             TypeName: 'System.String'
+      //           }
+      //           {
+      //             Name: 'ConfigurationMode'
+      //             Value: ConfigurationMode[Environment]
+      //             TypeName: 'System.String'
+      //           }
+      //           {
+      //             Name: 'RebootNodeIfNeeded'
+      //             Value: RebootNodeLookup[Environment]
+      //             TypeName: 'System.Boolean'
+      //           }
+      //           {
+      //             Name: 'ConfigurationModeFrequencyMins'
+      //             Value: DSCConfigurationModeFrequencyMins
+      //             TypeName: 'System.Int32'
+      //           }
+      //           {
+      //             Name: 'RefreshFrequencyMins'
+      //             Value: 30
+      //             TypeName: 'System.Int32'
+      //           }
+      //           {
+      //             Name: 'ActionAfterReboot'
+      //             Value: 'ContinueConfiguration'
+      //             TypeName: 'System.String'
+      //           }
+      //           {
+      //             Name: 'AllowModuleOverwrite'
+      //             Value: true
+      //             TypeName: 'System.Boolean'
+      //           }
+      //         ]
+      //       }
+      //     }
+      //   }
+      //   {
+      //     name: 'Microsoft.Powershell.DSC'
+      //     properties: {
+      //       provisionAfterExtensions: [
+      //         'joindomain'
+      //       ]
+      //       publisher: 'Microsoft.Powershell'
+      //       type: 'DSC'
+      //       typeHandlerVersion: '2.24'
+      //       autoUpgradeMinorVersion: true
+      //       forceUpdateTag: deploymentTime
+      //       settings: {
+      //         wmfVersion: 'latest'
+      //         configuration: {
+      //           url: '${Global._artifactsLocation}/ext-DSC/DSC-${(contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'))}.zip'
+      //           script: 'DSC-${(contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'))}.ps1'
+      //           function: contains(AppServer, 'DSConfig') ? AppServer.DSConfig : contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : 'AppServers'
+      //         }
+      //         configurationArguments: {
+      //           DomainName: Global.ADDomainName
+      //           Thumbprint: Global.certificateThumbprint
+      //           storageAccountId: saaccountidglobalsource.id
+      //           deployment: Deployment
+      //           networkid: '${networkId}.'
+      //           appInfo: contains(AppServer, 'AppInfo') ? string(AppServer.AppInfo) : ''
+      //           DataDiskInfo: string(AppServer.DataDisk)
+      //           clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : reference('${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${Deployment}-uaiStorageAccountOperator', '2018-11-30').ClientId
+      //           clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : reference('${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${Deployment}-uaiStorageAccountFileContributor', '2018-11-30').ClientId
+      //         }
+      //         configurationData: {
+      //           url: '${Global._artifactsLocation}/ext-CD/${AppServer.Role}-ConfigurationData.psd1'
+      //         }
+      //       }
+      //       protectedSettings: {
+      //         configurationArguments: {
+      //           AdminCreds: {
+      //             UserName: Global.vmAdminUserName
+      //             Password: vmAdminPassword
+      //           }
+      //           sshPublic: {
+      //             UserName: 'ssh'
+      //             Password: sshPublic
+      //           }
+      //           devOpsPat: {
+      //             UserName: 'pat'
+      //             Password: devOpsPat
+      //           }
+      //         }
+      //         configurationUrlSasToken: Global._artifactsLocationSasToken
+      //         configurationDataUrlSasToken: Global._artifactsLocationSasToken
+      //       }
+      //     }
+      //   }
+      //   {
+      //     name: 'HealthExtension'
+      //     properties: {
+      //       publisher: 'Microsoft.ManagedServices'
+      //       type: (OSType[AppServer.OSType].OS == 'Windows') ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux'
+      //       autoUpgradeMinorVersion: true
+      //       typeHandlerVersion: '1.0'
+      //       settings: AppServer.Health
+      //     }
+      //   }
+      // ]
+      // }
     }
   }
 }
 
-resource VMSSAutoscale 'Microsoft.Insights/autoscalesettings@2015-04-01' = {
+//     name: 'joindomain'
+//     name: 'VMDiagnostics'
+//     name: 'DependencyAgent'
+//   //   name: 'MonitoringAgent'
+//     name: 'Microsoft.Powershell.DSC.Pull'
+//     name: 'Microsoft.Powershell.DSC'
+//     name: 'HealthExtension'
+
+// resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.CertMgmt)) {
+//   name: 'KVAppServerExtensionForWindows'
+//   parent: VMSS
+//   properties: {
+//     publisher: 'Microsoft.Azure.KeyVault.Edp'
+//     type: 'KeyVaultForWindows'
+//     typeHandlerVersion: '0.0'
+//     autoUpgradeMinorVersion: true
+//     settings: {
+//       secretsManagementSettings: {
+//         pollingIntervalInS: 3600
+//         certificateStoreName: 'MY'
+//         certificateStoreLocation: 'LOCAL_MACHINE'
+//         observedCertificates: [
+//           cert.properties.secretUriWithVersion
+//         ]
+//       }
+//     }
+//   }
+// }
+
+// resource AzureDefenderForServers 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.AzureDefender)) {
+//   name: 'AzureDefenderForServers'
+//   parent: VMSS
+//   properties: {
+//     publisher: 'Microsoft.Azure.AzureDefenderForServers'
+//     type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'MDE.Windows' : 'MDE.Linux')
+//     typeHandlerVersion: '1.0'
+//     autoUpgradeMinorVersion: true
+//     settings: {
+//       azureResourceId: VMSS.id
+//       defenderForServersWorkspaceId: OMS.id
+//       forceReOnboarding: false
+//     }
+//   }
+// }
+
+// resource AppServerDomainJoin 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.DomainJoin) && !(contains(AppServer, 'ExcludeDomainJoin') && bool(AppServer.ExcludeDomainJoin))) {
+//   name: 'joindomain'
+//   parent: VMSS
+//   properties: {
+//     publisher: 'Microsoft.Compute'
+//     type: 'JsonADDomainExtension'
+//     typeHandlerVersion: '1.3'
+//     autoUpgradeMinorVersion: true
+//     settings: {
+//       Name: Global.ADDomainName
+//       OUPath: (contains(AppServer, 'OUPath') ? AppServer.OUPath : '')
+//       User: '${Global.vmAdminUserName}@${Global.ADDomainName}'
+//       Restart: 'true'
+//       Options: 3
+//     }
+//     protectedSettings: {
+//       Password: vmAdminPassword
+//     }
+//   }
+// }
+
+resource AppServerDiags 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.IaaSDiagnostics)) {
+  name: 'vmDiagnostics'
+  parent: VMSS
+  properties: {
+    publisher: 'Microsoft.Azure.Diagnostics'
+    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'IaaSDiagnostics' : 'LinuxDiagnostic')
+    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.9' : '3.0')
+    autoUpgradeMinorVersion: true
+    settings: {
+      WadCfg: ((OSType[AppServer.OSType].OS == 'Windows') ? WadCfg : null)
+      ladCfg: ((OSType[AppServer.OSType].OS == 'Windows') ? null : ladCfg)
+      StorageAccount: saaccountiddiag
+      StorageType: 'TableAndBlob'
+    }
+    protectedSettings: {
+      storageAccountName: saaccountiddiag
+      storageAccountKey: listKeys(saaccountiddiag, '2016-01-01').keys[0].value
+      storageAccountEndPoint: 'https://${environment().suffixes.storage}/'
+    }
+  }
+  dependsOn: []
+}
+
+resource AppServerDependencyAgent 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.DependencyAgent)) {
+  name: 'DependencyAgent'
+  parent: VMSS
+  properties: {
+    publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'DependencyAgentWindows' : 'DependencyAgentLinux')
+    typeHandlerVersion: '9.5'
+    autoUpgradeMinorVersion: true
+  }
+  dependsOn: [
+    AppServerDiags
+  ]
+}
+
+resource AppServerGuestHealth 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.GuestHealthAgent)) {
+  name: '${((OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')}'
+  parent: VMSS
+  properties: {
+    autoUpgradeMinorVersion: true
+    publisher: 'Microsoft.Azure.Monitor.VirtualMachines.GuestHealth'
+    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
+    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.0')
+  }
+  dependsOn: [
+    AppServerDependencyAgent
+  ]
+}
+
+resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.MonitoringAgent)) {
+  name: 'MonitoringAgent'
+  parent: VMSS
+  properties: {
+    publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux')
+    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4')
+    autoUpgradeMinorVersion: true
+    settings: {
+      workspaceId: OMS.properties.customerId
+    }
+    protectedSettings: {
+      workspaceKey: OMS.listKeys().primarySharedKey
+    }
+  }
+  dependsOn: [
+    AppServerGuestHealth
+  ]
+}
+
+resource AppServerAzureMonitor 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.AzureMonitorAgent)) {
+  name: '${((OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')}'
+  parent: VMSS
+  properties: {
+    autoUpgradeMinorVersion: true
+    publisher: 'Microsoft.Azure.Monitor'
+    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
+    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.5')
+  }
+  dependsOn: [
+    AppServerMonitoringAgent
+  ]
+}
+
+// resource vmInsights 'Microsoft.Insights/dataCollectionRuleAssociations@2021-04-01' = {
+//   name: '${DeploymentURI}vmInsights'
+//   properties: {
+//     description: 'Association of data collection rule for AppServer Insights Health.'
+//     dataCollectionRuleId: resourceId('Microsoft.Insights/dataCollectionRules', '${DeploymentURI}vmInsights')
+//   }
+// }
+
+resource VMSSAutoscale 'Microsoft.Insights/autoscalesettings@2021-05-01-preview' = {
   name: '${Deployment}-ss${AppServer.Name}-Autoscale'
   location: 'centralus'
   properties: {
@@ -529,6 +688,7 @@ resource VMSSAutoscale 'Microsoft.Insights/autoscalesettings@2015-04-01' = {
     enabled: AppServer.AutoScale
     predictiveAutoscalePolicy: {
       scaleMode: AppServer.PredictiveScale
+      // scaleLookAheadTime:
     }
     notifications: []
     targetResourceLocation: 'centralus'

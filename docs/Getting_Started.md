@@ -42,7 +42,7 @@ Go Home [Documentation Home](./index.md)
             "AppName": "HUB",                       // "3-Letter-App-Name" e.g. in this project, we call this the tenant name.
             "PrimaryLocation": "CentralUS",         // "CentralUS" e.g. partner region to East US 2
             "SecondaryLocation": "EastUS2",         // "EastUS2" e.g. partner region to Central US
-            "PublicIPAddressforRemoteAccess": "73.157.100.227/32",      // This IP will be used on NSG's if you have a Public IP
+            "IPAddressforRemoteAccess": "73.157.100.227/32",      // This IP will be used on NSG's if you have a Public IP
             "vmAdminUserName": "brw",               // "Local-Admin-UserName-for-Virtual-Machines"
             "DomainName": "psthing.com",            // "Interntal Active Directory Domain"
             "DomainNameExt": "psthing.com",         // "External Public DNS Name"
