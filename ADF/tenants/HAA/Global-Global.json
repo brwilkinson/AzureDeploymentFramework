@@ -13,7 +13,7 @@
     "PrimaryPrefix": "ACU1",
     "SecondaryLocation": "EastUS2",
     "SecondaryPrefix": "AEU2",
-    "PublicIPAddressforRemoteAccess": [
+    "IPAddressforRemoteAccess": [
       "73.157.100.227/32",
       "157.100.170.101/32"
     ],

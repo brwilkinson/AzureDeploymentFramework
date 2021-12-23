@@ -11,7 +11,7 @@
     },
     "PrimaryLocation": "CentralUS",
     "SecondaryLocation": "EastUS2",
-    "PublicIPAddressforRemoteAccess": [
+    "IPAddressforRemoteAccess": [
       "73.157.100.227/32",
       "157.100.170.101/32"
     ],

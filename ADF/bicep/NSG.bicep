@@ -229,29 +229,30 @@ var NSGDefault = {
         direction: 'Inbound'
       }
     }
-    {
-      name: 'ALL_JMP_IN_Allow_RDP_SSH'
-      properties: {
-        protocol: '*'
-        sourcePortRange: '*'
-        destinationPortRanges: [
-          '3389'
-          '22'
-        ]
-        sourceAddressPrefixes: contains(Global, 'PublicIPAddressforRemoteAccess') ? Global.PublicIPAddressforRemoteAccess : []
-        destinationAddressPrefix: '*'
-        access: 'Allow'
-        priority: 1130
-        direction: 'Inbound'
-      }
-    }
+    // Move to bastion JIT rule
+    // {
+    //   name: 'ALL_JMP_IN_Allow_RDP_SSH'
+    //   properties: {
+    //     protocol: '*'
+    //     sourcePortRange: '*'
+    //     destinationPortRanges: [
+    //       '3389'
+    //       '22'
+    //     ]
+    //     sourceAddressPrefixes: contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+    //     destinationAddressPrefix: '*'
+    //     access: 'Allow'
+    //     priority: 1130
+    //     direction: 'Inbound'
+    //   }
+    // }
     {
       name: 'ALL_JMP_IN_Allow_WEB01'
       properties: {
         protocol: '*'
         sourcePortRange: '*'
         destinationPortRange: '8080'
-        sourceAddressPrefixes: contains(Global, 'PublicIPAddressforRemoteAccess') ? Global.PublicIPAddressforRemoteAccess : []
+        sourceAddressPrefixes: contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
         destinationAddressPrefix: '*'
         access: 'Allow'
         priority: 1140
