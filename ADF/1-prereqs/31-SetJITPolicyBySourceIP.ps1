@@ -20,7 +20,7 @@ function Set-JITAccessPolicy
         $VMName = 'JMP02',
         [parameter(ValueFromPipeline)]
         $RGName = 'ACU1-BRW-AOA-RG-D2',
-        $SourceIP = '192.127.0.2',
+        $SourceIPs = @('192.127.0.2'),
         $JitPolicyName = 'Standard_JIT_Access'
     )
     process
@@ -43,28 +43,28 @@ function Set-JITAccessPolicy
                         id    = $VM.ID
                         ports = @(
                             @{
-                                number                     = 3389
-                                protocol                   = 'TCP'
-                                AllowedSourceAddressPrefix = $SourceIP
-                                maxRequestAccessDuration   = 'PT3H'
+                                number                       = 3389
+                                protocol                     = 'TCP'
+                                AllowedSourceAddressPrefixes = $SourceIPs
+                                maxRequestAccessDuration     = 'PT3H'
                             },
                             @{
-                                number                     = 22
-                                protocol                   = 'TCP'
-                                AllowedSourceAddressPrefix = $SourceIP
-                                maxRequestAccessDuration   = 'PT3H'
+                                number                       = 22
+                                protocol                     = 'TCP'
+                                AllowedSourceAddressPrefixes = $SourceIPs
+                                maxRequestAccessDuration     = 'PT3H'
                             },
                             @{
-                                number                     = 5985
-                                protocol                   = 'TCP'
-                                AllowedSourceAddressPrefix = $SourceIP
-                                maxRequestAccessDuration   = 'PT3H'
+                                number                       = 5985
+                                protocol                     = 'TCP'
+                                AllowedSourceAddressPrefixes = $SourceIPs
+                                maxRequestAccessDuration     = 'PT3H'
                             },
                             @{
-                                number                     = 5986
-                                protocol                   = 'TCP'
-                                AllowedSourceAddressPrefix = $SourceIP
-                                maxRequestAccessDuration   = 'PT3H'
+                                number                       = 5986
+                                protocol                     = 'TCP'
+                                AllowedSourceAddressPrefixes = $SourceIPs
+                                maxRequestAccessDuration     = 'PT3H'
                             }
                         )
                     }
