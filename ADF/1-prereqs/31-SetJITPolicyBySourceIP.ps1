@@ -17,11 +17,13 @@ function Set-JITAccessPolicy
 {
     param (
         [parameter(ValueFromPipeline)]
-        $VMName = 'JMP02',
+        $VMName = '.',
         [parameter(ValueFromPipeline)]
         $RGName = 'ACU1-BRW-AOA-RG-D2',
-        $SourceIPs = @('192.127.0.2'),
-        $JitPolicyName = 'Standard_JIT_Access'
+        [System.Collections.Generic.List[System.String]]$SourceIPs = @(
+            '192.127.0.2'
+        ), 
+        $JitPolicyName = 'JIT_Standard'
     )
     process
     {
