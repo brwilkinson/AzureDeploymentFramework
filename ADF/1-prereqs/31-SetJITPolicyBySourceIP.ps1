@@ -11,6 +11,13 @@
     Output (if any)
 .NOTES
     https://docs.microsoft.com/en-us/rest/api/securitycenter/jit-network-access-policies/create-or-update
+.NOTES
+    Enable with Bicep instead of Powershell
+    
+    ADF\bicep\x.vmJIT.bicep
+    ADF\bicep\x.vmJITNSG.bicep
+
+    Preference is to create dedicated NSG per VM on the NIC, then create dedicated JIT policy for the VM on that NSG.
 #>
 
 function Set-JITAccessPolicy
