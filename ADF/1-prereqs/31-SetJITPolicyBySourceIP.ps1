@@ -1,3 +1,5 @@
+#requires -Modules Az.Security
+
 <#
 .SYNOPSIS
     Set-JITAccessPolicy
