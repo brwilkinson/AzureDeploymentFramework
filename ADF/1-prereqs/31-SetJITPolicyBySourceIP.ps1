@@ -1,3 +1,5 @@
+#requires -Modules Az.Security
+
 <#
 .SYNOPSIS
     Set-JITAccessPolicy
@@ -29,7 +31,7 @@ function Set-JITAccessPolicy
         $RGName = 'ACU1-BRW-AOA-RG-D2',
         [System.Collections.Generic.List[System.String]]$SourceIPs = @(
             '192.127.0.2'
-        ), 
+        ),
         $JitPolicyName = 'JIT_Standard'
     )
     process
