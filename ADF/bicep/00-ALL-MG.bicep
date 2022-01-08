@@ -1,8 +1,9 @@
 @allowed([
+  'AEU1'
   'AEU2'
   'ACU1'
+  'AWU1'
   'AWU2'
-  'AEU1'
   'AWCU'
 ])
 param Prefix string

@@ -1,12 +1,5 @@
 
-@allowed([
-  'AZE2'
-  'AZC1'
-  'AEU2'
-  'ACU1'
-  'AWCU'
-])
-param Prefix string = 'ACU1'
+param Prefix string
 
 @allowed([
   'I'
@@ -69,10 +62,15 @@ module PublicIP 'x.publicIP.bicep' = if(contains(bst,'name')) {
   }
 }
 
-resource Bastion 'Microsoft.Network/bastionHosts@2021-02-01' = if(contains(bst,'name')) {
+resource Bastion 'Microsoft.Network/bastionHosts@2021-05-01' = if(contains(bst,'name')) {
   name: '${Deployment}-bst${bst.name}'
   location: resourceGroup().location
+  sku: {
+    name: contains(bst,'skuName') ? bst.skuName : 'Basic'
+  }
   properties: {
+    enableTunneling: contains(bst,'enableTunneling') ? bool(bst.enableTunneling) : false
+    scaleUnits: contains(bst,'scaleUnits') ? bst.scaleUnits : 2
     dnsName: toLower('${Deployment}-${bst.name}.bastion.azure.com')
     ipConfigurations: [
       {

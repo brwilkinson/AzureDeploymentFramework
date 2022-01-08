@@ -1,11 +1,4 @@
-@allowed([
-  'AZE2'
-  'AZC1'
-  'AEU2'
-  'ACU1'
-  'AWCU'
-])
-param Prefix string = 'ACU1'
+param Prefix string
 
 @allowed([
   'I'
@@ -151,3 +144,4 @@ module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSit
     website[index]
   ]
 }]
+

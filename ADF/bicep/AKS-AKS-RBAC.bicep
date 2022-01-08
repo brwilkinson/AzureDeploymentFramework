@@ -1,5 +1,7 @@
-param Deployment string
-param AKSInfo object
+param Deployment string = 'ACU1-BRW-AOA-T5'
+param AKSInfo object = {
+  name: '01'
+}
 
 resource AKS 'Microsoft.ContainerService/managedClusters@2020-12-01' existing = {
   name: '${Deployment}-aks${AKSInfo.Name}'

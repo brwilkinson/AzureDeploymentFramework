@@ -82,7 +82,7 @@ Compare-Object -ReferenceObject $current -DifferenceObject $update -Property Nam
 
 #> no new cmdlets in preview module
 
-Get-AzAksCluster -ResourceGroupName ACU1-BRW-AOA-RG-S1
+Get-AzAksCluster -ResourceGroupName ACU1-BRW-AOA-RG-T5
 
 az aks --help | clip 
 
@@ -199,3 +199,9 @@ AKS-IngressApplicationGatewayAddon microsoft.containerservice Registered
 #>
 
 help Import-AzAksCredential
+
+Get-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-AzureDefender
+
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-AzureDefender
+
+Register-AzResourceProvider -ProviderNamespace microsoft.containerservice

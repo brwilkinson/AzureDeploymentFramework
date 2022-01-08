@@ -44,7 +44,7 @@ var azureFilesIdentityBasedAuthentication = {
 var fileShares = contains(storageInfo, 'fileShares') ? storageInfo.fileShares : []
 var containers = contains(storageInfo, 'containers') ? storageInfo.containers : []
 
-resource SA 'Microsoft.Storage/storageAccounts@2021-02-01' = {
+resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
   location: resourceGroup().location
   sku: {
@@ -57,6 +57,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-02-01' = {
     azureFilesIdentityBasedAuthentication: ((contains(storageInfo, 'ADDS') && bool(storageInfo.ADDS)) ? azureFilesIdentityBasedAuthentication : null)
     largeFileSharesState: (contains(storageInfo, 'largeFileSharesState') ? storageInfo.largeFileSharesState : null)
     networkAcls: {
+      #disable-next-line BCP036
       bypass: 'Logging, Metrics, AzureServices'
       defaultAction: (contains(storageInfo, 'allNetworks') ? storageInfo.allNetworks : 'Allow')
     }
@@ -102,7 +103,7 @@ module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(sto
   ]
 }
 
-resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-04-01' = {
+resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = {
   name: 'default'
   parent: SA
   properties: {
@@ -115,7 +116,7 @@ resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-04-0
 }
 
 // https://docs.microsoft.com/en-us/azure/storage/files/files-smb-protocol?tabs=azure-powershell
-resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2020-08-01-preview' = {
+resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2021-06-01' = {
   name: 'default'
   parent: SA
   properties: {

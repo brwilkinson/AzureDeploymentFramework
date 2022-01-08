@@ -1,8 +1,9 @@
 @allowed([
+  'AEU1'
   'AEU2'
   'ACU1'
+  'AWU1'
   'AWU2'
-  'AEU1'
   'AWCU'
 ])
 param Prefix string
@@ -50,7 +51,7 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 // var location = Locationlookup[Prefix]
 
 
-module dp_Deployment_Security 'sub-Security.bicep' = {//if (contains(Stage, 'Security') && bool(Stage.Security) && '${DeploymentID}${Environment}' == 'G0') {
+module dp_Deployment_Security 'sub-Security.bicep' = if (contains(Stage, 'Security') && bool(Stage.Security) && '${DeploymentID}${Environment}' == 'G0') {
   name: 'dp${Deployment}-Security'
   params: {
     // move these to Splatting later

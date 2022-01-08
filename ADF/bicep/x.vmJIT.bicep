@@ -21,7 +21,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-07-01' existing 
 }
 
 resource StandardJITAccess 'Microsoft.Security/locations/jitNetworkAccessPolicies@2020-01-01' = {
-  name: '${resourceGroup().location}/Standard_JIT_${virtualMachine.name}'
+  name: '${resourceGroup().location}/JIT_${virtualMachine.name}'
   kind: 'Basic'
   properties: {
     virtualMachines: [

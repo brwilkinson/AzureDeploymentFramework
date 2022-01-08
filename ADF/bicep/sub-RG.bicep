@@ -1,11 +1,4 @@
-@allowed([
-    'AEU2'
-    'ACU1'
-    'AWU2'
-    'AEU1'
-    'AWCU'
-])
-param Prefix string = 'ACU1'
+param Prefix string
 
 @allowed([
     'G'
@@ -66,7 +59,7 @@ resource RG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
     properties: {}
 }
 
-module UAI 'sub-RG-UAI.bicep' = [for (uai, index) in identity: if (uai.match) {
+module UAI 'sub-RG-UAI.bicep' = [for (uai, index) in identity: if (uai.match && bool(Stage.UAI)) {
     name: 'dp-uai-${uai.name}'
     scope: RG
     params: {
