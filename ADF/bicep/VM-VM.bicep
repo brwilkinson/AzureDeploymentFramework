@@ -18,8 +18,6 @@ param sshPublic string
 @secure()
 param saKey string = newGuid()
 
-
-
 param deploymentTime string = utcNow()
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -80,6 +78,7 @@ var gh = {
 var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalRGJ.name}')
+var HubKVRGName = '${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-RG-${gh.hubKVRGName}'
 var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 var AAName = toLower('${gh.hubAAPrefix}${gh.hubAAOrgName}${gh.hubAAAppName}${gh.hubAARGName}${HubAAJ.name}')
 
@@ -138,7 +137,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 
 resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   name: HubKVName
-  scope: resourceGroup(HubRGName)
+  scope: resourceGroup(HubKVRGName)
 }
 
 resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = {
@@ -286,7 +285,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   }
   tags: {
     Environment: EnvironmentLookup[Environment]
-    Zone: contains(AppServer, 'Zone') ? AppServer.Zone : null
+    Zone: contains(AppServer, 'Zone') ? AppServer.Zone : 1 // tag for windows update, set to 1 if using availabilitysets
   }
   zones: contains(AppServer, 'Zone') ? array(AppServer.Zone) : null
   plan: contains(OSType[AppServer.OSType], 'plan') ? OSType[AppServer.OSType].plan : null

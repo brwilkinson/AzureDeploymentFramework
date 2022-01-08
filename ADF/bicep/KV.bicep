@@ -32,8 +32,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -44,10 +42,10 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
-  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
-  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
 }
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
@@ -68,7 +66,7 @@ module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVI
   }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
   name: 'dp${Deployment}-KV-privatelinkloop${kv.name}'
   params: {
     Deployment: Deployment
@@ -76,9 +74,12 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultI
     providerType: 'Microsoft.KeyVault/vaults'
     resourceName: '${Deployment}-kv${kv.name}'
   }
+  dependsOn: [
+    KeyVaults[index]
+  ]
 }]
 
-module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
+module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
   name: 'dp${Deployment}-KV-registerPrivateDNS${kv.name}'
   scope: resourceGroup(HubRGName)
   params: {

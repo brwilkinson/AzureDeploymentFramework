@@ -94,6 +94,18 @@ var delegations = {
   ]
 }
 
+var serviceEndpoints = {
+  default: []
+  'Microsoft.Storage': [
+      {
+        service: 'Microsoft.Storage'
+        locations: [
+          resourceGroup().location
+        ]
+      }
+    ]
+}
+
 resource NSG 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = [for (sn, index) in SubnetInfo: {
   name: '${Deployment}-nsg${sn.name}'
 }]
@@ -123,6 +135,7 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         routeTable: contains(sn, 'Route') && bool(sn.Route) ? RouteTableGlobal : null
         privateEndpointNetworkPolicies: 'Disabled'
         delegations: contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default
+        serviceEndpoints: contains(sn, 'serviceEndpoints') ? serviceEndpoints[sn.serviceEndpoints] : serviceEndpoints.default
       }
     }]
   }
