@@ -149,7 +149,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rc,index) in RedisInfo:
     Deployment: Deployment
     PrivateLinkInfo: rc.privateLinkInfo
     providerType: 'Microsoft.Cache/Redis'
-    resourceName: '${Deployment}-rc${rc.name}'
+    resourceName: RC[index].name
   }
 }]
 

@@ -32,8 +32,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -46,13 +44,13 @@ var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? De
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
-  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
-  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
 }
 
-var HubRGName =    '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
 resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
   name: '${Deployment}-ac${appConfigurationInfo.Name}'
@@ -78,7 +76,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfiguration
     Deployment: Deployment
     PrivateLinkInfo: appConfigurationInfo.privateLinkInfo
     providerType: 'Microsoft.AppConfiguration/configurationStores'
-    resourceName: '${Deployment}-ac${appConfigurationInfo.Name}'
+    resourceName: AC.name
   }
 }
 
@@ -92,4 +90,3 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(appConfigurati
     Nics: contains(appConfigurationInfo, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }
-

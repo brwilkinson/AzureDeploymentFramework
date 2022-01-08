@@ -280,7 +280,7 @@ module dp_Deployment_BastionHost 'Bastion.bicep' = if (contains(Stage, 'BastionH
   ]
 }
 
-module dp_Deployment_Relay 'Relay.bicep' = if (contains(Stage, 'Relay') && bool(Stage.Relay)) {
+module dp_Deployment_Relay 'CloudShellRelay.bicep' = if (contains(Stage, 'CloudShellRelay') && bool(Stage.CloudShellRelay)) {
   name: 'dp${Deployment}-Relay'
   params: {
     // move these to Splatting later

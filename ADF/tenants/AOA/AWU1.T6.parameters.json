@@ -29,16 +29,16 @@
         "StorageSync": 0,
         "RSV": 0,
         "NSG": 1,
-        "NetworkWatcher": 1,
+        "NetworkWatcher": 0,
         "FlowLogs": 1,
         "VNet": 1,
-        "VNetPeering": 1,
+        "VNetPeering": 0,
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 1,
-        "BastionHost": 1,
-        "Relay": 1,
+        "BastionHost": 0,
+        "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
@@ -251,6 +251,14 @@
             ]
           },
           {
+            "Name": "ACIService",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              }
+            ]
+          },
+          {
             "Name": "AzureKeyVault",
             "RBAC": [
               {
@@ -400,9 +408,6 @@
             "FlowAnalyticsEnabled": 1
           }
         ],
-        "networkWatcherInfo": {
-          "name": "networkwatcher"
-        },
         "BastionInfo": {
           "name": "HST01",
           "PublicIP": "Static",
@@ -411,9 +416,10 @@
           "enableTunneling": 1,
           "scaleUnits": 2
         },
-        "azRelayInfo": [
+        "cloudshellRelayInfo": [
           {
             "Name": "CS01",
+            "ContainerSubnet": "snBE02",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
@@ -440,7 +446,7 @@
             }
           },
           {
-            "namesuffix": "cloudshell",
+            "namesuffix": "cshell",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "logging": {
@@ -463,7 +469,7 @@
                 "quota": 5120
               }
             ],
-            "PrivateLinkInfo": [
+            "_PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "blob"

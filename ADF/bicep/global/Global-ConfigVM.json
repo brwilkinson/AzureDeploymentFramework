@@ -1,31 +1,153 @@
 {
   "DataDiskInfo": {
-    "0GB" : {},
-    "32GB" : {
-        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,32] ], "saType" : "StandardSSD_LRS" }
-      },
-    "64GB" : {
-        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" }
-      },
-      "64GBSS" : {
-        "DATASS" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" }
-      },
-    "64GB-2" : {
-        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64],[1,64] ], "saType" : "StandardSSD_LRS" }
-      },
-      "128GB" : {
-        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,128] ], "saType" : "StandardSSD_LRS"}
-      },
-    "FIL64GB" : {
-        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64] ], "saType" : "StandardSSD_LRS" },
-        "SOFS" : { "caching": "ReadOnly",  "LUNS" : [ [1,32],[2,32],[3,32]],"FileSystem" : "ReFS", "saType" : "StandardSSD_LRS" }
-      },        
-    "SQL64GB" : {
-        "DATA" : { "DriveLetter" : "F" ,"caching": "ReadOnly",  "LUNS" : [ [0,64]], "saType" : "StandardSSD_LRS" },
-        "LOGS" :  { "DriveLetter" : "G", "caching": "None",     "LUNS" : [ [8,64] ], "saType" : "StandardSSD_LRS" },
-        "TEMPDB" : { "DriveLetter" : "H", "caching": "ReadOnly","LUNS" : [ [12,64] ], "saType" : "StandardSSD_LRS" },
-        "BACKUP" : { "DriveLetter" : "I", "caching": "None",    "LUNS" : [ [15,64] ], "saType" : "StandardSSD_LRS" }
+    "0GB": {},
+    "32GB": {
+      "DATA": {
+        "DriveLetter": "F",
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            0,
+            32
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
       }
+    },
+    "64GB": {
+      "DATA": {
+        "DriveLetter": "F",
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            0,
+            64
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      }
+    },
+    "64GBSS": {
+      "DATASS": {
+        "DriveLetter": "F",
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            0,
+            64
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      }
+    },
+    "64GB-2": {
+      "DATA": {
+        "DriveLetter": "F",
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            0,
+            64
+          ],
+          [
+            1,
+            64
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      }
+    },
+    "128GB": {
+      "DATA": {
+        "DriveLetter": "F",
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            0,
+            128
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      }
+    },
+    "FIL64GB": {
+      "DATA": {
+        "DriveLetter": "F",
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            0,
+            64
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      },
+      "SOFS": {
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            1,
+            32
+          ],
+          [
+            2,
+            32
+          ],
+          [
+            3,
+            32
+          ]
+        ],
+        "FileSystem": "ReFS",
+        "saType": "StandardSSD_LRS"
+      }
+    },
+    "SQL64GB": {
+      "DATA": {
+        "DriveLetter": "F",
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            0,
+            64
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      },
+      "LOGS": {
+        "DriveLetter": "G",
+        "caching": "None",
+        "LUNS": [
+          [
+            8,
+            64
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      },
+      "TEMPDB": {
+        "DriveLetter": "H",
+        "caching": "ReadOnly",
+        "LUNS": [
+          [
+            12,
+            64
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      },
+      "BACKUP": {
+        "DriveLetter": "I",
+        "caching": "None",
+        "LUNS": [
+          [
+            15,
+            64
+          ]
+        ],
+        "saType": "StandardSSD_LRS"
+      }
+    }
   },
   "computeSizeLookupOptions": {
     "API-P": "Standard_D4s_v3",
@@ -70,26 +192,26 @@
       "imageReference": {
         "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2022"
       },
-    "licenseType": "Windows_Server",
-    "OS": "Windows",
-    "OSDiskGB": 127,
-    "RoleExtensions": {
-      "Scripts": 0,
-      "chefClient": 0
-    }
-  },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
     "Server2019SSIMG": {
       "imageReference": {
         "id": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore27"
       },
-    "licenseType": "Windows_Server",
-    "OS": "Windows",
-    "OSDiskGB": 127,
-    "RoleExtensions": {
-      "Scripts": 0,
-      "chefClient": 0
-    }
-  },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
     "cbld10": {
       "imageReference": {
         "id": "/subscriptions/27b750cd-ed43-42fd-9044-8d75e124ae55/resourceGroups/SBID-Build-Test/providers/Microsoft.Compute/galleries/cbldtest/images/cbld10-ext"
@@ -264,6 +386,21 @@
         "publisher": "microsoftwindowsserver",
         "product": "microsoftserveroperatingsystems-previews"
       },
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2022Containerssmall": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "datacenter-core-20h2-with-containers-smalldisk-g2",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
       "RoleExtensions": {
         "Scripts": 0,
         "chefClient": 0

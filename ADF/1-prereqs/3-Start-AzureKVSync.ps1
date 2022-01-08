@@ -1,9 +1,38 @@
+<#
+.SYNOPSIS
+    Sync keyvault secrets and certs between keyvaults
+.DESCRIPTION
+    Downloads blob certs and restores them, plus migrates secrets only if they are newer in the source kv.
+.EXAMPLE
+    # Use the App Name to sync from the primary region to the secondary region
+
+    .\3-Start-AzureKVSync.ps1 -App AOA
+
+.EXAMPLE
+    # manually passs in the source kvname and the destination kvname to sync
+
+    .\3-Start-AzureKVSync.ps1 -primaryKVName ACU1-BRW-AOA-P0-kvVLT01 -SecondaryKVName AWU1-BRW-AOA-P0-kvVLT01
+
+.INPUTS
+    Inputs (if any)
+.OUTPUTS
+    Output (if any)
+.NOTES
+    If you run this twice, it will not sync anything the second time, since all are up to date.
+    It uses the modified date on the secrets and certs, so you can modify any property and save it on the source.
+    That way it will sync again if you re-execute the script.
+    Ideally you manage secrets in a source location, then sync them to the DR/Partner region.
+#>
+
 param(
     [string]$TempCertPath = 'c:\temp\Certs',
-    [string]$App = 'AOA'
+    [string]$App = 'AOA',
+    [string]$primaryKVName,
+    [string]$SecondaryKVName
 )
 
 $Artifacts = "$PSScriptRoot\.."
+
 
 $Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
@@ -12,17 +41,22 @@ $SecondaryLocation = $Global.SecondaryLocation
 $PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
 $SecondaryPrefix = $LocationLookup.$SecondaryLocation.Prefix
 
-# Primary Region (Hub) Info
-$Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$PrimaryRGName = $Primary.HubRGName
-$PrimaryKVName = $Primary.KVName
-Write-Verbose -Message "Primary Keyvault: $primaryKVName in RG: $primaryRGName" -Verbose
+if (! $primaryKVName)
+{
+    # Primary Region (Hub) Info
+    $Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+    $PrimaryKVName = $Primary.KVName
+}
+Write-Verbose -Message "Primary Keyvault: $primaryKVName" -Verbose
 
-# Secondary Region (Hub) Info
-$Secondary = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$SecondaryRGName = $Secondary.HubRGName
-$SecondaryKVName = $Secondary.KVName
-Write-Verbose -Message "Secondary Keyvault: $SecondaryKVName in RG: $SecondaryRGName" -Verbose
+if (! $SecondaryKVName)
+{
+    # Secondary Region (Hub) Info
+    $Secondary = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+    $SecondaryKVName = $Secondary.KVName
+}
+
+Write-Verbose -Message "Secondary Keyvault: $SecondaryKVName" -Verbose
 
 Get-AzKeyVaultCertificate -VaultName $primaryKVName | ForEach-Object {
     $CertName = $_.Name
