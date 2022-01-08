@@ -1,11 +1,12 @@
 @allowed([
-  'AZE2'
-  'AZC1'
+  'AEU1'
   'AEU2'
   'ACU1'
+  'AWU1'
+  'AWU2'
   'AWCU'
 ])
-param Prefix string = 'ACU1'
+param Prefix string
 
 @allowed([
   'I'
@@ -52,7 +53,7 @@ var addressPrefixes = [
 ]
 
 var AzureDNS = '168.63.129.16'
-var DNSServerList = contains(DeploymentInfo,'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
+var DNSServerList = contains(DeploymentInfo, 'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
 var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
 
 module dp_Deployment_OMS 'OMS.bicep' = if (bool(Stage.OMS)) {
@@ -279,6 +280,23 @@ module dp_Deployment_BastionHost 'Bastion.bicep' = if (contains(Stage, 'BastionH
   ]
 }
 
+module dp_Deployment_Relay 'Relay.bicep' = if (contains(Stage, 'Relay') && bool(Stage.Relay)) {
+  name: 'dp${Deployment}-Relay'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+  ]
+}
+
 module dp_Deployment_DNSPrivateZone 'DNSPrivate.bicep' = if (bool(Stage.DNSPrivateZone)) {
   name: 'dp${Deployment}-DNSPrivateZone'
   params: {
@@ -357,7 +375,7 @@ module dp_Deployment_LB 'LB.bicep' = if (bool(Stage.LB)) {
   ]
 }
 
-module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary) || contains(Stage,'CreateADPDC') && bool(Stage.CreateADPDC)) {
+module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary) || contains(Stage, 'CreateADPDC') && bool(Stage.CreateADPDC)) {
   name: 'dp${Deployment}-VNETDNSPublic'
   params: {
     Deployment: Deployment
@@ -378,7 +396,7 @@ module dp_Deployment_VNETDNSPublic 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrima
   ]
 }
 
-module CreateADPDC 'VM.bicep' = if (contains(Stage,'CreateADPDC') && bool(Stage.CreateADPDC)) {
+module CreateADPDC 'VM.bicep' = if (contains(Stage, 'CreateADPDC') && bool(Stage.CreateADPDC)) {
   name: 'CreateADPDC'
   params: {
     // move these to Splatting later
@@ -416,7 +434,7 @@ module ADPrimary 'VM.bicep' = if (bool(Stage.ADPrimary)) {
   ]
 }
 
-module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary) || contains(Stage,'CreateADPDC') && bool(Stage.CreateADPDC)) {
+module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary) || contains(Stage, 'CreateADPDC') && bool(Stage.CreateADPDC)) {
   name: 'dp${Deployment}-VNETDNSDC1'
   params: {
     Deployment: Deployment
@@ -435,7 +453,7 @@ module dp_Deployment_VNETDNSDC1 'x.setVNETDNS.bicep' = if (bool(Stage.ADPrimary)
   ]
 }
 
-module CreateADBDC 'VM.bicep' = if (contains(Stage,'CreateADBDC') && bool(Stage.CreateADBDC)) {
+module CreateADBDC 'VM.bicep' = if (contains(Stage, 'CreateADBDC') && bool(Stage.CreateADBDC)) {
   name: 'CreateADBDC'
   params: {
     // move these to Splatting later
@@ -473,7 +491,7 @@ module ADSecondary 'VM.bicep' = if (bool(Stage.ADSecondary)) {
   ]
 }
 
-module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (bool(Stage.ADSecondary) || contains(Stage,'CreateADBDC') && bool(Stage.CreateADBDC)) {
+module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (bool(Stage.ADSecondary) || contains(Stage, 'CreateADBDC') && bool(Stage.CreateADBDC)) {
   name: 'dp${Deployment}-VNETDNSDC2'
   params: {
     Deployment: Deployment
@@ -523,8 +541,7 @@ module AppServers 'VM.bicep' = if (bool(Stage.VMApp)) {
   ]
 }
 
-
-module ConfigSQLAO 'VM.bicep' = if (contains(Stage,'ConfigSQLAO') && bool(Stage.ConfigSQLAO)) {
+module ConfigSQLAO 'VM.bicep' = if (contains(Stage, 'ConfigSQLAO') && bool(Stage.ConfigSQLAO)) {
   name: 'ConfigSQLAO'
   params: {
     // move these to Splatting later
@@ -625,7 +642,6 @@ module dp_Deployment_DASHBOARD 'Dashboard.bicep' = if (bool(Stage.DASHBOARD)) {
   }
   dependsOn: []
 }
-
 
 module dp_Deployment_CosmosDB 'Cosmos.bicep' = if (bool(Stage.CosmosDB)) {
   name: 'dp${Deployment}-CosmosDB'

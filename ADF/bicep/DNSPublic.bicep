@@ -1,12 +1,5 @@
-@allowed([
-  'AZE2'
-  'AZC1'
-  'AEU2'
-  'ACU1'
-  'AWCU'
-])
 #disable-next-line no-unused-params
-param Prefix string = 'ACU1'
+param Prefix string
 
 @allowed([
   'I'

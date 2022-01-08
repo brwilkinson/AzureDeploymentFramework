@@ -2,11 +2,10 @@ Get-AzOperationalInsightsIntelligencePack -ResourceGroupName ACU1-BRW-AOA-RG-T5 
 
 <#
 
-Name                             Enabled
-----                             -------
+
 CapacityPerformance                 True
 AzureWebAppsAnalytics               True
-BehaviorAnalyticsInsights          False
+BehaviorAnalyticsInsights           True
 Security                            True
 Updates                             True
 AntiMalware                         True
@@ -32,7 +31,7 @@ AzureNetworking                    False
 ADReplication                       True
 Office365                          False
 CompatibilityAssessment            False
-KeyVault                            True
+KeyVault                           False
 ServiceFabric                       True
 DnsAnalytics                        True
 ApplicationInsights                 True
@@ -51,12 +50,12 @@ VMware                             False
 SecurityCenterFree                 False
 LogicAppsManagement                False
 LogicAppB2B                        False
-AzureSQLAnalytics                  False
-KeyVaultAnalytics                  False
+AzureSQLAnalytics                   True
+KeyVaultAnalytics                   True
 AzureNSGAnalytics                   True
-AzureAppGatewayAnalytics           False
+AzureAppGatewayAnalytics            True
 DeviceHealthProd                   False
-WindowsDefenderATP                 False
+WindowsDefenderATP                  True
 WindowsDefenderATPStable           False
 InfrastructureInsights              True
 ProcessInvestigator                False
@@ -78,10 +77,12 @@ DHCPActivity                       False
 AzureDataFactoryAnalytics          False
 AzureSecurityOfThings              False
 SQLVulnerabilityAssessment         False
-SQLAdvancedThreatProtection        False
+SQLAdvancedThreatProtection         True
 VMInsights                          True
 WinLog                             False
 NetFlow                            False
+
+
 
 
 #>

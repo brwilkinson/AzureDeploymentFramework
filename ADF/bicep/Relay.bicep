@@ -52,39 +52,38 @@ var gh = {
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-var KeyVaultInfo = contains(DeploymentInfo, 'KVInfo') ? DeploymentInfo.KVInfo : []
+var azRelayInfo = contains(DeploymentInfo, 'azRelayInfo') ? DeploymentInfo.azRelayInfo : []
 
-var KVInfo = [for (kv, index) in KeyVaultInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, kv.name))
+var azRelay = [for i in range(0, length(azRelayInfo)): {
+  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.frontDoorInfo[i].Name))
 }]
 
-module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match) {
-  name: 'dp${Deployment}-KV-${kv.name}'
-  params: {
-    Deployment: Deployment
-    DeploymentURI: DeploymentURI
-    KVInfo: kv
-    Global: Global
+resource RELAY 'Microsoft.Relay/namespaces@2018-01-01-preview' = [for (rel,index) in azRelayInfo : if(azRelay[index].match) {
+  name: '${Deployment}-relay${rel.Name}'
+  location: resourceGroup().location
+  sku: {
+    name: 'Standard'
+    tier: 'Standard'
   }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-KV-privatelinkloop${kv.name}'
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rel,index) in azRelayInfo: if(azRelay[index].match && contains(rel, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-privatelinkloop${rel.name}'
   params: {
     Deployment: Deployment
-    PrivateLinkInfo: kv.privateLinkInfo
-    providerType: 'Microsoft.KeyVault/vaults'
-    resourceName: '${Deployment}-kv${kv.name}'
+    PrivateLinkInfo: rel.privateLinkInfo
+    providerType: 'Microsoft.Relay/namespaces'
+    resourceName: '${Deployment}-relay${rel.Name}'
   }
 }]
 
-module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (kv, index) in KeyVaultInfo: if(KVInfo[index].match && contains(kv, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-KV-registerPrivateDNS${kv.name}'
+module RCprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (rel,index) in azRelayInfo: if(azRelay[index].match && contains(rel, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-registerPrivateDNS${rel.name}'
   scope: resourceGroup(HubRGName)
   params: {
-    PrivateLinkInfo: kv.privateLinkInfo
-    providerURL: '.azure.net/'
-    resourceName: '${Deployment}-kv${((length(KeyVaultInfo) == 0) ? 'na' : kv.name)}'
-    Nics: contains(kv, 'privatelinkinfo') && length(KeyVaultInfo) != 0 ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
+    PrivateLinkInfo: rel.privateLinkInfo
+    providerURL: '.windows.net/'
+    resourceName: '${Deployment}-relay${rel.Name}'
+    Nics: contains(rel, 'privatelinkinfo') ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
   }
 }]

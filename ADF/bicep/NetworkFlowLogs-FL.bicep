@@ -1,7 +1,7 @@
 param NSGID string
 param SADIAGID string
 param subNet object
-param hubDeployment string
+param watcherDeployment string
 param retentionPolicydays int
 param flowLogVersion int
 param flowLogName string
@@ -12,7 +12,7 @@ var flowLogEnabled = contains(subNet,'FlowLogEnabled') && bool(subNet.FlowLogEna
 var FlowAnalyticsEnabled = contains(subNet,'FlowAnalyticsEnabled') && bool(subNet.FlowAnalyticsEnabled)
 
 resource NetworkWatcher 'Microsoft.Network/networkWatchers@2019-11-01' existing = {
-  name: '${hubDeployment}-networkwatcher'
+  name: '${watcherDeployment}-networkwatcher'
 }
 
 resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2020-11-01' = {

@@ -1,11 +1,4 @@
-@allowed([
-  'AZE2'
-  'AZC1'
-  'AEU2'
-  'ACU1'
-  'AWCU'
-])
-param Prefix string = 'ACU1'
+param Prefix string
 
 @allowed([
   'I'
@@ -39,7 +32,6 @@ param Global object
 param DeploymentInfo object
 #disable-next-line no-unused-params
 param deploymentTime string = utcNow('u')
-
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
@@ -75,10 +67,9 @@ var AppVault = '${Deployment}-kvApp01'
 
 resource kv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   name: AppVault
-  
 }
 
-module ACG 'ACI-ACI.bicep' = [for (aci,index) in ACIInfo : if (ACI[index].match) {
+module ACG 'ACI-ACI.bicep' = [for (aci, index) in ACIInfo: if (ACI[index].match) {
   name: 'dp${Deployment}-ACI-containergroupDeploy${aci.name}'
   params: {
     Deployment: Deployment

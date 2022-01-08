@@ -29,15 +29,15 @@ Function global:Start-AzDeploy
         
         [parameter(mandatory)]
         [alias('DP')]
-        [validateset('T0', 'P0', 'S1', 'S2', 'S3', 'D2', 'D3', 'D4', 'T5', 'U6', 'P7', 'G0', 'G1', 'M0', 'A0')]
+        [validateset('T0', 'P0', 'S1', 'S2', 'S3', 'D2', 'D3', 'D4', 'T5', 'T6', 'U6', 'P7', 'G0', 'G1', 'M0', 'A0')]
         [string] $Deployment,
 
         [validateset('ADF', 'PSO', 'HUB', 'ABC', 'AOA', 'HAA')]
         [alias('AppName')]
         [string] $App = 'AOA',
 
-        [validateset('AEU2', 'ACU1', 'AEU1', 'AWU2', 'AWCU')]
-        [String] $Prefix = 'ACU1',
+        [validateset('AEU1', 'AEU2', 'ACU1', 'AWCU', 'AWU1', 'AWU2')]
+        [String] $Prefix,
 
         [alias('ComputerName')]
         [string] $CN = '.',

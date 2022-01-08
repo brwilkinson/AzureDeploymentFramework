@@ -1,10 +1,3 @@
-@allowed([
-    'AEU2'
-    'ACU1'
-    'AWU2'
-    'AEU1'
-    'AWCU'
-])
 param Prefix string
 
 @allowed([

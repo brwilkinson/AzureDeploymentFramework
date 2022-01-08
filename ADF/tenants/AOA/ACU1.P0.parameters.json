@@ -462,7 +462,13 @@
         ],
         "azRelayInfo": [
           {
-            "Name": "CS01"
+            "Name": "CS01",
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ]
           }
         ],
         "VNGWInfo": [

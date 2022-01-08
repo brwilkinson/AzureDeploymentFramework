@@ -175,7 +175,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
     podIdentityProfile: (AKSInfo.podIdentity ? podIdentityProfile : json('null'))
     addonProfiles: {
       IngressApplicationGateway: {
-        enabled: true
+        enabled: bool(AKSInfo.AppGateway)
         config: bool(AKSInfo.BrownFields) ? IngressBrownfields : IngressGreenfields
       }
       httpApplicationRouting: {
@@ -254,6 +254,9 @@ module dp_identities_deployment 'AKS-AKS-RBAC.bicep' = {
     AKSInfo: AKSInfo
     Deployment: Deployment
   }
+  dependsOn: [
+    AKS
+  ]
 }
 
 module dp_deployment_rgroleassignmentsAKSUAI 'sub-RBAC-ALL.bicep' = [for i in range(0, 4): {

@@ -4,7 +4,7 @@
   'AEU2'
   'ACU1'
 ])
-param Prefix string = 'ACU1'
+param Prefix string
 
 @allowed([
   'I'

@@ -1,11 +1,4 @@
-@allowed([
-  'AZE2'
-  'AZC1'
-  'AEU2'
-  'ACU1'
-  'AWCU'
-])
-param Prefix string = 'ACU1'
+param Prefix string
 
 @allowed([
   'I'
@@ -246,19 +239,19 @@ var NSGDefault = {
     //     direction: 'Inbound'
     //   }
     // }
-    {
-      name: 'ALL_JMP_IN_Allow_WEB01'
-      properties: {
-        protocol: '*'
-        sourcePortRange: '*'
-        destinationPortRange: '8080'
-        sourceAddressPrefixes: contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-        destinationAddressPrefix: '*'
-        access: 'Allow'
-        priority: 1140
-        direction: 'Inbound'
-      }
-    }
+    // {
+    //   name: 'ALL_JMP_IN_Allow_WEB01'
+    //   properties: {
+    //     protocol: '*'
+    //     sourcePortRange: '*'
+    //     destinationPortRange: '8080'
+    //     sourceAddressPrefixes: contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+    //     destinationAddressPrefix: '*'
+    //     access: 'Allow'
+    //     priority: 1140
+    //     direction: 'Inbound'
+    //   }
+    // }
   ]
   SNBE01: [
     {
