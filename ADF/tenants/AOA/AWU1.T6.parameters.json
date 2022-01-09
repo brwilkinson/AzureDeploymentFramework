@@ -60,10 +60,10 @@
         "SetInternalDNS": 1,
         "APPCONFIG": 0,
         "REDIS": 0,
-        "APIM": 0,
-        "ACR": 0,
+        "APIM": 1,
+        "ACR": 1,
         "ACI": 0,
-        "AKS": 0,
+        "AKS": 1,
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 0,
@@ -169,16 +169,16 @@
           //     }
           //   ]
           // },
-          // {
-          //   "name": "KeyVaultSecretsGet",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Key Vault Secrets User",
-          //       "RG": "P0",
-          //       "Tenant": "AOA"
-          //     }
-          //   ]
-          // },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
           {
             "name": "StorageKeyRotation",
             "RBAC": [
@@ -247,14 +247,6 @@
               },
               {
                 "Name": "Load Test Owner"
-              }
-            ]
-          },
-          {
-            "Name": "ACIService",
-            "RBAC": [
-              {
-                "Name": "Contributor"
               }
             ]
           },
@@ -416,18 +408,6 @@
           "enableTunneling": 1,
           "scaleUnits": 2
         },
-        "cloudshellRelayInfo": [
-          {
-            "Name": "CS01",
-            "ContainerSubnet": "snBE02",
-            "PrivateLinkInfo": [
-              {
-                "Subnet": "snMT02",
-                "groupID": "namespace"
-              }
-            ]
-          }
-        ],
         "saInfo": [
           {
             "nameSuffix": "diag",
@@ -652,7 +632,8 @@
           {
             "Name": "01",
             "SKU": "Premium", // "Standard",
-            "adminUserEnabled": true
+            "adminUserEnabled": true,
+            "NoZone": 1
           }
         ],
         "appServiceplanInfo": [
