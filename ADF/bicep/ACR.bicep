@@ -99,7 +99,7 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = [for 
   properties: {
     adminUserEnabled: cr.adminUserEnabled
     dataEndpointEnabled: true
-    zoneRedundancy: 'Enabled'
+    zoneRedundancy: contains(cr,'NoZone') ? (bool(cr.NoZone) ? 'Disabled' : 'Enabled') : 'Enabled' // Some regions do not support zones
   }
 }]
 

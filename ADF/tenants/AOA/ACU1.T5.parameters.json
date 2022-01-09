@@ -407,17 +407,6 @@
           "enableTunneling": 1,
           "scaleUnits": 2
         },
-        "azRelayInfo": [
-          {
-            "Name": "CS01",
-            "PrivateLinkInfo": [
-              {
-                "Subnet": "snFE01",
-                "groupID": "namespace"
-              }
-            ]
-          }
-        ],
         "saInfo": [
           {
             "namesuffix": "data2",
