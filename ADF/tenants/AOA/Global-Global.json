@@ -11,7 +11,7 @@
     "PrimaryLocation": "CentralUS",
     "SecondaryLocation": "EastUS2",
     "IPAddressforRemoteAccess": [
-      "73.157.100.227/32",
+      "73.225.196.211/32",
       "157.100.170.101/32"
     ],
     "vmAdminUserName": "brw",
@@ -43,6 +43,7 @@
     "sqlAutobackupRetentionPeriod": 5,
     "RolesLookup": {
       "BW": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "LT": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
       "BC": "3e156fbc-f456-4e4e-b7c8-e8be9830b8e0",
       "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
       "AKS_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
