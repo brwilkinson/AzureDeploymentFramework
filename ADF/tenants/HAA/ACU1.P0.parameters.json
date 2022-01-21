@@ -451,7 +451,7 @@
               {
                 "Name": "Default-Azure-FW",
                 "addressPrefix": "0.0.0.0/0",
-                "nextHopIpAddress": "FW01",
+                "nextHopIpAddress": "172.16.142.132",
                 "nextHopType": "VirtualAppliance"
               }
             ]

@@ -32,8 +32,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
@@ -44,8 +42,10 @@ var gh = {
 }
 
 var HubVNName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-${gh.hubRGRGName}-vn'
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var HubDeployment = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-${gh.hubRGRGName}'
 
-var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+// var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var Domain = toUpper(split(Global.DomainName, '.')[0])
 
 var RTInfo = contains(DeploymentInfo, 'RTInfo') ? DeploymentInfo.RTInfo : []
@@ -54,12 +54,12 @@ resource RT 'Microsoft.Network/routeTables@2018-11-01' = [for (RT, i) in RTInfo:
   name: '${replace(HubVNName, 'vn', 'rt')}${Domain}${RT.Name}'
   location: resourceGroup().location
   properties: {
-    routes: [for j in range(0, length(RT.Routes)): {
-      name: '${Prefix}-${RT.Routes[j].Name}'
+    routes: [for route in RT.Routes : {
+      name: '${Prefix}-${route.Name}'
       properties: {
-        addressPrefix: RT.Routes[j].addressPrefix
-        nextHopType: RT.Routes[j].nextHopType
-        nextHopIpAddress: reference(resourceId('Microsoft.Network/azureFirewalls', '${Deployment}-vn${RT.Routes[j].nextHopIpAddress}'), '2019-09-01').ipConfigurations[0].properties.privateIPAddress
+        addressPrefix: route.addressPrefix
+        nextHopType: route.nextHopType
+        nextHopIpAddress: contains(route,'nextHopFW') ? reference(resourceId(HubRGName,'Microsoft.Network/azureFirewalls', '${HubDeployment}-${route.nextHopFW}'), '2021-05-01').ipConfigurations[0].properties.privateIPAddress : route.nextHopIpAddress
       }
     }]
   }
