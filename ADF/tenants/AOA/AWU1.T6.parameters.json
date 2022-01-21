@@ -267,12 +267,6 @@
             ]
           }
         ],
-        "LoadTestInfo": [
-          {
-            "Name": "APIWebTest",
-            "location": "eastus2"
-          }
-        ],
         "SPInfo": [
           {
             "Name": "GH_{GHProject}_{RGNAME}",
