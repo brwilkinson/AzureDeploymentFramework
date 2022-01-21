@@ -50,10 +50,13 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 var RolesGroupsLookup = json(Global.RolesGroupsLookup)
 var RolesLookup = json(Global.RolesLookup)
 
+var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+
 var IngressGreenfields = {
-  effectiveApplicationGatewayId: '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5-b/providers/Microsoft.Network/applicationGateways/${Deployment}-waf${AKSInfo.WAFName}'
+  effectiveApplicationGatewayId: '${subscription().id}/resourceGroups/${resourceGroup().name}-b/providers/Microsoft.Network/applicationGateways/${Deployment}-waf${AKSInfo.WAFName}'
   applicationGatewayName: '${Deployment}-waf${AKSInfo.WAFName}'
-  subnetCIDR: '10.2.0.0/16'
+  subnetCIDR: '${networkId}.128/25' // WAF Subnet //'${Global.networkId[0]}0.0/16'
 }
 var IngressBrownfields = {
   applicationGatewayId: resourceId('Microsoft.Network/applicationGateways/', '${Deployment}-waf${AKSInfo.WAFName}')
@@ -76,8 +79,6 @@ var availabilityZones = [
   '2'
   '3'
 ]
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 
 var Environment_var = {
   D: 'Dev'
@@ -104,7 +105,7 @@ var MSILookup = {
 }
 var aksAADAdminLookup = [for i in range(0, ((!contains(AKSInfo, 'aksAADAdminGroups')) ? 0 : length(AKSInfo.aksAADAdminGroups))): RolesLookup[AKSInfo.aksAADAdminGroups[i]]]
 
-resource AKS 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
+resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
   location: resourceGroup().location
   identity: {
@@ -135,7 +136,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
       vmSize: 'Standard_DS2_v2'
       vnetSubnetID: (contains(agentpool, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', agentpool.Subnet) : resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', AKSInfo.AgentPoolsSN))
       type: 'VirtualMachineScaleSets'
-      availabilityZones: ((AKSInfo.loadBalancer == 'basic') ? json('null') : availabilityZones)
+      availabilityZones: ((AKSInfo.loadBalancer == 'basic') ? null : availabilityZones)
       storageProfile: 'ManagedDisks'
     }]
     linuxProfile: {
@@ -175,6 +176,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
     podIdentityProfile: (AKSInfo.podIdentity ? podIdentityProfile : json('null'))
     addonProfiles: {
       IngressApplicationGateway: {
+        
         enabled: bool(AKSInfo.AppGateway)
         config: bool(AKSInfo.BrownFields) ? IngressBrownfields : IngressGreenfields
       }

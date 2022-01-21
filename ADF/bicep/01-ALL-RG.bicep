@@ -843,6 +843,25 @@ module dp_Deployment_APPCONFIG 'AppConfig.bicep' = if (bool(Stage.APPCONFIG)) {
   ]
 }
 
+module dp_Deployment_AKS 'AKS.bicep' = if (bool(Stage.AKS)) {
+  name: 'dp${Deployment}-AKS'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    // dp_Deployment_WAF
+    dp_Deployment_VNET
+    dp_Deployment_ACR
+  ]
+}
+
 /*
 
 module dp_Deployment_SQLMI '?' = if (bool(Stage.SQLMI)) {
@@ -882,16 +901,6 @@ module VMSS '?' = if (bool(Stage.VMSS)) {
     dp_Deployment_LB
     dp_Deployment_WAF
     dp_Deployment_SA
-  ]
-}
-
-module dp_Deployment_AKS '?' = if (bool(Stage.AKS)) {
-  name: 'dp${Deployment}-AKS'
-  params: {}
-  dependsOn: [
-    dp_Deployment_WAF
-    dp_Deployment_VNET
-    dp_Deployment_ACR
   ]
 }
 
