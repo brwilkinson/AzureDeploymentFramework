@@ -128,12 +128,12 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = [for (apim,
         identityClientId: UAI.properties.clientId
         keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
       }
-      {
-        type: 'Management'
-        hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-management.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-management.${Global.DomainNameExt}'))
-        identityClientId: UAI.properties.clientId
-        keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
-      }
+      // {
+      //   type: 'Management'
+      //   hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-management.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-management.${Global.DomainNameExt}'))
+      //   identityClientId: UAI.properties.clientId
+      //   keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
+      // }
       {
         type: 'Scm'
         hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-scm.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-scm.${Global.DomainNameExt}'))
@@ -249,6 +249,19 @@ module DNS 'x.DNS.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index
   ]
 }]
 
+// module DNSMan 'x.DNS.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
+//   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-management'
+//   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
+//   params: {
+//     hostname: toLower('${Deployment}-apim${apim.name}-managemen')
+//     cname: toLower('${Deployment}-apim${apim.name}.management.azure-api.net')
+//     Global: Global
+//   }
+//   dependsOn: [
+//     APIM[index]
+//   ]
+// }]
+
 module DNSscm 'x.DNS.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-scm'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
@@ -300,6 +313,19 @@ module DNSprivate 'x.DNS.private.CNAME.bicep' = [for (apim, index) in APIMInfo: 
     APIM[index]
   ]
 }]
+
+// module DNSprivateMan 'x.DNS.private.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
+//   name: 'private-CNAME-${Deployment}-apim-${apim.name}-${Global.DomainName}-management'
+//   scope: resourceGroup(subscription().subscriptionId, HubRGName)
+//   params: {
+//     hostname: toLower('${Deployment}${(contains(apim, 'frontDoor') ? '-afd${apim.frontDoor}' : '')}-apim${apim.name}-management')
+//     cname: toLower('${Deployment}-apim${apim.name}-proxy.${Global.DomainName}')
+//     Global: Global
+//   }
+//   dependsOn: [
+//     APIM[index]
+//   ]
+// }]
 
 module DNSprivatedeveloper 'x.DNS.private.CNAME.bicep' = [for (apim, index) in APIMInfo: if (APIMs[index].match && bool(Stage.SetInternalDNS)) {
   name: 'private-CNAME-${Deployment}-apim-${apim.name}-${Global.DomainName}-developer'
