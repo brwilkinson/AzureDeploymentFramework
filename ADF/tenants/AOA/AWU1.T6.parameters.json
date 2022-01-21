@@ -32,7 +32,7 @@
         "NetworkWatcher": 0,
         "FlowLogs": 1,
         "VNet": 1,
-        "VNetPeering": 0,
+        "VNetPeering": 1,
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
@@ -265,12 +265,6 @@
                 "Name": "Reader"
               }
             ]
-          }
-        ],
-        "LoadTestInfo": [
-          {
-            "Name": "APIWebTest",
-            "location": "eastus2"
           }
         ],
         "SPInfo": [
@@ -745,10 +739,10 @@
             "skuTier": "Paid", //Free
             "enableRBAC": true, //true, false
             "podIdentity": true, //true, false
-            "privateCluster": true, //true, false
+            "privateCluster": false, //true, false
             "AgentPoolsSN": "snMT02",
             "WAFName": "01",
-            "loadBalancer": "standard", //"basic","standard"
+            "loadBalancer": "basic", //"basic","standard"
             "BrownFields": 0,
             "AppGateway": 0,
             "aksAADAdminGroups": [
@@ -765,7 +759,7 @@
                 "_vmSize": "Standard_D1_v2",
                 "ASName": "JMP",
                 "mode": "System"
-              },
+              }
               // {
               //   "name": "winctr",
               //   "count": 2,
@@ -777,17 +771,17 @@
               //   "ASName": "JMP",
               //   "mode": "User"
               // }
-              {
-                "name": "linctr2",
-                "count": 2,
-                "osDiskSizeGb": 30,
-                "osType": "Linux",
-                "maxPods": 50,
-                "storageProfile": "ManagedDisks",
-                "_vmSize": "Standard_D1_v2",
-                "ASName": "JMP",
-                "mode": "User"
-              }
+              // {
+              //   "name": "linctr2",
+              //   "count": 2,
+              //   "osDiskSizeGb": 30,
+              //   "osType": "Linux",
+              //   "maxPods": 50,
+              //   "storageProfile": "ManagedDisks",
+              //   "_vmSize": "Standard_D1_v2",
+              //   "ASName": "JMP",
+              //   "mode": "User"
+              // }
             ]
           }
         ],

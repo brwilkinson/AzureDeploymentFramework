@@ -382,14 +382,14 @@
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1
           },
-          {
-            "name": "snWAF01",
-            "prefix": "128/25",
-            "NSG": 1,
-            "Route": 0,
-            "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1
-          },
+          // {
+          //   "name": "snWAF01",
+          //   "prefix": "128/25",
+          //   "NSG": 1,
+          //   "Route": 0,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // },
           {
             "name": "snMT02",
             "prefix": "0/24",
@@ -561,6 +561,59 @@
             "virtualNetworkType": "External",
             "certName": "PSTHING-WildCard",
             "_frontDoor": "01"
+          }
+        ],
+        "AKSInfo": [
+          {
+            "Name": "01",
+            "Version": "1.21.7", // "1.20.2","1.19.7","1.19.6", "1.18.14"
+            "skuTier": "Paid", //Free
+            "enableRBAC": true, //true, false
+            "podIdentity": true, //true, false
+            "privateCluster": false, //true, false
+            "AgentPoolsSN": "snMT02",
+            "WAFName": "01",
+            "loadBalancer": "standard", //"basic","standard"
+            "BrownFields": 0,
+            "AppGateway": 0,
+            "aksAADAdminGroups": [
+              "AKS_Admins"
+            ],
+            "AgentPools": [
+              {
+                "name": "linctr",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 16,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "System"
+              },
+              // {
+              //   "name": "winctr",
+              //   "count": 2,
+              //   "osDiskSizeGb": 30,
+              //   "osType": "Linux",
+              //   "maxPods": 50,
+              //   "storageProfile": "ManagedDisks",
+              //   "_vmSize": "Standard_D1_v2",
+              //   "ASName": "JMP",
+              //   "mode": "User"
+              // }
+              {
+                "name": "linctr2",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 50,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "User"
+              }
+            ]
           }
         ],
         "AzSQLInfo": [
@@ -748,59 +801,6 @@
           {
             "Name": "SodaPopBot",
             "Sku": "S1"
-          }
-        ],
-        "AKSInfo": [
-          {
-            "Name": "01",
-            "Version": "1.22.4", // "1.20.2","1.19.7","1.19.6", "1.18.14"
-            "skuTier": "Paid", //Free
-            "enableRBAC": true, //true, false
-            "podIdentity": true, //true, false
-            "privateCluster": true, //true, false
-            "AgentPoolsSN": "snMT02",
-            "WAFName": "01",
-            "loadBalancer": "standard", //"basic","standard"
-            "BrownFields": 0,
-            "AppGateway": 0,
-            "aksAADAdminGroups": [
-              "AKS_Admins"
-            ],
-            "AgentPools": [
-              {
-                "name": "linctr",
-                "count": 2,
-                "osDiskSizeGb": 30,
-                "osType": "Linux",
-                "maxPods": 16,
-                "storageProfile": "ManagedDisks",
-                "_vmSize": "Standard_D1_v2",
-                "ASName": "JMP",
-                "mode": "System"
-              },
-              // {
-              //   "name": "winctr",
-              //   "count": 2,
-              //   "osDiskSizeGb": 30,
-              //   "osType": "Linux",
-              //   "maxPods": 50,
-              //   "storageProfile": "ManagedDisks",
-              //   "_vmSize": "Standard_D1_v2",
-              //   "ASName": "JMP",
-              //   "mode": "User"
-              // }
-              {
-                "name": "linctr2",
-                "count": 2,
-                "osDiskSizeGb": 30,
-                "osType": "Linux",
-                "maxPods": 50,
-                "storageProfile": "ManagedDisks",
-                "_vmSize": "Standard_D1_v2",
-                "ASName": "JMP",
-                "mode": "User"
-              }
-            ]
           }
         ],
         "cosmosDBInfo": [

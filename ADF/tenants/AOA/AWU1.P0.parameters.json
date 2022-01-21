@@ -32,7 +32,7 @@
         "NetworkWatcher": 1,
         "FlowLogs": 1,
         "VNet": 1,
-        "VNetPeering": 0,
+        "VNetPeering": 1,
         "DNSPrivateZone": 1,
         "DNSPublicZone": 0,
         "LinkPrivateDns": 1,
@@ -201,6 +201,20 @@
             "RBAC": [
               {
                 "Name": "Contributor"
+              }
+            ]
+          },
+          {
+            "Name": "LT",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
               }
             ]
           }
