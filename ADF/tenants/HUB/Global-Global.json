@@ -19,7 +19,6 @@
       "*.contoso.com",
       "*.psthing.com"
     ],
-    "CertificateThumbprint": "215B3BBC1ABF37BF8D79541383374857A30F86F7",
     "GHProject": "ADF",
     "ADOProject": "eshopondapr3",
     "ServicePrincipalAdmins": [

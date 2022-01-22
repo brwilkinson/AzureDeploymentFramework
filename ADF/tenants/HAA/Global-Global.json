@@ -27,7 +27,6 @@
     "DomainNameExt": "haapp.net",
     "__DomainNameExtSubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
     "__DomainNameExtRG": "ACU1-BRW-HAA-RG-G1",
-    "CertificateThumbprint": "06A7D32D11C54BDC23E2DDB19148C29BE6E76612",
     "GHProject": "ADF",
     "ADOProject": "ADF",
     "AZDevOpsOrg": "AzureDeploymentFramework",

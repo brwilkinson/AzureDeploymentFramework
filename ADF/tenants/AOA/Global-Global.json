@@ -10,7 +10,7 @@
     },
     "PrimaryLocation": "CentralUS",
     "SecondaryLocation": "EastUS2",
-    "IPAddressforRemoteAccess": [
+    "IPAddressforRemoteAccess": [ // move these to keyvault
       "73.225.196.211/32",
       "157.100.170.101/32"
     ],
@@ -25,7 +25,6 @@
     "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "__DomainNameExtRG": "ACU1-BRW-AOA-RG-G1",
-    "CertificateThumbprint": "F3FD8F34736766A275FF7B3572B7EACCBB35B7C5",
     "GHProject": "ADF",
     "ADOProject": "ADF",
     "AZDevOpsOrg": "AzureDeploymentFramework",

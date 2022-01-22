@@ -69,11 +69,6 @@ if (!(Test-Path -Path $CertFilePath))
     $PW = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name LocalAdmin
 
     Export-PfxCertificate -FilePath $CertFilePath -Cert $cert -Password $PW.SecretValue
-
-    # Write the Cert and the thumbprint back to the json data  Global-Global.json 
-    $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json
-    $Temp.Global.CertificateThumbprint = $cert.Thumbprint
-    $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-Global.json
 }
 
 # Read the keyvault secret, from the Keyvault
@@ -82,15 +77,9 @@ return
 if ($DeployPrimary)
 {
     Import-AzKeyVaultCertificate -FilePath $CertFilePath -Name WildcardCert -VaultName $primaryKVName -Password $PW.SecretValue -OutVariable kvcert
-    # $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json
-    # $Temp.Global.certificateUrl = $kvcert[0].SecretId
-    # $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json
 }
 
 if ($DeploySecondary)
 {
     Import-AzKeyVaultCertificate -FilePath $CertFilePath -Name WildcardCert -VaultName $secondaryKVName -Password $PW.SecretValue -OutVariable kvcert
-    # $Temp = Get-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json | ConvertFrom-Json
-    # $Temp.Global.certificateUrl = $kvcert[0].SecretId
-    # $Temp | ConvertTo-Json | Set-Content -Path $Artifacts\tenants\$App\Global-$SecondaryPrefix.json
 }
