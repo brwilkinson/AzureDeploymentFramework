@@ -815,7 +815,6 @@
             "WAFMode": "Detection",
             "WAFPolicyAttached": true,
             "WAFPolicyName": "API",
-            "WAFSize": "WAF_v2",
             "WAFTier": "WAF_v2",
             "WAFCapacity": 2,
             "PrivateIP": "29",

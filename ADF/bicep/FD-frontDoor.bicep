@@ -131,7 +131,7 @@ module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services: {
   }
 }]
 
-resource FD 'Microsoft.Network/frontdoors@2020-05-01' = {
+resource FD 'Microsoft.Network/frontDoors@2020-05-01' = {
   name: FDName
   location: 'global'
   properties: {

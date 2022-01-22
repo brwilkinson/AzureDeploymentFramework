@@ -74,6 +74,8 @@ Function global:Start-AzMofUpload
     
     $sshPublicSS = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name sshPublic | ForEach-Object SecretValue
     $sshPublicCred = [PSCredential]::new('ssh', $sshPublicSS)
+
+    $Thumbprint = Get-AzKeyVaultCertificate -VaultName $primaryKVName -Name Wildcardcert | foreach Thumbprint
     
     $clientID = Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name "${Deployment}-uaiStorageAccountOperatorGlobal" | ForEach-Object clientId
     $RGclientID = Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name "${Deployment}-uaiStorageAccountOperator" | ForEach-Object clientId
@@ -124,7 +126,7 @@ Function global:Start-AzMofUpload
             AdminCreds        = $using:localadminCred
             sshPublic         = $using:sshPublicCred
             devOpsPat         = $using:devOpsPatCred
-            ThumbPrint        = $Global.CertificateThumbprint
+            ThumbPrint        = $using:Thumbprint
             StorageAccountId  = $using:GlobalStorageID
             Deployment        = $using:Deployment
             NetworkID         = $using:networkID

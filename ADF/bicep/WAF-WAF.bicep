@@ -32,12 +32,8 @@ var gh = {
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 
-resource FWPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2021-02-01' existing = if (contains(waf, 'WAFEnabled') && (waf.WAFEnabled == true)) {
-  name: '${Deployment}-wafPolicy${((contains(waf, 'WAFEnabled') && (waf.WAFEnabled == true)) ? waf.WAFPolicyName : 'nopolicy')}'
-}
-
-var firewallPolicy = {
-  id: FWPolicy.id
+resource FWPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2021-02-01' existing = {
+  name: '${DeploymentURI}Policywaf${waf.WAFPolicyName}'
 }
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
@@ -57,14 +53,14 @@ var SSLpolicyLookup = {
     policyName: 'AppGwSslPolicy20170401S'
     policyType: 'Predefined'
   }
-  Default: json('null')
+  Default: null
 }
 
 var webApplicationFirewallConfiguration = {
-  enabled: waf.WAFEnabled
-  firewallMode: ((contains(waf, 'WAFEnabled') && (waf.WAFEnabled == true)) ? waf.WAFMode : json('null'))
+  enabled: contains(waf, 'WAFEnabled') && bool(waf.WAFEnabled) ? waf.WAFEnabled : null
+  firewallMode: contains(waf, 'WAFEnabled') && bool(waf.WAFEnabled) ? waf.WAFMode : null
   ruleSetType: 'OWASP'
-  ruleSetVersion: '3.0'
+  ruleSetVersion: '3.1'
 }
 
 var Listeners = [for listener in waf.Listeners: {
@@ -96,9 +92,18 @@ resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' existing = {
   name: '${Deployment}-waf${waf.WAFName}-publicip1'
 }
 
+resource WAFPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2021-05-01' existing = {
+  name: '${DeploymentURI}WAFPolicy${waf.WAFPolicyName}'
+}
+
 resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
   name: WAFName
   location: resourceGroup().location
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -107,14 +112,19 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
   }
   properties: {
     forceFirewallPolicyAssociation: true
-    sslPolicy: (contains(waf, 'SSLPolicy') ? SSLpolicyLookup[waf.SSLPolicy] : json('null'))
-    firewallPolicy: ((contains(waf, 'WAFPolicyAttached') && (waf.WAFPolicyAttached == true)) ? firewallPolicy : json('null'))
-    sku: {
-      name: waf.WAFSize
-      tier: waf.WAFTier
-      capacity: waf.WAFCapacity
+    autoscaleConfiguration: {
+      minCapacity: 0
+      maxCapacity: 10
     }
-    webApplicationFirewallConfiguration: ((contains(waf, 'WAFEnabled') && (waf.WAFEnabled == true)) ? webApplicationFirewallConfiguration : json('null'))
+    sslPolicy: contains(waf, 'SSLPolicy') ? SSLpolicyLookup[waf.SSLPolicy] : null
+    firewallPolicy: !(contains(waf, 'WAFPolicyAttached') && bool(waf.WAFPolicyAttached)) ? null : {
+      id: WAFPolicy.id
+    }
+    sku: {
+      name: waf.WAFTier
+      tier: waf.WAFTier
+    }
+    webApplicationFirewallConfiguration: contains(waf, 'WAFPolicyAttached') && bool(waf.WAFPolicyAttached) ? null : contains(waf, 'WAFEnabled') && bool(waf.WAFEnabled) ? webApplicationFirewallConfiguration : null
     gatewayIPConfigurations: [
       {
         name: 'appGatewayIpConfig'
@@ -247,7 +257,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
       properties: {
         protocol: probe.protocol
         path: probe.path
-        host: (probe.useBE ? json('null') : '${probe.name}.${Global.domainName}')
+        host: (bool(probe.useBE) ? null : '${probe.name}.${Global.domainName}')
         interval: 30
         timeout: 30
         unhealthyThreshold: 3
@@ -262,7 +272,6 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-07-01' = {
       }
     }]
   }
-  dependsOn: []
 }
 
 resource WAFDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
@@ -317,6 +326,9 @@ module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list, index) in waf.Listeners:
     cname: PublicIP.properties.dnsSettings.fqdn
     Global: Global
   }
+  dependsOn: [
+    WAFDiag
+  ]
 }]
 
 module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list, index) in waf.Listeners: if (bool(Stage.SetExternalDNS) && (list.Protocol == 'https')) {
@@ -327,6 +339,9 @@ module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list, index) in waf.Listeners:
     ipv4Address: ((list.Interface == 'Private') ? WAF.properties.frontendIPConfigurations[1].properties.privateIPAddress : PublicIP.properties.ipAddress)
     Global: Global
   }
+  dependsOn: [
+    WAFDiag
+  ]
 }]
 
 output output1 array = WAF.properties.frontendIPConfigurations

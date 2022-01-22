@@ -1187,7 +1187,6 @@
             "WAFName": "API",
             "WAFEnabled": false,
             "WAFMode": "Detection",
-            "WAFSize": "Standard_v2",
             "WAFTier": "Standard_v2",
             "WAFCapacity": 2,
             "PrivateIP": "30",

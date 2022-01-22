@@ -472,7 +472,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-07-01' = {
       //         }
       //         configurationArguments: {
       //           DomainName: Global.ADDomainName
-      //           Thumbprint: Global.certificateThumbprint
+      //           Thumbprint: cert.properties.secretUriWithVersion
       //           storageAccountId: saaccountidglobalsource.id
       //           deployment: Deployment
       //           networkid: '${networkId}.'

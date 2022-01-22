@@ -578,7 +578,7 @@ resource AppServerDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01'
       }
       configurationArguments: {
         DomainName: Global.ADDomainName
-        // Thumbprint: Global.certificateThumbprint
+        // Thumbprint: cert.properties.secretUriWithVersion
         // storageAccountId: saaccountidglobalsource.id
         // deployment: replace(Deployment, '-', '')
         // networkid: '${networkId}.'
@@ -638,7 +638,7 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' 
       }
       configurationArguments: {
         DomainName: Global.ADDomainName
-        Thumbprint: Global.certificateThumbprint
+        Thumbprint: cert.properties.secretUriWithVersion
         storageAccountId: saaccountidglobalsource.id
         deployment: Deployment
         networkid: '${networkId}.'
@@ -799,6 +799,11 @@ resource AppServerSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions
         Enable: true
         CredentialName: Global.sqlCredentialName
       }
+        // AutoBackupSettings: {
+        //   Enable: true,
+        //   RetentionPeriod: 5
+        //   EnableEncryption: true
+        // }
     }
     protectedSettings: {
       PrivateKeyVaultCredentialSettings: {

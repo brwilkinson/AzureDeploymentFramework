@@ -38,7 +38,6 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var ENV = '${Environment}${DeploymentID}'
 
-
 var regionLookup = json(loadTextContent('./global/region.json'))
 var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
 
