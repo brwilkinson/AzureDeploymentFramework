@@ -1001,10 +1001,10 @@
                     "matchVariable": "RequestUri",
                     "operator": "Contains",
                     "negateCondition": false,
+                    "transforms": [],
                     "matchValue": [
                       "/promo"
-                    ],
-                    "transforms": []
+                    ]
                   }
                 ]
               }
@@ -1035,10 +1035,10 @@
                     "matchVariable": "RequestUri",
                     "operator": "Contains",
                     "negateCondition": false,
+                    "transforms": [],
                     "matchValue": [
                       "/promo"
-                    ],
-                    "transforms": []
+                    ]
                   }
                 ]
               }
