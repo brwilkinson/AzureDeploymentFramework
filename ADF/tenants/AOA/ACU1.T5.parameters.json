@@ -501,7 +501,7 @@
                 "groupID": "vault"
               }
             ],
-            "rolesInfo": [
+            "rolesInfo": [ // not in use as yet
               {
                 "Name": "BW",
                 "RBAC": [
@@ -573,16 +573,16 @@
             "podIdentity": true, //true, false
             "privateCluster": false, //true, false
             "AgentPoolsSN": "snMT02",
-            "WAFName": "01",
+            "WAFName": "AGIC01",
             "loadBalancer": "standard", //"basic","standard"
-            "BrownFields": 0,
-            "AppGateway": 0,
+            "BrownFields": 1,
+            "AppGateway": 1,
             "aksAADAdminGroups": [
               "AKS_Admins"
             ],
             "AgentPools": [
               {
-                "name": "linctr",
+                "name": "linctr1",
                 "count": 2,
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
@@ -593,7 +593,7 @@
                 "mode": "System"
               },
               // {
-              //   "name": "winctr",
+              //   "name": "winctr1",
               //   "count": 2,
               //   "osDiskSizeGb": 30,
               //   "osType": "Linux",
@@ -1349,7 +1349,7 @@
         ],
         "WAFPolicyInfo": [
           {
-            "Name": "API01",
+            "Name": "AGIC01",
             "State": "Enabled",
             "Mode": "Prevention",
             "ruleSetVersion": "3.1",
@@ -1361,43 +1361,17 @@
         ],
         "WAFInfo": [
           {
-            "WAFName": "API01",
-            "ISAGIC": true,
-            "WAFEnabled": false,
-            "WAFMode": "Detection",
+            "WAFName": "AGIC01",
             "WAFPolicyAttached": true,
-            "WAFPolicyName": "API01",
+            "WAFPolicyName": "AGIC01",
             "WAFTier": "WAF_v2",
-            "WAFCapacity": 40,
-            "PrivateIP": "253",
+            "PrivateIP": "252",
             "SSLCerts": [
               "PSTHING-WildCard"
             ],
-            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [
-              // "254"
-            ],
+            "BEIPs": [],
             "pathRules": [],
-            "probes": [
-              // {
-              //   "Name": "probe01",
-              //   "Path": "/",
-              //   "Protocol": "http",
-              //   "useBE": true
-              // },
-              {
-                "Name": "probe02",
-                "Path": "/api/headers",
-                "Protocol": "https",
-                "useBE": false
-              },
-              {
-                "Name": "probe03",
-                "Path": "/api/headers",
-                "Protocol": "http",
-                "useBE": false
-              }
-            ],
+            "probes": [],
             "frontEndPorts": [
               {
                 "Port": 80
@@ -1409,17 +1383,7 @@
             "BackendHttp": [
               {
                 "Port": 80,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe03"
-              },
-              {
-                "Port": 443,
-                "Protocol": "https",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe02"
+                "Protocol": "http"
               }
             ],
             "Listeners": [
@@ -1429,18 +1393,16 @@
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
                 "Domain": "psthing.com",
-                "Hostname": "API02",
+                "Hostname": "AGIC01",
                 "Interface": "Public"
-                // "pathRules": "map1"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
                 "Domain": "psthing.com",
-                "Hostname": "API02",
+                "Hostname": "AGIC01",
                 "Interface": "Public",
                 "httpsRedirect": 1
-                // "pathRules": "map1"
               }
             ]
           },
