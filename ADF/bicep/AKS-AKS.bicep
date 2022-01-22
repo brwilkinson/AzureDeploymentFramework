@@ -63,16 +63,16 @@ var IngressBrownfields = {
 }
 var enablePrivateCluster = {
   enablePrivateCluster: true
-  privateDNSZone: ((AKSInfo.privateCluster == bool('false')) ? json('null') : resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.centralus.azmk8s.io'))
+  privateDNSZone: bool(AKSInfo.privateCluster) ? null : resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.centralus.azmk8s.io')
 }
 var aadProfile = {
   managed: true
-  enableAzureRBAC: AKSInfo.enableRBAC
-  adminGroupObjectIDs: (AKSInfo.enableRBAC ? aksAADAdminLookup : json('null'))
+  enableAzureRBAC: bool(AKSInfo.enableRBAC)
+  adminGroupObjectIDs: AKSInfo.enableRBAC ? aksAADAdminLookup : null
   tenantID: tenant().tenantId
 }
 var podIdentityProfile = {
-  enabled: AKSInfo.enableRBAC
+  enabled: bool(AKSInfo.enableRBAC)
 }
 var availabilityZones = [
   '1'
@@ -161,8 +161,8 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
         logAnalyticsWorkspaceResourceId: OMS.id
       }
     }
-    aadProfile: (AKSInfo.enableRBAC ? aadProfile : json('null'))
-    apiServerAccessProfile: ((!AKSInfo.privateCluster) ? json('null') : enablePrivateCluster)
+    aadProfile: (AKSInfo.enableRBAC ? aadProfile : null)
+    apiServerAccessProfile: bool(AKSInfo.privateCluster) ? enablePrivateCluster : null
     networkProfile: {
       outboundType: 'loadBalancer'
       loadBalancerSku: AKSInfo.loadBalancer
@@ -173,10 +173,9 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
       dnsServiceIP: '10.0.0.10'
       dockerBridgeCidr: '172.17.0.1/16'
     }
-    podIdentityProfile: (AKSInfo.podIdentity ? podIdentityProfile : json('null'))
+    podIdentityProfile: bool(AKSInfo.podIdentity) ? podIdentityProfile : null
     addonProfiles: {
       IngressApplicationGateway: {
-        
         enabled: bool(AKSInfo.AppGateway)
         config: bool(AKSInfo.BrownFields) ? IngressBrownfields : IngressGreenfields
       }

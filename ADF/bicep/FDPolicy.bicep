@@ -39,7 +39,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var FDPolicyInfo = contains(DeploymentInfo, 'FrontDoorInfoPolicyInfo') ? DeploymentInfo.FrontDoorInfoPolicyInfo : []
+var FDPolicyInfo = contains(DeploymentInfo, 'FrontDoorPolicyInfo') ? DeploymentInfo.FrontDoorPolicyInfo : []
 
 var POLICY = [for policy in FDPolicyInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, policy.Name))
@@ -306,6 +306,66 @@ var ruleGroupOverrides = [
   }
 ]
 
+
+
+
+// @description('Generated from /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Network/frontdoorWebApplicationFirewallPolicies/acu1brwaoat5PolicyafdAPI')
+// resource acubrwaoatPolicyafdAPI 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2020-11-01' = {
+//   name: 'acu1brwaoat5PolicyafdAPI'
+//   location: 'Global'
+//   tags: {}
+//   sku: {
+//     name: 'Classic_AzureFrontDoor'
+//   }
+//   properties: {
+//     policySettings: {
+//       enabledState: 'Enabled'
+//       mode: 'Prevention'
+//       customBlockResponseStatusCode: 403
+//       requestBodyCheck: 'Disabled'
+//     }
+//     customRules: {
+//       rules: [
+//         {
+//           name: 'rateLimitRule'
+//           enabledState: 'Enabled'
+//           priority: 1
+//           ruleType: 'RateLimitRule'
+//           rateLimitDurationInMinutes: 1
+//           rateLimitThreshold: 1000
+//           matchConditions: [
+//             {
+//               matchVariable: 'RequestUri'
+//               operator: 'Contains'
+//               negateCondition: false
+//               matchValue: [
+//                 '/promo'
+//               ]
+//               transforms: []
+//             }
+//           ]
+//           action: 'Block'
+//         }
+//       ]
+//     }
+//     managedRules: {
+//       managedRuleSets: [
+//         {
+//           ruleSetType: 'DefaultRuleSet'
+//           ruleSetVersion: '1.0'
+//           ruleGroupOverrides: []
+//           exclusions: []
+//         }
+//         {
+//           ruleSetType: 'Microsoft_BotManagerRuleSet'
+//           ruleSetVersion: '1.0'
+//           ruleGroupOverrides: []
+//           exclusions: []
+//         }
+//       ]
+//     }
+//   }
+// }
 resource ClassicFDOWASPBot 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2020-11-01' = [for (policy, index) in FDPolicyInfo: if (POLICY[index].match) {
   name: '${DeploymentURI}Policyafd${policy.name}'
   location: 'Global'
