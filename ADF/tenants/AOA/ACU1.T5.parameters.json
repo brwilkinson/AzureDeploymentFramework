@@ -980,14 +980,35 @@
             ]
           }
         ],
-        "FrontDoorInfoPolicyInfo": [
+        "FrontDoorPolicyInfo": [
           {
             "Name": "API",
             "Version": "Classic", //Classic,Standard,Premium
             "State": "Enabled",
             "Mode": "Prevention",
             "ruleSetVersion": "1.0",
-            "customRules": [],
+            "customRules": [
+              {
+                "name": "RateLimitRule",
+                "ruleType": "RateLimitRule",
+                "EnabledState": "Enabled",
+                "action": "Block",
+                "priority": 1,
+                "rateLimitDurationInMinutes": 1,
+                "rateLimitThreshold": 1000,
+                "MatchConditions": [
+                  {
+                    "matchVariable": "RequestUri",
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValue": [
+                      "/promo"
+                    ],
+                    "transforms": []
+                  }
+                ]
+              }
+            ],
             "exclusions": [],
             "ruleGroupOverrides": [],
             "enableBotRule": 1,
@@ -1000,7 +1021,28 @@
             "State": "Enabled",
             "Mode": "Prevention",
             "ruleSetVersion": "1.0",
-            "customRules": [],
+            "customRules": [
+              {
+                "name": "RateLimitRule",
+                "ruleType": "RateLimitRule",
+                "EnabledState": "Enabled",
+                "action": "Block",
+                "priority": 1,
+                "rateLimitDurationInMinutes": 1,
+                "rateLimitThreshold": 1000,
+                "MatchConditions": [
+                  {
+                    "matchVariable": "RequestUri",
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValue": [
+                      "/promo"
+                    ],
+                    "transforms": []
+                  }
+                ]
+              }
+            ],
             "exclusions": [],
             "ruleGroupOverrides": [],
             "enableBotRule": 1,
