@@ -31,7 +31,6 @@
     "ServicePrincipalAdmins": [
       "BW"
     ],
-    "defaultWAFsslpolicyName": "AppGwSslPolicy20170401S",
     "apimPublisherEmail": "alerts@contoso.com",
     "alertRecipients": [
       "alerts@contoso.com"
@@ -39,7 +38,6 @@
     "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
     "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
     "sqlCredentialName": "brw",
-    "sqlAutobackupRetentionPeriod": 5,
     "RolesLookup": {
       "BW": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
       "LT": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",

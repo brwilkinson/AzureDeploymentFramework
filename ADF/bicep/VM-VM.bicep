@@ -799,6 +799,11 @@ resource AppServerSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions
         Enable: true
         CredentialName: Global.sqlCredentialName
       }
+        // AutoBackupSettings: {
+        //   Enable: true,
+        //   RetentionPeriod: 5
+        //   EnableEncryption: true
+        // }
     }
     protectedSettings: {
       PrivateKeyVaultCredentialSettings: {

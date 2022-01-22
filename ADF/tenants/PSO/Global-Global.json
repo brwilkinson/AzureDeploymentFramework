@@ -28,7 +28,6 @@
     "ServicePrincipalAdmins": [
       "benwilk@microsoft.com"
     ],
-    "defaultWAFsslpolicyName": "AppGwSslPolicy20170401S",
     "apimPublisherEmail": "alerts@contoso.com",
     "alertRecipients": [
       "alerts@contoso.com"
@@ -36,7 +35,6 @@
     "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
     "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
     "sqlCredentialName": "localadmin",
-    "sqlAutobackupRetentionPeriod": 5,
     "RolesLookup": {
       "benwilk@Microsoft.com": "b8214ecb-d982-402b-8185-ca909b853eec",
       "ADF_AZC1-PSO-RG-P0": "04ae85ef-f1d2-45fe-88ca-5dd117af3102",
