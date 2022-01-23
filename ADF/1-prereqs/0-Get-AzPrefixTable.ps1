@@ -16,7 +16,7 @@ Get-AzLocation | ForEach-Object {
 
     $UsablePrefix = if ($manualOverrides[$location]) { 'A' + $manualOverrides[$location] } else { $Prefix }
     
-    $PrefixLookup[$UsablePrefix] = [pscustomobject]@{
+    $Current = [pscustomobject]@{
         displayname  = $_.displayname
         location     = $location
         first        = $Parts[0]
@@ -26,7 +26,12 @@ Get-AzLocation | ForEach-Object {
         NameOverRide = $manualOverrides[$location]
         PREFIX       = $UsablePrefix
     }
-}
+    $Current
+    
+    # Only export limited propeties to json to limit size with loadtextcontext
+    $PrefixLookup[$UsablePrefix] = $Current | Select-Object displayname, location, prefix
+} | Format-Table -AutoSize
+
 $PrefixLookup | ConvertTo-Json | Set-Content -Path $PSScriptRoot\..\bicep\global\prefix.json
 
 # Documentation for this is available here:
