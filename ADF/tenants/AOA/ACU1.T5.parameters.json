@@ -564,6 +564,420 @@
             "_frontDoor": "01"
           }
         ],
+        "FrontDoorPolicyInfo": [
+          {
+            "Name": "API",
+            "Version": "Classic", //Classic,Standard,Premium
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "1.0",
+            "customRules": [
+              {
+                "name": "RateLimitRule",
+                "ruleType": "RateLimitRule",
+                "EnabledState": "Enabled",
+                "action": "Block",
+                "priority": 1,
+                "rateLimitDurationInMinutes": 1,
+                "rateLimitThreshold": 1000,
+                "MatchConditions": [
+                  {
+                    "matchVariable": "RequestUri",
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "transforms": [],
+                    "matchValue": [
+                      "/promo"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "exclusions": [],
+            "ruleGroupOverrides": [],
+            "enableBotRule": 1,
+            "botRuleGroupOverrides": [],
+            "botexclusions": []
+          },
+          {
+            "Name": "API2",
+            "Version": "Premium", //Classic,Standard,Premium
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "1.0",
+            "customRules": [
+              {
+                "name": "RateLimitRule",
+                "ruleType": "RateLimitRule",
+                "EnabledState": "Enabled",
+                "action": "Block",
+                "priority": 1,
+                "rateLimitDurationInMinutes": 1,
+                "rateLimitThreshold": 1000,
+                "MatchConditions": [
+                  {
+                    "matchVariable": "RequestUri",
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "transforms": [],
+                    "matchValue": [
+                      "/promo"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "exclusions": [],
+            "ruleGroupOverrides": [],
+            "enableBotRule": 1,
+            "botRuleGroupOverrides": [],
+            "botexclusions": []
+          }
+        ],
+        "FrontDoorInfo": [
+          {
+            "name": "01",
+            "_afdverify": "AOA",
+            "rulesEngineDetached": 1,
+            "rules": [
+              {
+                "name": "Rule1",
+                "priority": 0,
+                "action": {
+                  "requestHeaderActions": [],
+                  "responseHeaderActions": [
+                    {
+                      "headerActionType": "Append",
+                      "headerName": "Content-Security-Policy",
+                      "value": "\"script-src 'self' https://apiphany.portal.azure-api.net.\""
+                    }
+                  ]
+                },
+                "matchConditions": [
+                  {
+                    "rulesEngineMatchValue": [
+                      "AQ"
+                    ],
+                    "negateCondition": false,
+                    "rulesEngineMatchVariable": "RemoteAddr",
+                    "rulesEngineOperator": "GeoMatch",
+                    "transforms": []
+                  }
+                ],
+                "matchProcessingBehavior": "Continue"
+              }
+            ],
+            "services": [
+              {
+                "Name": "APIM03", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "patternsToMatch": [
+                  "/*"
+                ],
+                "rulesEngine": "Rule1"
+              },
+              {
+                "Name": "APIM03-Developer",
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-developer.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                "Name": "APIM03-Scm", // acu1-BRW-AOA-s1-afd 01 - apim01-scm .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-scm.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                // Default (front end) Service is Required, add backend as well for ability to test FE.
+                "Name": "Default",
+                "BEAddress": [
+                  {
+                    "address": "portal.azure.com"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
+            ]
+          }
+        ],
+        "WAFPolicyInfo": [
+          {
+            "Name": "AGIC01",
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "3.1",
+            "enableBotRule": 1,
+            "customRules": [],
+            "exclusions": [],
+            "ruleGroupOverrides": []
+          }
+        ],
+        "WAFInfo": [
+          {
+            "WAFName": "AGIC01",
+            "WAFPolicyAttached": true,
+            "WAFPolicyName": "AGIC01",
+            "WAFTier": "WAF_v2",
+            "PrivateIP": "252",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "BEIPs": [],
+            "pathRules": [],
+            "probes": [],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC01",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC01",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              }
+            ]
+          },
+          {
+            "WAFName": "API02",
+            "WAFEnabled": false,
+            // "WAFMode": "Detection",
+            // "WAFPolicyAttached": false,
+            // "WAFPolicyName": "API",
+            "WAFTier": "Standard_v2",
+            "WAFCapacity": 40,
+            "PrivateIP": "253",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "BEIPs": [
+              // "254"
+            ],
+            "pathRules": [],
+            "probes": [
+              // {
+              //   "Name": "probe01",
+              //   "Path": "/",
+              //   "Protocol": "http",
+              //   "useBE": true
+              // },
+              {
+                "Name": "probe02",
+                "Path": "/api/headers",
+                "Protocol": "https",
+                "useBE": false
+              },
+              {
+                "Name": "probe03",
+                "Path": "/api/headers",
+                "Protocol": "http",
+                "useBE": false
+              }
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe03"
+              },
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe02"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "API02",
+                "Interface": "Public"
+                // "pathRules": "map1"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "API02",
+                "Interface": "Public",
+                "httpsRedirect": 1
+                // "pathRules": "map1"
+              }
+            ]
+          },
+          {
+            "WAFName": "API03",
+            "WAFEnabled": false,
+            // "WAFMode": "Detection",
+            // "WAFPolicyAttached": false,
+            // "WAFPolicyName": "API",
+            "WAFTier": "Standard_v2",
+            "WAFCapacity": 2,
+            "PrivateIP": "254",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "zones": [
+              "1"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "BEIPs": [
+              // "254"
+            ],
+            "pathRules": [],
+            "probes": [
+              // {
+              //   "Name": "probe01",
+              //   "Path": "/",
+              //   "Protocol": "http",
+              //   "useBE": true
+              // },
+              {
+                "Name": "probe02",
+                "Path": "/api/headers",
+                "Protocol": "https",
+                "useBE": false
+              },
+              {
+                "Name": "probe03",
+                "Path": "/api/headers",
+                "Protocol": "http",
+                "useBE": false
+              }
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe03"
+              },
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe02"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "API03",
+                "Interface": "Public"
+                // "pathRules": "map1"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "API03",
+                "Interface": "Public",
+                "httpsRedirect": 1
+                // "pathRules": "map1"
+              }
+            ]
+          }
+        ],
         "AKSInfo": [
           {
             "Name": "01",
@@ -606,6 +1020,7 @@
               {
                 "name": "linctr2",
                 "count": 2,
+                "maxcount": 4,
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
                 "maxPods": 50,
@@ -980,191 +1395,6 @@
             ]
           }
         ],
-        "FrontDoorPolicyInfo": [
-          {
-            "Name": "API",
-            "Version": "Classic", //Classic,Standard,Premium
-            "State": "Enabled",
-            "Mode": "Prevention",
-            "ruleSetVersion": "1.0",
-            "customRules": [
-              {
-                "name": "RateLimitRule",
-                "ruleType": "RateLimitRule",
-                "EnabledState": "Enabled",
-                "action": "Block",
-                "priority": 1,
-                "rateLimitDurationInMinutes": 1,
-                "rateLimitThreshold": 1000,
-                "MatchConditions": [
-                  {
-                    "matchVariable": "RequestUri",
-                    "operator": "Contains",
-                    "negateCondition": false,
-                    "transforms": [],
-                    "matchValue": [
-                      "/promo"
-                    ]
-                  }
-                ]
-              }
-            ],
-            "exclusions": [],
-            "ruleGroupOverrides": [],
-            "enableBotRule": 1,
-            "botRuleGroupOverrides": [],
-            "botexclusions": []
-          },
-          {
-            "Name": "API2",
-            "Version": "Premium", //Classic,Standard,Premium
-            "State": "Enabled",
-            "Mode": "Prevention",
-            "ruleSetVersion": "1.0",
-            "customRules": [
-              {
-                "name": "RateLimitRule",
-                "ruleType": "RateLimitRule",
-                "EnabledState": "Enabled",
-                "action": "Block",
-                "priority": 1,
-                "rateLimitDurationInMinutes": 1,
-                "rateLimitThreshold": 1000,
-                "MatchConditions": [
-                  {
-                    "matchVariable": "RequestUri",
-                    "operator": "Contains",
-                    "negateCondition": false,
-                    "transforms": [],
-                    "matchValue": [
-                      "/promo"
-                    ]
-                  }
-                ]
-              }
-            ],
-            "exclusions": [],
-            "ruleGroupOverrides": [],
-            "enableBotRule": 1,
-            "botRuleGroupOverrides": [],
-            "botexclusions": []
-          }
-        ],
-        "FrontDoorInfo": [
-          {
-            "name": "01",
-            "_afdverify": "AOA",
-            "rulesEngineDetached": 1,
-            "rules": [
-              {
-                "name": "Rule1",
-                "priority": 0,
-                "action": {
-                  "requestHeaderActions": [],
-                  "responseHeaderActions": [
-                    {
-                      "headerActionType": "Append",
-                      "headerName": "Content-Security-Policy",
-                      "value": "\"script-src 'self' https://apiphany.portal.azure-api.net.\""
-                    }
-                  ]
-                },
-                "matchConditions": [
-                  {
-                    "rulesEngineMatchValue": [
-                      "AQ"
-                    ],
-                    "negateCondition": false,
-                    "rulesEngineMatchVariable": "RemoteAddr",
-                    "rulesEngineOperator": "GeoMatch",
-                    "transforms": []
-                  }
-                ],
-                "matchProcessingBehavior": "Continue"
-              }
-            ],
-            "services": [
-              {
-                "Name": "APIM03", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
-                "BEAddress": [
-                  {
-                    "address": "{Deployment}-apim03.azure-api.net",
-                    "hostheader": "{Deployment}-afd03-apim03.{Domain}"
-                  }
-                ],
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1, // _ to rename to disable after initial deployment
-                "patternsToMatch": [
-                  "/*"
-                ],
-                "rulesEngine": "Rule1"
-              },
-              {
-                "Name": "APIM03-Developer",
-                "BEAddress": [
-                  {
-                    "address": "{Deployment}-apim03.azure-api.net",
-                    "hostheader": "{Deployment}-afd03-apim03-developer.{Domain}"
-                  }
-                ],
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1,
-                "patternsToMatch": [
-                  "/*"
-                ]
-              },
-              {
-                "Name": "APIM03-Scm", // acu1-BRW-AOA-s1-afd 01 - apim01-scm .psthing.com
-                "BEAddress": [
-                  {
-                    "address": "{Deployment}-apim03.azure-api.net",
-                    "hostheader": "{Deployment}-afd03-apim03-scm.{Domain}"
-                  }
-                ],
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "EnableSSL": 1,
-                "patternsToMatch": [
-                  "/*"
-                ]
-              },
-              {
-                // Default (front end) Service is Required, add backend as well for ability to test FE.
-                "Name": "Default",
-                "BEAddress": [
-                  {
-                    "address": "portal.azure.com"
-                  }
-                ],
-                "ProbeName": "probe01",
-                "LBSettings": "balance01",
-                "sessionAffinityEnabledState": "Disabled",
-                "patternsToMatch": [
-                  "/*"
-                ]
-              }
-            ],
-            "probes": [
-              {
-                "Name": "probe01",
-                "ProbePath": "/"
-              }
-            ],
-            "LBSettings": [
-              {
-                "Name": "balance01",
-                "sampleSize": 4,
-                "successfulSamplesRequired": 2,
-                "additionalLatencyMilliseconds": 0
-              }
-            ]
-          }
-        ],
         "Appservers": {
           "AppServers": [
             {
@@ -1387,235 +1617,6 @@
               "OSType": "Server2016SS",
               "NodeKind": "API01"
             }
-          }
-        ],
-        "WAFPolicyInfo": [
-          {
-            "Name": "AGIC01",
-            "State": "Enabled",
-            "Mode": "Prevention",
-            "ruleSetVersion": "3.1",
-            "enableBotRule": 1,
-            "customRules": [],
-            "exclusions": [],
-            "ruleGroupOverrides": []
-          }
-        ],
-        "WAFInfo": [
-          {
-            "WAFName": "AGIC01",
-            "WAFPolicyAttached": true,
-            "WAFPolicyName": "AGIC01",
-            "WAFTier": "WAF_v2",
-            "PrivateIP": "252",
-            "SSLCerts": [
-              "PSTHING-WildCard"
-            ],
-            "BEIPs": [],
-            "pathRules": [],
-            "probes": [],
-            "frontEndPorts": [
-              {
-                "Port": 80
-              },
-              {
-                "Port": 443
-              }
-            ],
-            "BackendHttp": [
-              {
-                "Port": 80,
-                "Protocol": "http"
-              }
-            ],
-            "Listeners": [
-              {
-                "Port": 443,
-                "BackendPort": "80",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
-                "Hostname": "AGIC01",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "psthing.com",
-                "Hostname": "AGIC01",
-                "Interface": "Public",
-                "httpsRedirect": 1
-              }
-            ]
-          },
-          {
-            "WAFName": "API02",
-            "WAFEnabled": false,
-            // "WAFMode": "Detection",
-            // "WAFPolicyAttached": false,
-            // "WAFPolicyName": "API",
-            "WAFTier": "Standard_v2",
-            "WAFCapacity": 40,
-            "PrivateIP": "253",
-            "SSLCerts": [
-              "PSTHING-WildCard"
-            ],
-            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [
-              // "254"
-            ],
-            "pathRules": [],
-            "probes": [
-              // {
-              //   "Name": "probe01",
-              //   "Path": "/",
-              //   "Protocol": "http",
-              //   "useBE": true
-              // },
-              {
-                "Name": "probe02",
-                "Path": "/api/headers",
-                "Protocol": "https",
-                "useBE": false
-              },
-              {
-                "Name": "probe03",
-                "Path": "/api/headers",
-                "Protocol": "http",
-                "useBE": false
-              }
-            ],
-            "frontEndPorts": [
-              {
-                "Port": 80
-              },
-              {
-                "Port": 443
-              }
-            ],
-            "BackendHttp": [
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe03"
-              },
-              {
-                "Port": 443,
-                "Protocol": "https",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe02"
-              }
-            ],
-            "Listeners": [
-              {
-                "Port": 443,
-                "BackendPort": "80",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
-                "Hostname": "API02",
-                "Interface": "Public"
-                // "pathRules": "map1"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "psthing.com",
-                "Hostname": "API02",
-                "Interface": "Public",
-                "httpsRedirect": 1
-                // "pathRules": "map1"
-              }
-            ]
-          },
-          {
-            "WAFName": "API03",
-            "WAFEnabled": false,
-            // "WAFMode": "Detection",
-            // "WAFPolicyAttached": false,
-            // "WAFPolicyName": "API",
-            "WAFTier": "Standard_v2",
-            "WAFCapacity": 2,
-            "PrivateIP": "254",
-            "SSLCerts": [
-              "PSTHING-WildCard"
-            ],
-            "zones": [
-              "1"
-            ],
-            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [
-              // "254"
-            ],
-            "pathRules": [],
-            "probes": [
-              // {
-              //   "Name": "probe01",
-              //   "Path": "/",
-              //   "Protocol": "http",
-              //   "useBE": true
-              // },
-              {
-                "Name": "probe02",
-                "Path": "/api/headers",
-                "Protocol": "https",
-                "useBE": false
-              },
-              {
-                "Name": "probe03",
-                "Path": "/api/headers",
-                "Protocol": "http",
-                "useBE": false
-              }
-            ],
-            "frontEndPorts": [
-              {
-                "Port": 80
-              },
-              {
-                "Port": 443
-              }
-            ],
-            "BackendHttp": [
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe03"
-              },
-              {
-                "Port": 443,
-                "Protocol": "https",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe02"
-              }
-            ],
-            "Listeners": [
-              {
-                "Port": 443,
-                "BackendPort": "80",
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
-                "Hostname": "API03",
-                "Interface": "Public"
-                // "pathRules": "map1"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "psthing.com",
-                "Hostname": "API03",
-                "Interface": "Public",
-                "httpsRedirect": 1
-                // "pathRules": "map1"
-              }
-            ]
           }
         ]
       }

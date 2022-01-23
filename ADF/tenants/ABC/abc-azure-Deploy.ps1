@@ -4,8 +4,9 @@ param (
 )
 import-module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -force
 AzSet -Enviro $enviro -App $App
+# F5 to run above.
 break
-# F8 to run individual steps
+# F8 to run individual steps.
 
 #############################
 # Note this file is here to get to you you started, you can run ALL of this from the command line

@@ -15,4 +15,5 @@ Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -Featur
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName EnablePodIdentityPreview
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName WindowsPreview
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName UserAssignedIdentityPreview
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-ScaleDownModePreview
 Register-AzResourceProvider -ProviderNamespace microsoft.containerservice
