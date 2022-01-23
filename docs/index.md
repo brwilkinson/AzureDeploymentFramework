@@ -3,7 +3,9 @@
 ## - Azure Deployment Framework
 Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readme)
 
-[Documentation - What is ADF](./ADF.md)
+Overview [What is ADF](./ADF.md)
+## - Azure Deployment Framework ##
+This page [Documentation Home](./index.md)
 
 ### FAQ
 
