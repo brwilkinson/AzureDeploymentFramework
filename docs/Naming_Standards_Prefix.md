@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
-- Go Home [Naming Standards](./Naming_Standards.md)
+- Go Next [Naming Standards Bicep](./Naming_Standards_Bicep.md)
 
 ### Naming Standards - These are configurable, however built into this project by design.
 
