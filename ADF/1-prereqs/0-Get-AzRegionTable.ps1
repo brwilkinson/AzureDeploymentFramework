@@ -14,7 +14,7 @@ Get-AzLocation | ForEach-Object {
         'westeurope'      = 'WEU'
     }
 
-    $PrefixLookup[$location] = [pscustomobject]@{
+    $Current = [pscustomobject]@{
         displayname  = $_.displayname
         location     = $location
         first        = $Parts[0]
@@ -22,9 +22,14 @@ Get-AzLocation | ForEach-Object {
         third        = $parts[2]
         Name         = $NameFormat
         NameOverRide = $manualOverrides[$location]
-        PREFIX       = if ($manualOverrides[$location]) { 'A' + $manualOverrides[$location] } else { $Prefix } 
+        PREFIX       = if ($manualOverrides[$location]) { 'A' + $manualOverrides[$location] } else { $Prefix }
     }
-}
+    $Current
+
+    # Only export limited propeties to json to limit size with loadtextcontext
+    $PrefixLookup[$location] = $Current | Select-Object displayname, location, prefix
+} | Format-Table -AutoSize
+
 $PrefixLookup | ConvertTo-Json | Set-Content -Path $PSScriptRoot\..\bicep\global\region.json
 
 # Documentation for this is available here:
