@@ -126,10 +126,15 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
     nodeResourceGroup: '${resourceGroup().name}-b'
     enableRBAC: AKSInfo.enableRBAC
     dnsPrefix: toLower('${Deployment}-aks${AKSInfo.Name}')
+    //  https://docs.microsoft.com/en-us/azure/templates/microsoft.containerservice/2021-10-01/managedclusters/agentpools?tabs=bicep
     agentPoolProfiles: [for (agentpool, index) in AKSInfo.agentPools: {
       name: agentpool.name
       mode: agentpool.mode
       count: agentpool.count
+      minCount: agentpool.count
+      maxCount: contains(agentpool, 'maxcount') ? agentpool.maxcount : agentpool.count
+      enableAutoScaling: true
+      scaleDownMode: 'Delete'
       osDiskSizeGB: agentpool.osDiskSizeGb
       osType: agentpool.osType
       maxPods: agentpool.maxPods
@@ -137,7 +142,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
       vnetSubnetID: (contains(agentpool, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', agentpool.Subnet) : resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', AKSInfo.AgentPoolsSN))
       type: 'VirtualMachineScaleSets'
       availabilityZones: ((AKSInfo.loadBalancer == 'basic') ? null : availabilityZones)
-      storageProfile: 'ManagedDisks'
+      // storageProfile: 'ManagedDisks'
     }]
     linuxProfile: {
       adminUsername: (contains(AKSInfo, 'AdminUser') ? AKSInfo.AdminUser : Global.vmAdminUserName)
