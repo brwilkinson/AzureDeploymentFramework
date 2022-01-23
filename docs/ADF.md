@@ -1,7 +1,7 @@
 #  Observations on ARM (Bicep) Templates
 
 ## - Azure Deployment Framework ## 
-Go Home [Documentation Home](./index.md)
+- Go Home [Documentation Home](./index.md)
 
 - [Documentation - What is ADF (PPTX)](./Slides_ADF.pptx)
 - [Documentation - What is ADF (PDF)](./Slides_ADF.pdf)

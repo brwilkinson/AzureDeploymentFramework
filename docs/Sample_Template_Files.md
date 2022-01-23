@@ -1,7 +1,7 @@
 #  Observations on ARM (Bicep) Templates # 
 
 ## - Azure Deployment Framework ## 
-Go Home [Documentation Home](./index.md)
+- Go Home [Documentation Home](./index.md)
 
 ### Azure Resource Group Deployment - ADF App Environment
 

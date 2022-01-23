@@ -1,8 +1,8 @@
 #  Observations on ARM (Bicep) Templates
 
 ## - Azure Deployment Framework 
-Go Home [Documentation Home](./index.md)
-Go Next [Deployment Partitions](./Deployment_Partitions.md)
+- Go Home [Documentation Home](./index.md)
+- Go Next [Deployment Partitions](./Deployment_Partitions.md)
 
 ### Azure Deployment Framework (ADF) Features
 
