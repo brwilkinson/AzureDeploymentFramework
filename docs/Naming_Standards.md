@@ -117,24 +117,24 @@ The name of any resource is determined via the following method.
     - Where appropriate the template also combines the parts to create a **DeploymentURI** Variable.
         - This URI will be lower case  a exclude any dashes Etc.
         - This is used for URI's and also things such as storage account names.
-        ```jsonc
-        "variables": {
-                        // example: ACU1-FAB-HUB-G1
-        "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-                        // example: acu1fabhubg1
-        "DeploymentURI": "[toLower(concat(parameters('Prefix'),parameters('Global').OrgName,parameters('Global').Appname,parameters('Environment'),parameters('DeploymentID')))]",
-        }
+        ```bicep
+        var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+        var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
         ```
     - Within the resources section any resource that is created uses the Deployment/DeploymentURI variable.
         - The Deployment + the resource type prefix + the Resource short name.
             - The Resource short name comes from the parameteter file for each enironment e.g. global
-        ```jsonc
-        "resources": [
-            {
-                      // aze2d02nte sa global
-              "name": "[toLower(concat(variables('DeploymentURI'),'sa',variables('saInfo')[copyIndex()].nameSuffix))]",
-              "type": "Microsoft.Storage/storageAccounts",
-              "location": "[resourceGroup().location]",
+        ```bicep
+        // a storage account
+        resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+            name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
+        }
+        ```
+
+        ```bicep
+        // a virtual machine
+        resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
+            name: '${Deployment}-vm${AppServer.Name}'
         ```
 - [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.ACU1.G1.parameters.json)
     - The parameter also contains individual resource definitions for that Resource Group
@@ -168,13 +168,12 @@ The name of any resource is determined via the following method.
         "AppName": "HUB",
     ```
     - The references to these can be seen above on the Deployment variable
-        - parameters('Global').OrgName
-        - parameters('Global').Appname
-    ```jsonc
-        "variables": {
-                        // example: ACU1-FAB-HUB-G1
-        "Deployment": "[concat(parameters('Prefix'),'-',parameters('Global').OrgName,'-',parameters('Global').Appname,'-',parameters('Environment'),parameters('DeploymentID'))]",
-    ```
+        - Global.OrgName
+        - Global.Appname
+        ```bicep
+        var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+        var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
+        ```
 
 #### An end user is **not responsible** for managing naming standards/conventions, **standards are baked in**, end users only provide the short resource name. **It is possible to change the default naming convention to meet your organizational needs**, I wouldn't recommend it, however you would simply update the **"Deployment"** variable (shown above in json code) to your new format.
 ##### Short Resource Name examples:

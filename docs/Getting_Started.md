@@ -26,29 +26,30 @@ Go Home [Documentation Home](./index.md)
 
 ## Steps
 
-1. There are several setup/management scripts in this directory: ADF\1-prereqs\CustomResources
-1. There are several shared metadata files in your Tenant Directory e.g. Global-Global, AZC1-Global, AZE2-Global
+1. There are several setup/management scripts in this directory: [1-prereqs](https://github.com/brwilkinson/AzureDeploymentFramework/tree/main/ADF/1-prereqs)
+1. There are several shared metadata files in your Tenant Directory e.g. Global-Global, Global-ACU1, Global-AEU2
 1. We will start with the HUB Tenant, this is the Shared Hub
 1. We will also deploy the HUB Global Resource, this is shared Global resources
 1. Open the following File and fill out all of the information ADF\tenants\HUB\Global-Global.json
     1. All of the info below should be filled out ahead of time
-    1. Replace the 3 Characters that map to the Name of your App, in this case HUB, you can leave HUB
+    1. Replace the 3 Characters that map to the Name of your Org e.g. BRW
+    1. Replace the 3 Characters that map to the Name of your App e.g. HUB
         ```json
         "Global": {
-            "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5", // Optional if different from current
-            "OrgName": "BRW",                       // "3-Letter-Company-Name"  e.g. This is required to ensure all public resources deployed have a unique name
+            "OrgName": "BRW",                       // "3-Letter-Company-Name"  e.g. This is required to ensure all public resources have a unique name
                                                         // This should stay the same across ALL Tenants, only the AppName will change
                                                         // Be sure to keep this consistent
             "AppName": "HUB",                       // "3-Letter-App-Name" e.g. in this project, we call this the tenant name.
             "PrimaryLocation": "CentralUS",         // "CentralUS" e.g. partner region to East US 2
             "SecondaryLocation": "EastUS2",         // "EastUS2" e.g. partner region to Central US
-            "IPAddressforRemoteAccess": "73.157.100.227/32",      // This IP will be used on NSG's if you have a Public IP
+            "IPAddressforRemoteAccess": ["73.157.100.227/32"],      // This IP will be used on NSG's if you have a Public IP
             "vmAdminUserName": "brw",               // "Local-Admin-UserName-for-Virtual-Machines"
             "DomainName": "psthing.com",            // "Interntal Active Directory Domain"
             "DomainNameExt": "psthing.com",         // "External Public DNS Name"
         ```
-1. Open and review the regional File/s e.g. ADF\tenants\HUB\AZC1-Global.json
+1. Open and review the regional File/s e.g. ADF\tenants\HUB\Global-ACU1.json
     1. The file name should match your Primary/Secondary Azure Region that you will deploy into
+        1. You can find your Prefix for your region in this [region lookup metadata file](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/region.json)
         ```json
           "Global": {
             "hubRG": {
