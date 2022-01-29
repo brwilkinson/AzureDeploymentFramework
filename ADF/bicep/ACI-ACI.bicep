@@ -1,3 +1,4 @@
+param Prefix string
 param Deployment string
 param DeploymentURI string
 #disable-next-line no-unused-params
@@ -23,24 +24,40 @@ var userAssignedIdentities = {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountFileContributor')}': {}
   }
 }
-var Instances = [for (ic,index) in ACIInfo.InstanceCount : {
+
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+
+resource VNET 'Microsoft.Network/virtualNetworks@2020-11-01' existing = {
+  name: '${Deployment}-vn'
+}
+
+var Instances = [for (j,index) in range(0, ACIInfo.InstanceCount) : {
   name: '${ACIInfo.Name}-${index}'
-  location: (contains(ACIInfo, 'locations') ? ACIInfo.locations[(index % length(ACIInfo.locations))] : resourceGroup().location)
+  location: contains(ACIInfo, 'locations') ? ACIInfo.locations[(index % length(ACIInfo.locations))] : resourceGroup().location
 }]
 
-var ENVVARS = [for (env,index) in ACIInfo.environmentVariables : {
+var ENVVARS = [for (env, index) in ACIInfo.environmentVariables: {
   name: env.name
-  value: (contains(env, 'value') ? replace(env.value, '{Deployment}', Deployment) : json('null'))
-  secureValue: (contains(env, 'secureValue') ? replace(env.secureValue, '{WebUser}', WebUser) : json('null'))
+  value: contains(env, 'value') ? replace(env.value, '{Deployment}', Deployment) : null
+  secureValue: contains(env, 'secureValue') ? replace(env.secureValue, '{WebUser}', WebUser) : null
 }]
 
-var Mounts = [for (mounts,index) in ACIInfo.volumeMounts : {
+var Mounts = [for (mounts, index) in ACIInfo.volumeMounts: {
   name: mounts.name
   readOnly: false
   mountPath: mounts.mountPath
 }]
 
-var ports = [for (port,index) in ACIInfo.ports : {
+var ports = [for (port, index) in ACIInfo.ports: {
   protocol: 'TCP'
   port: port
 }]
@@ -49,7 +66,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = [for (aci,index) in Instances : {
+resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = [for (aci, index) in Instances: {
   name: '${Deployment}-aci-${aci.name}'
   location: aci.location
   identity: {
@@ -61,9 +78,9 @@ resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = [for (ac
       name: '${aci.name}-${j}'
       properties: {
         image: ACIInfo.image
-        command: (contains(ACIInfo, 'command') ? ACIInfo.command : json('null'))
+        command: contains(ACIInfo, 'command') ? ACIInfo.command : null
         ports: ports
-        environmentVariables: (contains(ACIInfo, 'environmentVariables') ? ENVVARS : json('null'))
+        environmentVariables: contains(ACIInfo, 'environmentVariables') ? ENVVARS : null
         volumeMounts: Mounts
         resources: {
           requests: {
@@ -87,9 +104,14 @@ resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = [for (ac
     restartPolicy: 'Always'
     ipAddress: {
       ports: ports
-      type: ((ACIInfo.isPublic == 0) ? 'Private' : 'Public')
-      dnsNameLabel: toLower('${Deployment}-aci-${aci.name}')
+      type: bool(ACIInfo.isPublic) ? 'Public' : 'Private'
+      dnsNameLabel: bool(ACIInfo.isPublic) ? toLower('${Deployment}-aci-${aci.name}') : null
     }
+    subnetIds: !(!(bool(ACIInfo.isPublic)) && contains(ACIInfo, 'subnetName')) ? [] : [
+      {
+        id: '${VNET.id}/subnets/${ACIInfo.subnetName}'
+      }
+    ]
     osType: 'Linux'
     diagnostics: {
       logAnalytics: {
@@ -102,7 +124,7 @@ resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = [for (ac
   }
 }]
 
-module ACIDNS 'x.DNS.CNAME.bicep' = [for (aci,index) in Instances : {
+module ACIDNS 'x.DNS.CNAME.bicep' = [for (aci, index) in Instances: if(bool(ACIInfo.isPublic)) {
   name: 'setdns-public-${Deployment}-ACI-${aci.name}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -112,3 +134,12 @@ module ACIDNS 'x.DNS.CNAME.bicep' = [for (aci,index) in Instances : {
   }
 }]
 
+module SetACIDNSAInternal 'x.DNS.private.A.bicep' = [for (aci, index) in Instances: if(!bool(ACIInfo.isPublic)) {
+  name: 'setdns-private-${Deployment}-ACI-${aci.name}-${Global.DomainNameExt}'
+  scope: resourceGroup(subscription().subscriptionId, HubRGName)
+  params: {
+    hostname: toLower(ACI[index].name)
+    ipv4Address: ACI[index].properties.ipAddress.ip
+    Global: Global
+  }
+}]
