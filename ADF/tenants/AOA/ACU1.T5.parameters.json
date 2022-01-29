@@ -1271,6 +1271,23 @@
         ],
         "ACIInfo": [
           {
+            "Name": "helloworld",
+            "registerDNS": 1,
+            "isPublic": 0,
+            "subnetName": "snBE02",
+            "scaleCount": 1,
+            "InstanceCount": 1,
+            "memoryInGB": 1,
+            "cpu": 1,
+            "image": "mcr.microsoft.com/azuredocs/aci-helloworld:latest",
+            "ports": [
+              80
+            ],
+            "_command": [],
+            "_environmentVariables": [],
+            "_volumeMounts": []
+          },
+          {
             "Name": "locust-master",
             "registerDNS": 1,
             "isPublic": 0,
