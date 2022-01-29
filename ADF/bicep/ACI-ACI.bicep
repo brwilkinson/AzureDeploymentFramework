@@ -45,13 +45,15 @@ var Instances = [for (j,index) in range(0, ACIInfo.InstanceCount) : {
   location: contains(ACIInfo, 'locations') ? ACIInfo.locations[(index % length(ACIInfo.locations))] : resourceGroup().location
 }]
 
-var ENVVARS = [for (env, index) in ACIInfo.environmentVariables: {
+var EnvironmentVARS = contains(ACIInfo, 'environmentVariables') ? ACIInfo.environmentVariables : []
+var ENVVARS = [for (env, index) in EnvironmentVARS : {
   name: env.name
   value: contains(env, 'value') ? replace(env.value, '{Deployment}', Deployment) : null
   secureValue: contains(env, 'secureValue') ? replace(env.secureValue, '{WebUser}', WebUser) : null
 }]
 
-var Mounts = [for (mounts, index) in ACIInfo.volumeMounts: {
+var diskMounts = contains(ACIInfo,'volumeMounts') ? ACIInfo.volumeMounts : []
+var Mounts = [for (mounts, index) in diskMounts : {
   name: mounts.name
   readOnly: false
   mountPath: mounts.mountPath
@@ -90,13 +92,13 @@ resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = [for (ac
         }
       }
     }]
-    volumes: [for j in range(0, length(ACIInfo.volumeMounts)): {
-      name: ACIInfo.volumeMounts[j].name
+    volumes: [for (mnt,index) in diskMounts : {
+      name: mnt.name
       azureFile: {
-        shareName: ACIInfo.volumeMounts[j].name
+        shareName: mnt.name
         readOnly: false
-        storageAccountName: '${DeploymentURI}sa${ACIInfo.volumeMounts[j].storageAccount}'
-        storageAccountKey: listKeys(resourceId('Microsoft.Storage/storageAccounts/', '${DeploymentURI}sa${ACIInfo.volumeMounts[j].storageAccount}'), '2016-01-01').keys[0].value
+        storageAccountName: '${DeploymentURI}sa${mnt.storageAccount}'
+        storageAccountKey: listKeys(resourceId('Microsoft.Storage/storageAccounts/', '${DeploymentURI}sa${mnt.storageAccount}'), '2016-01-01').keys[0].value
       }
     }]
     sku: 'Standard'
