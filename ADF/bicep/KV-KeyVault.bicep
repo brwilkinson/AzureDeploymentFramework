@@ -76,8 +76,8 @@ var accessPolicies = [for i in range(0, ((!contains(KVInfo, 'accessPolicies')) ?
   permissions: keyVaultPermissions[KVInfo.accessPolicies[i].Permissions]
 }]
 
-var ipRules = [for i in range(0, length(Global.IPAddressforRemoteAccess)): {
-  value: Global.IPAddressforRemoteAccess[i]
+var ipRules = [for ip in Global.IPAddressforRemoteAccess : {
+  value: ip
 }]
 
 var rolesInfo = contains(KVInfo, 'rolesInfo') ? KVInfo.rolesInfo : []
