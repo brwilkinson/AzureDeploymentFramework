@@ -50,17 +50,14 @@ var gh = {
 
 var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - int(DeploymentID)))}'
-var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
-var SubnetInfo = DeploymentInfo.SubnetInfo
-
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
 var ACIInfo = contains(DeploymentInfo, 'ACIInfo') ? DeploymentInfo.ACIInfo : []
-var ACI = [for i in range(0, length(ACIInfo)): {
-  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.ACIInfo[i].Name))
+
+var ACI = [for aci in ACIInfo : {
+  match: ((Global.CN == '.') || contains(Global.CN, aci.Name))
 }]
 
 var AppVault = '${Deployment}-kvApp01'
@@ -72,6 +69,7 @@ resource kv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
 module ACG 'ACI-ACI.bicep' = [for (aci, index) in ACIInfo: if (ACI[index].match) {
   name: 'dp${Deployment}-ACI-containergroupDeploy${aci.name}'
   params: {
+    Prefix: Prefix
     Deployment: Deployment
     DeploymentURI: DeploymentURI
     DeploymentID: DeploymentID

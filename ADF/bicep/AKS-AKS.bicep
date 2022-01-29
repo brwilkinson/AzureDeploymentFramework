@@ -61,10 +61,6 @@ var IngressGreenfields = {
 var IngressBrownfields = {
   applicationGatewayId: resourceId('Microsoft.Network/applicationGateways/', '${Deployment}-waf${AKSInfo.WAFName}')
 }
-var enablePrivateCluster = {
-  enablePrivateCluster: true
-  privateDNSZone: bool(AKSInfo.privateCluster) ? null : resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.centralus.azmk8s.io')
-}
 var aadProfile = {
   managed: true
   enableAzureRBAC: bool(AKSInfo.enableRBAC)
@@ -142,6 +138,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
       vnetSubnetID: (contains(agentpool, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', agentpool.Subnet) : resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', AKSInfo.AgentPoolsSN))
       type: 'VirtualMachineScaleSets'
       availabilityZones: ((AKSInfo.loadBalancer == 'basic') ? null : availabilityZones)
+
       // storageProfile: 'ManagedDisks'
     }]
     linuxProfile: {
@@ -167,7 +164,11 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
       }
     }
     aadProfile: (AKSInfo.enableRBAC ? aadProfile : null)
-    apiServerAccessProfile: bool(AKSInfo.privateCluster) ? enablePrivateCluster : null
+    apiServerAccessProfile: {
+      authorizedIPRanges: bool(AKSInfo.privateCluster) ? null : Global.IPAddressforRemoteAccess
+      enablePrivateCluster: bool(AKSInfo.privateCluster)
+      privateDNSZone: bool(AKSInfo.privateCluster) ? resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.centralus.azmk8s.io') : null
+    }
     networkProfile: {
       outboundType: 'loadBalancer'
       loadBalancerSku: AKSInfo.loadBalancer

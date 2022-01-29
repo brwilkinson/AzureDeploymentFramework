@@ -749,3 +749,21 @@ resource VMSSAutoscale 'Microsoft.Insights/autoscalesettings@2021-05-01-preview'
     ]
   }
 }
+
+resource VMSSScaleDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+  name: 'service'
+  scope: VMSSAutoscale
+  properties: {
+    workspaceId: OMS.id
+    logs: [
+      {
+        category: 'AutoscaleEvaluations'
+        enabled: true
+      }
+      {
+        category: 'AutoscaleScaleActions'
+        enabled: true
+      }
+    ]
+  }
+}

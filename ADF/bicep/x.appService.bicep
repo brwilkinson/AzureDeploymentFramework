@@ -43,6 +43,10 @@ module WebSiteDNS 'x.DNS.CNAME.bicep' = if (contains(ws,'customDNS') && bool(ws.
   }
 }
 
+resource FARM 'Microsoft.Web/serverfarms@2021-02-01' existing = {
+  name: '${Deployment}-asp${ws.AppSVCPlan}'
+}
+
 resource WS 'Microsoft.Web/sites@2021-01-01' = {
   name: '${Deployment}-${appprefix}${ws.Name}'
   identity: {
@@ -54,8 +58,9 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
   properties: {
     enabled: true
     httpsOnly: true
-    serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
+    serverFarmId: FARM.id
     siteConfig: {
+      // az webapp list-runtimes, this setting is linux only
       linuxFxVersion: empty(linuxFxVersion) ? null : linuxFxVersion
     }
   }

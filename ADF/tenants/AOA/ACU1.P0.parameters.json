@@ -16,7 +16,7 @@
         "RG": 1,
         "RBAC": 1,
         "UAI": 1,
-        "SP": 0,
+        "SP": 1,
         "KV": 1,
         "OMS": 1,
         "OMSSolutions": 1,
@@ -195,6 +195,21 @@
           }
         ],
         "SPInfo": [
+          {
+            "Name": "Microsoft.AzureFrontDoor-Cdn",
+            "RBAC": [
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
           {
             "Name": "Microsoft.Azure.Frontdoor",
             "RBAC": [
@@ -451,7 +466,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Allow",
+            "allNetworks": "Deny",
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

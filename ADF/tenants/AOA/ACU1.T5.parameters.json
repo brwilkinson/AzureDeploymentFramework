@@ -267,12 +267,6 @@
             ]
           }
         ],
-        "LoadTestInfo": [
-          {
-            "Name": "APIWebTest",
-            "location": "eastus2"
-          }
-        ],
         "SPInfo": [
           {
             "Name": "GH_{GHProject}_{RGNAME}",
@@ -475,12 +469,18 @@
             ]
           }
         ],
-        "CDNInfo": [
+        "LoadTestInfo": [
           {
-            "Name": "eshopcatalog",
-            "saname": "catalog",
-            "endpoint": "catalog-endpoint",
-            "hostname": "myweb"
+            "Name": "APIWebTest",
+            "location": "eastus2"
+          }
+        ],
+        "cdn": [
+          {
+            "Name": "data3",
+            "saname": "data3",
+            "endpoint": "data3",
+            "hostname": "data3"
           }
         ],
         "KVInfo": [
@@ -754,7 +754,7 @@
             "Name": "AGIC01",
             "State": "Enabled",
             "Mode": "Prevention",
-            "ruleSetVersion": "3.1",
+            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
             "enableBotRule": 1,
             "customRules": [],
             "exclusions": [],
@@ -981,7 +981,7 @@
         "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.21.7", // "1.20.2","1.19.7","1.19.6", "1.18.14"
+            "Version": "1.21.7", // "1.20.2","1.19.7","1.19.6", "1.18.14" // 1.22 and above no AGIC support 
             "skuTier": "Paid", //Free
             "enableRBAC": true, //true, false
             "podIdentity": true, //true, false
@@ -1271,9 +1271,27 @@
         ],
         "ACIInfo": [
           {
+            "Name": "helloworld",
+            "registerDNS": 1,
+            "isPublic": 0,
+            "subnetName": "snBE02",
+            "scaleCount": 1,
+            "InstanceCount": 1,
+            "memoryInGB": 1,
+            "cpu": 1,
+            "image": "mcr.microsoft.com/azuredocs/aci-helloworld:latest",
+            "ports": [
+              80
+            ],
+            "_command": [],
+            "_environmentVariables": [],
+            "_volumeMounts": []
+          },
+          {
             "Name": "locust-master",
             "registerDNS": 1,
-            "isPublic": 1,
+            "isPublic": 0,
+            "subnetName": "snBE02",
             "scaleCount": 1,
             "InstanceCount": 1,
             "memoryInGB": 1,
@@ -1356,10 +1374,11 @@
           {
             "Name": "locust-worker",
             "scaleCount": 1,
-            "InstanceCount": 98,
+            "InstanceCount": 9,
             "memoryInGB": 0.3,
             "cpu": 0.3,
             "isPublic": 1,
+            "subnetName": "snBE02",
             "image": "locustio/locust:1.4.4",
             "ports": [
               8089
@@ -1383,7 +1402,7 @@
               },
               {
                 "Name": "LOCUST_MASTER_NODE_HOST",
-                "value": "{Deployment}-aci-locust-master-0.centralus.azurecontainer.io"
+                "value": "{Deployment}-aci-locust-master-0.psthing.com"
               }
             ],
             "volumeMounts": [
