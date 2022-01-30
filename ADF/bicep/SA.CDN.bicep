@@ -138,9 +138,8 @@ resource SACDNCustomDomain 'Microsoft.Cdn/profiles/endpoints/customDomains@2020-
   ]
 }]
 
-// cert.properties.secretUriWithVersion
-resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (cdn, index) in CDNInfo: if (contains(cdn, 'EnableSSL') && bool(cdn.EnableSSL)) {
-  name: 'SetServicesCertificates${index + 1}-${cdn.name}'
+resource SetCDNServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (cdn, index) in CDNInfo: if (contains(cdn, 'EnableSSL') && bool(cdn.EnableSSL)) {
+  name: 'SetCDNServicesCertificates${index + 1}-${cdn.name}'
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
