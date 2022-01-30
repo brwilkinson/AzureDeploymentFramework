@@ -480,10 +480,10 @@
         ],
         "CDNInfo": [
           {
-            "Name": "data4",
-            "saname": "data4",
-            "endpoint": "data4",
-            "hostname": "data4",
+            "Name": "data7",
+            "saname": "data7",
+            "endpoint": "data7",
+            "hostname": "data7",
             "EnableSSL": 1
           }
         ],

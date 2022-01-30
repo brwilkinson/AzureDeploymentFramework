@@ -150,7 +150,7 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
   location: resourceGroup().location
   kind: 'AzurePowerShell'
   properties: {
-    azPowerShellVersion: '5.4'
+    azPowerShellVersion: '6.6'
     arguments: ' -ResourceGroupName ${resourceGroup().name} -ProfileName ${DeploymentURI}sacdn${cdn.name} -CustomDomainName ${CDN[index].saname}.${Global.DomainNameExt} -EndPointName ${CDN[index].saname} -VaultName ${KV.name} -SecretName ${cert.name}'
     scriptContent: loadTextContent('../bicep/loadTextContext/setCDNServicesCertificates.ps1')
     forceUpdateTag: now
