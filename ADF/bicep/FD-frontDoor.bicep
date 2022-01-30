@@ -38,7 +38,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 }
 
 resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = {
-  name: 'WildcardCert'
+  name: 'Global.CertName'
   parent: KV
 }
 
@@ -213,7 +213,7 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
   properties: {
     azPowerShellVersion: '5.4'
     arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${KV.id} -certificateUrl ${cert.properties.secretUriWithVersion}'
-    scriptContent: loadTextContent('../bicep/loadTextContext/setServicesCertificates.ps1')
+    scriptContent: loadTextContent('../bicep/loadTextContext/setFDServicesCertificates.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
