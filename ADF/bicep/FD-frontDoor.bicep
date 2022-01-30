@@ -201,7 +201,7 @@ resource FDDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
 }
 
 resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (service, index) in frontDoorInfo.services: if (contains(service, 'EnableSSL') && bool(service.EnableSSL)) {
-  name: 'SetServicesCertificates${index + 1}-${frontDoorInfo.name}'
+  name: 'SetFDServicesCertificates${index + 1}-${frontDoorInfo.name}'
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
