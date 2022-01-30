@@ -9,12 +9,14 @@ param description string = '' // leave these for loggin in the portal
 #disable-next-line no-unused-params
 param roledescription string = '' // leave these for loggin in the portal
 
+// ----------------------------------------------
 // Implement own resourceId for any segment length
 var segments = split(resourceType,'/')
 var items = split(resourceName,'/')
 var last = length(items)
 var segment = [for (item, index) in range(1,last) : item == 1 ? '${segments[0]}/${segments[item]}/${items[index]}/' : item != last ? '${segments[item]}/${items[index]}/' : '${segments[item]}/${items[index]}' ]
 var resourceid =  replace(replace(replace(string(string(segment)), '","', ''), '["', ''), '"]', '') // currently no join() method
+// ----------------------------------------------
 
 resource ResourceRoleAssignment 'Microsoft.Resources/deployments@2021-04-01' = {
     name: take(replace('dp-RRA-${resourceName}-${resourceType}', '/', ''),64)
