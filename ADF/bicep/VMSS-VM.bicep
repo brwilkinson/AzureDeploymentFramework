@@ -125,7 +125,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 }
 
 resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = {
-  name: 'WildcardCert'
+  name: 'Global.CertName'
   parent: KV
 }
 
