@@ -10,7 +10,7 @@ param principalId string
 param principalType string
 
 resource name_resource 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
-  scope: '${resourceType}/${resourceName}'
+  scope: '${resourceType}/${resourceName}' // not supported BCP036
   name: name
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
