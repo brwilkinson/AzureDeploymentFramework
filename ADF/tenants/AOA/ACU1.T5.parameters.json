@@ -132,6 +132,9 @@
             "RBAC": [
               {
                 "Name": "Network Contributor"
+              },
+              {
+                "Name": "CDN Profile Contributor"
               }
             ]
           },
@@ -475,12 +478,13 @@
             "location": "eastus2"
           }
         ],
-        "cdn": [
+        "CDNInfo": [
           {
-            "Name": "data3",
-            "saname": "data3",
-            "endpoint": "data3",
-            "hostname": "data3"
+            "Name": "data4",
+            "saname": "data4",
+            "endpoint": "data4",
+            "hostname": "data4",
+            "EnableSSL": 1
           }
         ],
         "KVInfo": [
@@ -1345,7 +1349,7 @@
               {
                 "Name": "LOCUST_USERS",
                 "value": "4000"
-              },
+              }
               // {
               //   "Name": "LOCUST_RUN_TIME",  // automated tests only
               //   "secureValue": "15m"
@@ -1354,14 +1358,14 @@
               //   "Name": "LOCUST_HEADLESS",  // automated tests only
               //   "secureValue": "true"
               // },
-              {
-                "Name": "LOCUST_TLS_KEY",
-                "value": "/home/locust/locust/psthing-wildcard-decrypted.key"
-              },
-              {
-                "Name": "LOCUST_TLS_CERT",
-                "value": "/home/locust/locust/psthing-wildcard.crt"
-              }
+              // {
+              //   "Name": "LOCUST_TLS_KEY",
+              //   "value": "/home/locust/locust/psthing-wildcard-decrypted.key"
+              // },
+              // {
+              //   "Name": "LOCUST_TLS_CERT",
+              //   "value": "/home/locust/locust/psthing-wildcard.crt"
+              // }
             ],
             "volumeMounts": [
               {
