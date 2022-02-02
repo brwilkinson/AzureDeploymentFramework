@@ -14,6 +14,7 @@ var DNSLookup = {
   namespace: 'servicebus'
   sqlServer: 'database'
   redisCache: 'redis.cache'
+  sites: 'azurewebsites'
 }
 
 //  dns private link group id

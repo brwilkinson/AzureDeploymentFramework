@@ -16,6 +16,7 @@
             "172.18.",
             142
         ],
+        "DNSServers": [],
         "RTName": "rtContoso-Hub"
     }
 }

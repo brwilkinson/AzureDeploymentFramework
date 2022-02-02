@@ -57,7 +57,7 @@ var kubeEnvInfo = [for (kubeenv, index) in appServiceKubeEnvInfo: {
   match: ((Global.CN == '.') || contains(Global.CN, kubeenv.name))
 }]
 
-resource KEP 'Microsoft.Web/kubeEnvironments@2021-03-01' = [for (kubeenv,index) in appServiceKubeEnvInfo: if (kubeEnvInfo[index].match) {
+resource KEP 'Microsoft.Web/kubeEnvironments@2021-02-01' = [for (kubeenv,index) in appServiceKubeEnvInfo: if (kubeEnvInfo[index].match) {
   name: toLower('${DeploymentURI}kep${kubeenv.Name}')
   location: contains(kubeenv,'location') ? kubeenv.location : resourceGroup().location
   properties: {

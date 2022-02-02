@@ -32,8 +32,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -61,7 +59,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var AzureDNS = '168.63.129.16'
-var DNSServerList = contains(DeploymentInfo,'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
+var DNSServerList = contains(DeploymentInfo, 'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
 var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
 
 // FunctionInfo
@@ -95,6 +93,9 @@ module functionApp 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (W
     DeploymentURI: DeploymentURI
     Global: Global
     globalRGName: globalRGName
+    DeploymentID: DeploymentID
+    Environment: Environment
+    Prefix: Prefix
     diagLogs: [
       {
         category: 'FunctionAppLogs'
@@ -124,7 +125,7 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
       WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       Storage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
-      WEBSITE_CONTENTSHARE: replace(toLower('${ws.name}'),'-','')
+      WEBSITE_CONTENTSHARE: replace(toLower('${ws.name}'), '-', '')
       WEBSITE_CONTENTOVERVNET: 1
       WEBSITE_DNS_SERVER: empty(DNSServers[0]) ? AzureDNS : DNSServers[0]
       WEBSITE_VNET_ROUTE_ALL: 1
@@ -136,4 +137,3 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
     functionApp[index]
   ]
 }]
-
