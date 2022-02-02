@@ -6,6 +6,9 @@ param diagLogs array
 param linuxFxVersion string = ''
 param Global object
 param globalRGName string
+param Prefix string
+param Environment string
+param DeploymentID string
 
 var MSILookup = {
   SQL: 'Cluster'
@@ -14,6 +17,18 @@ var MSILookup = {
   OCR: 'Storage'
   PS01: 'VMOperator'
 }
+
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
@@ -156,6 +171,27 @@ resource WSWebConfig 'Microsoft.Web/sites/config@2021-01-01' = if(contains(ws, '
   parent: WS
   properties: {
     preWarmedInstanceCount: ws.preWarmedCount
+  }
+}
+
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(ws, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-privatelinkloop${ws.name}'
+  params: {
+    Deployment: Deployment
+    PrivateLinkInfo: ws.privateLinkInfo
+    providerType: 'Microsoft.Web/sites'
+    resourceName: WS.name
+  }
+}
+
+module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if(contains(ws, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-registerPrivateDNS${ws.name}'
+  scope: resourceGroup(HubRGName)
+  params: {
+    PrivateLinkInfo: ws.privateLinkInfo
+    providerURL: '.net/'
+    resourceName: WS.name
+    Nics: contains(ws, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }
 

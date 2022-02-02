@@ -81,6 +81,9 @@ module website 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInf
     DeploymentURI: DeploymentURI
     Global: Global
     globalRGName: globalRGName
+    DeploymentID: DeploymentID
+    Environment: Environment
+    Prefix: Prefix
     diagLogs: [
       {
         category: 'AppServiceHTTPLogs'

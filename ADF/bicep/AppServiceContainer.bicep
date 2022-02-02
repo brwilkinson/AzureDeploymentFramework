@@ -32,8 +32,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 var ENV = '${Environment}${DeploymentID}'
@@ -116,6 +114,9 @@ module container 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSI
     linuxFxVersion: 'COMPOSE|${WSInfo[index].compose}'
     Global: Global
     globalRGName: globalRGName
+    DeploymentID: DeploymentID
+    Environment: Environment
+    Prefix: Prefix
     diagLogs: [
       {
         category: 'AppServiceHTTPLogs'
@@ -199,4 +200,3 @@ resource ACRWebhook 'Microsoft.ContainerRegistry/registries/webhooks@2020-11-01-
     container[index]
   ]
 }]
-
