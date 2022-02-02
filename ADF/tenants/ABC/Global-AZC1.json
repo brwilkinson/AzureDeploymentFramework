@@ -12,7 +12,6 @@
     "hubAA": {
       "name": "OMSAutomation"
     },
-    "DNSServers": [ // Leave Empty to use AzureDNS
       "networkId": [
         "10.1.",
         144

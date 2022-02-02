@@ -1,0 +1,53 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.177.0/containers/ubuntu
+{
+  "name": "Ubuntu",
+  "build": {
+    "dockerfile": "Dockerfile",
+    // Update 'VARIANT' to pick an Ubuntu version: focal, bionic
+    "args": {
+      "VARIANT": "5.0",
+      // Options
+      "INSTALL_NODE": "true",
+      "NODE_VERSION": "lts/*",
+      "INSTALL_AZURE_CLI": "true"
+      // "INSTALL_AZURE_POWERSHELL": "true"  // do feature request for this ?! 
+    }
+  },
+  // Set *default* container specific settings.json values on container create.
+  "settings": {
+    "[PowerShell]": {
+      "editor.defaultFormatter": "ms-vscode.powershell-preview",
+      "editor.formatOnPaste": false,
+      "editor.formatOnSave": true,
+      "editor.formatOnType": true,
+      "editor.snippetSuggestions": "inline"
+    },
+    "terminal.integrated.profiles.linux": {
+      "pwsh": {
+        "path": "/usr/bin/pwsh",
+        "icon": "terminal-powershell"
+      }
+    },
+    "files.defaultLanguage": "powershell",
+    "terminal.integrated.defaultProfile.linux": "pwsh"
+  },
+  // Add the IDs of extensions you want installed when the container is created.
+  "extensions": [
+    "ms-vscode.azure-account",
+    "ms-vscode.powershell-preview",
+    "msazurermtools.azurerm-vscode-tools",
+    "GitHub.vscode-pull-request-github",
+    "eamodio.gitlens",
+    "ms-dotnettools.vscode-dotnet-runtime",
+    "oderwat.indent-rainbow",
+    "ms-azuretools.vscode-bicep",
+    "ms-dotnettools.csharp"
+  ],
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "uname -a",
+  // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "vscode"
+}

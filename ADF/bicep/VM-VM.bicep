@@ -141,7 +141,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 }
 
 resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = {
-  name: 'Global.CertName'
+  name: Global.CertName
   parent: KV
 }
 
@@ -341,7 +341,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   ]
 }
 
-module AppServerJIT 'x.vmJIT.bicep' = {
+module AppServerJIT 'x.vmJIT.bicep' = if(bool(AppServer.DeployJIT)) {
   name: 'dp${Deployment}-AppServer-JIT-${AppServer.Name}'
   params: {
     Deployment: Deployment
@@ -421,6 +421,19 @@ resource AzureDefenderForServers 'Microsoft.Compute/virtualMachines/extensions@2
       defenderForServersWorkspaceId: OMS.id
       forceReOnboarding: false
     }
+  }
+}
+
+resource AzureGuestConfig 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.GuestConfig)) {
+  name: 'AzureGuestConfig'
+  parent: virtualMachine
+  location: resourceGroup().location
+  properties: {
+    publisher: 'Microsoft.GuestConfiguration'
+    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'ConfigurationForWindows' : 'ConfigurationForLinux')
+    typeHandlerVersion: '1.2'
+    autoUpgradeMinorVersion: true
+    settings: {}
   }
 }
 

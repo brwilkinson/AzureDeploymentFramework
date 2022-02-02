@@ -89,6 +89,7 @@
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
+        "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
@@ -479,6 +480,13 @@
           }
         ],
         "CDNInfo": [
+          {
+            "Name": "data7",
+            "saname": "data7",
+            "endpoint": "data7",
+            "hostname": "data7",
+            "EnableSSL": 1
+          },
           {
             "Name": "data7",
             "saname": "data7",
@@ -1167,7 +1175,13 @@
             "AppSVCPlan": "WPS01",
             "saname": "diag",
             "customDNS": 1,
-            "initialDeploy": 1
+            "initialDeploy": 1,
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
           }
         ],
         "WebSiteContainerInfo": [
@@ -1428,6 +1442,7 @@
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
               "HotPatch": true,
+              "DeployJIT": 0,
               "shutdown": {
                 "time": "2100",
                 "enabled": 0
@@ -1560,11 +1575,11 @@
               {
                 "ProbeName": "HTTP",
                 "LBBEProbePort": 80
-              },
-              {
-                "ProbeName": "HTTPS",
-                "LBBEProbePort": 443
               }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443
+              // }
             ],
             "Services": [
               {
@@ -1574,17 +1589,17 @@
                 "LBFEPort": 80,
                 "LBBEPort": 80,
                 "ProbeName": "HTTP",
-                "DirectReturn": false
-              },
-              {
-                "LBFEName": "API",
-                "LBBEName": "API",
-                "RuleName": "API-HTTPS",
-                "LBFEPort": 443,
-                "LBBEPort": 443,
-                "ProbeName": "HTTPS",
-                "DirectReturn": false
+                "DirectReturn": true
               }
+              // {
+              //   "LBFEName": "API",
+              //   "LBBEName": "API",
+              //   "RuleName": "API-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
             ]
           }
         ],

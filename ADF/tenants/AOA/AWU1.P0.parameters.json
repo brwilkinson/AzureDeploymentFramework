@@ -88,6 +88,7 @@
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
+        "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
@@ -688,6 +689,7 @@
               "DDRole": "32GB",
               "OSType": "Server2022Containerssmall",
               "ExcludeDomainJoin": 1,
+              "DeployJIT": 0,
               "_Zone": 1, // not supported in westus
               "NICs": [
                 {

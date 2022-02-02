@@ -86,6 +86,7 @@
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
+        "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
@@ -621,6 +622,7 @@
               "DDRole": "32GB",
               "OSType": "Server2016Coresmall",
               "ExcludeDomainJoin": 1,
+              "DeployJIT": 0,
               "Zone": 1,
               "NICs": [
                 {
@@ -655,6 +657,7 @@
               "ASName": "AD",
               "DDRole": "32GB",
               "OSType": "Server2016Coresmall",
+              "DeployJIT": 0,
               "Zone": 2,
               "NICs": [
                 {

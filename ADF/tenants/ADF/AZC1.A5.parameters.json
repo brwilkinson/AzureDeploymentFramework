@@ -78,6 +78,7 @@
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
+        "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 0,
         "CertMgmt": 0,
