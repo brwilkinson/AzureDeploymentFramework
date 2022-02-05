@@ -36,7 +36,7 @@ This page [Documentation Home](./index.md)
 
 ### RBAC and Role Assignments in this project
 
-- [RBAC and Role Assignments](./RBAC_RoleAsssignments.md)
+- [RBAC and Role Assignments](./RBAC_RoleAssignments.md)
 
 ### Using Parameter Files
 
