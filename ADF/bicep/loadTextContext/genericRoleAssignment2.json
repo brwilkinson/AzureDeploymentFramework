@@ -2,8 +2,16 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "scope": {
+    "resourceName": {
       "type": "string"
+    },
+    "resourceType": {
+      "type": "string",
+      "allowedValues": [
+        "Microsoft.KeyVault/vaults",
+        "Microsoft.Storage/storageAccounts",
+        "Microsoft.Storage/storageAccounts/acu1brwaoap0sadiag/blobServices/default/containers/insights-logs-networksecuritygroupflowevent"
+      ]
     },
     "name": {
       "type": "string"
@@ -22,7 +30,7 @@
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-08-01-preview",
-      "scope": "[parameters('scope')]",
+      "scope": "[format('{0}/{1}',parameters('resourceType'),parameters('resourceName'))]",
       "name": "[parameters('name')]",
       "properties": {
         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
@@ -32,9 +40,9 @@
     }
   ],
   "outputs": {
-    "roleAssignmentId": {
+    "roleAssignment": {
       "type": "string",
-      "value": "[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+      "value": "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('resourceName')), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
     }
   }
 }

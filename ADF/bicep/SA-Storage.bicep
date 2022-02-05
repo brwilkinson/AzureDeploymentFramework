@@ -390,6 +390,7 @@ module SAContainers 'x.storageContainer.bicep' = [for (container,index) in conta
   params: {
     SAName: SA.name
     container: container
+    Global: Global
   }
 }]
 
