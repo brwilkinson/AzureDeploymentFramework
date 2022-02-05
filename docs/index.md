@@ -34,6 +34,10 @@ This page [Documentation Home](./index.md)
 - [App Tenants](./App_Tenants.md)
 - [App Tenants Descriptions](./App_Tenants_Descriptions.md) (Which tenant should I use ?)
 
+### RBAC and Role Assignments in this project
+
+- [RBAC and Role Assignments](./RBAC_RoleAsssignments.md)
+
 ### Using Parameter Files
 
 - [Parameter Files](./Parameter_Files.md)

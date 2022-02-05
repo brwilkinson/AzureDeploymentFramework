@@ -468,7 +468,17 @@
             ],
             "containers": [
               {
-                "name": "locust"
+                "name": "locust",
+                "rolesInfo": [
+                  {
+                    "Name": "BW",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -1560,16 +1570,16 @@
               }
             ],
             "NATPools": [
-              {
-                "Name": "RDP",
-                "frontendPortRangeStart": 3389,
-                "frontendPortRangeEnd": 4500,
-                "enableFloatingIP": false,
-                "backendPort": 3389,
-                "idleTimeoutInMinutes": 4,
-                "protocol": "Tcp",
-                "LBFEName": "API"
-              }
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
             ],
             "Probes": [
               {
@@ -1589,7 +1599,7 @@
                 "LBFEPort": 80,
                 "LBBEPort": 80,
                 "ProbeName": "HTTP",
-                "DirectReturn": true
+                "DirectReturn": false
               }
               // {
               //   "LBFEName": "API",

@@ -41,8 +41,6 @@ var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${enviro}' // AZE2-BR
 
 var locationlookup = json(loadTextContent('./global/prefix.json'))
 var location = locationlookup[Prefix].location
-var roleslookup = json(Global.RolesLookup)
-var rolesgroupslookup = json(Global.RolesGroupsLookup)
 
 var uaiinfo = contains(DeploymentInfo, 'uaiinfo') ? DeploymentInfo.uaiinfo : []
 var rolesInfo = contains(DeploymentInfo, 'rolesInfo') ? DeploymentInfo.rolesInfo : []
@@ -61,8 +59,6 @@ module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: if (bool(Stage.U
         rgName: rg
         Enviro: enviro
         Global: Global
-        rolesGroupsLookup: rolesgroupslookup
-        rolesLookup: roleslookup
         roleInfo: uai
         providerPath: 'Microsoft.ManagedIdentity/userAssignedIdentities'
         namePrefix: '-uai'
@@ -79,8 +75,6 @@ module RBAC 'sub-RBAC-ALL.bicep' = [for (role, index) in rolesInfo: if (bool(Sta
         rgName: rg
         Enviro: enviro
         Global: Global
-        rolesGroupsLookup: rolesgroupslookup
-        rolesLookup: roleslookup
         roleInfo: role
         providerPath: ''
         namePrefix: ''
@@ -96,8 +90,6 @@ module SP 'sub-RBAC-ALL.bicep' = [for sp in sps: if (bool(Stage.SP)) {
         rgName: rg
         Enviro: enviro
         Global: Global
-        rolesGroupsLookup: rolesgroupslookup
-        rolesLookup: roleslookup
         roleInfo: sp
         providerPath: ''
         namePrefix: ''

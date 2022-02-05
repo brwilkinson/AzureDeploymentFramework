@@ -3,6 +3,8 @@ param Prefix string
 param rgName string
 param Enviro string
 param Global object
+param rolesLookup object = {}
+param rolesGroupsLookup object = {}
 param roleInfo object
 param providerPath string
 param namePrefix string
@@ -24,9 +26,6 @@ targetScope = 'subscription'
 // The Destination Tenant or App e.g. PSO 
 // Note if the destination info is not provides, assume it's local info
 // Only the Name is required if local
-
-var rolesLookup = json(Global.RolesLookup)
-var rolesGroupsLookup = json(Global.RolesGroupsLookup)
 
 var roleAssignment = [for rbac in roleInfo.RBAC : {
     SourceSubscriptionID: subscription().subscriptionId
