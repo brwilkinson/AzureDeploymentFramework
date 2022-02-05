@@ -21,6 +21,8 @@ There are 3 main types of Principals involved
 Example of a user assigned identiy role assignment defintion, that allow for cross referencing
 to other scopes E.g. tenant, subscription, Prefix (region) or App (tenant)
 
+- Only the Name is required, will create role assignment in current scope.
+
 ```json
         "uaiInfo": [
           {
