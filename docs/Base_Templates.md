@@ -92,3 +92,7 @@ You deploy the Base template `SB.bicep` then it calls the child/nested modules
 # Deploy all of the service Bus from T5 into Central US
 AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/SB.bicep
 ```
+
+#### You can easily discover the Bicep Base templates on the command line, since they are in the same directory
+
+![NestedTemplateDeployment](./Base_Templates_Bicep_Deployment.png)
