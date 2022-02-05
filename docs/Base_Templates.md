@@ -5,7 +5,7 @@ Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readm
 
 Overview [What is ADF](./ADF.md)
 
-####  Test Template
+####  Base Templates
 
 Using a base template is really Easy.
 
