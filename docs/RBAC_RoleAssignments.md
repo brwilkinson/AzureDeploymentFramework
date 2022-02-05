@@ -18,6 +18,36 @@ There are 3 main types of Principals involved
 - User Assigned Managed Identities [UAIInfo]
 - Service Principals [SPInfo]
 
+Example of a user assigned identiy role assignment defintion, that allow for cross referencing
+to other scopes E.g. tenant, subscription, Prefix (region) or App (tenant)
+
+```json
+        "uaiInfo": [
+          {
+            "name": "IngressApplicationGateway",
+            "RBAC": [
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          }
+```
+
 
 They can also be defined at the Resource Scope
 - Storage Accounts
@@ -27,6 +57,21 @@ They can also be defined at the Resource Scope
 - KeyVault
 - Any other resource scope, still adding these.
  - They all call the generic template for this `ADF\bicep\x.RBAC-ALL.bicep`
+
+
+Below demonstrates the format for all resource scoped role assignments
+```json
+"rolesInfo": [
+                  {
+                    "Name": "BW",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
+```
 
 
 
