@@ -23,7 +23,7 @@ Import-Module -Name $Repos/ADF/ADF/release-az/azSet.psm1 -Scope Global -Force
 
 Once you have the module loaded you can use the commands `azset`
 
-####  
+####  Azure PowerShell based deployments with azSet
 ![Loading your deployment scope with azSet](./Base_Templates_azset.png)
 
 As you can see the script sets some Environment Variables, that you can use on your prompts
