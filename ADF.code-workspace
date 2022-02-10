@@ -40,8 +40,8 @@
             "ms-dotnettools.vscode-dotnet-runtime",
             "oderwat.indent-rainbow",
             "ms-azuretools.vscode-bicep",
-            "humao.rest-client",
-            "pspester.pester-test"
+            "humao.rest-client"
+            // "pspester.pester-test"
         ]
     }
 }
