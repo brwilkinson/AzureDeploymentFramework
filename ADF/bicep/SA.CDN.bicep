@@ -105,6 +105,11 @@ resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn
       'application/x-javascript'
       'text/javascript'
     ]
+    // originGroups: [
+    //   {
+    //     name: 
+    //   }
+    // ]
     origins: [
       {
         name: 'origin1'
