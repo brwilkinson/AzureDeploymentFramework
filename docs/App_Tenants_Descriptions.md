@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
-- Go Next [RBAC and Role Assignments](./RBAC_RoleAsssignments.md)
+- Go Next [RBAC and Role Assignments](./RBAC_RoleAssignments.md)
 
 ### App Tenants
 
