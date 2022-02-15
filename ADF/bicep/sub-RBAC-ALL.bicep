@@ -25,7 +25,7 @@ targetScope = 'subscription'
 // Note if the destination info is not provides, assume it's local info
 // Only the Name is required if local
 
-var rolesLookup = json(Global.RolesLookup)
+var objectIdLookup = json(Global.objectIdLookup)
 var rolesGroupsLookup = json(Global.RolesGroupsLookup)
 
 var roleAssignment = [for rbac in roleInfo.RBAC : {
@@ -59,7 +59,7 @@ var roleAssignment = [for rbac in roleInfo.RBAC : {
 //         roledescription: rbac.RoleName
 //         roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
 //         principalType: rbac.principalType
-//         principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
+//         principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? objectIdLookup[roleInfo.name] : /*
 //               */ reference('${rbac.DestSubscription}/resourceGroups/${rbac.SourceRG}/providers/${providerPath}/${Deployment}${namePrefix}${roleInfo.Name}',providerAPI).principalId
 //     }
 // }]
@@ -73,7 +73,7 @@ module RBACRASUB 'sub-RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment:
         roledescription: rbac.RoleName
         roleDefinitionId: '${rbac.DestSubscription}/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
         principalType: rbac.principalType
-        principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
+        principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? objectIdLookup[roleInfo.name] : /*
               */ reference('${rbac.DestSubscription}/resourceGroups/${rbac.SourceRG}/providers/${providerPath}/${Deployment}${namePrefix}${roleInfo.Name}',providerAPI).principalId
     }
 }]
@@ -87,7 +87,7 @@ module RBACRARG 'sub-RBAC-ALL-RA-RG.bicep' = [for (rbac, index) in roleAssignmen
         roledescription: rbac.RoleName
         roleDefinitionId: '${rbac.DestSubscription}/providers/Microsoft.Authorization/roleDefinitions/${rbac.RoleID}'
         principalType: rbac.principalType
-        principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? rolesLookup[roleInfo.name] : /*
+        principalId: providerPath == 'guid' ? roleInfo.name : length(providerPath) == 0 ? objectIdLookup[roleInfo.name] : /*
               */ reference('${rbac.DestSubscription}/resourceGroups/${rbac.SourceRG}/providers/${providerPath}/${Deployment}${namePrefix}${roleInfo.Name}',providerAPI).principalId
     }
 }]
