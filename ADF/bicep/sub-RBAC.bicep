@@ -51,7 +51,7 @@ var sps = [for sp in SPInfo: {
     name: replace(replace(replace(sp.Name, '{GHProject}', Global.GHProject), '{ADOProject}', Global.ADOProject), '{RGNAME}', rg)
 }]
 
-module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: if (bool(Stage.UAI)) {
+module UAI 'sub-RBAC-ALL.bicep' = [for (uai, index) in uaiinfo: if (bool(Stage.UAI) && contains(uai,'RBAC')) {
     name: 'dp-rbac-uai-${Prefix}-${uai.name}'
     params: {
         Deployment: deployment

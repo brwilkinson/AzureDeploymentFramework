@@ -38,14 +38,14 @@ targetScope = 'subscription'
 
 var Enviro = '${Environment}${DeploymentID}' // D1
 var Deployment = '${Prefix}-${Global.orgname}-${Global.Appname}-${Enviro}' // AZE2-BRW-HUB-D1
-var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${Enviro}' // AZE2-BRW-HUB-D1
+// var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${Enviro}' // AZE2-BRW-HUB-D1
 
 var locationlookup = json(loadTextContent('./global/prefix.json'))
 var location = locationlookup[Prefix].location
 
 var roleDefinitionsInfo = DeploymentInfo.RoleDefinitionsInfo
 
-module roleDefinitions './sub-RoleDefinitions-Roles.bicep' = [for (rd, index) in roleDefinitionsInfo: {
+module roleDefinitions 'sub-RoleDefinitions-Roles.bicep' = [for (rd, index) in roleDefinitionsInfo: {
     name: rd.RoleName
     params: {
         actions: rd.actions
