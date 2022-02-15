@@ -23,12 +23,13 @@ var gh = {
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-var storageLoggingAbstractions = [
-  'blobServices'
-  'fileServices'
-  'queueServices'
-  'tableService'
-]
+// var storageLoggingAbstractions = [
+//   'blobServices'
+//   'fileServices'
+//   'queueServices'
+//   'tableService'
+// ]
+
 var azureFilesIdentityBasedAuthentication = {
   directoryServiceOptions: 'AD'
   activeDirectoryProperties: {
@@ -52,10 +53,13 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
   kind: 'StorageV2'
   properties: {
+    isHnsEnabled: contains(storageInfo, 'isHnsEnabled') ? bool(storageInfo.isHnsEnabled) : null
+    accessTier: contains(storageInfo, 'accessTier') ? storageInfo.accessTier : 'Hot'
     allowBlobPublicAccess: false
+    #disable-next-line BCP037
     supportsBlobContainerRetention: true
-    azureFilesIdentityBasedAuthentication: ((contains(storageInfo, 'ADDS') && bool(storageInfo.ADDS)) ? azureFilesIdentityBasedAuthentication : null)
-    largeFileSharesState: (contains(storageInfo, 'largeFileSharesState') ? storageInfo.largeFileSharesState : null)
+    azureFilesIdentityBasedAuthentication: contains(storageInfo, 'ADDS') && bool(storageInfo.ADDS) ? azureFilesIdentityBasedAuthentication : null
+    largeFileSharesState: contains(storageInfo, 'largeFileSharesState') ? storageInfo.largeFileSharesState : null
     networkAcls: {
       #disable-next-line BCP036
       bypass: 'Logging, Metrics, AzureServices'
@@ -75,7 +79,6 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
       }
     }
   }
-  dependsOn: []
 }
 
 module storageKeyRotationKey1 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo,'storageKeyRotation')) {
@@ -103,13 +106,14 @@ module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(sto
   ]
 }
 
-resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = {
+// Disable for hierarchical namespace/datalake
+resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = if(!(contains(storageInfo, 'isHnsEnabled') && bool(storageInfo.isHnsEnabled))) {
   name: 'default'
   parent: SA
   properties: {
-    isVersioningEnabled: (contains(storageInfo, 'blobVersioning') ? storageInfo.blobVersioning : false)
+    isVersioningEnabled: contains(storageInfo, 'blobVersioning') ? storageInfo.blobVersioning : false
     changeFeed: {
-      enabled: (contains(storageInfo, 'changeFeed') ? storageInfo.changeFeed : false)
+      enabled: contains(storageInfo, 'changeFeed') ? storageInfo.changeFeed : false
     }
     deleteRetentionPolicy: contains(storageInfo, 'softDeletePolicy') ? storageInfo.softDeletePolicy : null
   }
@@ -391,6 +395,7 @@ module SAContainers 'x.storageContainer.bicep' = [for (container,index) in conta
     SAName: SA.name
     container: container
     Global: Global
+    deployment: Deployment
   }
 }]
 
