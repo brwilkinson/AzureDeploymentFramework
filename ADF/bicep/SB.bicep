@@ -58,7 +58,7 @@ var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? De
 var SBInfo = contains(DeploymentInfo, 'SBInfo') ? DeploymentInfo.SBInfo : []
 
 var SB = [for (sb, index) in SBInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, sb.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), sb.Name))
 }]
 
 module SBs 'SB-ServiceBus.bicep' = [for (sb, index) in SBInfo: if (SB[index].match) {

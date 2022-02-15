@@ -57,7 +57,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var ACIInfo = contains(DeploymentInfo, 'ACIInfo') ? DeploymentInfo.ACIInfo : []
 
 var ACI = [for aci in ACIInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, aci.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), aci.Name))
 }]
 
 var AppVault = '${Deployment}-kvApp01'

@@ -1,12 +1,8 @@
 {
   "Global": {
     "hubRG": {
-      "name": "P0",
-      "Prefix": "ACU1"
-    },
-    "hubVN": {
-      "name": "vn",
-      "Prefix": "ACU1"
+      "name": "P0"
+      // "Prefix": "ACU1"
     },
     "hubKV": {
       "name": "VLT01"

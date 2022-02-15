@@ -15,20 +15,21 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
-  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
-  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
 }
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-var storageLoggingAbstractions = [
-  'blobServices'
-  'fileServices'
-  'queueServices'
-  'tableService'
-]
+// var storageLoggingAbstractions = [
+//   'blobServices'
+//   'fileServices'
+//   'queueServices'
+//   'tableService'
+// ]
+
 var azureFilesIdentityBasedAuthentication = {
   directoryServiceOptions: 'AD'
   activeDirectoryProperties: {
@@ -52,10 +53,13 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
   kind: 'StorageV2'
   properties: {
+    isHnsEnabled: contains(storageInfo, 'isHnsEnabled') ? bool(storageInfo.isHnsEnabled) : null
+    accessTier: contains(storageInfo, 'accessTier') ? storageInfo.accessTier : 'Hot'
     allowBlobPublicAccess: false
+    #disable-next-line BCP037
     supportsBlobContainerRetention: true
-    azureFilesIdentityBasedAuthentication: ((contains(storageInfo, 'ADDS') && bool(storageInfo.ADDS)) ? azureFilesIdentityBasedAuthentication : null)
-    largeFileSharesState: (contains(storageInfo, 'largeFileSharesState') ? storageInfo.largeFileSharesState : null)
+    azureFilesIdentityBasedAuthentication: contains(storageInfo, 'ADDS') && bool(storageInfo.ADDS) ? azureFilesIdentityBasedAuthentication : null
+    largeFileSharesState: contains(storageInfo, 'largeFileSharesState') ? storageInfo.largeFileSharesState : null
     networkAcls: {
       #disable-next-line BCP036
       bypass: 'Logging, Metrics, AzureServices'
@@ -75,27 +79,26 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
       }
     }
   }
-  dependsOn: []
 }
 
-module storageKeyRotationKey1 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo,'storageKeyRotation')) {
+module storageKeyRotationKey1 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo, 'storageKeyRotation')) {
   name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}-StorageKeyRotation-key1')
   params: {
     keyName: 'key1'
-    regenerationPeriodDays: contains(storageInfo.storageKeyRotation,'regenerationPeriodDays') ? storageInfo.storageKeyRotation.regenerationPeriodDays : 30
+    regenerationPeriodDays: contains(storageInfo.storageKeyRotation, 'regenerationPeriodDays') ? storageInfo.storageKeyRotation.regenerationPeriodDays : 30
     storageAccountName: SA.name
-    state: contains(storageInfo.storageKeyRotation,'state') ? storageInfo.storageKeyRotation.state : 'enabled'
+    state: contains(storageInfo.storageKeyRotation, 'state') ? storageInfo.storageKeyRotation.state : 'enabled'
     userAssignedIdentityName: '${Deployment}-uaiStorageKeyRotation'
   }
 }
 
-module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo,'storageKeyRotation')) {
+module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo, 'storageKeyRotation')) {
   name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}-StorageKeyRotation-key2')
   params: {
     keyName: 'key2'
-    regenerationPeriodDays: contains(storageInfo.storageKeyRotation,'regenerationPeriodDays') ? storageInfo.storageKeyRotation.regenerationPeriodDays : 30
+    regenerationPeriodDays: contains(storageInfo.storageKeyRotation, 'regenerationPeriodDays') ? storageInfo.storageKeyRotation.regenerationPeriodDays : 30
     storageAccountName: SA.name
-    state: contains(storageInfo.storageKeyRotation,'state') ? storageInfo.storageKeyRotation.state : 'enabled'
+    state: contains(storageInfo.storageKeyRotation, 'state') ? storageInfo.storageKeyRotation.state : 'enabled'
     userAssignedIdentityName: '${Deployment}-uaiStorageKeyRotation'
   }
   dependsOn: [
@@ -103,13 +106,14 @@ module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(sto
   ]
 }
 
-resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = {
+// Disable for hierarchical namespace/datalake
+resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = if(!(contains(storageInfo, 'isHnsEnabled') && bool(storageInfo.isHnsEnabled))) {
   name: 'default'
   parent: SA
   properties: {
-    isVersioningEnabled: (contains(storageInfo, 'blobVersioning') ? storageInfo.blobVersioning : false)
+    isVersioningEnabled: contains(storageInfo, 'blobVersioning') ? storageInfo.blobVersioning : false
     changeFeed: {
-      enabled: (contains(storageInfo, 'changeFeed') ? storageInfo.changeFeed : false)
+      enabled: contains(storageInfo, 'changeFeed') ? storageInfo.changeFeed : false
     }
     deleteRetentionPolicy: contains(storageInfo, 'softDeletePolicy') ? storageInfo.softDeletePolicy : null
   }
@@ -125,7 +129,7 @@ resource SAFileService 'Microsoft.Storage/storageAccounts/fileServices@2021-06-0
       smb: {
         versions: 'SMB3.0;SMB3.1.1' // remove SMB2.1
         kerberosTicketEncryption: 'AES-256' // remove RC4-HMAC
-        multichannel: ! contains(storageInfo, 'multichannel') ? null : {
+        multichannel: !contains(storageInfo, 'multichannel') ? null : {
           enabled: bool(storageInfo.multichannel)
         }
       }
@@ -377,20 +381,23 @@ resource SATableDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
   }
 }
 
-module SAFileShares 'x.storageFileShare.bicep' = [for (share,index) in fileShares : {
+module SAFileShares 'x.storageFileShare.bicep' = [for (share, index) in fileShares: {
   name: 'dp${Deployment}-SA-${storageInfo.nameSuffix}-FileShare-${share.name}'
   params: {
     SAName: SA.name
     fileShare: share
+    Global: Global
+    deployment: Deployment
   }
 }]
 
-module SAContainers 'x.storageContainer.bicep' = [for (container,index) in containers : {
+module SAContainers 'x.storageContainer.bicep' = [for (container, index) in containers: {
   name: 'dp${Deployment}-SA-${storageInfo.nameSuffix}-Container-${container.name}'
   params: {
     SAName: SA.name
     container: container
     Global: Global
+    deployment: Deployment
   }
 }]
 
@@ -414,4 +421,3 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, '
     Nics: contains(storageInfo, 'privatelinkinfo') && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
   }
 }
-

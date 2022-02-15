@@ -1,3 +1,4 @@
+#disable-next-line no-unused-params
 param Prefix string
 
 @allowed([
@@ -10,6 +11,7 @@ param Prefix string
     'G'
     'A'
 ])
+#disable-next-line no-unused-params
 param Environment string
 
 @allowed([
@@ -24,6 +26,7 @@ param Environment string
     '8'
     '9'
 ])
+#disable-next-line no-unused-params
 param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
@@ -39,11 +42,11 @@ var Free = contains(SecurityPricingInfo, 'Free') ? SecurityPricingInfo.Free : []
 var Standard = contains(SecurityPricingInfo, 'Standard') ? SecurityPricingInfo.Standard : []
 
 var PricingInfoFree = [for (name, index) in Free: {
-    match: ((Global.CN == '.') || contains(Global.CN, name))
+    match: ((Global.CN == '.') || contains(array(Global.CN), name))
 }]
 
 var PricingInfoStandard = [for (name, index) in Standard: {
-    match: ((Global.CN == '.') || contains(Global.CN, name))
+    match: ((Global.CN == '.') || contains(array(Global.CN), name))
 }]
 
 resource default 'Microsoft.Security/autoProvisioningSettings@2017-08-01-preview' = {
@@ -53,6 +56,7 @@ resource default 'Microsoft.Security/autoProvisioningSettings@2017-08-01-preview
     }
 }
 
+#disable-next-line BCP081
 resource securityContacts 'Microsoft.Security/securityContacts@2020-01-01-preview' = {
     name: 'default'
     properties: {

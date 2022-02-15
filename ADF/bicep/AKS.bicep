@@ -62,7 +62,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 var AKSInfo = contains(DeploymentInfo, 'AKSInfo') ? DeploymentInfo.AKSInfo : []
 
 var AKS = [for i in range(0, length(AKSInfo)): {
-  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.AKSInfo[i].Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), DeploymentInfo.AKSInfo[i].Name))
 }]
 
 module AKSAll 'AKS-AKS.bicep' = [for (aks, index) in AKSInfo: if (AKS[index].match) {

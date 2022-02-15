@@ -1,6 +1,7 @@
 param SAName string
 param container object
 param Global object
+param deployment string
 
 resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-04-01' existing = {
   name: '${SAName}/default'
@@ -22,6 +23,8 @@ module RBAC 'x.RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
         resourceId: SAContainers.id
         Global: Global
         roleInfo: role
+        Type: contains(role,'Type') ? role.Type : 'lookup'
+        deployment: deployment
     }
 }]
 

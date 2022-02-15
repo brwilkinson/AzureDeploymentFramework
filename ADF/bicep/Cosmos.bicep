@@ -55,7 +55,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var cosmosDBInfo = contains(DeploymentInfo, 'cosmosDBInfo') ? DeploymentInfo.cosmosDBInfo : []
 
 var cosmosDB = [for (cosmosDb, index) in cosmosDBInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, cosmosDb.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), cosmosDb.Name))
 }]
 
 module CosmosDB 'Cosmos-Account.bicep' = [for (account, index) in cosmosDBInfo : if(cosmosDB[index].match) {

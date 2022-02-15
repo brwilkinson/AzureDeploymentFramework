@@ -48,7 +48,7 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 var ImageGalleryInfo = contains(DeploymentInfo, 'ImageGalleryInfo') ? DeploymentInfo.ImageGalleryInfo : []
 
 var imgGallery = [for (gallery,index) in ImageGalleryInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, gallery.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), gallery.Name))
 }]
 
 resource gallery 'Microsoft.Compute/galleries@2021-07-01' = [for (gallery,index) in ImageGalleryInfo : if(imgGallery[index].match) {

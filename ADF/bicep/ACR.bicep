@@ -47,7 +47,7 @@ var subnetResourceId = '${VnetID}/subnets/snMT01'
 var ContainerRegistry = contains(DeploymentInfo, 'ContainerRegistry') ? DeploymentInfo.ContainerRegistry : []
 
 var ACRInfo = [for (acr, index) in ContainerRegistry: {
-  match: ((Global.CN == '.') || contains(Global.CN, acr.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), acr.name))
 }]
 
 var AppInsightsName = '${DeploymentURI}AppInsights'

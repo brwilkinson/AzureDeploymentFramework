@@ -40,7 +40,7 @@ param DeploymentInfo object
 var DNSPublicZoneInfo = contains(DeploymentInfo, 'DNSPublicZoneInfo') ? DeploymentInfo.DNSPublicZoneInfo : []
 
 var ZoneInfo = [for (zone, index) in DNSPublicZoneInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, zone))
+  match: ((Global.CN == '.') || contains(array(Global.CN), zone))
 }]
 
 resource DNSPublicZone 'Microsoft.Network/dnsZones@2018-05-01' = [for (zone, index) in DNSPublicZoneInfo: if (ZoneInfo[index].match) {

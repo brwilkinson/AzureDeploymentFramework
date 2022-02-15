@@ -58,7 +58,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 var WebSiteInfo = (contains(DeploymentInfo, 'WebSiteInfo') ? DeploymentInfo.WebSiteInfo : [])
 
 var WSInfo = [for (ws, index) in WebSiteInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, ws.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), ws.name))
   saName: toLower('${DeploymentURI}sa${ws.saname}')
 }]
 

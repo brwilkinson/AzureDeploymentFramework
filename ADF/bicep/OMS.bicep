@@ -1119,6 +1119,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
                 {
                     name: 'Microsoft-VMInsights-Health'
                     streams: [
+                        #disable-next-line BCP034
                         'Microsoft-HealthStateChange'
                     ]
                     extensionName: 'HealthExtension'
@@ -1157,6 +1158,7 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
         dataFlows: [
             {
                 streams: [
+                    #disable-next-line BCP034
                     'Microsoft-HealthStateChange'
                     'Microsoft-Perf'
                     'Microsoft-Syslog'

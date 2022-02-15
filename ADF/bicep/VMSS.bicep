@@ -64,7 +64,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 }
 
 var VM = [for (vm, index) in AppServers: {
-  match: Global.CN == '.' || contains(Global.CN, vm.Name)
+  match: Global.CN == '.' || contains(array(Global.CN), vm.Name)
   name: vm.Name
   Extensions: contains(OSType[vm.OSType], 'RoleExtensions') ? union(Extensions, OSType[vm.OSType].RoleExtensions) : Extensions
   DataDisk: contains(vm, 'DDRole') ? DataDiskInfo[vm.DDRole] : json('null')

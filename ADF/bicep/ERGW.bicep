@@ -49,7 +49,7 @@ var GatewaySubnetName = 'gatewaySubnet'
 var ERGWInfo = contains(DeploymentInfo, 'ERGWInfo') ? DeploymentInfo.ERGWInfo : []
 
 var GW = [for (gw, index) in ERGWInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, gw.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), gw.Name))
 }]
 
 resource GWSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = {

@@ -2,14 +2,13 @@
   "Global": {
     "hubRG": {
       "name": "P0"
-    },
-    "hubVN": {
-      "name": "vn"
+      // "Prefix": "ACU1"
     },
     "hubKV": {
       "name": "VLT01"
+      // "Prefix": "ACU1"
     },
-    "hubAA": {
+    "hubAA": { // Used for DSC State Configuration
       "name": "OMSAutomation"
     },
     "networkId": [

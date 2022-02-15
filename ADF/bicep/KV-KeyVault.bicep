@@ -2,12 +2,26 @@ param Deployment string
 param DeploymentURI string
 param KVInfo object
 param Global object
+param Prefix string
+param Environment string
+param DeploymentID string
 
 var Defaults = {
   enabledForDeployment: true
   enabledForDiskEncryption: true
   enabledForTemplateDeployment: true
 }
+
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
@@ -80,8 +94,6 @@ var ipRules = [for ip in Global.IPAddressforRemoteAccess : {
   value: ip
 }]
 
-var rolesInfo = contains(KVInfo, 'rolesInfo') ? KVInfo.rolesInfo : []
-
 resource KV 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: '${Deployment}-kv${KVInfo.Name}'
   location: resourceGroup().location
@@ -130,20 +142,36 @@ resource KVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
   }
 }
 
-// module KVRBAC 'x.RBAC-ALL.bicep' = [for (role, index) in rolesInfo : {
-//   name: 'dp${Deployment}-KV-${KVInfo.Name}-RBAC-${role.name}'
-//   params: {
-//       Deployment: Deployment
-//       Prefix: Prefix
-//       rgName: resourceGroup().name
-//       Enviro: '${Environment}${DeploymentID}'
-//       Global: Global
-//       rolesGroupsLookup: json(Global.RolesGroupsLookup)
-//       rolesLookup: json(Global.RolesLookup)
-//       roleInfo: role
-//       providerPath: ''
-//       namePrefix: ''
-//       providerAPI: ''
-//       principalType: ''
-//   }
-// }]
+var rolesInfo = contains(KVInfo, 'rolesInfo') ? KVInfo.rolesInfo : []
+
+module RBAC 'x.RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
+    name: 'dp-rbac-role-${KV.name}-${role.name}'
+    params: {
+        resourceId: KV.id
+        Global: Global
+        roleInfo: role
+        Type: contains(role,'Type') ? role.Type : 'lookup'
+        deployment: Deployment
+    }
+}]
+
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(KVInfo, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-KV-privatelinkloop${KVInfo.name}'
+  params: {
+    Deployment: Deployment
+    PrivateLinkInfo: KVInfo.privateLinkInfo
+    providerType: 'Microsoft.KeyVault/vaults'
+    resourceName: KV.name
+  }
+}
+
+module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(KVInfo, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-KV-registerPrivateDNS${KVInfo.name}'
+  scope: resourceGroup(HubRGName)
+  params: {
+    PrivateLinkInfo: KVInfo.privateLinkInfo
+    providerURL: '.azure.net/'
+    resourceName: KV.name
+    Nics: contains(KVInfo, 'privatelinkinfo') && length(KVInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
+  }
+}

@@ -52,7 +52,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 var appServiceplanInfo = (contains(DeploymentInfo, 'appServiceplanInfo') ? DeploymentInfo.appServiceplanInfo : [])
 
 var ASPlanInfo = [for (asp, index) in appServiceplanInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, asp.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), asp.name))
   autoscale: contains(asp, 'autoscale')
 }]
 

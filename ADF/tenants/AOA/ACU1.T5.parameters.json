@@ -206,15 +206,8 @@
             ]
           },
           {
-            "name": "StorageAccountDataContributor",
-            "RBAC": [
-              {
-                "Name": "Storage Blob Data Contributor"
-              },
-              {
-                "Name": "Storage Queue Data Contributor"
-              }
-            ]
+            "name": "SynapseDataContributor"
+            // if no RBAC, only assign on Resource
           },
           {
             "name": "VMOperator",
@@ -481,6 +474,57 @@
                 ]
               }
             ]
+          },
+          {
+            "namesuffix": "adldata",
+            "skuName": "Standard_RAGRS", //"Standard_LRS",
+            "isHnsEnabled": 1,
+            "allNetworks": "Allow",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "_changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "fileShares": [
+              {
+                "name": "locust",
+                "quota": 5120
+              },
+              {
+                "name": "function",
+                "quota": 5120
+              }
+            ],
+            "containers": [
+              {
+                "name": "adldata",
+                "rolesInfo": [
+                  {
+                    "Name": "BW",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  },
+                  {
+                    "Name": "SynapseDataContributor",
+                    "Type": "UAI",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ],
         "LoadTestInfo": [
@@ -517,18 +561,27 @@
               "permission": "SecretsGetAndList"
             },
             "allNetworks": "Allow",
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "vault"
               }
             ],
-            "rolesInfo": [ // not in use as yet
+            "rolesInfo": [
               {
                 "Name": "BW",
                 "RBAC": [
                   {
                     "Name": "Key Vault Administrator"
+                  }
+                ]
+              },
+              {
+                "name": "KeyVaultSecretsGet",
+                "Type": "UAI",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Secrets User"
                   }
                 ]
               }
@@ -545,7 +598,7 @@
               "permission": "SecretsGetAndList"
             },
             "allNetworks": "Allow",
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "vault"
@@ -567,7 +620,7 @@
           {
             "Name": "APIM01",
             "sku": "C1",
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "redisCache"
@@ -581,7 +634,7 @@
             "dnsName": "API",
             "apimSku": "Developer",
             "snName": "snBE01",
-            "virtualNetworkType": "External",
+            "virtualNetworkType": "Internal",
             "certName": "PSTHING-WildCard",
             "_frontDoor": "01"
           }
@@ -656,7 +709,132 @@
             "botexclusions": []
           }
         ],
+        "FrontDoorCDN": [
+          {
+            "name": "shared03", // hostname
+            "zone": "psthing.com",
+            "state": "Enabled",
+            "skuName": "Premium", // "Premium"|"Standard"
+            "WAFPolicy": "API2",
+            "pattern": [
+              "/*"
+            ]
+          }
+        ],
         "FrontDoorInfo": [
+          {
+            "name": "API2",
+            "_afdverify": "AOA",
+            "rulesEngineDetached": 1,
+            "rules": [
+              {
+                "name": "Rule1",
+                "priority": 0,
+                "action": {
+                  "requestHeaderActions": [],
+                  "responseHeaderActions": [
+                    {
+                      "headerActionType": "Append",
+                      "headerName": "Content-Security-Policy",
+                      "value": "\"script-src 'self' https://apiphany.portal.azure-api.net.\""
+                    }
+                  ]
+                },
+                "matchConditions": [
+                  {
+                    "rulesEngineMatchValue": [
+                      "AQ"
+                    ],
+                    "negateCondition": false,
+                    "rulesEngineMatchVariable": "RemoteAddr",
+                    "rulesEngineOperator": "GeoMatch",
+                    "transforms": []
+                  }
+                ],
+                "matchProcessingBehavior": "Continue"
+              }
+            ],
+            "services": [
+              {
+                "Name": "APIM03", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "patternsToMatch": [
+                  "/*"
+                ],
+                "rulesEngine": "Rule1"
+              },
+              {
+                "Name": "APIM03-Developer",
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-developer.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                "Name": "APIM03-Scm", // acu1-BRW-AOA-s1-afd 01 - apim01-scm .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-scm.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                // Default (front end) Service is Required, add backend as well for ability to test FE.
+                "Name": "Default",
+                "BEAddress": [
+                  {
+                    "address": "portal.azure.com"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
+            ]
+          },
           {
             "name": "01",
             "_afdverify": "AOA",
@@ -784,6 +962,58 @@
           }
         ],
         "WAFInfo": [
+          {
+            "WAFName": "AG01",
+            "WAFPolicyAttached": false,
+            "_WAFPolicyName": "AG01",
+            "WAFTier": "Standard_v2",
+            "PrivateIP": "250",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "application gateway"
+              }
+            ],
+            "BEIPs": [],
+            "pathRules": [],
+            "probes": [],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "AG01",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "AG01",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              }
+            ]
+          },
           {
             "WAFName": "AGIC01",
             "WAFPolicyAttached": true,
@@ -1061,7 +1291,7 @@
             "_AdminName": "AZ_SQL_Admins",
             "publicNetworkAccess": "Enabled",
             "allNetworks": "Deny",
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "sqlServer"
@@ -1099,7 +1329,7 @@
                 ]
               }
             ],
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "namespace"
@@ -1124,7 +1354,7 @@
                 ]
               }
             ],
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "namespace"
@@ -1186,7 +1416,7 @@
             "saname": "diag",
             "customDNS": 1,
             "initialDeploy": 1,
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "sites"
@@ -1234,7 +1464,7 @@
           "name": "01",
           "sku": "standard",
           "publicNetworkAccess": "Enabled",
-          "PrivateLinkInfo": [
+          "privateLinkInfo": [
             {
               "Subnet": "snMT02",
               "groupID": "configurationStores"
@@ -1254,7 +1484,7 @@
             "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
             "enableMultipleWriteLocations": true,
             "enableAutomaticFailover": true,
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "SQL"

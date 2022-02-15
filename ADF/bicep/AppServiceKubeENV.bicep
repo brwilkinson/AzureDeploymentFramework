@@ -54,7 +54,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 var appServiceKubeEnvInfo = (contains(DeploymentInfo, 'appServiceKubeEnvInfo') ? DeploymentInfo.appServiceKubeEnvInfo : [])
   
 var kubeEnvInfo = [for (kubeenv, index) in appServiceKubeEnvInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, kubeenv.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), kubeenv.name))
 }]
 
 resource KEP 'Microsoft.Web/kubeEnvironments@2021-02-01' = [for (kubeenv,index) in appServiceKubeEnvInfo: if (kubeEnvInfo[index].match) {

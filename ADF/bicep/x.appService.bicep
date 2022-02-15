@@ -29,7 +29,6 @@ var gh = {
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
@@ -48,7 +47,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: '${DeploymentURI}sa${ws.saname}'
 }
 
-module WebSiteDNS 'x.DNS.CNAME.bicep' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
+module WebSiteDNS 'x.DNS.CNAME.bicep' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'setdns-public-${Deployment}-${appprefix}${ws.Name}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -84,7 +83,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
   ]
 }
 
-module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws,'initialDeploy') && bool(ws.initialDeploy) && contains(ws,'customDNS') && bool(ws.customDNS)) {
+module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws, 'initialDeploy') && bool(ws.initialDeploy) && contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'dp-binding-${ws.name}'
   params: {
     externalDNS: Global.DomainNameExt
@@ -93,7 +92,7 @@ module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws,'initialDeploy') 
   }
 }
 
-resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
+resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: toLower('${WS.name}.${Global.DomainNameExt}')
   location: resourceGroup().location
   properties: {
@@ -105,7 +104,7 @@ resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,
   ]
 }
 
-module wsBindingSNI 'x.appServiceBinding.bicep' = if (contains(ws,'customDNS') && bool(ws.customDNS)) {
+module wsBindingSNI 'x.appServiceBinding.bicep' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'dp-binding-sni-${ws.name}'
   params: {
     externalDNS: Global.DomainNameExt
@@ -129,13 +128,15 @@ module wsBindingSNI 'x.appServiceBinding.bicep' = if (contains(ws,'customDNS') &
 
 // Create File share used for Function WEBSITE_CONTENTSHARE
 module SAFileShares 'x.storageFileShare.bicep' = {
-  name: 'dp${Deployment}-SA-${ws.saname}-FileShare-${replace(toLower('${WS.name}'),'-','')}'
+  name: 'dp${Deployment}-SA-${ws.saname}-FileShare-${replace(toLower('${WS.name}'), '-', '')}'
   params: {
     SAName: SA.name
     fileShare: {
-      name: replace(toLower('${WS.name}'),'-','')
+      name: replace(toLower('${WS.name}'), '-', '')
       quota: 5120
     }
+    Global: Global
+    deployment: Deployment
   }
 }
 
@@ -158,7 +159,7 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
-resource WSVirtualNetwork 'Microsoft.Web/sites/config@2021-01-15' = if(contains(ws, 'subnet')) {
+resource WSVirtualNetwork 'Microsoft.Web/sites/config@2021-01-15' = if (contains(ws, 'subnet')) {
   name: '${WS.name}/virtualNetwork'
   properties: {
     subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', ws.subnet)
@@ -166,7 +167,7 @@ resource WSVirtualNetwork 'Microsoft.Web/sites/config@2021-01-15' = if(contains(
   }
 }
 
-resource WSWebConfig 'Microsoft.Web/sites/config@2021-01-01' = if(contains(ws, 'preWarmedCount')) {
+resource WSWebConfig 'Microsoft.Web/sites/config@2021-01-01' = if (contains(ws, 'preWarmedCount')) {
   name: 'web'
   parent: WS
   properties: {
@@ -174,7 +175,7 @@ resource WSWebConfig 'Microsoft.Web/sites/config@2021-01-01' = if(contains(ws, '
   }
 }
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(ws, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws, 'privatelinkinfo')) {
   name: 'dp${Deployment}-privatelinkloop${ws.name}'
   params: {
     Deployment: Deployment
@@ -184,7 +185,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(ws, 'privatelinki
   }
 }
 
-module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if(contains(ws, 'privatelinkinfo')) {
+module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws, 'privatelinkinfo')) {
   name: 'dp${Deployment}-registerPrivateDNS${ws.name}'
   scope: resourceGroup(HubRGName)
   params: {
