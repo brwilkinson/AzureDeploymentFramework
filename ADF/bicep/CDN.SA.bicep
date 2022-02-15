@@ -66,7 +66,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var CDNInfo = (contains(DeploymentInfo, 'CDNInfo') ? DeploymentInfo.CDNInfo : [])
 
 var CDN = [for (cdn, i) in CDNInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.cdn[i].Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), DeploymentInfo.cdn[i].Name))
   saname: toLower('${DeploymentURI}sa${cdn.saname}')
 }]
 

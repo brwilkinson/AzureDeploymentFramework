@@ -31,7 +31,6 @@ var GlobalRGJ = json(Global.GlobalRG)
 var GlobalSAJ = json(Global.GlobalSA)
 var HubKVJ = json(Global.hubKV)
 var HubRGJ = json(Global.hubRG)
-var HubVNJ = json(Global.hubVN)
 var HubAAJ = json(Global.hubAA)
 
 var regionLookup = json(loadTextContent('./global/region.json'))
@@ -53,10 +52,10 @@ var gh = {
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
   hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
 
-  hubVNPrefix: contains(HubVNJ, 'Prefix') ? HubVNJ.Prefix : Prefix
-  hubVNOrgName: contains(HubVNJ, 'OrgName') ? HubVNJ.OrgName : Global.OrgName
-  hubVNAppName: contains(HubVNJ, 'AppName') ? HubVNJ.AppName : Global.AppName
-  hubVNRGName: contains(HubVNJ, 'name') ? HubVNJ.name : HubRGJ.name
+  // hubVNPrefix: contains(HubVNJ, 'Prefix') ? HubVNJ.Prefix : Prefix
+  // hubVNOrgName: contains(HubVNJ, 'OrgName') ? HubVNJ.OrgName : Global.OrgName
+  // hubVNAppName: contains(HubVNJ, 'AppName') ? HubVNJ.AppName : Global.AppName
+  // hubVNRGName: contains(HubVNJ, 'name') ? HubVNJ.name : HubRGJ.name
 
   hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
   hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName

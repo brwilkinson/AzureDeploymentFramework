@@ -139,7 +139,7 @@ resource KVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
 //       Enviro: '${Environment}${DeploymentID}'
 //       Global: Global
 //       rolesGroupsLookup: json(Global.RolesGroupsLookup)
-//       rolesLookup: json(Global.RolesLookup)
+//       objectIdLookup: json(Global.objectIdLookup)
 //       roleInfo: role
 //       providerPath: ''
 //       namePrefix: ''

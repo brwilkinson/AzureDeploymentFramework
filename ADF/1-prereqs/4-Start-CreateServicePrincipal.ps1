@@ -37,8 +37,8 @@ $AZDevOpsOrg = $Global.Global.AZDevOpsOrg
 $ADOProject = $Global.Global.ADOProject
 $SPAdmins = $Global.Global.ServicePrincipalAdmins
 $AppName = $Global.Global.AppName
-$RolesLookup = $Global.Global.RolesLookup
-$StartLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
+$ObjectIdLookup = $Global.Global.ObjectIdLookup
+$StartLength = $ObjectIdLookup | Get-Member -MemberType NoteProperty | Measure-Object
 
 if (-not (Get-VSTeamProfile -Name $AZDevOpsOrg))
 {
@@ -118,20 +118,20 @@ Foreach ($Environment in $Environments)
     }
     #endregion
 
-    if ($RolesLookup | Where-Object $ServicePrincipalName -EQ $SP.Id)
+    if ($ObjectIdLookup | Where-Object $ServicePrincipalName -EQ $SP.Id)
     {
         Write-Verbose "Service Principal [$ServicePrincipalName] already set in Global-Global.json" -Verbose
     }
     else 
     {
         Write-Verbose "Adding Service Principal [$ServicePrincipalName] to Global-Global.json" -Verbose
-        $RolesLookup | Add-Member -MemberType NoteProperty -Name $ServicePrincipalName -Value $SP.Id -Force -PassThru
+        $ObjectIdLookup | Add-Member -MemberType NoteProperty -Name $ServicePrincipalName -Value $SP.Id -Force -PassThru
     }
 }
-$EndLength = $RolesLookup | Get-Member -MemberType NoteProperty | Measure-Object
+$EndLength = $ObjectIdLookup | Get-Member -MemberType NoteProperty | Measure-Object
 # Write back the SP to global-Global if new.
 if ($StartLength -ne $EndLength)
 {
-    $Global.Global.RolesLookup = $RolesLookup
+    $Global.Global.ObjectIdLookup = $ObjectIdLookup
     $Global | ConvertTo-Json -Depth 5 | Set-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json
 }

@@ -88,7 +88,7 @@ module dp_Deployment_SA 'SA.bicep' = if (bool(Stage.SA)) {
   ]
 }
 
-module dp_Deployment_CDN 'SA.CDN.bicep' = if (bool(Stage.CDN)) {
+module dp_Deployment_CDN 'CDN.SA.bicep' = if (bool(Stage.CDN)) {
   name: 'dp${Deployment}-CDN'
   params: {
     // move these to Splatting later
@@ -856,44 +856,60 @@ module dp_Deployment_AKS 'AKS.bicep' = if (bool(Stage.AKS)) {
     Stage: Stage
   }
   dependsOn: [
-    // dp_Deployment_WAF
+    dp_Deployment_OMS
+    dp_Deployment_WAF
     dp_Deployment_VNET
     dp_Deployment_ACR
   ]
 }
 
-/*
-
-module dp_Deployment_SQLMI '?' = if (bool(Stage.SQLMI)) {
-  name: 'dp${Deployment}-SQLMI'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_VNETDNSDC1
-    dp_Deployment_VNETDNSDC2
-  ]
-}
-
-module dp_Deployment_WAFPOLICY '?' = if (bool(Stage.WAFPOLICY)) {
+module dp_Deployment_WAFPOLICY 'WAFPolicy.bicep' = if (bool(Stage.WAFPOLICY)) {
   name: 'dp${Deployment}-WAFPOLICY'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
   dependsOn: [
     dp_Deployment_VNET
   ]
 }
 
-module dp_Deployment_WAF '?' = if (bool(Stage.WAF)) {
+module dp_Deployment_WAF 'WAF.bicep' = if (bool(Stage.WAF)) {
   name: 'dp${Deployment}-WAF'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
   dependsOn: [
     dp_Deployment_VNET
     dp_Deployment_OMS
   ]
 }
 
-module VMSS '?' = if (bool(Stage.VMSS)) {
+module VMSS 'VMSS.bicep' = if (bool(Stage.VMSS)) {
   name: 'VMSS'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
   dependsOn: [
     dp_Deployment_VNETDNSDC1
     dp_Deployment_VNETDNSDC2
@@ -904,24 +920,62 @@ module VMSS '?' = if (bool(Stage.VMSS)) {
   ]
 }
 
-module dp_Deployment_MySQLDB '?' = if (bool(Stage.MySQLDB)) {
+module dp_Deployment_AzureSQL 'AZSQL.bicep' = if (bool(Stage.AzureSQL)) {
+  name: 'dp${Deployment}-AzureSQL'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+  ]
+}
+
+/*
+
+module dp_Deployment_SQLMI '?' = if (bool(Stage.SQLMI)) {
+  name: 'dp${Deployment}-SQLMI'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_VNETDNSDC1
+    dp_Deployment_VNETDNSDC2
+  ]
+}
+
+
+module dp_Deployment_MySQLDB '' = if (bool(Stage.MySQLDB)) {
   name: 'dp${Deployment}-MySQLDB'
-  params: {}
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
   dependsOn: [
     dp_Deployment_VNET
     dp_Deployment_OMS
     dp_Deployment_WebSite
   ]
 }
-
-module dp_Deployment_AzureSQL '?' = if (bool(Stage.AzureSQL)) {
-  name: 'dp${Deployment}-AzureSQL'
-  params: {}
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_OMS
-  ]
-}
-
-
 */

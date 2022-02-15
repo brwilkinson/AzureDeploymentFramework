@@ -22,7 +22,7 @@ $SecondaryRGName = $Secondary.HubRGName
 $SecondaryKvName = $Secondary.KVName
 
 $ServicePrincipalAdmins = $Global.ServicePrincipalAdmins
-$RolesLookup = $Global.RolesLookup
+$ObjectIdLookup = $Global.ObjectIdLookup
 
 # Primary RG
 Write-Verbose -Message "Primary HUB RGName: $PrimaryRGName" -Verbose
@@ -63,7 +63,7 @@ if (Get-AzKeyVault -Name $PrimaryKVName -EA SilentlyContinue)
     {
         $ServicePrincipalAdmins | ForEach-Object {
             $user = $_
-            $objID = $RolesLookup | foreach $user
+            $objID = $ObjectIdLookup | ForEach-Object $user
             
             if (! (Get-AzRoleAssignment -ResourceGroupName $PrimaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator'))
             {
@@ -117,7 +117,7 @@ if (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue)
     {
         $ServicePrincipalAdmins | ForEach-Object {
             $user = $_
-            $objID = $RolesLookup | foreach $user
+            $objID = $ObjectIdLookup | ForEach-Object $user
 
             if (! (Get-AzRoleAssignment -ResourceGroupName $SecondaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator'))
             {

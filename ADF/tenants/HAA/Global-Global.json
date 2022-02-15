@@ -41,7 +41,7 @@
     "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
     "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
     "sqlCredentialName": "localadmin",
-    "RolesLookup": {
+    "ObjectIdLookup": {
       "BW": "c5e10b46-28bb-48da-8cec-23ca8968d53a",
       "BC": "c6c308ea-5d66-418d-8653-37d9e2feb443",
       "Microsoft.Azure.Frontdoor": "f123250b-1b9b-4b25-9ab3-1290b18a8065",

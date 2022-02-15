@@ -9,7 +9,7 @@ param DeploymentID string
 @secure()
 param vmAdminPassword string
 
-var RolesLookup = json(Global.RolesLookup)
+var objectIdLookup = json(Global.objectIdLookup)
 
 var HubRGJ = json(Global.hubRG)
 
@@ -43,7 +43,7 @@ resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2020-11-01-prev
   properties: {
     administratorType: 'ActiveDirectory'
     login: azSQLInfo.AdminName
-    sid: RolesLookup[azSQLInfo.AdminName]
+    sid: objectIdLookup[azSQLInfo.AdminName]
     tenantId: tenant().tenantId
   }
 }
