@@ -85,7 +85,7 @@ var AppInsightsName = '${DeploymentURI}AppInsights'
 var APIMInfo = contains(DeploymentInfo, 'APIMInfo') ? DeploymentInfo.APIMInfo : []
 
 var APIMs = [for (apim, index) in APIMInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, apim.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), apim.name))
   virtualNetworkConfiguration: {
     subnetResourceId: '${VnetID}/subnets/${apim.snName}'
   }
@@ -120,25 +120,25 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = [for (apim,
         type: 'Proxy'
         hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}.${Global.DomainNameExt}'))
         identityClientId: UAI.properties.clientId
-        keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
+        keyVaultId: cert.properties.secretUriWithVersion
       }
       {
         type: 'DeveloperPortal'
         hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-developer.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-developer.${Global.DomainNameExt}'))
         identityClientId: UAI.properties.clientId
-        keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
+        keyVaultId: cert.properties.secretUriWithVersion
       }
       // {
       //   type: 'Management'
       //   hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-management.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-management.${Global.DomainNameExt}'))
       //   identityClientId: UAI.properties.clientId
-      //   keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
+      //   keyVaultId: cert.properties.secretUriWithVersion
       // }
       {
         type: 'Scm'
         hostName: (contains(apim, 'frontDoor') ? toLower('${Deployment}-afd${apim.frontDoor}-apim${apim.name}-scm.${Global.DomainNameExt}') : toLower('${Deployment}-apim${apim.name}-scm.${Global.DomainNameExt}'))
         identityClientId: UAI.properties.clientId
-        keyVaultId: '${KV.properties.vaultUri}secrets/${apim.certName}'
+        keyVaultId: cert.properties.secretUriWithVersion
       }
     ]
     // runtimeUrl: toLower('https://${Deployment}-apim${apim.Name}.azure-api.net')

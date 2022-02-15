@@ -53,7 +53,7 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 var KeyVaultInfo = contains(DeploymentInfo, 'KVInfo') ? DeploymentInfo.KVInfo : []
 
 var KVInfo = [for (kv, index) in KeyVaultInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, kv.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), kv.name))
 }]
 
 module KeyVaults 'KV-KeyVault.bicep' = [for (kv, index) in KeyVaultInfo: if (KVInfo[index].match) {

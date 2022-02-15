@@ -43,7 +43,7 @@ targetScope = 'managementGroup'
 var mgInfo = contains(DeploymentInfo, 'mgInfo') ? DeploymentInfo.mgInfo : []
 
 var managementGroupInfo = [for (mg, index) in mgInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, mg.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), mg.name))
 }]
 
 @batchSize(1)

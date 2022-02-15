@@ -32,7 +32,7 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
+// var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
@@ -42,7 +42,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var FDPolicyInfo = contains(DeploymentInfo, 'FrontDoorPolicyInfo') ? DeploymentInfo.FrontDoorPolicyInfo : []
 
 var POLICY = [for policy in FDPolicyInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, policy.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), policy.Name))
 }]
 
 var botExclusions = []

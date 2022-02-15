@@ -41,7 +41,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var storageInfo = contains(DeploymentInfo, 'saInfo') ? DeploymentInfo.saInfo : []
 
 var SAInfo = [for (sa, index) in storageInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, sa.nameSuffix))
+  match: (Global.CN == '.') || contains(array(Global.CN), sa.nameSuffix)
 }]
 
 module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: if (SAInfo[index].match) {

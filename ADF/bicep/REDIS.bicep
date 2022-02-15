@@ -61,7 +61,7 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 var RedisInfo = contains(DeploymentInfo, 'RedisInfo') ? DeploymentInfo.RedisInfo : []
 
 var RCs = [for (rc,index) in RedisInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, rc.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), rc.Name))
 }]
 
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : json('null')
@@ -115,7 +115,7 @@ var RedisConfiguration = {
 
 resource RC 'Microsoft.Cache/redis@2020-12-01' = [for (rc,index) in RedisInfo: if(RCs[index].match) {
   name: toLower('${Deployment}-rc${rc.Name}')
-  location: 'Central US'
+  location: resourceGroup().location
   properties: {
     redisVersion: '6'
     sku: SKULookup[rc.sku]

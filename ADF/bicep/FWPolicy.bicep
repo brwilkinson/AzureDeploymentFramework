@@ -42,7 +42,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var FWInfo = contains(DeploymentInfo, 'FWInfo') ? DeploymentInfo.FWInfo : []
 
 var FW = [for (fw, index) in FWInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, fw.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), fw.Name))
 }]
 
 module FireWall 'FWPolicy-Policy.bicep' = [for (fw, index) in FWInfo: if(FW[index].match) {

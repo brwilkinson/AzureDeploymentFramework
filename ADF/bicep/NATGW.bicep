@@ -43,7 +43,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var NATGWInfo = contains(DeploymentInfo, 'NATGWInfo') ? DeploymentInfo.NATGWInfo : []
 
 var NGW = [for (ngw, index) in NATGWInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, ngw.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), ngw.Name))
 }]
 
 module FireWall 'NATGW-NGW.bicep' = [for (ngw, index) in NATGWInfo: if(NGW[index].match) {

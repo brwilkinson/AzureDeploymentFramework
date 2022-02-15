@@ -68,7 +68,7 @@ var myAppConfig = {
 }
 
 var WSInfo = [for (ws, index) in WebSiteInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, ws.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), ws.name))
   saName: toLower('${DeploymentURI}sa${ws.saname}')
   compose: base64(format('''
   version: '3'

@@ -42,7 +42,7 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 var azBOTInfo = contains(DeploymentInfo, 'azBOTInfo') ? DeploymentInfo.azBOTInfo : []
 
 var azBOT = [for (bot,index) in azBOTInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, bot.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), bot.Name))
 }]
 
 resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {

@@ -50,7 +50,7 @@ var uaiInfo = (contains(DeploymentInfo, 'uaiInfo') ? DeploymentInfo.uaiInfo : []
 
 var identity = [for uai in uaiInfo: {
     name: uai.name
-    match: Global.cn == '.' || contains(Global.cn, uai.name)
+    match: Global.cn == '.' || contains(array(Global.CN), uai.name)
 }]
 
 resource RG 'Microsoft.Resources/resourceGroups@2021-04-01' = {

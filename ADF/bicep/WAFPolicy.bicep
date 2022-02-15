@@ -42,7 +42,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var WAFPolicyInfo = (contains(DeploymentInfo, 'WAFPolicyInfo') ? DeploymentInfo.WAFPolicyInfo : WAFPolicyDefault)
 
 var POLICY = [for policy in WAFPolicyInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, policy.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), policy.Name))
 }]
 
 var WAFPolicyDefault = [

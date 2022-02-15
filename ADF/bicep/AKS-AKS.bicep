@@ -48,7 +48,7 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 
 // roles are unique per subscription leave this as runtime parameters
 var RolesGroupsLookup = json(Global.RolesGroupsLookup)
-var RolesLookup = json(Global.RolesLookup)
+var objectIdLookup = json(Global.objectIdLookup)
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
@@ -99,7 +99,7 @@ var MSILookup = {
   OCR: 'Storage'
   WVD: 'WVD'
 }
-var aksAADAdminLookup = [for i in range(0, ((!contains(AKSInfo, 'aksAADAdminGroups')) ? 0 : length(AKSInfo.aksAADAdminGroups))): RolesLookup[AKSInfo.aksAADAdminGroups[i]]]
+var aksAADAdminLookup = [for i in range(0, ((!contains(AKSInfo, 'aksAADAdminGroups')) ? 0 : length(AKSInfo.aksAADAdminGroups))): objectIdLookup[AKSInfo.aksAADAdminGroups[i]]]
 
 resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
@@ -163,7 +163,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
         logAnalyticsWorkspaceResourceId: OMS.id
       }
     }
-    aadProfile: (AKSInfo.enableRBAC ? aadProfile : null)
+    aadProfile: AKSInfo.enableRBAC ? aadProfile : null
     apiServerAccessProfile: {
       authorizedIPRanges: bool(AKSInfo.privateCluster) ? null : Global.IPAddressforRemoteAccess
       enablePrivateCluster: bool(AKSInfo.privateCluster)
@@ -255,7 +255,7 @@ resource AKSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
-module dp_identities_deployment 'AKS-AKS-RBAC.bicep' = {
+module identities 'AKS-AKS-RBAC.bicep' = {
   name: 'dp-identities-${Deployment}-aks${AKSInfo.Name}'
   params: {
     AKSInfo: AKSInfo
@@ -266,7 +266,7 @@ module dp_identities_deployment 'AKS-AKS-RBAC.bicep' = {
   ]
 }
 
-module dp_deployment_rgroleassignmentsAKSUAI 'sub-RBAC-ALL.bicep' = [for i in range(0, 4): {
+module rgroleassignmentsAKSUAI 'sub-RBAC-ALL.bicep' = [for i in range(0, 4): {
   name: 'dp${Deployment}-rgroleassignmentsAKSUAI-${(i + 1)}'
   scope: subscription()
   params: {
@@ -275,8 +275,7 @@ module dp_deployment_rgroleassignmentsAKSUAI 'sub-RBAC-ALL.bicep' = [for i in ra
     rgName: RGName
     Enviro: Enviro
     Global: Global
-    rolesGroupsLookup: RolesGroupsLookup
-    roleInfo: dp_identities_deployment.outputs.ManagedIdentities[i]
+    roleInfo: identities.outputs.ManagedIdentities[i]
     providerPath: 'guid'
     namePrefix: ''
     providerAPI: ''

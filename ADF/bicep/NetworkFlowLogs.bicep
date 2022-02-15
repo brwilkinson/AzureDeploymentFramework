@@ -41,7 +41,6 @@ var HubRGJ = json(Global.hubRG)
 var NetworkWatcherRGJ = contains(Global,'networkWatcherRG') ? json(Global.networkWatcherRG) : json(Global.hubRG)
 
 var gh = {
-
   watcherRGPrefix:  contains(NetworkWatcherRGJ, 'Prefix') ? NetworkWatcherRGJ.Prefix : contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   watcherRGOrgName: contains(NetworkWatcherRGJ, 'OrgName') ? NetworkWatcherRGJ.OrgName : contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   watcherRGAppName: contains(NetworkWatcherRGJ, 'AppName') ? NetworkWatcherRGJ.AppName : contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName

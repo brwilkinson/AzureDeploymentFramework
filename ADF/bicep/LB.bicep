@@ -51,7 +51,7 @@ var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] -
 var LBInfo = contains(DeploymentInfo, 'LBInfo') ? DeploymentInfo.LBInfo : []
 
 var LB = [for (lb,Index) in LBInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, lb.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), lb.Name))
 }]
 
 module PublicIP 'x.publicIP.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {

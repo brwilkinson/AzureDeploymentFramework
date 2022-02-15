@@ -43,7 +43,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var loadTestInfo = contains(DeploymentInfo, 'loadTestInfo') ? DeploymentInfo.loadTestInfo : []
 
 var LTInfo = [for (lt, index) in loadTestInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, lt.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), lt.name))
 }]
 
 // Load Test Owner, Load Test Contributor, or Load Test Reader role

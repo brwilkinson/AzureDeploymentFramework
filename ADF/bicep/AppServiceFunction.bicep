@@ -66,7 +66,7 @@ var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '$
 var WebSiteInfo = (contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : [])
 
 var WSInfo = [for (ws, index) in WebSiteInfo: {
-  match: ((Global.CN == '.') || contains(Global.CN, ws.name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), ws.name))
   saName: toLower('${DeploymentURI}sa${ws.saname}')
 }]
 

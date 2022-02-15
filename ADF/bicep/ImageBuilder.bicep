@@ -59,7 +59,7 @@ var userAssignedIdentities = {
   None: {}
 }
 var image = [for (img,index) in ImageInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, img.imageName))
+  match: ((Global.CN == '.') || contains(array(Global.CN), img.imageName))
   imageName: '${img.imageName}_${now}'
 }]
 

@@ -54,7 +54,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var WAFInfo = contains(DeploymentInfo, 'WAFInfo') ? DeploymentInfo.WAFInfo : []
 
 var WAFs = [for waf in WAFInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, waf.WAFName))
+  match: ((Global.CN == '.') || contains(array(Global.CN), waf.WAFName))
 }]
 
 resource PublicIP 'Microsoft.Network/publicIPAddresses@2019-02-01' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {

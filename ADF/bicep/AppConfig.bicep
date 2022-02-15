@@ -54,7 +54,7 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 
 resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
   name: '${Deployment}-ac${appConfigurationInfo.Name}'
-  location: 'centralus'
+  location: resourceGroup().location
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {

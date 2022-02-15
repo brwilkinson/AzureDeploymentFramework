@@ -53,7 +53,7 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 var azRelayInfo = contains(DeploymentInfo, 'cloudshellRelayInfo') ? DeploymentInfo.cloudshellRelayInfo : []
 
 var azRelay = [for i in range(0, length(azRelayInfo)): {
-  match: ((Global.CN == '.') || contains(Global.CN, DeploymentInfo.frontDoorInfo[i].Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), DeploymentInfo.frontDoorInfo[i].Name))
 }]
 
 resource VNET 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
