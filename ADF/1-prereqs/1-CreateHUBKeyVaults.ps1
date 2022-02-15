@@ -23,6 +23,10 @@ $SecondaryKvName = $Secondary.KVName
 
 $ServicePrincipalAdmins = $Global.ServicePrincipalAdmins
 $ObjectIdLookup = $Global.ObjectIdLookup
+
+# Primary RG
+Write-Verbose -Message "Primary HUB RGName: $PrimaryRGName" -Verbose
+if (! (Get-AzResourceGroup -Name $PrimaryRGName -EA SilentlyContinue))
 {
     try
     {
@@ -59,71 +63,63 @@ if (Get-AzKeyVault -Name $PrimaryKVName -EA SilentlyContinue)
     {
         $ServicePrincipalAdmins | ForEach-Object {
             $user = $_
-            $objID = $ObjectIdtIdtIdtIdLooFkupE | E-ObjectorE-Objectach-Object $user
+            $objID = $ObjectIdLookup | foreach $user
             
             if (! (Get-AzRoleAssignment -ResourceGroupName $PrimaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator'))
             {
-                $objID = $ObjectIdLookup | ForEach-Object $user
-                {
-                    Write-Warning $_
-                    break
-                }
+                New-AzRoleAssignment -ResourceGroupName $PrimaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator' -Verbose
             }
+        }
+    }
+    catch
+    {
+        Write-Warning $_
+        break
+    }
+}
 
-            # Secondary RG
-            Write-Verbose -Message "Secondary HUB RGName: $SecondaryRGName" -Verbose
-            if (! (Get-AzResourceGroup -Name $SecondaryRGName -EA SilentlyContinue))
-            {
-                try
-                {
-                    New-AzResourceGroup -Name $SecondaryRGName -Location $SecondaryLocation -ErrorAction stop
-                }
-                catch
-                {
-                    Write-Warning $_
-                    break
-                }
-            }
+# Secondary RG
+Write-Verbose -Message "Secondary HUB RGName: $SecondaryRGName" -Verbose
+if (! (Get-AzResourceGroup -Name $SecondaryRGName -EA SilentlyContinue))
+{
+    try
+    {
+        New-AzResourceGroup -Name $SecondaryRGName -Location $SecondaryLocation -ErrorAction stop
+    }
+    catch
+    {
+        Write-Warning $_
+        break
+    }
+}
 
-            # Secondary KV
-            Write-Verbose -Message "Secondary KV Name: $SecondaryKvName" -Verbose
-            if (! (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue))
-            {
-                try
-                {
-                    New-AzKeyVault -Name $SecondaryKvName -ResourceGroupName $SecondaryRGName -Location $SecondaryLocation `
-                        -EnabledForDeployment -EnabledForTemplateDeployment -EnablePurgeProtection -EnableRbacAuthorization -Sku Standard -ErrorAction Stop
-                }
-                catch
-                {
-                    Write-Warning $_
-                    break
-                }
-            }
+# Secondary KV
+Write-Verbose -Message "Secondary KV Name: $SecondaryKvName" -Verbose
+if (! (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue))
+{
+    try
+    {
+        New-AzKeyVault -Name $SecondaryKvName -ResourceGroupName $SecondaryRGName -Location $SecondaryLocation `
+            -EnabledForDeployment -EnabledForTemplateDeployment -EnablePurgeProtection -EnableRbacAuthorization -Sku Standard -ErrorAction Stop
+    }
+    catch
+    {
+        Write-Warning $_
+        break
+    }
+}
 
-            # Secondary KV RBAC
-            Write-Verbose -Message "Secondary KV Name: $PrimaryKVName RBAC for KV Contributor" -Verbose
-            if (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue)
-            {
-                try
-                {
-                    $ServicePrincipalAdmins | ForEach-Object {
-                        $user = $_
-                        $objID = $ObjectIdtIdtIdtIdLooFkupE | E-ObjectorE-Objectach-Object $user
+# Secondary KV RBAC
+Write-Verbose -Message "Secondary KV Name: $PrimaryKVName RBAC for KV Contributor" -Verbose
+if (Get-AzKeyVault -Name $SecondaryKvName -EA SilentlyContinue)
+{
+    try
+    {
+        $ServicePrincipalAdmins | ForEach-Object {
+            $user = $_
+            $objID = $ObjectIdLookup | foreach $user
 
-                        if (! (Get-AzRoleAssignment -ResourceGroupName $SecondaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator'))
-                        {
-                            New-AzRoleAssignment -ResourceGroupName $SecondaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator' -Verbose
-                        }
-                    }
-                }
-                catch
-                {
-                    Write-Warning $_
-                    break
-                }
-            }
-
+            if (! (Get-AzRoleAssignment -ResourceGroupName $SecondaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator'))
             {
                 New-AzRoleAssignment -ResourceGroupName $SecondaryRGName -ObjectId $objID -RoleDefinitionName 'Key Vault Administrator' -Verbose
             }
@@ -135,4 +131,3 @@ if (Get-AzKeyVault -Name $PrimaryKVName -EA SilentlyContinue)
         break
     }
 }
-
