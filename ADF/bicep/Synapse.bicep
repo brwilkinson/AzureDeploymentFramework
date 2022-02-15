@@ -37,8 +37,8 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 
 var SynapseInfo = contains(DeploymentInfo, 'SynapseInfo') ? DeploymentInfo.SynapseInfo : []
 
-var Synapse = [for (sap,Index) in SynapseInfo : {
-  match: ((Global.CN == '.') || contains(array(Global.CN), sap.Name))
+var Synapse = [for (sap,index) in SynapseInfo : {
+  match: Global.CN == '.' || contains(array(Global.CN), sap.Name)
 }]
 
 module LBs 'Synapse-WS.bicep' = [for (sap,index) in SynapseInfo: if(Synapse[index].match) {
@@ -49,5 +49,7 @@ module LBs 'Synapse-WS.bicep' = [for (sap,index) in SynapseInfo: if(Synapse[inde
     DeploymentID: DeploymentID
     Synapse: sap
     Global: Global
+    Environment: Environment
+    Prefix: Prefix
   }
 }]

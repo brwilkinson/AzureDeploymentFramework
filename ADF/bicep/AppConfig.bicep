@@ -65,8 +65,13 @@ resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
     name: appConfigurationInfo.sku
   }
   properties: {
-    publicNetworkAccess: appConfigurationInfo.publicNetworkAccess
-    encryption: {}
+    publicNetworkAccess: bool(appConfigurationInfo.publicNetworkAccess) ? 'Enabled' : 'Disabled'
+    // encryption: {
+    //   keyVaultProperties: {
+    //     identityClientId: ''
+    //     keyIdentifier: 
+    //   }
+    // }
   }
 }
 

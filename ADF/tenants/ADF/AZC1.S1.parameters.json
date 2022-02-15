@@ -326,7 +326,7 @@
           {
             "name": "Config01",
             "sku": "standard",
-            "publicNetworkAccess": "Enabled"
+            "publicNetworkAccess": 1
           }
         ],
         "SBInfo": [
@@ -356,7 +356,7 @@
             "Name": "IMG01",
             "administratorLogin": "brw",
             "AdminName": "brw",
-            "publicNetworkAccess": "Disabled",
+            "publicNetworkAccess": 0,
             "allNetworks": "Deny",
             "PrivateLinkInfo": [
               {

@@ -207,7 +207,7 @@
           },
           {
             "name": "SynapseDataContributor"
-            // if no RBAC, only assign on Resource
+            // if no RBAC, create uai only, then assign RBAC on Resource level.
           },
           {
             "name": "VMOperator",
@@ -523,6 +523,20 @@
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ],
+        "SynapseInfo": [
+          {
+            "name": "data01",
+            "saname": "adldata",
+            "sashare": "adldata",
+            "publicNetworkAccess": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sql"
               }
             ]
           }
@@ -1289,7 +1303,7 @@
             "Name": "ESHOPSQL",
             "administratorLogin": "brw",
             "_AdminName": "AZ_SQL_Admins",
-            "publicNetworkAccess": "Enabled",
+            "publicNetworkAccess": 1,
             "allNetworks": "Deny",
             "privateLinkInfo": [
               {
@@ -1463,7 +1477,7 @@
         "appConfigurationInfo": {
           "name": "01",
           "sku": "standard",
-          "publicNetworkAccess": "Enabled",
+          "publicNetworkAccess": 1,
           "privateLinkInfo": [
             {
               "Subnet": "snMT02",
@@ -1484,7 +1498,7 @@
             "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
             "enableMultipleWriteLocations": true,
             "enableAutomaticFailover": true,
-            "privateLinkInfo": [
+            "_privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "SQL"
