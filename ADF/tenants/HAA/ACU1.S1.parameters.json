@@ -429,7 +429,7 @@
             "Name": "ESHOPSQL",
             "administratorLogin": "brw",
             "AdminName": "AZ_SQL_Admins",
-            "publicNetworkAccess": "Enabled",
+            "publicNetworkAccess": 1,
             "allNetworks": "Deny",
             "_PrivateLinkInfo": [
               {
@@ -516,7 +516,7 @@
         "appConfigurationInfo": {
           "name": "01",
           "sku": "standard",
-          "publicNetworkAccess": "Enabled",
+          "publicNetworkAccess": 1,
           "PrivateLinkInfo": [
             {
               "Subnet": "snBE02",

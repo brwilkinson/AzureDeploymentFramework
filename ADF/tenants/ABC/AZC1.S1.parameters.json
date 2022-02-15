@@ -669,7 +669,7 @@
           {
             "name": "Config01",
             "sku": "standard",
-            "publicNetworkAccess": "Enabled"
+            "publicNetworkAccess": 1
           }
         ],
         "RTInfo": [

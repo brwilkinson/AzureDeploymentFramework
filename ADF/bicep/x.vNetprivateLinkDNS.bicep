@@ -15,6 +15,7 @@ var DNSLookup = {
   sqlServer: 'database'
   redisCache: 'redis.cache'
   sites: 'azurewebsites'
+  syn: 'sql'
 }
 
 //  dns private link group id

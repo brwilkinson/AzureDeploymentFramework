@@ -33,7 +33,7 @@ resource SQL 'Microsoft.Sql/servers@2020-11-01-preview' = {
     administratorLogin: azSQLInfo.administratorLogin
     administratorLoginPassword: vmAdminPassword
     minimalTlsVersion: '1.2'
-    publicNetworkAccess: azSQLInfo.publicNetworkAccess
+    publicNetworkAccess: bool(azSQLInfo.publicNetworkAccess) ? 'Enabled' : 'Disabled'
   }
 }
 
