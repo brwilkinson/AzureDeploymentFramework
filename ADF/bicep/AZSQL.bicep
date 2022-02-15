@@ -34,16 +34,6 @@ param Global object = {
 }
 param DeploymentInfo object
 
-@secure()
-param vmAdminPassword string
-
-@secure()
-#disable-next-line no-unused-params
-param devOpsPat string
-
-@secure()
-#disable-next-line no-unused-params
-param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
@@ -76,7 +66,7 @@ var appConfigurationInfo = (contains(DeploymentInfo, 'appConfigurationInfo') ? D
 var azSQLInfo = contains(DeploymentInfo, 'azSQLInfo') ? DeploymentInfo.azSQLInfo : []
 
 var azSQL = [for (sql,index) in azSQLInfo : {
-  match: ((Global.CN == '.') || contains(Global.CN, sql.Name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), sql.Name))
 }]
 
 module SQL 'AZSQL-SQL.bicep' = [for (sql,index) in azSQLInfo : if(azSQL[index].match) {

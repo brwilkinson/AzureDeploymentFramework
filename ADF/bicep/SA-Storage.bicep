@@ -107,7 +107,7 @@ module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(sto
 }
 
 // Disable for hierarchical namespace/datalake
-resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = if (!(contains(storageInfo, 'isHnsEnabled') && bool(storageInfo.isHnsEnabled))) {
+resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = if(!(contains(storageInfo, 'isHnsEnabled') && bool(storageInfo.isHnsEnabled))) {
   name: 'default'
   parent: SA
   properties: {

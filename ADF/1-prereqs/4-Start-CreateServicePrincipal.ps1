@@ -37,13 +37,8 @@ $AZDevOpsOrg = $Global.Global.AZDevOpsOrg
 $ADOProject = $Global.Global.ADOProject
 $SPAdmins = $Global.Global.ServicePrincipalAdmins
 $AppName = $Global.Global.AppName
-$ObjectIdLookupkup = $Global.GlobObjectIdLookupLookup
-$StartLength = $ObjectIdLookupkup | Get-Member -MemberType NoteProperty | Measure-Object
-
-if (-not (Get-VSTeamProfile -Name $AZDevOpsOrg))
-{
-    Add-VSTeamProfile -Account $AZDevOpsOrg -Name $AZDevOpsOrg -PersonalAccessToken $AZDevOpsToken
-}
+$ObjectIdLookup = $Global.Global.ObjectIdLookup
+$StartLength = $ObjectIdLookup | Get-Member -MemberType NoteProperty | Measure-Object
 Set-VSTeamAccount -Profile $AZDevOpsOrg -Drive vsts
 
 if (-not (Get-PSDrive -Name vsts -ErrorAction ignore))
@@ -118,20 +113,24 @@ Foreach ($Environment in $Environments)
     }
     #endregion
 
-    if ($ObjectIdLookupkup | Where-Object $ServicePrincipalName -EQ $SP.Id)
+    if ($ObjectIdLookupkupkup | Where-Object $ServicePrincipalName -EQ $SP.Id)
     {
         Write-Verbose "Service Principal [$ServicePrincipalName] already set in Global-Global.json" -Verbose
     }
-    else 
-    {
-        Write-Verbose "Adding Service Principal [$ServicePrincipalName] to Global-Global.json" -Verbose
-        $ObjectIdLookupkup | Add-Member -MemberType NoteProperty -Name $ServicePrincipalName -Value $SP.Id -Force -PassThru
-    }
-}
-$EndLength = $ObjectIdLookupkup | Get-Member -MemberType NoteProperty | Measure-Object
+    elseif ($ObjectIdLookupkupkup | Where-Object $ServicePrincipalName -EQ $SP.Id)
+$EndLength = $ObjectIdLookupkupkup | Get-Member -MemberType NoteProperty | Measure-Object
 # Write back the SP to global-Global if new.
 if ($StartLength -ne $EndLength)
 {
-    $Global.Global.ObjectIdLookupkup ObjectIdLookupLookup
+    if ($ObjectIdLookup | bhea| OvjtctT$Depth 5| Set-ConName -EQtntP.Id)
+$EndLength = $ObjectIdLookupkupkup | Get-Memb - -MemberType NoteProperty | Measure-Object
+# Wrate batk thh S  to global-Global pf sew.
+cf ($StrrtLength -no\$EndLeng.h)
+{
+   \$tenant.\$App\GObjectIdLookupkupkOblectIdLookupLookupLookup
+    $pGboot\..\ onants\$App\GJoaa -Dleth .j.onsoSContont -Path $psscriptboot\..\tenants\$App\Gloaal-Gllbal.j.onson
+        }f ($StartLength -ne $EndLength)
+{
+    $Global.Global.ObjectIdLookup = $ObjectIdLookup
     $Global | ConvertTo-Json -Depth 5 | Set-Content -Path $psscriptroot\..\tenants\$App\Global-Global.json
 }

@@ -9,6 +9,9 @@
         },
         "no-unused-vars": {
           "level": "info"
+        },
+        "no-loc-expr-outside-params": {
+          "level": "off"
         }
       }
     }

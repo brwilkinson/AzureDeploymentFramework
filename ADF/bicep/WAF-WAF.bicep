@@ -340,5 +340,26 @@ module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list, index) in waf.Listeners:
   ]
 }]
 
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(waf, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-WAF-privatelinkloop-${waf.nameSuffix}'
+  params: {
+    Deployment: Deployment
+    PrivateLinkInfo: waf.privateLinkInfo
+    providerType: 'Microsoft.Network/applicationgateways'
+    resourceName: WAF.name
+  }
+}
+
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(waf, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-WAF-registerPrivateDNS-${waf.nameSuffix}'
+  scope: resourceGroup(HubRGName)
+  params: {
+    PrivateLinkInfo: waf.privateLinkInfo
+    providerURL: '.${environment().suffixes.storage}/' // '.core.windows.net/' 
+    resourceName: WAF.name
+    Nics: contains(waf, 'privatelinkinfo') && length(waf) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
+  }
+}
+
 output output1 array = WAF.properties.frontendIPConfigurations
 output output2 string = WAF.properties.frontendIPConfigurations[1].properties.privateIPAddress
