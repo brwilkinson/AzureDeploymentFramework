@@ -561,18 +561,27 @@
               "permission": "SecretsGetAndList"
             },
             "allNetworks": "Allow",
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "vault"
               }
             ],
-            "rolesInfo": [ // not in use as yet
+            "rolesInfo": [
               {
                 "Name": "BW",
                 "RBAC": [
                   {
                     "Name": "Key Vault Administrator"
+                  }
+                ]
+              },
+              {
+                "name": "KeyVaultSecretsGet",
+                "Type": "UAI",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Secrets User"
                   }
                 ]
               }
@@ -589,7 +598,7 @@
               "permission": "SecretsGetAndList"
             },
             "allNetworks": "Allow",
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "vault"
@@ -611,7 +620,7 @@
           {
             "Name": "APIM01",
             "sku": "C1",
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "redisCache"
@@ -962,7 +971,7 @@
             "SSLCerts": [
               "PSTHING-WildCard"
             ],
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "application gateway"
@@ -1282,7 +1291,7 @@
             "_AdminName": "AZ_SQL_Admins",
             "publicNetworkAccess": "Enabled",
             "allNetworks": "Deny",
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "sqlServer"
@@ -1320,7 +1329,7 @@
                 ]
               }
             ],
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "namespace"
@@ -1345,7 +1354,7 @@
                 ]
               }
             ],
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "namespace"
@@ -1407,7 +1416,7 @@
             "saname": "diag",
             "customDNS": 1,
             "initialDeploy": 1,
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "sites"
@@ -1455,7 +1464,7 @@
           "name": "01",
           "sku": "standard",
           "publicNetworkAccess": "Enabled",
-          "PrivateLinkInfo": [
+          "privateLinkInfo": [
             {
               "Subnet": "snMT02",
               "groupID": "configurationStores"
@@ -1475,7 +1484,7 @@
             "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
             "enableMultipleWriteLocations": true,
             "enableAutomaticFailover": true,
-            "PrivateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "SQL"
