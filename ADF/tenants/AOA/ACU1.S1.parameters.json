@@ -347,7 +347,7 @@
           {
             "nameaddress": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "logging": {
               "r": 0,
               "w": 0,
@@ -363,7 +363,7 @@
           {
             "nameaddress": "catalog",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,
@@ -400,7 +400,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "_PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -415,7 +415,7 @@
             "administratorLogin": "brw",
             "AdminName": "AZ_SQL_Admins",
             "publicNetworkAccess": 1,
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "_PrivateLinkInfo": [
               {
                 "Subnet": "snBE02",

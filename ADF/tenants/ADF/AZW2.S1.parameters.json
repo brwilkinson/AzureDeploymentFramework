@@ -167,41 +167,41 @@
           {
             "name": "naslfse",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState": "Enabled"
           },
           {
             "name": "naslfsd",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState": "Disabled"
           },
           {
             "name": "naslfsn",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState2": "Enabled"
           },
           {
             "name": "nas",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState": "Enabled"
           },
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           },
           {
             "name": "witness",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           },
           {
             "name": "dis01",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
@@ -216,7 +216,7 @@
           {
             "name": "sqlbackup",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           }
         ],
         "StorageSyncInfo": [
@@ -257,7 +257,7 @@
                 "Permissions": "All"
               }
             ],
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

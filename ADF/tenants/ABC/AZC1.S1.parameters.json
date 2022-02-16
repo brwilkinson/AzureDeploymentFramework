@@ -294,7 +294,7 @@
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "blobVersioning": 1,
             "changeFeed": 1,
             "softDeletePolicy":{
@@ -305,7 +305,7 @@
           {
             "name": "adds",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "ADDS": 0,
             "largeFileSharesState": "Disabled",
             "logging": {
@@ -657,7 +657,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

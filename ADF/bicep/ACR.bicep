@@ -61,7 +61,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 // var storageInfo = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
   //   name: toLower('reg${cr.Name}')
   //   skuName: 'Standard_LRS'
-  //   allNetworks: 'Deny'
+  //   allNetworks: 0
   //   logging: {
   //     r: 0
   //     w: 0

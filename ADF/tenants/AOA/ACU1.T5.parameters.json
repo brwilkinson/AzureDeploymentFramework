@@ -404,7 +404,7 @@
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,
@@ -423,7 +423,7 @@
               },
               {
                 "Subnet": "snMT02",
-                "groupID": "queue"
+                "groupID": "file"
               }
             ],
             "rolesInfo": [
@@ -457,7 +457,7 @@
           {
             "name": "data2",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,
@@ -491,7 +491,7 @@
           {
             "name": "data",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,
@@ -533,7 +533,7 @@
             "name": "adldata",
             "skuName": "Standard_RAGRS", //"Standard_LRS",
             "isHnsEnabled": 1,
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,
@@ -628,7 +628,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -665,7 +665,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -1358,7 +1358,7 @@
             "administratorLogin": "brw",
             "_AdminName": "AZ_SQL_Admins",
             "publicNetworkAccess": 1,
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "privateLinkInfo": [
               {
                 "Subnet": "snMT02",

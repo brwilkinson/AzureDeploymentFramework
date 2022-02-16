@@ -151,7 +151,7 @@
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           }
         ],
         "DNSPrivateZoneInfo": [
@@ -226,7 +226,7 @@
             "Name": "Vault01",
             "skuName": "standard",
             "softDelete": true,
-            "AllNetworks": "Deny",
+            "allNetworks": 0,
             "accessPolicies": [
               {
                 "objectId": "528b1170-7a6c-4970-94bb-0eb34e1ae947",

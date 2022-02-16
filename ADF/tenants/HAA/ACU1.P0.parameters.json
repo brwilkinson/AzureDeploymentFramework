@@ -384,7 +384,7 @@
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "logging": {
               "r": 0,
               "w": 0,
@@ -405,7 +405,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

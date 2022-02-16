@@ -233,7 +233,7 @@
           {
             "name": "global",
             "skuName": "Standard_RAGRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "addRemoteManagementIPs": 1,
             "largeFileSharesState": "Disabled",
             "logging": {

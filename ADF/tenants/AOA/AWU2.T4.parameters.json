@@ -408,7 +408,7 @@
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Deny",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,
@@ -419,33 +419,8 @@
             "softDeletePolicy": {
               "enabled": 1,
               "days": 7
-            }
-          },
-          {
-            "name": "cshell",
-            "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
-            "logging": {
-              "r": 0,
-              "w": 0,
-              "d": 1
             },
-            "_storageKeyRotation": {
-              "State": "disabled"
-            },
-            "blobVersioning": 1,
-            "changeFeed": 1,
-            "softDeletePolicy": {
-              "enabled": 1,
-              "days": 7
-            },
-            "fileShares": [
-              {
-                "name": "cloudshell",
-                "quota": 5120
-              }
-            ],
-            "_PrivateLinkInfo": [
+            "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "blob"
@@ -476,7 +451,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -504,7 +479,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -552,7 +527,7 @@
             "administratorLogin": "brw",
             "_AdminName": "AZ_SQL_Admins",
             "publicNetworkAccess": 1,
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

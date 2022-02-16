@@ -147,7 +147,7 @@ The name of any resource is determined via the following method.
               {
                 "name": "global",
                 "skuName": "Standard_RAGRS",
-                "allNetworks": "Allow",
+                "allNetworks": 1,
                 "largeFileSharesState": "Disabled",
                 "logging": {
                   "r": 0,
