@@ -42,7 +42,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-08-01' existing = {
   name: toLower('${DeploymentURI}sa${Synapse.saname}')
 }
 
-var sapname = '${DeploymentURI}saw${Synapse.name}'
+var sapname = toLower('${Deployment}-sqlsyn${Synapse.name}')
 
 resource synapseWS 'Microsoft.Synapse/workspaces@2021-06-01' = {
   name: sapname
@@ -75,6 +75,54 @@ resource synapseWS 'Microsoft.Synapse/workspaces@2021-06-01' = {
   }
 }
 
+resource synapseWSDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'service'
+  scope: synapseWS
+  properties: {
+    workspaceId: OMS.id
+    logs: [
+      {
+        category: 'SQLSecurityAuditEvents'
+        enabled: true
+      }
+      {
+        category: 'SynapseRbacOperations'
+        enabled: true
+      }
+      {
+        category: 'GatewayApiRequests'
+        enabled: true
+      }
+      {
+        category: 'BuiltinSqlReqsEnded'
+        enabled: true
+      }
+      {
+        category: 'IntegrationPipelineRuns'
+        enabled: true
+      }
+      {
+        category: 'IntegrationActivityRuns'
+        enabled: true
+      }
+      {
+        category: 'IntegrationTriggerRuns'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        timeGrain: 'PT5M'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+  }
+}
+
 // resource synapseWS 'Microsoft.Synapse/workspaces/sqlAdministrators@2021-06-01' = {
 //   name: 
 // }
@@ -93,6 +141,9 @@ resource alertPolicies 'Microsoft.Synapse/workspaces/securityAlertPolicies@2021-
     storageAccountAccessKey: SADiag.listKeys().keys[0].value
     retentionDays: 0
   }
+  dependsOn: [
+    synapseWSDiags
+  ]
 }
 
 resource vulnAssessments 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-06-01' = if (false) {
@@ -115,10 +166,13 @@ resource auditSettings 'Microsoft.Synapse/workspaces/auditingSettings@2021-06-01
   parent: synapseWS
   properties: {
     retentionDays: 0
+    isAzureMonitorTargetEnabled: true
+    state: 'Enabled'
     auditActionsAndGroups: [
       'FAILED_DATABASE_AUTHENTICATION_GROUP'
       // 'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
       // 'BATCH_COMPLETED_GROUP'
+
       /*
       APPLICATION_ROLE_CHANGE_PASSWORD_GROUP
       BACKUP_RESTORE_GROUP
@@ -142,30 +196,8 @@ resource auditSettings 'Microsoft.Synapse/workspaces/auditingSettings@2021-06-01
       BATCH_COMPLETED_GROUP
       */
     ]
-    isAzureMonitorTargetEnabled: true
-    state: 'Enabled'
-    // storageEndpoint: SADiag.properties.primaryEndpoints.blob
-    // storageAccountSubscriptionId: '00000000-0000-0000-0000-000000000000'
   }
 }
-
-// resource extendedAudit 'Microsoft.Synapse/workspaces/extendedAuditingSettings@2021-06-01' = {
-//   name: 'default'
-//   parent: synapseWS
-//   properties: {
-//     // predicateExpression: ''
-//     retentionDays: 0
-//     auditActionsAndGroups: [
-//       'FAILED_DATABASE_AUTHENTICATION_GROUP'
-//       // 'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
-//       // 'BATCH_COMPLETED_GROUP'
-//     ]
-//     isAzureMonitorTargetEnabled: true
-//     state: 'Enabled'
-//     // storageEndpoint: SADiag.properties.primaryEndpoints.blob
-//     // storageAccountSubscriptionId: '00000000-0000-0000-0000-000000000000'
-//   }
-// }
 
 var rolesInfo = contains(Synapse, 'rolesInfo') ? Synapse.rolesInfo : []
 
