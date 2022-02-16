@@ -69,6 +69,7 @@
         "MySQLDB": 0,
         "Function": 1,
         "SB": 1,
+        "AzureSYN": 0,
         "AzureSQL": 0
       }
     },

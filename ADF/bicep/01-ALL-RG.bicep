@@ -920,6 +920,24 @@ module VMSS 'VMSS.bicep' = if (bool(Stage.VMSS)) {
   ]
 }
 
+module dp_Deployment_AzureSYN 'Synapse.bicep' = if (bool(Stage.AzureSYN)) {
+  name: 'dp${Deployment}-Synapse'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+  ]
+}
+
 module dp_Deployment_AzureSQL 'AZSQL.bicep' = if (bool(Stage.AzureSQL)) {
   name: 'dp${Deployment}-AzureSQL'
   params: {
