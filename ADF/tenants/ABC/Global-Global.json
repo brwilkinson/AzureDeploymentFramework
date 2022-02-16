@@ -4,7 +4,7 @@
     "OrgName": "BRW",
     "AppName": "ABC",
     "GlobalSA": {
-      "namesuffix": "global"
+      "name": "global"
     },
     "GlobalRG": {
       "RG": "G1"

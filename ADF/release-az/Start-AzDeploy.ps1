@@ -74,7 +74,7 @@ Function global:Start-AzDeploy
     $LocationLookup = Get-Content -Path $PSScriptRoot/../bicep/global/region.json | ConvertFrom-Json
     $PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
     $GlobalSA = $GlobalGlobal.GlobalSA
-    $saglobalsuffix = $GlobalSA.namesuffix
+    $saglobalsuffix = $GlobalSA.name
 
     $ResourceGroupName = $prefix + '-' + $GlobalGlobal.OrgName + '-' + $App + '-RG-' + $Deployment
 

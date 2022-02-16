@@ -449,7 +449,7 @@
         ],
         "saInfo": [
           {
-            "nameSuffix": "diag",
+            "name": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Deny",
             "logging": {

@@ -389,7 +389,7 @@
         ],
         "saInfo": [
           {
-            "namesuffix": "diag",
+            "name": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Deny",
             "logging": {
@@ -405,7 +405,7 @@
             }
           },
           {
-            "namesuffix": "data",
+            "name": "data",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "logging": {

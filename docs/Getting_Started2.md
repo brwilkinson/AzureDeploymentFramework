@@ -65,7 +65,7 @@
             "OrgName": "BRW",
             "AppName": "AOA",
             "GlobalSA": {
-              "namesuffix": "global"
+              "name": "global"
             },
             "GlobalRG": {
               "name": "G1" // comment out for global in local

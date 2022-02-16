@@ -204,23 +204,23 @@
         ],
         "saInfo": [
           {
-            "nameSuffix": "nas",
+            "name": "nas",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "largeFileSharesState": "Enabled"
           },
           {
-            "nameSuffix": "diag",
+            "name": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow"
           },
           {
-            "nameSuffix": "witness",
+            "name": "witness",
             "skuName": "Standard_ZRS",
             "allNetworks": "Allow"
           },
           {
-            "nameSuffix": "sqlbackup",
+            "name": "sqlbackup",
             "skuName": "Standard_ZRS",
             "allNetworks": "Allow"
           }

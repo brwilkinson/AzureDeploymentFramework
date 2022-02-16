@@ -165,41 +165,41 @@
         ],
         "saInfo": [
           {
-            "nameSuffix": "naslfse",
+            "name": "naslfse",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "largeFileSharesState": "Enabled"
           },
           {
-            "nameSuffix": "naslfsd",
+            "name": "naslfsd",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "largeFileSharesState": "Disabled"
           },
           {
-            "nameSuffix": "naslfsn",
+            "name": "naslfsn",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "largeFileSharesState2": "Enabled"
           },
           {
-            "nameSuffix": "nas",
+            "name": "nas",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "largeFileSharesState": "Enabled"
           },
           {
-            "nameSuffix": "diag",
+            "name": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow"
           },
           {
-            "nameSuffix": "witness",
+            "name": "witness",
             "skuName": "Standard_ZRS",
             "allNetworks": "Allow"
           },
           {
-            "nameSuffix": "dis01",
+            "name": "dis01",
             "skuName": "Standard_ZRS",
             "allNetworks": "Allow",
             "PrivateLinkInfo": [
@@ -214,7 +214,7 @@
             ]
           },
           {
-            "nameSuffix": "sqlbackup",
+            "name": "sqlbackup",
             "skuName": "Standard_ZRS",
             "allNetworks": "Allow"
           }

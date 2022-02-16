@@ -341,7 +341,7 @@ module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list, index) in waf.Listeners:
 }]
 
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(waf, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-WAF-privatelinkloop-${waf.nameSuffix}'
+  name: 'dp${Deployment}-WAF-privatelinkloop-${waf.name}'
   params: {
     Deployment: Deployment
     PrivateLinkInfo: waf.privateLinkInfo
@@ -351,7 +351,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(waf, 'privatelin
 }
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(waf, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-WAF-registerPrivateDNS-${waf.nameSuffix}'
+  name: 'dp${Deployment}-WAF-registerPrivateDNS-${waf.name}'
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: waf.privateLinkInfo

@@ -46,7 +46,7 @@ var fileShares = contains(storageInfo, 'fileShares') ? storageInfo.fileShares : 
 var containers = contains(storageInfo, 'containers') ? storageInfo.containers : []
 
 resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
-  name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
+  name: toLower('${DeploymentURI}sa${storageInfo.name}')
   location: resourceGroup().location
   sku: {
     name: storageInfo.skuName
@@ -81,8 +81,21 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
+var rolesInfo = contains(storageInfo, 'rolesInfo') ? storageInfo.rolesInfo : []
+
+module RBAC 'x.RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
+    name: 'dp-rbac-role-${storageInfo.name}-${role.name}'
+    params: {
+        resourceId: SA.id
+        Global: Global
+        roleInfo: role
+        Type: contains(role,'Type') ? role.Type : 'lookup'
+        deployment: Deployment
+    }
+}]
+
 module storageKeyRotationKey1 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo, 'storageKeyRotation')) {
-  name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}-StorageKeyRotation-key1')
+  name: toLower('${DeploymentURI}sa${storageInfo.name}-StorageKeyRotation-key1')
   params: {
     keyName: 'key1'
     regenerationPeriodDays: contains(storageInfo.storageKeyRotation, 'regenerationPeriodDays') ? storageInfo.storageKeyRotation.regenerationPeriodDays : 30
@@ -93,7 +106,7 @@ module storageKeyRotationKey1 'x.setStorageKeyRotation.bicep' = if (contains(sto
 }
 
 module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo, 'storageKeyRotation')) {
-  name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}-StorageKeyRotation-key2')
+  name: toLower('${DeploymentURI}sa${storageInfo.name}-StorageKeyRotation-key2')
   params: {
     keyName: 'key2'
     regenerationPeriodDays: contains(storageInfo.storageKeyRotation, 'regenerationPeriodDays') ? storageInfo.storageKeyRotation.regenerationPeriodDays : 30
@@ -382,7 +395,7 @@ resource SATableDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-pr
 }
 
 module SAFileShares 'x.storageFileShare.bicep' = [for (share, index) in fileShares: {
-  name: 'dp${Deployment}-SA-${storageInfo.nameSuffix}-FileShare-${share.name}'
+  name: 'dp${Deployment}-SA-${storageInfo.name}-FileShare-${share.name}'
   params: {
     SAName: SA.name
     fileShare: share
@@ -392,7 +405,7 @@ module SAFileShares 'x.storageFileShare.bicep' = [for (share, index) in fileShar
 }]
 
 module SAContainers 'x.storageContainer.bicep' = [for (container, index) in containers: {
-  name: 'dp${Deployment}-SA-${storageInfo.nameSuffix}-Container-${container.name}'
+  name: 'dp${Deployment}-SA-${storageInfo.name}-Container-${container.name}'
   params: {
     SAName: SA.name
     container: container
@@ -402,7 +415,7 @@ module SAContainers 'x.storageContainer.bicep' = [for (container, index) in cont
 }]
 
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-SA-privatelinkloop-${storageInfo.nameSuffix}'
+  name: 'dp${Deployment}-SA-privatelinkloop-${storageInfo.name}'
   params: {
     Deployment: Deployment
     PrivateLinkInfo: storageInfo.privateLinkInfo
@@ -412,7 +425,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'pr
 }
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-SA-registerPrivateDNS-${storageInfo.nameSuffix}'
+  name: 'dp${Deployment}-SA-registerPrivateDNS-${storageInfo.name}'
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: storageInfo.privateLinkInfo

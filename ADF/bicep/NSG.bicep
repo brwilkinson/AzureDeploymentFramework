@@ -204,22 +204,6 @@ var NSGDefault = {
     }
   ]
   SNFE01: [
-    {
-      name: 'ALL_Bastion_IN_Allow_RDP_SSH'
-      properties: {
-        protocol: '*'
-        sourcePortRange: '*'
-        destinationPortRanges: [
-          '3389'
-          '22'
-        ]
-        sourceAddressPrefix: 'VirtualNetwork'
-        destinationAddressPrefix: '*'
-        access: 'Allow'
-        priority: 1120
-        direction: 'Inbound'
-      }
-    }
     // Move to bastion JIT rule
     // {
     //   name: 'ALL_JMP_IN_Allow_RDP_SSH'

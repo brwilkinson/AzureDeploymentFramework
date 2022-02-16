@@ -128,7 +128,7 @@ The name of any resource is determined via the following method.
         ```bicep
         // a storage account
         resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
-            name: toLower('${DeploymentURI}sa${storageInfo.nameSuffix}')
+            name: toLower('${DeploymentURI}sa${storageInfo.name}')
         }
         ```
 
@@ -139,13 +139,13 @@ The name of any resource is determined via the following method.
         ```
 - [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.ACU1.G1.parameters.json)
     - The parameter also contains individual resource definitions for that Resource Group
-    - Notice the nameSuffix value above for 'global' comes from the parameter file as below.
+    - Notice the name value above for 'global' comes from the parameter file as below.
         ```json
         "DeploymentInfo": {
           "value": {
             "saInfo": [
               {
-                "nameSuffix": "global",
+                "name": "global",
                 "skuName": "Standard_RAGRS",
                 "allNetworks": "Allow",
                 "largeFileSharesState": "Disabled",
@@ -178,7 +178,7 @@ The name of any resource is determined via the following method.
 
 #### An end user is **not responsible** for managing naming standards/conventions, **standards are baked in**, end users only provide the short resource name. **It is possible to change the default naming convention to meet your organizational needs**, I wouldn't recommend it, however you would simply update the **"Deployment"** variable (shown above in json code) to your new format.
 ##### Short Resource Name examples:
-    - global     e.g. storage namesuffix
+    - global     e.g. storage name
     - SQL01      e.g. Virtual Machine Name
     - App01      e.g. Keyvault Name
     - FW01       e.g. Web Application Firewall Name
