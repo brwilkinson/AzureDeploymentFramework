@@ -33,16 +33,14 @@ param(
 
 $Artifacts = "$PSScriptRoot\.."
 
-
-$Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
-$LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
-$PrimaryLocation = $Global.PrimaryLocation
-$SecondaryLocation = $Global.SecondaryLocation
-$PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
-$SecondaryPrefix = $LocationLookup.$SecondaryLocation.Prefix
-
 if (! $primaryKVName)
 {
+    $Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+    $LocationLookup = Get-Content -Path $PSScriptRoot\..\bicep\global\region.json | ConvertFrom-Json
+    $PrimaryLocation = $Global.PrimaryLocation
+    $SecondaryLocation = $Global.SecondaryLocation
+    $PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
+    $SecondaryPrefix = $LocationLookup.$SecondaryLocation.Prefix
     # Primary Region (Hub) Info
     $Primary = Get-Content -Path $Artifacts\tenants\$App\Global-$PrimaryPrefix.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
     $PrimaryKVName = $Primary.KVName
