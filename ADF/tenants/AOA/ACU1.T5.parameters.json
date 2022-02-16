@@ -582,7 +582,7 @@
         ],
         "SynapseInfo": [
           {
-            "name": "data01",
+            "name": "01",
             "saname": "adldata",
             "sashare": "adldata",
             "publicNetworkAccess": 1,
