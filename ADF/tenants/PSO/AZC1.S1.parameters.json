@@ -206,23 +206,23 @@
           {
             "name": "nas",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState": "Enabled"
           },
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           },
           {
             "name": "witness",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           },
           {
             "name": "sqlbackup",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           }
         ],
         "StorageSyncInfo": [

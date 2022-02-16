@@ -219,7 +219,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "_PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
@@ -232,7 +232,7 @@
           {
             "name": "global",
             "skuName": "Standard_RAGRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "addRemoteManagementIPs": 1,
             "largeFileSharesState": "Disabled",
             "logging": {

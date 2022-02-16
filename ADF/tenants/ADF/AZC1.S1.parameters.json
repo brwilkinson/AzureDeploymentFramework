@@ -211,7 +211,7 @@
           {
             "name": "naslfse",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState": "Enabled",
             "logging": {
               "r": 0,
@@ -222,35 +222,35 @@
           {
             "name": "naslfsd",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState": "Disabled"
           },
           {
             "name": "naslfsn",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState2": "Enabled"
           },
           {
             "name": "nas",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "largeFileSharesState": "Enabled"
           },
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           },
           {
             "name": "witness",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           },
           {
             "name": "dis01",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
@@ -265,7 +265,7 @@
           {
             "name": "sqlbackup",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           }
         ],
         "StorageSyncInfo": [
@@ -314,7 +314,7 @@
               "name": "KeyVaultSecretsGetApp",
               "permission": "SecretsGetAndList"
             },
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
@@ -358,7 +358,7 @@
             "administratorLogin": "brw",
             "AdminName": "brw",
             "publicNetworkAccess": 0,
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snBE01",

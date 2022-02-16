@@ -321,7 +321,7 @@
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow"
+            "allNetworks": 1
           }
         ],
         "KVInfo": [
@@ -331,7 +331,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

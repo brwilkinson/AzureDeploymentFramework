@@ -372,7 +372,7 @@
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": "Deny",
+            "allNetworks": 0,
             "logging": {
               "r": 0,
               "w": 0,
@@ -388,7 +388,7 @@
           {
             "name": "witness",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,
@@ -404,7 +404,7 @@
           {
             "name": "sqlbackup",
             "skuName": "Standard_ZRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,
@@ -420,7 +420,7 @@
           {
             "name": "data",
             "skuName": "Standard_LRS",
-            "allNetworks": "Allow",
+            "allNetworks": 1,
             "logging": {
               "r": 0,
               "w": 0,

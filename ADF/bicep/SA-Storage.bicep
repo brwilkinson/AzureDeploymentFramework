@@ -63,7 +63,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
     networkAcls: {
       #disable-next-line BCP036
       bypass: 'Logging, Metrics, AzureServices'
-      defaultAction: (contains(storageInfo, 'allNetworks') ? storageInfo.allNetworks : 'Allow')
+      defaultAction: ! contains(storageInfo, 'allNetworks') ? 'Allow' : bool(storageInfo.allNetworks) ? 'Allow' : 'Deny'
     }
     supportsHttpsTrafficOnly: true
     minimumTlsVersion: 'TLS1_2'
