@@ -380,7 +380,7 @@
         ],
         "saInfo": [
           {
-            "namesuffix": "diag",
+            "name": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "logging": {
@@ -396,7 +396,7 @@
             }
           },
           {
-            "namesuffix": "witness",
+            "name": "witness",
             "skuName": "Standard_ZRS",
             "allNetworks": "Allow",
             "logging": {
@@ -412,7 +412,7 @@
             }
           },
           {
-            "namesuffix": "sqlbackup",
+            "name": "sqlbackup",
             "skuName": "Standard_ZRS",
             "allNetworks": "Allow",
             "logging": {
@@ -428,7 +428,7 @@
             }
           },
           {
-            "namesuffix": "data",
+            "name": "data",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "logging": {

@@ -25,6 +25,7 @@ param Environment string = 'D'
   '9'
 ])
 param DeploymentID string = '1'
+#disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
 param Extensions object
@@ -41,11 +42,11 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var storageInfo = contains(DeploymentInfo, 'saInfo') ? DeploymentInfo.saInfo : []
 
 var SAInfo = [for (sa, index) in storageInfo: {
-  match: (Global.CN == '.') || contains(array(Global.CN), sa.nameSuffix)
+  match: (Global.CN == '.') || contains(array(Global.CN), sa.name)
 }]
 
 module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: if (SAInfo[index].match) {
-  name: 'dp${Deployment}-SA-${sa.nameSuffix}'
+  name: 'dp${Deployment}-SA-${sa.name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI

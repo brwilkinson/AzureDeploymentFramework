@@ -230,7 +230,7 @@
         ],
         "saInfo": [
           {
-            "nameSuffix": "global",
+            "name": "global",
             "skuName": "Standard_RAGRS",
             "allNetworks": "Allow",
             "addRemoteManagementIPs": 1,

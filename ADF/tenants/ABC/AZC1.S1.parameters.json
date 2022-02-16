@@ -291,7 +291,7 @@
         ],
         "saInfo": [
           {
-            "nameSuffix": "diag",
+            "name": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "blobVersioning": 1,
@@ -302,7 +302,7 @@
             }
           },
           {
-            "nameSuffix": "adds",
+            "name": "adds",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "ADDS": 0,

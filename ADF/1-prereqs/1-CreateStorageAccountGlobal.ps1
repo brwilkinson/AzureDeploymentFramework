@@ -12,7 +12,7 @@ $PrimaryPrefix = $LocationLookup.$PrimaryLocation.Prefix
 
 $GlobalSA = $Global.GlobalSA
 $GlobalInfo = $Global.GlobalRG
-$saglobalsuffix = $GlobalSA.namesuffix
+$saglobalsuffix = $GlobalSA.name
 
 $GlobalRGName = "{0}-{1}-{2}-RG-$($GlobalInfo.RG)" -f $PrimaryPrefix, ($GlobalInfo.OrgName ?? $Global.OrgName), ($GlobalInfo.AppName ?? $Global.AppName)
 $StorageAccountName = ("{0}{1}{2}{3}sa${saglobalsuffix}" -f ($GlobalSA.Prefix ?? $PrimaryPrefix),

@@ -19,6 +19,10 @@ var objectIdLookup = json(Global.objectIdLookup)
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
+resource SADiag 'Microsoft.Storage/storageAccounts@2021-08-01' existing = {
+  name: '${DeploymentURI}sadiag'
+}
+
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
@@ -79,26 +83,25 @@ resource alertPolicies 'Microsoft.Synapse/workspaces/securityAlertPolicies@2021-
   name: 'Default'
   parent: synapseWS
   properties: {
-    state: 'Disabled'
+    state: 'Enabled'
     disabledAlerts: [
       // ''
     ]
-    emailAddresses: [
-      // ''
-    ]
+    emailAddresses: Global.alertRecipients
     emailAccountAdmins: false
-    // storageEndpoint: ''
-    // storageAccountAccessKey: ''
+    storageEndpoint: SADiag.properties.primaryEndpoints.blob
+    storageAccountAccessKey: SADiag.listKeys().keys[0].value
     retentionDays: 0
   }
 }
 
-resource vulnAssessments 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-06-01' = if(false) {
+resource vulnAssessments 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-06-01' = if (false) {
   name: 'default'
   parent: synapseWS
   #disable-next-line BCP035
   properties: {
-    // storageContainerPath: ''
+    storageContainerPath: '${SADiag.properties.primaryEndpoints.blob}/sascans/'
+    // storageAccountAccessKey: SADiag.listKeys().keys[0].value
     recurringScans: {
       isEnabled: true
       emailSubscriptionAdmins: true
@@ -116,31 +119,53 @@ resource auditSettings 'Microsoft.Synapse/workspaces/auditingSettings@2021-06-01
       'FAILED_DATABASE_AUTHENTICATION_GROUP'
       // 'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
       // 'BATCH_COMPLETED_GROUP'
+      /*
+      APPLICATION_ROLE_CHANGE_PASSWORD_GROUP
+      BACKUP_RESTORE_GROUP
+      DATABASE_LOGOUT_GROUP
+      DATABASE_OBJECT_CHANGE_GROUP
+      DATABASE_OBJECT_OWNERSHIP_CHANGE_GROUP
+      DATABASE_OBJECT_PERMISSION_CHANGE_GROUP
+      DATABASE_OPERATION_GROUP
+      DATABASE_PERMISSION_CHANGE_GROUP
+      DATABASE_PRINCIPAL_CHANGE_GROUP
+      DATABASE_PRINCIPAL_IMPERSONATION_GROUP
+      DATABASE_ROLE_MEMBER_CHANGE_GROUP
+      FAILED_DATABASE_AUTHENTICATION_GROUP
+      SCHEMA_OBJECT_ACCESS_GROUP
+      SCHEMA_OBJECT_CHANGE_GROUP
+      SCHEMA_OBJECT_OWNERSHIP_CHANGE_GROUP
+      SCHEMA_OBJECT_PERMISSION_CHANGE_GROUP
+      SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP
+      USER_CHANGE_PASSWORD_GROUP
+      BATCH_STARTED_GROUP
+      BATCH_COMPLETED_GROUP
+      */
     ]
     isAzureMonitorTargetEnabled: true
     state: 'Enabled'
-    // storageEndpoint: ''
+    // storageEndpoint: SADiag.properties.primaryEndpoints.blob
     // storageAccountSubscriptionId: '00000000-0000-0000-0000-000000000000'
   }
 }
 
-resource extendedAudit 'Microsoft.Synapse/workspaces/extendedAuditingSettings@2021-06-01' = {
-  name: 'default'
-  parent: synapseWS
-  properties: {
-    // predicateExpression: ''
-    retentionDays: 0
-    auditActionsAndGroups: [
-      'FAILED_DATABASE_AUTHENTICATION_GROUP'
-      // 'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
-      // 'BATCH_COMPLETED_GROUP'
-    ]
-    isAzureMonitorTargetEnabled: true
-    state: 'Enabled'
-    // storageEndpoint: ''
-    // storageAccountSubscriptionId: '00000000-0000-0000-0000-000000000000'
-  }
-}
+// resource extendedAudit 'Microsoft.Synapse/workspaces/extendedAuditingSettings@2021-06-01' = {
+//   name: 'default'
+//   parent: synapseWS
+//   properties: {
+//     // predicateExpression: ''
+//     retentionDays: 0
+//     auditActionsAndGroups: [
+//       'FAILED_DATABASE_AUTHENTICATION_GROUP'
+//       // 'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
+//       // 'BATCH_COMPLETED_GROUP'
+//     ]
+//     isAzureMonitorTargetEnabled: true
+//     state: 'Enabled'
+//     // storageEndpoint: SADiag.properties.primaryEndpoints.blob
+//     // storageAccountSubscriptionId: '00000000-0000-0000-0000-000000000000'
+//   }
+// }
 
 var rolesInfo = contains(Synapse, 'rolesInfo') ? Synapse.rolesInfo : []
 

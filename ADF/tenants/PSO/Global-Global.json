@@ -5,7 +5,7 @@
     "OrgName": "BRW",
     "AppName": "PSO",
     "GlobalSA": {
-      "namesuffix": "global"
+      "name": "global"
     },
     "GlobalRG": {
       "RG": "G1"

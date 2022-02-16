@@ -405,7 +405,7 @@
         },
         "saInfo": [
           {
-            "nameSuffix": "diag",
+            "name": "diag",
             "skuName": "Standard_LRS",
             "allNetworks": "Deny",
             "logging": {
@@ -421,7 +421,7 @@
             }
           },
           {
-            "namesuffix": "cshell",
+            "name": "cshell",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "logging": {

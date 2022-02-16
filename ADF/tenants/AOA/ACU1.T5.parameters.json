@@ -401,7 +401,60 @@
         },
         "saInfo": [
           {
-            "namesuffix": "data2",
+            "name": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": "Allow",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              },
+              {
+                "Subnet": "snMT02",
+                "groupID": "queue"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "SynapseDataContributor",
+                "Type": "UAI",
+                "RBAC": [
+                  {
+                    "Name": "Storage Blob Data Contributor"
+                  }
+                ]
+              }
+            ],
+            "containers": [
+              {
+                "name": "vascans",
+                "rolesInfo": [
+                  {
+                    "Name": "SynapseDataContributor",
+                    "Type": "UAI",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "data2",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "logging": {
@@ -435,7 +488,7 @@
             ]
           },
           {
-            "namesuffix": "data",
+            "name": "data",
             "skuName": "Standard_LRS",
             "allNetworks": "Allow",
             "logging": {
@@ -476,7 +529,7 @@
             ]
           },
           {
-            "namesuffix": "adldata",
+            "name": "adldata",
             "skuName": "Standard_RAGRS", //"Standard_LRS",
             "isHnsEnabled": 1,
             "allNetworks": "Allow",

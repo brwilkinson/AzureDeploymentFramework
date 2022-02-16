@@ -140,12 +140,12 @@
         ],
         "saInfo": [
           {
-            "nameSuffix": "diag",
+            "name": "diag",
             "skuName": "Standard_LRS",
             "allNetworks" :"Allow"
           },
           {
-            "nameSuffix": "witness",
+            "name": "witness",
             "skuName": "Standard_ZRS",
             "allNetworks" :"Allow"
           }

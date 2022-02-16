@@ -59,7 +59,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 }
 
 // var storageInfo = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
-  //   nameSuffix: toLower('reg${cr.Name}')
+  //   name: toLower('reg${cr.Name}')
   //   skuName: 'Standard_LRS'
   //   allNetworks: 'Deny'
   //   logging: {
@@ -76,7 +76,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   // }]
   
   // module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: {
-  //   name: 'dp${Deployment}-storageDeploy${sa.nameSuffix}'
+  //   name: 'dp${Deployment}-storageDeploy${sa.name}'
   //   params: {
   //     Deployment: Deployment
   //     DeploymentURI: DeploymentURI
