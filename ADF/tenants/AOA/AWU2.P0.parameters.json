@@ -541,6 +541,16 @@
                 "Subnet": "snMT02",
                 "groupID": "vault"
               }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "MicrosoftAzureAppService",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Secrets User"
+                  }
+                ]
+              }
             ]
           }
         ],
