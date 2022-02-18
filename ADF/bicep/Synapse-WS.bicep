@@ -150,7 +150,7 @@ resource vulnAssessments 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@
     storageContainerPath: '${SADiag.properties.primaryEndpoints.blob}sascans/'
     recurringScans: {
       isEnabled: true
-      emailSubscriptionAdmins: false
+      emailSubscriptionAdmins: true
       emails: Global.alertRecipients
     }
   }
