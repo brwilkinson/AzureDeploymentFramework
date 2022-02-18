@@ -103,7 +103,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rel, index) in azRelayI
   params: {
     Deployment: Deployment
     PrivateLinkInfo: rel.privateLinkInfo
-    providerType: 'Microsoft.Relay/namespaces'
+    providerType: RELAY[index].type
     resourceName: RELAY[index].name
   }
 }]
@@ -113,8 +113,9 @@ module RCprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (rel, index) in azRe
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: rel.privateLinkInfo
-    providerURL: '.windows.net/'
-    resourceName: '${Deployment}-relay${rel.Name}'
+    providerURL: 'windows.net'
+    resourceName: RELAY[index].name
+    providerType: RELAY[index].type
     Nics: contains(rel, 'privatelinkinfo') ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
   }
 }]

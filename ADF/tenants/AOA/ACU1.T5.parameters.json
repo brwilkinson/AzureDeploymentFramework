@@ -590,7 +590,7 @@
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
-                "groupID": "sql"
+                "groupID": "Sql"
               }
             ]
           }
@@ -1552,7 +1552,7 @@
             "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
             "enableMultipleWriteLocations": true,
             "enableAutomaticFailover": true,
-            "_privateLinkInfo": [
+            "privateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "SQL"
@@ -1570,7 +1570,7 @@
                 "isZoneRedundant": true
               }
             ],
-            "databases": [
+            "_databases": [
               {
                 "databaseName": "customers",
                 "containers": [

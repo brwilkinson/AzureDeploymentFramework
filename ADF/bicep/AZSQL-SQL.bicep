@@ -14,10 +14,10 @@ var objectIdLookup = json(Global.objectIdLookup)
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
-  hubRGPrefix:  contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
-  hubRGRGName:  contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
 }
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
@@ -37,7 +37,7 @@ resource SQL 'Microsoft.Sql/servers@2020-11-01-preview' = {
   }
 }
 
-resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2020-11-01-preview' = if(contains(azSQLInfo,'AdminName')) {
+resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2020-11-01-preview' = if (contains(azSQLInfo, 'AdminName')) {
   name: 'ActiveDirectory'
   parent: SQL
   properties: {
@@ -66,7 +66,7 @@ resource SQLAllConnectionsAllowed 'Microsoft.Sql/servers/firewallRules@2020-11-0
   }
 }
 
-resource SQLDB 'Microsoft.Sql/servers/databases@2020-11-01-preview' = [for (db,index) in azSQLInfo.DBInfo : {
+resource SQLDB 'Microsoft.Sql/servers/databases@2020-11-01-preview' = [for (db, index) in azSQLInfo.DBInfo: {
   name: db.Name
   parent: SQL
   location: resourceGroup().location
@@ -79,7 +79,7 @@ resource SQLDB 'Microsoft.Sql/servers/databases@2020-11-01-preview' = [for (db,i
   }
 }]
 
-resource SQLDBDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (db,index) in azSQLInfo.DBInfo : {
+resource SQLDBDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (db, index) in azSQLInfo.DBInfo: {
   name: 'service'
   scope: SQLDB[index]
   properties: {
@@ -156,12 +156,9 @@ module SQLPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(azSQLInfo, 'priva
   params: {
     Deployment: Deployment
     PrivateLinkInfo: azSQLInfo.privateLinkInfo
-    providerType: 'Microsoft.Sql/servers'
-    resourceName: '${Deployment}-azsql${azSQLInfo.Name}'
+    providerType: SQL.type
+    resourceName: SQL.name
   }
-  dependsOn: [
-    SQL
-  ]
 }
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(azSQLInfo, 'privatelinkinfo')) {
@@ -169,8 +166,9 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(azSQLInfo, 'pr
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: azSQLInfo.privateLinkInfo
-    resourceName: '${Deployment}-azsql${azSQLInfo.Name}'
-    providerURL: '.windows.net/'
+    providerURL: 'windows.net'
+    resourceName: SQL.name
+    providerType: SQL.type
     Nics: contains(azSQLInfo, 'privatelinkinfo') ? array(SQLPrivateLink.outputs.NICID) : array('')
   }
 }

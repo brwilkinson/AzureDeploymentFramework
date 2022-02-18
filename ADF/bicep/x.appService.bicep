@@ -218,8 +218,9 @@ module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws, 'privat
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: ws.privateLinkInfo
-    providerURL: '.net/'
+    providerURL: 'net'
     resourceName: WS.name
+    providerType: WS.type
     Nics: contains(ws, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }

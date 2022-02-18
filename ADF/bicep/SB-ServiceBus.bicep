@@ -7,6 +7,18 @@ param Global object
 param Stage object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
+param Prefix string
+
+var HubRGJ = json(Global.hubRG)
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
@@ -76,3 +88,25 @@ module ServiceBus_TopicSubscriptions 'SB-ServiceBus-TopicSubscription.bicep' = [
     SBTopic
   ]
 }]
+
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(SBInfo, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-SB-privatelinkloop${SBInfo.name}'
+  params: {
+    Deployment: Deployment
+    PrivateLinkInfo: SBInfo.privateLinkInfo
+    resourceName: SB.name
+    providerType: SB.type
+  }
+}
+
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(SBInfo, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-SB-registerPrivateDNS${SBInfo.name}'
+  scope: resourceGroup(HubRGName)
+  params: {
+    PrivateLinkInfo: SBInfo.privateLinkInfo
+    providerURL: 'windows.net'
+    resourceName: SB.name
+    providerType: SB.type
+    Nics: contains(SBInfo, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('na')
+  }
+}

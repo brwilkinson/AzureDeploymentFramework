@@ -148,7 +148,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rc,index) in RedisInfo:
   params: {
     Deployment: Deployment
     PrivateLinkInfo: rc.privateLinkInfo
-    providerType: 'Microsoft.Cache/Redis'
+    providerType: RC[index].type
     resourceName: RC[index].name
   }
 }]
@@ -158,8 +158,9 @@ module RCprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (rc,index) in RedisI
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: rc.privateLinkInfo
-    providerURL: '.windows.net/'
-    resourceName: '${Deployment}-rc${rc.name}'
+    providerURL: 'windows.net'
+    resourceName: RC[index].name
+    providerType: RC[index].type
     Nics: contains(rc, 'privatelinkinfo') ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
   }
 }]

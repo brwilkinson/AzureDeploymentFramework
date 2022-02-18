@@ -150,7 +150,7 @@ resource vulnAssessments 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@
     storageContainerPath: '${SADiag.properties.primaryEndpoints.blob}sascans/'
     recurringScans: {
       isEnabled: true
-      emailSubscriptionAdmins: false
+      emailSubscriptionAdmins: true
       emails: Global.alertRecipients
     }
   }
@@ -189,20 +189,20 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(Synapse, 'privat
   params: {
     Deployment: Deployment
     PrivateLinkInfo: Synapse.privateLinkInfo
-    providerType: 'Microsoft.Synapse/workspaces'
     resourceName: synapseWS.name
+    providerType: synapseWS.type
   }
 }
 
-// module SynapsePrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(Synapse, 'privatelinkinfo')) {
-//   name: 'dp${Deployment}-Synapse-registerPrivateDNS${Synapse.name}'
-//   scope: resourceGroup(HubRGName)
-//   params: {
-//     PrivateLinkInfo: Synapse.privateLinkInfo
-//     providerURL: '.azuresynapse.net'
-//     resourceName: synapseWS.name
-//     Nics: contains(Synapse, 'privatelinkinfo') && length(Synapse) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
-//   }
-// }
+module SynapsePrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(Synapse, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-Synapse-registerPrivateDNS${Synapse.name}'
+  scope: resourceGroup(HubRGName)
+  params: {
+    PrivateLinkInfo: Synapse.privateLinkInfo
+    providerURL: 'azuresynapse.net'
+    resourceName: synapseWS.name
+    providerType: synapseWS.type
+    Nics: contains(Synapse, 'privatelinkinfo') && length(Synapse) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
+  }
+}
 
-// output url string = SADiag.properties.primaryEndpoints.blob
