@@ -194,6 +194,14 @@
                 "Name": "Virtual Machine Administrator Login"
               }
             ]
+          },
+          {
+            "Name": "Microsoft.Azure.CertificateRegistration",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+            ]
           }
         ],
         "SPInfo": [
@@ -478,6 +486,16 @@
               {
                 "Subnet": "snMT02",
                 "groupID": "vault"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "MicrosoftAzureAppService",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
               }
             ]
           }

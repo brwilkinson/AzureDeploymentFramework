@@ -19,23 +19,37 @@ var MSILookup = {
 }
 
 var HubRGJ = json(Global.hubRG)
+var HubKVJ = json(Global.hubKV)
 
 var gh = {
   hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
   hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
 }
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var HubKVRGName = '${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-RG-${gh.hubKVRGName}'
+var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: 'AWU2-BRW-AOA-P0-kvVLT01' //HubKVName
+  scope: resourceGroup('AWU2-BRW-AOA-RG-P0') //resourceGroup(HubKVRGName)
+}
+
 var userAssignedIdentities = {
   Default: {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
   }
   VMOperator: {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiVMOperator')}': {}
@@ -103,6 +117,20 @@ resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,
     wsBinding
   ]
 }
+
+//  Prefer managed certs above, so will just leave integration of certs from KV till later.
+// resource certificatesKV 'Microsoft.Web/certificates@2021-03-01' = {
+//   name: toLower('${WS.name}.${Global.DomainNameExt}-${Global.CertName}')
+//   location: resourceGroup().location
+//   properties: {
+//     serverFarmId: resourceId('Microsoft.Web/serverfarms', '${Deployment}-asp${ws.AppSVCPlan}')
+//     keyVaultId: KV.id
+//     keyVaultSecretName: Global.CertName
+//   }
+//   dependsOn: [
+//     wsBinding
+//   ]
+// }
 
 module wsBindingSNI 'x.appServiceBinding.bicep' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'dp-binding-sni-${ws.name}'

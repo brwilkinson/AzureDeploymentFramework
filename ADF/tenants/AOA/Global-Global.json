@@ -48,6 +48,7 @@
       "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
       "Microsoft.AzureFrontDoor-Cdn": "4dbab725-22a4-44d5-ad44-c267ca38a954",
       "Microsoft.Azure.CertificateRegistration": "ed47c2a1-bd23-4341-b39c-f4fd69138dd3",
+      "MicrosoftAzureAppService": "f8daea97-62e7-4026-becf-13c2ea98e8b4",
       "Logic_Runner_4@microsoft.onmicrosoft.com": "fdd71a51-494b-456a-a3dc-a9ae9e0889a6",
       "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",

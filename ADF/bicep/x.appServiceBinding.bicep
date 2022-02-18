@@ -18,3 +18,5 @@ resource extDNSBinding 'Microsoft.Web/sites/hostNameBindings@2021-02-01' = {
     thumbprint: sslState == 'SniEnabled' ? thumbprint : null
   }
 }
+
+
