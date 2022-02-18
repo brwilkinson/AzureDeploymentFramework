@@ -80,7 +80,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfiguration
   params: {
     Deployment: Deployment
     PrivateLinkInfo: appConfigurationInfo.privateLinkInfo
-    providerType: 'Microsoft.AppConfiguration/configurationStores'
+    providerType: AC.type
     resourceName: AC.name
   }
 }
@@ -90,8 +90,9 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(appConfigurati
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: appConfigurationInfo.privateLinkInfo
-    providerURL: '.io/'
-    resourceName: '${Deployment}-ac${appConfigurationInfo.Name}'
+    providerURL: 'io'
+    providerType: AC.type
+    resourceName: AC.name
     Nics: contains(appConfigurationInfo, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }

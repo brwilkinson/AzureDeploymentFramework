@@ -160,7 +160,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(KVInfo, 'private
   params: {
     Deployment: Deployment
     PrivateLinkInfo: KVInfo.privateLinkInfo
-    providerType: 'Microsoft.KeyVault/vaults'
+    providerType: KV.type
     resourceName: KV.name
   }
 }
@@ -170,7 +170,8 @@ module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(KVInfo, 'pri
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: KVInfo.privateLinkInfo
-    providerURL: '.azure.net/'
+    providerURL: 'azure.net'
+    providerType: KV.type
     resourceName: KV.name
     Nics: contains(KVInfo, 'privatelinkinfo') && length(KVInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
