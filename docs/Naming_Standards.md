@@ -7,10 +7,8 @@
 ### Naming Standards - These are configurable, however built into this project by design.
 
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
-<br/>
 
-
-    Common naming standards/conventions/examples:
+**Common naming standards/conventions/examples:**
 
 ```diff
 +       - ACU1-FAB-ADF-RG-S1
@@ -93,7 +91,7 @@
 The name of any resource is determined via the following method.
     - Example the Hub tenant, Central US Global Parameter File
 
-- [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.ACU1.G1.parameters.json)
+- [The Paremter File that you are deploying](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/tenants/AOA/ACU1.G1.parameters.json){:target="_blank"}
     - The parameter file defines a Resource Group
     - This contains, the 3 parameters that automatically build the resource names.
         - [Prefix](./Naming_Standards_Prefix.md)
@@ -113,7 +111,7 @@ The name of any resource is determined via the following method.
                 },
             ```
 
-- [Each template reads these values e.g. Storage Template](../ADF/templates-base/1-azuredeploy-Storage.json)
+- [Each template reads these values e.g. Storage Template](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/SA.bicep){:target="_blank"}
     - The template combines the parts to create a **Deployment** Variable.
     - Where appropriate the template also combines the parts to create a **DeploymentURI** Variable.
         - This URI will be lower case  a exclude any dashes Etc.
@@ -137,7 +135,7 @@ The name of any resource is determined via the following method.
         resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
             name: '${Deployment}-vm${AppServer.Name}'
         ```
-- [The Paremter File that you are deploying](../ADF/tenants/HUB/azuredeploy.1.ACU1.G1.parameters.json)
+- [The Paremter File that you are deploying](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/tenants/AOA/ACU1.G1.parameters.json){:target="_blank"}
     - The parameter also contains individual resource definitions for that Resource Group
     - Notice the name value above for 'global' comes from the parameter file as below.
         ```json
@@ -159,7 +157,7 @@ The name of any resource is determined via the following method.
           }
         }
         ```
-- [There is additional Global Metadata for each tenant (App Group)](../ADF/tenants/HUB/Global-Global.json)
+- [There is additional Global Metadata for each tenant (App Group)](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/tenants/AOA/Global-Global.json){:target="_blank"}
     - This is kept in the global file, so that it doesn't have to be included in each individual parameter file
     - This information will be static per App Group/Tenant.
     ```json
