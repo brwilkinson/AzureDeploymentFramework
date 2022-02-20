@@ -32,18 +32,6 @@
 
 - [Parameter Files](./Parameter_Files.md)
 
-### Using Parameter file per environment
-
-- [Parameter File Per Environment](./Parameter_Files_Per_Environment.md)
-
-### How does (Role Based Access Control) RBAC work
-
-- [Role Based Access Control](./RBAC.md)
-
-### Moving out Global and Regional settings
-
-- [Global Settings](./Global_Settings.md)
-
 ### Using Base templates
 
 - [Base Templates](./Base_Templates.md)
@@ -55,6 +43,18 @@
 ### Using nested templates
 
 - [Nested Templates/Modules](./Nested_Templates.md)
+
+### Using Parameter file per environment
+
+- [Parameter File Per Environment](./Parameter_Files_Per_Environment.md)
+
+### How does (Role Based Access Control) RBAC work
+
+- [Role Based Access Control](./RBAC.md)
+
+### Moving out Global and Regional settings
+
+- [Global Settings](./Global_Settings.md)
 
 ### Deploying from PowerShell
 
