@@ -6,7 +6,7 @@
 
 ### Frequently asked questions (FAQ).
 
-#### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
+##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 #### <a name="ARM"></a> Why Azure Resource Manager (ARM) Bicep:
 1) Why use Bicep?
 

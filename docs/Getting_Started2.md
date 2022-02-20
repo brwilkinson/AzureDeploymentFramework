@@ -6,7 +6,7 @@
 ### Getting Started - Deploy your Second App
 - [Documentation - Getting Started - Deploy your First App](./Getting_Started.md)
 
-#### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
+##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
 #### This project assumes:
 - Shared Subscription between all Apps/Tenants
