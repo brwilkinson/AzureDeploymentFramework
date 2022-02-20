@@ -6,8 +6,8 @@
 ---
 ### - Declarative Infrastructure
 
-- [Documentation - What is ADF, Observations on ARM (Bicep) Templates Etc.](./index.md)
-- [Documentation - Ready to Deploy? Getting Started Steps](./Getting_Started.md)
+- [Documentation - What is ADF, Observations on ARM (Bicep) Templates Etc.](https://brwilkinson.github.io/AzureDeploymentFramework/)
+- [Documentation - Ready to Deploy? Getting Started Steps](https://brwilkinson.github.io/AzureDeploymentFramework/Getting_Started.md)
 
     - [Status - Deployment Workflows GitHub](./Deployment_Pipelines_GitHub.md)
     - [Status - Deployment Pipelines Azure DevOps](./Deployment_Pipelines_DevOps.md)

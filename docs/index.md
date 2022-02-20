@@ -5,10 +5,6 @@
 - Overview: [What is ADF (PPT)](./ADF.md)
 - **This page:** [Documentation Home](./index.md)
 
-### ADF Features
-
-- [ADF Features](./ADF_Features.md)
-
 ### Deployment Partitions
 
 - [Deployment Partitions](./Deployment_Partitions.md)
@@ -95,6 +91,10 @@
 ### FAQ
 
 - [FAQ](./FAQ.md)
+
+### ADF Features
+
+- [ADF Features](./ADF_Features.md)
 
 <!-- ### Deploying Template Specs (Preview)
 
