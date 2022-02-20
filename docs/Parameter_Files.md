@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework
 - Go Home [Documentation Home](./index.md)
-- Go Next [Parameter File Per Environment](./Parameter_Files_Per_Environment.md)
+- **Go Next** [Parameter File Per Environment](./Parameter_Files_Per_Environment.md)
 
 Overview [What is ADF](./ADF.md)
 
@@ -21,6 +21,7 @@ Parameter file samples: Once you clone an Org Directory e.g. AOA there are sampl
 https://github.com/brwilkinson/AzureDeploymentFramework/tree/main/ADF/tenants/AOA
 
 - You can delete any parameter file that you don't need
-- You can easily clone a whole environment just by cloning the parameter file and giving it a new ID.
+- You can easily clone a whole environment just by cloning the parameter file
+    - Then giving it a new ID and Prefix to match the Region and Deployment Env Type e.g. D2
 
 ![AOA Parameter Files](./Parameter_Files_Examples.png)

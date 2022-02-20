@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
-- Go Next [Base Templates](./Base_Templates.md)
+- **Go Next** [Base Templates](./Base_Templates.md)
 
 ####  Global Settings
 

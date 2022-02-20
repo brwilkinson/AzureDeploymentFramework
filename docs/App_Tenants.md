@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
-- Go Next [App Tenants Descriptions](./App_Tenants_Descriptions.md)
+- **Go Next** [App Tenants Descriptions](./App_Tenants_Descriptions.md)
 
 ### App Tenants
 
