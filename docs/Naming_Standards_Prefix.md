@@ -7,15 +7,15 @@
 ### Naming Standards - These are configurable, however built into this project by design.
 ###### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
-These Naming standards are exported to state files in the project
-- This allows to reference the location from the Prefix OR the Prefix from the location.
+    These Naming standards are exported to state files in the project
+    - This allows to reference the location from the Prefix OR the Prefix from the location.
+    - Note since these have already been exported, you do not have to run these scripts.
 
 - [Export Prefix Script - 1-prereqs/0-Get-AzPrefixTable.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzPrefixTable.ps1){:target="_blank"}
     - [Exported Prefix JSON - bicep/global/prefix.json](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/prefix.json){:target="_blank"}
 - [Export Region Script - 1-prereqs/0-Get-AzRegionTable.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzRegionTable.ps1){:target="_blank"}
     - [Exported Region JSON - bicep/global/region.json](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/region.json){:target="_blank"}
 
-Common naming standards/conventions/examples for PREFIX:
 
 ```powershell
 $PrefixLookup = @{}
