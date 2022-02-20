@@ -19,7 +19,7 @@ var objectIdLookup = json(Global.objectIdLookup)
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-resource SADiag 'Microsoft.Storage/storageAccounts@2021-08-01' existing = {
+resource SADiag 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
   name: '${DeploymentURI}sadiag'
 }
 
@@ -38,7 +38,7 @@ var userAssignedIdentities = {
   None: {}
 }
 
-resource SA 'Microsoft.Storage/storageAccounts@2021-08-01' existing = {
+resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
   name: toLower('${DeploymentURI}sa${Synapse.saname}')
 }
 

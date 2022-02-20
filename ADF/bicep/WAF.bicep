@@ -103,7 +103,7 @@ module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match)
     DeploymentURI: DeploymentURI
     DeploymentID: DeploymentID
     globalRGName: globalRGName
-    waf: waf
+    wafinfo: waf
     Global: Global
     Stage: Stage
     Environment: Environment

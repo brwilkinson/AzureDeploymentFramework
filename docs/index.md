@@ -1,15 +1,9 @@
 #  Observations on ARM (Bicep) Templates
 
-## - Azure Deployment Framework
-Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readme)
-
-Overview [What is ADF](./ADF.md)
-## - Azure Deployment Framework ##
-This page [Documentation Home](./index.md)
-
-### FAQ
-
-- [FAQ](./FAQ.md)
+## - Azure Deployment Framework docs sections
+- Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readme) (GithHub Home)
+- Overview [What is ADF](./ADF.md)
+- **This page:** [Documentation Home](./index.md)
 
 ### ADF Features
 
@@ -97,6 +91,10 @@ This page [Documentation Home](./index.md)
 ### Setting up your pipeline
 
 - [Pipeline Deployments](./Pipeline_Deployments.md)
+
+### FAQ
+
+- [FAQ](./FAQ.md)
 
 <!-- ### Deploying Template Specs (Preview)
 

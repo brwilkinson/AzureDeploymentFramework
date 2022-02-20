@@ -47,7 +47,7 @@
         "InitialDOP": 0,
         "VMApp": 0,
         "VMAppLinux": 0,
-        "VMSQL": 1,
+        "VMSQL": 0,
         "VMFILE": 0,
         "VMSS": 0,
         "WAFPOLICY": 0,
@@ -426,6 +426,11 @@
           {
             "linkDNS": 1,
             "zone": "privatelink.redis.cache.windows.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.sql.azuresynapse.net",
             "Autoregistration": false
           }
         ],
