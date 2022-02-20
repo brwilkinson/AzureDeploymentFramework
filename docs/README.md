@@ -1,6 +1,8 @@
 
 ## Azure Deployment Framework [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/).
 #### This project is currently in Preview. [[ADF Source]](https://github.com/brwilkinson/AzureDeploymentFramework)
+- If you have previously forked this project, I recommend to pull in recent commits [Feb 2022]
+- The project setup steps have been streamlined.
 ---
 ### - Declarative Infrastructure
 

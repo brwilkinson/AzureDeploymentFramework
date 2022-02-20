@@ -1,11 +1,12 @@
-#  Observations on ARM (Bicep) Templates # 
+#  Observations on ARM (Bicep) Templates
 
-## - Azure Deployment Framework ## 
-- Go Home [Documentation Home](./index.md)
+## - Azure Deployment Framework docs sections
+- Go: [README](https://github.com/brwilkinson/AzureDeploymentFramework#readme){:target="_blank"} (GithHub Home)
+- **Go Home** [Documentation Home](./index.md)
+- **This Page** [Deploy your First App](./Getting_Started.md)
+- **Go Next** [Deploy your Second App](./Getting_Started2.md)
 
 ### Getting Started - Deploy your First App
-- [Documentation - Getting Started - Deploy your Second App](./Getting_Started2.md)
-
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
 #### This project assumes:
@@ -36,16 +37,17 @@
     1. Replace the 3 Characters that map to the Name of your App e.g. HUB
         ```json
         "Global": {
-            "OrgName": "BRW",                       // "3-Letter-Company-Name"  e.g. This is required to ensure all public resources have a unique name
-                                                        // This should stay the same across ALL Tenants, only the AppName will change
-                                                        // Be sure to keep this consistent
-            "AppName": "HUB",                       // "3-Letter-App-Name" e.g. in this project, we call this the tenant name.
-            "PrimaryLocation": "CentralUS",         // "CentralUS" e.g. partner region to East US 2
-            "SecondaryLocation": "EastUS2",         // "EastUS2" e.g. partner region to Central US
-            "IPAddressforRemoteAccess": ["73.157.100.227/32"],      // This IP will be used on NSG's if you have a Public IP
-            "vmAdminUserName": "brw",               // "Local-Admin-UserName-for-Virtual-Machines"
-            "DomainName": "psthing.com",            // "Interntal Active Directory Domain"
-            "DomainNameExt": "psthing.com",         // "External Public DNS Name"
+            "OrgName": "BRW", // "3-Letter-Company-Name"
+                              // e.g. This is required to ensure all public resources have a unique name
+                              // This should stay the same across ALL Tenants, 
+                              // only the AppName will change, be sure to keep OrgName consistent
+            "AppName": "HUB", // "3-Letter-App-Name" e.g. in this project, we call this the tenant name.
+            "PrimaryLocation": "CentralUS", // "CentralUS" e.g. partner region to East US 2
+            "SecondaryLocation": "EastUS2", // "EastUS2" e.g. partner region to Central US
+            "IPAddressforRemoteAccess": ["73.157.100.227/32"], // This IP will be used on NSG's if Public IP
+            "vmAdminUserName": "brw",       // "Local-Admin-UserName-for-Virtual-Machines"
+            "DomainName": "psthing.com",    // "Interntal Active Directory Domain"
+            "DomainNameExt": "psthing.com", // "External Public DNS Name"
         ```
 1. Open and review the regional File/s e.g. ADF\tenants\HUB\Global-ACU1.json
     1. The file name should match your Primary/Secondary Azure Region that you will deploy into
@@ -53,16 +55,16 @@
         ```json
           "Global": {
             "hubRG": {
-                "name": "P0"
+                "name": "P0" // Used for many services in Hub e.g. Private DNS Zones or Network watcher
             },
             "hubVN": {
-                "name": "vn"
+                "name": "vn" // the Virtual Network, used for Peering
             },
             "hubKV": {
-                "name": "VLT01"
+                "name": "VLT01" //Main keyvault used to pull secrets and Certs.
             },
             "hubAA": {
-                "name": "OMSAutomation"
+                "name": "OMSAutomation" // Used for DSC Stage Configuration centralized configs
             },
             "networkId": [ // this is a /20 broken into 2 parts, unique for each region
                 "10.10.",
@@ -72,7 +74,7 @@
                 "10.10.144.75",
                 "10.10.144.76"
             ],
-            "RTName": "Hub",
+            "RTName": "Hub", // If you have a Firewall in the Hub, you will use this RT in Spokes
             "shutdownSchedulerTimeZone": "Pacific Standard Time",
             "patchSchedulerTimeZone": "America/Los_Angeles"
         ```
@@ -91,7 +93,7 @@
     1. You will see the lines below, that you can execute (make sure you did F5 first! and are in your subscription)
         ```powershell
         # Pre-reqs
-        # Create Global Storage Account
+        # Create Global Storage Account, I am considering moving this to Bicep setup from PowerShell.
         . ADF:\1-prereqs\1-CreateStorageAccountGlobal.ps1 -APP $App
         ```
         1. You wil see an output similar to below once the RG and Storage are created.

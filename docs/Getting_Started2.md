@@ -1,11 +1,12 @@
-#  Observations on ARM (Bicep) Templates # 
+#  Observations on ARM (Bicep) Templates
 
-## - Azure Deployment Framework ## 
-- Go Home [Documentation Home](./index.md)
+## - Azure Deployment Framework docs sections
+- Go: [README](https://github.com/brwilkinson/AzureDeploymentFramework#readme){:target="_blank"} (GithHub Home)
+- **Go Home** [Documentation Home](./index.md)
+- **Go Previous** [Deploy your First App](./Getting_Started.md)
+- **This Page** [Deploy your Second App](./Getting_Started2.md)
 
-### Getting Started - Deploy your Second App
-- [Documentation - Getting Started - Deploy your First App](./Getting_Started.md)
-
+### Getting Started - Deploy your First App
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
 #### This project assumes:
