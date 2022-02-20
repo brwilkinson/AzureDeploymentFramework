@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
-- Go Next [Nested Templates/Modules](./Nested_Templates.md)
+- **Go Next** [Nested Templates/Modules](./Nested_Templates.md)
 
 ####  Orchestration Templates
 
@@ -22,13 +22,15 @@ These allow you to deploy a set of nested Modules into the different Scopes:
 - Resource Group
 
 Below is an example of the Subscription Level Deployment Template
-- dp_Deployment_Security 'sub-Security.bicep'
-- dp_Deployment_RG 'sub-RG.bicep'
-- dp_Deployment_RBAC 'sub-RBAC.bicep'
-- dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep'
+- dp_Deployment_Security `'sub-Security.bicep'`
+- dp_Deployment_RG `'sub-RG.bicep'`
+- dp_Deployment_RBAC `'sub-RBAC.bicep'`
+- dp_Deployment_RoleDefinition`'sub-RoleDefinitions.bicep'`
 
 Each of the Stages in these Deployment Orchestration Template contains a feature flag switch
 - This allows you to enable/disable the layers of the orchestration e.g. `if (contains(Stage, 'Security') && bool(Stage.Security))`
+- The Stage list of feature flags exists within each individual Parameter Files.
+    - [Parameter Files](./Parameter_Files.md)
 
 ```Bicep
 @allowed([

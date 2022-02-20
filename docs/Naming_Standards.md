@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
-- Go Next [Naming Standards Prefix](./Naming_Standards_Prefix.md)
+- **Go Next** [Naming Standards Prefix](./Naming_Standards_Prefix.md)
 
 ### Naming Standards - These are configurable, however built into this project by design.
 

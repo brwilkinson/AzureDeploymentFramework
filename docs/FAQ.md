@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ##
 - Go Home [Documentation Home](./index.md)
-- Go Top [ADF Features](./ADF_Features.md)
+- **Go Top**  [ADF Features](./ADF_Features.md)
 
 ### Frequently asked questions (FAQ).
 
