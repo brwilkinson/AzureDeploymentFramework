@@ -1,10 +1,12 @@
 #  Observations on ARM (Bicep) Templates
 
-## - Azure Deployment Framework ## 
-- Go Home [Documentation Home](./index.md)
+## - Azure Deployment Framework docs sections
+- Go: [README](https://github.com/brwilkinson/AzureDeploymentFramework#readme) (GithHub Home)
+- **This page:** [What is ADF (PPT)](./ADF.md)
+- Go: [Documentation Home](./index.md)
 
-- [Documentation - What is ADF (PPTX)](./Slides_ADF.pptx)
-- [Documentation - What is ADF (PDF)](./Slides_ADF.pdf)
+- [Download - What is ADF (PPTX)](./Slides_ADF.pptx)
+- [Download - What is ADF (PDF)](./Slides_ADF.pdf)
 
 ![Title](./Slides_ADF/Slide1.SVG)
 
