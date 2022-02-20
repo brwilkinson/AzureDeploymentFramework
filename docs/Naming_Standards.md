@@ -174,7 +174,10 @@ The name of any resource is determined via the following method.
         var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
         ```
 
-#### An end user is **not responsible** for managing naming standards/conventions, **standards are baked in**, end users only provide the short resource name. **It is possible to change the default naming convention to meet your organizational needs**, I wouldn't recommend it, however you would simply update the **"Deployment"** variable (shown above in json code) to your new format.
+##### As a consumer of this project you are **not responsible** for managing naming standards/conventions.
+-  **Naming standards are baked in**, you only provide the short resource name. 
+- **It is possible to change the default naming convention to meet your organizational needs**
+    -  I wouldn't recommend it, however you would simply update the **"Deployment"** variable (shown above) to your new format.
 ##### Short Resource Name examples:
     - global     e.g. storage name
     - SQL01      e.g. Virtual Machine Name
