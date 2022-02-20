@@ -9,16 +9,23 @@
 #### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 <br/>
 
+These Naming standards are exported from Azure and storage in state files in the project
+
+[Export Prefix](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzPrefixTable.ps1){:target="_blank"}
+    [Exported Prefix](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/prefix.json)
+[Export Region](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzRegionTable.ps1){:target="_blank"}
+    [Exported Region](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/region.json)
+
+- The above files allow to reference the location from the Prefix OR the Prefix from the location.
 
     Common naming standards/conventions/examples for PREFIX:
 
 ```powershell
-
-Install-Module FormatMarkdownTable -Force
-
+$PrefixLookup = @{}
 Get-AzLocation | ForEach-Object {
-    $parts = $_.displayname -split '\s' ;
+    $parts = $_.displayname -split '\s'
     $location = $_.location
+    
     # Build the Naming Standard based on the name parts, then prefix with A for Azure
     $NameFormat = $($Parts[0][0] + $Parts[1][0] ) + $(if ($parts[2]) { $parts[2][0] }else { 1 })
     $Prefix = 'A' + $NameFormat
@@ -29,19 +36,26 @@ Get-AzLocation | ForEach-Object {
         'northeurope'     = 'NEU'
         'westeurope'      = 'WEU'
     }
+
+    $UsablePrefix = if ($manualOverrides[$location]) { 'A' + $manualOverrides[$location] } else { $Prefix }
     
-    [pscustomobject]@{
-        displayname  = $_.displayname; 
-        location     = $location; 
-        first        = $Parts[0]; 
-        second       = $parts[1]; 
-        third        = $parts[2]; 
+    $Current = [pscustomobject]@{
+        displayname  = $_.displayname
+        location     = $location
+        first        = $Parts[0]
+        second       = $parts[1]
+        third        = $parts[2]
         Name         = $NameFormat
         NameOverRide = $manualOverrides[$location]
-        PREFIX       = if ($manualOverrides[$location]) { 'A' + $manualOverrides[$location] } else { $Prefix }
-    } 
-} | Sort-Object name | 
-Format-MarkdownTableTableStyle -Property DisplayName, Location, First, Second, Third, Name, Name, NameOverRide, PREFIX
+        PREFIX       = $UsablePrefix
+    }
+    $Current
+    
+    # Only export limited propeties to json to limit size with loadtextcontext
+    $PrefixLookup[$UsablePrefix] = $Current | Select-Object displayname, location, prefix
+} | Format-Table -AutoSize
+
+$PrefixLookup | ConvertTo-Json | Set-Content -Path $PSScriptRoot\..\bicep\global\prefix.json
 
 ```
 
