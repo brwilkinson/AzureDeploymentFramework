@@ -8,7 +8,7 @@ Overview [What is ADF](./ADF.md)
 
 ####  Parameter Files Usage
 
-There is a parameter file for each deployment layer
+There is a parameter file for each deployment layer [Deployment Partitions](./Deployment_Partitions.md)
 - Tenant
 - Management Groups
 - Subscription
