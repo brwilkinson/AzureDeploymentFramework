@@ -11,10 +11,10 @@
 
 These Naming standards are exported from Azure and storage in state files in the project
 
-[Export Prefix](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzPrefixTable.ps1){:target="_blank"}
-    [Exported Prefix](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/prefix.json)
-[Export Region](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzRegionTable.ps1){:target="_blank"}
-    [Exported Region](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/region.json)
+- [Export Prefix Script](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzPrefixTable.ps1){:target="_blank"}
+    - [Exported Prefix JSON](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/prefix.json)
+- [Export Region Script](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzRegionTable.ps1){:target="_blank"}
+    - [Exported Region JSON](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/region.json)
 
 - The above files allow to reference the location from the Prefix OR the Prefix from the location.
 
