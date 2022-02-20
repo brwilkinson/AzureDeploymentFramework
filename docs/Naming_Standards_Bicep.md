@@ -5,14 +5,11 @@
 - Go Next [Tools Setup](./Tools_Setup.md)
 
 ### Naming Standards Bicep - These are a work in progress.
+##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
-#### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
-<br/>
+Common naming standards/conventions/examples for Bicep:
 
-
-    Common naming standards/conventions/examples for Bicep:
-
-    Bicep is new, so this is a work in progress and subject to change.
+Bicep is new, so this is a work in progress and subject to change.
 
 - Currently ALL Bicep files are in the same directory e.g. [bicep](https://github.com/brwilkinson/AzureDeploymentFramework/tree/main/ADF/bicep)
 - Files that begin with 'sub' E.g. sub-XYX.bicep should be deployed into the Subscription Scope.

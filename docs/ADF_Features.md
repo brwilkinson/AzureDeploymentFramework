@@ -6,7 +6,7 @@
 
 ### Azure Deployment Framework (ADF) Features
 
-#### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
+##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 <br/>
 
 #### Choose between (traditional) Active Directory (AD) join or (modern) Azure Active Directory (AAD) join for your resources.

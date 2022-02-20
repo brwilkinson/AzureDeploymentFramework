@@ -6,7 +6,7 @@
 
 ### Naming Standards - These are configurable, however built into this project by design.
 
-#### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
+##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 <br/>
 
 
