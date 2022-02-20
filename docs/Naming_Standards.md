@@ -111,7 +111,7 @@ The name of any resource is determined via the following method.
                 },
             ```
 
-- [Each template reads these values e.g. Storage Template](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/SA.bicep){:target="_blank"}
+- [Each template reads these values e.g. Storage Template](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/SA.bicep#L35){:target="_blank"}
     - The template combines the parts to create a **Deployment** Variable.
     - Where appropriate the template also combines the parts to create a **DeploymentURI** Variable.
         - This URI will be lower case  a exclude any dashes Etc.
@@ -135,7 +135,7 @@ The name of any resource is determined via the following method.
         resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
             name: '${Deployment}-vm${AppServer.Name}'
         ```
-- [The Paremter File that you are deploying](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/tenants/AOA/ACU1.G1.parameters.json){:target="_blank"}
+- [The Parameter File that you are deploying](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/tenants/AOA/ACU1.G1.parameters.json){:target="_blank"}
     - The parameter also contains individual resource definitions for that Resource Group
     - Notice the name value above for 'global' comes from the parameter file as below.
         ```json
