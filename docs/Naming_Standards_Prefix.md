@@ -113,7 +113,7 @@ $PrefixLookup | ConvertTo-Json | Set-Content -Path $PSScriptRoot\..\bicep\global
 
 ```
 
-    - Some references in the project templates/docs may still refer to the OLD naming AZE2 and AZC1 (now replaced by AEU2 and ACU1)
-        - These will be removed over time.
+    - Some references in the project templates/docs may still refer to the OLD naming AZE2 and AZC1 
+        - Now replaced by AEU2 and ACU1, these references will be removed over time.
 
 
