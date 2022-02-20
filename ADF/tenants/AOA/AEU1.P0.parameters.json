@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
-      "value": "AWU2"
+      "value": "AEU1"
     },
     "Environment": {
       "value": "P"
@@ -23,28 +23,25 @@
         "OMSDataSources": 1,
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
-        "OMSUpates": 0,
         "SA": 1,
         "CDN": 0,
         "StorageSync": 0,
-        "RSV": 0,
+        "RSV": 1,
         "NSG": 1,
         "NetworkWatcher": 1,
         "FlowLogs": 1,
         "VNet": 1,
-        "VNetPeering": 0,
+        "VNetPeering": 1,
         "DNSPrivateZone": 1,
-        "DNSPublicZone": 0,
         "LinkPrivateDns": 1,
         "PrivateLink": 1,
         "BastionHost": 0,
-        "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
         "NATGW": 0,
         "ERGW": 0,
-        "ADPrimary": 1,
+        "ADPrimary": 0,
         "ADSecondary": 0,
         "LB": 0,
         "InitialDOP": 0,
@@ -86,15 +83,15 @@
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
         "VMInsights": 1,
-        "AdminCenter": 1,
+        "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
         "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 1,
-        "AADLogin": 0,
+        "DomainJoin": 0,
+        "AADLogin": 1,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
         "SqlIaasExtension": 0,
@@ -196,29 +193,6 @@
                 "Name": "Virtual Machine Administrator Login"
               }
             ]
-          },
-          {
-            "Name": "ACIService",
-            "Comment": "used for ACI SP to access AzureRelay + Network",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              }
-            ]
-          },
-          {
-            "Name": "LT",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              },
-              {
-                "Name": "Key Vault Administrator"
-              },
-              {
-                "Name": "Virtual Machine Administrator Login"
-              }
-            ]
           }
         ],
         "SPInfo": [
@@ -306,6 +280,8 @@
             ]
           }
         ],
+        //  in Secondary Hub, override peer (primary) Hub
+        "hubRegionPrefix": "ACU1",
         "SubnetInfo": [
           {
             "name": "snWAF01",
@@ -331,14 +307,12 @@
             "FlowAnalyticsEnabled": 1
           },
           {
-            "name": "snBE02",
+            "name": "snBE01",
             "prefix": "80/28",
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1,
-            "delegations": "Microsoft.ContainerInstance/containerGroups",
-            "serviceEndpoints": "Microsoft.Storage"
+            "FlowAnalyticsEnabled": 1
           },
           {
             "name": "AzureBastionSubnet",
@@ -436,7 +410,7 @@
           },
           {
             "linkDNS": 1,
-            "zone": "privatelink.centralus.azmk8s.io",
+            "zone": "privatelink.eastus2.azmk8s.io",
             "Autoregistration": false
           },
           {
@@ -460,26 +434,6 @@
             "Autoregistration": false
           }
         ],
-        "BastionInfo": {
-          "name": "HST01",
-          "PublicIP": "Static",
-          "Zone": true,
-          "skuName": "Standard",
-          "enableTunneling": 1,
-          "scaleUnits": 2
-        },
-        "cloudshellRelayInfo": [
-          {
-            "Name": "CS01",
-            "ContainerSubnet": "snBE02",
-            "PrivateLinkInfo": [
-              {
-                "Subnet": "snMT02",
-                "groupID": "namespace"
-              }
-            ]
-          }
-        ],
         "saInfo": [
           {
             "name": "diag",
@@ -496,41 +450,6 @@
               "enabled": 1,
               "days": 7
             }
-          },
-          {
-            "name": "cshell",
-            "skuName": "Standard_LRS",
-            "allNetworks": 1,
-            "logging": {
-              "r": 0,
-              "w": 0,
-              "d": 1
-            },
-            "_storageKeyRotation": {
-              "State": "disabled"
-            },
-            "blobVersioning": 1,
-            "changeFeed": 1,
-            "softDeletePolicy": {
-              "enabled": 1,
-              "days": 7
-            },
-            "fileShares": [
-              {
-                "name": "cloudshell",
-                "quota": 5120
-              }
-            ],
-            "_PrivateLinkInfo": [
-              {
-                "Subnet": "snMT02",
-                "groupID": "blob"
-              },
-              {
-                "Subnet": "snMT02",
-                "groupID": "file"
-              }
-            ]
           }
         ],
         "KVInfo": [
@@ -540,31 +459,10 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": 1,
+            "allNetworks": 0,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
-                "groupID": "vault"
-              }
-            ],
-            "rolesInfo": [
-              {
-                "Name": "MicrosoftAzureAppService",
-                "RBAC": [
-                  {
-                    "Name": "Key Vault Secrets User"
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        "azRelayInfo": [
-          {
-            "Name": "CS01",
-            "PrivateLinkInfo": [
-              {
-                "Subnet": "snFE01",
                 "groupID": "vault"
               }
             ]
@@ -604,7 +502,7 @@
               {
                 "Name": "Default-Azure-FW",
                 "addressPrefix": "0.0.0.0/0",
-                "nextHopIpAddress": "FW01",
+                "nextHopIpAddress": "172.16.142.132",
                 "nextHopType": "VirtualAppliance"
               }
             ]
@@ -627,86 +525,57 @@
             }
           }
         ],
-        "FWPolicyInfo": [
-          {
-            "name": "Policy01",
-            "sku": "Standard",
-            "threatIntelMode": "Alert",
-            "natRules": [
-              {
-                "Name": "JMP01",
-                "priority": "20000",
-                "actionType": "DNAT",
-                "rule": {
-                  "name": "JMP01-RDP-Allow",
-                  "sourceAddresses": [
-                    "73.157.100.227"
-                  ],
-                  "destinationPorts": [
-                    "3389"
-                  ],
-                  "protocols": [
-                    "Any"
-                  ],
-                  "translatedAddress": "172.16.137.62"
-                }
-              },
-              {
-                "Name": "API01",
-                "priority": "20001",
-                "actionType": "DNAT",
-                "rule": {
-                  "name": "WEB-API-Allow",
-                  "sourceAddresses": [
-                    "*"
-                  ],
-                  "destinationPorts": [
-                    "443"
-                  ],
-                  "protocols": [
-                    "Any"
-                  ],
-                  "translatedAddress": "10.10.139.254"
-                }
-              }
-            ]
-          }
-        ],
         "FWInfo": [
           {
             "Name": "FW01",
-            "PublicIP": "Static",
-            "Zone": true
+            "threatIntelMode": "Alert"
+          }
+        ],
+        "natRulesInfo": [
+          {
+            "Name": "JMP01",
+            "priority": "20000",
+            "actionType": "DNAT",
+            "rule": {
+              "name": "JMP01-RDP-Allow",
+              "sourceAddresses": [
+                "73.157.100.227"
+              ],
+              "destinationPorts": [
+                "3389"
+              ],
+              "protocols": [
+                "Any"
+              ],
+              "translatedAddress": "172.16.137.62"
+            }
+          }
+        ],
+        "ASRInfo": [
+          {
+            "SourceRG": "P0",
+            "SourceRegion": "ACU1",
+            "SourceSasuffix": "cache",
+            "DestinationRG": "P0",
+            "DestinationRegion": "AEU2",
+            "DestinationRSVName": "ASRRecoveryVault",
+            "DestinationLogAnalytics": "LogAnalytics",
+            "RSVSkuName": "RS0",
+            "RSVSkuTier": "Standard",
+            "ReplicationPolicyName": "24-hour-retention-policy",
+            "RecoveryPlanName": "Failover"
           }
         ],
         "Appservers": {
           "ADPrimary": [
-            // {
-            //   "Name": "DNS01",
-            //   "Role": "DNS",
-            //   "ASName": "DNS",
-            //   "DSConfig": "AppServers",
-            //   "DDRole": "32GB",
-            //   "OSType": "Server2019CoreContainerssmall",
-            //   "Zone": 1,
-            //   "NICs": [
-            //     {
-            //       "Subnet": "AD01",
-            //       "Primary": 1,
-            //       "StaticIP": "75"
-            //     }
-            //   ]
-            // }
-            // move back to AD Domain because of conditional access policies
             {
               "Name": "DC01",
               "Role": "ADp",
               "ASName": "AD",
               "DDRole": "32GB",
-              "OSType": "Server2022Containerssmall",
+              "OSType": "Server2016Coresmall",
               "ExcludeDomainJoin": 1,
-              "DeployJIT": 0,
-              "_Zone": 1, // not supported in westus
+              "Zone": 1,
               "NICs": [
                 {
                   "Subnet": "AD01",
@@ -717,40 +586,20 @@
             }
           ],
           "ADSecondary": [
-            // {
-            //   "Name": "DNS02",
-            //   "Role": "DNS",
-            //   "ASName": "DNS",
-            //   "DSConfig": "AppServers",
-            //   "DDRole": "32GB",
-            //   "OSType": "Server2019CoreContainerssmall",
-            //   "Zone": 2,
-            //   "NICs": [
-            //     {
-            //       "Subnet": "AD01",
-            //       "Primary": 1,
-            //       "StaticIP": "76"
-            //     }
-            //   ]
-            // }
-            // move back to AD Domain because of conditional access policies
             {
               "Name": "DC02",
               "Role": "ADs",
               "ASName": "AD",
               "DDRole": "32GB",
-              "OSType": "Server2022Containerssmall",
-              "_Zone": 2,
+              "OSType": "Server2016Coresmall",
+              "Zone": 2,
               "NICs": [
                 {
                   "Subnet": "AD01",
                   "Primary": 1,
                   "StaticIP": "76"
                 }
-              ],
-              "AppInfo": {
-                "SiteName": "Default-First-Site-Name"
-              }
+              ]
             }
           ]
         }

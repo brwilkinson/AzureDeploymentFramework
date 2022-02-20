@@ -709,46 +709,12 @@
         ],
         "FrontDoorPolicyInfo": [
           {
-            "Name": "API",
-            "Version": "Classic", //Classic,Standard,Premium
-            "State": "Enabled",
-            "Mode": "Prevention",
-            "ruleSetVersion": "1.0",
-            "customRules": [
-              {
-                "name": "RateLimitRule",
-                "ruleType": "RateLimitRule",
-                "EnabledState": "Enabled",
-                "action": "Block",
-                "priority": 1,
-                "rateLimitDurationInMinutes": 1,
-                "rateLimitThreshold": 1000,
-                "MatchConditions": [
-                  {
-                    "matchVariable": "RequestUri",
-                    "operator": "Contains",
-                    "negateCondition": false,
-                    "transforms": [],
-                    "matchValue": [
-                      "/promo"
-                    ]
-                  }
-                ]
-              }
-            ],
-            "exclusions": [],
-            "ruleGroupOverrides": [],
-            "enableBotRule": 1,
-            "botRuleGroupOverrides": [],
-            "botexclusions": []
-          },
-          {
-            "Name": "API2",
+            "Name": "API01",
             "Version": "Premium", //Classic,Standard,Premium
             "State": "Enabled",
             "Mode": "Prevention",
             "ruleSetVersion": "1.0",
-            "customRules": [
+            "_customRules": [
               {
                 "name": "RateLimitRule",
                 "ruleType": "RateLimitRule",
@@ -779,11 +745,11 @@
         ],
         "FrontDoorCDN": [
           {
-            "name": "shared03", // hostname
+            "name": "API01", // hostname
             "zone": "psthing.com",
             "state": "Enabled",
             "skuName": "Premium", // "Premium"|"Standard"
-            "WAFPolicy": "API2",
+            "WAFPolicy": "API01",
             "pattern": [
               "/*"
             ]

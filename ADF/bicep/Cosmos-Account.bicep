@@ -119,7 +119,8 @@ module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if(contains(cosmosA
     PrivateLinkInfo: cosmosAccount.privateLinkInfo
     providerURL: '.azure.com'
     resourceName: CosmosAccount.name
-    providerType: '${CosmosAccount.type}/${CosmosAccount.properties.EnabledApiTypes}'
+    #disable-next-line BCP053
+    providerType: '${CosmosAccount.type}/${CosmosAccount.properties.EnabledApiTypes}' // Sql etc, confirm if this works for others.
     Nics: contains(cosmosAccount, 'privatelinkinfo') && length(cosmosAccount) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }

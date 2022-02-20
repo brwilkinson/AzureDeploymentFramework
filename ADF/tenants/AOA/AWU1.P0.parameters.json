@@ -453,6 +453,11 @@
             "linkDNS": 1,
             "zone": "privatelink.redis.cache.windows.net",
             "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.sql.azuresynapse.net",
+            "Autoregistration": false
           }
         ],
         "BastionInfo": {

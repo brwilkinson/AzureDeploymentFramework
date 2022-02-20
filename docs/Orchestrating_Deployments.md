@@ -1,9 +1,9 @@
-#  Observations on ARM (Bicep) Templates
+#  Observations on ARM (Bicep) Templates # 
 
-## - Azure Deployment Framework
-Go Readme [README](https://github.com/brwilkinson/AzureDeploymentFramework#readme)
+## - Azure Deployment Framework ## 
+- Go Home [Documentation Home](./index.md)
+- Go Next [Pipeline Deployments](./Pipeline_Deployments.md)
 
-Overview [What is ADF](./ADF.md)
 
 ####  Orchestrating Deployments
 

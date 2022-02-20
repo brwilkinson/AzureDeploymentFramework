@@ -5,10 +5,10 @@
       "enabled": true,
       "rules": {
         "no-unused-params": {
-          "level": "info"
+          "level": "off"
         },
         "no-unused-vars": {
-          "level": "info"
+          "level": "off"
         },
         "no-loc-expr-outside-params": {
           "level": "off"
