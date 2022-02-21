@@ -16,6 +16,34 @@ This project currently has 3 Top Level Orchestration Templates
 1) 00-ALL-SUB.bicep
 1) 01-ALL-RG.bicep
 
+```powershell
+# Deploy into the Subscription Scope
+AzSet -App DEF -Enviro G0
+AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/00-ALL-SUB.bicep
+# note there is no RG scope for G0, since it's for Subscription level
+
+# Create the first Resource Group for Global resources G1
+# Set the Enviro
+AzSet -App DEF -Enviro G1
+# Create the RG and RBAC by deploying into the Subscription Scope for G1
+AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/00-ALL-SUB.bicep
+# Create the Resources in the RG by deploying into the RG Scope for G1
+AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/01-ALL-RG.bicep
+
+```
+It should be noted that the things that will be deployed are based on the Feature Flags that you set
+- The feature flags are actually part of every parameter file for every Enviro
+- These are known as `Stage` a summary is shown below or more in the docs [Feature Flags](./Feature_Flags.md)
+```json
+    "Stage": {
+      "value": {
+        "RG": 0,
+        "RoleDefinition": 1,
+        "Security": 1,
+        "RBAC": 1,
+        "UAI": 0,
+```
+
 These allow you to deploy a set of nested Modules into the different Scopes:
 - ManagementGroup
 - Subscription
