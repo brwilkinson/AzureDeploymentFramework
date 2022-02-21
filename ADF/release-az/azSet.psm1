@@ -4,7 +4,7 @@ function Global:AzSet
         [parameter(Mandatory)]
         [string]$Enviro,
         [parameter(Mandatory)]
-        [validateset('ABC', 'ADF', 'AOA', 'HUB', 'PSO', 'HAA')]
+        [validateset('ABC', 'ADF', 'AOA', 'HUB', 'PSO', 'HAA', 'DEF')]
         [string]$App
     )
     # F5 to load

@@ -1,0 +1,76 @@
+{
+  "Global": {
+    "OrgName": "BRW",
+    "AppName": "AOA",
+    "GlobalSA": {
+      "name": "global"
+    },
+    "GlobalRG": {
+      "name": "G1" // comment out for global in local
+    },
+    "PrimaryLocation": "CentralUS",
+    "SecondaryLocation": "EastUS2",
+    "IPAddressforRemoteAccess": [ // move these to keyvault
+      "73.225.196.211/32",
+      "157.100.170.101/32"
+    ],
+    "vmAdminUserName": "brw",
+    "CertName": "PSTHING-WildCard",
+    "CertURLs": [
+      "*.psthing.com",
+      "*.contoso.com"
+    ],
+    "ADDomainName": "contoso.com",
+    "DomainName": "psthing.com",
+    "DomainNameExt": "psthing.com",
+    "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtRG": "ACU1-BRW-AOA-RG-G1",
+    "GHProject": "ADF",
+    "ADOProject": "ADF",
+    "AZDevOpsOrg": "AzureDeploymentFramework",
+    "ServicePrincipalAdmins": [
+      "BW"
+    ],
+    "apimPublisherEmail": "alerts@contoso.com",
+    "alertRecipients": [
+      "alerts@contoso.com"
+    ],
+    "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
+    "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
+    "sqlCredentialName": "brw",
+    "ObjectIdLookup": {
+      "BW": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "LT": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
+      "BC": "3e156fbc-f456-4e4e-b7c8-e8be9830b8e0",
+      "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
+      "AKS_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
+      "Microsoft.AzureFrontDoor-Cdn": "4dbab725-22a4-44d5-ad44-c267ca38a954",
+      "Microsoft.Azure.CertificateRegistration": "ed47c2a1-bd23-4341-b39c-f4fd69138dd3",
+      "MicrosoftAzureAppService": "f8daea97-62e7-4026-becf-13c2ea98e8b4",
+      "Logic_Runner_4@microsoft.onmicrosoft.com": "fdd71a51-494b-456a-a3dc-a9ae9e0889a6",
+      "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
+      "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
+      "GH_ADF_ACU1-BRW-AOA-RG-D3": "3adf899c-ddb4-4489-9cfc-4ab58d1a5781",
+      "ADO_ADF_ACU1-BRW-AOA-RG-D3": "a4c44160-c7cd-45b7-80c1-e585ad2e67fd",
+      "GH_ADF_ACU1-BRW-AOA-RG-P0": "c7fb6ba6-db10-45d6-8526-1b0b2f82f3cd",
+      "GH_ADF_ACU1-BRW-AOA-RG-G1": "c1efbe2a-4067-4f7d-9571-c15cbdea5f23",
+      "GH_ADF_ACU1-BRW-AOA-RG-S1": "b78e5cf4-ac47-4f88-bbb0-f187a35774a4",
+      "GH_ADF_ACU1-BRW-AOA-RG-T5": "44ed5165-e3e5-46e4-914b-7a8ef411f646",
+      "GH_ADF_ACU1-BRW-AOA-RG-P7": "0b4a1626-3194-4c9e-9bea-da625d0a5cf8",
+      "GH_ADF_AEU2-BRW-AOA-RG-P0": "46c77a15-4116-4ab7-a503-05b590151e0b",
+      "GH_ADF_AEU2-BRW-AOA-RG-S1": "ffdb6f95-0373-4896-b4b3-023732231e1e",
+      "GH_ADF_AEU2-BRW-AOA-RG-T5": "61c7e7c2-e9a4-4f3f-970a-c783f1dbfaca",
+      "GH_ADF_AEU2-BRW-AOA-RG-P7": "c83cc466-ed2d-4660-a9da-7f7b7e4a7b9e",
+      "ADO_ADF_ACU1-BRW-AOA-RG-P0": "c2cddeae-1246-41ff-a0c6-d705251e54b7",
+      "ADO_ADF_ACU1-BRW-AOA-RG-G0": "e30df424-5f3e-4292-a615-1abcc9761458",
+      "ADO_ADF_ACU1-BRW-AOA-RG-G1": "607086bb-d3c0-428c-b9c8-36ed555a3360",
+      "ADO_ADF_ACU1-BRW-AOA-RG-S1": "70eadd22-6d70-4a68-a486-e20b9e361bf2",
+      "ADO_ADF_ACU1-BRW-AOA-RG-T5": "6c018b03-d5b3-4264-80c4-688874ec91d4",
+      "GH_ADF_ACU1-BRW-AOA-RG-D2": "2275dd8b-9adc-4247-9d10-8e3a9d37aa16",
+      "ADO_ADF_ACU1-BRW-AOA-RG-D2": "45d78fae-3c0d-4292-8c0c-f085b20822d4",
+      "GH_ADF_ACU1-BRW-AOA-RG-G0": "b0bed67d-5b08-4100-b273-599c95173fa4"
+    }
+  }
+}

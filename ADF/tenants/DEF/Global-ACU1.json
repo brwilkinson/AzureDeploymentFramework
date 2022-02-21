@@ -1,0 +1,24 @@
+{
+  "Global": {
+    "hubRG": {
+      "name": "P0"
+    },
+    "hubKV": {
+      "name": "VLT01"
+    },
+    "hubAA": {
+      "name": "OMSAutomation"
+    },
+    "networkId": [
+      "10.10.",
+      144
+    ],
+    "DNSServers": [ // Leave Empty to use AzureDNS
+      "10.10.144.75",
+      "10.10.144.76"
+    ],
+    "RTName": "Hub",
+    "shutdownSchedulerTimeZone": "Pacific Standard Time",
+    "patchSchedulerTimeZone": "America/Los_Angeles"
+  }
+}

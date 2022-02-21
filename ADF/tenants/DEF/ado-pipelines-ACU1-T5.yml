@@ -1,0 +1,26 @@
+trigger: none 
+  # batch: 'true'
+  # branches:
+  #   include: [ dev ]
+  # tags:
+  #   exclude: [ NoBuild ]
+
+variables:
+  ORG:        BRW
+  APP :       AOA
+  
+  PREFIX:     ACU1
+  ENV:        T5
+  
+  ADOProject: ADO_ADF
+
+stages:
+- stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+  jobs:
+  - template: ..\..\..\.ado\ado-pipelines-ALL.yml
+    parameters:
+      ORG:    ${{ variables.ORG }}
+      APP :   ${{ variables.APP }}
+      PREFIX: ${{ variables.PREFIX }}
+      ENV:    ${{ variables.ENV }}
+      SP:     ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG

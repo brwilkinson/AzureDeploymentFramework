@@ -2,9 +2,9 @@
 
 param (
     [String]$Env,
-    [string]$Prefix = 'AZC1',
+    [string]$Prefix = 'ACU1',
     [String]$stage = 'ALL',
-    [ValidateSet('ADF', 'PSO', 'ABC', 'HUB', 'AOA')]
+    [ValidateSet('ADF', 'PSO', 'ABC', 'HUB', 'AOA', 'DEF')]
     [String]$APP = 'ADF',
     [switch]$SubscriptionDeploy,
     [switch]$FullUpload,
