@@ -44,19 +44,11 @@ winget install Microsoft.AzureStorageExplorer
 #>
 
 
-Install-Module -Name posh-git, Terminal-Icons
-
-# for window powershell
-Install-Module -Name oh-my-posh
-
-# for powershell 6+
-Install-Module -Name oh-my-posh -AllowPrerelease
+Install-Module -Name posh-git, Terminal-Icons, oh-my-posh
 
 <# I add this to my personal powershell profile
 
-if ($PSVersionTable.psversion.Major -ge 6)
-{ Import-Module oh-my-posh -MinimumVersion 3.0 ; Set-PoshPrompt -Theme $home\my-oh-my-posh.json } else 
-{ Import-Module oh-my-posh -MaximumVersion 2.* ; Set-Theme -name Emodipt }
+Import-Module oh-my-posh
 Import-Module posh-git
 Import-Module Terminal-Icons
 
@@ -67,118 +59,132 @@ Import-Module Terminal-Icons
 # https://ohmyposh.dev/  <-- more info on customizing the prompt
 
 {
+    "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+    "version": 1,
     "final_space": true,
-    "console_title": false,
+    "transient_prompt": {
+        "background": "transparent",
+        "foreground": "#ffffff",
+        "template": "{{ .Shell }}> "
+    },
     "blocks": [
         {
             "type": "prompt",
-            "alignment": "left",
-            "horizontal_offset": 0,
-            "vertical_offset": 0,
             "segments": [
+                {
+                    "type": "os",
+                    "style": "plain",
+                    "properties": {
+                        "windows": "  ",
+                        "template": "{{ if .WSL }}wsl {{ end }}{{.Icon}}"
+                    },
+                    "foreground": "#26C6DA",
+                    "background": "#070707"
+                },
                 {
                     "type": "shell",
                     "style": "powerline",
-                    "powerline_symbol": "\uE0B0",
-                    "foreground": "#ffffff",
-                    "background": "#0077c2",
                     "properties": {
-                        "prefix": " \uFCB5 "
-                    }
+                        "template": " ﲵ {{ .Name }} "
+                    },
+                    "powerline_symbol": "",
+                    "foreground": "#ffffff",
+                    "background": "#0077c2"
                 },
                 {
                     "type": "time",
                     "style": "plain",
-                    "powerline_symbol": "",
-                    "invert_powerline": false,
-                    "foreground": "#E5C07B",
-                    "background": "",
-                    "leading_diamond": "",
-                    "trailing_diamond": "",
                     "properties": {
-                        "postfix": "]",
-                        "prefix": "[",
-                        "time_format": "15:04:05"
-                    }
+                        "time_format": "15:04:05",
+                        "template": "[{{ .CurrentDate | date .Format }}]"
+                    },
+                    "foreground": "#E5C07B"
                 },
                 {
                     "type": "root",
                     "style": "plain",
-                    "powerline_symbol": "",
-                    "invert_powerline": false,
-                    "foreground": "#B5B50D",
-                    "background": "",
-                    "leading_diamond": "",
-                    "trailing_diamond": "",
-                    "properties": null
-                },
-                {
-                    "type": "path",
-                    "style": "plain",
-                    "powerline_symbol": "",
-                    "invert_powerline": false,
-                    "foreground": "#61AFEF",
-                    "background": "",
-                    "leading_diamond": "",
-                    "trailing_diamond": "",
                     "properties": {
-                        "postfix": " on",
-                        "style": "agnoster"
-                    }
-                },
-                {
-                    "type": "git",
-                    "style": "plain",
-                    "powerline_symbol": "",
-                    "invert_powerline": false,
-                    "foreground": "#F3C267",
-                    "background": "",
-                    "leading_diamond": "",
-                    "trailing_diamond": "",
-                    "properties": {
-                        "branch_gone_icon": "❎",
-                        "branch_identical_icon": "",
-                        "display_status": true
-                    }
-                },
-                {
-                    "type": "exit",
-                    "style": "plain",
-                    "powerline_symbol": "",
-                    "invert_powerline": false,
-                    "foreground": "#C94A16",
-                    "background": "",
-                    "leading_diamond": "",
-                    "trailing_diamond": "",
-                    "properties": {
-                        "prefix": "x"
-                    }
-                },
-                {
-                    "type": "envvar",
-                    "style": "powerline",
-                    "powerline_symbol": "\uE0B0",
-                    "foreground": "#ffffff",
-                    "background": "#0077c2",
-                    "properties": {
-                        "var_name": "ENVIRO"
-                    }
+                        "template": "  "
+                    },
+                    "foreground": "#B5B50D"
                 },
                 {
                     "type": "text",
                     "style": "plain",
-                    "powerline_symbol": "",
-                    "invert_powerline": false,
-                    "foreground": "#E06C75",
-                    "background": "",
-                    "leading_diamond": "",
-                    "trailing_diamond": "",
                     "properties": {
-                        "prefix": "",
-                        "text": " ❯"
+                        "template": "{{ .Env.AZAccount }}"
+                    },
+                    "powerline_symbol": "",
+                    "foreground": "#474646",
+                    "background": "#e6c868"
+                },
+                {
+                    "type": "path",
+                    "style": "plain",
+                    "properties": {
+                        "template": " {{ .Path }} ",
+                        "style": "agnoster"
+                    },
+                    "foreground": "#61AFEF"
+                },
+                {
+                    "type": "git",
+                    "style": "plain",
+                    "powerline_symbol": "\uE0B0",
+                    "foreground": "#e6c868",
+                    // "background": "#200f3b",
+                    "background_templates": [
+                        "{{ if or (.Working.Changed) (.Staging.Changed) }}#200f3b{{ end }}",
+                        "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#8462bb{{ end }}",
+                        "{{ if gt .Ahead 0 }}#483468{{ end }}",
+                        "{{ if gt .Behind 0 }}#261a3a{{ end }}"
+                    ],
+                    "properties": {
+                        "fetch_status": true,
+                        "fetch_stash_count": true,
+                        "fetch_upstream_icon": true,
+                        "template": "{{ .UpstreamIcon }} {{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uF044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uF046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uF692 {{ .StashCount }}{{ end }}"
                     }
+                },
+                // {
+                //     "type": "git",
+                //     "style": "plain",
+                //     "properties": {
+                //         "template": " {{ .HEAD }} {{ .BranchStatus }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Staging.Changed) (.Working.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0}}  {{ .StashCount }}{{ end }}{{ if gt .WorktreeCount 0}}  {{ .WorktreeCount }}{{ end }} ",
+                //         "fetch_status": true,
+                //         "branch_identical_icon": "",
+                //         "branch_gone_icon": "🟧"
+                //     },
+                //     "foreground": "#F3C267"
+                // },
+                {
+                    "type": "exit",
+                    "style": "plain",
+                    "properties": {
+                        "template": "x{{ if gt .Code 0 }} {{ .Meaning }}{{ else }}{{ end }} "
+                    },
+                    "foreground": "#C94A16"
+                },
+                {
+                    "type": "text",
+                    "style": "powerline",
+                    "properties": {
+                        "template": "{{ .Env.Enviro }}"
+                    },
+                    "powerline_symbol": "",
+                    "foreground": "#6d1d24",
+                    "background": "#73e600"
+                },
+                {
+                    "type": "text",
+                    "style": "plain",
+                    "properties": {
+                        "template": "❯ "
+                    },
+                    "foreground": "#E06C75"
                 }
-            ]
+            ],
+            "alignment": "left"
         }
     ]
 }
