@@ -81,7 +81,7 @@
 |Subscription|G0|Azure Subscription Deployments G0|E.g. RBAC or Policy|
 |Global|G1|A Global environment G1 represents Azure Global Services|E.g. DNS Zones or Traffic Manager OR GRS Storage|
 |HUB|P0|A Hub environment is denoted by the P0 or P00|ACU1-FAB-ADF-P0 Central Hub, AZE2-FAB-ADF-P0 EastUS2 Hub|
-|DR|P0 or any other mirrored environment e.g. T4|Primary Test environment ACU1-FAB-ADF-T4 would have a mirror environment<br/>DR Test environment AZE2-FAB-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
+|DR + HA|P0 or any other mirrored environment e.g. T4|Primary Test environment ACU1-FAB-ADF-T4 would have a mirror environment<br/>DR Test environment AZE2-FAB-ADF-T4 in the partner region|A mirror would exist for a Test and Prod environments, <br/>Plus the associated HUB environment|
 |* | ------------------------------------------------------------- | * |---------------------------|
 
 <br/>
