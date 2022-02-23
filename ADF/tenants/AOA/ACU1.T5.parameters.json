@@ -76,7 +76,8 @@
         "SB": 1,
         "AzureSYN": 0,
         "AzureSQL": 0,
-        "LT": 1
+        "LT": 1,
+        "SFM": 0
       }
     },
     "Extensions": {
@@ -1928,6 +1929,28 @@
             "placementProperties": {
               "OSType": "Server2016SS",
               "NodeKind": "API01"
+            }
+          }
+        ],
+        "SFMInfo": [
+          {
+            "name": "01",
+            "skuName": "Standard",
+            "connectionPort": 29000,
+            "gatewayPort": 29080,
+            "allowRDP": true,
+            "nodeTypes": [
+              {
+                "name": "nodetype1",
+                "OSType": "Server2019SS",
+                "role": "SF",
+                "isPrimary": 1,
+                "capacity": 6
+              }
+            ],
+            "placementProperties": {
+              "OSType": "Server2019SS",
+              "NodeKind": "SF01"
             }
           }
         ]

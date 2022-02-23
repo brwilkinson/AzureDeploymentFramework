@@ -168,7 +168,10 @@ var secrets = [
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 
-var storageAccountType = ((Environment == 'P') ? 'Premium_LRS' : 'Standard_LRS')
+var storageAccountType = Environment == 'P' ? /*
+*/ (contains(AppServer, 'Zone') ? 'Premium_LRS' : 'Premium_ZRS') : /*
+*/ (contains(AppServer, 'Zone') ? 'StandardSSD_ZRS' : 'StandardSSD_LRS')
+
 var SADiagName = '${DeploymentURI}sadiag'
 var saaccountiddiag = resourceId('Microsoft.Storage/storageAccounts/', SADiagName)
 
