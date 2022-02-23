@@ -1,19 +1,6 @@
 param Deployment string
 param DeploymentURI string
-param sfmInfo object = {
-  name: '01'
-  skuName: 'Standard'
-  connectionPort: 29000
-  gatewayPort: 29080
-  allowRDP: true
-  nodeTypes: [
-    {
-      role: 'SF'
-      isPrimary: 1
-      capacity: 6
-    }
-  ]
-}
+param sfmInfo object
 param Global object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
@@ -137,6 +124,7 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2021-11-01-preview' = { //
     name: contains(sfmInfo, 'skuName') ? sfmInfo.skuName : 'Basic' //'Standard' //'Basic'
   }
   properties: {
+
     clusterCodeVersion: '8.2.1486.9590'
     clusterUpgradeMode: 'Automatic'
     // isPrivateClusterCodeVersion: false
@@ -155,6 +143,8 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2021-11-01-preview' = { //
     ]
     addonFeatures: [
       'DnsService'
+      'ResourceMonitorService'
+      'BackupRestoreService'
     ]
     enableAutoOSUpgrade: contains(sfmInfo, 'autoUpgrade') ? bool(sfmInfo.autoUpgrade) : false
     zonalResiliency: true
