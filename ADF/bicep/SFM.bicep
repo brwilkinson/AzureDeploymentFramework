@@ -39,11 +39,6 @@ var HubKVJ = json(Global.hubKV)
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
-  // hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
-  // hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
-  // hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
-  // hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
-
   hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
   hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
   hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
@@ -68,7 +63,7 @@ var SFInfo = [for (sfm, index) in SFMInfo: {
   match: (Global.CN == '.') || contains(array(Global.CN), sfm.name)
 }]
 
-module SA 'SFM-Clusters.bicep' = [for (sfm, index) in SFMInfo: if (SFInfo[index].match) {
+module SFM 'SFM-Clusters.bicep' = [for (sfm, index) in SFMInfo: if (SFInfo[index].match) {
   name: 'dp${Deployment}-SFM-${sfm.name}'
   params: {
     Deployment: Deployment
@@ -82,5 +77,4 @@ module SA 'SFM-Clusters.bicep' = [for (sfm, index) in SFMInfo: if (SFInfo[index]
     devOpsPat: KV.getSecret('devOpsPat')
     sshPublic: KV.getSecret('sshPublic')
   }
-  dependsOn: []
 }]

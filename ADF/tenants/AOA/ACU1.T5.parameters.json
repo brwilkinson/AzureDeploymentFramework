@@ -71,6 +71,8 @@
         "ServerFarm": 1,
         "WebSite": 0,
         "WebSiteContainer": 0,
+        "KubeEnv": 0,
+        "KubeApp": 0,
         "MySQLDB": 0,
         "Function": 1,
         "SB": 1,
@@ -1437,12 +1439,11 @@
             "deploy": 1
           }
         ],
-        "appServiceKubeEnvInfo": [
-          {
-            "Name": "KUBE01",
-            "location": "northcentralusstage"
-          }
-        ],
+        // "appServiceKubeEnvInfo": [
+        //   {
+        //     "Name": "01"
+        //   }
+        // ],
         "WebSiteInfo": [
           {
             "Name": "WPS01",

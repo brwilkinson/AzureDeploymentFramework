@@ -92,6 +92,8 @@
         "ServerFarm": 0,
         "WebSite": 0,
         "WebSiteContainer": 0,
+        "KubeEnv": 0,
+        "KubeApp": 0,
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,

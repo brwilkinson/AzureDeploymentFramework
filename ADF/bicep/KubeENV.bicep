@@ -32,8 +32,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -51,27 +49,34 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
-var appServiceKubeEnvInfo = (contains(DeploymentInfo, 'appServiceKubeEnvInfo') ? DeploymentInfo.appServiceKubeEnvInfo : [])
-  
-var kubeEnvInfo = [for (kubeenv, index) in appServiceKubeEnvInfo: {
+var kubeEnvInfo = (contains(DeploymentInfo, 'kubeEnvInfo') ? DeploymentInfo.kubeEnvInfo : [])
+
+var kubeEnv = [for (kubeenv, index) in kubeEnvInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), kubeenv.name))
 }]
 
-resource KEP 'Microsoft.Web/kubeEnvironments@2021-02-01' = [for (kubeenv,index) in appServiceKubeEnvInfo: if (kubeEnvInfo[index].match) {
-  name: toLower('${DeploymentURI}kep${kubeenv.Name}')
-  location: contains(kubeenv,'location') ? kubeenv.location : resourceGroup().location
+resource KUBE 'Microsoft.Web/kubeEnvironments@2021-03-01' = [for (kubeenv, index) in kubeEnvInfo: if (kubeEnv[index].match) {
+  name: toLower('${Deployment}-kube${kubeenv.Name}')
+  location: contains(kubeenv, 'location') ? kubeenv.location : resourceGroup().location
+  kind: 'containerenvironment'
   properties: {
-    type: 'Managed'
-    internalLoadBalancerEnabled: contains(kubeenv,'internalLoadBalancerEnabled') ? bool(kubeenv.internalLoadBalancerEnabled) : false
+    internalLoadBalancerEnabled: contains(kubeenv, 'internalLoadBalancerEnabled') ? bool(kubeenv.internalLoadBalancerEnabled) : false
     appLogsConfiguration: {
       destination: 'log-analytics'
-      // logAnalyticsConfiguration: {
-      //   customerId: OMS.properties.customerId
-      //   sharedKey: OMS.listKeys().primarySharedKey
-      // }
+      logAnalyticsConfiguration: {
+        customerId: OMS.properties.customerId
+        sharedKey: OMS.listKeys().primarySharedKey
+      }
     }
-    // containerAppsConfiguration: {
-    //   daprAIInstrumentationKey: AppInsights.properties.InstrumentationKey
-    // }
+    containerAppsConfiguration: {
+      // internalOnly: false
+      // appSubnetResourceId: 
+      // controlPlaneSubnetResourceId:
+      // dockerBridgeCidr:
+      // platformReservedCidr:
+      // platformReservedDnsIP:
+      daprAIInstrumentationKey: AppInsights.properties.InstrumentationKey
+    }
   }
 }]
+

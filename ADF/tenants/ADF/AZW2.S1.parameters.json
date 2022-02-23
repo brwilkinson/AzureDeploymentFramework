@@ -88,6 +88,8 @@
         "ServerFarm": 1,
         "WebSite": 1,
         "WebSiteContainer": 0,
+        "KubeEnv": 0,
+        "KubeApp": 0,
         "MySQLDB": 1,
         "Function":1
       }
