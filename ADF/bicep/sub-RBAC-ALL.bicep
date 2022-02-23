@@ -52,7 +52,7 @@ var roleAssignment = [for rbac in roleInfo.RBAC : {
 
 // module RBACRAMG 'sub-RBAC-ALL-RA-MG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro == 'M0') {
 //     name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
-//     scope: managementGroup(rbac.DestManagementGroup)
+//     scope: mg[index]
 //     params:{
 //         description: roleInfo.name
 //         name: rbac.GUID
