@@ -345,7 +345,7 @@
             "NSG": 1,
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
-            "delegations": "Microsoft.ContainerInstance/containerGroups"
+            "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",

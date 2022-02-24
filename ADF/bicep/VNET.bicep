@@ -31,8 +31,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 var subscriptionId = subscription().subscriptionId
 var resourceGroupName = resourceGroup().name
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
@@ -97,13 +95,13 @@ var delegations = {
 var serviceEndpoints = {
   default: []
   'Microsoft.Storage': [
-      {
-        service: 'Microsoft.Storage'
-        locations: [
-          resourceGroup().location
-        ]
-      }
-    ]
+    {
+      service: 'Microsoft.Storage'
+      locations: [
+        resourceGroup().location
+      ]
+    }
+  ]
 }
 
 resource NSG 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = [for (sn, index) in SubnetInfo: {
