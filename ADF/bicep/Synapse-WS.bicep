@@ -62,7 +62,7 @@ resource synapseWS 'Microsoft.Synapse/workspaces@2021-06-01' = {
       accountUrl: SA.properties.primaryEndpoints.dfs //'https://x.dfs.core.windows.net'
       filesystem: Synapse.sashare
     }
-    managedResourceGroupName: '${resourceGroup().name}-syn'
+    managedResourceGroupName: '${resourceGroup().name}-sqlsyn${Synapse.name}'
     publicNetworkAccess: bool(Synapse.publicNetworkAccess) ? 'Enabled' : 'Disabled'
     // trustedServiceBypassEnabled: true
     // azureADOnlyAuthentication: true

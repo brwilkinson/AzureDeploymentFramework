@@ -119,7 +119,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
   }
   properties: {
     kubernetesVersion: AKSInfo.Version
-    nodeResourceGroup: '${resourceGroup().name}-b'
+    nodeResourceGroup: '${resourceGroup().name}-aks${AKSInfo.Name}'
     enableRBAC: AKSInfo.enableRBAC
     dnsPrefix: toLower('${Deployment}-aks${AKSInfo.Name}')
     //  https://docs.microsoft.com/en-us/azure/templates/microsoft.containerservice/2021-10-01/managedclusters/agentpools?tabs=bicep
