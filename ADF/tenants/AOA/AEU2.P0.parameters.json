@@ -477,7 +477,8 @@
         ],
         "kubeAppInfo": [
           {
-            "Name": "HW01"
+            "Name": "HW01",
+            "kubeENV": "01"
           }
         ],
         "VNGWInfo": [
