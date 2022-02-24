@@ -21,3 +21,21 @@ $name = 'waf.haapp.net'
 Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
     where {$_.records[0].cname -match $name} | 
     Remove-AzDnsRecordSet
+
+# cleanup CDN records and Cosmos
+$name = 'azureedge.net'
+Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
+    Where-Object { $_.records[0].cname -match $name } | #foreach records
+    Remove-AzDnsRecordSet
+
+# cleanup APIM records
+$name = 'azure-api.net'
+Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
+    Where-Object { $_.records[0].cname -match $name } | #foreach records
+    Remove-AzDnsRecordSet
+
+# cleanup App Service 
+$name = 'cloudapp.azure.com'
+Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
+    Where-Object { $_.records[0].cname -match $name } | #foreach records
+    Remove-AzDnsRecordSet #-Confirm -Verbose

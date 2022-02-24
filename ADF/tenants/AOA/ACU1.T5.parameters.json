@@ -611,13 +611,6 @@
             "endpoint": "data7",
             "hostname": "data7",
             "EnableSSL": 1
-          },
-          {
-            "Name": "data7",
-            "saname": "data7",
-            "endpoint": "data7",
-            "hostname": "data7",
-            "EnableSSL": 1
           }
         ],
         "KVInfo": [
@@ -1052,11 +1045,11 @@
             ]
           },
           {
-            "WAFName": "AGIC01",
+            "WAFName": "AGIC02",
             "WAFPolicyAttached": true,
             "WAFPolicyName": "AGIC01",
             "WAFTier": "WAF_v2",
-            "PrivateIP": "252",
+            "PrivateIP": "250",
             "SSLCerts": [
               "PSTHING-WildCard"
             ],
