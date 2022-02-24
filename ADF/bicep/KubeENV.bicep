@@ -60,6 +60,7 @@ resource KUBE 'Microsoft.Web/kubeEnvironments@2021-03-01' = [for (kubeenv, index
   location: contains(kubeenv, 'location') ? kubeenv.location : resourceGroup().location
   kind: 'containerenvironment'
   properties: {
+    environmentType: 'Managed'
     internalLoadBalancerEnabled: contains(kubeenv, 'internalLoadBalancerEnabled') ? bool(kubeenv.internalLoadBalancerEnabled) : false
     appLogsConfiguration: {
       destination: 'log-analytics'

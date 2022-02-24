@@ -68,6 +68,30 @@ var userAssignedIdentities = {
 
 var apimName = '${Deployment}-apim${apim.Name}'
 
+/*
+
+- These are ALL False
+        "customPropertiesNonConsumption": {
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168": "[parameters('tripleDES')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "[parameters('clientTls11')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "[parameters('clientTls10')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30": "[parameters('clientSsl30')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "[parameters('backendTls11')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "[parameters('backendTls10')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "[parameters('backendSsl30')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "[parameters('http2')]"
+        },
+        "customPropertiesConsumption": {
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "[parameters('clientTls11')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "[parameters('clientTls10')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "[parameters('backendTls11')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "[parameters('backendTls10')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "[parameters('backendSsl30')]",
+            "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "[parameters('http2')]"
+        }
+*/
+
+
 resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
   name: apimName
   location: resourceGroup().location
@@ -82,6 +106,13 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
   properties: {
     publisherEmail: Global.apimPublisherEmail
     publisherName: Global.apimPublisherEmail
+    customProperties: {
+      subnetAddress: reference('${VnetID}/subnets/${apim.snName}', '2015-06-15').addressprefix
+    }
+    virtualNetworkType: apim.VirtualNetworkType
+    virtualNetworkConfiguration: apim.VirtualNetworkType == 'None' ? null : {
+      subnetResourceId: '${VnetID}/subnets/${apim.snName}'
+    }
     hostnameConfigurations: [
       {
         type: 'Proxy'
@@ -112,13 +143,6 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
     // portalUrl: toLower('https://${apimName}.portal.azure-api.net')
     // managementApiUrl: toLower('https://${apimName}.management.azure-api.net')
     // scmUrl: toLower('https://${apimName}.scm.azure-api.net')
-    customProperties: {
-      subnetAddress: reference('${VnetID}/subnets/${apim.snName}', '2015-06-15').addressprefix
-    }
-    virtualNetworkType: apim.VirtualNetworkType
-    virtualNetworkConfiguration: apim.VirtualNetworkType == 'None' ? null : {
-      subnetResourceId: '${VnetID}/subnets/${apim.snName}'
-    }
   }
 }
 

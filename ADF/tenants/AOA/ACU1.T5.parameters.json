@@ -345,7 +345,7 @@
             "NSG": 1,
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
-            "delegations": "Microsoft.ContainerInstance/containerGroups"
+            "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",
@@ -605,13 +605,6 @@
           }
         ],
         "CDNInfo": [
-          {
-            "Name": "data7",
-            "saname": "data7",
-            "endpoint": "data7",
-            "hostname": "data7",
-            "EnableSSL": 1
-          },
           {
             "Name": "data7",
             "saname": "data7",
@@ -1052,11 +1045,11 @@
             ]
           },
           {
-            "WAFName": "AGIC01",
+            "WAFName": "AGIC02",
             "WAFPolicyAttached": true,
             "WAFPolicyName": "AGIC01",
             "WAFTier": "WAF_v2",
-            "PrivateIP": "252",
+            "PrivateIP": "250",
             "SSLCerts": [
               "PSTHING-WildCard"
             ],
