@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework
 - Go Home [Documentation Home](./index.md)
-- **Go Next** [Base Templates](./Base_Templates.md)
+- **Go Next** [Orchestration Templates](./Orchestration_Templates.md)
 
 Overview [What is ADF](./ADF.md)
 
