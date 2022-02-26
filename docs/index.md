@@ -32,13 +32,13 @@
 
 - [Parameter Files](./Parameter_Files.md)
 
-### Using Base templates
-
-- [Base Templates](./Base_Templates.md)
-
 ### Using orchestration templates
 
 - [Orchestration Templates](./Orchestration_Templates.md)
+
+### Using Base templates
+
+- [Base Templates](./Base_Templates.md)
 
 ### Using nested templates
 

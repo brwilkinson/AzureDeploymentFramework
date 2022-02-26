@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
-- **Go Next** [Nested Templates/Modules](./Nested_Templates.md)
+- **Go Next** [Base Templates](./Base_Templates.md)
 
 ####  Orchestration Templates - Overview
 
@@ -22,7 +22,7 @@ These allow you to deploy a set of nested Modules into the different Scopes:
 - Resource Group
 
 ####  Orchestration Templates - Deploying
-###### Below uses this file: ADF\tenants\DEF\ACU1.G0.parameters.json
+##### Below uses this file: ADF\tenants\DEF\ACU1.G0.parameters.json
 - Review the `Stage` and `DeploymentInfo` in that file to see what will be deployed
 
 ```powershell
@@ -32,7 +32,7 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/00-ALL-SUB.bicep
 # note there is no RG scope for G0, since it's for Subscription level
 ```
 
-###### Below uses this file: ADF\tenants\DEF\ACU1.G1.parameters.json
+##### Below uses this file: ADF\tenants\DEF\ACU1.G1.parameters.json
 - Review the `Stage` and `DeploymentInfo` in that file to see what will be deployed
 
 ```powershell
@@ -45,7 +45,7 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/00-ALL-SUB.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/01-ALL-RG.bicep
 ```
 
-###### Below uses this file: ADF\tenants\DEF\ACU1.P0.parameters.json
+##### Below uses this file: ADF\tenants\DEF\ACU1.P0.parameters.json
 - Review the `Stage` and `DeploymentInfo` in that file to see what will be deployed
 
 ```powershell
@@ -59,7 +59,7 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/01-ALL-RG.bicep
 
 ```
 
-It should be noted that the things that will be deployed are based on the Feature Flags that you set
+##### It should be noted that the things that will be deployed are based on the Feature Flags that you set
 - The feature flags are actually part of every parameter file for every Enviro
 - These are known as `Stage` a summary is shown below or more in the docs [Feature Flags](./Feature_Flags.md)
 
@@ -73,14 +73,16 @@ It should be noted that the things that will be deployed are based on the Featur
         "UAI": 0,
 ```
 
-Below is an example of the Subscription Level Deployment Template
+##### Below is an example of the Subscription Level Deployment Template
 - dp_Deployment_Security `'sub-Security.bicep'`
 - dp_Deployment_RG `'sub-RG.bicep'`
 - dp_Deployment_RBAC `'sub-RBAC.bicep'`
 - dp_Deployment_RoleDefinition`'sub-RoleDefinitions.bicep'`
 
 Each of the Stages in these Deployment Orchestration Template contains a feature flag switch
-- This allows you to enable/disable the layers of the orchestration e.g. `if (contains(Stage, 'Security') && bool(Stage.Security))`
+- This allows you to enable/disable the layers of the orchestration 
+    - e.g. `if (contains(Stage, 'Security') && bool(Stage.Security))`
+
 - The Stage list of feature flags exists within each individual Parameter Files.
     - [Parameter Files](./Parameter_Files.md)
 
