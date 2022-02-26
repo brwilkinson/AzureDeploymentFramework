@@ -30,8 +30,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 #disable-next-line no-unused-params
 param now string = utcNow('F')
 
@@ -767,7 +765,7 @@ resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' = {
     }
 }
 
-resource AADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' =  {
+resource AADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
     name: 'service'
     scope: AA
     properties: {
@@ -822,8 +820,13 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
         features: {
             legacy: 0
             searchVersion: 1
-            enableLogAccessUsingOnlyResourcePermissions: false
+            enableLogAccessUsingOnlyResourcePermissions: true
         }
+        workspaceCapping: {
+            dailyQuotaGb: 1
+        }
+        publicNetworkAccessForIngestion: 'Enabled'
+        publicNetworkAccessForQuery: 'Enabled'
     }
 }
 
@@ -851,7 +854,7 @@ resource OMSDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-previe
     }
 }
 
-resource OMSworkspaceName_Automation 'Microsoft.OperationalInsights/workspaces/linkedServices@2015-11-01-preview' = {
+resource OMSAutomation 'Microsoft.OperationalInsights/workspaces/linkedServices@2015-11-01-preview' = {
     parent: OMS
     name: 'Automation'
     properties: {
@@ -1172,9 +1175,9 @@ resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bo
     }
 }
 
-resource AppInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
+resource AppInsights 'Microsoft.Insights/components@2020-02-02' = {
     name: appInsightsName
-    location: contains(Global,'AppInsightsRegion') ? Global.AppInsightsRegion : resourceGroup().location
+    location: contains(Global, 'AppInsightsRegion') ? Global.AppInsightsRegion : resourceGroup().location
     kind: 'other'
     properties: {
         Application_Type: 'web'
@@ -1183,6 +1186,10 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
         Request_Source: 'rest'
         // HockeyAppId: ''
         // SamplingPercentage: null
+        WorkspaceResourceId: OMS.id
+        IngestionMode: 'LogAnalytics'
+        publicNetworkAccessForIngestion: 'Enabled'
+        //     publicNetworkAccessForQuery: '
     }
 }
 
@@ -1322,3 +1329,42 @@ resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
 //       'Microsoft.OperationalInsights/workspaces/${OMSworkspaceName_var}/savedSearches/${toLower(item.search.category)}|${toLower(item.search.name)}/schedules/schedule-${uniqueString(resourceGroup().id, deployment().name, OMSworkspaceName_var, '/', item.search.category, '|', item.search.name)}'
 //     ]
 //   }]
+
+// @description('Generated from /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AWU1-BRW-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
+// resource awubrwaoatAppInsights 'Microsoft.Insights/components@2020-02-02' = {
+//   name: 'awu1brwaoat6AppInsights'
+//   location: 'westus2'
+//   tags: {}
+//   kind: 'other'
+//   etag: '"6e003443-0000-0600-0000-61da27740000"'
+//   properties: {
+//     Ver: 'v2'
+//     Application_Type: 'web'
+//     Flow_Type: 'Redfield'
+//     Request_Source: 'rest'
+//     RetentionInDays: 90
+//     IngestionMode: 'ApplicationInsights'
+//     publicNetworkAccessForIngestion: 'Enabled'
+//     publicNetworkAccessForQuery: 'Enabled'
+//   }
+// }
+
+// @description('Generated from /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AWU1-BRW-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
+// resource awubrwaoatAppInsights 'Microsoft.Insights/components@2020-02-02' = {
+//   name: 'awu1brwaoat6AppInsights'
+//   location: 'westus2'
+//   tags: {}
+//   kind: 'other'
+//   etag: '"0000d43d-0000-0600-0000-62199cf30000"'
+//   properties: {
+//     Ver: 'v2'
+//     Application_Type: 'web'
+//     Flow_Type: 'Redfield'
+//     Request_Source: 'rest'
+//     RetentionInDays: 90
+//     WorkspaceResourceId: '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourcegroups/awu1-brw-aoa-rg-t6/providers/microsoft.operationalinsights/workspaces/awu1brwaoat6loganalytics'
+//     IngestionMode: 'LogAnalytics'
+//     publicNetworkAccessForIngestion: 'Enabled'
+//     publicNetworkAccessForQuery: 'Enabled'
+//   }
+// }

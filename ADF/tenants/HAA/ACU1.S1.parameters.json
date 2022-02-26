@@ -51,30 +51,34 @@
         "VMSQL": 0,
         "VMFILE": 0,
         "VMSS": 0,
-        "WAFPOLICY": 0,
-        "FRONTDOOR": 0,
+        "WAFPOLICY": 1,
         "WAF": 0,
+        "FRONTDOORPOLICY": 1,
+        "FRONTDOOR": 0,
         "SetExternalDNS": 1,
         "SetInternalDNS": 1,
         "APPCONFIG": 0,
         "REDIS": 0,
         "APIM": 1,
-        "ACR": 0,
+        "ACR": 1,
         "ACI": 0,
-        "AKS": 0,
+        "AKS": 1,
         "SQLMI": 0,
         "CosmosDB": 0,
-        "DASHBOARD": 1,
+        "DASHBOARD": 0,
         "DNSLookup": 0,
         "ServerFarm": 1,
-        "WebSite": 1,
+        "WebSite": 0,
         "WebSiteContainer": 0,
         "KubeEnv": 0,
         "KubeApp": 0,
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,
-        "AzureSQL": 10
+        "AzureSYN": 0,
+        "AzureSQL": 0,
+        "LT": 0,
+        "SFM": 0
       }
     },
     "Extensions": {
@@ -810,24 +814,31 @@
             }
           ]
         },
+        "WAFPolicyInfo": [
+          {
+            "Name": "AGIC01",
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
+            "enableBotRule": 1,
+            "customRules": [],
+            "exclusions": [],
+            "ruleGroupOverrides": []
+          }
+        ],
         "WAFInfo": [
           {
-            "WAFName": "01",
-            "WAFEnabled": true,
-            "ISAGIC": true,
-            "WAFMode": "Detection",
+            "WAFName": "AGIC01",
             "WAFPolicyAttached": true,
-            "WAFPolicyName": "API",
+            "WAFPolicyName": "AGIC01",
             "WAFTier": "WAF_v2",
-            "WAFCapacity": 2,
-            "PrivateIP": "29",
+            "PrivateIP": "240",
             "SSLCerts": [
               "HAAPP-WildCard"
             ],
-            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
-            "BEIPs": [], //"useAGIC"
-            "pathRules": [
-            ],
+            "BEIPs": [],
+            "pathRules": [],
+            "probes": [],
             "frontEndPorts": [
               {
                 "Port": 80
@@ -839,17 +850,7 @@
             "BackendHttp": [
               {
                 "Port": 80,
-                "Protocol": "http",
-                "CookieBasedAffinity": "Enabled",
-                "RequestTimeout": 600,
-                "probePath": "/"
-              },
-              {
-                "Port": 443,
-                "Protocol": "https",
-                "CookieBasedAffinity": "Enabled",
-                "RequestTimeout": 600,
-                "probePath": "/"
+                "Protocol": "http"
               }
             ],
             "Listeners": [
@@ -858,17 +859,17 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
-                "Domain": "haapp.net",
-                "Hostname": "waf",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC01",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "haapp.net",
-                "Hostname": "waf",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC01",
                 "Interface": "Public",
-                "httpsRedirect": 0
+                "httpsRedirect": 1
               }
             ]
           }

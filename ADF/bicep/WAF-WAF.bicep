@@ -52,12 +52,13 @@ var SSLpolicyLookup = {
   Default: null
 }
 
-var webApplicationFirewallConfiguration = {
-  enabled: contains(wafinfo, 'WAFEnabled') && bool(wafinfo.WAFEnabled) ? wafinfo.WAFEnabled : null
-  firewallMode: contains(wafinfo, 'WAFEnabled') && bool(wafinfo.WAFEnabled) ? wafinfo.WAFMode : null
-  ruleSetType: 'OWASP'
-  ruleSetVersion: '3.1'
-}
+//  move this to policy now...
+// var webApplicationFirewallConfiguration = {
+//   enabled: contains(wafinfo, 'WAFEnabled') && bool(wafinfo.WAFEnabled) ? wafinfo.WAFEnabled : null
+//   firewallMode: contains(wafinfo, 'WAFEnabled') && bool(wafinfo.WAFEnabled) ? wafinfo.WAFMode : null
+//   ruleSetType: 'OWASP'
+//   ruleSetVersion: '3.1'
+// }
 
 var Listeners = [for listener in wafinfo.Listeners: {
   name: listener.Port
@@ -120,7 +121,8 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
       name: wafinfo.WAFTier
       tier: wafinfo.WAFTier
     }
-    webApplicationFirewallConfiguration: contains(wafinfo, 'WAFPolicyAttached') && bool(wafinfo.WAFPolicyAttached) ? null : contains(wafinfo, 'WAFEnabled') && bool(wafinfo.WAFEnabled) ? webApplicationFirewallConfiguration : null
+    // Move to WAF Policy attached
+    // webApplicationFirewallConfiguration: contains(wafinfo, 'WAFPolicyAttached') && bool(wafinfo.WAFPolicyAttached) ? webApplicationFirewallConfiguration : null
     gatewayIPConfigurations: [
       {
         name: 'appGatewayIpConfig'
