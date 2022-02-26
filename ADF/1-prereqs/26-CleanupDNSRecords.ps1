@@ -35,7 +35,7 @@ Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME |
     Remove-AzDnsRecordSet
 
 # cleanup App Service 
-$name = 'cloudapp.azure.com'
+$name = 'azurewebsites.net'
 Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
-    Where-Object { $_.records[0].cname -match $name } | #foreach records
+    Where-Object { $_.records[0].cname -match $name } | #ForEach-Object records
     Remove-AzDnsRecordSet #-Confirm -Verbose

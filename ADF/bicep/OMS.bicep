@@ -823,7 +823,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
             enableLogAccessUsingOnlyResourcePermissions: true
         }
         workspaceCapping: {
-            // dailyQuotaGb: '-1.0'
+            dailyQuotaGb: 1
         }
         publicNetworkAccessForIngestion: 'Enabled'
         publicNetworkAccessForQuery: 'Enabled'
@@ -854,7 +854,7 @@ resource OMSDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-previe
     }
 }
 
-resource OMSworkspaceName_Automation 'Microsoft.OperationalInsights/workspaces/linkedServices@2015-11-01-preview' = {
+resource OMSAutomation 'Microsoft.OperationalInsights/workspaces/linkedServices@2015-11-01-preview' = {
     parent: OMS
     name: 'Automation'
     properties: {

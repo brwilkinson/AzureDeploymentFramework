@@ -74,8 +74,8 @@
         "KubeEnv": 0,
         "KubeApp": 0,
         "MySQLDB": 0,
-        "Function": 1,
-        "SB": 1,
+        "Function": 0,
+        "SB": 0,
         "AzureSYN": 0,
         "AzureSQL": 0,
         "LT": 1,
@@ -981,7 +981,7 @@
         ],
         "WAFPolicyInfo": [
           {
-            "Name": "AGIC01",
+            "Name": "AGIC02",
             "State": "Enabled",
             "Mode": "Prevention",
             "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
@@ -1047,9 +1047,9 @@
           {
             "WAFName": "AGIC02",
             "WAFPolicyAttached": true,
-            "WAFPolicyName": "AGIC01",
+            "WAFPolicyName": "AGIC02",
             "WAFTier": "WAF_v2",
-            "PrivateIP": "250",
+            "PrivateIP": "240",
             "SSLCerts": [
               "PSTHING-WildCard"
             ],
@@ -1077,14 +1077,14 @@
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
                 "Domain": "psthing.com",
-                "Hostname": "AGIC01",
+                "Hostname": "AGIC02",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
                 "Domain": "psthing.com",
-                "Hostname": "AGIC01",
+                "Hostname": "AGIC02",
                 "Interface": "Public",
                 "httpsRedirect": 1
               }
@@ -1269,7 +1269,7 @@
             "podIdentity": true, //true, false
             "privateCluster": false, //true, false
             "AgentPoolsSN": "snMT02",
-            "WAFName": "AGIC01",
+            "WAFName": "AGIC02",
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "AppGateway": 1,

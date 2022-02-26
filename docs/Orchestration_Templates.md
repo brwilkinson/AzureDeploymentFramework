@@ -24,14 +24,17 @@ These allow you to deploy a set of nested Modules into the different Scopes:
 ####  Orchestration Templates - Deploying
 ###### Below uses this file: ADF\tenants\DEF\ACU1.G0.parameters.json
 - Review the `Stage` and `DeploymentInfo` in that file to see what will be deployed
+
 ```powershell
 # Deploy into the Subscription Scope
 AzSet -App DEF -Enviro G0
 AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/00-ALL-SUB.bicep
 # note there is no RG scope for G0, since it's for Subscription level
 ```
+
 ###### Below uses this file: ADF\tenants\DEF\ACU1.G1.parameters.json
 - Review the `Stage` and `DeploymentInfo` in that file to see what will be deployed
+
 ```powershell
 # Create the first Resource Group for Global resources G1
 # Set the Enviro
@@ -41,8 +44,10 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/00-ALL-SUB.bicep
 # Create the Resources in the RG by deploying into the RG Scope for G1
 AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/01-ALL-RG.bicep
 ```
+
 ###### Below uses this file: ADF\tenants\DEF\ACU1.P0.parameters.json
 - Review the `Stage` and `DeploymentInfo` in that file to see what will be deployed
+
 ```powershell
 # Create the second Resource Group for Hub resources P0
 # Set the Enviro
@@ -53,9 +58,11 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/00-ALL-SUB.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/01-ALL-RG.bicep
 
 ```
+
 It should be noted that the things that will be deployed are based on the Feature Flags that you set
 - The feature flags are actually part of every parameter file for every Enviro
 - These are known as `Stage` a summary is shown below or more in the docs [Feature Flags](./Feature_Flags.md)
+
 ```json
     "Stage": {
       "value": {
@@ -180,5 +187,4 @@ module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(S
     dp_Deployment_RG
   ]
 }
-
 ```
