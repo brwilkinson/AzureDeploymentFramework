@@ -316,7 +316,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
         diskSizeGB: OSType[AppServer.OSType].OSDiskGB
         createOption: 'FromImage'
         managedDisk: {
-          storageAccountType: storageAccountType
+          storageAccountType: contains(AppServer,'OSstorageAccountType') ? AppServer.OSstorageAccountType : storageAccountType
         }
       }
       dataDisks: DISKLOOKUP.outputs.DATADisks

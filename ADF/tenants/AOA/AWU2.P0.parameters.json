@@ -707,7 +707,7 @@
               "DDRole": "32GB",
               "OSType": "Server2022Containerssmall",
               "ExcludeDomainJoin": 1,
-              "DeployJIT": 0,
+              "DeployJIT": 1,
               "_Zone": 1, // not supported in westus
               "NICs": [
                 {

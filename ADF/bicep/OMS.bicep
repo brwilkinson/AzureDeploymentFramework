@@ -585,12 +585,10 @@ var solutions = [
     'DnsAnalytics'
     'ApplicationInsights'
     'AzureWebAppsAnalytics'
-    // 'KeyVault'
     'AzureNSGAnalytics'
     'AlertManagement'
     'CapacityPerformance'
     'NetworkMonitoring'
-    'WireData2'
     'Containers'
     'ContainerInsights'
     'ServiceFabric'
@@ -601,10 +599,14 @@ var solutions = [
     // testing
     'SQLAdvancedThreatProtection'
     'WindowsDefenderATP'
-    'AzureAppGatewayAnalytics'
     'KeyVaultAnalytics'
     'AzureSQLAnalytics'
     'BehaviorAnalyticsInsights'
+
+    // EOL
+    // 'WireData2'
+    // 'AzureAppGatewayAnalytics'
+    // 'KeyVault'
 ]
 var aaAssets = {
     modules: [

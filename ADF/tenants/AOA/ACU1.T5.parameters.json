@@ -1710,8 +1710,9 @@
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
+              "OSstorageAccountType": "Standard_LRS",
               "HotPatch": true,
-              "DeployJIT": 0,
+              "DeployJIT": 1,
               "shutdown": {
                 "time": "2100",
                 "enabled": 0
