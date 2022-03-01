@@ -28,32 +28,28 @@ function Set-JITAccessPolicy
         [parameter(ValueFromPipeline)]
         $VMName = '.',
         [parameter(ValueFromPipeline)]
-        $RGName = 'ACU1-BRW-AOA-RG-T5',
+        $RGName = 'ACU1-BRW-AOA-RG-D2',
         [System.Collections.Generic.List[System.String]]$SourceIPs = @(
-            '192.127.0.2',
-            '73.225.196.211'
+            '192.127.0.2'
         ),
-        $JitPolicyNamePrefix = 'JIT_'
+        $JitPolicyName = 'JIT_Standard'
     )
     process
     {
         # can find multiple VM's, limit to the single RG, per policy assignment
-        Get-AzVM -ResourceGroupName $RGName |
-            Where-Object Name -Match $VMName -ov VMs
+        Get-AzVM -ResourceGroupName $RGName | Where-Object Name -Match $VMName -ov VMs
 
-        # Create a JIT single Policy Per VM
-        foreach ($VM in $VMs)
-        {
-            Write-Warning -Message "Found VM [$($VM.ID)]"
+        Write-Warning -Message "Found VM [$($VMs.ID)]"
 
-            $Params = @{
-                #Assume all VM's in same RG in the same location
-                Location          = $VM.location
-                ResourceGroupName = $VM.ResourceGroupName
-                Name              = $JitPolicyNamePrefix + $VM.Name
-                Kind              = 'Basic'
-                Confirm           = $true
-                VirtualMachine    = @(
+        $Params = @{
+            #Assume all VM's in same RG in the same location
+            Location          = $VMs[0].location
+            ResourceGroupName = $VMs[0].ResourceGroupName
+            Name              = $JitPolicyName
+            Kind              = 'Basic'
+            Confirm           = $true
+            VirtualMachine    = @(foreach ($VM in $VMs)
+                {
                     @{
                         id    = $VM.ID
                         ports = @(
@@ -83,9 +79,9 @@ function Set-JITAccessPolicy
                             }
                         )
                     }
-                )
-            }
-            Set-AzJitNetworkAccessPolicy @Params
+                })
         }
-    }#Process
-}#Set-JITAccessPolicy
+
+        Set-AzJitNetworkAccessPolicy @Params
+    }
+}
