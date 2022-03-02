@@ -15,6 +15,7 @@
     "vmAdminUserName": "brw",
     "DomainName": "psthing.com",
     "DomainNameExt": "psthing.com",
+    "CertThumbprint": "48B8F2B8C7DE8115804B74D8CBB4488C53492E5F",
     "CertURLs": [
       "*.contoso.com",
       "*.psthing.com"

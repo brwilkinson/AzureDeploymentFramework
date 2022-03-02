@@ -226,3 +226,4 @@ module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws, 'privat
 }
 
 output WebSite object = WS
+output Thumbprint string = certificates.properties.thumbprint
