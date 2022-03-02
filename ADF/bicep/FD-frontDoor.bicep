@@ -212,7 +212,7 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '5.4'
-    arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${KV.id} -certificateUrl ${cert.properties.secretUriWithVersion}'
+    arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${KV.id} -certificateUrl ${cert.properties.secretUri}'
     scriptContent: loadTextContent('../bicep/loadTextContext/setFDServicesCertificates.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'
