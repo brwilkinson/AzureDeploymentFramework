@@ -15,7 +15,8 @@
       "value": {
         "RoleDefinition": 1,
         "Security": 1,
-        "RBAC": 1
+        "RBAC": 1,
+        "SP": 1
       }
     },
     "Extensions": {
