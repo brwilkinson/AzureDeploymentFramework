@@ -14,13 +14,13 @@ $BasePath
 # if everyone has the same modules, then you ensure you don't break your configs, only update when you can test at the same time.
 # remove the line in the gitignore to allow your staged resources to be uploaded with your instance of this code
 <#
-& $BasePath\5.1-PreReqDSCModuleList.ps1 -DownloadLatest 1
+& $BasePath\05.1-PreReqDSCModuleList.ps1 -DownloadLatest 1
 #>
 
 
 # Upload modules to Gallery
-& $BasePath\5.3-PreReqDSCModuleListAA.ps1 -AAEnvironment $AAEnvironment -App $App -Prefix $Prefix
+& $BasePath\05.3-PreReqDSCModuleListAA.ps1 -AAEnvironment $AAEnvironment -App $App -Prefix $Prefix
 
 
 # Upload custom modules to Gallery
-& $BasePath\5.4-PreReqDSCCustomModuleAA.ps1 -AAEnvironment $AAEnvironment -App $App -Prefix $Prefix
+& $BasePath\05.4-PreReqDSCCustomModuleAA.ps1 -AAEnvironment $AAEnvironment -App $App -Prefix $Prefix

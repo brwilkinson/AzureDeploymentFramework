@@ -68,7 +68,7 @@
     - This allows to reference the location from the Prefix OR the Prefix from the location.
     - Note since these have already been exported, you do not have to run these scripts.
 
-- [1-prereqs/0-Get-AzPrefixTable.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzPrefixTable.ps1){:target="_blank"}
+- [1-prereqs/00-Get-AzPrefixTable.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/00-Get-AzPrefixTable.ps1){:target="_blank"}
     - [bicep/global/prefix.json](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/prefix.json){:target="_blank"}
 - [1-prereqs/0-Get-AzRegionTable.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-Get-AzRegionTable.ps1){:target="_blank"}
     - [bicep/global/region.json](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/bicep/global/region.json){:target="_blank"}

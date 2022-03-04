@@ -88,7 +88,7 @@ Execute the AzSet command to select your `app tenant` and `Enviro`
 - `azset -App DEF -Enviro G0`
 The `AzSet` function also sets an Enviro Variable so you can track this setting in your prompt
 - `$env:Enviro = "${App} ${Enviro}" # add this to track on prompt (oh-my-posh env variable)`
-- This can be viewed here: [Install-Tools.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-InstallTools.ps1#L157)
+- This can be viewed here: [Install-Tools.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/00-InstallTools.ps1#L157)
     ```json
     {
         "type": "text",

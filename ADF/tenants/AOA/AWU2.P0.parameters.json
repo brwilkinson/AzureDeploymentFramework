@@ -708,6 +708,7 @@
               "OSType": "Server2022Containerssmall",
               "ExcludeDomainJoin": 1,
               "DeployJIT": 1,
+              "OSstorageAccountType": "Premium_LRS",
               "_Zone": 1, // not supported in westus
               "NICs": [
                 {

@@ -1933,7 +1933,7 @@
             "skuName": "Standard",
             "connectionPort": 29000,
             "gatewayPort": 29080,
-            "allowRDP": true,
+            "allowRDP": false,
             "nodeTypes": [
               {
                 "name": "nodetype1",

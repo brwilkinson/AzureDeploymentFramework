@@ -6,12 +6,12 @@
 .EXAMPLE
     # Use the App Name to sync from the primary region to the secondary region
 
-    .\3-Start-AzureKVSync.ps1 -App AOA
+    .\03-Start-AzureKVSync.ps1 -App AOA
 
 .EXAMPLE
     # manually passs in the source kvname and the destination kvname to sync
 
-    .\3-Start-AzureKVSync.ps1 -primaryKVName ACU1-BRW-AOA-P0-kvVLT01 -SecondaryKVName AWU1-BRW-AOA-P0-kvVLT01
+    .\03-Start-AzureKVSync.ps1 -primaryKVName ACU1-BRW-AOA-P0-kvVLT01 -SecondaryKVName AWU1-BRW-AOA-P0-kvVLT01
 
 .INPUTS
     Inputs (if any)

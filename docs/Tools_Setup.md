@@ -20,7 +20,7 @@
 
 - Configure VSCode, Import the workspace and install the suggested extensions
 - Review the Scripts in the [1-prereqs](https://github.com/brwilkinson/AzureDeploymentFramework/tree/main/ADF/1-prereqs)
-    - [https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-InstallTools.ps1]
+    - [https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/00-InstallTools.ps1]
 - Before running any of the Scripts Discuss
     - [Naming Standards](./Naming_Standards.md)
     - [App Tenants](./App_Tenants.md)
