@@ -13,7 +13,6 @@
     },
     "Stage": {
       "value": {
-        "RG": 1,
         "RoleDefinition": 1,
         "Security": 1,
         "RBAC": 1
