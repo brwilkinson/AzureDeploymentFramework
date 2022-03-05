@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
-***
+---
 ### Azure Resource Group Deployment - ADF App Environment
 
     To Deploy all Tiers simply choose the following template
