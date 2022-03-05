@@ -96,16 +96,16 @@ Execute the AzSet command to select your `app tenant` and `Enviro`
 
 `azset -App DEF -Enviro G0`
 
+![AzSet to select Enviro](./Getting_Started_azset.png)
+
 The `AzSet` function also sets an Enviro Variable so you can track this setting in your prompt
 ###### Add this to track on prompt (oh-my-posh env variable)
 - `$env:Enviro = "${App} ${Enviro}"`
+- This can be viewed here: [Install-Tools.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/00-InstallTools.ps1#L157)
 
     ![AzSet to select Enviro](./Getting_Started_ohmyposh.png)
 
-- This can be viewed here: [Install-Tools.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/00-InstallTools.ps1#L157)
-    
-    ![AzSet to select Enviro](./Getting_Started_azset.png)
 
-Once this setup has been complete you can look at the docs for the following:
+Once this setup has been complete you can look at the docs for the following for deploying:
 - [Orchestration Templates](./Orchestration_Templates.md)
 - [Base Templates](./Base_Templates.md)
