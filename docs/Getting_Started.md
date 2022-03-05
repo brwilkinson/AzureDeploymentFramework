@@ -105,7 +105,8 @@ The `AzSet` function also sets an Enviro Variable so you can track this setting 
         "background": "#73e600"
     }
     ```
-![AzSet to select Enviro](./Getting_Started_azset.png)
+    
+    ![AzSet to select Enviro](./Getting_Started_azset.png)
 
 Once this setup has been complete you can look at the docs for the following:
 - [Orchestration Templates](./Orchestration_Templates.md)
