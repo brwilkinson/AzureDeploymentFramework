@@ -9,7 +9,7 @@
 ### Getting Started
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
-Setup Steps
+Setup Steps:
 
 1. Fork the Repo
 1. Clone the Repo
@@ -64,7 +64,7 @@ Setup Steps
 1. Ensure you are logged into Azure and are set to the correct Subscription and Context
 1. There are some more Pre-Req. steps, however you may not need these straight away
     1. [Getting Started Pre-reqs](./Getting_Started_PreReqs.md)
-        1. Create storage account for artifacts e.g. vm extension files
+        1. Create storage account for artifacts e.g. vm DSC Extension files
         1. Create keyvault for secrets and certs
         1. Create a self signed web cert, if needed for Virtual Machines or VMSS etc.
         1. Export out role definitions that are custom to your Subscription/Tenant
@@ -72,7 +72,7 @@ Setup Steps
         1. Create service principals for GitHub deployments + secrets
         1. Sync keyvault secrets and certs from the primary region to a secondary region
 
-Deploy Steps
+Deploy Steps:
 
 ```powershell
 # I recommend to put this in your own Powershell profile, so it's loaded by default
