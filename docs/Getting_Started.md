@@ -10,6 +10,7 @@
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
 #### Setup Steps
+
 1) Fork the Repo
 1) Clone the Repo
     1) `set-location -Path D:\Repos`
@@ -104,5 +105,5 @@ The `AzSet` function also sets an Enviro Variable so you can track this setting 
 ![AzSet to select Enviro](./Getting_Started_azset.png)
 
 Once this setup has been complete you can look at the docs for the following:
-- [Base Templates](./Base_Templates.md)
 - [Orchestration Templates](./Orchestration_Templates.md)
+- [Base Templates](./Base_Templates.md)
