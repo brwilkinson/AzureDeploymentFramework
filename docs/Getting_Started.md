@@ -9,7 +9,7 @@
 ### Getting Started
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
-#### Setup Steps
+Setup Steps
 
 1) Fork the Repo
 1) Clone the Repo
@@ -69,7 +69,7 @@
         1) Create service principals for GitHub deployments + secrets
         1) Sync keyvault secrets and certs from the primary region to a secondary region
 
-#### Deploy Steps
+Deploy Steps
 
 ```powershell
 # I recommend to put this in your own Powershell profile, so it's loaded by default
