@@ -17,7 +17,7 @@
     1) `gh repo clone <yourProjectForkName>/AzureDeploymentFramework ADF`
 1) Review the Tools/Setup [Tools Setup](./Tools_Setup.md)
 1) Open the cloned repo in VSCode Insiders
-    1) `code-insiders .\ADF\ADF.code-workspace`
+    1) `code-insiders .\ADF\ADF.code-workspace` 
     1) Accept the install of the Extensions
     1) Ctrl+ J to open the console in vscode
     1) I also recommend having a second window Open in the (Windows or other) Terminal
