@@ -88,13 +88,20 @@ Import-Module -Name $Repos/ADF/ADF/release-az/azSet.psm1 -Scope Global -Force
 
 ```
 
-Now in the Terminal you can setup your Enviro for the Tenant and (Enviro) Deployment Partition that you want to deploy.
-Set the location to the project ADF cloned repo directory
-- `Set-Location -Path ADF`
+Now in the Terminal you can setup Scope that you want to deploy
+- Tenant (The app name) 
+- Enviro (Deployment Partition or deployment stamp, see Orchestration Templates below)
+
 Execute the AzSet command to select your `app tenant` and `Enviro`
-- `azset -App DEF -Enviro G0`
+
+`azset -App DEF -Enviro G0`
+
 The `AzSet` function also sets an Enviro Variable so you can track this setting in your prompt
-- `$env:Enviro = "${App} ${Enviro}" # add this to track on prompt (oh-my-posh env variable)`
+###### Add this to track on prompt (oh-my-posh env variable)
+- `$env:Enviro = "${App} ${Enviro}"`
+
+    ![AzSet to select Enviro](./Getting_Started_ohmyposh.png)
+
 - This can be viewed here: [Install-Tools.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/00-InstallTools.ps1#L157)
     
     ![AzSet to select Enviro](./Getting_Started_azset.png)
