@@ -9,14 +9,14 @@
 ####  Orchestration Templates - Overview
 
 Bicep deployments leverage Bicep Module for several reasons
-1) It allows you to standardize on a Resource Template
-1) It allows you to iterate over calling a Resource Template multiple time, in a loop.
-1) It allows you to call different Modules or orchestrate a set of other Bicep Modules.
+1.It allows you to standardize on a Resource Template
+1.It allows you to iterate over calling a Resource Template multiple time, in a loop.
+1.It allows you to call different Modules or orchestrate a set of other Bicep Modules.
 
 This project currently has 3 Top Level Orchestration Templates
-1) 00-ALL-MG.bicep
-1) 00-ALL-SUB.bicep
-1) 01-ALL-RG.bicep
+1.00-ALL-MG.bicep
+1.00-ALL-SUB.bicep
+1.01-ALL-RG.bicep
 
 These allow you to deploy a set of nested Modules into the different Scopes:
 - ManagementGroup
