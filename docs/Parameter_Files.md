@@ -3,9 +3,7 @@
 ## - Azure Deployment Framework
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Orchestration Templates](./Orchestration_Templates.md)
-
-Overview [What is ADF](./ADF.md)
-
+***
 ####  Parameter Files Usage
 
 There is a parameter file for each deployment layer [Deployment Partitions](./Deployment_Partitions.md)

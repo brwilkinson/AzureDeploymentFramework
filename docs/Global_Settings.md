@@ -3,7 +3,7 @@
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Deploying From PowerShell](./Deploying_From_PowerShell.md)
-
+***
 ####  Global Settings
 
 |Tenant/App|Description|

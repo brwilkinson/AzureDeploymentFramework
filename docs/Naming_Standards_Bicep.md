@@ -3,7 +3,7 @@
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Tools Setup](./Tools_Setup.md)
-
+***
 ### Naming Standards Bicep - These are a work in progress.
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 

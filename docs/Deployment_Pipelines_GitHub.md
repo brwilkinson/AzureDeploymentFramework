@@ -2,9 +2,9 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
+***
 
-
-## Environment Information [Deployment Pipelines]  
+## Environment Information [Deployment Pipelines]
 #### TODO update from Azure DevOps Pipelines to GitHub Actions on these links
 <br/>
 

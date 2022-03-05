@@ -4,7 +4,7 @@
 - Go: [README](https://github.com/brwilkinson/AzureDeploymentFramework#readme){:target="_blank"} (GithHub Home)
 - Overview: [What is ADF (PPT)](./ADF.md)
 - **This page:** [Documentation Home](./index.md)
-
+***
 ### Deployment Partitions
 
 - [Deployment Partitions](./Deployment_Partitions.md)
