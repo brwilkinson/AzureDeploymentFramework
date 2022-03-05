@@ -3,7 +3,9 @@
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Naming Standards Prefix](./Naming_Standards_Prefix.md)
+
 * * *
+
 ### Naming Standards - These are configurable, however built into this project by design.
 
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
@@ -192,4 +194,6 @@ The name of any resource is determined via the following method.
 #### Sample - Spoke **S1** Resource Group Resources
 ![Spoke-S1-Resources](./Spoke-S1-Resources.jpg)
 
+
 * * *
+

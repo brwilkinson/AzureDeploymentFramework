@@ -3,7 +3,9 @@
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [App Tenants](./App_Tenants.md)
+
 * * *
+
 ### Tools and Setup
 #### Getting started, what do you need ?
 - Azure AD Tenant
@@ -22,4 +24,6 @@
     - [Naming Standards](./Naming_Standards.md)
     - [App Tenants](./App_Tenants.md)
 - Once you are ready to deploy you can view the steps: [Getting_Started](./Getting_Started.md)
+
 * * *
+

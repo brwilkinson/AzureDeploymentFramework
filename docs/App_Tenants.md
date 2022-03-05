@@ -3,7 +3,9 @@
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [App Tenants Descriptions](./App_Tenants_Descriptions.md)
+
 * * *
+
 ### App Tenants
 
 The Framework supports deploying Multiple Applications, each application is referred to as a Tenant within the ADF.
@@ -64,4 +66,6 @@ Each Tenant has it's own dedicated directory, that contains the Environment Meta
 ####  GitHub Workflow Files for Tenants/Environments
 ![GitHub Workflow Files for Tenants/Environments](./App_Tenants_Workflows.jpg)
 
+
 * * *
+

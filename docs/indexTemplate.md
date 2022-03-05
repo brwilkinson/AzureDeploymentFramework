@@ -1,6 +1,10 @@
+
 * * *
+
 layout: default
+
 * * *
+
 
 Text can be **bold**, _italic_, or ~~strikethrough~~.
 
@@ -60,7 +64,9 @@ end
 
 ### There's a horizontal rule below this.
 
+
 * * *
+
 
 ### Here is an unordered list:
 

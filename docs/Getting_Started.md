@@ -5,7 +5,9 @@
 - **Go Home** [Documentation Home](./index.md)
 - **This Page** [Deploy your First App](./Getting_Started.md)
 - **Go Next** [Deploy your Second App](./Getting_Started2.md)
+
 * * *
+
 ### Getting Started
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 

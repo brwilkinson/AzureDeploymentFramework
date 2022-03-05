@@ -3,7 +3,9 @@
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Tools Setup](./Tools_Setup.md)
+
 * * *
+
 ### Naming Standards Bicep - These are a work in progress.
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
@@ -37,4 +39,6 @@ Bicep is new, so this is a work in progress and subject to change.
 - Helper functions are currently prefixed with an x.file.bicep, these are reusable bicep modules that can be called from more than 1 parent module.
 
     ![Bicep Helper Functions](./Naming_Standards_Bicep_Helper.jpg)
+
 * * *
+
