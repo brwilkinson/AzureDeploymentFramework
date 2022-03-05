@@ -3,7 +3,7 @@
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Nested Templates/Modules](./Nested_Templates.md)
----
+* * *
 ####  Base Templates
 
 Using a base template is really Easy.

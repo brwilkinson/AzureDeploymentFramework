@@ -3,7 +3,7 @@
 ## - Azure Deployment Framework ##
 - Go Home [Documentation Home](./index.md)
 - **Go Top**  [ADF Features](./ADF_Features.md)
----
+* * *
 ### Frequently asked questions (FAQ).
 
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*

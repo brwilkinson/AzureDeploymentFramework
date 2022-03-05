@@ -3,7 +3,7 @@
 ## - Azure Deployment Framework
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Parameter Files](./Parameter_Files.md)
----
+* * *
 ####  This File describes the capabilities to manage Role Assignments within this project
 
 Role Assignment can be defined at the following scopes"

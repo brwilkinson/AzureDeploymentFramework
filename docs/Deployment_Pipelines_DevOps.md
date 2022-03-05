@@ -2,7 +2,7 @@
 
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
----
+* * *
 
 ## Environment Information [Deployment Pipelines]  
 #### TODO update from Azure DevOps Pipelines to GitHub Actions on these links
@@ -17,7 +17,7 @@
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/G1%20-%20%5BGlobal%20RG%20Deployment%5D?branchName=master)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=7&branchName=master)
 
----
+* * *
 
 ### Environment Information - Individual Environments
 
@@ -35,7 +35,7 @@
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/AZC1%20S3%20-%20%5BSpoke%20Environment%5D?branchName=master)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=15&branchName=master)
 
----
+* * *
 
 ### Environment Information - Individual Environments
 
@@ -51,4 +51,4 @@
 
 <br/>
 
----
+* * *

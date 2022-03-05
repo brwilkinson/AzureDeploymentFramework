@@ -3,7 +3,7 @@
 ## - Azure Deployment Framework ## 
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Naming Standards Bicep](./Naming_Standards_Bicep.md)
----
+* * *
 ### Naming Standards - These are configurable, however built into this project by design.
 ###### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
@@ -62,7 +62,7 @@
 |West US 2|westus2|West|US|2|WU2||**AWU2**|
 |West US 3|westus3|West|US|3|WU3||**AWU3**|
 
----
+* * *
 
     These Naming standards are exported to state files in the project
     - This allows to reference the location from the Prefix OR the Prefix from the location.
