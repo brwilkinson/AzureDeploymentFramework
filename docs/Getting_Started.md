@@ -30,12 +30,15 @@
             1) Edit this file `ADF\release-az\Start-AzDeploy.ps1`
                 1) Add the new tenant/app Name e.g. 'DEF' to the validateset
                 ![Add your tenant/app Name to validateset](./Getting_Started_validateset.png)
+                
             1) Edit this file `ADF\release-az\azSet.psm1`
                 1) Add the new tenant/app Name e.g. 'DEF' to the validateset
                 ![Add your tenant/app Name to validateset](./Getting_Started_validateset2.png)
+                
             1) Edit this file `ADF\release-az\AzDeploy.ps1`
                 1) Add the new tenant/app Name e.g. 'DEF' to the validateset
                 ![Add your tenant/app Name to validateset](./Getting_Started_validateset3.png)
+                
         1) Update the 'AppName' in `.\ADF\tenants\DEF\Global-Global.json` to match **DEF**
         1) Update the 'OrgName' in `.\ADF\tenants\DEF\Global-Global.json` to match your Team name **NYC**
     1) You can Choose your Primary and Secondary Azure Deployment Regions
