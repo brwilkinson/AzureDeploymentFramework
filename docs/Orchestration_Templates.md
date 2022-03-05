@@ -63,14 +63,16 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/01-ALL-RG.bicep
 - The feature flags are actually part of every parameter file for every Enviro
 - These are known as `Stage` a summary is shown below or more in the docs [Feature Flags](./Feature_Flags.md)
 
+E.g. Stage for Subscription Deployment G0
 ```json
     "Stage": {
       "value": {
-        "RG": 0,
         "RoleDefinition": 1,
         "Security": 1,
         "RBAC": 1,
-        "UAI": 0,
+        "SP": 1
+      }
+    }
 ```
 
 ##### Below is an example of the Subscription Level Deployment Template
