@@ -61,7 +61,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: '${DeploymentURI}sa${ws.saname}'
 }
 
-module WebSiteDNS 'x.DNS.CNAME.bicep' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
+module WebSiteDNS 'x.DNS.Public.CNAME.bicep' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'setdns-public-${Deployment}-${appprefix}${ws.Name}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -96,6 +96,20 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
     WebSiteDNS
   ]
 }
+
+resource slots 'Microsoft.Web/sites/slots@2021-03-01' = [for (item, index) in range(1, ws.extraSlots): if (contains(ws, 'extraSlots')) {
+  name: 'slot${item}'
+  parent: WS
+  location: resourceGroup().location
+  identity: {
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: (contains(MSILookup, ws.NAME) ? userAssignedIdentities[MSILookup[ws.NAME]] : userAssignedIdentities.Default)
+  }
+  properties: {
+    enabled: true
+    httpsOnly: true
+  }
+}]
 
 module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws, 'initialDeploy') && bool(ws.initialDeploy) && contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'dp-binding-${ws.name}'

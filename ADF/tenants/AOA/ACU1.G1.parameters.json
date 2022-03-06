@@ -254,8 +254,18 @@
           "psthing.com",
           "vote.psthing.com",
           "vote2.psthing.com"
+        ],
+        "AppServiceCertRequestInfo" : [
+          {
+            "name": "ADF-Wildcard",
+            "domainName": "adf.com",
+            "domainDNS": "*.adf.com",
+            "wildcard": 1
+          }
         ]
       }
     }
   }
 }
+
+// /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourcegroups/acu1-brw-aoa-rg-g1/providers/Microsoft.CertificateRegistration/certificateOrders/psthing-wildcard
