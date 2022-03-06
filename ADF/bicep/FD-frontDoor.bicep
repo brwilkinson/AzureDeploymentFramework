@@ -121,7 +121,7 @@ module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.servi
   }
 }]
 
-module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services: {
+module DNSCNAME 'x.DNS.Public.CNAME.bicep' = [for service in frontDoorInfo.services: {
   name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {

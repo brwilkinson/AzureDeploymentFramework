@@ -229,7 +229,7 @@ resource APIMPublic 'Microsoft.ApiManagement/service/products@2020-06-01-preview
   }
 }
 
-module DNS 'x.DNS.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
+module DNS 'x.DNS.Public.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -242,7 +242,7 @@ module DNS 'x.DNS.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
   ]
 }
 
-// module DNSMan 'x.DNS.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
+// module DNSMan 'x.DNS.Public.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
 //   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-management'
 //   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
 //   params: {
@@ -255,7 +255,7 @@ module DNS 'x.DNS.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
 //   ]
 // }
 
-module DNSscm 'x.DNS.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
+module DNSscm 'x.DNS.Public.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-scm'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -268,7 +268,7 @@ module DNSscm 'x.DNS.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
   ]
 }
 
-module DNSdeveloper 'x.DNS.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
+module DNSdeveloper 'x.DNS.Public.CNAME.bicep' = if (bool(Stage.SetExternalDNS)) {
   name: 'setdns-public-${Deployment}-apim-${apim.name}-${Global.DomainNameExt}-developer'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {

@@ -126,7 +126,7 @@ resource ACI 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = [for (ac
   }
 }]
 
-module ACIDNS 'x.DNS.CNAME.bicep' = [for (aci, index) in Instances: if(bool(ACIInfo.isPublic)) {
+module ACIDNS 'x.DNS.Public.CNAME.bicep' = [for (aci, index) in Instances: if(bool(ACIInfo.isPublic)) {
   name: 'setdns-public-${Deployment}-ACI-${aci.name}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {

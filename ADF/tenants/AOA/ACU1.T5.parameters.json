@@ -1475,7 +1475,8 @@
             "subnet": "snMT01",
             "preWarmedCount": 1,
             "customDNS": 1,
-            "initialDeploy": 0
+            "initialDeploy": 0,
+            "extraSlots": 1
           },
           {
             "Name": "PS02",

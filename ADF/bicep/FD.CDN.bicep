@@ -103,7 +103,7 @@ resource endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2020-09-01' = [for (cdn, 
   }
 }]
 
-module DNSCNAME 'x.DNS.CNAME.bicep' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
+module DNSCNAME 'x.DNS.Public.CNAME.bicep' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
   name: '${cdn.name}.${cdn.zone}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
