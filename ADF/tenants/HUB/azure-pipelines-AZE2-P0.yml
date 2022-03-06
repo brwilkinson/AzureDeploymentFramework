@@ -23,7 +23,7 @@ stages:
         azureSubscription: 'ADF_AZE2-ADF-RG-G0'
         ScriptType: 'FilePath'
         ScriptPath: 'ADF/release-az/AzDeploy.ps1'
-        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload'
+        ScriptArguments: '-app $(app) -env $(env) -Prefix $(prefix) -stage "sub-InitialRG" -FullUpload'
         FailOnStandardError: true
         azurePowerShellVersion: 'LatestVersion'
 

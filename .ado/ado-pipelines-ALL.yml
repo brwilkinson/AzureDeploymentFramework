@@ -48,7 +48,7 @@ jobs:
       azureSubscription: ${{ parameters.SP }}-G0
       ScriptType: 'FilePath'
       ScriptPath: 'ADF/release-az/BicepDeploy.ps1'
-      ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "00-ALL-SUB" -SubscriptionDeploy -FullUpload'
+      ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "00-ALL-SUB" -FullUpload'
       FailOnStandardError: true
       azurePowerShellVersion: 'LatestVersion'
       # preferredAzurePowerShellVersion: 6.0.0
