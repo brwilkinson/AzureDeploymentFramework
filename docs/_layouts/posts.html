@@ -1,0 +1,56 @@
+---
+layout: default
+css: ["post.css"]
+js: ["post.js"]
+---
+
+<header>
+  {% if page.toc %}
+    {% include header-wTOC.html %}
+  {% else %}
+    {% include header-wtTOC.html %}
+  {% endif %}
+</header>
+<main>
+  <div class="container">
+    <div id="post-info">
+      <h3>{{page.title}}</h3>
+      <span>
+        Posted on
+        <span style="display: initial;" class="cat-class">{{page.date | date: "%d/%m/%Y"}}</span>,
+        in
+        {% for cat in page.categories %}
+          {% for catDat in site.data.categories %}
+            {% if catDat.slug == cat %}
+              {% assign catego = catDat %}
+            {% endif %}
+          {% endfor %}
+          {% if catego %}
+            <a class="cat-class cat-commas" href="{{site.baseurl}}/categories#{{cat | slugify}}">{{ catego.name }}</a>{% unless forloop.last %},{% else %}.{% endunless %}
+          {% endif %}
+        {% endfor %}
+      </span>
+    </div>
+
+    <div class="divider"></div>
+    <div class="row thi-post">
+      <div class="col s12">
+        {{ content }}
+      </div>
+    </div>
+
+    <div class="tag-list">
+      {% for tag in page.tags %}
+      {% capture test %}{{tag | slice: 0}}{% endcapture %}
+      {% capture testup %}{{tag | slice: 0 | upcase}}{% endcapture %}
+      <a class="tag-chip" href="{{site.baseurl}}/tags#{{tag | slugify}}{% if test == testup %}_cap{% endif %}"><div class="chip z-depth-1">{{tag}}</div></a>
+      {% endfor %}
+    </div>
+    {% include related-posts.html %}
+    {% include search_form.html %}
+
+    {% if site.disqus_shortname and page.comment %}
+      {% include disqus.html %}
+    {% endif %}
+  </div>
+</main>

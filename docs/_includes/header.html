@@ -2,7 +2,8 @@
 
 <header class="page-header" role="banner">
     <h2 class="project-name">{{ page.title | default: site.title | default: site.github.repository_name }}</h2>
-    <h3 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h3>
+    <h3 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline
+        }}</h3>
     {% if site.github.is_project_page %}
     <a href="{{ site.github.repository_url }}" class="btn">View on GitHub</a>
     {% endif %}
