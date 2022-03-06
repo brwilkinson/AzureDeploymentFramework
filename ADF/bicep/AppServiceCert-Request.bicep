@@ -26,6 +26,7 @@ var gh = {
   globalRGName: contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
 }
 
+var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
 var KVName = toLower('${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-${gh.globalRGName}-kvGlobal')
 
 resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
@@ -46,6 +47,7 @@ resource certOrder 'Microsoft.CertificateRegistration/certificateOrders@2021-03-
 
 module verifyDNS 'x.DNS.Public.TXT.bicep' = {
   name: 'dp-AddDNSVerifyTXT-${cert.name}'
+  scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
     name: cert.name
     DomainNameExt: Global.DomainNameExt

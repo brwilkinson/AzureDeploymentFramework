@@ -764,6 +764,20 @@
             "WAFPolicy": "API01",
             "pattern": [
               "/*"
+            ],
+            "originGroups": [
+              {
+                "name": "storage",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  {
+                    "name": "awu2brwaoat4sadiag",
+                    "hostname": "awu2brwaoat4sadiag.blob.core.windows.net",
+                    "enabled": 1
+                  }
+                ]
+              }
             ]
           }
         ],
