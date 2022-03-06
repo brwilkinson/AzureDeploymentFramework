@@ -6,6 +6,8 @@
 - **This Page** [Deploy your First App](./Getting_Started.md)
 - **Go Next** [Deploy your Second App](./Getting_Started2.md)
 
+* * *
+
 ### Getting Started - Deploy your First App
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
@@ -81,7 +83,7 @@
 1. We are now ready to Deploy the initial Storage Account
     1. Make sure you are logged into Azure PowerShell
         1. First make sure you are in the correct Azure Tenant/Subscription
-        1. More info is in this file: [ADF\1-prereqs\0-ConnectToAzureSelectSubscription.ps1]
+        1. More info is in this file: [ADF\1-prereqs\00-ConnectToAzureSelectSubscription.ps1]
     1. Although these helper scripts live in this directory [ADF\1-prereqs], we deploy them from a helper script from within your Tenant.
     1. Open up the Helper Script [ADF\tenants\HUB\azure-Deploy.ps1]
     1. In order to Load some settings into memory, once you open that file you press F5 to load it.
@@ -94,7 +96,7 @@
         ```powershell
         # Pre-reqs
         # Create Global Storage Account, I am considering moving this to Bicep setup from PowerShell.
-        . ADF:\1-prereqs\1-CreateStorageAccountGlobal.ps1 -APP $App
+        . ADF:\1-prereqs\01-CreateStorageAccountGlobal.ps1 -APP $App
         ```
         1. You wil see an output similar to below once the RG and Storage are created.
         1. This storage account is used for uploading Assets (for IaaS/VM Deployments) that you may need, such as software installs and also used for your Template Deployments.
@@ -123,7 +125,7 @@
     1. Execute this following line
         ```powershell
         # Export all role defintions
-        . ADF:\1-prereqs\4.1-getRoleDefinitionTable.ps1 -APP $App
+        . ADF:\1-prereqs\04.1-getRoleDefinitionTable.ps1 -APP $App
         ```
     1. This process will actually update the JSON object in the following file [ADF\tenants\HUB\Global-Config.json]
         1. You can open that file and format it if you like and then save it.
@@ -148,8 +150,8 @@
     1. Execute this following line/s (One for each region)
         ```powershell
         # Create Service principal for Env.
-        . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments P0,G0,G1,D2,S1
-        . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
+        . ADF:\1-prereqs\04-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments P0,G0,G1,D2,S1
+        . ADF:\1-prereqs\04-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments P0,S1
         ```
         1. Sample Output, this does several things
             1. Create the Application/Service Principal in Azure ActiveDirectory
@@ -185,7 +187,7 @@
     1. Then execute the following
         ```powershell
         # Bootstrap Hub RGs and Keyvaults
-        . ADF:\1-prereqs\1-CreateHUBKeyVaults.ps1 -APP $App
+        . ADF:\1-prereqs\01-CreateHUBKeyVaults.ps1 -APP $App
         ```
     1. You should see the following output
         ```powershell
@@ -226,7 +228,7 @@
     1. Then execute the following
         ```powershell
         # Create Global Web Create
-        . ADF:\1-prereqs\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
+        . ADF:\1-prereqs\02-CreateUploadWebCertAdminCreds.ps1 -APP $App
         ```
     1. The cert will be created using the password from your keyvault localadmin secret that you set earlier
     1. The DNS names used on the cert are from the Global-Global.json [CertURLs] property.
@@ -240,7 +242,7 @@
     1. Then execute the following
         ```powershell
         # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
-        . ADF:\1-prereqs\3-Start-AzureKVSync.ps1
+        . ADF:\1-prereqs\03-Start-AzureKVSync.ps1
         ```
     1. The Primary and Secondary KV Name and Region Etc. comes from the Global meta data file that you updated earlier.
         1. i.e. [ADF\tenants\HUB\Global-Global.json]

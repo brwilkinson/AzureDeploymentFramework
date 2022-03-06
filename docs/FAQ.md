@@ -4,11 +4,13 @@
 - Go Home [Documentation Home](./index.md)
 - **Go Top**  [ADF Features](./ADF_Features.md)
 
+* * *
+
 ### Frequently asked questions (FAQ).
 
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 #### <a name="ARM"></a> Why Azure Resource Manager (ARM) Bicep:
-1) Why use Bicep?
+1.Why use Bicep?
 
     - All Azure Resources are built on JSON schemas, these are documemented in both the **REST API's** and the **ARM/Bicep Template Docs**
 

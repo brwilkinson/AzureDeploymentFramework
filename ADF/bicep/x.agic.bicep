@@ -292,7 +292,7 @@ resource WAFDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   }
 }
 
-module SetWAFDNSCNAME 'x.DNS.CNAME.bicep' = [for (list, index) in wafInfo.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
+module SetWAFDNSCNAME 'x.DNS.Public.CNAME.bicep' = [for (list, index) in wafInfo.Listeners: if ((list.Interface == 'Public') && (bool(Stage.SetExternalDNS) && (list.Protocol == 'https'))) {
   name: 'setdns-public-${list.Protocol}-${list.Hostname}-${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {

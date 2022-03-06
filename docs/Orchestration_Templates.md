@@ -4,17 +4,19 @@
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Base Templates](./Base_Templates.md)
 
+* * *
+
 ####  Orchestration Templates - Overview
 
 Bicep deployments leverage Bicep Module for several reasons
-1) It allows you to standardize on a Resource Template
-1) It allows you to iterate over calling a Resource Template multiple time, in a loop.
-1) It allows you to call different Modules or orchestrate a set of other Bicep Modules.
+1.It allows you to standardize on a Resource Template
+1.It allows you to iterate over calling a Resource Template multiple time, in a loop.
+1.It allows you to call different Modules or orchestrate a set of other Bicep Modules.
 
 This project currently has 3 Top Level Orchestration Templates
-1) 00-ALL-MG.bicep
-1) 00-ALL-SUB.bicep
-1) 01-ALL-RG.bicep
+1.00-ALL-MG.bicep
+1.00-ALL-SUB.bicep
+1.01-ALL-RG.bicep
 
 These allow you to deploy a set of nested Modules into the different Scopes:
 - ManagementGroup
@@ -63,14 +65,16 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:/bicep/01-ALL-RG.bicep
 - The feature flags are actually part of every parameter file for every Enviro
 - These are known as `Stage` a summary is shown below or more in the docs [Feature Flags](./Feature_Flags.md)
 
+E.g. Stage for Subscription Deployment G0
 ```json
     "Stage": {
       "value": {
-        "RG": 0,
         "RoleDefinition": 1,
         "Security": 1,
         "RBAC": 1,
-        "UAI": 0,
+        "SP": 1
+      }
+    }
 ```
 
 ##### Below is an example of the Subscription Level Deployment Template

@@ -12,14 +12,14 @@ $BasePath
 # if everyone has the same modules, then you ensure you don't break your configs, only update when you can test at the same time.
 # remove the line in the gitignore to allow your staged resources to be uploaded with your instance of this code
 <#
-& $BasePath\5.1-PreReqDSCModuleList.ps1 -DownloadLatest 1
+& $BasePath\05.1-PreReqDSCModuleList.ps1 -DownloadLatest 1
 #>
 
 # Same as above, only this time stage them in Program files/WinodwsPowershell Modules
 # Every one in the team stages the same module versions that 1 person in the team staged and tested and checked in.
 # This only updates modules if you are not on the correct version that was staged in the project
 # if no modules are staged in the project then execute lin 11 above.
-& $BasePath\5.1-PreReqDSCModuleList.ps1 -DownloadLatest $DownloadLatest
+& $BasePath\05.1-PreReqDSCModuleList.ps1 -DownloadLatest $DownloadLatest
 
 # Copy custom DSC Resources to PSModulePath
-& $BasePath\5.2-PreReqDSCModuleListCustom.ps1
+& $BasePath\05.2-PreReqDSCModuleListCustom.ps1

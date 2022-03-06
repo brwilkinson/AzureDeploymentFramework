@@ -56,8 +56,8 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 
 var frontDoorInfo = contains(DeploymentInfo, 'frontDoorInfo') ? DeploymentInfo.frontDoorInfo : []
 
-var frontDoor = [for i in range(0, length(frontDoorInfo)): {
-  match: ((Global.CN == '.') || contains(array(Global.CN), DeploymentInfo.fd.Name))
+var frontDoor = [for fd in frontDoorInfo : {
+  match: ((Global.CN == '.') || contains(array(Global.CN), fd.Name))
 }]
 
 module FD 'FD-frontDoor.bicep'= [for (fd,index) in frontDoorInfo: if (frontDoor[index].match) {

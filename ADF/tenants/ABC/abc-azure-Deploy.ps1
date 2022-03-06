@@ -19,23 +19,23 @@ break
 
 # Pre-reqs
 # Create Global Storage Account
-. ADF:\1-prereqs\1-CreateStorageAccountGlobal.ps1 -APP $App
+. ADF:\1-prereqs\01-CreateStorageAccountGlobal.ps1 -APP $App
 
 # Export all role defintions
-. ADF:\1-prereqs\4.1-getRoleDefinitionTable.ps1 -APP $App
+. ADF:\1-prereqs\04.1-getRoleDefinitionTable.ps1 -APP $App
 
 # Create Service principal for Env.
-. ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
-. ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
+. ADF:\1-prereqs\04-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
+. ADF:\1-prereqs\04-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
 
 # Bootstrap Hub RGs and Keyvaults
-. ADF:\1-prereqs\1-CreateHUBKeyVaults.ps1 -APP $App
+. ADF:\1-prereqs\01-CreateHUBKeyVaults.ps1 -APP $App
 
 # Create Global Web Create
-. ADF:\1-prereqs\2-CreateUploadWebCertAdminCreds.ps1 -APP $App
+. ADF:\1-prereqs\02-CreateUploadWebCertAdminCreds.ps1 -APP $App
 
 # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region)
-. ADF:\1-prereqs\3-Start-AzureKVSync.ps1
+. ADF:\1-prereqs\03-Start-AzureKVSync.ps1
 
 # Deploy Environment
 

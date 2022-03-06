@@ -4,16 +4,18 @@
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [Nested Templates/Modules](./Nested_Templates.md)
 
+* * *
+
 ####  Base Templates
 
 Using a base template is really Easy.
 
-The first thing you have to do is choose the Scope of your deployment.
+The first thing you have to do is [choose the Scope of your deployment](./Getting_Started.html)
 - Prefix (location/region)
 - Enviro (the resource group)
 - The App tenant (the application you are working with, often maps to a subscription).
 
-I recommend to do the following in your Powershell profile after you have forked the project
+As a mimimum I recommend to do the following in your Powershell profile.
 
 ```powershell
 $Repos = "d:\repos"

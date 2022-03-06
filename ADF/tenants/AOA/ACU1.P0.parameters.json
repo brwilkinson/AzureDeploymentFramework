@@ -648,7 +648,7 @@
               "DDRole": "32GB",
               "OSType": "Server2016Coresmall",
               "ExcludeDomainJoin": 1,
-              "DeployJIT": 0,
+              "DeployJIT": 1,
               "Zone": 1,
               "NICs": [
                 {
@@ -683,7 +683,7 @@
               "ASName": "AD",
               "DDRole": "32GB",
               "OSType": "Server2016Coresmall",
-              "DeployJIT": 0,
+              "DeployJIT": 1,
               "Zone": 2,
               "NICs": [
                 {

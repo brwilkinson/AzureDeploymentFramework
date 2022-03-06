@@ -65,7 +65,7 @@ module dp_Deployment_Security 'sub-Security.bicep' = if (contains(Stage, 'Securi
   }
 }
 
-module dp_Deployment_RG 'sub-RG.bicep' = if (bool(Stage.RG) && (!('${DeploymentID}${Environment}' == 'G0'))) {
+module dp_Deployment_RG 'sub-RG.bicep' = if (contains(Stage, 'RG') && bool(Stage.RG) && (!('${DeploymentID}${Environment}' == 'G0'))) {
   name: 'dp${Deployment}-RG'
   params: {
     // move these to Splatting later

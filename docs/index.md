@@ -5,6 +5,8 @@
 - Overview: [What is ADF (PPT)](./ADF.md)
 - **This page:** [Documentation Home](./index.md)
 
+* * *
+
 ### Deployment Partitions
 
 - [Deployment Partitions](./Deployment_Partitions.md)

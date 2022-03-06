@@ -1475,7 +1475,8 @@
             "subnet": "snMT01",
             "preWarmedCount": 1,
             "customDNS": 1,
-            "initialDeploy": 0
+            "initialDeploy": 0,
+            "extraSlots": 1
           },
           {
             "Name": "PS02",
@@ -1710,8 +1711,9 @@
               "DDRole": "64GB",
               "OSType": "Server2022",
               "ExcludeAdminCenter": 1,
+              "OSstorageAccountType": "Standard_LRS",
               "HotPatch": true,
-              "DeployJIT": 0,
+              "DeployJIT": 1,
               "shutdown": {
                 "time": "2100",
                 "enabled": 0
@@ -1932,7 +1934,7 @@
             "skuName": "Standard",
             "connectionPort": 29000,
             "gatewayPort": 29080,
-            "allowRDP": true,
+            "allowRDP": false,
             "nodeTypes": [
               {
                 "name": "nodetype1",

@@ -15,30 +15,30 @@ break
 
 # Pre-reqs
 # Create Global Storage Account
-. ADF:\1-prereqs\1-CreateStorageAccountGlobal.ps1 @Current
+. ADF:\1-prereqs\01-CreateStorageAccountGlobal.ps1 @Current
 
 # Export all role defintions
-. ADF:\1-prereqs\4.1-getRoleDefinitionTable.ps1 @Current
+. ADF:\1-prereqs\04.1-getRoleDefinitionTable.ps1 @Current
 
 # Create Service principal for Env. + add GH secret or AZD Service connections
 # Infra in Github
-set-location -path ADF:\
-. ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments G0 #D2, D3, P0, G0, G1, S1, T5, P7
-. ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
+Set-Location -Path ADF:\
+. ADF:\1-prereqs\04-Start-CreateServicePrincipalGH.ps1 @Current -Prefix ACU1 -Environments G0 #D2, D3, P0, G0, G1, S1, T5, P7
+. ADF:\1-prereqs\04-Start-CreateServicePrincipalGH.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
 # App pipelines in AZD
-. ADF:\1-prereqs\4-Start-CreateServicePrincipal.ps1 @Current -Prefix ACU1 -Environments D2 # D3, P0, G0, G1, S1, T5, P7
-. ADF:\1-prereqs\4-Start-CreateServicePrincipal.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
+. ADF:\1-prereqs\04-Start-CreateServicePrincipal.ps1 @Current -Prefix ACU1 -Environments D2 # D3, P0, G0, G1, S1, T5, P7
+. ADF:\1-prereqs\04-Start-CreateServicePrincipal.ps1 @Current -Prefix AEU2 -Environments P0, S1, T5, P7
 
 # Bootstrap Hub RGs and Keyvaults
-. ADF:\1-prereqs\1-CreateHUBKeyVaults.ps1 @Current
+. ADF:\1-prereqs\01-CreateHUBKeyVaults.ps1 @Current
 # then add localadmin cred manually in primary region.
 
 # Create Global Web Create
-. ADF:\1-prereqs\2-CreateUploadWebCertAdminCreds.ps1 @Current
+. ADF:\1-prereqs\02-CreateUploadWebCertAdminCreds.ps1 @Current
 
 # Sync the keyvault from CentralUS to EastUS2 (Primary Region to Secondary Region [auto detected])
-. ADF:\1-prereqs\3-Start-AzureKVSync.ps1 -App $App
+. ADF:\1-prereqs\03-Start-AzureKVSync.ps1 -App $App
 
 ##########################################################
 # Deploy Environment
@@ -83,7 +83,7 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\SA.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\SA.bicep -CN logs
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\KV.bicep
-AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\KV.bicep -CN App01,App02
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\KV.bicep -CN App01, App02
 
 
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\KV.bicep
@@ -113,14 +113,14 @@ AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\VM.bicep -DeploymentName ConfigSQL
 
 ##########################################################
 # Stage and Upload DSC Resource Modules for AA
-. ADF:\1-prereqs\5.0-UpdateDSCModulesMain.ps1 -DownloadLatest 1
-. ADF:\1-prereqs\5.0-UpdateDSCModulesMain.ps1 -DownloadLatest 0
+. ADF:\1-prereqs\05.0-UpdateDSCModulesMain.ps1 -DownloadLatest 1
+. ADF:\1-prereqs\05.0-UpdateDSCModulesMain.ps1 -DownloadLatest 0
 
 ## these two steps only after 01-azuredeploy-OMS.json has been deployed, which includes the Automation account.
 
 # Using Azure Automation Pull Mode to host configurations - upload DSC Modules, prior to deploying AppServers
-. ADF:\1-prereqs\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix ACU1 -AAEnvironment P0
-. ADF:\1-prereqs\5.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix AEU2 -AAEnvironment P0
+. ADF:\1-prereqs\05.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix ACU1 -AAEnvironment P0
+. ADF:\1-prereqs\05.0-UpdateDSCModulesMainAA.ps1 @Current -Prefix AEU2 -AAEnvironment P0
 
 # upload mofs for a particular configuration, prior to deploying AppServers
 AzMofUpload @Current -Prefix ACU1 -AAEnvironment G1 -Roles IMG -NoDomain

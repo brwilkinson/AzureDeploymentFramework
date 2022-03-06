@@ -63,7 +63,7 @@ var DNSServerList = contains(DeploymentInfo, 'DNSServers') ? DeploymentInfo.DNSS
 var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
 
 // FunctionInfo
-var WebSiteInfo = (contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : [])
+var WebSiteInfo = contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : []
 
 var WSInfo = [for (ws, index) in WebSiteInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), ws.name))

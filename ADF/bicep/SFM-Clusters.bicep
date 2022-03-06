@@ -138,7 +138,7 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2021-11-01-preview' = { //
     clients: [
       {
         isAdmin: true
-        thumbprint: '48B8F2B8C7DE8115804B74D8CBB4488C53492E5F'
+        thumbprint: Global.CertThumbprint
       }
     ]
     addonFeatures: [

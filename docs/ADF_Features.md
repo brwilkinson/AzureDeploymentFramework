@@ -4,6 +4,8 @@
 - Go Home [Documentation Home](./index.md)
 - **Go TOP** [Deployment Partitions](./Deployment_Partitions.md)
 
+* * *
+
 ### Azure Deployment Framework (ADF) Features
 
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*

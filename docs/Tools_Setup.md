@@ -4,11 +4,10 @@
 - Go Home [Documentation Home](./index.md)
 - **Go Next** [App Tenants](./App_Tenants.md)
 
+* * *
+
 ### Tools and Setup
-
 #### Getting started, what do you need ?
-<br/>
-
 - Azure AD Tenant
 - Azure Subscription, with and Owner level Account
 - A Repo for you Code, either Azure DevOps or Github are recommended
@@ -20,9 +19,11 @@
 
 - Configure VSCode, Import the workspace and install the suggested extensions
 - Review the Scripts in the [1-prereqs](https://github.com/brwilkinson/AzureDeploymentFramework/tree/main/ADF/1-prereqs)
-    - [https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/0-InstallTools.ps1]
+    - [00-InstallTools.ps1](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/ADF/1-prereqs/00-InstallTools.ps1)
 - Before running any of the Scripts Discuss
     - [Naming Standards](./Naming_Standards.md)
     - [App Tenants](./App_Tenants.md)
 - Once you are ready to deploy you can view the steps: [Getting_Started](./Getting_Started.md)
----
+
+* * *
+

@@ -121,7 +121,7 @@ module FDServiceBE 'FD-frontDoor-BE.bicep' = [for service in frontDoorInfo.servi
   }
 }]
 
-module DNSCNAME 'x.DNS.CNAME.bicep' = [for service in frontDoorInfo.services: {
+module DNSCNAME 'x.DNS.Public.CNAME.bicep' = [for service in frontDoorInfo.services: {
   name: 'setdnsServices-${frontDoorInfo.name}-${service.name}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
@@ -212,7 +212,7 @@ resource SetFDServicesCertificates 'Microsoft.Resources/deploymentScripts@2020-1
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '5.4'
-    arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${KV.id} -certificateUrl ${cert.properties.secretUriWithVersion}'
+    arguments: ' -ResourceGroupName ${resourceGroup().name} -FrontDoorName ${Deployment}-afd${frontDoorInfo.name} -Name ${frontendEndpoints[index].name} -VaultID ${KV.id} -certificateUrl ${cert.properties.secretUri}'
     scriptContent: loadTextContent('../bicep/loadTextContext/setFDServicesCertificates.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'

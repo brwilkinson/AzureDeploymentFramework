@@ -6,6 +6,8 @@
 - **Go Previous** [Deploy your First App](./Getting_Started.md)
 - **This Page** [Deploy your Second App](./Getting_Started2.md)
 
+* * *
+
 ### Getting Started - Deploy your First App
 ##### *Azure Resource Group Deployment - Multi-Region/Multi-Tier Hub/Spoke Environments*
 
@@ -164,8 +166,8 @@
     1. Execute this following line/s (One for each region)
         ```powershell
         # Create Service principal for Env.
-        . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
-        . ADF:\1-prereqs\4-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
+        . ADF:\1-prereqs\04-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZC1 -Environments S1,D2,T3
+        . ADF:\1-prereqs\04-Start-CreateServicePrincipalGH.ps1 -APP $App -Prefix AZE2 -Environments S1
         ```
         1. Sample Output, this does several things
             1. Create the Application/Service Principal in Azure ActiveDirectory
