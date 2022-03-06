@@ -45,10 +45,10 @@ Set-Location -Path ADF:\
 # Deploy Environment
 
 # Global  sub deploy for $env:Enviro
-AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy #-FullUpload     #<-- Deploys from Pipelines Region 1
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep -SubscriptionDeploy     #<-- Deploys from Pipelines Region 2
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep #-FullUpload     #<-- Deploys from Pipelines Region 1
+AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep     #<-- Deploys from Pipelines Region 2
 
-AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\sub-RBAC.bicep -SubscriptionDeploy
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\sub-RBAC.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-mg-ManagementGroups.json   #todo
 
 AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\00-azuredeploy-Test2.json
@@ -129,4 +129,4 @@ AzMofUpload @Current -Prefix ACU1 -AAEnvironment P0 -Roles SQLp,SQLs
 
 
 # ASR deploy
-AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\21-azuredeploy-ASRSetup.json -SubscriptionDeploy -FullUpload
+AzDeploy @Current -Prefix ACU1 -TF ADF:\templates-base\21-azuredeploy-ASRSetup.json -FullUpload

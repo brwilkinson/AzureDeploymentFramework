@@ -41,7 +41,7 @@ jobs:
       - name: G0_Sub
         uses: Azure/powershell@v1
         with:
-          inlineScript: ./ADF/release-az/BicepDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "00-ALL-SUB" -SubscriptionDeploy -FullUpload
+          inlineScript: ./ADF/release-az/BicepDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "00-ALL-SUB" -FullUpload
           azPSVersion: latest
 
       - name: Login via Az module

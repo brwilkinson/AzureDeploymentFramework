@@ -43,5 +43,5 @@ jobs:
       - name: G0_Sub
         uses: Azure/powershell@v1
         with:
-          inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "sub-InitialRG" -SubscriptionDeploy -FullUpload
+          inlineScript: ./ADF/release-az/AzDeploy.ps1 -app $env:app -env $env:env -Prefix $env:prefix -stage "sub-InitialRG" -FullUpload
           azPSVersion: latest

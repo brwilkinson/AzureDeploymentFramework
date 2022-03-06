@@ -28,8 +28,8 @@ break
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\0-azuredeploy-mg-ManagementGroups.json
 
 # Global  sub deploy for $Enviro
-AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy #-FullUpload
-AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ADF:\templates-deploy\0-azuredeploy-sub-InitialRG.json -SubscriptionDeploy #-FullUpload
+AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-deploy\0-azuredeploy-sub-InitialRG.json #-FullUpload
+AzDeploy -App $App -Prefix AZE2 -DP $Enviro -TF ADF:\templates-deploy\0-azuredeploy-sub-InitialRG.json #-FullUpload
 
 # $Enviro RG deploy
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-deploy\0-azuredeploy-ALL.json
@@ -72,4 +72,4 @@ AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\5-azuredeplo
 AzDeploy -App $App -Prefix AZC1 -DP $Enviro -TF ADF:\templates-base\5-azuredeploy-VMApp.json -DeploymentName AppServersLinux
 
 # ASR deploy
-AzDeploy -DP $Enviro -App ADF -TF ADF:\templates-base\21-azuredeploy-ASRSetup.json -SubscriptionDeploy -FullUpload
+AzDeploy -DP $Enviro -App ADF -TF ADF:\templates-base\21-azuredeploy-ASRSetup.json -FullUpload
