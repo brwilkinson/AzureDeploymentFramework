@@ -589,7 +589,7 @@
             "name": "01",
             "saname": "adldata",
             "sashare": "adldata",
-            "publicNetworkAccess": 1,
+            "publicNetworkAccess": 0,
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",

@@ -62,9 +62,17 @@ resource synapseWS 'Microsoft.Synapse/workspaces@2021-06-01' = {
       accountUrl: SA.properties.primaryEndpoints.dfs //'https://x.dfs.core.windows.net'
       filesystem: Synapse.sashare
     }
+    managedVirtualNetwork: 'default'
+    managedVirtualNetworkSettings: {
+      preventDataExfiltration: true
+    }
+    trustedServiceBypassEnabled: true
+    // virtualNetworkProfile: {
+    //   computeSubnetId: 
+    // }
+
     managedResourceGroupName: '${resourceGroup().name}-sqlsyn${Synapse.name}'
     publicNetworkAccess: bool(Synapse.publicNetworkAccess) ? 'Enabled' : 'Disabled'
-    // trustedServiceBypassEnabled: true
     // azureADOnlyAuthentication: true
     // purviewConfiguration: {
     //   purviewResourceId: 
@@ -151,7 +159,7 @@ resource vulnAssessments 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@
     recurringScans: {
       isEnabled: true
       emailSubscriptionAdmins: true
-      emails: Global.alertRecipients
+      // emails: Global.alertRecipients
     }
   }
 }
