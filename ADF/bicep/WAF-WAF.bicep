@@ -345,7 +345,8 @@ module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list, index) in wafinfo.Listen
 // module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(wafinfo, 'privatelinkinfo')) {
 //   name: 'dp${Deployment}-WAF-privatelinkloop-${wafinfo.name}'
 //   params: {
-//     Deployment: Deployment
+    // Deployment: Deployment
+    // DeploymentURI: DeploymentURI
 //     PrivateLinkInfo: wafinfo.privateLinkInfo
 //     resourceName: WAF.name
 //     providerType: WAF.type

@@ -28,7 +28,8 @@
         "powershell.codeFormatting.whitespaceBetweenParameters": true,
         "powershell.codeFormatting.whitespaceInsideBrace": true,
         "powershell.notebooks.showToggleButton": true,
-        "powershell.pester.useLegacyCodeLens": false
+        "powershell.pester.useLegacyCodeLens": false,
+        "pester.autoRunOnSave": false
     },
     "extensions": {
         "recommendations": [

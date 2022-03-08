@@ -102,6 +102,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rel, index) in azRelayI
   name: 'dp${Deployment}-privatelinkloop${rel.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: rel.privateLinkInfo
     providerType: RELAY[index].type
     resourceName: RELAY[index].name

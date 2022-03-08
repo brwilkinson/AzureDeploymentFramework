@@ -155,6 +155,7 @@ module SQLPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(azSQLInfo, 'priva
   name: 'dp${Deployment}-SQL-privatelinkloop${azSQLInfo.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: azSQLInfo.privateLinkInfo
     providerType: SQL.type
     resourceName: SQL.name

@@ -147,6 +147,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rc,index) in RedisInfo:
   name: 'dp${Deployment}-privatelinkloop${rc.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: rc.privateLinkInfo
     providerType: RC[index].type
     resourceName: RC[index].name

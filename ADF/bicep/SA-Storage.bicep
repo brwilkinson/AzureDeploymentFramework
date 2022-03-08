@@ -418,11 +418,14 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'pr
   name: 'dp${Deployment}-SA-privatelinkloop-${storageInfo.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: storageInfo.privateLinkInfo
     providerType: SA.type
     resourceName: SA.name
   }
 }
+
+
 
 module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
   name: 'dp${Deployment}-SA-registerPrivateDNS-${storageInfo.name}'
