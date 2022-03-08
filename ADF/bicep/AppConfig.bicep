@@ -79,6 +79,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfiguration
   name: 'dp${Deployment}-privatelinkloopAC${appConfigurationInfo.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: appConfigurationInfo.privateLinkInfo
     providerType: AC.type
     resourceName: AC.name

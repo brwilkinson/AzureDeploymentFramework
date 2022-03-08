@@ -196,6 +196,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(Synapse, 'privat
   name: 'dp${Deployment}-Synapse-privatelinkloop${Synapse.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: Synapse.privateLinkInfo
     resourceName: synapseWS.name
     providerType: synapseWS.type

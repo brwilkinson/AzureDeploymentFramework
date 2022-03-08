@@ -221,6 +221,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws, 'privatelink
   name: 'dp${Deployment}-privatelinkloop${ws.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: ws.privateLinkInfo
     providerType: 'Microsoft.Web/sites'
     resourceName: WS.name

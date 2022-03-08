@@ -106,6 +106,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(cosmosAccount, 'p
   name: 'dp${Deployment}-Cosmos-privatelinkloop${cosmosAccount.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: cosmosAccount.privateLinkInfo
     resourceName: CosmosAccount.name
     providerType: CosmosAccount.type

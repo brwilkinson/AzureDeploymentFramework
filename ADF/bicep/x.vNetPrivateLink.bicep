@@ -1,4 +1,5 @@
 param Deployment string
+param DeploymentURI string
 param PrivateLinkInfo array
 param providerType string
 param resourceName string
@@ -30,6 +31,14 @@ resource subnetPrivateEndpoint 'Microsoft.Network/privateEndpoints@2019-11-01' =
     subnet: {
       id: resourceId('Microsoft.Network/virtualNetworks/subnets', privateLink[index].vNet, pl.Subnet)
     }
+  }
+}]
+
+module NICDiags 'x.vNetPrivateLinkDiags.bicep' = [for (pl, index) in PrivateLinkInfo: {
+  name: 'dp-${resourceName}-pl-${pl.groupID}-${pl.Subnet}-diags'
+  params: {
+    DeploymentURI: DeploymentURI
+    NICName: last(split(subnetPrivateEndpoint[index].properties.networkInterfaces[0].id,'/'))
   }
 }]
 

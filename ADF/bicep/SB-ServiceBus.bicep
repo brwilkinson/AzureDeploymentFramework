@@ -93,6 +93,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(SBInfo, 'private
   name: 'dp${Deployment}-SB-privatelinkloop${SBInfo.name}'
   params: {
     Deployment: Deployment
+    DeploymentURI: DeploymentURI
     PrivateLinkInfo: SBInfo.privateLinkInfo
     resourceName: SB.name
     providerType: SB.type
