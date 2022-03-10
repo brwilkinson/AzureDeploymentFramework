@@ -1,7 +1,7 @@
 name: Bug Report
 description: Create a report to help us improve
 title: "[Bug]: "
-labels: ["bug", "Needs%3A%20Triage%20🔍"]
+labels: ["Needs%3A%20Triage%20🔍"]
 assignees:
   - octocat
 body:
