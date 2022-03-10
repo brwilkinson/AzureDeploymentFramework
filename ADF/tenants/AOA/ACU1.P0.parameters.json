@@ -328,7 +328,8 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.Network/dnsResolvers"
           },
           {
             "name": "snBE01",
@@ -483,7 +484,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": 0,
+            "allNetworks": 1,
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",

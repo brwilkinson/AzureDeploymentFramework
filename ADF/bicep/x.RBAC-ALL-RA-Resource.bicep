@@ -23,7 +23,7 @@ param roledescription string = '' // leave these for loggin in the portal
 // // ----------------------------------------------
 
 resource ResourceRoleAssignment 'Microsoft.Resources/deployments@2021-04-01' = {
-    name: take(replace('dp-RRA-${description}-${split(resourceId,'/')[1]}', '/', ''),64)
+    name: take('dp-RRA-${description}-${last(split(resourceId,'/'))}',64)
     properties: {
         mode: 'Incremental'
         expressionEvaluationOptions: {

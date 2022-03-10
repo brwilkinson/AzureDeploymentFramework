@@ -10,6 +10,7 @@ param Stage object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
 
+var prefixLookup = json(loadTextContent('./global/prefix.json'))
 var regionLookup = json(loadTextContent('./global/region.json'))
 var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
 
@@ -66,6 +67,8 @@ var userAssignedIdentities = {
   }
 }
 
+var additionalLocation = apim.apimSku == 'Premium' ? apim.additionalLocations : []
+
 var apimName = '${Deployment}-apim${apim.Name}'
 
 /*
@@ -101,7 +104,7 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
   }
   identity: {
     type: 'UserAssigned'
-    userAssignedIdentities: userAssignedIdentities.Default
+    userAssignedIdentities: userAssignedIdentities['Default']
   }
   properties: {
     publisherEmail: Global.apimPublisherEmail
@@ -143,6 +146,17 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
     // portalUrl: toLower('https://${apimName}.portal.azure-api.net')
     // managementApiUrl: toLower('https://${apimName}.management.azure-api.net')
     // scmUrl: toLower('https://${apimName}.scm.azure-api.net')
+    additionalLocations: [for (extra, index) in additionalLocation: {
+        location: prefixLookup[extra.prefix].location
+        sku: {
+          name: apim.apimSku
+          capacity: extra.capacity
+        }
+        virtualNetworkConfiguration: {
+          subnetResourceId: resourceId(replace(resourceGroup().name,Prefix,extra.prefix),'Microsoft.Network/virtualNetworks/subnets', '${replace(Deployment,Prefix,extra.prefix)}-vn', extra.snName)
+        }
+    }]
+    // enableClientCertificate: true
   }
 }
 
@@ -342,3 +356,6 @@ module DNSprivatescm 'x.DNS.private.CNAME.bicep' = if (bool(Stage.SetInternalDNS
     APIM
   ]
 }
+
+
+

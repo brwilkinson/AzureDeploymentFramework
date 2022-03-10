@@ -470,17 +470,6 @@
             ]
           }
         ],
-        "kubeEnvInfo": [
-          {
-            "Name": "01"
-          }
-        ],
-        "kubeAppInfo": [
-          {
-            "Name": "HW01",
-            "kubeENV": "01"
-          }
-        ],
         "VNGWInfo": [
           {
             "Name": "VNGW01",
