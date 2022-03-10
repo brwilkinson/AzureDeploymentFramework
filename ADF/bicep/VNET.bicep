@@ -84,9 +84,17 @@ var delegations = {
   ]
   'Microsoft.ContainerInstance/containerGroups': [
     {
-      name: 'aciDelegation'
+      name: 'delegation'
       properties: {
         serviceName: 'Microsoft.ContainerInstance/containerGroups'
+      }
+    }
+  ]
+  'Microsoft.Network/dnsResolvers': [
+    {
+      name: 'delegation'
+      properties: {
+        serviceName: 'Microsoft.Network/dnsResolvers'
       }
     }
   ]

@@ -694,13 +694,20 @@
         ],
         "APIMInfo": [
           {
-            "name": "01",
+            "name": "03",
             "dnsName": "API",
-            "apimSku": "Developer",
+            "apimSku": "Premium",
             "snName": "snBE01",
             "virtualNetworkType": "Internal",
             "certName": "PSTHING-WildCard",
-            "_frontDoor": "01"
+            "_frontDoor": "01",
+            "additionalLocations": [
+              {
+                "prefix": "AEU2",
+                "snName": "snBE01",
+                "capacity": 1
+              }
+            ]
           }
         ],
         "FrontDoorPolicyInfo": [

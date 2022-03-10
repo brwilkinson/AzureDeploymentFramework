@@ -395,6 +395,7 @@
             "FlowAnalyticsEnabled": 1
           }
         ],
+        "DNSServers": [],
         "BastionInfo": {
           "name": "HST01",
           "PublicIP": "Static",
