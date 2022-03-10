@@ -12,7 +12,7 @@ body:
         - It is recommended to reproduce this issue with the latest version of Bicep
         - Please search for existing issues and add comments there if relevant
         - If this is a feature request, please use the feature request template
-        - If this is not related to a bug or you need further information or investigation, consider opening a discussion
+        - If this is not related to a bug or you need further information or investigation, consider opening a [Discussion](https://github.com/brwilkinson/AzureDeploymentFramework/discussions)
 
   # - type: input
   #   id: contact
@@ -48,7 +48,7 @@ body:
         # or executing below and providing version for "ms-azuretools.vscode-bicep"
         code --list-extensions --show-versions --category azure
 
-      value: "A bug happened!"
+      # value: "A bug happened!"
     validations:
       required: true
   - type: checkboxes
@@ -68,14 +68,6 @@ body:
       label: Your sample Bicep code
       description: Please provide your Bicep code snippet below, this will automatically be formatted, no need for ```tagging```
       render: Bicep
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!
-        - It is recommended to reproduce this issue with the latest version of Bicep
-        - Please search for existing issues and add comments there if relevant
-        - If this is a feature request, please use the feature request template
-        - If this is not related to a bug or you need further information or investigation, consider opening a discussion
   - type: checkboxes
     id: terms
     attributes:
