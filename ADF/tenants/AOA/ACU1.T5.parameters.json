@@ -475,6 +475,7 @@
               "enabled": 1,
               "days": 7
             },
+            // "ADDS": 1,
             "fileShares": [
               {
                 "name": "locust",
@@ -482,7 +483,19 @@
               },
               {
                 "name": "function",
-                "quota": 5120
+                "quota": 5120,
+                //  Note that SMB shares via ADDS need an update for RBAC
+                "_rolesInfo": [
+                  {
+                    "Name": "StorageAccountFileContributor",
+                    "Type": "UAI",
+                    "RBAC": [
+                      {
+                        "Name": "Storage File Data SMB Share Contributor"
+                      }
+                    ]
+                  }
+                ]
               }
             ],
             "containers": [
