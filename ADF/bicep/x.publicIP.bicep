@@ -10,7 +10,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP')) {
+resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP') && nic.PublicIP != null) {
   name: '${Deployment}-${PIPprefix}${VM.Name}-publicip${index + 1}'
   location: resourceGroup().location
   sku: {
@@ -24,7 +24,7 @@ resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = [for (nic,i
   }
 }]
 
-resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP')) {
+resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP') && nic.PublicIP != null) {
   name: 'service'
   scope: PublicIP[index]
   properties: {
@@ -48,4 +48,4 @@ resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
   }
 }]
 
-output PIPID array = [for (nic,index) in NICs: contains(nic, 'PublicIP') ? PublicIP[index].id : '' ]
+output PIPID array = [for (nic,index) in NICs: contains(nic, 'PublicIP') && nic.PublicIP != null ? PublicIP[index].id : '' ]

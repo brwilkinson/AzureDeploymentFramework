@@ -71,8 +71,55 @@ var additionalLocation = apim.apimSku == 'Premium' ? apim.additionalLocations : 
 
 var apimName = '${Deployment}-apim${apim.Name}'
 
-/*
+var availabilityZones = [
+  1
+  2
+  3
+]
 
+//  prepare for creating Public IP for Zone redundant apim gateways across 3 zones.
+module PublicIP 'x.publicIP.bicep' = if (contains(apim, 'zone') && bool(apim.zone)) {
+  name: 'dp${Deployment}-LB-publicIPDeploy-apim${apim.Name}'
+  params: {
+    Deployment: Deployment
+    DeploymentURI: DeploymentURI
+    //     NICs: [
+    //   {
+    //     PublicIP: 'Static'// toggle
+    //   }
+    //   {
+    //     PublicIP: 'Static' // toggle between these public IPs for service changes
+    //   }
+    // ]
+    NICs: [for (pip, index) in range(1,3) : {
+      // a Scale event requires a new publicIP, so map instance to publicip index
+      PublicIP: pip == apim.capacity ? 'Static' : null
+    }]
+    VM: apim
+    PIPprefix: 'apim'
+    Global: Global
+  }
+}
+
+//  prepare for creating Public IP for Zone redundant apim gateways across 3 zones.
+
+module PublicIPAdditional 'x.publicIP.bicep' = [for (extra, index) in additionalLocation: if (contains(apim, 'zone') && bool(apim.zone)) {
+  name: 'dp${replace(Deployment, Prefix, extra.prefix)}-LB-publicIPDeploy-apim${apim.Name}'
+  scope: resourceGroup(replace(resourceGroup().name, Prefix, extra.prefix))
+  params: {
+    Deployment: replace(Deployment, Prefix, extra.prefix)
+    DeploymentURI: replace(DeploymentURI, toLower(Prefix), toLower(extra.prefix))
+    NICs: [for (pip, index) in range(1,3) : {
+      // a Scale event requires a new publicIP, so map instance to publicip index
+      PublicIP: pip == apim.capacity ? 'Static' : null
+    }]
+    VM: apim
+    PIPprefix: 'apim'
+    Global: Global
+  }
+}]
+
+/*
 - These are ALL False
         "customPropertiesNonConsumption": {
             "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168": "[parameters('tripleDES')]",
@@ -94,24 +141,25 @@ var apimName = '${Deployment}-apim${apim.Name}'
         }
 */
 
-
-resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
+resource APIM 'Microsoft.ApiManagement/service@2021-04-01-preview' = {
   name: apimName
   location: resourceGroup().location
   sku: {
     name: apim.apimSku
-    capacity: 1
+    capacity: apim.capacity
   }
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: userAssignedIdentities['Default']
   }
+  zones: contains(apim, 'zone') && bool(apim.zone) ? take(availabilityZones, apim.capacity) : null
   properties: {
     publisherEmail: Global.apimPublisherEmail
     publisherName: Global.apimPublisherEmail
     customProperties: {
       subnetAddress: reference('${VnetID}/subnets/${apim.snName}', '2015-06-15').addressprefix
     }
+    publicIpAddressId: contains(apim, 'zone') && bool(apim.zone) ? PublicIP.outputs.PIPID[apim.capacity -1] : null // apim.capacity-1
     virtualNetworkType: apim.VirtualNetworkType
     virtualNetworkConfiguration: apim.VirtualNetworkType == 'None' ? null : {
       subnetResourceId: '${VnetID}/subnets/${apim.snName}'
@@ -142,21 +190,23 @@ resource APIM 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
         keyVaultId: cert.properties.secretUri
       }
     ]
+    // enableClientCertificate: true
     // runtimeUrl: toLower('https://${apimName}.azure-api.net')
     // portalUrl: toLower('https://${apimName}.portal.azure-api.net')
     // managementApiUrl: toLower('https://${apimName}.management.azure-api.net')
     // scmUrl: toLower('https://${apimName}.scm.azure-api.net')
     additionalLocations: [for (extra, index) in additionalLocation: {
-        location: prefixLookup[extra.prefix].location
-        sku: {
-          name: apim.apimSku
-          capacity: extra.capacity
-        }
-        virtualNetworkConfiguration: {
-          subnetResourceId: resourceId(replace(resourceGroup().name,Prefix,extra.prefix),'Microsoft.Network/virtualNetworks/subnets', '${replace(Deployment,Prefix,extra.prefix)}-vn', extra.snName)
-        }
+      location: prefixLookup[extra.prefix].location
+      publicIpAddressId: contains(apim, 'zone') && bool(apim.zone) ? PublicIPAdditional[index].outputs.PIPID[extra.capacity -1] : null // extra.capacity -1
+      sku: {
+        name: apim.apimSku
+        capacity: extra.capacity
+      }
+      virtualNetworkConfiguration: {
+        subnetResourceId: resourceId(replace(resourceGroup().name, Prefix, extra.prefix), 'Microsoft.Network/virtualNetworks/subnets', '${replace(Deployment, Prefix, extra.prefix)}-vn', extra.snName)
+      }
+      zones: contains(apim, 'zone') && bool(apim.zone) ? take(availabilityZones, extra.capacity) : null
     }]
-    // enableClientCertificate: true
   }
 }
 
@@ -167,7 +217,7 @@ resource APIMAppInsights 'Microsoft.ApiManagement/service/loggers@2021-01-01-pre
     loggerType: 'applicationInsights'
     description: 'Application Insights logger'
     credentials: {
-      instrumentationKey: reference(resourceId('Microsoft.Insights/components', AppInsightsName), '2014-04-01').InstrumentationKey
+      instrumentationKey: reference(resourceId('Microsoft.Insights/components', AppInsightsName), '2020-02-02').InstrumentationKey
     }
     isBuffered: true
     resourceId: resourceId('microsoft.insights/components', AppInsightsName)
@@ -356,6 +406,3 @@ module DNSprivatescm 'x.DNS.private.CNAME.bicep' = if (bool(Stage.SetInternalDNS
     APIM
   ]
 }
-
-
-

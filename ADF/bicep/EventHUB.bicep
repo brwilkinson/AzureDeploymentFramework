@@ -81,7 +81,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource EventHub 'Microsoft.EventHub/namespaces@2021-06-01-preview' = [for item in eventHubInfo: {
+resource EventHub 'Microsoft.EventHub/namespaces@2021-11-01' = [for item in eventHubInfo: {
   name: '${Deployment}-eh${item.name}'
   location: item.location
   sku: {

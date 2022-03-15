@@ -33,12 +33,12 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 var azureFilesIdentityBasedAuthentication = {
   directoryServiceOptions: 'AD'
   activeDirectoryProperties: {
-    domainName: Global.DomainName
-    netBiosDomainName: first(split(Global.DomainName, '.'))
-    forestName: Global.DomainName
-    domainGuid: '99cbe596-b191-4853-aca3-4e19d44f67e0'
-    domainSid: 'S-1-5-21-4089952384-727918856-4151886579'
-    azureStorageSid: 'string'
+    domainName: 'Contoso.com' //Global.DomainName
+    netBiosDomainName: 'Contoso' //first(split(Global.DomainName, '.'))
+    forestName: 'Contoso.com' // Global.DomainName
+    domainGuid: '7bdbf663-36ad-43e2-9148-c142ace6ae24'
+    domainSid: 'S-1-5-21-4189862783-2073351504-2099725206'
+    azureStorageSid: 'S-1-5-21-4189862783-2073351504-2099725206-3101'
   }
 }
 
