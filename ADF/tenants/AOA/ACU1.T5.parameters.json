@@ -364,7 +364,7 @@
             "delegations": "Microsoft.ContainerInstance/containerGroups"
           },
           {
-            "name": "snBE01", // APIM Dedicated
+            "name": "snBE01", // APIM Dedicated, switch to /27
             "prefix": "80/28",
             "NSG": 1,
             "Route": 0, //1
@@ -707,18 +707,20 @@
         ],
         "APIMInfo": [
           {
-            "name": "03",
+            "name": "01",
             "dnsName": "API",
             "apimSku": "Premium",
             "snName": "snBE01",
             "virtualNetworkType": "Internal",
             "certName": "PSTHING-WildCard",
             "_frontDoor": "01",
+            "zone": 1,
+            "capacity": 2,
             "additionalLocations": [
               {
                 "prefix": "AEU2",
                 "snName": "snBE01",
-                "capacity": 1
+                "capacity": 2
               }
             ]
           }
