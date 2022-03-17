@@ -51,7 +51,7 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 // var location = Locationlookup[Prefix]
 
 
-module dp_Deployment_Security 'sub-Security.bicep' = if (contains(Stage, 'Security') && bool(Stage.Security) && '${DeploymentID}${Environment}' == 'G0') {
+module dp_Deployment_Security 'sub-Security.bicep' = if ((contains(Stage, 'Security') && bool(Stage.Security)) && '${Environment}${DeploymentID}' == 'G0') {
   name: 'dp${Deployment}-Security'
   params: {
     // move these to Splatting later
@@ -65,7 +65,7 @@ module dp_Deployment_Security 'sub-Security.bicep' = if (contains(Stage, 'Securi
   }
 }
 
-module dp_Deployment_RG 'sub-RG.bicep' = if (contains(Stage, 'RG') && bool(Stage.RG) && (!('${DeploymentID}${Environment}' == 'G0'))) {
+module dp_Deployment_RG 'sub-RG.bicep' = if ((contains(Stage, 'RG') && bool(Stage.RG)) && (!('${Environment}${DeploymentID}' == 'G0'))) {
   name: 'dp${Deployment}-RG'
   params: {
     // move these to Splatting later

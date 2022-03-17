@@ -715,12 +715,12 @@
             "certName": "PSTHING-WildCard",
             "_frontDoor": "01",
             "zone": 1,
-            "capacity": 2,
+            "capacity": 1,
             "additionalLocations": [
               {
                 "prefix": "AEU2",
                 "snName": "snBE01",
-                "capacity": 2
+                "capacity": 1
               }
             ]
           }
@@ -1288,6 +1288,7 @@
             "Version": "1.21.7", // "1.20.2","1.19.7","1.19.6", "1.18.14" // 1.22 and above no AGIC support 
             "skuTier": "Paid", //Free
             "enableRBAC": true, //true, false
+            "enableOSM": true, //true, false
             "podIdentity": true, //true, false
             "privateCluster": false, //true, false
             "AgentPoolsSN": "snMT02",
@@ -1295,6 +1296,7 @@
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "AppGateway": 1,
+            "AutoScale": 0,
             "aksAADAdminGroups": [
               "AKS_Admins"
             ],

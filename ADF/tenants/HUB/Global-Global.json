@@ -9,7 +9,7 @@
     "PrimaryPrefix": "AZC1",
     "SecondaryLocation": "EastUS2",
     "SecondaryPrefix": "AZE2",
-    "IPAddressforRemoteAccess": [
+    "_IPAddressforRemoteAccess": [ // moved these to keyvault, remove "_" to use here
       "73.157.100.227/32"
     ],
     "vmAdminUserName": "brw",
