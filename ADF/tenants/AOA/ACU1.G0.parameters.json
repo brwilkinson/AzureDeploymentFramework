@@ -77,9 +77,9 @@
             "OpenSourceRelationalDatabases",
             "CosmosDbs"
           ],
-          "Free": [
-            // "KubernetesService",
-            // "ContainerRegistry"
+          "Free": [ // deprecated
+            "KubernetesService",
+            "ContainerRegistry"
           ]
         },
         "RoleDefinitionsInfo": [

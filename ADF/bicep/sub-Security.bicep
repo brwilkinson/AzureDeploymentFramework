@@ -57,7 +57,7 @@ resource default 'Microsoft.Security/autoProvisioningSettings@2017-08-01-preview
 }
 
 #disable-next-line BCP081
-resource securityContacts 'Microsoft.Security/securityContacts@2020-01-01-preview' = {
+resource defaultSecurityContact 'Microsoft.Security/securityContacts@2020-01-01-preview' = {
     name: 'default'
     properties: {
         alertNotifications: {
@@ -71,7 +71,8 @@ resource securityContacts 'Microsoft.Security/securityContacts@2020-01-01-previe
                 'ServiceAdmin'
             ]
         }
-        emails: replace(replace(replace(string(Global.alertRecipients), '","', ','), '["', ''), '"]', '') // currently no join method
+        // currently no join method, create semicolon separated string
+        emails: replace(replace(replace(string(Global.alertRecipients), '","', ';'), '["', ''), '"]', '')
     }
 }
 
