@@ -10,9 +10,10 @@
     },
     "PrimaryLocation": "CentralUS",
     "SecondaryLocation": "EastUS2",
-    "IPAddressforRemoteAccess": [ // move these to keyvault
+    "IPAddressforRemoteAccess": [ // moved these to keyvault, remove "_" to use here
       "73.225.196.211/32",
-      "157.100.170.101/32"
+      "157.100.170.101/32",
+      "73.193.31.45"
     ],
     "vmAdminUserName": "brw",
     "sqlCredentialName": "brw",

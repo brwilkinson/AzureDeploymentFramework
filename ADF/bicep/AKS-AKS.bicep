@@ -64,7 +64,7 @@ var IngressBrownfields = {
 var aadProfile = {
   managed: true
   enableAzureRBAC: bool(AKSInfo.enableRBAC)
-  adminGroupObjectIDs: AKSInfo.enableRBAC ? aksAADAdminLookup : null
+  adminGroupObjectIDs: bool(AKSInfo.enableRBAC) ? aksAADAdminLookup : null
   tenantID: tenant().tenantId
 }
 var podIdentityProfile = {
@@ -75,6 +75,26 @@ var availabilityZones = [
   '2'
   '3'
 ]
+
+var autoScalerProfile = {
+  // balance-similar-node-groups: 'string'
+  // expander: 'string'
+  // max-empty-bulk-delete: 'string'
+  // max-graceful-termination-sec: 'string'
+  // max-node-provision-time: 'string'
+  // max-total-unready-percentage: 'string'
+  // new-pod-scale-up-delay: 'string'
+  // ok-total-unready-count: 'string'
+  // scale-down-delay-after-add: 'string'
+  // scale-down-delay-after-delete: 'string'
+  // scale-down-delay-after-failure: 'string'
+  // scale-down-unneeded-time: 'string'
+  // scale-down-unready-time: 'string'
+  // scale-down-utilization-threshold: 'string'
+  // scan-interval: 'string'
+  // skip-nodes-with-local-storage: 'string'
+  // skip-nodes-with-system-pods: 'string'
+}
 
 var Environment_var = {
   D: 'Dev'
@@ -101,7 +121,11 @@ var MSILookup = {
 }
 var aksAADAdminLookup = [for i in range(0, ((!contains(AKSInfo, 'aksAADAdminGroups')) ? 0 : length(AKSInfo.aksAADAdminGroups))): objectIdLookup[AKSInfo.aksAADAdminGroups[i]]]
 
-resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
+resource csi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+  name: '${Deployment}-uaiIngressApplicationGateway'
+}
+
+resource AKS 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
   location: resourceGroup().location
   identity: {
@@ -120,7 +144,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
   properties: {
     kubernetesVersion: AKSInfo.Version
     nodeResourceGroup: '${resourceGroup().name}-aks${AKSInfo.Name}'
-    enableRBAC: AKSInfo.enableRBAC
+    enableRBAC: bool(AKSInfo.enableRBAC)
     dnsPrefix: toLower('${Deployment}-aks${AKSInfo.Name}')
     //  https://docs.microsoft.com/en-us/azure/templates/microsoft.containerservice/2021-10-01/managedclusters/agentpools?tabs=bicep
     agentPoolProfiles: [for (agentpool, index) in AKSInfo.agentPools: {
@@ -163,12 +187,13 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
         logAnalyticsWorkspaceResourceId: OMS.id
       }
     }
-    aadProfile: AKSInfo.enableRBAC ? aadProfile : null
+    aadProfile: bool(AKSInfo.enableRBAC) ? aadProfile : null
     apiServerAccessProfile: {
       authorizedIPRanges: bool(AKSInfo.privateCluster) ? null : Global.IPAddressforRemoteAccess
       enablePrivateCluster: bool(AKSInfo.privateCluster)
       privateDNSZone: bool(AKSInfo.privateCluster) ? resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.centralus.azmk8s.io') : null
     }
+    publicNetworkAccess: bool(AKSInfo.privateCluster) ? 'Disabled' : 'Enabled'
     networkProfile: {
       outboundType: 'loadBalancer'
       loadBalancerSku: AKSInfo.loadBalancer
@@ -179,17 +204,31 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2021-10-01' = {
       dnsServiceIP: '10.0.0.10'
       dockerBridgeCidr: '172.17.0.1/16'
     }
+    autoScalerProfile: bool(AKSInfo.AutoScale) ? autoScalerProfile : null
     podIdentityProfile: bool(AKSInfo.podIdentity) ? podIdentityProfile : null
     addonProfiles: {
+      azureKeyvaultSecretsProvider: {
+        enabled: true
+        config: {
+          enableSecretRotation: 'true'
+        }
+      }
       IngressApplicationGateway: {
         enabled: bool(AKSInfo.AppGateway)
         config: bool(AKSInfo.BrownFields) ? IngressBrownfields : IngressGreenfields
+      }
+      openServiceMesh: {
+        enabled: contains(AKSInfo, 'enableOSM') ? bool(AKSInfo.enableOSM) : false
+        config: {}
       }
       httpApplicationRouting: {
         enabled: false
       }
       azurePolicy: {
         enabled: false
+        config: {
+          version: 'v2'
+        }
       }
       omsAgent: {
         enabled: true
