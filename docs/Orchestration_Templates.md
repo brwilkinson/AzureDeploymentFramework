@@ -135,7 +135,7 @@ targetScope = 'subscription'
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 
-module dp_Deployment_Security 'sub-Security.bicep' = if (contains(Stage, 'Security') && bool(Stage.Security) && '${DeploymentID}${Environment}' == 'G0') {
+module dp_Deployment_Security 'sub-Security.bicep' = if ((contains(Stage, 'Security') && bool(Stage.Security)) && '${Environment}${DeploymentID}' == 'G0') {
   name: 'dp${Deployment}-Security'
   params: {
     DeploymentID: DeploymentID
@@ -148,7 +148,7 @@ module dp_Deployment_Security 'sub-Security.bicep' = if (contains(Stage, 'Securi
   }
 }
 
-module dp_Deployment_RG 'sub-RG.bicep' = if (bool(Stage.RG) && (!('${DeploymentID}${Environment}' == 'G0'))) {
+module dp_Deployment_RG 'sub-RG.bicep' = if (bool(Stage.RG) && (!('${Environment}${DeploymentID}' == 'G0'))) {
   name: 'dp${Deployment}-RG'
   params: {
     DeploymentID: DeploymentID
