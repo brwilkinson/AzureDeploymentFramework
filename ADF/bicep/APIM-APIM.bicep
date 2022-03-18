@@ -67,7 +67,7 @@ var userAssignedIdentities = {
   }
 }
 
-var additionalLocation = apim.apimSku == 'Premium' ? apim.additionalLocations : []
+var additionalLocations = apim.apimSku == 'Premium' ? apim.additionalLocations : []
 
 var apimName = '${Deployment}-apim${apim.Name}'
 
@@ -103,7 +103,7 @@ module PublicIP 'x.publicIP.bicep' = if (contains(apim, 'zone') && bool(apim.zon
 
 //  prepare for creating Public IP for Zone redundant apim gateways across 3 zones.
 
-module PublicIPAdditional 'x.publicIP.bicep' = [for (extra, index) in additionalLocation: if (contains(apim, 'zone') && bool(apim.zone)) {
+module PublicIPAdditional 'x.publicIP.bicep' = [for (extra, index) in additionalLocations: if (contains(apim, 'zone') && bool(apim.zone)) {
   name: 'dp${replace(Deployment, Prefix, extra.prefix)}-LB-publicIPDeploy-apim${apim.Name}'
   scope: resourceGroup(replace(resourceGroup().name, Prefix, extra.prefix))
   params: {
@@ -111,7 +111,7 @@ module PublicIPAdditional 'x.publicIP.bicep' = [for (extra, index) in additional
     DeploymentURI: replace(DeploymentURI, toLower(Prefix), toLower(extra.prefix))
     NICs: [for (pip, index) in range(1,3) : {
       // a Scale event requires a new publicIP, so map instance to publicip index
-      PublicIP: pip == apim.capacity ? 'Static' : null
+      PublicIP: pip == extra.capacity ? 'Static' : null
     }]
     VM: apim
     PIPprefix: 'apim'
@@ -195,7 +195,7 @@ resource APIM 'Microsoft.ApiManagement/service@2021-04-01-preview' = {
     // portalUrl: toLower('https://${apimName}.portal.azure-api.net')
     // managementApiUrl: toLower('https://${apimName}.management.azure-api.net')
     // scmUrl: toLower('https://${apimName}.scm.azure-api.net')
-    additionalLocations: [for (extra, index) in additionalLocation: {
+    additionalLocations: [for (extra, index) in additionalLocations: {
       location: prefixLookup[extra.prefix].location
       publicIpAddressId: contains(apim, 'zone') && bool(apim.zone) ? PublicIPAdditional[index].outputs.PIPID[extra.capacity -1] : null // extra.capacity -1
       sku: {

@@ -76,6 +76,7 @@ resource defaultSecurityContact 'Microsoft.Security/securityContacts@2020-01-01-
     }
 }
 
+// toggle solutions off/free to sunset/disable them.
 module pricingFree 'sub-Security-Pricing.bicep' = [for (name, index) in Free: if (PricingInfoFree[index].match) {
     name: 'dp-pricing-${name}-free'
     params: {

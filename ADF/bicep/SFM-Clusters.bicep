@@ -186,7 +186,7 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2021-11-01-
       endPort: 65534
     }
     vmSecrets: secrets
-    vmExtensions: [
+    vmExtensions: [ //Geneva, KV, AAD Login
       // {
       //   name:
       //   properties: {
