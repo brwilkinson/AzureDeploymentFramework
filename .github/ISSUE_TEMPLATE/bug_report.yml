@@ -19,7 +19,7 @@ body:
   - type: textarea
     id: what-happened
     attributes:
-      label: Describe the bug
+      label: ~ Description of the issue ~
       description: A clear and concise description of what the bug is vs what you expected to happen
       placeholder: |
         You can provide Markdown examples/tagging here for PowerShell or CLI Etc.
@@ -30,7 +30,7 @@ body:
   - type: textarea
     id: version
     attributes:
-      label: Bicep version
+      label: ~ The Bicep version ~
       description: What version of our software are you running?
       render: PowerShell
       placeholder: |
@@ -49,7 +49,7 @@ body:
   - type: textarea
     id: code-snippet
     attributes:
-      label: Your sample Bicep code
+      label: ~ Sample Bicep code to reproduce the issue ~
       description: Please provide your Bicep code snippet below, this will automatically be formatted, no need for ```tagging```
       render: Bicep
       placeholder: |
