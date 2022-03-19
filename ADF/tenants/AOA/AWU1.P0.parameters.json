@@ -460,6 +460,11 @@
             "linkDNS": 1,
             "zone": "privatelink.sql.azuresynapse.net",
             "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.azure-api.net",
+            "Autoregistration": false
           }
         ],
         "BastionInfo": {

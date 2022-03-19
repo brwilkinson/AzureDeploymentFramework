@@ -349,6 +349,7 @@ module AppServerJIT 'x.vmJIT.bicep' = if(bool(AppServer.DeployJIT)) {
     Deployment: Deployment
     VM: AppServer
     Global: Global
+    DeploymentID: DeploymentID
   }
   dependsOn: [
     virtualMachine
@@ -375,6 +376,7 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
   }
 }
 
+// sf
 resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.CertMgmt)) {
   name: 'KVAppServerExtensionForWindows'
   parent: virtualMachine
@@ -390,13 +392,14 @@ resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachi
         certificateStoreName: 'MY'
         certificateStoreLocation: 'LOCAL_MACHINE'
         observedCertificates: [
-          cert.properties.secretUriWithVersion
+          cert.properties.secretUri
         ]
       }
     }
   }
 }
 
+//  SF
 resource AppServerAADLogin 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.AADLogin) && (contains(AppServer, 'ExcludeAADLogin') && AppServer.ExcludeAADLogin != 1)) {
   name: 'AADLogin'
   parent: virtualMachine
@@ -713,6 +716,7 @@ resource AppServerDiags 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
   }
 }
 
+//  SF
 resource AppServerDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.DependencyAgent)) {
   name: 'DependencyAgent'
   parent: virtualMachine
@@ -737,6 +741,7 @@ resource AppServerAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@202
   }
 }
 
+// SF
 resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.MonitoringAgent)) {
   name: 'MonitoringAgent'
   parent: virtualMachine

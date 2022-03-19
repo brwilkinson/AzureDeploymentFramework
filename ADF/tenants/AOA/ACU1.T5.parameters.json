@@ -92,7 +92,7 @@
         "VMInsights": 1,
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
-        "DSC": 1,
+        "DSC": 0,
         "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
@@ -707,20 +707,33 @@
         ],
         "APIMInfo": [
           {
-            "name": "01",
+            "name": "02",
             "dnsName": "API",
             "apimSku": "Premium",
             "snName": "snBE01",
-            "virtualNetworkType": "Internal",
+            "virtualNetworkType": "None",
             "certName": "PSTHING-WildCard",
             "_frontDoor": "01",
             "zone": 1,
-            "capacity": 1,
+            "capacity": 2,
+            "_publicAccess": 0,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "Gateway"
+              }
+            ],
             "additionalLocations": [
               {
                 "prefix": "AEU2",
                 "snName": "snBE01",
-                "capacity": 2
+                "capacity": 1,
+                "privateLinkInfo": [
+                  {
+                    "Subnet": "snFE01",
+                    "groupID": "Gateway"
+                  }
+                ]
               }
             ]
           }
@@ -1963,6 +1976,13 @@
               {
                 "name": "nodetype1",
                 "OSType": "Server2019SS",
+                "role": "SF",
+                "isPrimary": 1,
+                "capacity": 6
+              },
+              {
+                "name": "nodetype2",
+                "OSType": "Server2019SSgs",
                 "role": "SF",
                 "isPrimary": 1,
                 "capacity": 6
