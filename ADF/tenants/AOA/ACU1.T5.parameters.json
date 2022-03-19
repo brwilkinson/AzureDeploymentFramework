@@ -715,7 +715,7 @@
             "certName": "PSTHING-WildCard",
             "_frontDoor": "01",
             "zone": 1,
-            "capacity": 2,
+            "capacity": 1,
             "_publicAccess": 0,
             "privateLinkInfo": [
               {

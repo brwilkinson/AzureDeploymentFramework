@@ -1,4 +1,4 @@
-name: Bicep Bug Report
+name: Bug Report
 description: Create a report to help us improve
 # title: "[Bug]: "
 
@@ -11,9 +11,10 @@ body:
     attributes:
       value: |
         Thank you for taking the time to fill out this bug report!
-        - It is recommended to reproduce this issue with the latest version of Bicep
-        - Please search for existing issues and add comments there if relevant
-        - If this is not related to a bug or you need further information or investigation, consider opening a [Discussion](https://github.com/brwilkinson/AzureDeploymentFramework/discussions)
+        - Please ensure you reproduce this issue with the latest version of Bicep.
+        - Please search for existing issues as a first preference to opening a new issue.
+        - If this is not related to a bug or you need further information or investigation, consider opening a [Discussion](https://github.com/Azure/bicep/discussions)
+        - If this is a Resource Provider or ARM API Specification issue, please open an issue in
 
   - type: textarea
     id: what-happened
@@ -44,30 +45,20 @@ body:
     validations:
       required: true
 
-  - type: checkboxes
-    attributes:
-      label: What component is this related to
-      description: If this is related to a certain component, please provide details
-      options:
-        - label: Bicep Language
-        - label: Bicep.exe
-        - label: AZ CLI
-        - label: VSCode Extension
-        - label: Linting
-          required: false
-
   - type: textarea
     id: code-snippet
     attributes:
       label: Your sample Bicep code
       description: Please provide your Bicep code snippet below, this will automatically be formatted, no need for ```tagging```
       render: Bicep
+      placeholder: |
+        // Please provide sample Bicep code to reproduce the issue, including default parameter values where possible.
 
   - type: checkboxes
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/.github/CODE_OF_CONDUCT.md)
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Azure/bicep/blob/main/.github/CODE_OF_CONDUCT.md)
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true
