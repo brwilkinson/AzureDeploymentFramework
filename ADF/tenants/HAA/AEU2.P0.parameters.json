@@ -88,7 +88,6 @@
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 1,
-        "DNSLookup": 0,
         "ServerFarm": 0,
         "WebSite": 0,
         "WebSiteContainer": 0,

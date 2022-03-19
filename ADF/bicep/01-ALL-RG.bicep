@@ -511,14 +511,6 @@ module dp_Deployment_VNETDNSDC2 'x.setVNETDNS.bicep' = if (bool(Stage.ADSecondar
   ]
 }
 
-// module DNSLookup '?' = if (bool(Stage.DNSLookup)) {
-//   name: 'DNSLookup'
-//   params: {}
-//   dependsOn: [
-//     dp_Deployment_WAF
-//   ]
-// }
-
 module AppServers 'VM.bicep' = if (bool(Stage.VMApp)) {
   name: 'AppServers'
   params: {
