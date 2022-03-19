@@ -1,4 +1,7 @@
 $PrefixLookup = @{}
+$subscriptionId = Get-AzContext | ForEach-Object Subscription | ForEach-Object Id
+$URI = "https://management.azure.com/subscriptions/$subscriptionId/locations?api-version=2020-01-01"
+$locations = Invoke-AzRestMethod $URI | ForEach-Object Content | ConvertFrom-Json | ForEach-Object value
 Get-AzLocation | ForEach-Object {
     $parts = $_.displayname -split '\s'
     $location = $_.location
@@ -25,11 +28,12 @@ Get-AzLocation | ForEach-Object {
         Name         = $NameFormat
         NameOverRide = $manualOverrides[$location]
         PREFIX       = $UsablePrefix
+        pairedRegion = $locations | Where-Object name -EQ $location | ForEach-Object metadata | ForEach-Object pairedRegion | ForEach-Object name
     }
     $Current
     
     # Only export limited propeties to json to limit size with loadtextcontext
-    $PrefixLookup[$UsablePrefix] = $Current | Select-Object displayname, location, prefix
+    $PrefixLookup[$UsablePrefix] = $Current | Select-Object displayname, location, prefix, pairedRegion
 } | Format-Table -AutoSize
 
 $PrefixLookup | ConvertTo-Json | Set-Content -Path $PSScriptRoot\..\bicep\global\prefix.json
