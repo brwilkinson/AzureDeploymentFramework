@@ -67,7 +67,7 @@ var userAssignedIdentities = {
   }
 }
 
-var additionalLocations = apim.apimSku == 'Premium' ? apim.additionalLocations : []
+var additionalLocations = apim.apimSku == 'Premium' && contains(apim,'additionalLocations') ? apim.additionalLocations : []
 
 var apimName = '${Deployment}-apim${apim.Name}'
 
@@ -78,19 +78,11 @@ var availabilityZones = [
 ]
 
 //  prepare for creating Public IP for Zone redundant apim gateways across 3 zones.
-module PublicIP 'x.publicIP.bicep' = if (contains(apim, 'zone') && bool(apim.zone)) {
+module PublicIP 'x.publicIP.bicep' = if (! (apim.VirtualNetworkType == 'None') && contains(apim, 'zone') && bool(apim.zone)) {
   name: 'dp${Deployment}-LB-publicIPDeploy-apim${apim.Name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    //     NICs: [
-    //   {
-    //     PublicIP: 'Static'// toggle
-    //   }
-    //   {
-    //     PublicIP: 'Static' // toggle between these public IPs for service changes
-    //   }
-    // ]
     NICs: [for (pip, index) in range(1,3) : {
       // a Scale event requires a new publicIP, so map instance to publicip index
       PublicIP: pip == apim.capacity ? 'Static' : null
@@ -103,7 +95,7 @@ module PublicIP 'x.publicIP.bicep' = if (contains(apim, 'zone') && bool(apim.zon
 
 //  prepare for creating Public IP for Zone redundant apim gateways across 3 zones.
 
-module PublicIPAdditional 'x.publicIP.bicep' = [for (extra, index) in additionalLocations: if (contains(apim, 'zone') && bool(apim.zone)) {
+module PublicIPAdditional 'x.publicIP.bicep' = [for (extra, index) in additionalLocations: if (! (apim.VirtualNetworkType == 'None') && contains(apim, 'zone') && bool(apim.zone)) {
   name: 'dp${replace(Deployment, Prefix, extra.prefix)}-LB-publicIPDeploy-apim${apim.Name}'
   scope: resourceGroup(replace(resourceGroup().name, Prefix, extra.prefix))
   params: {
@@ -154,12 +146,13 @@ resource APIM 'Microsoft.ApiManagement/service@2021-04-01-preview' = {
   }
   zones: contains(apim, 'zone') && bool(apim.zone) ? take(availabilityZones, apim.capacity) : null
   properties: {
+    publicNetworkAccess: contains(apim, 'publicAccess') && ! bool(apim.publicAccess) ? 'Disabled' : 'Enabled'
     publisherEmail: Global.apimPublisherEmail
     publisherName: Global.apimPublisherEmail
     customProperties: {
       subnetAddress: reference('${VnetID}/subnets/${apim.snName}', '2015-06-15').addressprefix
     }
-    publicIpAddressId: contains(apim, 'zone') && bool(apim.zone) ? PublicIP.outputs.PIPID[apim.capacity -1] : null // apim.capacity-1
+    publicIpAddressId: apim.VirtualNetworkType == 'None' ? null : contains(apim, 'zone') && bool(apim.zone) ? PublicIP.outputs.PIPID[apim.capacity -1] : null // apim.capacity-1
     virtualNetworkType: apim.VirtualNetworkType
     virtualNetworkConfiguration: apim.VirtualNetworkType == 'None' ? null : {
       subnetResourceId: '${VnetID}/subnets/${apim.snName}'
@@ -197,12 +190,12 @@ resource APIM 'Microsoft.ApiManagement/service@2021-04-01-preview' = {
     // scmUrl: toLower('https://${apimName}.scm.azure-api.net')
     additionalLocations: [for (extra, index) in additionalLocations: {
       location: prefixLookup[extra.prefix].location
-      publicIpAddressId: contains(apim, 'zone') && bool(apim.zone) ? PublicIPAdditional[index].outputs.PIPID[extra.capacity -1] : null // extra.capacity -1
+      publicIpAddressId: apim.VirtualNetworkType == 'None' ? null : contains(apim, 'zone') && bool(apim.zone) ? PublicIPAdditional[index].outputs.PIPID[extra.capacity -1] : null // extra.capacity -1
       sku: {
         name: apim.apimSku
         capacity: extra.capacity
       }
-      virtualNetworkConfiguration: {
+      virtualNetworkConfiguration: apim.VirtualNetworkType == 'None' ? null : {
         subnetResourceId: resourceId(replace(resourceGroup().name, Prefix, extra.prefix), 'Microsoft.Network/virtualNetworks/subnets', '${replace(Deployment, Prefix, extra.prefix)}-vn', extra.snName)
       }
       zones: contains(apim, 'zone') && bool(apim.zone) ? take(availabilityZones, extra.capacity) : null
@@ -406,3 +399,40 @@ module DNSprivatescm 'x.DNS.private.CNAME.bicep' = if (bool(Stage.SetInternalDNS
     APIM
   ]
 }
+
+
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(apim, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-APIM-privatelinkloop-${apim.name}'
+  params: {
+    Deployment: Deployment
+    DeploymentURI: DeploymentURI
+    PrivateLinkInfo: apim.privateLinkInfo
+    providerType: APIM.type
+    resourceName: APIM.name
+  }
+}
+
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(apim, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-APIM-registerPrivateDNS-${apim.name}'
+  scope: resourceGroup(HubRGName)
+  params: {
+    PrivateLinkInfo: apim.privateLinkInfo
+    providerURL: 'net'
+    providerType: APIM.type
+    resourceName: APIM.name
+    Nics: contains(apim, 'privatelinkinfo') && length(apim) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
+  }
+}
+
+module vnetPrivateLinkAdditional 'x.vNetPrivateLink.bicep' = [for (extra, index) in additionalLocations: if ((apim.VirtualNetworkType == 'None') && contains(extra, 'privatelinkinfo')) {
+  name: 'dp${replace(Deployment, Prefix, extra.prefix)}-APIM-privatelinkloop-${apim.name}'
+  scope: resourceGroup(replace(resourceGroup().name, Prefix, extra.prefix))
+  params: {
+    Deployment: replace(Deployment, Prefix, extra.prefix)
+    DeploymentURI: replace(DeploymentURI, toLower(Prefix), toLower(extra.prefix))
+    PrivateLinkInfo: apim.privateLinkInfo
+    providerType: APIM.type
+    resourceName: APIM.name
+    resourceRG: resourceGroup().name
+  }
+}]

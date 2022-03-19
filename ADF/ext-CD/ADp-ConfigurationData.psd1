@@ -58,7 +58,9 @@
                 @{Name = 'windowsazure.com'; MasterServers = '168.63.129.16' },
                 @{Name = 'azconfig.io'; MasterServers = '168.63.129.16' },
                 @{Name = 'azure.net'; MasterServers = '168.63.129.16' },
-                @{Name = 'azurewebsites.net'; MasterServers = '168.63.129.16' }
+                @{Name = 'azurewebsites.net'; MasterServers = '168.63.129.16' },
+                @{Name = 'azuresynapse.net'; MasterServers = '168.63.129.16' },
+                @{Name = 'azure-api.net'; MasterServers = '168.63.129.16' }
             )
 
             

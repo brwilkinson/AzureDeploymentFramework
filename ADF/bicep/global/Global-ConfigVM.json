@@ -496,6 +496,20 @@
         "chefClient": 0
       }
     },
+    "Server2019SSgs": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2019-Datacenter-with-Containers-gs",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
     "Server2019SS": {
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",

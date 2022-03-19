@@ -19,6 +19,7 @@ var DNSLookup = {
   'Microsoft.Cache/redis': 'redis.cache'
   'Microsoft.Web/sites': 'azurewebsites'
   'Microsoft.Synapse/workspaces': 'sql'
+  'Microsoft.ApiManagement/service': 'azure-api'
 }
 
 //  dns private link group id

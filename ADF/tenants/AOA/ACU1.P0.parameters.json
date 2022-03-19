@@ -32,9 +32,9 @@
         "FlowLogs": 1,
         "VNet": 1,
         "VNetPeering": 0,
-        "DNSPrivateZone": 0,
+        "DNSPrivateZone": 1,
         "DNSPublicZone": 0,
-        "LinkPrivateDns": 0,
+        "LinkPrivateDns": 1,
         "PrivateLink": 1,
         "BastionHost": 0,
         "RT": 0,
@@ -328,8 +328,8 @@
             "NSG": 1,
             "Route": 0,
             "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1,
-            "delegations": "Microsoft.Network/dnsResolvers"
+            "FlowAnalyticsEnabled": 1
+            // "delegations": "Microsoft.Network/dnsResolvers"
           },
           {
             "name": "snBE01",
@@ -456,6 +456,11 @@
           {
             "linkDNS": 1,
             "zone": "privatelink.sql.azuresynapse.net",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.azure-api.net",
             "Autoregistration": false
           }
         ],

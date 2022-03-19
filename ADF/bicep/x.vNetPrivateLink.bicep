@@ -3,6 +3,7 @@ param DeploymentURI string
 param PrivateLinkInfo array
 param providerType string
 param resourceName string
+param resourceRG string = resourceGroup().name
 
 var privateLink = [for item in PrivateLinkInfo: {
   name: '${Deployment}-pl${item.Subnet}'
@@ -17,7 +18,7 @@ resource subnetPrivateEndpoint 'Microsoft.Network/privateEndpoints@2019-11-01' =
       {
         name: '${resourceName}-pl-${pl.groupID}-${pl.Subnet}'
         properties: {
-          privateLinkServiceId: resourceId(providerType, resourceName)
+          privateLinkServiceId: resourceId(resourceRG, providerType, resourceName)
           groupIds: array(pl.groupID)
           privateLinkServiceConnectionState: {
             status: 'Approved'

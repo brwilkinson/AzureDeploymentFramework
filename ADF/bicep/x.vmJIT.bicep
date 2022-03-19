@@ -1,6 +1,7 @@
 param Deployment string
 param VM object
 param Global object
+param DeploymentID string
 
 var portList = [
   3389
@@ -9,10 +10,15 @@ var portList = [
   5986
 ]
 
+var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var addressPrefixes = [
+  '${networkId}.0/23'
+]
+
 var ports = [for (port, index) in portList: {
   number: port
   protocol: 'TCP'
-  allowedSourceAddressPrefixes: Global.IPAddressforRemoteAccess
+  allowedSourceAddressPrefixes: union(Global.IPAddressforRemoteAccess,addressPrefixes)
   maxRequestAccessDuration: 'PT3H'
 }]
 
