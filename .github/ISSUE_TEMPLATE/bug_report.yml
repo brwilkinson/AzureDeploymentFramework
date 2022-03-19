@@ -19,7 +19,7 @@ body:
   - type: textarea
     id: what-happened
     attributes:
-      label: ~ Description of the issue ~
+      label: ~~ Description of the issue ~~
       description: A clear and concise description of what the bug is vs what you expected to happen
       placeholder: |
         You can provide Markdown examples/tagging here for PowerShell or CLI Etc.
