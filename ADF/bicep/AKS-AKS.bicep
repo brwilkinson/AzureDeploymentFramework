@@ -208,7 +208,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
     podIdentityProfile: bool(AKSInfo.podIdentity) ? podIdentityProfile : null
     addonProfiles: {
       gitops: {
-        enabled: false // preview enabled in eastus/westeurope
+        enabled: resourceGroup().location == 'eastus' ? true : false // preview enabled in eastus/westeurope
         config: {
           
         }
