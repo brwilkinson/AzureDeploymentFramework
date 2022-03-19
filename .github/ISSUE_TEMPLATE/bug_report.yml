@@ -14,7 +14,7 @@ body:
         - Please ensure you reproduce this issue with the latest version of Bicep.
         - Please search for existing issues as a first preference to opening a new issue.
         - If this is not related to a bug or you need further information or investigation, consider opening a [Discussion](https://github.com/Azure/bicep/discussions)
-        - If this is a Resource Provider or ARM API Specification issue, please open an issue in
+        - If this is a Resource Provider or ARM API Specification issue, please open an issue in X.
 
   - type: textarea
     id: what-happened
