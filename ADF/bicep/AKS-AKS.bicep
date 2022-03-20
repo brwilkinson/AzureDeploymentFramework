@@ -58,9 +58,14 @@ var IngressGreenfields = {
   applicationGatewayName: '${Deployment}-waf${AKSInfo.WAFName}'
   subnetCIDR: '${networkId}.128/25' // WAF Subnet //'${Global.networkId[0]}0.0/16'
 }
-var IngressBrownfields = {
-  applicationGatewayId: resourceId('Microsoft.Network/applicationGateways/', '${Deployment}-waf${AKSInfo.WAFName}')
+// var IngressBrownfields = {
+//   applicationGatewayId: resourceId('Microsoft.Network/applicationGateways/', '${Deployment}-waf${AKSInfo.WAFName}')
+// }
+
+resource IngressBrownfields 'Microsoft.Network/applicationGateways@2021-05-01' existing = {
+  name: '${Deployment}-waf${AKSInfo.WAFName}'
 }
+
 var aadProfile = {
   managed: true
   enableAzureRBAC: bool(AKSInfo.enableRBAC)
@@ -221,7 +226,9 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
       }
       IngressApplicationGateway: {
         enabled: bool(AKSInfo.AppGateway)
-        config: bool(AKSInfo.BrownFields) ? IngressBrownfields : IngressGreenfields
+        config: !bool(AKSInfo.BrownFields) ? IngressGreenfields : {
+          applicationGatewayId: IngressBrownfields.id
+        }
       }
       openServiceMesh: {
         enabled: contains(AKSInfo, 'enableOSM') ? bool(AKSInfo.enableOSM) : false

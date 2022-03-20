@@ -216,6 +216,22 @@
                 "Name": "Azure Kubernetes Service RBAC Cluster Admin"
               }
             ]
+          },
+          {
+            "Name": "AzureKeyVault",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "Name": "sec-scan-acr",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
           }
         ],
         "SPInfo": [
@@ -579,7 +595,7 @@
               {
                 "Name": "probe02",
                 "ProbePath": "/api/headers",
-                "probeMethod": "GET"  // Head | Get
+                "probeMethod": "GET" // Head | Get
               }
             ],
             "LBSettings": [

@@ -835,30 +835,9 @@ module dp_Deployment_APPCONFIG 'AppConfig.bicep' = if (bool(Stage.APPCONFIG)) {
   ]
 }
 
-module dp_Deployment_AKS 'AKS.bicep' = if (bool(Stage.AKS)) {
-  name: 'dp${Deployment}-AKS'
-  params: {
-    // move these to Splatting later
-    DeploymentID: DeploymentID
-    DeploymentInfo: DeploymentInfo
-    Environment: Environment
-    Extensions: Extensions
-    Global: Global
-    Prefix: Prefix
-    Stage: Stage
-  }
-  dependsOn: [
-    dp_Deployment_OMS
-    dp_Deployment_WAF
-    dp_Deployment_VNET
-    dp_Deployment_ACR
-  ]
-}
-
 module dp_Deployment_WAFPOLICY 'WAFPolicy.bicep' = if (bool(Stage.WAFPOLICY)) {
   name: 'dp${Deployment}-WAFPOLICY'
   params: {
-    // move these to Splatting later
     DeploymentID: DeploymentID
     DeploymentInfo: DeploymentInfo
     Environment: Environment
@@ -875,7 +854,6 @@ module dp_Deployment_WAFPOLICY 'WAFPolicy.bicep' = if (bool(Stage.WAFPOLICY)) {
 module dp_Deployment_WAF 'WAF.bicep' = if (bool(Stage.WAF)) {
   name: 'dp${Deployment}-WAF'
   params: {
-    // move these to Splatting later
     DeploymentID: DeploymentID
     DeploymentInfo: DeploymentInfo
     Environment: Environment
@@ -887,6 +865,26 @@ module dp_Deployment_WAF 'WAF.bicep' = if (bool(Stage.WAF)) {
   dependsOn: [
     dp_Deployment_VNET
     dp_Deployment_OMS
+    dp_Deployment_WAFPOLICY
+  ]
+}
+
+module dp_Deployment_AKS 'AKS.bicep' = if (bool(Stage.AKS)) {
+  name: 'dp${Deployment}-AKS'
+  params: {
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    dp_Deployment_OMS
+    dp_Deployment_WAF
+    dp_Deployment_VNET
+    dp_Deployment_ACR
   ]
 }
 
