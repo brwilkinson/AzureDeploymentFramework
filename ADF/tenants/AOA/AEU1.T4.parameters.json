@@ -44,17 +44,9 @@
         "VNGW": 0,
         "NATGW": 0,
         "ERGW": 0,
-        "ADPrimary": 0,
-        "ADSecondary": 0,
         "LB": 0,
-        "InitialDOP": 0,
-        "VMApp": 0,
-        "VMAppLinux": 0,
-        "VMSQL": 0,
-        "VMFILE": 0,
-        "VMSS": 0,
-        "WAFPOLICY": 0,
-        "WAF": 0,
+        "WAFPOLICY": 1,
+        "WAF": 1,
         "FRONTDOORPOLICY": 0,
         "FRONTDOOR": 0,
         "SetExternalDNS": 1,
@@ -62,13 +54,10 @@
         "APPCONFIG": 0,
         "REDIS": 0,
         "APIM": 0,
-        "ACR": 1,
-        "ACI": 0,
-        "AKS": 0,
+        "ACR": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 0,
-        "DNSLookup": 0,
         "ServerFarm": 0,
         "WebSite": 0,
         "WebSiteContainer": 0,
@@ -77,10 +66,22 @@
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,
-        "AzureSYN": 0,
-        "AzureSQL": 0,
         "LT": 0,
-        "SFM": 0
+        "AzureSYN": 0,
+        // below require secrets from KV
+        "VMSS": 0,
+        "ACI": 0,
+        "AKS": 1,
+        "AzureSQL": 0,
+        "SFM": 0,
+        // VM templates
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0
       }
     },
     "Extensions": {
@@ -110,6 +111,63 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
+          {
+            "name": "IngressApplicationGateway",
+            "RBAC": [
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
           {
             "name": "KeyVaultSecretsGet",
             "RBAC": [
@@ -366,15 +424,75 @@
             ]
           }
         ],
+        "WAFPolicyInfo": [
+          {
+            "Name": "AGIC02",
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
+            "enableBotRule": 1,
+            "customRules": [],
+            "exclusions": [],
+            "ruleGroupOverrides": []
+          }
+        ],
+        "WAFInfo": [
+          {
+            "WAFName": "AGIC02",
+            "WAFPolicyAttached": true,
+            "WAFPolicyName": "AGIC02",
+            "WAFTier": "WAF_v2",
+            "PrivateIP": "240",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "BEIPs": [],
+            "pathRules": [],
+            "probes": [],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC02",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC02",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              }
+            ]
+          }
+        ],
         "AKSInfo": [
           {
             "Name": "01",
             "Version": "1.21.7", // "1.20.2","1.19.7","1.19.6", "1.18.14" // 1.22 and above no AGIC support 
             "skuTier": "Paid", //Free
-            "enableRBAC": true, //true, false
-            "enableOSM": true, //true, false
-            "podIdentity": true, //true, false
-            "privateCluster": false, //true, false
+            "enableRBAC": 1,
+            "enableOSM": 1,
+            "podIdentity": 1,
+            "privateCluster": 0,
             "AgentPoolsSN": "snMT02",
             "WAFName": "AGIC02",
             "loadBalancer": "standard", //"basic","standard"

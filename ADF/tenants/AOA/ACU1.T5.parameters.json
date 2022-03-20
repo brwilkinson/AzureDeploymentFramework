@@ -58,7 +58,6 @@
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 0,
-        "DNSLookup": 0,
         "ServerFarm": 1,
         "WebSite": 0,
         "WebSiteContainer": 0,
@@ -1303,10 +1302,10 @@
             "Name": "01",
             "Version": "1.21.7", // "1.20.2","1.19.7","1.19.6", "1.18.14" // 1.22 and above no AGIC support 
             "skuTier": "Paid", //Free
-            "enableRBAC": true, //true, false
-            "enableOSM": true, //true, false
-            "podIdentity": true, //true, false
-            "privateCluster": false, //true, false
+            "enableRBAC": 1,
+            "enableOSM": 1,
+            "podIdentity": 1,
+            "privateCluster": 0,
             "AgentPoolsSN": "snMT02",
             "WAFName": "AGIC02",
             "loadBalancer": "standard", //"basic","standard"
