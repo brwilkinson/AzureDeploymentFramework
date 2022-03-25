@@ -89,7 +89,7 @@ resource SACDN 'Microsoft.Cdn/profiles@2020-09-01' = [for (cdn, index) in CDNInf
 }]
 
 resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
-  name: '${CDN[index].saname}'
+  name: CDN[index].saname
   parent: SACDN[index]
   location: resourceGroup().location
   properties: {
@@ -126,14 +126,14 @@ module DNSCNAME 'x.DNS.Public.CNAME.bicep' = [for (cdn, index) in CDNInfo: if (C
   name: '${CDN[index].saname}.${Global.DomainNameExt}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
-    hostname: '${CDN[index].saname}'
+    hostname: CDN[index].saname
     cname: SACDNEndpoint[index].properties.hostName
     Global: Global
   }
 }]
 
 resource SACDNCustomDomain 'Microsoft.Cdn/profiles/endpoints/customDomains@2020-09-01' = [for (cdn, index) in CDNInfo: if (CDN[index].match && contains(cdn, 'hostname')) {
-  name: '${CDN[index].saname}'
+  name: CDN[index].saname
   parent: SACDNEndpoint[index]
   properties: {
     hostName: '${CDN[index].saname}.${Global.DomainNameExt}'
