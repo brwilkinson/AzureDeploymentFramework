@@ -88,6 +88,10 @@ resource SACDN 'Microsoft.Cdn/profiles@2020-09-01' = [for (cdn, index) in CDNInf
   }
 }]
 
+resource CDNPolicy 'Microsoft.Cdn/CdnWebApplicationFirewallPolicies@2020-09-01' existing = [for (cdn, index) in CDNInfo: if (CDN[index].match && contains(cdn, 'CDNPolicy')) {
+  name: '${DeploymentURI}Policycdn${cdn.CDNPolicy}'
+}]
+
 resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
   name: CDN[index].saname
   parent: SACDN[index]
@@ -98,6 +102,9 @@ resource SACDNEndpoint 'Microsoft.Cdn/profiles/endpoints@2020-09-01' = [for (cdn
     isHttpAllowed: true
     isHttpsAllowed: true
     queryStringCachingBehavior: 'IgnoreQueryString'
+    webApplicationFirewallPolicyLink: ! contains(cdn, 'CDNPolicy') ? null : {
+      id: CDNPolicy[index].id
+    }
     contentTypesToCompress: [
       'text/plain'
       'text/html'

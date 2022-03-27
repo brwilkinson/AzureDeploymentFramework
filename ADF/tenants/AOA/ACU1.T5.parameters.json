@@ -739,7 +739,7 @@
         ],
         "CDNPolicyInfo": [
           {
-            "Name": "API01",
+            "Name": "data8",
             "state": "Enabled",
             "mode": "Prevention"
           }
@@ -750,7 +750,8 @@
             "saname": "data7",
             "endpoint": "data7",
             "hostname": "data7",
-            "EnableSSL": 1
+            "EnableSSL": 1,
+            "CDNPolicy": "data8"
           }
         ],
         "FrontDoorPolicyInfo": [
