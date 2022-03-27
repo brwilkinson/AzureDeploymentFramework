@@ -507,8 +507,8 @@
             ]
           },
           {
-            "name": "data",
-            "skuName": "Standard_LRS",
+            "name": "data6",
+            "skuName": "Standard_RAGZRS", // "Standard_LRS",
             "allNetworks": 1,
             "logging": {
               "r": 0,
@@ -521,7 +521,13 @@
               "enabled": 1,
               "days": 7
             },
-            "fileShares": [
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              }
+            ],
+            "_fileShares": [
               {
                 "name": "locust",
                 "quota": 5120
@@ -533,7 +539,7 @@
             ],
             "containers": [
               {
-                "name": "locust",
+                "name": "cdntest",
                 "rolesInfo": [
                   {
                     "Name": "BW",
@@ -617,15 +623,6 @@
           {
             "Name": "APIWebTest",
             "location": "eastus2"
-          }
-        ],
-        "CDNInfo": [
-          {
-            "Name": "data7",
-            "saname": "data7",
-            "endpoint": "data7",
-            "hostname": "data7",
-            "EnableSSL": 1
           }
         ],
         "KVInfo": [
@@ -740,6 +737,22 @@
             ]
           }
         ],
+        "CDNPolicyInfo": [
+          {
+            "Name": "API01",
+            "state": "Enabled",
+            "mode": "Prevention"
+          }
+        ],
+        "CDNInfo": [
+          {
+            "Name": "data7",
+            "saname": "data7",
+            "endpoint": "data7",
+            "hostname": "data7",
+            "EnableSSL": 1
+          }
+        ],
         "FrontDoorPolicyInfo": [
           {
             "Name": "API01",
@@ -778,13 +791,91 @@
         ],
         "FrontDoorCDN": [
           {
-            "name": "API01", // hostname
+            "name": "API04", // hostname
             "zone": "psthing.com",
             "state": "Enabled",
             "skuName": "Premium", // "Premium"|"Standard"
             "WAFPolicy": "API01",
             "pattern": [
               "/*"
+            ],
+            "originGroups": [
+              {
+                "name": "apimtest",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  // {
+                  //   "name": "acu1brwaoat5sadata3",
+                  //   "hostname": "acu1brwaoat5sadata3.blob.core.windows.net",
+                  //   "enabled": 1
+                  // }
+                  {
+                    "name": "acu1-brw-aoa-t5-apim02",
+                    "hostname": "acu1-brw-aoa-t5-apim02.psthing.com",
+                    "enabled": 1,
+                    "PrivateLinkInfo": {
+                      "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.ApiManagement/service/ACU1-BRW-AOA-T5-apim02",
+                      "privateLinkLocation": "centralus",
+                      "groupId": "Gateways"
+                    }
+                  }
+                  // {
+                  //   "name": "acu1brwaoat5sadata6-secondary",
+                  //   "hostname": "acu1brwaoat5sadata6-secodary.blob.core.windows.net",
+                  //   "enabled": 1,
+                  //   "PrivateLinkInfo": {
+                  //     "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Storage/storageAccounts/acu1brwaoat5sadata6",
+                  //     "privateLinkLocation": "eastus2",
+                  //     "groupId": "blob_secondary"
+                  //   }
+                  // }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "API03", // hostname
+            "zone": "psthing.com",
+            "state": "Enabled",
+            "skuName": "Premium", // "Premium"|"Standard"
+            "WAFPolicy": "API01",
+            "pattern": [
+              "/*"
+            ],
+            "originGroups": [
+              {
+                "name": "storage2",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  // {
+                  //   "name": "acu1brwaoat5sadata3",
+                  //   "hostname": "acu1brwaoat5sadata3.blob.core.windows.net",
+                  //   "enabled": 1
+                  // }
+                  {
+                    "name": "acu1brwaoat5sadata6",
+                    "hostname": "acu1brwaoat5sadata6.blob.core.windows.net",
+                    "enabled": 1,
+                    "PrivateLinkInfo": {
+                      "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Storage/storageAccounts/acu1brwaoat5sadata6",
+                      "privateLinkLocation": "centralus",
+                      "groupId": "blob"
+                    }
+                  }
+                  // {
+                  //   "name": "acu1brwaoat5sadata6-secondary",
+                  //   "hostname": "acu1brwaoat5sadata6-secodary.blob.core.windows.net",
+                  //   "enabled": 1,
+                  //   "PrivateLinkInfo": {
+                  //     "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Storage/storageAccounts/acu1brwaoat5sadata6",
+                  //     "privateLinkLocation": "eastus2",
+                  //     "groupId": "blob_secondary"
+                  //   }
+                  // }
+                ]
+              }
             ]
           }
         ],

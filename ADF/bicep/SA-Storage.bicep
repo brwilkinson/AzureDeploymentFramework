@@ -432,7 +432,7 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, '
   scope: resourceGroup(HubRGName)
   params: {
     PrivateLinkInfo: storageInfo.privateLinkInfo
-    providerURL: '${environment().suffixes.storage}' // '.core.windows.net'
+    providerURL: environment().suffixes.storage // '.core.windows.net'
     providerType: SA.type
     resourceName: SA.name
     Nics: contains(storageInfo, 'privatelinkinfo') && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
