@@ -79,12 +79,15 @@ resource origins 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01' = [for
     weight: 1000
     enabledState: bool(origin.enabled) ? 'Enabled' : 'Disabled'
     enforceCertificateNameCheck: true
-    sharedPrivateLinkResource: {
+    // azureOrigin: !contains(origin,'azureOriginId') ? null : {
+    //   id: origin.azureOriginId
+    // }
+    sharedPrivateLinkResource: !contains(origin,'PrivateLinkInfo') ? null : {
       privateLink: {
-        id: '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AWU2-BRW-AOA-RG-T4/providers/Microsoft.Storage/storageAccounts/awu2brwaoat4sadiag'
+        id: origin.PrivateLinkInfo.privateLinkId
       }
-      groupId: 'blob'
-      privateLinkLocation: 'westus2'
+      groupId: origin.PrivateLinkInfo.groupId
+      privateLinkLocation: origin.PrivateLinkInfo.privateLinkLocation
       requestMessage: 'Private link service from AFD'
     }
   }
