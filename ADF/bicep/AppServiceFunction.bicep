@@ -129,7 +129,7 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
       WEBSITE_CONTENTOVERVNET: 1
       WEBSITE_DNS_SERVER: empty(DNSServers[0]) ? AzureDNS : DNSServers[0]
       WEBSITE_VNET_ROUTE_ALL: 1
-      FUNCTIONS_WORKER_RUNTIME: ws.runtime
+      FUNCTIONS_WORKER_RUNTIME: ws.stack
       FUNCTIONS_EXTENSION_VERSION: '~3'
     }
   }
