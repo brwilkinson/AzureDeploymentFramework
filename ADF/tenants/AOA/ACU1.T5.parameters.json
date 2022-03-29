@@ -1573,6 +1573,37 @@
             "Name": "WPS01",
             "kind": "app",
             "AppSVCPlan": "WPS01",
+            "stack": "php",
+            "saname": "diag",
+            "customDNS": 1,
+            "initialDeploy": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          },
+          {
+            "Name": "WPS02",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "dotnet",
+            "saname": "diag",
+            "customDNS": 1,
+            "initialDeploy": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          },
+          {
+            "Name": "WPS03",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "node",
             "saname": "diag",
             "customDNS": 1,
             "initialDeploy": 1,
