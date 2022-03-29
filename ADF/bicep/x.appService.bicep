@@ -122,6 +122,17 @@ resource slots 'Microsoft.Web/sites/slots@2021-03-01' = [for (item, index) in ra
   }
 }]
 
+resource slotConfig 'Microsoft.Web/sites/config@2021-03-01' = {
+  name: 'slotConfigNames'
+  parent: WS
+  properties: {
+    appSettingNames: [
+      // 'abc'
+      'def'
+    ]
+  }
+}
+
 module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws, 'initialDeploy') && bool(ws.initialDeploy) && contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'dp-binding-${ws.name}'
   params: {

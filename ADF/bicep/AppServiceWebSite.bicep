@@ -82,7 +82,7 @@ var myAppConfig = {
   }
 }
 
-resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-01-15' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-03-01' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
   name: '${Deployment}-ws${ws.Name}/appsettings'
 }]
 
@@ -161,3 +161,4 @@ module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSit
     website[index]
   ]
 }]
+
