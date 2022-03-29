@@ -75,6 +75,11 @@ resource FARM 'Microsoft.Web/serverfarms@2021-02-01' existing = {
   name: '${Deployment}-asp${ws.AppSVCPlan}'
 }
 
+var alwaysOn = [
+  'php'
+  'dotnet'
+]
+
 resource WS 'Microsoft.Web/sites@2021-01-01' = {
   name: '${Deployment}-${appprefix}${ws.Name}'
   identity: {
@@ -90,6 +95,10 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
     siteConfig: {
       // az webapp list-runtimes, this setting is linux only
       linuxFxVersion: empty(linuxFxVersion) ? null : linuxFxVersion
+      phpVersion: ws.stack == 'php' ? '7.4' : 'OFF'
+      nodeVersion: ws.stack == 'node' ? '~16' : 'OFF'
+      netFrameworkVersion: ws.stack == 'dotnet' ? 'v6.0' : null
+      alwaysOn: contains(alwaysOn ,ws.stack) ? true : false
     }
   }
   dependsOn: [
@@ -218,6 +227,30 @@ resource WSWebConfig 'Microsoft.Web/sites/config@2021-01-01' = if (contains(ws, 
     preWarmedInstanceCount: ws.preWarmedCount
   }
 }
+
+resource stack 'Microsoft.Web/sites/config@2021-01-15' = {
+  name: 'metadata'
+  parent: WS
+  properties: {
+    CURRENT_STACK: ws.stack
+  }
+}
+
+// resource php 'Microsoft.Web/sites/config@2021-01-15' = {
+//   name: 'phpVersion'
+//   parent: WS
+//   properties: {
+//     CURRENT_STACK: ws.stack
+//   }
+// }
+
+// resource node 'Microsoft.Web/sites/config@2021-01-15' = {
+//   name: 'nodeVersion'
+//   parent: WS
+//   properties: {
+//     CURRENT_STACK: ws.stack
+//   }
+// }
 
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws, 'privatelinkinfo')) {
   name: 'dp${Deployment}-privatelinkloop${ws.name}'

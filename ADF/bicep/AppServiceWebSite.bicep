@@ -66,8 +66,6 @@ var WSInfo = [for (ws, index) in WebSiteInfo: {
 var myAppConfig = {
   abc: 'value'
   def: 'value'
-  netFrameworkVersion: 'v4.0'
-  phpVersion: '7.4'
 }
 
 resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-01-15' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
