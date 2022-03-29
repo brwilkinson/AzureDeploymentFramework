@@ -236,22 +236,6 @@ resource stack 'Microsoft.Web/sites/config@2021-01-15' = {
   }
 }
 
-// resource php 'Microsoft.Web/sites/config@2021-01-15' = {
-//   name: 'phpVersion'
-//   parent: WS
-//   properties: {
-//     CURRENT_STACK: ws.stack
-//   }
-// }
-
-// resource node 'Microsoft.Web/sites/config@2021-01-15' = {
-//   name: 'nodeVersion'
-//   parent: WS
-//   properties: {
-//     CURRENT_STACK: ws.stack
-//   }
-// }
-
 module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws, 'privatelinkinfo')) {
   name: 'dp${Deployment}-privatelinkloop${ws.name}'
   params: {
