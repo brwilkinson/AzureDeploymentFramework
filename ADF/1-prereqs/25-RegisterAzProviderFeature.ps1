@@ -3,6 +3,7 @@
 Register-AzProviderFeature -ProviderNamespace Microsoft.VirtualMachineImages -FeatureName VirtualMachineTemplatePreview
 
 Get-AzProviderFeature -ProviderNamespace Microsoft.Network -list
+Get-AzProviderFeature -ProviderNamespace microsoft.containerservice -list | Sort-Object FeatureName, RegistrationState
 
 # FrontDoor
 # allows deletion of front door with dangling DNS, recommend to cleanup dangling instead of using this.
@@ -17,4 +18,18 @@ Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -Featur
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName UserAssignedIdentityPreview
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-ScaleDownModePreview
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-GitOps
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-ExtensionManager
+
 Register-AzResourceProvider -ProviderNamespace microsoft.containerservice
+Register-AzResourceProvider -ProviderNamespace microsoft.Kubernetes
+Register-AzResourceProvider -ProviderNamespace microsoft.KubernetesConfiguration
+
+
+# az cli 
+
+az extension add -n k8s-configuration
+az extension add -n k8s-extension
+
+
+az extension update -n k8s-configuration
+az extension update -n k8s-extension
