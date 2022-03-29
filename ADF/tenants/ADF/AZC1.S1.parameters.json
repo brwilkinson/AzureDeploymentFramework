@@ -460,7 +460,7 @@
             "kind": "functionapp",
             "AppSVCPlan": "ASP01",
             "saname": "dis01",
-            "runtime": "dotnet",
+            "stack": "dotnet",
             "subnet": "snMT01",
             "preWarmedCount": 1,
             "deploy": 0
@@ -470,7 +470,7 @@
             "kind": "functionapp",
             "AppSVCPlan": "ASP01",
             "saname": "dis01",
-            "runtime": "powershell",
+            "stack": "powershell",
             "subnet": "snMT01",
             "preWarmedCount": 1,
             "deploy": 1

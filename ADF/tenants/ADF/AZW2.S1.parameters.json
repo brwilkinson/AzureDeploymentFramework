@@ -311,7 +311,7 @@
             "kind": "functionapp",
             "AppSVCPlan": "DIS01",
             "saname": "dis01",
-            "runtime": "dotnet"
+            "stack": "dotnet"
           }
         ],
         "APIMInfo": [

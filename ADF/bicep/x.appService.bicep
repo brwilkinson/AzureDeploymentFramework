@@ -98,7 +98,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
       phpVersion: ws.stack == 'php' ? '7.4' : 'OFF'
       nodeVersion: ws.stack == 'node' ? '~16' : 'OFF'
       netFrameworkVersion: ws.stack == 'dotnet' ? 'v6.0' : null
-      alwaysOn: contains(alwaysOn ,ws.stack) ? true : false
+      alwaysOn: contains(alwaysOn,ws.stack) && FARM.kind != 'elastic' ? true : false
     }
   }
   dependsOn: [

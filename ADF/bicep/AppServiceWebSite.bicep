@@ -64,6 +64,9 @@ var WSInfo = [for (ws, index) in WebSiteInfo: {
 
 // merge appConfig, move this to the websiteInfo as a property to pass in these from the param file
 var myAppConfig = {
+  default: {
+    
+  }
   php: {
     
   }
