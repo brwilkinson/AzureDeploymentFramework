@@ -666,12 +666,6 @@
             "deploy": 1
           }
         ],
-        "appServiceKubeEnvInfo": [
-          {
-            "Name": "KUBE01",
-            "location": "northcentralusstage"
-          }
-        ],
         "WebSiteInfo": [
           {
             "Name": "WPS01",

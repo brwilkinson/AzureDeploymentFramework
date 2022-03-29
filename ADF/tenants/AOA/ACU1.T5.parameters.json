@@ -1563,11 +1563,6 @@
             "deploy": 1
           }
         ],
-        // "appServiceKubeEnvInfo": [
-        //   {
-        //     "Name": "01"
-        //   }
-        // ],
         "WebSiteInfo": [
           {
             "Name": "WPS01",
