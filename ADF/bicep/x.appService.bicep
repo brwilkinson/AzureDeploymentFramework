@@ -97,7 +97,9 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
   ]
 }
 
-resource slots 'Microsoft.Web/sites/slots@2021-03-01' = [for (item, index) in range(1, ws.extraSlots): if (contains(ws, 'extraSlots')) {
+var extraSlots = contains(ws, 'extraSlots') ? ws.extraSlots : 0
+
+resource slots 'Microsoft.Web/sites/slots@2021-03-01' = [for (item, index) in range(1, extraSlots): if (contains(ws, 'extraSlots')) {
   name: 'slot${item}'
   parent: WS
   location: resourceGroup().location

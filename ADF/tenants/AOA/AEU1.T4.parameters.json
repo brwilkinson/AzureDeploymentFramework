@@ -424,6 +424,121 @@
             ]
           }
         ],
+        "FrontDoorPolicyInfo": [
+          {
+            "Name": "API01",
+            "Version": "Premium", //Classic,Standard,Premium
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "1.0",
+            "_customRules": [
+              {
+                "name": "RateLimitRule",
+                "ruleType": "RateLimitRule",
+                "EnabledState": "Enabled",
+                "action": "Block",
+                "priority": 1,
+                "rateLimitDurationInMinutes": 1,
+                "rateLimitThreshold": 1000,
+                "MatchConditions": [
+                  {
+                    "matchVariable": "RequestUri",
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "transforms": [],
+                    "matchValue": [
+                      "/promo"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "exclusions": [],
+            "ruleGroupOverrides": [],
+            "enableBotRule": 1,
+            "botRuleGroupOverrides": [],
+            "botexclusions": []
+          }
+        ],
+        "FrontDoorCDN": [
+          {
+            "name": "API05", // hostname
+            "zone": "psthing.com",
+            "state": "Enabled",
+            "skuName": "Premium", // "Premium"|"Standard"
+            "WAFPolicy": "API01",
+            "pattern": [
+              "/*"
+            ],
+            "originGroups": [
+              {
+                "name": "apimtest",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  // {
+                  //   "name": "acu1brwaoat5sadata3",
+                  //   "hostname": "acu1brwaoat5sadata3.blob.core.windows.net",
+                  //   "enabled": 1
+                  // }
+                  {
+                    "name": "aeu1-brw-aoa-t4-apim02",
+                    "hostname": "aeu1-brw-aoa-t4-apim02.psthing.com",
+                    "enabled": 1,
+                    "PrivateLinkInfo": {
+                      "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AEU1-BRW-AOA-RG-T4/providers/Microsoft.ApiManagement/service/AEU1-BRW-AOA-T4-apim02",
+                      "privateLinkLocation": "eastus",
+                      "groupId": "Gateways"
+                    }
+                  }
+                  // {
+                  //   "name": "acu1brwaoat5sadata6-secondary",
+                  //   "hostname": "acu1brwaoat5sadata6-secodary.blob.core.windows.net",
+                  //   "enabled": 1,
+                  //   "PrivateLinkInfo": {
+                  //     "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Storage/storageAccounts/acu1brwaoat5sadata6",
+                  //     "privateLinkLocation": "eastus2",
+                  //     "groupId": "blob_secondary"
+                  //   }
+                  // }
+                ]
+              }
+            ]
+          }
+        ],
+        "APIMInfo": [
+          {
+            "name": "02",
+            "dnsName": "API",
+            "apimSku": "Premium",
+            "snName": "snBE01",
+            "virtualNetworkType": "None",
+            "certName": "PSTHING-WildCard",
+            "_frontDoor": "01",
+            "zone": 1,
+            "capacity": 1,
+            "_publicAccess": 0,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "Gateway"
+              }
+            ],
+            "additionalLocations": [
+              {
+                "prefix": "AWU2",
+                "snName": "snBE01",
+                "capacity": 1,
+                "privateLinkInfo": [
+                  {
+                    "Subnet": "snFE01",
+                    "groupID": "Gateway"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
         "WAFPolicyInfo": [
           {
             "Name": "AGIC02",

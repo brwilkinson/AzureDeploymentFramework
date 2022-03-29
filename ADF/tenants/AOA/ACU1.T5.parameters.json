@@ -812,12 +812,12 @@
                   //   "enabled": 1
                   // }
                   {
-                    "name": "acu1-brw-aoa-t5-apim02",
-                    "hostname": "acu1-brw-aoa-t5-apim02.psthing.com",
+                    "name": "acu1-brw-aoa-t5-apim02-2",
+                    "hostname": "acu1-brw-aoa-t5-apim02-2.psthing.com",
                     "enabled": 1,
                     "PrivateLinkInfo": {
                       "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.ApiManagement/service/ACU1-BRW-AOA-T5-apim02",
-                      "privateLinkLocation": "centralus",
+                      "privateLinkLocation": "eastus2",
                       "groupId": "Gateways"
                     }
                   }
