@@ -16,15 +16,15 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
-resource KUBE 'Microsoft.Web/kubeEnvironments@2021-03-01' existing = {
+resource managedENV 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
   name: toLower('${Deployment}-kube${kubeAppInfo.kubeENV}')
 }
 
-resource KUBEAPP 'Microsoft.Web/containerApps@2021-03-01' = {
-  name: toLower('${KUBE.name}-app${kubeAppInfo.name}')
+resource containerAPP 'Microsoft.App/containerApps@2022-01-01-preview' = {
+  name: toLower('${managedENV.name}-app${kubeAppInfo.name}')
   location: resourceGroup().location
   properties: {
-    kubeEnvironmentId: KUBE.id
+    managedEnvironmentId: managedENV.id
     configuration: {
       activeRevisionsMode: 'multiple'
       ingress: {
