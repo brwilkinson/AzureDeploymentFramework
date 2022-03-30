@@ -35,18 +35,18 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var kubeAppInfo = contains(DeploymentInfo, 'kubeAppInfo') ? DeploymentInfo.kubeAppInfo : []
+var containerAppInfo = contains(DeploymentInfo, 'containerAppInfo') ? DeploymentInfo.containerAppInfo : []
 
-var kApp = [for (kubeapp, index) in kubeAppInfo: {
+var kApp = [for (kubeapp, index) in containerAppInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), kubeapp.name))
 }]
 
-module kubeApp 'KubeApp-App.bicep' = [for (ka, index) in kubeAppInfo: if (kApp[index].match) {
+module kubeApp 'ContainerApp-App.bicep' = [for (ka, index) in containerAppInfo: if (kApp[index].match) {
   name: 'dp${Deployment}-KubeApp-${ka.name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    kubeAppInfo: ka
+    containerAppInfo: ka
     Global: Global
     DeploymentID: Deployment
     Environment: Environment
