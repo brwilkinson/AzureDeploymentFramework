@@ -1,6 +1,6 @@
 param Deployment string
 param DeploymentURI string
-param kubeAppInfo object
+param containerAppInfo object
 param Global object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
@@ -17,11 +17,11 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 }
 
 resource managedENV 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
-  name: toLower('${Deployment}-kube${kubeAppInfo.kubeENV}')
+  name: toLower('${Deployment}-kube${containerAppInfo.kubeENV}')
 }
 
 resource containerAPP 'Microsoft.App/containerApps@2022-01-01-preview' = {
-  name: toLower('${managedENV.name}-app${kubeAppInfo.name}')
+  name: toLower('${managedENV.name}-app${containerAppInfo.name}')
   location: resourceGroup().location
   properties: {
     managedEnvironmentId: managedENV.id
