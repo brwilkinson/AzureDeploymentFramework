@@ -1197,7 +1197,7 @@
         },
         "WAFInfo": [
           {
-            "WAFName": "API",
+            "Name": "API",
             "WAFEnabled": true,
             "WAFMode": "Prevention",
             "WAFPolicyAttached": true,

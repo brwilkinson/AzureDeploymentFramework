@@ -14,6 +14,13 @@ var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var snWAF01Name = 'snWAF01'
 var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
 
+var PL = contains(wafinfo, 'privateLinkInfo') ? wafinfo.privateLinkInfo : []
+
+var privateLinkInfo = [for (privateLink, index) in PL: {
+  SN: '${VnetID}/subnets/${privateLink.Subnet}'
+  GroupID: privateLink.groupId
+}]
+
 var HubKVJ = json(Global.hubKV)
 var HubRGJ = json(Global.hubRG)
 
@@ -41,8 +48,8 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   scope: resourceGroup(HubRGName)
 }
 
-var WAFName = '${Deployment}-waf${wafinfo.WAFName}'
-var WAFID = resourceId('Microsoft.Network/applicationGateways', WAFName)
+var Name = '${Deployment}-waf${wafinfo.Name}'
+var WAFID = resourceId('Microsoft.Network/applicationGateways', Name)
 
 var SSLpolicyLookup = {
   tls12: {
@@ -63,30 +70,30 @@ var SSLpolicyLookup = {
 var Listeners = [for listener in wafinfo.Listeners: {
   name: listener.Port
   backendAddressPool: {
-    id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', WAFName, 'appGatewayBackendPool')
+    id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', Name, 'BackendPool')
   }
   backendHttpSettings: {
-    id: contains(listener, 'BackendPort') ? resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', WAFName, 'appGatewayBackendHttpSettings${listener.BackendPort}') : null
+    id: contains(listener, 'BackendPort') ? resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', Name, 'BackendHttpSettings${listener.BackendPort}') : null
   }
   redirectConfiguration: {
-    id: resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', WAFName, 'redirectConfiguration-${listener.Hostname}-80')
+    id: resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', Name, 'redirectConfiguration-${listener.Hostname}-80')
   }
   sslCertificate: {
-    id: contains(listener, 'Cert') ? resourceId('Microsoft.Network/applicationGateways/sslCertificates', WAFName, listener.Cert) : null
+    id: contains(listener, 'Cert') ? resourceId('Microsoft.Network/applicationGateways/sslCertificates', Name, listener.Cert) : null
   }
   urlPathMap: {
-    id: contains(listener, 'pathRules') ? resourceId('Microsoft.Network/applicationGateways/urlPathMaps', WAFName, listener.pathRules) : null
+    id: contains(listener, 'pathRules') ? resourceId('Microsoft.Network/applicationGateways/urlPathMaps', Name, listener.pathRules) : null
   }
 }]
 
 var BackendHttp = [for be in wafinfo.BackendHttp: {
   probe: {
-    id: resourceId('Microsoft.Network/applicationGateways/probes', WAFName, (contains(be, 'probeName') ? be.probeName : 'na'))
+    id: resourceId('Microsoft.Network/applicationGateways/probes', Name, (contains(be, 'probeName') ? be.probeName : 'na'))
   }
 }]
 
 resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' existing = {
-  name: '${Deployment}-waf${wafinfo.WAFName}-publicip1'
+  name: '${Deployment}-waf${wafinfo.Name}-publicip1'
 }
 
 resource WAFPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2021-05-01' existing = {
@@ -94,7 +101,7 @@ resource WAFPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPo
 }
 
 resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
-  name: WAFName
+  name: Name
   location: resourceGroup().location
   zones: [
     '1'
@@ -121,11 +128,28 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
       name: wafinfo.WAFTier
       tier: wafinfo.WAFTier
     }
+    privateLinkConfigurations: [for (privateLink, index) in PL: {
+      name: 'private'
+      properties: {
+        ipConfigurations: [
+          {
+            name: 'waf-internal-${index}'
+            properties: {
+              primary: true //index == 0 ? true : false
+              privateIPAllocationMethod: 'Dynamic'
+              subnet: {
+                id: '${VnetID}/subnets/${privateLink.Subnet}'
+              }
+            }
+          }
+        ]
+      }
+    }]
     // Move to WAF Policy attached
     // webApplicationFirewallConfiguration: contains(wafinfo, 'WAFPolicyAttached') && bool(wafinfo.WAFPolicyAttached) ? webApplicationFirewallConfiguration : null
     gatewayIPConfigurations: [
       {
-        name: 'appGatewayIpConfig'
+        name: 'IpConfig'
         properties: {
           subnet: {
             id: SubnetRefGW
@@ -135,15 +159,19 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
     ]
     frontendIPConfigurations: [
       {
-        name: 'appGatewayFrontendPublic'
+        name: 'frontendPublic'
         properties: {
           publicIPAddress: {
             id: PublicIP.id
           }
+          privateIPAllocationMethod: 'Dynamic'
+          privateLinkConfiguration: !contains(wafinfo, 'privateLinkInfo') ? null : {
+            id: resourceId('Microsoft.Network/applicationGateways/privateLinkConfigurations', Name, 'private')
+          }
         }
       }
       {
-        name: 'appGatewayFrontendPrivate'
+        name: 'frontendPrivate'
         properties: {
           privateIPAddress: '${networkId}.${wafinfo.PrivateIP}'
           privateIPAllocationMethod: 'Static'
@@ -155,7 +183,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
     ]
     backendAddressPools: [
       {
-        name: 'appGatewayBackendPool'
+        name: 'BackendPool'
         properties: {
           backendAddresses: [for (be, Index) in (contains(wafinfo, 'FQDNs') ? wafinfo.FQDNs : wafinfo.BEIPs): {
             fqdn: contains(wafinfo, 'FQDNs') ? '${DeploymentURI}${be}.${Global.DomainName}' : null
@@ -171,7 +199,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
       }
     }]
     frontendPorts: [for (fe, index) in wafinfo.frontendPorts: {
-      name: 'appGatewayFrontendPort${fe.Port}'
+      name: 'FrontendPort${fe.Port}'
       properties: {
         port: fe.Port
       }
@@ -180,10 +208,10 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
       name: pr.Name
       properties: {
         defaultBackendAddressPool: {
-          id: '${WAFID}/backendAddressPools/appGatewayBackendPool'
+          id: '${WAFID}/backendAddressPools/BackendPool'
         }
         defaultBackendHttpSettings: {
-          id: '${WAFID}/backendHttpSettingsCollection/appGatewayBackendHttpSettings443'
+          id: '${WAFID}/backendHttpSettingsCollection/BackendHttpSettings443'
         }
         pathRules: [
           {
@@ -191,10 +219,10 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
             properties: {
               paths: pr.paths
               backendAddressPool: {
-                id: '${WAFID}/backendAddressPools/appGatewayBackendPool'
+                id: '${WAFID}/backendAddressPools/BackendPool'
               }
               backendHttpSettings: {
-                id: '${WAFID}/backendHttpSettingsCollection/appGatewayBackendHttpSettings443'
+                id: '${WAFID}/backendHttpSettingsCollection/BackendHttpSettings443'
               }
             }
           }
@@ -202,7 +230,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
       }
     }]
     backendHttpSettingsCollection: [for (be, index) in wafinfo.BackendHttp: {
-      name: 'appGatewayBackendHttpSettings${be.Port}'
+      name: 'BackendHttpSettings${be.Port}'
       properties: {
         port: be.Port
         protocol: be.Protocol
@@ -215,10 +243,10 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' = {
       name: 'httpListener-${(contains(list, 'pathRules') ? 'PathBasedRouting' : 'Basic')}-${list.Hostname}-${list.Port}'
       properties: {
         frontendIPConfiguration: {
-          id: '${WAFID}/frontendIPConfigurations/appGatewayFrontend${list.Interface}'
+          id: '${WAFID}/frontendIPConfigurations/Frontend${list.Interface}'
         }
         frontendPort: {
-          id: '${WAFID}/frontendPorts/appGatewayFrontendPort${list.Port}'
+          id: '${WAFID}/frontendPorts/FrontendPort${list.Port}'
         }
         protocol: list.Protocol
         hostName: toLower('${Deployment}-${list.Hostname}.${list.Domain}')
@@ -342,16 +370,16 @@ module SetWAFDNSA 'x.DNS.private.A.bicep' = [for (list, index) in wafinfo.Listen
   ]
 }]
 
-// module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(wafinfo, 'privatelinkinfo')) {
-//   name: 'dp${Deployment}-WAF-privatelinkloop-${wafinfo.name}'
-//   params: {
-    // Deployment: Deployment
-    // DeploymentURI: DeploymentURI
-//     PrivateLinkInfo: wafinfo.privateLinkInfo
-//     resourceName: WAF.name
-//     providerType: WAF.type
-//   }
-// }
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(wafinfo, 'privatelinkinfo')) {
+  name: 'dp${Deployment}-WAF-privatelinkloop-${wafinfo.name}'
+  params: {
+    Deployment: Deployment
+    DeploymentURI: DeploymentURI
+    PrivateLinkInfo: wafinfo.privateLinkInfo
+    resourceName: WAF.name
+    providerType: WAF.type
+  }
+}
 
 // module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(wafinfo, 'privatelinkinfo')) {
 //   name: 'dp${Deployment}-WAF-registerPrivateDNS-${wafinfo.name}'

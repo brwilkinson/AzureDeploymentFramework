@@ -54,11 +54,11 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 var WAFInfo = contains(DeploymentInfo, 'WAFInfo') ? DeploymentInfo.WAFInfo : []
 
 var WAFs = [for waf in WAFInfo : {
-  match: ((Global.CN == '.') || contains(array(Global.CN), waf.WAFName))
+  match: ((Global.CN == '.') || contains(array(Global.CN), waf.Name))
 }]
 
 resource PublicIP 'Microsoft.Network/publicIPAddresses@2019-02-01' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {
-  name: '${Deployment}-waf${waf.WAFName}-publicip1'
+  name: '${Deployment}-waf${waf.Name}-publicip1'
   location: resourceGroup().location
   sku: {
     name: 'Standard'
@@ -66,7 +66,7 @@ resource PublicIP 'Microsoft.Network/publicIPAddresses@2019-02-01' = [for (waf,i
   properties: {
     publicIPAllocationMethod: 'Static'
     dnsSettings: {
-      domainNameLabel: toLower('${DeploymentURI}waf${waf.WAFName}')
+      domainNameLabel: toLower('${DeploymentURI}waf${waf.Name}')
     }
   }
   dependsOn: []
@@ -97,7 +97,7 @@ resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
 }]
 
 module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {
-  name: 'dp${Deployment}-WAFDeploy${waf.WAFName}'
+  name: 'dp${Deployment}-WAFDeploy${waf.Name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI

@@ -2,7 +2,14 @@
 # Image Builder
 Register-AzProviderFeature -ProviderNamespace Microsoft.VirtualMachineImages -FeatureName VirtualMachineTemplatePreview
 
-Get-AzProviderFeature -ProviderNamespace Microsoft.Network -list
+Get-AzProviderFeature -ProviderNamespace microsoft.Network -list | Sort-Object FeatureName, RegistrationState
+
+Register-AzProviderFeature -ProviderNamespace Microsoft.Network -FeatureName AllowApplicationGatewayPrivateLink
+Register-AzProviderFeature -ProviderNamespace Microsoft.Network -FeatureName AllowAppGwPublicAndPrivateIpOnSamePort 
+
+Register-AzResourceProvider -ProviderNamespace microsoft.network
+
+
 Get-AzProviderFeature -ProviderNamespace microsoft.containerservice -list | Sort-Object FeatureName, RegistrationState
 
 # FrontDoor

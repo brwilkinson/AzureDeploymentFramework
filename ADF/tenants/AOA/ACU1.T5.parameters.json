@@ -1122,7 +1122,7 @@
         ],
         "WAFInfo": [
           {
-            "WAFName": "AG01",
+            "Name": "AG01",
             "WAFPolicyAttached": false,
             "_WAFPolicyName": "AG01",
             "WAFTier": "Standard_v2",
@@ -1174,13 +1174,19 @@
             ]
           },
           {
-            "WAFName": "AGIC02",
+            "Name": "AGIC02",
             "WAFPolicyAttached": true,
             "WAFPolicyName": "AGIC02",
             "WAFTier": "WAF_v2",
             "PrivateIP": "240",
             "SSLCerts": [
               "PSTHING-WildCard"
+            ],
+            "privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "frontendPublic"
+              }
             ],
             "BEIPs": [],
             "pathRules": [],
@@ -1220,7 +1226,7 @@
             ]
           },
           {
-            "WAFName": "API02",
+            "Name": "API02",
             "WAFEnabled": false,
             // "WAFMode": "Detection",
             // "WAFPolicyAttached": false,
@@ -1303,7 +1309,7 @@
             ]
           },
           {
-            "WAFName": "API03",
+            "Name": "API03",
             "WAFEnabled": false,
             // "WAFMode": "Detection",
             // "WAFPolicyAttached": false,
@@ -1399,7 +1405,7 @@
             "podIdentity": 1,
             "privateCluster": 0,
             "AgentPoolsSN": "snMT02",
-            "WAFName": "AGIC02",
+            "Name": "AGIC02",
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "AppGateway": 1,
@@ -2095,14 +2101,14 @@
             "allowRDP": false,
             "nodeTypes": [
               {
-                "name": "nodetype1",
+                "name": "FE",
                 "OSType": "Server2019SS",
                 "role": "SF",
                 "isPrimary": 1,
                 "capacity": 6
               },
               {
-                "name": "nodetype2",
+                "name": "BE",
                 "OSType": "Server2019SSgs",
                 "role": "SF",
                 "isPrimary": 1,

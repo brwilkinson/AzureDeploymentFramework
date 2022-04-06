@@ -583,7 +583,7 @@ Below is a sample of a Web Application Firewall Configuration
 ``` json
     "WAFInfo": [
       {
-        "WAFName": "API02",
+        "Name": "API02",
         "WAFEnabled": false,
         // "WAFMode": "Detection",
         // "WAFPolicyAttached": false,

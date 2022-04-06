@@ -193,7 +193,7 @@ AKS-IngressApplicationGatewayAddon microsoft.containerservice Registered
 "IngressApplicationGateway": {
 "enabled": true,
 "config": {
-    "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].WAFName))]"
+    "applicationGatewayId": "[resourceid('Microsoft.Network/applicationGateways',concat(variables('Deployment'), '-waf', variables('AKS')[copyIndex(0)].Name))]"
 }
 },
 #>
