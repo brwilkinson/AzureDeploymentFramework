@@ -94,8 +94,9 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
     httpsOnly: true
     serverFarmId: FARM.id
     siteConfig: {
-      // az webapp list-runtimes, this setting is linux only
+      // az webapp list-runtimes --os linux
       linuxFxVersion: empty(linuxFxVersion) ? null : linuxFxVersion
+      // az webapp list-runtimes --os windows
       phpVersion: ws.stack == 'php' ? '7.4' : 'OFF'
       nodeVersion: ws.stack == 'node' ? '~16' : 'OFF'
       netFrameworkVersion: ws.stack == 'dotnet' ? 'v6.0' : null
