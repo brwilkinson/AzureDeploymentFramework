@@ -35,8 +35,8 @@ var gh = {
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 
-var WAFName = '${Deployment}-waf${wafInfo.WAFName}'
-var WAFID = resourceId('Microsoft.Network/applicationGateways', WAFName)
+var Name = '${Deployment}-waf${wafInfo.Name}'
+var WAFID = resourceId('Microsoft.Network/applicationGateways', Name)
 
 var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
@@ -56,28 +56,28 @@ var SSLpolicyLookup = {
 var Listeners = [for i in range(0, length(wafInfo.Listeners)): {
   name: wafInfo.Listeners[i].Port
   backendAddressPool: {
-    id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', '${Deployment}-waf${WAFName}', 'appGatewayBackendPool')
+    id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', '${Deployment}-waf${Name}', 'appGatewayBackendPool')
   }
   backendHttpSettings: {
-    id: (contains(wafInfo.Listeners[i], 'BackendPort') ? resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', '${Deployment}-waf${WAFName}', 'appGatewayBackendHttpSettings${wafInfo.Listeners[i].BackendPort}') : json('null'))
+    id: (contains(wafInfo.Listeners[i], 'BackendPort') ? resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', '${Deployment}-waf${Name}', 'appGatewayBackendHttpSettings${wafInfo.Listeners[i].BackendPort}') : json('null'))
   }
   redirectConfiguration: {
-    id: resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', '${Deployment}-waf${WAFName}', 'redirectConfiguration-${wafInfo.Listeners[i].Hostname}-80')
+    id: resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', '${Deployment}-waf${Name}', 'redirectConfiguration-${wafInfo.Listeners[i].Hostname}-80')
   }
   sslCertificate: {
-    id: (contains(wafInfo.Listeners[i], 'Cert') ? resourceId('Microsoft.Network/applicationGateways/sslCertificates', '${Deployment}-waf${WAFName}', wafInfo.Listeners[i].Cert) : json('null'))
+    id: (contains(wafInfo.Listeners[i], 'Cert') ? resourceId('Microsoft.Network/applicationGateways/sslCertificates', '${Deployment}-waf${Name}', wafInfo.Listeners[i].Cert) : json('null'))
   }
   urlPathMap: {
-    id: (contains(wafInfo.Listeners[i], 'pathRules') ? resourceId('Microsoft.Network/applicationGateways/urlPathMaps', '${Deployment}-waf${WAFName}', wafInfo.Listeners[i].pathRules) : json('null'))
+    id: (contains(wafInfo.Listeners[i], 'pathRules') ? resourceId('Microsoft.Network/applicationGateways/urlPathMaps', '${Deployment}-waf${Name}', wafInfo.Listeners[i].pathRules) : json('null'))
   }
 }]
 
 resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' existing = {
-  name: '${Deployment}-waf${wafInfo.WAFName}-publicip1'
+  name: '${Deployment}-waf${wafInfo.Name}-publicip1'
 }
 
 resource WAF 'Microsoft.Network/applicationGateways@2020-06-01' = {
-  name: '${Deployment}-waf${WAFName}'
+  name: '${Deployment}-waf${Name}'
   location: resourceGroup().location
   identity: {
     type: 'UserAssigned'
@@ -115,7 +115,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-06-01' = {
         name: 'appGatewayFrontendPublic'
         properties: {
           publicIPAddress: {
-            id: concat(resourceId('Microsoft.Network/publicIPAddresses/', '${Deployment}-waf${WAFName}-publicip1'))
+            id: concat(resourceId('Microsoft.Network/publicIPAddresses/', '${Deployment}-waf${Name}-publicip1'))
           }
         }
       }

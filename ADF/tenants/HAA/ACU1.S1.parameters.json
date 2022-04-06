@@ -669,7 +669,7 @@
             "podIdentity": 1,
             "privateCluster": 1,
             "AgentPoolsSN": "snMT02",
-            "WAFName": "01",
+            "Name": "01",
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "aksAADAdminGroups": [
@@ -827,7 +827,7 @@
         ],
         "WAFInfo": [
           {
-            "WAFName": "AGIC01",
+            "Name": "AGIC01",
             "WAFPolicyAttached": true,
             "WAFPolicyName": "AGIC01",
             "WAFTier": "WAF_v2",

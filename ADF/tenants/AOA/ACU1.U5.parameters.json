@@ -1050,7 +1050,7 @@
         ],
         "WAFInfo": [
           {
-            "WAFName": "API02",
+            "Name": "API02",
             "WAFEnabled": false,
             // "WAFMode": "Detection",
             // "WAFPolicyAttached": false,
@@ -1133,7 +1133,7 @@
             ]
           },
           {
-            "WAFName": "API03",
+            "Name": "API03",
             "WAFEnabled": false,
             // "WAFMode": "Detection",
             // "WAFPolicyAttached": false,

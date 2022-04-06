@@ -739,7 +739,7 @@
             "podIdentity": 1,
             "privateCluster": 0,
             "AgentPoolsSN": "snMT02",
-            "WAFName": "01",
+            "Name": "01",
             "loadBalancer": "basic", //"basic","standard"
             "BrownFields": 0,
             "AppGateway": 0,
@@ -1300,7 +1300,7 @@
         ],
         "WAFInfo": [
           {
-            "WAFName": "API02",
+            "Name": "API02",
             "WAFEnabled": false,
             // "WAFMode": "Detection",
             // "WAFPolicyAttached": false,
@@ -1383,7 +1383,7 @@
             ]
           },
           {
-            "WAFName": "API03",
+            "Name": "API03",
             "WAFEnabled": false,
             // "WAFMode": "Detection",
             // "WAFPolicyAttached": false,

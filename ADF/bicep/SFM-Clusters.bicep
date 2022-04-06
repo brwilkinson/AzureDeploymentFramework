@@ -102,14 +102,18 @@ var MSILookup = {
   SF: 'Cluster'
 }
 
+resource UAIKV 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+  name: '${Deployment}-uaiKeyVaultSecretsGet'
+}
+
 var userAssignedIdentities = {
   Cluster: {
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
+    '${UAIKV.id}': {}
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperatorGlobal')}': {}
   }
   Default: {
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
+    '${UAIKV.id}': {}
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperatorGlobal')}': {}
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountFileContributor')}': {}
@@ -117,16 +121,17 @@ var userAssignedIdentities = {
   None: {}
 }
 
-resource SFM 'Microsoft.ServiceFabric/managedClusters@2021-11-01-preview' = { // 2022-01-01
+resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-01-01' = {
+  // 2022-01-01
   name: sfmname
   location: resourceGroup().location
   sku: {
     name: contains(sfmInfo, 'skuName') ? sfmInfo.skuName : 'Basic' //'Standard' //'Basic'
   }
   properties: {
-
     clusterCodeVersion: '8.2.1486.9590'
     clusterUpgradeMode: 'Automatic'
+
     // isPrivateClusterCodeVersion: false
     clusterUpgradeCadence: 'Wave0'
     adminUserName: contains(sfmInfo, 'AdminUser') ? sfmInfo.AdminUser : Global.vmAdminUserName
@@ -151,7 +156,7 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2021-11-01-preview' = { //
   }
 }
 
-resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2021-11-01-preview' = [for (nt, index) in sfmInfo.nodeTypes: {
+resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-01-01' = [for (nt, index) in sfmInfo.nodeTypes: {
   name: nt.name
   parent: SFM
   sku: {
@@ -178,7 +183,7 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2021-11-01-
     multiplePlacementGroups: false
     capacities: {}
     applicationPorts: {
-      startPort: 20000
+      startPort: 25000
       endPort: 30000
     }
     ephemeralPorts: {
@@ -186,13 +191,58 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2021-11-01-
       endPort: 65534
     }
     vmSecrets: secrets
-    vmExtensions: [ //Geneva, KV, AAD Login
+    vmExtensions: [
+      {
+        name: 'AADLogin'
+        properties: {
+          publisher: ((OSType[nt.OSType].OS == 'Windows') ? 'Microsoft.Azure.ActiveDirectory' : 'Microsoft.Azure.ActiveDirectory.LinuxSSH')
+          type: ((OSType[nt.OSType].OS == 'Windows') ? 'AADLoginForWindows' : 'AADLoginForLinux')
+          typeHandlerVersion: '1.0'
+          autoUpgradeMinorVersion: true
+        }
+      }
+      {
+        name: 'Microsoft.Azure.Geneva.GenevaMonitoring'
+        properties: {
+          publisher: 'Microsoft.Azure.Geneva'
+          type: 'GenevaMonitoring'
+          typeHandlerVersion: '2.0'
+          enableAutomaticUpgrade: true
+          protectedSettings: {}
+          settings: {}
+        }
+      }
       // {
-      //   name:
+      //   name: 'KVVMExtensionForWindows'
       //   properties: {
-      //     publisher:
-      //     type:
-      //     typeHandlerVersion:
+      //     publisher: 'Microsoft.Azure.KeyVault'
+      //     type: 'KeyVaultForWindows'
+      //     typeHandlerVersion: '1.0'
+      //     autoUpgradeMinorVersion: true
+      //     settings: {
+      //       secretsManagementSettings: {
+      //         pollingIntervalInS: 3600
+      //         certificateStoreName: 'MY'
+      //         certificateStoreLocation: 'LocalMachine'
+      //         observedCertificates: [
+      //           cert.properties.secretUri
+      //         ]
+      //       }
+      //     }
+      //     authenticationSettings: {
+      //       msiEndpoint: 'http://169.254.169.254/metadata/identity/oauth2/token'
+      //       msiClientId: UAIKV.properties.clientId
+      //     }
+      //   }
+      // }
+      // {
+      //   name: 'AzureGuestConfig'
+      //   properties: {
+      //     publisher: 'Microsoft.GuestConfiguration'
+      //     type: ((OSType[nt.OSType].OS == 'Windows') ? 'ConfigurationForWindows' : 'ConfigurationForLinux')
+      //     typeHandlerVersion: '1.2'
+      //     autoUpgradeMinorVersion: true
+      //     settings: {}
       //   }
       // }
     ]

@@ -649,7 +649,7 @@
             "podIdentity": 1,
             "privateCluster": 1,
             "AgentPoolsSN": "snMT02",
-            "WAFName": "01",
+            "Name": "01",
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "aksAADAdminGroups": [
@@ -795,7 +795,7 @@
         },
         "WAFInfo": [
           {
-            "WAFName": "01",
+            "Name": "01",
             "WAFEnabled": true,
             "ISAGIC": true,
             "WAFMode": "Detection",

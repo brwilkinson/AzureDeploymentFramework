@@ -140,6 +140,7 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         }
         routeTable: contains(sn, 'Route') && bool(sn.Route) ? RouteTableGlobal : null
         privateEndpointNetworkPolicies: 'Disabled'
+        privateLinkServiceNetworkPolicies: 'Disabled'
         delegations: contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default
         serviceEndpoints: contains(sn, 'serviceEndpoints') ? serviceEndpoints[sn.serviceEndpoints] : serviceEndpoints.default
       }

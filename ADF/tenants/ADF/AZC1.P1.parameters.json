@@ -591,7 +591,7 @@
         },
         "WAFInfo": [
           {
-            "WAFName": "API",
+            "Name": "API",
             "WAFEnabled": false,
             "WAFMode": "Detection",
             "WAFTier": "Standard_v2",

@@ -54,16 +54,16 @@ var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(
 var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 
 var IngressGreenfields = {
-  effectiveApplicationGatewayId: '${subscription().id}/resourceGroups/${resourceGroup().name}-b/providers/Microsoft.Network/applicationGateways/${Deployment}-waf${AKSInfo.WAFName}'
-  applicationGatewayName: '${Deployment}-waf${AKSInfo.WAFName}'
+  effectiveApplicationGatewayId: '${subscription().id}/resourceGroups/${resourceGroup().name}-b/providers/Microsoft.Network/applicationGateways/${Deployment}-waf${AKSInfo.Name}'
+  applicationGatewayName: '${Deployment}-waf${AKSInfo.Name}'
   subnetCIDR: '${networkId}.128/25' // WAF Subnet //'${Global.networkId[0]}0.0/16'
 }
 // var IngressBrownfields = {
-//   applicationGatewayId: resourceId('Microsoft.Network/applicationGateways/', '${Deployment}-waf${AKSInfo.WAFName}')
+//   applicationGatewayId: resourceId('Microsoft.Network/applicationGateways/', '${Deployment}-waf${AKSInfo.Name}')
 // }
 
 resource IngressBrownfields 'Microsoft.Network/applicationGateways@2021-05-01' existing = {
-  name: '${Deployment}-waf${AKSInfo.WAFName}'
+  name: '${Deployment}-waf${AKSInfo.Name}'
 }
 
 var aadProfile = {

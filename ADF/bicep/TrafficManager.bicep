@@ -12,6 +12,7 @@ param Prefix string = 'AZE2'
   'U'
   'P'
   'S'
+  'T'
   'G'
   'A'
 ])
@@ -35,14 +36,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-@secure()
-param vmAdminPassword string
-
-@secure()
-param devOpsPat string
-
-@secure()
-param sshPublic string
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var subscriptionId = subscription().subscriptionId
@@ -95,17 +88,21 @@ resource TM 'Microsoft.Network/trafficmanagerprofiles@2018-08-01' = [for (tm,ind
       expectedStatusCodeRanges: []
     }
     endpoints: [
-      {
-        name: '${tm.PrimaryendpointPrefix}-${tm.Name}'
-        type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
-        properties: {
-          endpointStatus: tm.PrimaryendpointStatus
-          targetResourceId: resourceId('${tm.PrimaryendpointPrefix}-${Global.Appname}-RG-${tm.PrimaryendpointRGName}', 'Microsoft.Network/publicIPAddresses', '${tm.PrimaryendpointPrefix}-${Global.Appname}-${tm.PrimaryendpointRGName}-waf${tm.Name}-publicip1')
-          weight: 1
-          priority: tm.PrimaryendpointPriority
-          endpointLocation: tm.PrimaryendpointLocation
-        }
-      }
+// {
+//   name: 'containerApp'
+//   type: 
+// }
+      // {
+      //   name: '${tm.PrimaryendpointPrefix}-${tm.Name}'
+      //   type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+      //   properties: {
+      //     endpointStatus: tm.PrimaryendpointStatus
+      //     targetResourceId: resourceId('${tm.PrimaryendpointPrefix}-${Global.Appname}-RG-${tm.PrimaryendpointRGName}', 'Microsoft.Network/publicIPAddresses', '${tm.PrimaryendpointPrefix}-${Global.Appname}-${tm.PrimaryendpointRGName}-waf${tm.Name}-publicip1')
+      //     weight: 1
+      //     priority: tm.PrimaryendpointPriority
+      //     endpointLocation: tm.PrimaryendpointLocation
+      //   }
+      // }
     ]
   }
 }]

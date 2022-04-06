@@ -726,7 +726,7 @@
         },
         "WAFInfoNTE": [
           {
-            "WAFName": "FE",
+            "Name": "FE",
             "WAFEnabled": true,
             "WAFMode": "Prevention",
             "WAFPolicyAttached": true,
@@ -783,7 +783,7 @@
         ],
         "WAFInfo": [
           {
-            "WAFName": "API",
+            "Name": "API",
             "WAFEnabled": true,
             "WAFMode": "Detection",
             "WAFPolicyAttached": true,

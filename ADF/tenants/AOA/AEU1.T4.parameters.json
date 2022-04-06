@@ -307,8 +307,8 @@
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1,
-            "delegations": "Microsoft.Web/serverfarms"
+            "FlowAnalyticsEnabled": 1
+            // "delegations": "Microsoft.Web/serverfarms"
           },
           {
             "name": "snFE01",
@@ -553,13 +553,19 @@
         ],
         "WAFInfo": [
           {
-            "WAFName": "AGIC02",
+            "Name": "AGIC02",
             "WAFPolicyAttached": true,
             "WAFPolicyName": "AGIC02",
             "WAFTier": "WAF_v2",
             "PrivateIP": "240",
             "SSLCerts": [
               "PSTHING-WildCard"
+            ],
+            "privateLinkInfo": [
+              {
+                "Subnet": "snMT01",
+                "groupID": "application gateway"
+              }
             ],
             "BEIPs": [],
             "pathRules": [],
@@ -609,7 +615,7 @@
             "podIdentity": 1,
             "privateCluster": 0,
             "AgentPoolsSN": "snMT02",
-            "WAFName": "AGIC02",
+            "Name": "AGIC02",
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "AppGateway": 1,
