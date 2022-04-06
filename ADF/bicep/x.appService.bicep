@@ -78,6 +78,7 @@ resource FARM 'Microsoft.Web/serverfarms@2021-02-01' existing = {
 var alwaysOn = [
   'php'
   'dotnet'
+  'java'
 ]
 
 resource WS 'Microsoft.Web/sites@2021-01-01' = {
@@ -98,6 +99,9 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
       phpVersion: ws.stack == 'php' ? '7.4' : 'OFF'
       nodeVersion: ws.stack == 'node' ? '~16' : 'OFF'
       netFrameworkVersion: ws.stack == 'dotnet' ? 'v6.0' : null
+      javaVersion: ws.stack == 'java' ? '11' : null
+      javaContainer: ws.stack == 'java' ? 'JAVA' : null
+      javaContainerVersion: ws.stack == 'java' ? 'SE' : null
       alwaysOn: contains(alwaysOn,ws.stack) && FARM.kind != 'elastic' ? true : false
     }
   }

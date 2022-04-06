@@ -1571,6 +1571,21 @@
         ],
         "WebSiteInfo": [
           {
+            "Name": "WPS04",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "java",
+            "saname": "diag",
+            "customDNS": 1,
+            "initialDeploy": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          },
+          {
             "Name": "WPS01",
             "kind": "app",
             "AppSVCPlan": "WPS01",
