@@ -80,6 +80,9 @@ var myAppConfig = {
     XDT_MicrosoftApplicationInsights_NodeJS: '1'
     XDT_MicrosoftApplicationInsights_Mode: 'default'
   }
+  java: {
+    
+  }
 }
 
 resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-03-01' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
