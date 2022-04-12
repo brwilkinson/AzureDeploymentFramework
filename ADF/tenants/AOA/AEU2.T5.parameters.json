@@ -1356,17 +1356,26 @@
             "allowRDP": false,
             "nodeTypes": [
               {
-                "name": "nodetype1",
-                "OSType": "Server2019SS",
+                "name": "FE",
+                "OSType": "Server2019SSgs",
                 "role": "SF",
-                "isPrimary": 1,
-                "capacity": 6
+                "isPrimary": 0,
+                "capacity": 3,
+                "placementProperties": {
+                  "NodeType": "FE-Node"
+                }
+              },
+              {
+                "name": "BE",
+                "OSType": "Server2019SSgs",
+                "role": "SF",
+                "isPrimary": 0,
+                "capacity": 3,
+                "placementProperties": {
+                  "NodeType": "BE-Node"
+                }
               }
-            ],
-            "placementProperties": {
-              "OSType": "Server2019SS",
-              "NodeKind": "SF01"
-            }
+            ]
           }
         ]
       }
