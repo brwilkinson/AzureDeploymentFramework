@@ -43,6 +43,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
 }
 
 var sapname = toLower('${Deployment}-sqlsyn${Synapse.name}')
+var SynapseSQLDB = contains(Synapse,'SQLDB') ? Synapse.SQLDB : []
 
 resource synapseWS 'Microsoft.Synapse/workspaces@2021-06-01' = {
   name: sapname
@@ -86,6 +87,21 @@ resource synapseWS 'Microsoft.Synapse/workspaces@2021-06-01' = {
 // resource synapseWS 'Microsoft.Synapse/workspaces/sqlAdministrators@2021-06-01' = {
 //   name: 
 // }
+
+// resource SQLDB 'Microsoft.Synapse/workspaces/sqlDatabases@2020-04-01-preview' = [for (db, index) in SynapseSQLDB: {
+//   name: db.name
+//   location: resourceGroup().location
+//   parent: synapseWS
+//   properties: {
+//     storageRedundancy:
+//     // collation: 'string'
+//     // dataRetention: {
+//     //   dropRetentionPeriod: 'string'
+//     //   retentionPeriod: 'string'
+//     // }
+//   }
+// }]
+
 
 resource synapseWSDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'service'

@@ -2051,6 +2051,128 @@
               //   "DirectReturn": false
               // }
             ]
+          },
+          {
+            "Name": "SF01",
+            "ASName": "SF01",
+            "Sku": "Standard",
+            "Type": "Private",
+            "BackEnd": [
+              "SF01"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "SF01",
+                "SNName": "MT02",
+                "LBFEIP": "250"
+                // "zones": [
+                //   "1"
+                // ]
+              }
+            ],
+            "NATPools": [
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443
+              // }
+            ],
+            "Services": [
+              {
+                "LBFEName": "SF01",
+                "LBBEName": "SF01",
+                "RuleName": "SF01-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              }
+              // {
+              //   "LBFEName": "API",
+              //   "LBBEName": "API",
+              //   "RuleName": "API-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
+            ]
+          },
+          {
+            "Name": "SF02",
+            "ASName": "SF02",
+            "Sku": "Standard",
+            "Type": "Private",
+            "BackEnd": [
+              "SF02"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "SF02",
+                "SNName": "MT02",
+                "LBFEIP": "249"
+                // "zones": [
+                //   "1"
+                // ]
+              }
+            ],
+            "NATPools": [
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443
+              // }
+            ],
+            "Services": [
+              {
+                "LBFEName": "SF02",
+                "LBBEName": "SF02",
+                "RuleName": "SF02-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              }
+              // {
+              //   "LBFEName": "API",
+              //   "LBBEName": "API",
+              //   "RuleName": "API-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
+            ]
           }
         ],
         "AppServersVMSS": [
@@ -2117,23 +2239,27 @@
             "nodeTypes": [
               {
                 "name": "FE",
-                "OSType": "Server2019SS",
+                "OSType": "Server2019SSgs",
                 "role": "SF",
-                "isPrimary": 1,
-                "capacity": 6
+                "isPrimary": 0,
+                "capacity": 3,
+                "placementProperties": {
+                  "OSType": "Server2019SSgs",
+                  "NodeType": "FE-Node"
+                }
               },
               {
                 "name": "BE",
                 "OSType": "Server2019SSgs",
                 "role": "SF",
-                "isPrimary": 1,
-                "capacity": 6
+                "isPrimary": 0,
+                "capacity": 3,
+                "placementProperties": {
+                  "OSType": "Server2019SSgs",
+                  "NodeType": "BE-Node"
+                }
               }
-            ],
-            "placementProperties": {
-              "OSType": "Server2019SS",
-              "NodeKind": "SF01"
-            }
+            ]
           }
         ]
       }

@@ -179,7 +179,9 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-01-01'
     dataDiskSizeGB: 256
     dataDiskType: storageAccountType
     dataDiskLetter: 'S'
-    placementProperties: contains(nt, 'placementProperties') ? nt.placementProperties : {}
+    placementProperties: contains(nt, 'placementProperties') ? nt.placementProperties : {
+      NodeType: nt.name
+    }
     multiplePlacementGroups: false
     capacities: {}
     applicationPorts: {
