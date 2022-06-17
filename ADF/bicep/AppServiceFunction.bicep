@@ -24,7 +24,7 @@ param Environment string = 'D'
   '8'
   '9'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -96,6 +96,7 @@ module functionApp 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (W
     DeploymentID: DeploymentID
     Environment: Environment
     Prefix: Prefix
+    Stage: Stage
     diagLogs: [
       {
         category: 'FunctionAppLogs'
@@ -116,7 +117,7 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
     appprefix: 'fn'
     Deployment: Deployment
     appConfigCustom: myAppConfig
-    appConfigCurrent: WSInfo[index].match ? appsettingsCurrent[index].list().properties : null
+    appConfigCurrent: contains(ws,'initialDeploy') && bool(ws.initialDeploy) ? {} : appsettingsCurrent[index].list().properties
     appConfigNew: {
       // https://docs.microsoft.com/en-us/azure/azure-functions/configure-networking-how-to
       // https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
@@ -125,12 +126,13 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
       WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       Storage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
-      WEBSITE_CONTENTSHARE: replace(toLower('${ws.name}'), '-', '')
-      WEBSITE_CONTENTOVERVNET: 1
-      WEBSITE_DNS_SERVER: empty(DNSServers[0]) ? AzureDNS : DNSServers[0]
-      WEBSITE_VNET_ROUTE_ALL: 1
+      WEBSITE_CONTENTSHARE: replace(toLower('${Deployment}-fn${ws.Name}'), '-', '')
+      // WEBSITE_CONTENTOVERVNET: 1
+      // WEBSITE_DNS_SERVER: length(DNSServers) == 0 ? AzureDNS : DNSServers[0]
+      // WEBSITE_VNET_ROUTE_ALL: 1
       FUNCTIONS_WORKER_RUNTIME: ws.stack
-      FUNCTIONS_EXTENSION_VERSION: '~3'
+      FUNCTIONS_EXTENSION_VERSION: '~4'
+      AzureWebJobsDisableHomepage: 'true'
     }
   }
   dependsOn: [
