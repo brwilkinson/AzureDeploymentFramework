@@ -24,7 +24,7 @@ param Environment string = 'D'
   '8'
   '9'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params

@@ -649,7 +649,7 @@
             "podIdentity": 1,
             "privateCluster": 1,
             "AgentPoolsSN": "snMT02",
-            "Name": "01",
+            "WAFName": "01",
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "aksAADAdminGroups": [

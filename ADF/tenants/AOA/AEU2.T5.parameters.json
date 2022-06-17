@@ -766,7 +766,7 @@
             "podIdentity": 1,
             "privateCluster": 0,
             "AgentPoolsSN": "snMT02",
-            "Name": "AGIC02",
+            "WAFName": "AGIC02",
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "AppGateway": 1,

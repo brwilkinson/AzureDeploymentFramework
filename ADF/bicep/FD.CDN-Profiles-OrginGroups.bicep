@@ -38,13 +38,8 @@ resource CDNProfile 'Microsoft.Cdn/profiles@2020-09-01' existing = {
   name: toLower('${DeploymentURI}cdn${cdn.name}')
 }
 
-resource customDomains 'Microsoft.Cdn/profiles/customDomains@2021-06-01' existing = {
-  name: toLower(replace('${cdn.name}.${cdn.zone}', '.', '-'))
-  parent: CDNProfile
-}
-
 resource endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2020-09-01' existing = {
-  name: toLower('${DeploymentURI}cdn${cdn.name}')
+  name: toLower(originGroup.name)
   parent: CDNProfile
 }
 
@@ -65,6 +60,11 @@ resource originGroups 'Microsoft.Cdn/profiles/originGroups@2021-06-01' = {
     }
     sessionAffinityState: bool(originGroup.sessionAffinity) ? 'Enabled' : 'Disabled'
   }
+}
+
+resource customDomains 'Microsoft.Cdn/profiles/customDomains@2021-06-01' existing = {
+  name: toLower(replace('${originGroup.name}.${cdn.zone}', '.', '-'))
+  parent: CDNProfile
 }
 
 resource origins 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01' = [for (origin, index) in originGroup.origins: {
@@ -93,8 +93,8 @@ resource origins 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01' = [for
   }
 }]
 
-resource afdRoutes 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = [for (rt, index) in cdn.originGroups: {
-  name: rt.name
+resource afdRoutes 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = {
+  name: toLower(originGroup.name)
   parent: endpoint
   properties: {
     customDomains: [
@@ -106,13 +106,13 @@ resource afdRoutes 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = [fo
       id: originGroups.id
     }
     enabledState: 'Enabled'
-    supportedProtocols: [
+    supportedProtocols: contains(originGroup,'protocols') ? originGroup.protocols : [
       'Http'
       'Https'
     ]
     forwardingProtocol: 'MatchRequest'
     httpsRedirect: 'Enabled'
-    originPath: rt.probePath
+    originPath: originGroup.probePath
     linkToDefaultDomain: 'Disabled'
     patternsToMatch: cdn.pattern
     cacheConfiguration: {
@@ -124,4 +124,4 @@ resource afdRoutes 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = [fo
   dependsOn: [
     origins
   ]
-}]
+}
