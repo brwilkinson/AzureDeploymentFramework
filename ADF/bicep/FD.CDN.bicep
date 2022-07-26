@@ -39,12 +39,11 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 
 var CDNInfo = contains(DeploymentInfo, 'FrontDoorCDN') ? DeploymentInfo.FrontDoorCDN : []
 
-// var CDN = [for (cdn, i) in CDNInfo: {
-//   match: Global.CN == '.' || contains(array(Global.CN), cdn.Name)
-// }]
+var CDN = [for (cdn, i) in CDNInfo: {
+  match: Global.CN == '.' || contains(array(Global.CN), cdn.Name)
+}]
 
-// remove match filter on Frontdoor profile, move to afdendpoins and endpoints
-module FD 'FD.CDN-Profiles.bicep' = [for (cdn, index) in CDNInfo: {    //if (CDN[index].match) {
+module FD 'FD.CDN-Profiles.bicep' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
   name: 'dp-FD.CDN-Profiles-${cdn.name}'
   params: {
     Environment: Environment
