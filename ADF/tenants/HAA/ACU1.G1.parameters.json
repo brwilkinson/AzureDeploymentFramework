@@ -251,7 +251,7 @@
           }
         ],
         "DNSPublicZoneInfo": [
-          "haapp.net"
+          "foo.com"
         ]
       }
     }

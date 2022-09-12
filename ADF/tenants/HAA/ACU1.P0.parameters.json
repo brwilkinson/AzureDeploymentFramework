@@ -312,7 +312,7 @@
         "DNSPrivateZoneInfo": [
           {
             "linkDNS": 1,
-            "zone": "HAApp.net",
+            "zone": "foo.com",
             "Autoregistration": false
           },
           {

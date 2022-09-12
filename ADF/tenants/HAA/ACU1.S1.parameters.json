@@ -600,7 +600,7 @@
             "_afdverify": "HAA",
             "services": [
               {
-                "Name": "APIM01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
+                "Name": "APIM01", // acu1-brw-haa-s1-afd 01 - apim01 .foo.com
                 "BEAddress": "apim01.azure-api.net", //always use the gateway
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",
@@ -622,7 +622,7 @@
                 ]
               },
               {
-                "Name": "APIM01-Scm", // acu1-brw-haa-s1-afd 01 - apim01-scm .haapp.net
+                "Name": "APIM01-Scm", // acu1-brw-haa-s1-afd 01 - apim01-scm .foo.com
                 "BEAddress": "apim01.azure-api.net", //always use the gateway
                 "ProbeName": "probe01",
                 "LBSettings": "balance01",

@@ -484,7 +484,7 @@
               },
               {
                 "Name": "LOCUST_HOST",
-                "value": "https://acu1-brw-haa-d3-api03.haapp.net"
+                "value": "https://acu1-brw-haa-d3-api03.foo.com"
               },
               {
                 "Name": "LOCUST_LOGLEVEL",
@@ -555,7 +555,7 @@
             "_afdverify": "HAA",
             "services": [
               {
-                "Name": "PLB01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
+                "Name": "PLB01", // acu1-brw-haa-s1-afd 01 - apim01 .foo.com
                 "BEAddress": [
                   {
                     "address": "{Deployment}-api01.{Domain}"
@@ -610,7 +610,7 @@
             "_afdverify": "HAA",
             "services": [
               {
-                "Name": "GW01", // acu1-brw-haa-s1-afd 01 - apim01 .haapp.net
+                "Name": "GW01", // acu1-brw-haa-s1-afd 01 - apim01 .foo.com
                 "BEAddress": [
                   {
                     "address": "{Deployment}-api02.{Domain}",
@@ -1093,7 +1093,7 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
-                "Domain": "haapp.net",
+                "Domain": "foo.com",
                 "Hostname": "API02",
                 "Interface": "Public"
                 // "pathRules": "map1"
@@ -1101,7 +1101,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "haapp.net",
+                "Domain": "foo.com",
                 "Hostname": "API02",
                 "Interface": "Public",
                 "httpsRedirect": 1
@@ -1179,7 +1179,7 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "HAAPP-WildCard",
-                "Domain": "haapp.net",
+                "Domain": "foo.com",
                 "Hostname": "API03",
                 "Interface": "Public"
                 // "pathRules": "map1"
@@ -1187,7 +1187,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "haapp.net",
+                "Domain": "foo.com",
                 "Hostname": "API03",
                 "Interface": "Public",
                 "httpsRedirect": 1

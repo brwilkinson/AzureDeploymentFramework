@@ -21,12 +21,12 @@
     "CertThumbprint": "45F981E30340710BFB07CCEC6CFF14C829E521D2",
     "CertName": "WildCardCert",
     "CertURLs": [
-      "*.haapp.net",
+      "*.foo.com",
       "*.contoso.com"
     ],
     "ADDomainName": "contoso.com",
-    "DomainName": "haapp.net",
-    "DomainNameExt": "haapp.net",
+    "DomainName": "foo.com",
+    "DomainNameExt": "foo.com",
     "__DomainNameExtSubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
     "__DomainNameExtRG": "ACU1-BRW-HAA-RG-G1",
     "GHProject": "ADF",

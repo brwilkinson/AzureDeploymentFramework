@@ -15,13 +15,6 @@ Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME |
     where {$_.records[0].cname -match $name} | 
     Remove-AzDnsRecordSet
 
-
-# cleanup Dangling DNS WAF
-$name = 'waf.haapp.net'
-Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
-    where {$_.records[0].cname -match $name} | 
-    Remove-AzDnsRecordSet
-
 # cleanup CDN records and Cosmos
 $name = 'azureedge.net'
 Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
