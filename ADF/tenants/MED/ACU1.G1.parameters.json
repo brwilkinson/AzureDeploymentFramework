@@ -1,0 +1,269 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "G"
+    },
+    "DeploymentID": {
+      "value": "1"
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "UAI": 1,
+        "SP": 1,
+        "KV": 0,
+        "OMS": 1,
+        "OMSSolutions": 0,
+        "OMSDataSources": 0,
+        "OMSUpdateWeekly": 0,
+        "OMSUpdateMonthly": 0,
+        "SA": 1,
+        "CDN": 0,
+        "StorageSync": 0,
+        "RSV": 0,
+        "NSG": 0,
+        "NetworkWatcher": 0,
+        "FlowLogs": 0,
+        "VNet": 0,
+        "VNetPeering": 0,
+        "DNSPublicZone": 1,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 0,
+        "BastionHost": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "NATGW": 0,
+        "ERGW": 0,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "LB": 0,
+        "PLB": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0,
+        "VMSS": 0,
+        "WAFPOLICY": 0,
+        "FRONTDOOR": 0,
+        "WAF": 0,
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 1,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "ManagedEnv": 0,
+        "ContainerApp": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "AzureSYN": 0,
+        "AzureSQL": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 0,
+        "AdminCenter": 0,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "GuestConfig": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "AADLogin": 1,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 1,
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "ImageBuilder",
+            "RBAC": [
+              {
+                // "Name": "Image_Builder",
+                "Name": "contributor",
+                "RG": "G1",
+                "Prefix": "ACU1"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+            ]
+          },
+          {
+            "Name": "Microsoft.Azure.CertificateRegistration",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "PREFIX": "AEU2"
+              }
+            ]
+          }
+        ],
+        "Appservers": {
+          "AppServers": [ // testing for VM SS images and AA Stage Configuration
+            {
+              "Name": "API01",
+              "Role": "API",
+              "ASName": "API",
+              "DDRole": "64GB"
+            }
+          ]
+        },
+        "ImageGalleryInfo": [
+          {
+            "Name": "01",
+            "description": "my image gallery"
+          }
+        ],
+        "ImageInfo": [
+          {
+            "GalleryName": "01",
+            "imageName": "vmss2019",
+            "OSType": "Server2019",
+            "vmSize": "Standard_D4s_v3",
+            "skipImage": 0
+          },
+          {
+            "GalleryName": "01",
+            "imageName": "vmss2022",
+            "OSType": "Server2022",
+            "vmSize": "Standard_D4s_v3",
+            "skipImage": 1
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "Global",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "allNetworks": 1,
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "vault"
+              }
+            ]
+          }
+        ],
+        "saInfo": [
+          {
+            "name": "global",
+            "skuName": "Standard_RAGRS",
+            "allNetworks": 1,
+            "addRemoteManagementIPs": 1,
+            "largeFileSharesState": "Disabled",
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
+          }
+        ],
+        "DNSPublicZoneInfo": [
+          "psthing.com",
+          "vote.psthing.com",
+          "vote2.psthing.com"
+        ],
+        "AppServiceCertRequestInfo" : [
+          {
+            "name": "PSTHING-Wildcard",
+            "domainName": "psthing.com",
+            "domainDNS": "*.psthing.com",
+            "wildcard": 1
+          }
+        ]
+      }
+    }
+  }
+}
+

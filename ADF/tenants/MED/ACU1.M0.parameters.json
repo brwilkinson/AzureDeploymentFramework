@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "G"
+    },
+    "DeploymentID": {
+      "value": "0"
+    },
+    "Stage": {
+      "value": {
+        "RoleDefinition": 1,
+        "Security": 1,
+        "RBAC": 1,
+        "roleEligibility": 1,
+        "SP": 1,
+        "mgInfo": 1
+      }
+    },
+    "Extensions": {
+      "value": {}
+    },
+    "DeploymentInfo": {
+      "value": {
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
+          }
+        ],
+        "RoleDefinitionsInfo": [
+          {
+            "RoleName": "Key_Vault_Reader",
+            "description": "Lets you run deployments from the KeyVault",
+            "notActions": [],
+            "actions": [
+              "MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION"
+            ]
+          }
+        ],
+        "mgInfo" : [
+          {
+            "DisplayName": "Global",
+            "Parent": "Tenant Root Group"
+          },
+          {
+            "DisplayName": "PSO",
+            "Parent": "Global"
+          }
+        ]
+      }
+    }
+  }
+}

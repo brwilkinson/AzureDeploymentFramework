@@ -1,0 +1,2325 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "T"
+    },
+    "DeploymentID": {
+      "value": "5"
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "UAI": 1,
+        "SP": 0,
+        "KV": 1,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "OMSUpdateWeekly": 0,
+        "OMSUpdateMonthly": 0,
+        "OMSUpates": 1,
+        "SA": 1,
+        "CDN": 0,
+        "StorageSync": 0,
+        "RSV": 1,
+        "NSG": 1,
+        "NetworkWatcher": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetPeering": 1,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 1,
+        "BastionHost": 1,
+        "CloudShellRelay": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "NATGW": 0,
+        "ERGW": 0,
+        "LB": 1,
+        "WAFPOLICY": 1,
+        "WAF": 0,
+        "FRONTDOORPOLICY": 1,
+        "FRONTDOOR": 0,
+        "SetExternalDNS": 1,
+        "SetInternalDNS": 1,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 1,
+        "ACR": 1,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "ServerFarm": 1,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "ManagedEnv": 0,
+        "ContainerApp": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "LT": 1,
+        "AzureSYN": 0,
+        // below require secrets from KV
+        "VMSS": 1,
+        "ACI": 0,
+        "AKS": 1,
+        "AzureSQL": 0,
+        "SFM": 0,
+        // VM templates
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "InitialDOP": 0,
+        "VMApp": 1,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 1,
+        "AdminCenter": 1,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "GuestConfig": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "AADLogin": 0,
+        "WindowsOpenSSH": 0,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 0,
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "IngressApplicationGateway",
+            "RBAC": [
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          },
+          {
+            "name": "NetworkContributor",
+            "RBAC": [
+              {
+                "Name": "Network Contributor"
+              },
+              {
+                "Name": "CDN Profile Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageKeyRotation",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Account Contributor"
+              }
+            ]
+          },
+          {
+            "name": "SynapseDataContributor"
+            // if no RBAC, create uai only, then assign RBAC on Resource level.
+          },
+          {
+            "name": "VMOperator",
+            "RBAC": [
+              {
+                "Name": "Virtual Machine Contributor"
+              }
+            ]
+          },
+          {
+            "name": "MonitoringReader",
+            "RBAC": [
+              {
+                "Name": "Monitoring Reader"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              },
+              {
+                "Name": "Load Test Owner"
+              }
+            ]
+          },
+          {
+            "Name": "AzureKeyVault",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "Name": "sec-scan-acr",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "ACRPush"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "User Access Administrator"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Automation_Account_Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA",
+                "PREFIX": "AEU2"
+              }
+            ]
+          }
+        ],
+        "SubnetInfo": [
+          {
+            "name": "snMT01",
+            "prefix": "0/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.Web/serverfarms"
+          },
+          {
+            "name": "snFE01",
+            "prefix": "32/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snBE02",
+            "prefix": "64/28",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
+          },
+          {
+            "name": "snBE01", // APIM Dedicated, switch to /27
+            "prefix": "80/28",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snWAF01",
+            "prefix": "128/25",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          }
+        ],
+        "BastionInfo": {
+          "name": "HST01",
+          "PublicIP": "Static",
+          "Zone": true,
+          "skuName": "Standard",
+          "enableTunneling": 1,
+          "scaleUnits": 2
+        },
+        "saInfo": [
+          {
+            "name": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              },
+              {
+                "Subnet": "snMT02",
+                "groupID": "file"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "SynapseDataContributor",
+                "Type": "UAI",
+                "RBAC": [
+                  {
+                    "Name": "Storage Blob Data Contributor"
+                  }
+                ]
+              }
+            ],
+            "containers": [
+              {
+                "name": "vascans",
+                "rolesInfo": [
+                  {
+                    "Name": "SynapseDataContributor",
+                    "Type": "UAI",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "data2",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "storageKeyRotation": {
+              "State": "enabled"
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            // "ADDS": 1,
+            "fileShares": [
+              {
+                "name": "locust",
+                "quota": 5120
+              },
+              {
+                "name": "function",
+                "quota": 5120,
+                //  Note that SMB shares via ADDS need an update for RBAC
+                "_rolesInfo": [
+                  {
+                    "Name": "StorageAccountFileContributor",
+                    "Type": "UAI",
+                    "RBAC": [
+                      {
+                        "Name": "Storage File Data SMB Share Contributor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "containers": [
+              {
+                "name": "locust"
+              }
+            ]
+          },
+          {
+            "name": "data6",
+            "skuName": "Standard_RAGZRS", // "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              }
+            ],
+            "_fileShares": [
+              {
+                "name": "locust",
+                "quota": 5120
+              },
+              {
+                "name": "function",
+                "quota": 5120
+              }
+            ],
+            "containers": [
+              {
+                "name": "cdntest",
+                "rolesInfo": [
+                  {
+                    "Name": "BW",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "adldata",
+            "skuName": "Standard_RAGRS", //"Standard_LRS",
+            "isHnsEnabled": 1,
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "_changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "fileShares": [
+              {
+                "name": "locust",
+                "quota": 5120
+              },
+              {
+                "name": "function",
+                "quota": 5120
+              }
+            ],
+            "containers": [
+              {
+                "name": "adldata",
+                "rolesInfo": [
+                  {
+                    "Name": "BW",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  },
+                  {
+                    "Name": "SynapseDataContributor",
+                    "Type": "UAI",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "SynapseInfo": [
+          {
+            "name": "01",
+            "saname": "adldata",
+            "sashare": "adldata",
+            "publicNetworkAccess": 0,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "Sql"
+              }
+            ]
+          }
+        ],
+        "LoadTestInfo": [
+          {
+            "Name": "APIWebTest",
+            "location": "eastus2"
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "Data2",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "BW",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              },
+              {
+                "name": "KeyVaultSecretsGet",
+                "Type": "UAI",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Secrets User"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "Name": "App01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "BW",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "RedisInfo": [
+          {
+            "Name": "APIM01",
+            "sku": "C1",
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "redisCache"
+              }
+            ]
+          }
+        ],
+        "APIMInfo": [
+          {
+            "name": "02",
+            "dnsName": "API",
+            "apimSku": "Premium",
+            "snName": "snBE01",
+            "virtualNetworkType": "None",
+            "certName": "PSTHING-WildCard",
+            "_frontDoor": "01",
+            "zone": 1,
+            "capacity": 1,
+            "_publicAccess": 0,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "Gateway"
+              }
+            ],
+            "additionalLocations": [
+              {
+                "prefix": "AEU2",
+                "snName": "snBE01",
+                "capacity": 1,
+                "privateLinkInfo": [
+                  {
+                    "Subnet": "snFE01",
+                    "groupID": "Gateway"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "CDNPolicyInfo": [
+          {
+            "Name": "data8",
+            "state": "Enabled",
+            "mode": "Prevention"
+          }
+        ],
+        "CDNInfo": [
+          {
+            "Name": "data7",
+            "saname": "data7",
+            "endpoint": "data7",
+            "hostname": "data7",
+            "EnableSSL": 1,
+            "CDNPolicy": "data8"
+          }
+        ],
+        "FrontDoorPolicyInfo": [
+          {
+            "Name": "API01",
+            "Version": "Premium", //Classic,Standard,Premium
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "1.0",
+            "_customRules": [
+              {
+                "name": "RateLimitRule",
+                "ruleType": "RateLimitRule",
+                "EnabledState": "Enabled",
+                "action": "Block",
+                "priority": 1,
+                "rateLimitDurationInMinutes": 1,
+                "rateLimitThreshold": 1000,
+                "MatchConditions": [
+                  {
+                    "matchVariable": "RequestUri",
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "transforms": [],
+                    "matchValue": [
+                      "/promo"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "exclusions": [],
+            "ruleGroupOverrides": [],
+            "enableBotRule": 1,
+            "botRuleGroupOverrides": [],
+            "botexclusions": []
+          }
+        ],
+        "FrontDoorCDN": [
+          {
+            "name": "sadata3", // deployment + hostname
+            "zone": "psthing.com",
+            "state": "Enabled",
+            "skuName": "Standard", // "Premium"|"Standard"
+            "pattern": [
+              "/*"
+            ],
+            "endPoints": [
+              {
+                "name": "acu1brwaoat5sadata3",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  {
+                    "name": "acu1brwaoat5sadata3",
+                    "hostname": "acu1brwaoat5sadata3.z19.web.core.windows.net",
+                    "enabled": 1
+                  },
+                  {
+                    "name": "acu1brwaoat5sadata3-secondary",
+                    "hostname": "acu1brwaoat5sadata3-secondary.z19.web.core.windows.net",
+                    "enabled": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "API04", // hostname
+            "zone": "psthing.com",
+            "state": "Enabled",
+            "skuName": "Premium", // "Premium"|"Standard"
+            "WAFPolicy": "API01",
+            "pattern": [
+              "/*"
+            ],
+            "endPoints": [
+              {
+                "name": "apimtest",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  // {
+                  //   "name": "acu1brwaoat5sadata3",
+                  //   "hostname": "acu1brwaoat5sadata3.blob.core.windows.net",
+                  //   "enabled": 1
+                  // }
+                  {
+                    "name": "acu1-brw-aoa-t5-apim02-2",
+                    "hostname": "acu1-brw-aoa-t5-apim02-2.psthing.com",
+                    "enabled": 1,
+                    "PrivateLinkInfo": {
+                      "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.ApiManagement/service/ACU1-BRW-AOA-T5-apim02",
+                      "privateLinkLocation": "eastus2",
+                      "groupId": "Gateways"
+                    }
+                  },
+                  {
+                    "name": "acu1brwaoat5sadata6-secondary",
+                    "hostname": "acu1brwaoat5sadata6-secodary.blob.core.windows.net",
+                    "enabled": 1,
+                    "PrivateLinkInfo": {
+                      "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Storage/storageAccounts/acu1brwaoat5sadata6",
+                      "privateLinkLocation": "eastus2",
+                      "groupId": "blob_secondary"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "shared02", // hostname
+            "zone": "psthing.com",
+            "state": "Enabled",
+            "skuName": "Premium", // "Premium"|"Standard"
+            "_WAFPolicy": "API01",
+            "pattern": [
+              "/*"
+            ],
+            "endPoints": [
+              {
+                "name": "appt11",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "protocols": [
+                  "Https"
+                ],
+                "origins": [
+                  {
+                    "name": "acu1brwaoat5sat1",
+                    "hostname": "acu1brwaoat5sat1.blob.core.windows.net",
+                    "enabled": 1,
+                    "PrivateLinkInfo": {
+                      "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Storage/storageAccounts/acu1brwaoat5sat1",
+                      "privateLinkLocation": "centralus",
+                      "groupId": "blob"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "appt21",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  {
+                    "name": "acu1brwaoat5sat2",
+                    "hostname": "acu1brwaoat5sat2.blob.core.windows.net",
+                    "enabled": 1,
+                    "PrivateLinkInfo": {
+                      "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Storage/storageAccounts/acu1brwaoat5sat2",
+                      "privateLinkLocation": "centralus",
+                      "groupId": "blob"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "appt31",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  {
+                    "name": "acu1brwaoat5sat3",
+                    "hostname": "acu1brwaoat5sat3.blob.core.windows.net",
+                    "enabled": 1
+                  }
+                ]
+              },
+              {
+                "name": "appt41",
+                "probePath": "/",
+                "sessionAffinity": 1,
+                "origins": [
+                  {
+                    "name": "acu1brwaoat5sat4",
+                    "hostname": "acu1brwaoat5sat4.blob.core.windows.net",
+                    "enabled": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "FrontDoorInfo": [
+          {
+            "name": "API2",
+            "_afdverify": "AOA",
+            "rulesEngineDetached": 1,
+            "rules": [
+              {
+                "name": "Rule1",
+                "priority": 0,
+                "action": {
+                  "requestHeaderActions": [],
+                  "responseHeaderActions": [
+                    {
+                      "headerActionType": "Append",
+                      "headerName": "Content-Security-Policy",
+                      "value": "\"script-src 'self' https://apiphany.portal.azure-api.net.\""
+                    }
+                  ]
+                },
+                "matchConditions": [
+                  {
+                    "rulesEngineMatchValue": [
+                      "AQ"
+                    ],
+                    "negateCondition": false,
+                    "rulesEngineMatchVariable": "RemoteAddr",
+                    "rulesEngineOperator": "GeoMatch",
+                    "transforms": []
+                  }
+                ],
+                "matchProcessingBehavior": "Continue"
+              }
+            ],
+            "services": [
+              {
+                "Name": "APIM03", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "patternsToMatch": [
+                  "/*"
+                ],
+                "rulesEngine": "Rule1"
+              },
+              {
+                "Name": "APIM03-Developer",
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-developer.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                "Name": "APIM03-Scm", // acu1-BRW-AOA-s1-afd 01 - apim01-scm .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-scm.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                // Default (front end) Service is Required, add backend as well for ability to test FE.
+                "Name": "Default",
+                "BEAddress": [
+                  {
+                    "address": "portal.azure.com"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
+            ]
+          },
+          {
+            "name": "01",
+            "_afdverify": "AOA",
+            "rulesEngineDetached": 1,
+            "rules": [
+              {
+                "name": "Rule1",
+                "priority": 0,
+                "action": {
+                  "requestHeaderActions": [],
+                  "responseHeaderActions": [
+                    {
+                      "headerActionType": "Append",
+                      "headerName": "Content-Security-Policy",
+                      "value": "\"script-src 'self' https://apiphany.portal.azure-api.net.\""
+                    }
+                  ]
+                },
+                "matchConditions": [
+                  {
+                    "rulesEngineMatchValue": [
+                      "AQ"
+                    ],
+                    "negateCondition": false,
+                    "rulesEngineMatchVariable": "RemoteAddr",
+                    "rulesEngineOperator": "GeoMatch",
+                    "transforms": []
+                  }
+                ],
+                "matchProcessingBehavior": "Continue"
+              }
+            ],
+            "services": [
+              {
+                "Name": "APIM03", // acu1-BRW-AOA-s1-afd 01 - apim01 .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1, // _ to rename to disable after initial deployment
+                "patternsToMatch": [
+                  "/*"
+                ],
+                "rulesEngine": "Rule1"
+              },
+              {
+                "Name": "APIM03-Developer",
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-developer.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                "Name": "APIM03-Scm", // acu1-BRW-AOA-s1-afd 01 - apim01-scm .psthing.com
+                "BEAddress": [
+                  {
+                    "address": "{Deployment}-apim03.azure-api.net",
+                    "hostheader": "{Deployment}-afd03-apim03-scm.{Domain}"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "EnableSSL": 1,
+                "patternsToMatch": [
+                  "/*"
+                ]
+              },
+              {
+                // Default (front end) Service is Required, add backend as well for ability to test FE.
+                "Name": "Default",
+                "BEAddress": [
+                  {
+                    "address": "portal.azure.com"
+                  }
+                ],
+                "ProbeName": "probe01",
+                "LBSettings": "balance01",
+                "sessionAffinityEnabledState": "Disabled",
+                "patternsToMatch": [
+                  "/*"
+                ]
+              }
+            ],
+            "probes": [
+              {
+                "Name": "probe01",
+                "ProbePath": "/"
+              }
+            ],
+            "LBSettings": [
+              {
+                "Name": "balance01",
+                "sampleSize": 4,
+                "successfulSamplesRequired": 2,
+                "additionalLatencyMilliseconds": 0
+              }
+            ]
+          }
+        ],
+        "WAFPolicyInfo": [
+          {
+            "Name": "AGIC02",
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
+            "enableBotRule": 1,
+            "customRules": [],
+            "exclusions": [],
+            "ruleGroupOverrides": []
+          }
+        ],
+        "WAFInfo": [
+          {
+            "Name": "AG01",
+            "WAFPolicyAttached": false,
+            "_WAFPolicyName": "AG01",
+            "WAFTier": "Standard_v2",
+            "PrivateIP": "250",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "application gateway"
+              }
+            ],
+            "BEIPs": [],
+            "pathRules": [],
+            "probes": [],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "AG01",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "AG01",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              }
+            ]
+          },
+          {
+            "Name": "AGIC02",
+            "WAFPolicyAttached": true,
+            "WAFPolicyName": "AGIC02",
+            "WAFTier": "WAF_v2",
+            "PrivateIP": "240",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "frontendPublic"
+              }
+            ],
+            "BEIPs": [],
+            "pathRules": [],
+            "probes": [],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC02",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC02",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              }
+            ]
+          },
+          {
+            "Name": "API02",
+            "WAFEnabled": false,
+            // "WAFMode": "Detection",
+            // "WAFPolicyAttached": false,
+            // "WAFPolicyName": "API",
+            "WAFTier": "Standard_v2",
+            "WAFCapacity": 40,
+            "PrivateIP": "253",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "BEIPs": [
+              // "254"
+            ],
+            "pathRules": [],
+            "probes": [
+              // {
+              //   "Name": "probe01",
+              //   "Path": "/",
+              //   "Protocol": "http",
+              //   "useBE": true
+              // },
+              {
+                "Name": "probe02",
+                "Path": "/api/headers",
+                "Protocol": "https",
+                "useBE": false
+              },
+              {
+                "Name": "probe03",
+                "Path": "/api/headers",
+                "Protocol": "http",
+                "useBE": false
+              }
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe03"
+              },
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe02"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "API02",
+                "Interface": "Public"
+                // "pathRules": "map1"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "API02",
+                "Interface": "Public",
+                "httpsRedirect": 1
+                // "pathRules": "map1"
+              }
+            ]
+          },
+          {
+            "Name": "API03",
+            "WAFEnabled": false,
+            // "WAFMode": "Detection",
+            // "WAFPolicyAttached": false,
+            // "WAFPolicyName": "API",
+            "WAFTier": "Standard_v2",
+            "WAFCapacity": 2,
+            "PrivateIP": "254",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "zones": [
+              "1"
+            ],
+            "commentFQDN": "for FQDNs Justuse NetBios since Domain is AddedfromGlobalParam",
+            "BEIPs": [
+              // "254"
+            ],
+            "pathRules": [],
+            "probes": [
+              // {
+              //   "Name": "probe01",
+              //   "Path": "/",
+              //   "Protocol": "http",
+              //   "useBE": true
+              // },
+              {
+                "Name": "probe02",
+                "Path": "/api/headers",
+                "Protocol": "https",
+                "useBE": false
+              },
+              {
+                "Name": "probe03",
+                "Path": "/api/headers",
+                "Protocol": "http",
+                "useBE": false
+              }
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe03"
+              },
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe02"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "API03",
+                "Interface": "Public"
+                // "pathRules": "map1"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "API03",
+                "Interface": "Public",
+                "httpsRedirect": 1
+                // "pathRules": "map1"
+              }
+            ]
+          }
+        ],
+        "AKSInfo": [
+          {
+            "Name": "01",
+            "Version": "1.21.7", // "1.20.2","1.19.7","1.19.6", "1.18.14" // 1.22 and above no AGIC support 
+            "skuTier": "Paid", //Free
+            "enableRBAC": 1,
+            "enableOSM": 1,
+            "podIdentity": 1,
+            "privateCluster": 0,
+            "AgentPoolsSN": "snMT02",
+            "WAFName": "AGIC02",
+            "loadBalancer": "standard", //"basic","standard"
+            "BrownFields": 1,
+            "AppGateway": 1,
+            "AutoScale": 0,
+            "aksAADAdminGroups": [
+              "AKS_Admins"
+            ],
+            "AgentPools": [
+              {
+                "name": "linctr1",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 16,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "System"
+              },
+              // {
+              //   "name": "winctr1",
+              //   "count": 2,
+              //   "osDiskSizeGb": 30,
+              //   "osType": "Linux",
+              //   "maxPods": 50,
+              //   "storageProfile": "ManagedDisks",
+              //   "_vmSize": "Standard_D1_v2",
+              //   "ASName": "JMP",
+              //   "mode": "User"
+              // }
+              {
+                "name": "linctr2",
+                "count": 2,
+                "maxcount": 4,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 50,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "User"
+              }
+            ]
+          }
+        ],
+        "AzSQLInfo": [
+          {
+            "Name": "ESHOPSQL",
+            "administratorLogin": "brw",
+            "_AdminName": "AZ_SQL_Admins",
+            "publicNetworkAccess": 1,
+            "allNetworks": 0,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "sqlServer"
+              }
+            ],
+            "DBInfo": [
+              {
+                "Name": "catalogdb",
+                "skuName": "S1"
+              },
+              {
+                "Name": "identitydb",
+                "skuName": "S1"
+              },
+              {
+                "Name": "orderingdb",
+                "skuName": "S1"
+              }
+            ]
+          }
+        ],
+        "SBInfo": [
+          {
+            "Name": "BUSOrderTracking",
+            "sku": "Premium",
+            "skuCapacity": 1,
+            "zoneRedundant": false,
+            "topics": [
+              {
+                "Name": "TopicOrderTracking",
+                "subscriptions": [
+                  {
+                    "Name": "SubOrderTracking"
+                  }
+                ]
+              }
+            ],
+            "privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "namespace"
+              }
+            ]
+          },
+          {
+            "Name": "ESHOPSB",
+            "sku": "Premium",
+            "skuCapacity": 1,
+            "zoneRedundant": true,
+            "topics": [
+              {
+                "Name": "eshop_event_bus",
+                "subscriptions": [
+                  {
+                    "Name": "Basket"
+                  },
+                  {
+                    "Name": "Catalog"
+                  }
+                ]
+              }
+            ],
+            "privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "namespace"
+              }
+            ]
+          }
+        ],
+        "ContainerRegistry": [
+          {
+            "Name": "01",
+            "SKU": "Premium", // "Standard",
+            "adminUserEnabled": true
+          }
+        ],
+        "appServiceplanInfo": [
+          {
+            "Name": "ASP01",
+            "kind": "elastic",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "EP1",
+            "skutier": "ElasticPremium",
+            "skucapacity": 1,
+            "maxWorkerCount": 100,
+            "deploy": 1
+          },
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skucapacity": 1,
+            "deploy": 1
+          },
+          {
+            "Name": "CTR01",
+            "kind": "linux",
+            "perSiteScaling": false,
+            "reserved": true, //true for containers
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skucapacity": 1,
+            "deploy": 1
+          }
+        ],
+        "WebSiteInfo": [
+          {
+            "Name": "WPS04",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "java",
+            "saname": "diag",
+            "customDNS": 1,
+            "initialDeploy": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          },
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "php",
+            "saname": "diag",
+            "customDNS": 1,
+            "initialDeploy": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          },
+          {
+            "Name": "WPS02",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "dotnet",
+            "saname": "diag",
+            "customDNS": 1,
+            "initialDeploy": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          },
+          {
+            "Name": "WPS03",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "node",
+            "saname": "diag",
+            "customDNS": 1,
+            "initialDeploy": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          }
+        ],
+        "WebSiteContainerInfo": [
+          {
+            "Name": "CTR01",
+            "kind": "app,linux,container",
+            "AppSVCPlan": "CTR01",
+            "stack": "default",
+            "saname": "data",
+            "registry": "01",
+            "customDNS": 1,
+            "initialDeploy": 1
+            // "registryENV": "t5"
+          }
+        ],
+        "FunctionInfo": [
+          {
+            "Name": "DIS03",
+            "kind": "functionapp",
+            "AppSVCPlan": "ASP01",
+            "saname": "data",
+            "stack": "dotnet",
+            "subnet": "snMT01",
+            "preWarmedCount": 1,
+            "customDNS": 1,
+            "initialDeploy": 0,
+            "extraSlots": 1
+          },
+          {
+            "Name": "PS02",
+            "kind": "functionapp",
+            "AppSVCPlan": "ASP01",
+            "saname": "data",
+            "stack": "powershell",
+            "subnet": "snMT01",
+            "preWarmedCount": 1,
+            "customDNS": 1,
+            "initialDeploy": 1
+          }
+        ],
+        "appConfigurationInfo": {
+          "name": "01",
+          "sku": "standard",
+          "publicNetworkAccess": 1,
+          "privateLinkInfo": [
+            {
+              "Subnet": "snMT02",
+              "groupID": "configurationStores"
+            }
+          ]
+        },
+        "azBOTInfo": [
+          {
+            "Name": "SodaPopBot",
+            "Sku": "S1"
+          }
+        ],
+        "cosmosDBInfo": [
+          {
+            "Name": "eshop-sql",
+            "Kind": "GlobalDocumentDB", //GlobalDocumentDB, MongoDB, Parse
+            "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
+            "enableMultipleWriteLocations": true,
+            "enableAutomaticFailover": true,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "SQL"
+              }
+            ],
+            "locations": [
+              {
+                "location": "PrimaryLocation",
+                "failoverPriority": 0,
+                "isZoneRedundant": true
+              },
+              {
+                "location": "SecondaryLocation",
+                "failoverPriority": 1,
+                "isZoneRedundant": true
+              }
+            ],
+            "_databases": [
+              {
+                "databaseName": "customers",
+                "containers": [
+                  {
+                    "containerName": "Info",
+                    "partitionKeyPaths": [
+                      "/myPartitionKey"
+                    ],
+                    "indexingPolicyPathInclude": [
+                      {
+                        "path": "/*"
+                      }
+                    ],
+                    "indexingPolicyPathExclude": [
+                      {
+                        "path": "/myPathToNotIndex/*"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "ACIInfo": [
+          {
+            "Name": "helloworld",
+            "registerDNS": 1,
+            "isPublic": 0,
+            "subnetName": "snBE02",
+            "scaleCount": 1,
+            "InstanceCount": 1,
+            "memoryInGB": 1,
+            "cpu": 1,
+            "image": "mcr.microsoft.com/azuredocs/aci-helloworld:latest",
+            "ports": [
+              80
+            ],
+            "_command": [],
+            "_environmentVariables": [],
+            "_volumeMounts": []
+          },
+          {
+            "Name": "locust-master",
+            "registerDNS": 1,
+            "isPublic": 0,
+            "subnetName": "snBE02",
+            "scaleCount": 1,
+            "InstanceCount": 1,
+            "memoryInGB": 1,
+            "cpu": 1,
+            "image": "locustio/locust:1.4.4",
+            "ports": [
+              5557,
+              8089
+            ],
+            "command": [
+              "locust"
+            ],
+            //  https://docs.locust.io/en/stable/configuration.html#all-available-configuration-options
+            "environmentVariables": [
+              {
+                "Name": "LOCUST_LOCUSTFILE",
+                "value": "/home/locust/locust/locustfile.py"
+              },
+              {
+                "Name": "LOCUST_MODE_MASTER",
+                "value": "true"
+              },
+              {
+                "Name": "LOCUST_WEB_AUTH",
+                "secureValue": "locust:{WebUser}"
+              },
+              {
+                "Name": "LOCUST_CSV",
+                "value": "true"
+              },
+              {
+                "Name": "LOCUST_CSV_FULL_HISTORY",
+                "value": "true"
+              },
+              {
+                "Name": "LOCUST_HTML",
+                "value": "true"
+              },
+              {
+                "Name": "LOCUST_HOST",
+                "value": "https://acu1-brw-aoa-d3-api03.psthing.com"
+              },
+              {
+                "Name": "LOCUST_LOGLEVEL",
+                "value": "DEBUG"
+              },
+              {
+                "Name": "LOCUST_SPAWN_RATE",
+                "value": "20"
+              },
+              {
+                "Name": "LOCUST_USERS",
+                "value": "4000"
+              }
+              // {
+              //   "Name": "LOCUST_RUN_TIME",  // automated tests only
+              //   "secureValue": "15m"
+              // },
+              // {
+              //   "Name": "LOCUST_HEADLESS",  // automated tests only
+              //   "secureValue": "true"
+              // },
+              // {
+              //   "Name": "LOCUST_TLS_KEY",
+              //   "value": "/home/locust/locust/psthing-wildcard-decrypted.key"
+              // },
+              // {
+              //   "Name": "LOCUST_TLS_CERT",
+              //   "value": "/home/locust/locust/psthing-wildcard.crt"
+              // }
+            ],
+            "volumeMounts": [
+              {
+                "name": "locust",
+                "mountPath": "/home/locust/locust",
+                "storageAccount": "data"
+              }
+            ]
+          },
+          {
+            "Name": "locust-worker",
+            "scaleCount": 1,
+            "InstanceCount": 9,
+            "memoryInGB": 0.3,
+            "cpu": 0.3,
+            "isPublic": 1,
+            "subnetName": "snBE02",
+            "image": "locustio/locust:1.4.4",
+            "ports": [
+              8089
+            ],
+            "command": [
+              "locust"
+            ],
+            "locations": [
+              "centralus"
+              // "eastus2",
+              // "westus2"
+            ],
+            "environmentVariables": [
+              {
+                "Name": "LOCUST_LOCUSTFILE",
+                "value": "/home/locust/locust/locustfile.py"
+              },
+              {
+                "Name": "LOCUST_MODE_WORKER",
+                "value": "true"
+              },
+              {
+                "Name": "LOCUST_MASTER_NODE_HOST",
+                "value": "{Deployment}-aci-locust-master-0.psthing.com"
+              }
+            ],
+            "volumeMounts": [
+              {
+                "name": "locust",
+                "mountPath": "/home/locust/locust",
+                "storageAccount": "data"
+              }
+            ]
+          }
+        ],
+        "Appservers": {
+          "AppServers": [
+            {
+              "Name": "JMP01",
+              "Role": "JMP",
+              "ASName": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Server2022",
+              "ExcludeAdminCenter": 1,
+              "OSstorageAccountType": "Standard_LRS",
+              "HotPatch": true,
+              "DeployJIT": 1,
+              "shutdown": {
+                "time": "2100",
+                "enabled": 0
+              },
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "FE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "62"
+                }
+              ]
+            }
+          ]
+        },
+        "LBInfo": [
+          {
+            "Name": "PLB01",
+            "Zone": 1,
+            "ASName": "PLB01",
+            "Sku": "Standard",
+            "Type": "Public",
+            "BackEnd": [
+              "PLB01"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "PLB01",
+                "PublicIP": "Static"
+                // "zones": [
+                //   "1"
+                // ]
+              }
+            ],
+            "_outboundRules": [
+              {
+                "LBFEName": "PLB01",
+                "allocatedOutboundPorts": 1024,
+                "idleTimeoutInMinutes": 4,
+                "enableTcpReset": true,
+                "protocol": "All"
+              }
+            ],
+            "NATPools": [
+              {
+                "Name": "RDP",
+                "frontendPortRangeStart": 3389,
+                "frontendPortRangeEnd": 4500,
+                "enableFloatingIP": false,
+                "backendPort": 3389,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "LBFEName": "PLB01"
+              },
+              {
+                "Name": "RTC",
+                "frontendPortRangeStart": 6000,
+                "frontendPortRangeEnd": 6500,
+                "enableFloatingIP": false,
+                "backendPort": 6000,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "LBFEName": "PLB01"
+              }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              },
+              {
+                "ProbeName": "HTTPS",
+                "LBBEProbePort": 443
+              }
+            ],
+            "Services": [
+              {
+                "LBFEName": "PLB01",
+                "LBBEName": "PLB01",
+                "RuleName": "API-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              },
+              {
+                "LBFEName": "PLB01",
+                "LBBEName": "PLB01",
+                "RuleName": "API-HTTPS",
+                "LBFEPort": 443,
+                "LBBEPort": 443,
+                "ProbeName": "HTTPS",
+                "DirectReturn": false
+              }
+            ]
+          },
+          {
+            "Name": "API",
+            "ASName": "API",
+            "Sku": "Standard",
+            "Type": "Private",
+            "BackEnd": [
+              "API"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "API",
+                "SNName": "MT02",
+                "LBFEIP": "254"
+                // "zones": [
+                //   "1"
+                // ]
+              }
+            ],
+            "NATPools": [
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443
+              // }
+            ],
+            "Services": [
+              {
+                "LBFEName": "API",
+                "LBBEName": "API",
+                "RuleName": "API-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              }
+              // {
+              //   "LBFEName": "API",
+              //   "LBBEName": "API",
+              //   "RuleName": "API-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
+            ]
+          },
+          {
+            "Name": "SF01",
+            "ASName": "SF01",
+            "Sku": "Standard",
+            "Type": "Private",
+            "BackEnd": [
+              "SF01"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "SF01",
+                "SNName": "MT02",
+                "LBFEIP": "250"
+                // "zones": [
+                //   "1"
+                // ]
+              }
+            ],
+            "NATPools": [
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443
+              // }
+            ],
+            "Services": [
+              {
+                "LBFEName": "SF01",
+                "LBBEName": "SF01",
+                "RuleName": "SF01-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              }
+              // {
+              //   "LBFEName": "API",
+              //   "LBBEName": "API",
+              //   "RuleName": "API-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
+            ]
+          },
+          {
+            "Name": "SF02",
+            "ASName": "SF02",
+            "Sku": "Standard",
+            "Type": "Private",
+            "BackEnd": [
+              "SF02"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "SF02",
+                "SNName": "MT02",
+                "LBFEIP": "249"
+                // "zones": [
+                //   "1"
+                // ]
+              }
+            ],
+            "NATPools": [
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443
+              // }
+            ],
+            "Services": [
+              {
+                "LBFEName": "SF02",
+                "LBBEName": "SF02",
+                "RuleName": "SF02-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              }
+              // {
+              //   "LBFEName": "API",
+              //   "LBBEName": "API",
+              //   "RuleName": "API-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
+            ]
+          }
+        ],
+        "AppServersVMSS": [
+          {
+            "Name": "API02",
+            "AutoScale": true,
+            "PredictiveScale": "Enabled",
+            "ExcludeDomainJoin": 1,
+            "saname": "data",
+            "Role": "API",
+            "ASNAME": "API",
+            "DDRole": "64GBSS",
+            "OSType": "Server2022SSIMG",
+            "Subnet": "MT02",
+            "LB": "PLB01",
+            "NATName": [
+              "RDP",
+              "RTC"
+            ],
+            "zones": [
+              "1",
+              "2",
+              "3"
+            ],
+            "LBBE": [
+              "PLB01"
+            ],
+            "_WAFBE": [
+              "API02"
+            ],
+            "NICs": [
+              {
+                "Subnet": "FE01",
+                "Primary": 1,
+                "FastNic": 1,
+                "PublicIP": 0
+              }
+            ],
+            "AutoScalecapacity": {
+              "minimum": "3",
+              "maximum": "9",
+              "default": "3"
+            },
+            "Health": {
+              "protocol": "https",
+              "port": "443",
+              "requestPath": "/api/headers"
+            },
+            "IsPrimary": true,
+            "durabilityLevel": "Bronze",
+            "placementProperties": {
+              "OSType": "Server2016SS",
+              "NodeKind": "API01"
+            }
+          }
+        ],
+        "SFMInfo": [
+          {
+            "name": "01",
+            "skuName": "Standard",
+            "connectionPort": 29000,
+            "gatewayPort": 29080,
+            "allowRDP": false,
+            "nodeTypes": [
+              {
+                "name": "FE",
+                "OSType": "Server2019SSgs",
+                "role": "SF",
+                "isPrimary": 0,
+                "capacity": 3,
+                "placementProperties": {
+                  "OSType": "Server2019SSgs",
+                  "NodeType": "FE-Node"
+                }
+              },
+              {
+                "name": "BE",
+                "OSType": "Server2019SSgs",
+                "role": "SF",
+                "isPrimary": 0,
+                "capacity": 3,
+                "placementProperties": {
+                  "OSType": "Server2019SSgs",
+                  "NodeType": "BE-Node"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

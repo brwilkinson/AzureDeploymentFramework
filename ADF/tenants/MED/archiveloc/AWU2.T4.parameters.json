@@ -1,0 +1,485 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "AWU2"
+    },
+    "Environment": {
+      "value": "T"
+    },
+    "DeploymentID": {
+      "value": "4"
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "UAI": 1,
+        "SP": 0,
+        "KV": 1,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "OMSUpdateWeekly": 0,
+        "OMSUpdateMonthly": 0,
+        "OMSUpates": 0,
+        "SA": 1,
+        "CDN": 0,
+        "StorageSync": 0,
+        "RSV": 0,
+        "NSG": 1,
+        "NetworkWatcher": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetPeering": 1,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 1,
+        "BastionHost": 0,
+        "CloudShellRelay": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "NATGW": 0,
+        "ERGW": 0,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "LB": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0,
+        "VMSS": 0,
+        "WAFPOLICY": 0,
+        "WAF": 0,
+        "FRONTDOORPOLICY": 0,
+        "FRONTDOOR": 0,
+        "SetExternalDNS": 1,
+        "SetInternalDNS": 1,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "ManagedEnv": 0,
+        "ContainerApp": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "AzureSYN": 0,
+        "AzureSQL": 0,
+        "LT": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 1,
+        "AdminCenter": 1,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "GuestConfig": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "AADLogin": 0,
+        "WindowsOpenSSH": 0,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 0,
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "IngressApplicationGateway",
+            "RBAC": [
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          },
+          {
+            "name": "NetworkContributor",
+            "RBAC": [
+              {
+                "Name": "Network Contributor"
+              },
+              {
+                "Name": "CDN Profile Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageKeyRotation",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountContributor",
+            "RBAC": [
+              {
+                "Name": "Storage Account Contributor"
+              }
+            ]
+          },
+          {
+            "name": "SynapseDataContributor"
+            // if no RBAC, create uai only, then assign RBAC on Resource level.
+          },
+          {
+            "name": "VMOperator",
+            "RBAC": [
+              {
+                "Name": "Virtual Machine Contributor"
+              }
+            ]
+          },
+          {
+            "name": "MonitoringReader",
+            "RBAC": [
+              {
+                "Name": "Monitoring Reader"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              },
+              {
+                "Name": "Load Test Owner"
+              }
+            ]
+          },
+          {
+            "Name": "AzureKeyVault",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "Name": "sec-scan-acr",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "ACRPush"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "User Access Administrator"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Automation_Account_Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA",
+                "PREFIX": "AEU2"
+              }
+            ]
+          }
+        ],
+        "SubnetInfo": [
+          {
+            "name": "snMT01",
+            "prefix": "0/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
+          },
+          {
+            "name": "snFE01",
+            "prefix": "32/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snBE02",
+            "prefix": "64/28",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
+          },
+          {
+            "name": "snBE01", // APIM Dedicated
+            "prefix": "80/28",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snWAF01",
+            "prefix": "128/25",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          }
+        ],
+        "saInfo": [
+          {
+            "name": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              },
+              {
+                "Subnet": "snMT02",
+                "groupID": "file"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "SynapseDataContributor",
+                "Type": "UAI",
+                "RBAC": [
+                  {
+                    "Name": "Storage Blob Data Contributor"
+                  }
+                ]
+              }
+            ],
+            "containers": [
+              {
+                "name": "vascans",
+                "rolesInfo": [
+                  {
+                    "Name": "SynapseDataContributor",
+                    "Type": "UAI",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "App01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": 1,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "BW",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

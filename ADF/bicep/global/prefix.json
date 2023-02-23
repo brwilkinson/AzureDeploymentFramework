@@ -1,51 +1,15 @@
 {
-  "ASI1": {
-    "displayname": "South India",
-    "location": "southindia",
-    "PREFIX": "ASI1",
-    "pairedRegion": "centralindia"
+  "ASC1": {
+    "displayname": "Sweden Central",
+    "location": "swedencentral",
+    "PREFIX": "ASC1",
+    "pairedRegion": "swedensouth"
   },
-  "ANW1": {
-    "displayname": "Norway West",
-    "location": "norwaywest",
-    "PREFIX": "ANW1",
-    "pairedRegion": "norwayeast"
-  },
-  "ASA1": {
-    "displayname": "Southeast Asia",
-    "location": "southeastasia",
-    "PREFIX": "ASA1",
-    "pairedRegion": "eastasia"
-  },
-  "ASN1": {
-    "displayname": "Switzerland North",
-    "location": "switzerlandnorth",
-    "PREFIX": "ASN1",
-    "pairedRegion": "switzerlandwest"
-  },
-  "ACI1": {
-    "displayname": "Central India",
-    "location": "centralindia",
-    "PREFIX": "ACI1",
-    "pairedRegion": "southindia"
-  },
-  "AWU1": {
-    "displayname": "West US",
-    "location": "westus",
-    "PREFIX": "AWU1",
-    "pairedRegion": "eastus"
-  },
-  "AUS1": {
-    "displayname": "UK South",
-    "location": "uksouth",
-    "PREFIX": "AUS1",
-    "pairedRegion": "ukwest"
-  },
-  "ASAW": {
-    "displayname": "South Africa West",
-    "location": "southafricawest",
-    "PREFIX": "ASAW",
-    "pairedRegion": "southafricanorth"
+  "ACUE": {
+    "displayname": "Central US EUAP",
+    "location": "centraluseuap",
+    "PREFIX": "ACUE",
+    "pairedRegion": "eastus2euap"
   },
   "AJW1": {
     "displayname": "Japan West",
@@ -59,65 +23,17 @@
     "PREFIX": "ASW1",
     "pairedRegion": "switzerlandnorth"
   },
-  "ACC1": {
-    "displayname": "Canada Central",
-    "location": "canadacentral",
-    "PREFIX": "ACC1",
-    "pairedRegion": "canadaeast"
+  "ACI1": {
+    "displayname": "Central India",
+    "location": "centralindia",
+    "PREFIX": "ACI1",
+    "pairedRegion": "southindia"
   },
-  "AUW1": {
-    "displayname": "UK West",
-    "location": "ukwest",
-    "PREFIX": "AUW1",
-    "pairedRegion": "uksouth"
-  },
-  "AJIC": {
-    "displayname": "Jio India Central",
-    "location": "jioindiacentral",
-    "PREFIX": "AJIC",
-    "pairedRegion": "jioindiawest"
-  },
-  "AUC1": {
-    "displayname": "UAE Central",
-    "location": "uaecentral",
-    "PREFIX": "AUC1",
-    "pairedRegion": "uaenorth"
-  },
-  "AWU2": {
-    "displayname": "West US 2",
-    "location": "westus2",
-    "PREFIX": "AWU2",
-    "pairedRegion": "westcentralus"
-  },
-  "AKS1": {
-    "displayname": "Korea South",
-    "location": "koreasouth",
-    "PREFIX": "AKS1",
-    "pairedRegion": "koreacentral"
-  },
-  "AFC1": {
-    "displayname": "France Central",
-    "location": "francecentral",
-    "PREFIX": "AFC1",
-    "pairedRegion": "francesouth"
-  },
-  "AJIW": {
-    "displayname": "Jio India West",
-    "location": "jioindiawest",
-    "PREFIX": "AJIW",
-    "pairedRegion": "jioindiacentral"
-  },
-  "ASAN": {
-    "displayname": "South Africa North",
-    "location": "southafricanorth",
-    "PREFIX": "ASAN",
-    "pairedRegion": "southafricawest"
-  },
-  "ACU1": {
-    "displayname": "Central US",
-    "location": "centralus",
-    "PREFIX": "ACU1",
-    "pairedRegion": "eastus2"
+  "AEA1": {
+    "displayname": "East Asia",
+    "location": "eastasia",
+    "PREFIX": "AEA1",
+    "pairedRegion": "southeastasia"
   },
   "AUN1": {
     "displayname": "UAE North",
@@ -125,41 +41,35 @@
     "PREFIX": "AUN1",
     "pairedRegion": "uaecentral"
   },
-  "ANEU": {
-    "displayname": "North Europe",
-    "location": "northeurope",
-    "PREFIX": "ANEU",
-    "pairedRegion": "westeurope"
+  "AAE1": {
+    "displayname": "Australia East",
+    "location": "australiaeast",
+    "PREFIX": "AAE1",
+    "pairedRegion": "australiasoutheast"
   },
-  "AKC1": {
-    "displayname": "Korea Central",
-    "location": "koreacentral",
-    "PREFIX": "AKC1",
-    "pairedRegion": "koreasouth"
+  "AEU2": {
+    "displayname": "East US 2 EUAP",
+    "location": "eastus2euap",
+    "PREFIX": "AEU2",
+    "pairedRegion": "centraluseuap"
   },
-  "AAS1": {
-    "displayname": "Australia Southeast",
-    "location": "australiasoutheast",
-    "PREFIX": "AAS1",
-    "pairedRegion": "australiaeast"
+  "ASCU": {
+    "displayname": "South Central US",
+    "location": "southcentralus",
+    "PREFIX": "ASCU",
+    "pairedRegion": "northcentralus"
+  },
+  "AFS1": {
+    "displayname": "France South",
+    "location": "francesouth",
+    "PREFIX": "AFS1",
+    "pairedRegion": "francecentral"
   },
   "ANCU": {
     "displayname": "North Central US",
     "location": "northcentralus",
     "PREFIX": "ANCU",
     "pairedRegion": "southcentralus"
-  },
-  "AGWC": {
-    "displayname": "Germany West Central",
-    "location": "germanywestcentral",
-    "PREFIX": "AGWC",
-    "pairedRegion": "germanynorth"
-  },
-  "AAC2": {
-    "displayname": "Australia Central 2",
-    "location": "australiacentral2",
-    "PREFIX": "AAC2",
-    "pairedRegion": "australiacentral2"
   },
   "ACE1": {
     "displayname": "Canada East",
@@ -173,77 +83,11 @@
     "PREFIX": "AJE1",
     "pairedRegion": "japanwest"
   },
-  "ABS1": {
-    "displayname": "Brazil South",
-    "location": "brazilsouth",
-    "PREFIX": "ABS1",
-    "pairedRegion": "southcentralus"
-  },
-  "AFS1": {
-    "displayname": "France South",
-    "location": "francesouth",
-    "PREFIX": "AFS1",
-    "pairedRegion": "francecentral"
-  },
-  "ASCU": {
-    "displayname": "South Central US",
-    "location": "southcentralus",
-    "PREFIX": "ASCU",
-    "pairedRegion": "northcentralus"
-  },
-  "AWCU": {
-    "displayname": "West Central US",
-    "location": "westcentralus",
-    "PREFIX": "AWCU",
-    "pairedRegion": "westus2"
-  },
-  "ANE1": {
-    "displayname": "Norway East",
-    "location": "norwayeast",
-    "PREFIX": "ANE1",
-    "pairedRegion": "norwaywest"
-  },
-  "AEU2": {
-    "displayname": "East US 2",
-    "location": "eastus2",
-    "PREFIX": "AEU2",
-    "pairedRegion": "centralus"
-  },
-  "ABSE": {
-    "displayname": "Brazil Southeast",
-    "location": "brazilsoutheast",
-    "PREFIX": "ABSE",
-    "pairedRegion": "brazilsouth"
-  },
-  "AAE1": {
-    "displayname": "Australia East",
-    "location": "australiaeast",
-    "PREFIX": "AAE1",
-    "pairedRegion": "australiasoutheast"
-  },
-  "AGN1": {
-    "displayname": "Germany North",
-    "location": "germanynorth",
-    "PREFIX": "AGN1",
-    "pairedRegion": "germanywestcentral"
-  },
-  "AWU3": {
-    "displayname": "West US 3",
-    "location": "westus3",
-    "PREFIX": "AWU3",
+  "AWU1": {
+    "displayname": "West US",
+    "location": "westus",
+    "PREFIX": "AWU1",
     "pairedRegion": "eastus"
-  },
-  "ASC1": {
-    "displayname": "Sweden Central",
-    "location": "swedencentral",
-    "PREFIX": "ASC1",
-    "pairedRegion": "swedensouth"
-  },
-  "AEA1": {
-    "displayname": "East Asia",
-    "location": "eastasia",
-    "PREFIX": "AEA1",
-    "pairedRegion": "southeastasia"
   },
   "AAC1": {
     "displayname": "Australia Central",
@@ -251,11 +95,47 @@
     "PREFIX": "AAC1",
     "pairedRegion": "australiacentral"
   },
-  "AWI1": {
-    "displayname": "West India",
-    "location": "westindia",
-    "PREFIX": "AWI1",
-    "pairedRegion": "southindia"
+  "ANW1": {
+    "displayname": "Norway West",
+    "location": "norwaywest",
+    "PREFIX": "ANW1",
+    "pairedRegion": "norwayeast"
+  },
+  "AQC1": {
+    "displayname": "Qatar Central",
+    "location": "qatarcentral",
+    "PREFIX": "AQC1",
+    "pairedRegion": null
+  },
+  "AAS1": {
+    "displayname": "Australia Southeast",
+    "location": "australiasoutheast",
+    "PREFIX": "AAS1",
+    "pairedRegion": "australiaeast"
+  },
+  "ABSE": {
+    "displayname": "Brazil Southeast",
+    "location": "brazilsoutheast",
+    "PREFIX": "ABSE",
+    "pairedRegion": "brazilsouth"
+  },
+  "AKC1": {
+    "displayname": "Korea Central",
+    "location": "koreacentral",
+    "PREFIX": "AKC1",
+    "pairedRegion": "koreasouth"
+  },
+  "ASAW": {
+    "displayname": "South Africa West",
+    "location": "southafricawest",
+    "PREFIX": "ASAW",
+    "pairedRegion": "southafricanorth"
+  },
+  "AUC1": {
+    "displayname": "UAE Central",
+    "location": "uaecentral",
+    "PREFIX": "AUC1",
+    "pairedRegion": "uaenorth"
   },
   "AWEU": {
     "displayname": "West Europe",
@@ -263,10 +143,142 @@
     "PREFIX": "AWEU",
     "pairedRegion": "northeurope"
   },
+  "ACU1": {
+    "displayname": "Central US",
+    "location": "centralus",
+    "PREFIX": "ACU1",
+    "pairedRegion": "eastus2"
+  },
+  "AWI1": {
+    "displayname": "West India",
+    "location": "westindia",
+    "PREFIX": "AWI1",
+    "pairedRegion": "southindia"
+  },
+  "AWU3": {
+    "displayname": "West US 3",
+    "location": "westus3",
+    "PREFIX": "AWU3",
+    "pairedRegion": "eastus"
+  },
+  "AAC2": {
+    "displayname": "Australia Central 2",
+    "location": "australiacentral2",
+    "PREFIX": "AAC2",
+    "pairedRegion": "australiacentral2"
+  },
+  "AWCU": {
+    "displayname": "West Central US",
+    "location": "westcentralus",
+    "PREFIX": "AWCU",
+    "pairedRegion": "westus2"
+  },
+  "AGWC": {
+    "displayname": "Germany West Central",
+    "location": "germanywestcentral",
+    "PREFIX": "AGWC",
+    "pairedRegion": "germanynorth"
+  },
+  "AUS1": {
+    "displayname": "United States",
+    "location": "unitedstates",
+    "PREFIX": "AUS1",
+    "pairedRegion": null
+  },
+  "ANE1": {
+    "displayname": "Norway East",
+    "location": "norwayeast",
+    "PREFIX": "ANE1",
+    "pairedRegion": "norwaywest"
+  },
+  "A1": {
+    "displayname": "Switzerland",
+    "location": "switzerland",
+    "PREFIX": "A1",
+    "pairedRegion": null
+  },
+  "ASI1": {
+    "displayname": "South India",
+    "location": "southindia",
+    "PREFIX": "ASI1",
+    "pairedRegion": "centralindia"
+  },
+  "AKS1": {
+    "displayname": "Korea South",
+    "location": "koreasouth",
+    "PREFIX": "AKS1",
+    "pairedRegion": "koreacentral"
+  },
+  "AGN1": {
+    "displayname": "Germany North",
+    "location": "germanynorth",
+    "PREFIX": "AGN1",
+    "pairedRegion": "germanywestcentral"
+  },
+  "ACC1": {
+    "displayname": "Canada Central",
+    "location": "canadacentral",
+    "PREFIX": "ACC1",
+    "pairedRegion": "canadaeast"
+  },
+  "AUW1": {
+    "displayname": "UK West",
+    "location": "ukwest",
+    "PREFIX": "AUW1",
+    "pairedRegion": "uksouth"
+  },
+  "ABS1": {
+    "displayname": "Brazil South",
+    "location": "brazilsouth",
+    "PREFIX": "ABS1",
+    "pairedRegion": "southcentralus"
+  },
+  "ASN1": {
+    "displayname": "Switzerland North",
+    "location": "switzerlandnorth",
+    "PREFIX": "ASN1",
+    "pairedRegion": "switzerlandwest"
+  },
+  "AWU2": {
+    "displayname": "West US 2",
+    "location": "westus2",
+    "PREFIX": "AWU2",
+    "pairedRegion": "westcentralus"
+  },
+  "ANEU": {
+    "displayname": "North Europe",
+    "location": "northeurope",
+    "PREFIX": "ANEU",
+    "pairedRegion": "westeurope"
+  },
+  "AAP1": {
+    "displayname": "Asia Pacific",
+    "location": "asiapacific",
+    "PREFIX": "AAP1",
+    "pairedRegion": null
+  },
+  "AFC1": {
+    "displayname": "France Central",
+    "location": "francecentral",
+    "PREFIX": "AFC1",
+    "pairedRegion": "francesouth"
+  },
   "AEU1": {
     "displayname": "East US",
     "location": "eastus",
     "PREFIX": "AEU1",
     "pairedRegion": "westus"
+  },
+  "ASAN": {
+    "displayname": "South Africa North",
+    "location": "southafricanorth",
+    "PREFIX": "ASAN",
+    "pairedRegion": "southafricawest"
+  },
+  "ASA1": {
+    "displayname": "South Africa",
+    "location": "southafrica",
+    "PREFIX": "ASA1",
+    "pairedRegion": null
   }
 }

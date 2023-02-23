@@ -2,46 +2,46 @@
   "Global": {
     "_hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
     "rootManagementGroupName": "Global",
-    "OrgName": "BRW",
-    "AppName": "PSO",
+    "OrgName": "MED",
+    "AppName": "LIC",
     "GlobalSA": {
       "name": "global"
     },
     "GlobalRG": {
       "RG": "G1"
     },
-    "PrimaryLocation": "CentralUS",
-    "SecondaryLocation": "EastUS2",
+    "PrimaryLocation": "WestUS",
+    "SecondaryLocation": "EastUS",
     "_IPAddressforRemoteAccess": [ // moved these to keyvault, remove "_" to use here
       "73.157.100.227/32"
     ],
-    "vmAdminUserName": "brw",
-    "DomainName": "psobject.com",
-    "DomainNameExt": "psobject.com",
+    "vmAdminUserName": "med",
+    "DomainName": "LICbject.com",
+    "DomainNameExt": "LICbject.com",
     "CertThumbprint": "48B8F2B8C7DE8115804B74D8CBB4488C53492E5F",
     "CertURLs": [
       "*.contoso.com",
-      "*.psobject.com",
+      "*.LICbject.com",
       "*.psthing.com"
     ],
     "GHProject": "ADF",
     "ADOProject": "eshopondapr3",
     "ServicePrincipalAdmins": [
-      "benwilk@microsoft.com"
+      "v_2prasc@hotmail.com"
     ],
-    "apimPublisherEmail": "alerts@contoso.com",
+    "apimPublisherEmail": "azmd.prasant@gmail.com",
     "alertRecipients": [
-      "alerts@contoso.com"
+      ""
     ],
     "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
     "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
     "sqlCredentialName": "localadmin",
     "ObjectIdLookup": {
-      "benwilk@Microsoft.com": "b8214ecb-d982-402b-8185-ca909b853eec",
-      "ADF_AZC1-PSO-RG-P0": "04ae85ef-f1d2-45fe-88ca-5dd117af3102",
-      "ADF_AZC1-PSO-RG-S1": "a9a66686-b439-487e-878d-d96707ac5fbf",
-      "AzureDeploymentFramework_AZC1-PSO-RG-S1": "117aff79-3e00-4d8b-ae74-83b2b388b02d",
-      "AzureDeploymentFramework_AZC1-PSO-RG-P0": "bdc6c2d1-ccae-4b67-a2aa-65db164d741b"
+      "v_2prasc@hotmail.com": "b8214ecb-d982-402b-8185-ca909b853eec",
+      "ADF_AZC1-LIC-RG-P0": "04ae85ef-f1d2-45fe-88ca-5dd117af3102",
+      "ADF_AZC1-LIC-RG-S1": "a9a66686-b439-487e-878d-d96707ac5fbf",
+      "AzureDeploymentFramework_AZC1-LIC-RG-S1": "117aff79-3e00-4d8b-ae74-83b2b388b02d",
+      "AzureDeploymentFramework_AZC1-LIC-RG-P0": "bdc6c2d1-ccae-4b67-a2aa-65db164d741b"
     }
   }
 }

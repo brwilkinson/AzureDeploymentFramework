@@ -22,7 +22,7 @@ Login-AzAccount
 Get-AzSubscription 
 
 # Select the one that you want to work in
-Select-AzSubscription -SubscriptionId dad159c2-ca67-40c3-878e-3408f4bd92b8
+Select-AzSubscription -SubscriptionId d4a23241-7c83-4708-a2ce-c5c15fd80a35
 
 # Get the context that you are currently working in 
 # Useful if you have been away from the console and return

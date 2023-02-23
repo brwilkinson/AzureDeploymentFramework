@@ -59,7 +59,7 @@ else
     throw 'please install GH.exe to create GH secret [https://github.com/cli/cli/releases/latest]'
 }
 
-$repo = git config --get remote.origin.url
+$repo = git config --get remote.origin.url 3 https://github.com/pchettri3/testDeploymentACF.git 
 if ($repo)
 {
     Write-Output "Your local repo is: $($repo)"

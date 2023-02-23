@@ -1,0 +1,126 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "G"
+    },
+    "DeploymentID": {
+      "value": "0"
+    },
+    "Stage": {
+      "value": {
+        "RoleDefinition": 1,
+        "Security": 1,
+        "RBAC": 1,
+        "roleEligibility": 1,
+        "SP": 1
+      }
+    },
+    "Extensions": {
+      "value": {}
+    },
+    "DeploymentInfo": {
+      "value": {
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
+          }
+        ],
+        "rolesEligibilityInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
+          },
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Owner"
+              }
+            ]
+          }
+        ],
+        "SecurityPricingInfo": {
+          "Standard": [
+            "VirtualMachines",
+            "SqlServers",
+            "AppServices",
+            "StorageAccounts",
+            "SqlServerVirtualMachines",
+            "KeyVaults",
+            "Dns",
+            "Arm",
+            "Containers",
+            "OpenSourceRelationalDatabases",
+            "CosmosDbs"
+          ],
+          "Free": [ // deprecated
+            "KubernetesService",
+            "ContainerRegistry"
+          ]
+        },
+        "RoleDefinitionsInfo": [
+          {
+            "roleName": "Automation_Account_Contributor",
+            "description": "Allows access to manage Azure Automation and its resources",
+            "actions": [
+              "Microsoft.Authorization/*/read",
+              "Microsoft.Insights/alertRules/*",
+              "Microsoft.Insights/metrics/read",
+              "Microsoft.Insights/diagnosticSettings/*",
+              "Microsoft.Resources/deployments/*",
+              "Microsoft.Resources/subscriptions/resourceGroups/read",
+              "Microsoft.Automation/automationAccounts/*",
+              "Microsoft.Support/*"
+            ],
+            "notActions": []
+          },
+          {
+            "RoleName": "Key_Vault_Reader",
+            "description": "Lets you run deployments from the KeyVault",
+            "notActions": [],
+            "actions": [
+              "MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION"
+            ]
+          }
+          // {
+          //   "RoleName": "Image_Builder",
+          //   "description": "Lets you deploy vm images",
+          //   "notActions": [],
+          //   "actions": [
+          //     "Microsoft.Compute/galleries/read",
+          //     "Microsoft.Compute/galleries/read",
+          //     "Microsoft.Compute/galleries/images/read",
+          //     "Microsoft.Compute/galleries/images/versions/read",
+          //     "Microsoft.Network/virtualNetworks/read",
+          //     "Microsoft.Network/virtualNetworks/subnets/join/action"
+          //   ]
+          // }
+        ]
+      }
+    }
+  }
+}

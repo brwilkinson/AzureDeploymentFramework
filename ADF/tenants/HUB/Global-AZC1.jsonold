@@ -1,0 +1,25 @@
+{
+  "Global": {
+    "hubRG": {
+      "name": "P0"
+    },
+    "hubVN": {
+      "name": "vn"
+    },
+    "hubKV": {
+      "name": "VLT01"
+    },
+    "hubAA": {
+      "name": "OMSAutomation"
+    },
+    "networkId": [
+      "10.0.",
+      144
+    ],
+    "DNSServers": [
+      "10.0.144.75",
+      "10.0.144.76"
+    ],
+    "RTName": "rtContoso-Hub"
+  }
+}

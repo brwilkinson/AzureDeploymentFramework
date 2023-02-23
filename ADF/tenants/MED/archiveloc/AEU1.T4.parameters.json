@@ -1,0 +1,622 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "AEU1"
+    },
+    "Environment": {
+      "value": "T"
+    },
+    "DeploymentID": {
+      "value": "4"
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "UAI": 1,
+        "SP": 0,
+        "KV": 1,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "OMSUpdateWeekly": 0,
+        "OMSUpdateMonthly": 0,
+        "OMSUpates": 0,
+        "SA": 1,
+        "CDN": 0,
+        "StorageSync": 0,
+        "RSV": 0,
+        "NSG": 1,
+        "NetworkWatcher": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetPeering": 1,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 1,
+        "BastionHost": 0,
+        "CloudShellRelay": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "NATGW": 0,
+        "ERGW": 0,
+        "LB": 0,
+        "WAFPOLICY": 1,
+        "WAF": 1,
+        "FRONTDOORPOLICY": 0,
+        "FRONTDOOR": 0,
+        "SetExternalDNS": 1,
+        "SetInternalDNS": 1,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "ManagedEnv": 0,
+        "ContainerApp": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "LT": 0,
+        "AzureSYN": 0,
+        // below require secrets from KV
+        "VMSS": 0,
+        "ACI": 0,
+        "AKS": 1,
+        "AzureSQL": 0,
+        "SFM": 0,
+        // VM templates
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 1,
+        "AdminCenter": 1,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "GuestConfig": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "AADLogin": 0,
+        "WindowsOpenSSH": 0,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 0,
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "IngressApplicationGateway",
+            "RBAC": [
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountOperatorGlobal",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
+          {
+            "name": "StorageKeyRotation",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "BW",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              },
+              {
+                "Name": "Load Test Owner"
+              }
+            ]
+          },
+          {
+            "Name": "AzureKeyVault",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "Name": "sec-scan-acr",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "GH_{GHProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "ACRPush"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              }
+            ]
+          },
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Contributor"
+              },
+              {
+                "Name": "User Access Administrator"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Automation_Account_Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key_Vault_Reader",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "AOA",
+                "PREFIX": "AEU2"
+              }
+            ]
+          }
+        ],
+        "SubnetInfo": [
+          {
+            "name": "snMT01",
+            "prefix": "0/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+            // "delegations": "Microsoft.Web/serverfarms"
+          },
+          {
+            "name": "snFE01",
+            "prefix": "32/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snBE02",
+            "prefix": "64/28",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
+          },
+          {
+            "name": "snBE01", // APIM Dedicated
+            "prefix": "80/28",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "96/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snWAF01",
+            "prefix": "128/25",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          }
+        ],
+        "DNSServers": [],
+        "saInfo": [
+          {
+            "name": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "blob"
+              },
+              {
+                "Subnet": "snMT02",
+                "groupID": "file"
+              }
+            ]
+          }
+        ],
+        "ContainerRegistry": [
+          {
+            "Name": "01",
+            "SKU": "Premium", // "Standard",
+            "adminUserEnabled": true,
+            "NoZone": 1
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "App01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": 1,
+            "PrivateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ],
+            "rolesInfo": [
+              {
+                "Name": "BW",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "FrontDoorPolicyInfo": [
+          {
+            "Name": "API01",
+            "Version": "Premium", //Classic,Standard,Premium
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "1.0",
+            "_customRules": [
+              {
+                "name": "RateLimitRule",
+                "ruleType": "RateLimitRule",
+                "EnabledState": "Enabled",
+                "action": "Block",
+                "priority": 1,
+                "rateLimitDurationInMinutes": 1,
+                "rateLimitThreshold": 1000,
+                "MatchConditions": [
+                  {
+                    "matchVariable": "RequestUri",
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "transforms": [],
+                    "matchValue": [
+                      "/promo"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "exclusions": [],
+            "ruleGroupOverrides": [],
+            "enableBotRule": 1,
+            "botRuleGroupOverrides": [],
+            "botexclusions": []
+          }
+        ],
+        "APIMInfo": [
+          {
+            "name": "02",
+            "dnsName": "API",
+            "apimSku": "Premium",
+            "snName": "snBE01",
+            "virtualNetworkType": "None",
+            "certName": "PSTHING-WildCard",
+            "_frontDoor": "01",
+            "zone": 1,
+            "capacity": 1,
+            "_publicAccess": 0,
+            "privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "Gateway"
+              }
+            ],
+            "additionalLocations": [
+              {
+                "prefix": "AWU2",
+                "snName": "snBE01",
+                "capacity": 1,
+                "privateLinkInfo": [
+                  {
+                    "Subnet": "snFE01",
+                    "groupID": "Gateway"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "WAFPolicyInfo": [
+          {
+            "Name": "AGIC02",
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
+            "enableBotRule": 1,
+            "customRules": [],
+            "exclusions": [],
+            "ruleGroupOverrides": []
+          }
+        ],
+        "WAFInfo": [
+          {
+            "Name": "AGIC02",
+            "WAFPolicyAttached": true,
+            "WAFPolicyName": "AGIC02",
+            "WAFTier": "WAF_v2",
+            "PrivateIP": "240",
+            "SSLCerts": [
+              "PSTHING-WildCard"
+            ],
+            "privateLinkInfo": [
+              {
+                "Subnet": "snMT01",
+                "groupID": "application gateway"
+              }
+            ],
+            "BEIPs": [],
+            "pathRules": [],
+            "probes": [],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 80,
+                "Protocol": "http"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": "80",
+                "Protocol": "https",
+                "Cert": "PSTHING-WildCard",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC02",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC02",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              }
+            ]
+          }
+        ],
+        "AKSInfo": [
+          {
+            "Name": "01",
+            "Version": "1.21.7", // "1.20.2","1.19.7","1.19.6", "1.18.14" // 1.22 and above no AGIC support 
+            "skuTier": "Paid", //Free
+            "enableRBAC": 1,
+            "enableOSM": 1,
+            "podIdentity": 1,
+            "privateCluster": 0,
+            "AgentPoolsSN": "snMT02",
+            "WAFName": "AGIC02",
+            "loadBalancer": "standard", //"basic","standard"
+            "BrownFields": 1,
+            "AppGateway": 1,
+            "AutoScale": 0,
+            "aksAADAdminGroups": [
+              "AKS_Admins"
+            ],
+            "AgentPools": [
+              {
+                "name": "linctr1",
+                "count": 2,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 16,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "System"
+              },
+              // {
+              //   "name": "winctr1",
+              //   "count": 2,
+              //   "osDiskSizeGb": 30,
+              //   "osType": "Linux",
+              //   "maxPods": 50,
+              //   "storageProfile": "ManagedDisks",
+              //   "_vmSize": "Standard_D1_v2",
+              //   "ASName": "JMP",
+              //   "mode": "User"
+              // }
+              {
+                "name": "linctr2",
+                "count": 2,
+                "maxcount": 4,
+                "osDiskSizeGb": 30,
+                "osType": "Linux",
+                "maxPods": 50,
+                "storageProfile": "ManagedDisks",
+                "_vmSize": "Standard_D1_v2",
+                "ASName": "JMP",
+                "mode": "User"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

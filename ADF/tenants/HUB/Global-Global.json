@@ -5,9 +5,9 @@
     "AppName": "HUB",
     "SAName": "azc1brwhubg1saglobal",
     "GlobalRGName": "AZC1-BRW-HUB-RG-G1",
-    "PrimaryLocation": "CentralUS",
+    "PrimaryLocation": "WestUS",
     "PrimaryPrefix": "AZC1",
-    "SecondaryLocation": "EastUS2",
+    "SecondaryLocation": "EastUS",
     "SecondaryPrefix": "AZE2",
     "_IPAddressforRemoteAccess": [ // moved these to keyvault, remove "_" to use here
       "73.157.100.227/32"

@@ -11,7 +11,7 @@ break
 https://github.com/microsoft/winget-cli/releases
 # Side load the app or else you can find it in the Microsoft Store on Windows 10
 # E.g.
-Add-AppxPackage -Path $home\Downloads\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle 
+Add-AppxPackage -Path $home\Downloads\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.MSIXBUNDLE 
 
 winget install "Git Credential Manager Core"
 winget install Microsoft.PowerShell
