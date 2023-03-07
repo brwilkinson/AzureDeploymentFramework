@@ -31,7 +31,7 @@
     - Which provide the most value to your customers?
     - Which are fundamentally important for running your business?
     
-    Once you identify those applications/services, you need to ensure they are running in the most: 
+    Once you identity those applications/services, you need to ensure they are running in the most: 
         - efficient
         - secure
         - reliable
