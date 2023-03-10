@@ -739,7 +739,7 @@
             "podIdentity": 1,
             "privateCluster": 0,
             "AgentPoolsSN": "snMT02",
-            "Name": "01",
+            "WAFName": "01",
             "loadBalancer": "basic", //"basic","standard"
             "BrownFields": 0,
             "AppGateway": 0,

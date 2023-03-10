@@ -9,6 +9,7 @@ param globalRGName string
 param Prefix string
 param Environment string
 param DeploymentID string
+param Stage object
 
 var MSILookup = {
   SQL: 'Cluster'
@@ -138,6 +139,7 @@ resource slotConfig 'Microsoft.Web/sites/config@2021-03-01' = {
   }
 }
 
+// only bind with sslState disabled the very first run, via: "InitialDeploy": 1.
 module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws, 'initialDeploy') && bool(ws.initialDeploy) && contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'dp-binding-${ws.name}'
   params: {
@@ -252,7 +254,7 @@ resource stack 'Microsoft.Web/sites/config@2021-01-15' = {
   }
 }
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-privatelinkloop${ws.name}'
   params: {
     Deployment: Deployment
@@ -263,7 +265,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws, 'privatelink
   }
 }
 
-module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws, 'privatelinkinfo')) {
+module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-registerPrivateDNS${ws.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -271,7 +273,7 @@ module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws, 'privat
     providerURL: 'net'
     resourceName: WS.name
     providerType: WS.type
-    Nics: contains(ws, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('na')
+    Nics: contains(ws,'privatelinkinfo') && bool(Stage.PrivateLink) ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }
 

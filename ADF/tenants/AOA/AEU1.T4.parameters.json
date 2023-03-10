@@ -358,6 +358,7 @@
             "FlowAnalyticsEnabled": 1
           }
         ],
+        "DNSServers": [],
         "saInfo": [
           {
             "name": "diag",
@@ -458,52 +459,6 @@
             "enableBotRule": 1,
             "botRuleGroupOverrides": [],
             "botexclusions": []
-          }
-        ],
-        "FrontDoorCDN": [
-          {
-            "name": "API05", // hostname
-            "zone": "psthing.com",
-            "state": "Enabled",
-            "skuName": "Premium", // "Premium"|"Standard"
-            "WAFPolicy": "API01",
-            "pattern": [
-              "/*"
-            ],
-            "originGroups": [
-              {
-                "name": "apimtest",
-                "probePath": "/",
-                "sessionAffinity": 1,
-                "origins": [
-                  // {
-                  //   "name": "acu1brwaoat5sadata3",
-                  //   "hostname": "acu1brwaoat5sadata3.blob.core.windows.net",
-                  //   "enabled": 1
-                  // }
-                  {
-                    "name": "aeu1-brw-aoa-t4-apim02",
-                    "hostname": "aeu1-brw-aoa-t4-apim02.psthing.com",
-                    "enabled": 1,
-                    "PrivateLinkInfo": {
-                      "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AEU1-BRW-AOA-RG-T4/providers/Microsoft.ApiManagement/service/AEU1-BRW-AOA-T4-apim02",
-                      "privateLinkLocation": "eastus",
-                      "groupId": "Gateways"
-                    }
-                  }
-                  // {
-                  //   "name": "acu1brwaoat5sadata6-secondary",
-                  //   "hostname": "acu1brwaoat5sadata6-secodary.blob.core.windows.net",
-                  //   "enabled": 1,
-                  //   "PrivateLinkInfo": {
-                  //     "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Storage/storageAccounts/acu1brwaoat5sadata6",
-                  //     "privateLinkLocation": "eastus2",
-                  //     "groupId": "blob_secondary"
-                  //   }
-                  // }
-                ]
-              }
-            ]
           }
         ],
         "APIMInfo": [
@@ -615,7 +570,7 @@
             "podIdentity": 1,
             "privateCluster": 0,
             "AgentPoolsSN": "snMT02",
-            "Name": "AGIC02",
+            "WAFName": "AGIC02",
             "loadBalancer": "standard", //"basic","standard"
             "BrownFields": 1,
             "AppGateway": 1,
