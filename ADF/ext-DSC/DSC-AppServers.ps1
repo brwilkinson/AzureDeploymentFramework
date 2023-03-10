@@ -14,7 +14,7 @@ Configuration $Configuration
         [String]$NetworkID,
         [String]$AppInfo,
         [String]$DataDiskInfo,
-        [String]$clientIDLocal,
+        # [String]$clientIDLocal,
         [String]$clientIDGlobal,
         [switch]$NoDomainJoin
     )
@@ -45,7 +45,7 @@ Configuration $Configuration
     Import-DscResource -ModuleName DSCR_AppxPackage
     
     # PowerShell Modules that you want deployed, comment out if not needed
-    Import-DscResource -ModuleName BRWAzure
+    # Import-DscResource -ModuleName BRWAzure
 
     # Azure VM Metadata service
     $VMMeta = Invoke-RestMethod -Headers @{'Metadata' = 'true' } -Uri http://169.254.169.254/metadata/instance?api-version=2020-10-01 -Method get

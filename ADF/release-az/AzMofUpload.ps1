@@ -1,18 +1,19 @@
 # Helper script for VSTS Releases
 param (
-    [String[]]$enviros = ("S1"),
-    [String]$Config = "API|JMP",
-    [String]$prefix = "AZE2"
+    [String[]]$enviros = ('S1'),
+    [String]$Config = 'API|JMP',
+    [String]$prefix = 'AZE2'
 )
-. $PSScriptRoot\Start-AzMofUpload.ps1
-$ArtifactStagingDirectory = get-item -path "$PSScriptRoot\.."
-foreach ($enviro in $enviros) {
+Import-Module $PSScriptRoot\Start-AzMofUpload.psm1 -Force
+$Artifacts = Get-Item -Path "$PSScriptRoot\.."
+foreach ($enviro in $enviros)
+{
     [String]$envir = $enviro.Substring(0, 1)
     [String]$depid = $enviro.Substring(1, 1)
-    write-warning "PSScriptRoot             = $PSScriptRoot"
-    write-warning "ArtifactStagingDirectory = $ArtifactStagingDirectory"
-    write-warning "Env                      = $envir" 
-    write-warning "DepID                    = $depid" 
-    write-warning "Prefix                   = $prefix" 
-    Start-AzureMofUpload -envir $envir -depid $depid  -Config $Config -ConfigDir $ArtifactStagingDirectory -Prefix $prefix 
+    Write-Warning "PSScriptRoot             = $PSScriptRoot"
+    Write-Warning "Artifacts                = $Artifacts"
+    Write-Warning "Env                      = $envir"
+    Write-Warning "DepID                    = $depid"
+    Write-Warning "Prefix                   = $prefix"
+    Start-AzureMofUpload -envir $envir -depid $depid -Config $Config -ConfigDir $Artifacts -Prefix $prefix 
 }

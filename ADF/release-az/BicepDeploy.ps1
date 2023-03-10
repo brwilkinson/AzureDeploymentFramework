@@ -2,42 +2,41 @@
 
 param (
     [String]$Env,
-    [string]$Prefix = 'ACU1',
+    [string]$Prefix,
     [String]$stage,
-    [ValidateSet('ADF', 'PSO', 'ABC', 'HUB', 'AOA')]
+    [ValidateSet('ADF', 'GW', 'SFM', 'HUB', 'AOA', 'PST', 'MON', 'AKS')]
     [String]$APP = 'ADF',
-    [switch]$SubscriptionDeploy,
     [switch]$FullUpload,
-    [switch]$LogAzDebug,
-    [switch]$TemplateSpec
+    [string]$CN = '.',
+    [string]$CN2 = '.'
 )
 
-. $PSScriptRoot\Start-AzDeploy.ps1
-$ArtifactStagingDirectory = get-item -path "$PSScriptRoot\.."
+Get-AzContext | Select-Object Name, Account, Environment, Subscription, Tenant | Out-String
 
-$templatefile = "$ArtifactStagingDirectory\bicep\${stage}.bicep"
+Import-Module $PSScriptRoot\Start-AzDeploy.psm1 -Force
+$Artifacts = Get-Item -Path "$PSScriptRoot\.."
+
+$templatefile = "$Artifacts\bicep\${stage}.bicep"
 
 $Params = @{
-    Deployment               = $Env 
-    Prefix                   = $Prefix
-    App                      = $APP
-    ArtifactStagingDirectory = $ArtifactStagingDirectory
-    TemplateFile             = $templatefile
-    #TemplateParametersFile   = "$PSScriptRoot\..\azuredeploy.1.$Prefix.$Env.parameters.json"
-    TemplateSpec             = $TemplateSpec
+    Deployment   = $Env
+    Prefix       = $Prefix
+    App          = $APP
+    Artifacts    = $Artifacts
+    TemplateFile = $templatefile
+    CN           = $CN
+    CN2          = $CN2
 }
 
-<#
-# Bicep is now included in hosted runners
-
-if (-not (gcm bicep -ea 0))
+# Force manual upgrade only when required
+if ($IsLinux -and (bicep --version) -match '0.7.4')
 {
-    az bicep install
+    $source = Get-Command bicep | ForEach-Object source
+    Write-Output "source is $source"
+    Invoke-WebRequest -Uri https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64 -OutFile bicep
+    chmod +x ./bicep
+    sudo mv ./bicep $source
+    bicep --version
 }
-
-gmo az.resources -list
-
-$env:Path += ";$home\.azure\bin\"
-#>
 
 Start-AzDeploy @Params -FullUpload:$FullUpload -NoPackage # -LogAzDebug:$LogAzDebug

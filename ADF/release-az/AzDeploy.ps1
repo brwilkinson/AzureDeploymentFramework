@@ -4,27 +4,22 @@ param (
     [String]$Env,
     [string]$Prefix = 'ACU1',
     [String]$stage = 'ALL',
-    [ValidateSet('ADF', 'PSO', 'ABC', 'HUB', 'AOA', 'DEF')]
+    [ValidateSet('ADF', 'PSO', 'ABC', 'HUB', 'AOA', 'DEF', 'PST', 'MON', 'AKS')]
     [String]$APP = 'ADF',
-    [switch]$SubscriptionDeploy,
-    [switch]$FullUpload,
-    [switch]$LogAzDebug,
-    [switch]$TemplateSpec
+    [switch]$FullUpload
 )
 
-. $PSScriptRoot\Start-AzDeploy.ps1
-$ArtifactStagingDirectory = get-item -path "$PSScriptRoot\.."
+Import-Module $PSScriptRoot\Start-AzDeploy.psm1 -Force
+$Artifacts = Get-Item -Path "$PSScriptRoot\.."
 
-$templatefile = "$ArtifactStagingDirectory\templates-deploy\0-azuredeploy-$stage.json"
+$templatefile = "$Artifacts\templates-deploy\0-azuredeploy-$stage.json"
 
 $Params = @{
-    Deployment               = $Env 
-    Prefix                   = $Prefix
-    App                      = $APP
-    ArtifactStagingDirectory = $ArtifactStagingDirectory
-    TemplateFile             = $templatefile
-    #TemplateParametersFile   = "$PSScriptRoot\..\azuredeploy.1.$Prefix.$Env.parameters.json"
-    TemplateSpec             = $TemplateSpec
+    Deployment   = $Env
+    Prefix       = $Prefix
+    App          = $APP
+    Artifacts    = $Artifacts
+    TemplateFile = $templatefile
 }
 
 Start-AzDeploy @Params -FullUpload:$FullUpload -NoPackage # -LogAzDebug:$LogAzDebug
