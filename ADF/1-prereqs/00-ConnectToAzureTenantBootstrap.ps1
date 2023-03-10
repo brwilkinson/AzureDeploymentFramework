@@ -1,6 +1,6 @@
-$ArtifactStagingDirectory = "$PSScriptRoot\.."
+$Artifacts = "$PSScriptRoot\.."
 $AppName = 'HUB'
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$AppName\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Global = Get-Content -Path $Artifacts\tenants\$AppName\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 # F5 to load.
 break
 

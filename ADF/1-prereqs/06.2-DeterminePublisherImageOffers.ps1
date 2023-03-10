@@ -25,19 +25,27 @@ $pubName = 'MicrosoftWindowsServer'
 $pubname = 'MicrosoftSQLServer'
 $pubname = 'Microsoft.Azure.Diagnostics'
 $pubname = 'MicrosoftWindowsDesktop'
+$pubname = 'MicrosoftCBLMariner'
+Get-AzVMImageOffer -Location $location -Publisher $pubName | Select-Object Offer
 
 $pubname = 'Microsoft.Powershell'   # Ext
 $pubname = 'Microsoft.Azure.ActiveDirectory.LinuxSSH'  # ext
 $pubname = 'Microsoft.Azure.ActiveDirectory' # ext
 $pubname = 'Microsoft.Azure.OpenSSH' #Ext
 $pubname = 'Microsoft.Azure.Monitoring.DependencyAgent'  # ext
-Get-AzVMImageOffer -Location $location -Publisher $pubName | Select-Object Offer
+$pubname = 'Microsoft.Azure.Monitor'
+$pubname = 'Microsoft.EnterpriseCloud.Monitoring'
+Get-AzVMExtensionImageType -PublisherName $pubname -Location $Location
 
 # Extensions
 $ExtType = 'DSC'
 $ExtType = 'LinuxDiagnostic'
 $ExtType = 'IaaSDiagnostic'
 $ExtType = 'DependencyAgentWindows'
+$ExtType = 'AzureMonitorLinuxAgent'
+$ExtType = 'AzureMonitorWindowsAgent'
+$ExtType = 'MicrosoftMonitoringAgent'
+$ExtType = 'OmsAgentForLinux'
 Get-AzVMExtensionImage -Location $location -PublisherName $pubname -Type $ExtType | Select-Object PublisherName, Type, Version
 
 # 3 retrieve the SKUs of the offering
@@ -56,6 +64,7 @@ $offername = 'microsoftserveroperatingsystems-previews'
 $offername = 'windowsserver-gen2preview'
 $offername = 'Windows-10'
 $offername = 'office-365'
+$offername = 'cbl-mariner'
 Get-AzVMImageSku -Location $location `
     -Publisher $pubName `
     -Offer $offerName | 
@@ -82,8 +91,11 @@ $sku = 'windows-server-2019-azure-edition-preview'
 $sku = '2019-datacenter-gen2'
 $sku = 'windows-server-2022-g2'
 $sku = 'Enterprise'
+$sku = '2022-datacenter-azure-edition'
+$sku = '2019-Datacenter-gs'
+$sku = 'cbl-mariner-2-gen2'
 Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU | #Select-Object * | ogv
-    Select-Object PublisherName, skus, Offer, Version,PurchasePlanText # Location
+    Select-Object PublisherName, skus, Offer, Version, PurchasePlanText | Format-Table -AutoSize
 
 # Sample output:
 
@@ -142,4 +154,4 @@ Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Sku
 
 
 $version = '20324.3.2103272200'
-Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU -Version $version | select *
+Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU -Version $version | Select-Object *

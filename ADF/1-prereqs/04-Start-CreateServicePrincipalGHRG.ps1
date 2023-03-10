@@ -133,6 +133,6 @@ Id                    : 0b3103ed-343d-426b-9570-26514f91988e
 Type                  :
 
 WARNING: Assigning role 'Storage Blob Data Contributor' over scope '/subscriptions/855c22ce-7a6c-468b-ac72-1d1ef4355acf/resourceGroups/ACU1-BRW-HAA-RG-G1' to the new service principal.
-{"clientId":"758d00e3-54b8-41c2-9f0a-48d572c5d796","clientSecret":"e54555e1-5a14-4e18-8ef4-4ad53115be39","tenantId":"11cb9e1b-bd08-4f80-bb8f-f71940c39079","subscriptionId":"855c22ce-7a6c-468b-ac72-1d1ef4355acf","activeDirectoryEndpointUrl":"https://login.microsoftonline.com","resourceManagerEndpointUrl":"https://management.azure.com/","activeDirectoryGraphResourceId":"https://graph.windows.net/","sqlManagementEndpointUrl":"https://management.core.windows.net:8443/","galleryEndpointUrl":"https://gallery.azure.com/","managementEndpointUrl":"https://management.core.windows.net/"}
+{"clientId":"758d00e3-54b8-41c2-9f0a-48d572c5d796","tenantId":"11cb9e1b-bd08-4f80-bb8f-f71940c39079","subscriptionId":"855c22ce-7a6c-468b-ac72-1d1ef4355acf","activeDirectoryEndpointUrl":"https://login.microsoftonline.com","resourceManagerEndpointUrl":"https://management.azure.com/","activeDirectoryGraphResourceId":"https://graph.windows.net/","sqlManagementEndpointUrl":"https://management.core.windows.net:8443/","galleryEndpointUrl":"https://gallery.azure.com/","managementEndpointUrl":"https://management.core.windows.net/"}
 ✓ Set secret ACU1_BRW_HAA_RG_G1 for bcage29/LogHeadersAPI
 #>

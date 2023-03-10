@@ -36,8 +36,9 @@ microsoft.support
 $ProviderNamespace = 'Microsoft.storage'
 $ProviderNamespace = 'Microsoft.HybridCompute'
 $ProviderNamespace = 'Microsoft.Compute'
+$ProviderNamespace = 'Microsoft.ApiManagement'
 
-(Get-AzResourceProvider -ProviderNamespace $ProviderNamespace).ResourceTypes | foreach ResourceTypeName
+(Get-AzResourceProvider -ProviderNamespace $ProviderNamespace).ResourceTypes | ForEach-Object ResourceTypeName
 
 <#
 availabilitySets
@@ -70,6 +71,7 @@ virtualMachines/metricDefinitions
 $ResourceTypeName = 'VirtualMachines'
 $ResourceTypeName = 'storageAccounts'
 $ResourceTypeName = 'machines'
+$ResourceTypeName = 'service'
 ((Get-AzResourceProvider -ProviderNamespace $ProviderNamespace).ResourceTypes | Where-Object ResourceTypeName -eq $ResourceTypeName).ApiVersions
 
 <#

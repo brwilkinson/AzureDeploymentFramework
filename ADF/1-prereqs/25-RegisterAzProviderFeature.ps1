@@ -32,6 +32,9 @@ Register-AzResourceProvider -ProviderNamespace microsoft.Kubernetes
 Register-AzResourceProvider -ProviderNamespace microsoft.KubernetesConfiguration
 
 
+Register-AzProviderFeature -FeatureName 'LiveResize' -ProviderNamespace 'Microsoft.Compute'
+Get-AzProviderFeature -FeatureName 'LiveResize' -ProviderNamespace 'Microsoft.Compute'
+
 # az cli 
 
 az extension add -n k8s-configuration

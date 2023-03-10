@@ -1,6 +1,6 @@
 param (
     [alias('Dir', 'Path')]
-    [string] $ArtifactStagingDirectory = (Get-Item -Path "$PSScriptRoot\.."),
+    [string] $Artifacts = (Get-Item -Path "$PSScriptRoot\.."),
 
     [validateset('ADF', 'PSO', 'HUB', 'ABC', 'AOA', 'HAA')]
     [alias('AppName')]
@@ -13,7 +13,7 @@ param (
     [string] $AAEnvironment = 'G1'
 )
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $AutomationAccount = '{0}{1}{2}{3}OMSAutomation' -f $Prefix, $Global.OrgName, $App, $AAEnvironment
 $AAResourceGroupName = '{0}-{1}-{2}-RG-{3}' -f $Prefix, $Global.OrgName, $App, $AAEnvironment
 

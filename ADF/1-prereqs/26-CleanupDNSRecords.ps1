@@ -39,3 +39,8 @@ $name = 'azurewebsites.net'
 Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
     Where-Object { $_.records[0].cname -match $name } | #ForEach-Object records
     Remove-AzDnsRecordSet #-Confirm -Verbose
+
+$name = 'azurecontainerapps.io'
+Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
+    Where-Object { $_.records[0].cname -match $name } | #ForEach-Object records
+    Remove-AzDnsRecordSet #-Confirm -Verbose

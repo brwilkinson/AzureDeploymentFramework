@@ -58,7 +58,7 @@ if (! $SecondaryKVName)
 
 Write-Verbose -Message "Secondary Keyvault: $SecondaryKVName" -Verbose
 
-Get-AzKeyVaultCertificate -VaultName $primaryKVName | ForEach-Object {
+Get-AzKeyVault -VaultName $primaryKVName | Get-AzKeyVaultCertificate | ForEach-Object {
     $CertName = $_.Name
     $SourceCert = Get-AzKeyVaultCertificate -VaultName $primaryKVName -Name $CertName
     $DestinationCert = Get-AzKeyVaultCertificate -VaultName $SecondaryKVName -Name $CertName
@@ -79,7 +79,7 @@ Get-AzKeyVaultCertificate -VaultName $primaryKVName | ForEach-Object {
 }
 
 # Get-AzKeyVaultSecret -VaultName $primaryKVName | Where-Object ContentType -NE 'application/x-pkcs12' | ForEach-Object {
-Get-AzKeyVaultSecret -VaultName $primaryKVName | ForEach-Object {
+Get-AzKeyVault -VaultName $primaryKVName | Get-AzKeyVaultSecret | ForEach-Object {
     $SecretName = $_.Name
     $SourceSecret = Get-AzKeyVaultSecret -VaultName $primaryKVName -Name $SecretName
 

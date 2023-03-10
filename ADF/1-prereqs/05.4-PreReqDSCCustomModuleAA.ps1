@@ -1,6 +1,6 @@
 param (
     [alias('Dir', 'Path')]
-    [string] $ArtifactStagingDirectory = (Get-Item -Path "$PSScriptRoot\.."),
+    [string] $Artifacts = (Get-Item -Path "$PSScriptRoot\.."),
 
     [validateset('ADF', 'PSO', 'HUB', 'ABC', 'AOA', 'HAA')]
     [alias('AppName')]
@@ -15,7 +15,7 @@ param (
     [string] $StorageContainerName = "dscresourcesaa"
 )
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
+$Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json -Depth 10 | ForEach-Object Global
 $AutomationAccount = '{0}{1}{2}{3}OMSAutomation' -f $Prefix, $Global.OrgName, $App, $AAEnvironment
 $AAResourceGroupName = '{0}-{1}-{2}-RG-{3}' -f $Prefix, $Global.OrgName, $App, $AAEnvironment
 
@@ -98,7 +98,7 @@ get-childitem -path $modulePath -Directory | foreach {
         $filePath = Join-path -path $modulePath -ChildPath ($ModuleName + ".zip")
         Compress-Archive -Path "$modulePath\$ModuleName" -DestinationPath $filePath -Force 
         Get-Item -Path $filePath | ForEach-Object {
-            #    $_.FullName.Substring($ArtifactStagingDirectory.length)
+            #    $_.FullName.Substring($Artifacts.length)
             Set-AzStorageBlobContent -File $_.FullName -Blob $_.FullName.Substring($modulePath.length + 1 ) -Container $StorageContainerName -Context $StorageAccount.Context -Force -OutVariable blob
         } | Select Name, Length, LastModified
         $link = $blob[0].ICloudBlob.Uri.AbsoluteUri + $sasToken

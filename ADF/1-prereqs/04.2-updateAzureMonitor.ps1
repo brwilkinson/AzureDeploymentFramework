@@ -2,9 +2,9 @@ param (
     [String]$App = 'ADF'
 )
 
-$ArtifactStagingDirectory = Get-Item -Path $PSScriptRoot\..
+$Artifacts = Get-Item -Path $PSScriptRoot\..
 
-$Global = Get-Content -Path $ArtifactStagingDirectory\tenants\$App\Global-Global.json | ConvertFrom-Json
+$Global = Get-Content -Path $Artifacts\tenants\$App\Global-Global.json | ConvertFrom-Json
 
 # https://docs.microsoft.com/en-us/azure/azure-monitor/insights/vminsights-health-enable?tabs=powershell
 

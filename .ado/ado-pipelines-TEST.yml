@@ -1,0 +1,137 @@
+parameters:
+  - name: ORG
+    displayName: ORG Code
+    type: string
+    default: BRW
+    values:
+      - BRW
+
+  - name: PREFIX
+    displayName: Region Prefix
+    type: string
+    default: ACU1
+    values:
+      - AEU2
+      - ACU1
+      - AEU1
+      - AWU1
+      - AWU2
+      - AWCU
+
+  - name: APP
+    displayName: App/Tenant Name
+    type: string
+    default: AOA
+    values:
+      - AOA
+      - ABC
+      - ADF
+      - HAA
+      - HUB
+      - SFM
+      - GW
+      - PST
+      - MON
+      - AKS
+
+  - name: APPPRIMARY
+    displayName: App/Tenant PRIMARY Name
+    type: string
+    default: AOA
+    values:
+      - AOA
+      - HUB
+      - MON
+      - GW
+      - AKS
+
+  - name: ENV
+    displayName: Environment Name
+    type: string
+    default: D1
+
+  - name: SP
+    displayName: Service principal name
+    type: string
+
+  - name: SPG0
+    displayName: Global Service principal name
+    type: string
+
+  - name: ConnectionName
+    displayName: ConnectionName for ADO Service Connection
+    type: string
+    default: default
+
+  - name: ConnectionType
+    displayName: Service connection type
+    type: string
+    default: AZ
+    values:
+      - AZ
+      - SF
+      - AKS
+
+jobs:
+  - job: JOB_01_${{ parameters.ConnectionType }}_Connection_Test__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
+    pool:
+      vmImage: windows-latest
+
+    steps:
+      - task: AzurePowerShell@5
+        displayName: Test Service Connection
+        inputs:
+          azureSubscription: ${{ parameters.SP }}-${{ parameters.ENV }}
+          ScriptType: "FilePath"
+          ScriptPath: "ADF/release-az/TestServiceConnection.ps1"
+          ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -Type ${{ parameters.ConnectionType }}'
+          FailOnStandardError: true
+          azurePowerShellVersion: "LatestVersion"
+          # preferredAzurePowerShellVersion: 8.0.0
+          pwsh: true
+          
+
+      - task: ServiceFabricPowerShell@1
+        displayName: Service Fabric Test Command
+        condition: ${{ eq(parameters.ConnectionType, 'SF') }}
+        inputs:
+          ${{ if eq(parameters.ConnectionName, 'default') }}:
+            clusterConnection: SC-SharedSFM-Cluster-Dev
+          ${{ else }}:
+            clusterConnection: ${{ parameters.ConnectionName }}
+          ScriptType: 'InlineScript'
+          Inline: |
+            $r = Get-ServiceFabricNode
+            if ($r)
+            {
+              $r
+              return 'success'
+            }
+            else
+            {
+              Write-Error "Connection is not successful"
+              return 'failed'
+            }
+
+      - task: AzurePowerShell@5
+        condition: ${{ eq(parameters.ConnectionType, 'AZ') }}
+        displayName: Azure PowerShell Test Command
+        inputs:
+          azureSubscription: ${{ parameters.SP }}-${{ parameters.ENV }}
+          ScriptType: InlineScript
+          Inline: |
+            $r = Get-AzResourceGroup -Name ${ENV:PREFIX}-${ENV:ORG}-${ENV:APP}-RG-${ENV:ENV}
+            if ($r)
+            {
+              $r
+              return 'success'
+            }
+            else
+            {
+              Write-Error "Connection is not successful"
+              return 'failed'
+            }
+          FailOnStandardError: true
+          azurePowerShellVersion: "LatestVersion"
+          # preferredAzurePowerShellVersion: 8.0.0
+          pwsh: true

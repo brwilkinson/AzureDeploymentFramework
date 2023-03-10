@@ -58,6 +58,20 @@ parameters:
     displayName: Global Service principal name
     type: string
 
+  - name: STAGE
+    displayName: Deployment Stage
+    type: string
+
+  - name: CN
+    displayName: Deployment Stage
+    type: string
+    default: "."
+
+  - name: CN2
+    displayName: Deployment Stage
+    type: string
+    default: "."
+
   - name: UAI
     displayName: Switch to use the UAI for Global
     type: string
@@ -88,9 +102,10 @@ parameters:
     default: false
 
 jobs:
-  - job: JOB_00_ALL_SUB__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
+  - job: JOB_${{ replace(replace(parameters.STAGE,'-','_'),'.','_') }}__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
+    timeoutInMinutes: 120
     pool:
-      ${{ if eq(parameters.UAI, 1) }}:
+      ${{ if and(eq(parameters.STAGE, '00-ALL-SUB'), eq(parameters.UAI, 1)) }}:
         name: ${{ parameters.POOLPrefix }}-${{ parameters.ORG }}-${{ parameters.APPPRIMARY }}-p0-${{ parameters.POOL }}
       ${{ else }}:
         vmImage: ubuntu-latest
@@ -98,33 +113,16 @@ jobs:
     steps:
       - task: AzurePowerShell@5
         inputs:
-          ${{ if eq(parameters.UAI, 0) }}:
+          ${{ if and(eq(parameters.STAGE, '00-ALL-SUB'), eq(parameters.UAI, 1)) }}:
+            azureSubscription: ${{ parameters.SPG0 }}-G0_UAI
+          ${{ elseif and(eq(parameters.STAGE, '00-ALL-SUB'), eq(parameters.UAI, 0)) }}:
             azureSubscription: ${{ parameters.SPG0 }}-G0
           ${{ else }}:
-            azureSubscription: ${{ parameters.SPG0 }}-G0_UAI
+            azureSubscription: ${{ parameters.SP }}-${{ parameters.ENV }}
           ScriptType: "FilePath"
           ScriptPath: "ADF/release-az/BicepDeploy.ps1"
-          ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "00-ALL-SUB"'
+          ScriptArguments: "-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage ${{ parameters.STAGE }} -CN ${{ parameters.CN }} -CN2 ${{ parameters.CN2 }} -FullUpload:$${{ parameters.FullUpload }}"
           FailOnStandardError: true
           azurePowerShellVersion: "LatestVersion"
-          # preferredAzurePowerShellVersion: 8.0.0
-          pwsh: true
-
-  - job: JOB_01_ALL_RG__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
-    dependsOn: JOB_00_ALL_SUB__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
-    timeoutInMinutes: 240
-    pool:
-      vmImage: ubuntu-latest
-      # pool: AZC1-S1-Infra
-
-    steps:
-      - task: AzurePowerShell@5
-        inputs:
-          azureSubscription: ${{ parameters.SP }}-${{ parameters.ENV }}
-          ScriptType: "FilePath"
-          ScriptPath: "ADF/release-az/BicepDeploy.ps1"
-          ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "01-ALL-RG" -FullUpload:$${{ parameters.FullUpload }}'
-          FailOnStandardError: true
-          azurePowerShellVersion: "LatestVersion"
-          # preferredAzurePowerShellVersion: 8.0.0
+          # preferredAzurePowerShellVersion: 6.0.0
           pwsh: true
