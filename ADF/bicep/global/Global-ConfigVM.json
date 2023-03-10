@@ -153,9 +153,9 @@
     "API-P": "Standard_D4s_v3",
     "API-D": "Standard_D4s_v3",
     "API-S": "Standard_D2s_v3",
-    "SF-P": "Standard_D4s_v3",
-    "SF-D": "Standard_D2s_v3",
-    "SF-S": "Standard_D2s_v3",
+    "SFM-P": "Standard_D4s_v3",
+    "SFM-D": "Standard_D2s_v3",
+    "SFM-U": "Standard_D2s_v3",
     "CTNR-P": "Standard_D4s_v3",
     "CTNR-D": "Standard_D2s_v3",
     "ADp-P": "Standard_D2s_v3",
@@ -176,6 +176,10 @@
     "DFS-D": "Standard_D4s_v3",
     "JMP-P": "Standard_D4s_v3",
     "JMP-D": "Standard_D4s_v3",
+    "CBL-P": "Standard_D4s_v3",
+    "CBL-D": "Standard_D4s_v3",
+    "UBU-P": "Standard_D4s_v3",
+    "UBU-D": "Standard_D4s_v3",
     "CLT-P": "Standard_D4s_v3",
     "CLT-D": "Standard_D4s_v3",
     "PXY-P": "Standard_D4s_v3",
@@ -212,6 +216,40 @@
         "chefClient": 0
       }
     },
+    "MMSWindows2022-Secure": {
+      "imageReference": {
+        "id": "/subscriptions/723b64f0-884d-4994-b6de-8960d049cb7e/resourceGroups/CloudTestImages/providers/Microsoft.Compute/galleries/CloudTestGallery/images/MMSWindows2022-Secure"
+      },
+      "licenseType": "Windows_Server",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "MMSUbuntu22.04-Secure": {
+      "imageReference": {
+        "id": "/subscriptions/723b64f0-884d-4994-b6de-8960d049cb7e/resourceGroups/CloudTestImages/providers/Microsoft.Compute/galleries/CloudTestGallery/images/MMSUbuntu22.04-Secure"
+      },
+      "OS": "Linux",
+      "OSDiskGB": 32,
+      "RoleExtensions": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "Antimalware": 0,
+        "DependencyAgent": 1,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "chefClient": 0,
+        "GuestHealthAgent": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0
+      }
+    },
     "cbld10": {
       "imageReference": {
         "id": "/subscriptions/27b750cd-ed43-42fd-9044-8d75e124ae55/resourceGroups/SBID-Build-Test/providers/Microsoft.Compute/galleries/cbldtest/images/cbld10-ext"
@@ -232,6 +270,32 @@
         "GuestHealthAgent": 0,
         "AdminCenter": 0,
         "WindowsOpenSSH": 0
+      }
+    },
+    "Mariner2": {
+      "imageReference": {
+        "publisher": "MicrosoftCBLMariner",
+        "offer": "cbl-mariner",
+        "sku": "cbl-mariner-2-gen2",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "patchMode": "AutomaticByPlatform",
+      "OSDiskGB": 32,
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "Antimalware": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 1,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0,
+        "GuestHealthAgent": 0,
+        "GuestConfig": 0
       }
     },
     "Win10O365": {
@@ -355,6 +419,22 @@
         "chefClient": 0
       }
     },
+    "Server2019gs": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2019-Datacenter-gs",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByOS",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
     "Server2019": {
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
@@ -375,17 +455,12 @@
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "2022-Datacenter-g2",
+        "sku": "2022-datacenter-azure-edition",
         "version": "latest"
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",
       "OSDiskGB": 127,
-      "_plan": {
-        "name": "windows-server-2022",
-        "publisher": "microsoftwindowsserver",
-        "product": "microsoftserveroperatingsystems-previews"
-      },
       "RoleExtensions": {
         "Scripts": 0,
         "chefClient": 0
@@ -669,6 +744,31 @@
         "WindowsOpenSSH": 0
       }
     },
+    "UbuntuServer1804LTS": {
+      "imageReference": {
+        "publisher": "canonical",
+        "offer": "UbuntuServer",
+        "sku": "18.04-LTS",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "patchMode": "AutomaticByPlatform",
+      "OSDiskGB": 32,
+      "RoleExtensions": {
+        "AzureMonitorAgent": 0,
+        "GuestHealthAgent": 0,
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "Antimalware": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "GuestConfig": 0
+      }
+    },
     "UbuntuServer1904": {
       "imageReference": {
         "publisher": "canonical",
@@ -677,13 +777,14 @@
         "version": "latest"
       },
       "OS": "Linux",
+      "patchMode": "AutomaticByPlatform",
       "OSDiskGB": 32,
       "RoleExtensions": {
         "MonitoringAgent": 0,
         "IaaSDiagnostics": 0,
         "Antimalware": 0,
         "DependencyAgent": 0,
-        "DSC": 0,
+        // "DSC": 0,
         "Scripts": 1,
         "MSI": 0,
         "CertMgmt": 0,

@@ -1,0 +1,227 @@
+{
+  "AGN1": {
+    "location": "germanynorth",
+    "Used": false,
+    "Network": ""
+  },
+  "AJIW": {
+    "location": "jioindiawest",
+    "Used": false,
+    "Network": ""
+  },
+  "AGWC": {
+    "location": "germanywestcentral",
+    "Used": false,
+    "Network": ""
+  },
+  "ABS1": {
+    "location": "brazilsouth",
+    "Used": true,
+    "Network": 3
+  },
+  "AWCU": {
+    "location": "westcentralus",
+    "Used": true,
+    "Network": 24
+  },
+  "ASAW": {
+    "location": "southafricawest",
+    "Used": false,
+    "Network": ""
+  },
+  "AWU2": {
+    "location": "westus2",
+    "Used": true,
+    "Network": 28
+  },
+  "ACE1": {
+    "location": "canadaeast",
+    "Used": true,
+    "Network": 5
+  },
+  "ASAN": {
+    "location": "southafricanorth",
+    "Used": false,
+    "Network": ""
+  },
+  "ACU1": {
+    "location": "centralus",
+    "Used": true,
+    "Network": 7
+  },
+  "AEA1": {
+    "location": "eastasia",
+    "Used": true,
+    "Network": 8
+  },
+  "AJE1": {
+    "location": "japaneast",
+    "Used": true,
+    "Network": 12
+  },
+  "ASN1": {
+    "location": "switzerlandnorth",
+    "Used": false,
+    "Network": ""
+  },
+  "ABSE": {
+    "location": "brazilsoutheast",
+    "Used": false,
+    "Network": ""
+  },
+  "AAS1": {
+    "location": "australiasoutheast",
+    "Used": true,
+    "Network": 2
+  },
+  "ACC1": {
+    "location": "canadacentral",
+    "Used": true,
+    "Network": 4
+  },
+  "ASW1": {
+    "location": "switzerlandwest",
+    "Used": false,
+    "Network": ""
+  },
+  "ASC1": {
+    "location": "swedencentral",
+    "Used": false,
+    "Network": ""
+  },
+  "AUS1": {
+    "location": "uksouth",
+    "Used": true,
+    "Network": 22
+  },
+  "AWU3": {
+    "location": "westus3",
+    "Used": true,
+    "Network": 29
+  },
+  "AFC1": {
+    "location": "francecentral",
+    "Used": true,
+    "Network": 11
+  },
+  "AWI1": {
+    "location": "westindia",
+    "Used": true,
+    "Network": 26
+  },
+  "AUC1": {
+    "location": "uaecentral",
+    "Used": false,
+    "Network": ""
+  },
+  "AUN1": {
+    "location": "uaenorth",
+    "Used": true,
+    "Network": 21
+  },
+  "ASCU": {
+    "location": "southcentralus",
+    "Used": true,
+    "Network": 19
+  },
+  "ACI1": {
+    "location": "centralindia",
+    "Used": true,
+    "Network": 6
+  },
+  "AKC1": {
+    "location": "koreacentral",
+    "Used": true,
+    "Network": 14
+  },
+  "AEU2": {
+    "location": "eastus2",
+    "Used": true,
+    "Network": 10
+  },
+  "AAC2": {
+    "location": "australiacentral2",
+    "Used": false,
+    "Network": ""
+  },
+  "AWEU": {
+    "location": "westeurope",
+    "Used": true,
+    "Network": 25
+  },
+  "ANW1": {
+    "location": "norwaywest",
+    "Used": false,
+    "Network": ""
+  },
+  "ANE1": {
+    "location": "norwayeast",
+    "Used": false,
+    "Network": ""
+  },
+  "AWU1": {
+    "location": "westus",
+    "Used": true,
+    "Network": 27
+  },
+  "AKS1": {
+    "location": "koreasouth",
+    "Used": true,
+    "Network": 15
+  },
+  "ANCU": {
+    "location": "northcentralus",
+    "Used": true,
+    "Network": 16
+  },
+  "AJIC": {
+    "location": "jioindiacentral",
+    "Used": false,
+    "Network": ""
+  },
+  "AFS1": {
+    "location": "francesouth",
+    "Used": false,
+    "Network": ""
+  },
+  "ASI1": {
+    "location": "southindia",
+    "Used": true,
+    "Network": 20
+  },
+  "AAC1": {
+    "location": "australiacentral",
+    "Used": true,
+    "Network": 0
+  },
+  "AEU1": {
+    "location": "eastus",
+    "Used": true,
+    "Network": 9
+  },
+  "AJW1": {
+    "location": "japanwest",
+    "Used": true,
+    "Network": 13
+  },
+  "ANEU": {
+    "location": "northeurope",
+    "Used": true,
+    "Network": 17
+  },
+  "AUW1": {
+    "location": "ukwest",
+    "Used": true,
+    "Network": 23
+  },
+  "ASA1": {
+    "location": "southeastasia",
+    "Used": true,
+    "Network": 18
+  },
+  "AAE1": {
+    "location": "australiaeast",
+    "Used": true,
+    "Network": 1
+  }
+}
