@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -36,17 +43,6 @@ param DeploymentInfo object
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
-
-var subscriptionId = subscription().subscriptionId
-var Domain = split(Global.DomainName, '.')[0]
-var resourceGroupName = resourceGroup().name
-
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
-}
-var VNetID = resourceId(subscriptionId, resourceGroupName, 'Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
 
 var LBInfo = contains(DeploymentInfo, 'LBInfo') ? DeploymentInfo.LBInfo : []
 
@@ -63,6 +59,7 @@ module PublicIP 'x.publicIP.bicep' = [for (lb,index) in LBInfo: if(LB[index].mat
     VM: lb
     PIPprefix: 'lb'
     Global: Global
+    Prefix: Prefix
   }
 }]
 
@@ -80,6 +77,7 @@ module LBs 'LB-LB.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {
     probes: (contains(lb, 'probes') ? lb.probes : json('[]'))
     LB: lb
     Global: Global
+    Prefix: Prefix
   }
   dependsOn: [
     PublicIP

@@ -26,7 +26,7 @@ try
         }
         else
         {
-            # /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01
+            # /subscriptions/{subscriptionguid}/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01
             $SecretVersion = Split-Path -Path $certificateUrl -Leaf
             $Secret = Split-Path -Path $certificateUrl
             $SecretName = Split-Path -Path $Secret -Leaf

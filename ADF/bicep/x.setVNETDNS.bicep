@@ -19,11 +19,27 @@ var gh = {
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 var HubVNName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-${gh.hubRGRGName}-vn'
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
 var addressPrefixes = [
-  '${networkId}.0/23'
+  '${networkId.upper}.${networkId.lower}.0/21'
 ]
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
+}
+
 var SubnetInfo = (contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : [])
 
 var Domain = split(Global.DomainName, '.')[0]
@@ -48,10 +64,30 @@ var delegations = {
   ]
   'Microsoft.ContainerInstance/containerGroups': [
     {
-      name: 'aciDelegation'
+      name: 'delegation'
       properties: {
         serviceName: 'Microsoft.ContainerInstance/containerGroups'
       }
+    }
+  ]
+  'Microsoft.Network/dnsResolvers': [
+    {
+      name: 'delegation'
+      properties: {
+        serviceName: 'Microsoft.Network/dnsResolvers'
+      }
+    }
+  ]
+}
+
+var serviceEndpoints = {
+  default: []
+  'Microsoft.Storage': [
+    {
+      service: 'Microsoft.Storage'
+      locations: [
+        resourceGroup().location
+      ]
     }
   ]
 }
@@ -69,7 +105,7 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
     subnets: [for (sn,index) in SubnetInfo: {
       name: sn.name
       properties: {
-        addressPrefix: '${((sn.name == 'snMT02') ? networkIdUpper : networkId)}.${sn.Prefix}'
+        addressPrefix: '${networkId.upper}.${ contains(lowerLookup,sn.name) ? int(networkId.lower) + ( 1 * lowerLookup[sn.name]) : networkId.lower }.${sn.Prefix}'
         networkSecurityGroup: ! (contains(sn, 'NSG') && bool(sn.NSG)) ? null : /*
         */  {
               id: NSG[index].id
@@ -80,7 +116,9 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
             }
         routeTable: contains(sn, 'Route') && bool(sn.Route) ? RouteTableGlobal : null
         privateEndpointNetworkPolicies: 'Disabled'
+        privateLinkServiceNetworkPolicies: 'Disabled'
         delegations: contains(sn, 'delegations') ? delegations[sn.delegations] : delegations.default
+        serviceEndpoints: contains(sn, 'serviceEndpoints') ? serviceEndpoints[sn.serviceEndpoints] : serviceEndpoints.default
       }
     }]
   }

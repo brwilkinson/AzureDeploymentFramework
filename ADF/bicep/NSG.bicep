@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -46,7 +53,8 @@ var subnetInfo = contains(DeploymentInfo, 'subnetInfo') ? DeploymentInfo.subnetI
 var NSGInfo = [for (subnet, index) in subnetInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), subnet.name))
   subnetNSGParam: contains(subnet, 'securityRules') ? subnet.securityRules : []
-  subnetNSGDefault: contains(NSGDefault, subnet.name) ? NSGDefault[subnet.name] : []
+  // Allow for override the NSG Name otherwise default to match subnet name for NSG Name/lookup.
+  subnetNSGDefault: contains(NSGDefault, contains(subnet, 'NSGRuleName') ? subnet.NSGRuleName : subnet.name) ? NSGDefault[contains(subnet, 'NSGRuleName') ? subnet.NSGRuleName : subnet.name] : []
 }]
 
 var NSGDefault = {
@@ -203,42 +211,60 @@ var NSGDefault = {
       }
     }
   ]
-  SNFE01: [
-    // Move to bastion JIT rule
-    // {
-    //   name: 'ALL_JMP_IN_Allow_RDP_SSH'
-    //   properties: {
-    //     protocol: '*'
-    //     sourcePortRange: '*'
-    //     destinationPortRanges: [
-    //       '3389'
-    //       '22'
-    //     ]
-    //     sourceAddressPrefixes: contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-    //     destinationAddressPrefix: '*'
-    //     access: 'Allow'
-    //     priority: 1130
-    //     direction: 'Inbound'
-    //   }
-    // }
-    // {
-    //   name: 'ALL_JMP_IN_Allow_WEB01'
-    //   properties: {
-    //     protocol: '*'
-    //     sourcePortRange: '*'
-    //     destinationPortRange: '8080'
-    //     sourceAddressPrefixes: contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-    //     destinationAddressPrefix: '*'
-    //     access: 'Allow'
-    //     priority: 1140
-    //     direction: 'Inbound'
-    //   }
-    // }
-  ]
-  SNBE01: [
+  SNFE01: []
+  // Rules for service fabric, not documented yet.
+  SFM: [
+      {
+        name: 'AllowAzureLoadBalancer'
+        properties: {
+          access: 'Allow'
+          destinationAddressPrefix: 'VirtualNetwork'
+          destinationPortRange: '*'
+          direction: 'Inbound'
+          priority: 1100
+          protocol: '*'
+          sourceAddressPrefix: 'AzureLoadBalancer'
+          sourcePortRange: '*'
+          description: '[Required] Allow traffic from Azure Load Balancer.'
+        }
+      }
+      {
+        name: 'AllowSFRP'
+        properties: {
+          access: 'Allow'
+          destinationAddressPrefix: 'VirtualNetwork'
+          destinationPortRange: '*'
+          direction: 'Inbound'
+          priority: 1110
+          protocol: '*'
+          sourceAddressPrefix: 'ServiceFabric'
+          sourcePortRange: '*'
+          description: '[Required] Allow traffic from Service Fabric Resource Provider.'
+        }
+      }
+      // {
+      //   name: 'AllowCorpNet'
+      //   properties: {
+      //     protocol: '*'
+      //     sourcePortRange: '*'
+      //     sourceAddressPrefix: 'CorpNetPublic'
+      //     destinationAddressPrefix: 'VirtualNetwork'
+      //     destinationPortRanges: [
+      //       '3389'
+      //       '19000'
+      //       '19080'
+      //     ]
+      //     access: 'Allow'
+      //     priority: 1010
+      //     direction: 'Inbound'
+      //     description: 'Allow RDP, SFX and Service Fabric client access from CorpNet.'
+      //   }
+      // }
+    ]
+  SNAPIM01: [
     // Rules for API Management as documented here: https://docs.microsoft.com/en-us/azure/api-management/api-management-using-with-vnet
     {
-      name: 'APIM_Client_Inbound_FD'
+      name: 'APIM_Client_Inbound'
       properties: {
         protocol: 'Tcp'
         sourcePortRange: '*'
@@ -266,6 +292,19 @@ var NSGDefault = {
         direction: 'Inbound'
       }
     }
+    {
+      name: 'Azure_Infrastructure_Load_Balancer'
+      properties: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '6390'
+        sourceAddressPrefix: 'AzureLoadBalancer'
+        destinationAddressPrefix: 'VirtualNetwork'
+        access: 'Allow'
+        priority: 1130
+        direction: 'Inbound'
+      }
+    }
     // {
     //   name: 'APIM_LOGS_Management_Inbound'
     //   properties: {
@@ -278,7 +317,7 @@ var NSGDefault = {
     //     sourceAddressPrefix: 'VirtualNetwork'
     //     destinationAddressPrefix: 'AzureMonitor'
     //     access: 'Allow'
-    //     priority: 1130
+    //     priority: 1140
     //     direction: 'Inbound'
     //   }
     // }
@@ -291,7 +330,7 @@ var NSGDefault = {
     //     sourceAddressPrefix: 'VirtualNetwork'
     //     destinationAddressPrefix: 'VirtualNetwork'
     //     access: 'Allow'
-    //     priority: 1140
+    //     priority: 1150
     //     direction: 'Inbound'
     //   }
     // }
@@ -304,17 +343,211 @@ var NSGDefault = {
     //     sourceAddressPrefix: 'VirtualNetwork'
     //     destinationAddressPrefix: 'VirtualNetwork'
     //     access: 'Allow'
+    //     priority: 1160
+    //     direction: 'Inbound'
+    //   }
+    // }
+    // --------------------------------------------------------------------
+    // Outbound, only required if outbound is blocked OR routing via Firewall
+    // {
+    //   name: 'APIM_Storage'
+    //   properties: {
+    //     description: 'APIM service dependency on Azure Blob and Azure Table Storage'
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRange: '443'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'Storage'
+    //     access: 'Allow'
+    //     priority: 2100
+    //     direction: 'Outbound'
+    //   }
+    // }
+    // {
+    //   name: 'APIM_AAD'
+    //   properties: {
+    //     description: 'Connect to Azure Active Directory for Developer Portal Authentication or for Oauth2 flow during any Proxy Authentication'
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRange: '443'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'AzureActiveDirectory'
+    //     access: 'Allow'
+    //     priority: 2110
+    //     direction: 'Outbound'
+    //   }
+    // }
+    // {
+    //   name: 'APIM_AZSQL'
+    //   properties: {
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRange: '1433'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'Sql'
+    //     access: 'Allow'
+    //     priority: 2120
+    //     direction: 'Outbound'
+    //   }
+    // }
+    // {
+    //   name: 'APIM_KeyVault'
+    //   properties: {
+    //     description: 'Allow APIM service control plane access to KeyVault to refresh secrets'
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRange: '443'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'AzureKeyVault'
+    //     access: 'Allow'
+    //     priority: 2130
+    //     direction: 'Outbound'
+    //   }
+    // }
+    // {
+    //   name: 'APIM_EventHub'
+    //   properties: {
+    //     protocol: '*'
+    //     sourcePortRange: '*'
+    //     destinationPortRanges: [
+    //       '5671'
+    //       '5672'
+    //       '443'
+    //     ]
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'EventHub'
+    //     access: 'Allow'
+    //     priority: 2140
+    //     direction: 'Outbound'
+    //   }
+    // }
+    // {
+    //   name: 'APIM_Storage_SMB'
+    //   properties: {
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRange: '445'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'Storage'
+    //     access: 'Allow'
+    //     priority: 2150
+    //     direction: 'Outbound'
+    //   }
+    // }
+    // {
+    //   name: 'APIM_Monitoring_Extension'
+    //   properties: {
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRanges: [
+    //       '443'
+    //       '12000'
+    //     ]
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'AzureCloud'
+    //     access: 'Allow'
+    //     priority: 2160
+    //     direction: 'Outbound'
+    //   }
+    // }
+    // {
+    //   name: 'APIM_SMTP'
+    //   properties: {
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRanges: [
+    //       '25'
+    //       '587'
+    //       '25028'
+    //     ]
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'Internet'
+    //     access: 'Allow'
+    //     priority: 2170
+    //     direction: 'Outbound'
+    //   }
+    // }
+  ]
+  SNAPIM02: [
+    // Rules for API Management as documented here: https://docs.microsoft.com/en-us/azure/api-management/api-management-using-with-vnet
+    {
+      name: 'APIM_Client_Inbound'
+      properties: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRanges: [
+          '443'
+          '80'
+        ]
+        sourceAddressPrefix: 'Internet' // 'AzureFrontDoor.Backend'
+        destinationAddressPrefix: 'VirtualNetwork'
+        access: 'Allow'
+        priority: 1100
+        direction: 'Inbound'
+      }
+    }
+    {
+      name: 'APIM_Management_Inbound'
+      properties: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '3443'
+        sourceAddressPrefix: 'ApiManagement'
+        destinationAddressPrefix: 'VirtualNetwork'
+        access: 'Allow'
+        priority: 1120
+        direction: 'Inbound'
+      }
+    }
+    {
+      name: 'Azure_Infrastructure_Load_Balancer'
+      properties: {
+        protocol: 'Tcp'
+        sourcePortRange: '*'
+        destinationPortRange: '6390'
+        sourceAddressPrefix: 'AzureLoadBalancer'
+        destinationAddressPrefix: 'VirtualNetwork'
+        access: 'Allow'
+        priority: 1130
+        direction: 'Inbound'
+      }
+    }
+    // {
+    //   name: 'APIM_LOGS_Management_Inbound'
+    //   properties: {
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRanges: [
+    //       '1886'
+    //       '443'
+    //     ]
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'AzureMonitor'
+    //     access: 'Allow'
+    //     priority: 1140
+    //     direction: 'Inbound'
+    //   }
+    // }
+    // {
+    //   name: APIM_REDIS_Inbound'
+    //   properties: {
+    //     protocol: 'Tcp'
+    //     sourcePortRange: '*'
+    //     destinationPortRange: '6381-6383'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     destinationAddressPrefix: 'VirtualNetwork'
+    //     access: 'Allow'
     //     priority: 1150
     //     direction: 'Inbound'
     //   }
     // }
     // {
-    //   name: 'Azure_Infrastructure_Load_Balancer'
+    //   name: 'Sync_Counters_for_Rate_Limit_policies_between_machines'
     //   properties: {
-    //     protocol: 'Tcp'
+    //     protocol: 'Udp'
     //     sourcePortRange: '*'
-    //     destinationPortRange: '*'
-    //     sourceAddressPrefix: 'AzureLoadBalancer'
+    //     destinationPortRange: '4290'
+    //     sourceAddressPrefix: 'VirtualNetwork'
     //     destinationAddressPrefix: 'VirtualNetwork'
     //     access: 'Allow'
     //     priority: 1160

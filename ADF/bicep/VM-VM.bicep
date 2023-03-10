@@ -20,6 +20,23 @@ param saKey string = newGuid()
 
 param deploymentTime string = utcNow()
 
+param month string = utcNow('MM')
+param year string = utcNow('yyyy')
+
+// Use same PAT token for 3 month blocks, min PAT age is 6 months, max is 9 months
+var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) -1) % 3),2,'0')}-01', 'P9M')
+
+// Roll the SAS token one per 3 months, min length of 6 months.
+var DSCSAS = saaccountidglobalsource.listServiceSAS('2021-09-01', {
+  canonicalizedResource: '/blob/${saaccountidglobalsource.name}/${last(split(Global._artifactsLocation, '/'))}'
+  signedResource: 'c'
+  signedProtocol: 'https'
+  signedPermission: 'r'
+  signedServices: 'b'
+  signedExpiry: SASEnd
+  keyToSign: 'key1'
+}).serviceSasToken
+
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -76,7 +93,7 @@ var gh = {
 
 var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
-var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalRGJ.name}')
+var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalSAJ.name}')
 var HubKVRGName = '${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-RG-${gh.hubKVRGName}'
 var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 var AAName = toLower('${gh.hubAAPrefix}${gh.hubAAOrgName}${gh.hubAAAppName}${gh.hubAARGName}${HubAAJ.name}')
@@ -130,6 +147,9 @@ var ConfigurationMode = {
 }
 var DSCConfigurationModeFrequencyMins = 15
 
+var autoManageConfigurationProfile = '${DeploymentURI}AutoManage'
+// var autoManageConfigurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPractices${AppServerSizeLookup[Environment] == 'P' ? 'Production' : 'DevTest'}'
+
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
@@ -166,7 +186,26 @@ var secrets = [
   }
 ]
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
+var addressPrefixes = [
+  '${networkId.upper}.${networkId.lower}.0/21'
+]
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
+}
 
 var storageAccountType = Environment == 'P' ? /*
 */ (contains(AppServer, 'Zone') ? 'Premium_LRS' : 'Premium_ZRS') : /*
@@ -193,8 +232,8 @@ var userAssignedIdentities = {
   }
   Default: {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperatorGlobal')}': {}
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
+    // '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperatorGlobal')}': {}
+    // '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountFileContributor')}': {}
   }
   DefaultKeyVault: {
@@ -216,7 +255,7 @@ var userAssignedIdentities = {
 
 var ASNAME = contains(AppServer, 'Zone') ? 'usingZones' : AppServer.ASNAME
 
-resource AS 'Microsoft.Compute/availabilitySets@2021-03-01' = if (ASNAME != 'usingZones') {
+resource AS 'Microsoft.Compute/availabilitySets@2022-03-01' = if (ASNAME != 'usingZones') {
   name: '${Deployment}-as${ASNAME}'
   location: resourceGroup().location
   sku: {
@@ -235,8 +274,9 @@ module AppServerPIP 'x.publicIP.bicep' = {
     DeploymentURI: DeploymentURI
     NICs: AppServer.NICs
     VM: AppServer
-    PIPprefix: 'AppServer'
+    PIPprefix: 'vm'
     Global: Global
+    Prefix: Prefix
   }
 }
 
@@ -257,13 +297,15 @@ module AppServerNIC 'x.NIC.bicep' = {
     NICs: AppServer.NICs
     VM: AppServer
     Global: Global
+    Prefix: Prefix
+    Type: 'vm'
   }
   dependsOn: [
     AppServerPIP
   ]
 }
 
-module DISKLOOKUP 'y.disks.bicep' = {
+module DISKLOOKUP 'y.disks.bicep' = if(contains(AppServer,'DDRole')) {
   name: 'dp${Deployment}-AppServer-diskLookup${AppServer.Name}'
   params: {
     Deployment: Deployment
@@ -278,7 +320,7 @@ module DISKLOOKUP 'y.disks.bicep' = {
   }
 }
 
-resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-03-01' = {
   name: '${Deployment}-vm${AppServer.Name}'
   location: resourceGroup().location
   identity: {
@@ -294,7 +336,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   properties: {
     licenseType: contains(OSType[AppServer.OSType], 'licenseType') ? OSType[AppServer.OSType].licenseType : null
     availabilitySet: contains(AppServer, 'Zone') ? null : {
-      id: '${resourceId('Microsoft.Compute/availabilitySets', '${Deployment}-as${AppServer.ASName}')}'
+      id: resourceId('Microsoft.Compute/availabilitySets', '${Deployment}-as${AppServer.ASName}')
     }
     hardwareProfile: {
       vmSize: computeSizeLookupOptions['${AppServer.ROLE}-${AppServerSizeLookup[Environment]}']
@@ -303,7 +345,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
       computerName: VM.vmHostName
       adminUsername: contains(AppServer, 'AdminUser') ? AppServer.AdminUser : Global.vmAdminUserName
       adminPassword: vmAdminPassword
-      customData: contains(AppServer, 'customData') ? base64(replace(AppServer.customData, '{0}', '${networkId}.')) : null
+      customData: contains(AppServer, 'customData') ? base64(replace(AppServer.customData, '{0}', '${networkId.upper}.${ contains(lowerLookup,AppServer.NICs[0].subnet) ? int(networkId.lower) + ( 1 * lowerLookup[AppServer.NICs[0].subnet]) : networkId.lower }.')) : null
       secrets: OSType[AppServer.OSType].OS == 'Windows' ? secrets : null
       windowsConfiguration: OSType[AppServer.OSType].OS == 'Windows' ? VM.windowsConfiguration : null
       linuxConfiguration: OSType[AppServer.OSType].OS != 'Windows' ? VM.linuxConfiguration : null
@@ -311,7 +353,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
     storageProfile: {
       imageReference: OSType[AppServer.OSType].imageReference
       osDisk: {
-        name: '${Deployment}-${AppServer.Name}-OSDisk'
+        name: '${Deployment}-vm${AppServer.Name}-OSDisk'
         caching: 'ReadWrite'
         diskSizeGB: OSType[AppServer.OSType].OSDiskGB
         createOption: 'FromImage'
@@ -319,11 +361,11 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
           storageAccountType: contains(AppServer,'OSstorageAccountType') ? AppServer.OSstorageAccountType : storageAccountType
         }
       }
-      dataDisks: DISKLOOKUP.outputs.DATADisks
+      dataDisks: contains(AppServer,'DDRole') ? DISKLOOKUP.outputs.DATADisks : null
     }
     networkProfile: {
       networkInterfaces: [for (nic, index) in AppServer.NICs: {
-        id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}${contains(nic, 'LB') ? '-niclb' : contains(nic, 'PLB') ? '-nicplb' : contains(nic, 'SLB') ? '-nicslb' : '-nic'}${index == 0 ? '' : index + 1}${AppServer.Name}')
+        id: resourceId('Microsoft.Network/networkInterfaces', '${Deployment}-vm${AppServer.Name}${contains(nic, 'LB') ? '-NICLB' : contains(nic, 'PLB') ? '-NICPLB' : contains(nic, 'SLB') ? '-NICSLB' : '-NIC'}${index == 0 ? '' : index + 1}')
         properties: {
           primary: contains(nic, 'Primary')
           deleteOption: 'Delete'
@@ -343,6 +385,14 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   ]
 }
 
+// resource AutoManage 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' = if (VM.match && bool(VM.Extensions.AutoManage)) {
+//   name: 'default'
+//   scope: virtualMachine
+//   properties: {
+//     configurationProfile: autoManageConfigurationProfile
+//   }
+// }
+
 module AppServerJIT 'x.vmJIT.bicep' = if(bool(AppServer.DeployJIT)) {
   name: 'dp${Deployment}-AppServer-JIT-${AppServer.Name}'
   params: {
@@ -350,6 +400,7 @@ module AppServerJIT 'x.vmJIT.bicep' = if(bool(AppServer.DeployJIT)) {
     VM: AppServer
     Global: Global
     DeploymentID: DeploymentID
+    Prefix: Prefix
   }
   dependsOn: [
     virtualMachine
@@ -365,7 +416,7 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
     }
     notificationSettings: {
       status: contains(AppServer.shutdown, 'notification') && bool(AppServer.shutdown.notification) ? 'Enabled' : 'Disabled'
-      emailRecipient: replace(replace(replace(string(Global.alertRecipients),'","',';'),'["',''),'"]','') // currently no join method
+      emailRecipient: join(Global.alertRecipients,';')
       notificationLocale: 'en'
       timeInMinutes: 30
     }
@@ -376,8 +427,8 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
   }
 }
 
-// sf
-resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.CertMgmt)) {
+// sf ✅
+resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.CertMgmt)) {
   name: 'KVAppServerExtensionForWindows'
   parent: virtualMachine
   location: resourceGroup().location
@@ -399,26 +450,26 @@ resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachi
   }
 }
 
-//  SF
-resource AppServerAADLogin 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.AADLogin) && (contains(AppServer, 'ExcludeAADLogin') && AppServer.ExcludeAADLogin != 1)) {
+//  SF ✅
+resource AppServerAADLogin 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.AADLogin) && (contains(AppServer, 'ExcludeAADLogin') && AppServer.ExcludeAADLogin != 1)) {
   name: 'AADLogin'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
-    publisher: ((OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Azure.ActiveDirectory' : 'Microsoft.Azure.ActiveDirectory.LinuxSSH')
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'AADLoginForWindows' : 'AADLoginForLinux')
+    publisher: (OSType[AppServer.OSType].OS == 'Windows' ? 'Microsoft.Azure.ActiveDirectory' : 'Microsoft.Azure.ActiveDirectory.LinuxSSH')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'AADLoginForWindows' : 'AADLoginForLinux')
     typeHandlerVersion: '1.0'
     autoUpgradeMinorVersion: true
   }
 }
 
-resource AzureDefenderForServers 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.AzureDefender)) {
+resource AzureDefenderForServers 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.AzureDefender)) {
   name: 'AzureDefenderForServers'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.Azure.AzureDefenderForServers'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'MDE.Windows' : 'MDE.Linux')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'MDE.Windows' : 'MDE.Linux')
     typeHandlerVersion: '1.0'
     autoUpgradeMinorVersion: true
     settings: {
@@ -429,20 +480,20 @@ resource AzureDefenderForServers 'Microsoft.Compute/virtualMachines/extensions@2
   }
 }
 
-resource AzureGuestConfig 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.GuestConfig)) {
+resource AzureGuestConfig 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.GuestConfig)) {
   name: 'AzureGuestConfig'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.GuestConfiguration'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'ConfigurationForWindows' : 'ConfigurationForLinux')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'ConfigurationForWindows' : 'ConfigurationForLinux')
     typeHandlerVersion: '1.2'
     autoUpgradeMinorVersion: true
     settings: {}
   }
 }
 
-resource AppServerAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.AdminCenter) && (contains(AppServer, 'ExcludeAdminCenter') && AppServer.ExcludeAdminCenter != 1)) {
+resource AppServerAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.AdminCenter) && (contains(AppServer, 'ExcludeAdminCenter') && AppServer.ExcludeAdminCenter != 1)) {
   name: 'AdminCenter'
   parent: virtualMachine
   location: resourceGroup().location
@@ -466,7 +517,7 @@ resource AppServerAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2021
   }
 }
 
-resource AppServerDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.DomainJoin) && !(contains(AppServer, 'ExcludeDomainJoin') && bool(AppServer.ExcludeDomainJoin))) {
+resource AppServerDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.DomainJoin) && !(contains(AppServer, 'ExcludeDomainJoin') && bool(AppServer.ExcludeDomainJoin))) {
   name: 'joindomain'
   parent: virtualMachine
   location: resourceGroup().location
@@ -477,7 +528,7 @@ resource AppServerDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2021-
     autoUpgradeMinorVersion: true
     settings: {
       Name: Global.ADDomainName
-      OUPath: (contains(AppServer, 'OUPath') ? AppServer.OUPath : '')
+      OUPath: contains(AppServer, 'OUPath') ? AppServer.OUPath : ''
       User: '${Global.vmAdminUserName}@${Global.ADDomainName}'
       Restart: 'true'
       Options: 3
@@ -488,7 +539,7 @@ resource AppServerDomainJoin 'Microsoft.Compute/virtualMachines/extensions@2021-
   }
 }
 
-resource AppServerDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = if (VM.match && bool(VM.Extensions.DSC) && AppServer.Role == 'PULL') {
+resource AppServerDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = if (VM.match && bool(VM.Extensions.DSC) && (contains(AppServer, 'DSC') && AppServer.DSC == 'PULL')) {
   name: 'Microsoft.Powershell.DSC.Pull'
   parent: virtualMachine
   location: resourceGroup().location
@@ -496,9 +547,9 @@ resource AppServerDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-
     displayName: 'Powershell.DSC.Pull'
   }
   properties: {
-    publisher: ((OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions')
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux')
-    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '2.77' : '2.0')
+    publisher: (OSType[AppServer.OSType].OS == 'Windows' ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'DSC' : 'DSCForLinux')
+    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '2.77' : '2.0')
     autoUpgradeMinorVersion: true
     protectedSettings: {
       Items: {
@@ -567,84 +618,24 @@ resource AppServerDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-
   ]
 }
 
-resource UAILocal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
-  name: '${Deployment}-uaiStorageAccountOperator'
-  scope: resourceGroup(RGName)
-}
+// resource UAILocal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+//   name: '${Deployment}-uaiStorageAccountOperator'
+//   scope: resourceGroup(RGName)
+// }
 
 resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
   name: '${Deployment}-uaiStorageAccountFileContributor'
   scope: resourceGroup(RGName)
 }
 
-resource AppServerDSC2 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = if (VM.match && (contains(VM.Extensions, 'DSC2') && bool(VM.Extensions.DSC2)) && AppServer.Role != 'PULL' && (DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
-  name: 'Microsoft.Powershell.DSC2'
-  parent: virtualMachine
-  location: resourceGroup().location
-  properties: {
-    publisher: ((OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions')
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux')
-    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '2.24' : '2.0')
-    autoUpgradeMinorVersion: true
-    forceUpdateTag: deploymentTime
-    settings: {
-      wmfVersion: 'latest'
-      configuration: {
-        url: '${Global._artifactsLocation}/ext-DSC/DSC-${(contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : DeploymentName))}.zip'
-        script: 'DSC-${(contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : DeploymentName))}.ps1'
-        function: (contains(AppServer, 'DSConfig') ? AppServer.DSConfig : (contains(DSCConfigLookup, DeploymentName) ? DSCConfigLookup[DeploymentName] : DeploymentName))
-      }
-      configurationArguments: {
-        DomainName: Global.ADDomainName
-        // Thumbprint: Global.CertThumbprint
-        // storageAccountId: saaccountidglobalsource.id
-        // deployment: replace(Deployment, '-', '')
-        // networkid: '${networkId}.'
-        // appInfo: (contains(AppServer, 'AppInfo') ? string(VM.AppInfo) : '')
-        // DataDiskInfo: string(VMs.DataDisk)
-        // clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAILocal.properties.clientId
-        // clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAIGlobal.properties.clientId
-      }
-      // configurationData: {
-      //   url: '${Global._artifactsLocation}/ext-CD/${AppServer.Role}-ConfigurationData.psd1'
-      // }
-    }
-    protectedSettings: {
-      configurationArguments: {
-        AdminCreds: {
-          UserName: Global.vmAdminUserName
-          Password: vmAdminPassword
-        }
-        SQLServiceCreds: {
-          UserName: 'sqladmin'
-          Password: vmAdminPassword
-        }
-        witnessStorageKey: {
-          UserName: 'sakey'
-          Password: saKey
-        }
-        // devOpsPat: {
-        //   UserName: 'pat'
-        //   Password: devOpsPat
-        // }
-      }
-      configurationUrlSasToken: Global._artifactsLocationSasToken
-      // configurationDataUrlSasToken: Global._artifactsLocationSasToken
-    }
-  }
-  dependsOn: [
-    AppServerDomainJoin
-  ]
-}
-
-resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' = if (VM.match && bool(VM.Extensions.DSC) && AppServer.Role != 'PULL' && !(DeploymentName == 'ConfigSQLAO' || DeploymentName == 'CreateADPDC' || DeploymentName == 'CreateADBDC')) {
+resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = if (VM.match && bool(VM.Extensions.DSC) && !(contains(AppServer, 'DSC') && AppServer.DSC == 'PULL')) {
   name: 'Microsoft.Powershell.DSC'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
-    publisher: ((OSType[AppServer.OSType].OS == 'Windows') ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions')
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'DSC' : 'DSCForLinux')
-    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '2.24' : '2.0')
+    publisher: (OSType[AppServer.OSType].OS == 'Windows' ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'DSC' : 'DSCForLinux')
+    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '2.77' : '2.0')
     autoUpgradeMinorVersion: true
     forceUpdateTag: deploymentTime
     settings: {
@@ -659,10 +650,10 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' 
         Thumbprint: Global.CertThumbprint
         storageAccountId: saaccountidglobalsource.id
         deployment: Deployment
-        networkid: '${networkId}.'
+        networkid: '${networkId.upper}.${ contains(lowerLookup,AppServer.NICs[0].subnet) ? int(networkId.lower) + ( 1 * lowerLookup[AppServer.NICs[0].subnet]) : networkId.lower }.'
         appInfo: (contains(AppServer, 'AppInfo') ? string(VM.AppInfo) : '')
         DataDiskInfo: string(VM.DataDisk)
-        clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAILocal.properties.clientId
+        // clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAILocal.properties.clientId
         clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAIGlobal.properties.clientId
       }
       configurationData: {
@@ -684,8 +675,8 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-03-01' 
           Password: devOpsPat
         }
       }
-      configurationUrlSasToken: Global._artifactsLocationSasToken
-      configurationDataUrlSasToken: Global._artifactsLocationSasToken
+      configurationUrlSasToken: '?${DSCSAS}'
+      configurationDataUrlSasToken: '?${DSCSAS}'
     }
   }
   dependsOn: [
@@ -699,12 +690,12 @@ resource AppServerDiags 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.Azure.Diagnostics'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'IaaSDiagnostics' : 'LinuxDiagnostic')
-    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.9' : '3.0')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'IaaSDiagnostics' : 'LinuxDiagnostic')
+    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.9' : '3.0')
     autoUpgradeMinorVersion: true
     settings: {
-      WadCfg: ((OSType[AppServer.OSType].OS == 'Windows') ? WadCfg : null)
-      ladCfg: ((OSType[AppServer.OSType].OS == 'Windows') ? null : ladCfg)
+      WadCfg: (OSType[AppServer.OSType].OS == 'Windows' ? WadCfg : null)
+      ladCfg: (OSType[AppServer.OSType].OS == 'Windows' ? null : ladCfg)
       StorageAccount: saaccountiddiag
       StorageType: 'TableAndBlob'
     }
@@ -716,40 +707,41 @@ resource AppServerDiags 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
   }
 }
 
-//  SF
+// SF ✅
 resource AppServerDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.DependencyAgent)) {
   name: 'DependencyAgent'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'DependencyAgentWindows' : 'DependencyAgentLinux')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux')
     typeHandlerVersion: '9.5'
     autoUpgradeMinorVersion: true
   }
 }
 
+// SF ✅
 resource AppServerAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.AzureMonitorAgent)) {
-  name: '${((OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')}'
+  name: (OSType[AppServer.OSType].OS == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
     autoUpgradeMinorVersion: true
     publisher: 'Microsoft.Azure.Monitor'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
-    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.5')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
+    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.5')
   }
 }
 
-// SF
+// SF ✅
 resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.MonitoringAgent)) {
   name: 'MonitoringAgent'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux')
-    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.4')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux')
+    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.4')
     autoUpgradeMinorVersion: true
     settings: {
       workspaceId: OMS.properties.customerId
@@ -761,14 +753,14 @@ resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@
 }
 
 resource AppServerGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.GuestHealthAgent)) {
-  name: '${((OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')}'
+  name: (OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
     autoUpgradeMinorVersion: true
     publisher: 'Microsoft.Azure.Monitor.VirtualMachines.GuestHealth'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
-    typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.0')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
+    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.0')
   }
 }
 
@@ -781,13 +773,13 @@ resource vmInsights 'Microsoft.Insights/dataCollectionRuleAssociations@2019-11-0
   }
 }
 
-resource AppServerChefClient 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.chefClient)) {
+resource AppServerChefClient 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.chefClient)) {
   name: 'chefClient'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
     publisher: 'Chef.Bootstrap.WindowsAzure'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'ChefClient' : 'LinuxChefClient')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'ChefClient' : 'LinuxChefClient')
     typeHandlerVersion: '1210.12'
     settings: {
       bootstrap_options: {
@@ -802,7 +794,7 @@ resource AppServerChefClient 'Microsoft.Compute/virtualMachines/extensions@2021-
   }
 }
 
-resource AppServerSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && AppServer.role == 'SQL' && bool(VM.Extensions.SqlIaasExtension)) {
+resource AppServerSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && AppServer.role == 'SQL' && bool(VM.Extensions.SqlIaasExtension)) {
   name: 'SqlIaasExtension'
   parent: virtualMachine
   location: resourceGroup().location
@@ -838,7 +830,7 @@ resource AppServerSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions
   }
 }
 
-resource AppServerAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && AppServer.role == 'SQL' && bool(VM.Extensions.BackupWindowsWorkloadSQL)) {
+resource AppServerAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && AppServer.role == 'SQL' && bool(VM.Extensions.BackupWindowsWorkloadSQL)) {
   name: 'AzureBackupWindowsWorkload'
   parent: virtualMachine
   location: resourceGroup().location
@@ -854,7 +846,7 @@ resource AppServerAzureBackupWindowsWorkload 'Microsoft.Compute/virtualMachines/
   }
 }
 
-resource AppServerIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.Antimalware)) {
+resource AppServerIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.Antimalware)) {
   name: 'IaaSAntimalware'
   parent: virtualMachine
   location: resourceGroup().location
@@ -884,4 +876,4 @@ resource AppServerIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@
   }
 }
 
-output Disks array = DISKLOOKUP.outputs.DATADisks
+output Disks array = contains(AppServer,'DDRole') ? DISKLOOKUP.outputs.DATADisks : []

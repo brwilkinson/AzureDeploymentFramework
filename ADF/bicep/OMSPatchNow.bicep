@@ -1,38 +1,43 @@
 param Prefix string
 
 @allowed([
-    'I'
-    'D'
-    'T'
-    'U'
-    'P'
-    'S'
-    'G'
-    'A'
+  'I'
+  'D'
+  'T'
+  'U'
+  'P'
+  'S'
+  'G'
+  'A'
 ])
 param Environment string = 'D'
 
 @allowed([
-    '0'
-    '1'
-    '2'
-    '3'
-    '4'
-    '5'
-    '6'
-    '7'
-    '8'
-    '9'
+  '0'
+  '1'
+  '2'
+  '3'
+  '4'
+  '5'
+  '6'
+  '7'
+  '8'
+  '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
 param Extensions object
 param Global object
 param DeploymentInfo object
-
-
 
 param now string = utcNow('F')
 
@@ -52,59 +57,59 @@ var serviceTier = 'PerNode'
 var AAserviceTier = 'Basic' // 'Free'
 
 var patchingZones = [
-    '1'
-    '2'
-    '3'
+  '1'
+  '2'
+  '3'
 ]
 var patchingEnabled = {
-    linuxNOW: false
-    windowsNOW: true
+  linuxNOW: false
+  windowsNOW: true
 }
 
 resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
-    name: AAName
+  name: AAName
 }
 
 resource updateConfigWindowsNOW 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: {
-    parent: AA
-    name: 'Update-NOW-Windows-Zone${zone}'
-    properties: {
-        updateConfiguration: {
-            operatingSystem: 'Windows'
-            windows: {
-                includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
-                excludedKbNumbers: []
-                includedKbNumbers: []
-                rebootSetting: 'IfRequired'
-            }
-            duration: 'PT2H'
-            // azureVirtualMachines: []
-            // nonAzureComputerNames: []
-            targets: {
-                azureQueries: [
-                    {
-                        scope: [
-                            resourceGroup().id
-                        ]
-                        tagSettings: {
-                            tags: {
-                                zone: [
-                                    zone
-                                ]
-                            }
-                            filterOperator: 'Any'
-                        }
-                        locations: []
-                    }
+  parent: AA
+  name: 'Update-NOW-Windows-Zone${zone}'
+  properties: {
+    updateConfiguration: {
+      operatingSystem: 'Windows'
+      windows: {
+        includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
+        excludedKbNumbers: []
+        includedKbNumbers: []
+        rebootSetting: 'IfRequired'
+      }
+      duration: 'PT2H'
+      // azureVirtualMachines: []
+      // nonAzureComputerNames: []
+      targets: {
+        azureQueries: [
+          {
+            scope: [
+              resourceGroup().id
+            ]
+            tagSettings: {
+              tags: {
+                zone: [
+                  zone
                 ]
+              }
+              filterOperator: 'Any'
             }
-        }
-        tasks: {}
-        scheduleInfo: {
-            isEnabled: patchingEnabled.windowsNOW
-            frequency: 'OneTime'
-            interval: 1
-            startTime: dateTimeAdd(now, 'PT${int(zone) * 15}M') // 15, 30, 45 mins from now, zones 1,2,3
-        }
+            locations: []
+          }
+        ]
+      }
     }
+    tasks: {}
+    scheduleInfo: {
+      isEnabled: patchingEnabled.windowsNOW
+      frequency: 'OneTime'
+      interval: 1
+      startTime: dateTimeAdd(now, 'PT${int(zone) * 15}M') // 15, 30, 45 mins from now, zones 1,2,3
+    }
+  }
 }]

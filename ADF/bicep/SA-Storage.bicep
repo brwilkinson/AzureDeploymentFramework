@@ -7,6 +7,7 @@ param now string = utcNow('F')
 param Prefix string
 param Environment string
 param DeploymentID string
+param Stage object
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
@@ -45,7 +46,7 @@ var azureFilesIdentityBasedAuthentication = {
 var fileShares = contains(storageInfo, 'fileShares') ? storageInfo.fileShares : []
 var containers = contains(storageInfo, 'containers') ? storageInfo.containers : []
 
-resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+resource SA 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: toLower('${DeploymentURI}sa${storageInfo.name}')
   location: resourceGroup().location
   sku: {
@@ -53,6 +54,10 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
   kind: 'StorageV2'
   properties: {
+    // customDomain: contains(storageInfo,'customdomain') ? {
+    //   name: storageInfo.customdomain.name
+    //   useSubDomainName: contains(storageInfo.customdomain,'asverify') ? storageInfo.customdomain.asverify : false
+    // } : null
     isHnsEnabled: contains(storageInfo, 'isHnsEnabled') ? bool(storageInfo.isHnsEnabled) : null
     accessTier: contains(storageInfo, 'accessTier') ? storageInfo.accessTier : 'Hot'
     allowBlobPublicAccess: false
@@ -405,7 +410,7 @@ module SAFileShares 'x.storageFileShare.bicep' = [for (share, index) in fileShar
 }]
 
 module SAContainers 'x.storageContainer.bicep' = [for (container, index) in containers: {
-  name: 'dp${Deployment}-SA-${storageInfo.name}-Container-${container.name}'
+  name: replace('dp${Deployment}-SA-${storageInfo.name}-Container-${container.name}','$','_')
   params: {
     SAName: SA.name
     container: container
@@ -414,7 +419,7 @@ module SAContainers 'x.storageContainer.bicep' = [for (container, index) in cont
   }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-SA-privatelinkloop-${storageInfo.name}'
   params: {
     Deployment: Deployment
@@ -427,7 +432,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'pr
 
 
 
-module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo')) {
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-SA-registerPrivateDNS-${storageInfo.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -435,6 +440,6 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, '
     providerURL: environment().suffixes.storage // '.core.windows.net'
     providerType: SA.type
     resourceName: SA.name
-    Nics: contains(storageInfo, 'privatelinkinfo') && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
+    Nics: contains(storageInfo,'privatelinkinfo') && bool(Stage.PrivateLink) && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
   }
 }

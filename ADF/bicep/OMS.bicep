@@ -1,30 +1,37 @@
 param Prefix string
 
 @allowed([
-    'I'
-    'D'
-    'T'
-    'U'
-    'P'
-    'S'
-    'G'
-    'A'
+  'I'
+  'D'
+  'T'
+  'U'
+  'P'
+  'S'
+  'G'
+  'A'
 ])
 param Environment string = 'D'
 
 @allowed([
-    '0'
-    '1'
-    '2'
-    '3'
-    '4'
-    '5'
-    '6'
-    '7'
-    '8'
-    '9'
+  '0'
+  '1'
+  '2'
+  '3'
+  '4'
+  '5'
+  '6'
+  '7'
+  '8'
+  '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 param Stage object
 param Extensions object
 param Global object
@@ -41,6 +48,7 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 var OMSWorkspaceName = '${DeploymentURI}LogAnalytics'
 var AAName = '${DeploymentURI}OMSAutomation'
 var appInsightsName = '${DeploymentURI}AppInsights'
+var AutoManageName = '${DeploymentURI}AutoManage'
 
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
 
@@ -49,936 +57,1017 @@ var serviceTier = 'PerNode'
 var AAserviceTier = 'Basic' // 'Free'
 
 var patchingZones = [
-    '1'
-    '2'
-    '3'
+  '1'
+  '2'
+  '3'
 ]
 var patchingEnabled = {
-    linuxWeekly: false
+  linuxWeekly: false
 
-    windowsNOW: true
-    windowsWeekly: true
-    windowsMonthly: true
+  windowsNOW: true
+  windowsWeekly: true
+  windowsMonthly: true
+}
+
+var OMSDailyLimitGB = {
+  D: 5
+  U: 5
+  P: 5
+  G: 5
+  T: 5
 }
 
 var dataSources = [
-    {
-        name: 'AzureActivityLog'
-        kind: 'AzureActivityLog'
-        properties: {
-            linkedResourceId: '${subscription().id}/providers/Microsoft.Insights/eventTypes/management'
-        }
+  {
+    name: 'AzureActivityLog'
+    kind: 'AzureActivityLog'
+    properties: {
+      linkedResourceId: '${subscription().id}/providers/Microsoft.Insights/eventTypes/management'
     }
-    {
-        name: 'LogicalDisk1'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Avg Disk sec/Read'
-        }
+  }
+  {
+    name: 'LogicalDisk1'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Avg Disk sec/Read'
     }
-    {
-        name: 'LogicalDisk2'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Avg Disk sec/Write'
-        }
+  }
+  {
+    name: 'LogicalDisk2'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Avg Disk sec/Write'
     }
-    {
-        name: 'LogicalDisk3'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Current Disk Queue Length'
-        }
+  }
+  {
+    name: 'LogicalDisk3'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Current Disk Queue Length'
     }
-    {
-        name: 'LogicalDisk4'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Disk Reads/sec'
-        }
+  }
+  {
+    name: 'LogicalDisk4'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Disk Reads/sec'
     }
-    {
-        name: 'LogicalDisk5'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Disk Transfers/sec'
-        }
+  }
+  {
+    name: 'LogicalDisk5'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Disk Transfers/sec'
     }
-    {
-        name: 'LogicalDisk6'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Disk Writes/sec'
-        }
+  }
+  {
+    name: 'LogicalDisk6'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Disk Writes/sec'
     }
-    {
-        name: 'LogicalDisk7'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Free Megabytes'
-        }
+  }
+  {
+    name: 'LogicalDisk7'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Free Megabytes'
     }
-    {
-        name: 'LogicalDisk8'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: '% Free Space'
-        }
+  }
+  {
+    name: 'LogicalDisk8'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: '% Free Space'
     }
-    {
-        name: 'LogicalDisk9'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Avg Disk sec/Transfer'
-        }
+  }
+  {
+    name: 'LogicalDisk9'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Avg Disk sec/Transfer'
     }
-    {
-        name: 'LogicalDisk10'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Disk Bytes/sec'
-        }
+  }
+  {
+    name: 'LogicalDisk10'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Disk Bytes/sec'
     }
-    {
-        name: 'LogicalDisk11'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Disk Read Bytes/sec'
-        }
+  }
+  {
+    name: 'LogicalDisk11'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Disk Read Bytes/sec'
     }
-    {
-        name: 'LogicalDisk12'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'LogicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Disk Write Bytes/sec'
-        }
+  }
+  {
+    name: 'LogicalDisk12'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'LogicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Disk Write Bytes/sec'
     }
-    {
-        name: 'PhysicalDisk'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: '% Free Space'
-        }
+  }
+  {
+    name: 'PhysicalDisk'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: '% Free Space'
     }
-    {
-        name: 'PhysicalDisk1'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: '% Disk Time'
-        }
+  }
+  {
+    name: 'PhysicalDisk1'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: '% Disk Time'
     }
-    {
-        name: 'PhysicalDisk2'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: '% Disk Read Time'
-        }
+  }
+  {
+    name: 'PhysicalDisk2'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: '% Disk Read Time'
     }
-    {
-        name: 'PhysicalDisk3'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: '% Disk Write Time'
-        }
+  }
+  {
+    name: 'PhysicalDisk3'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: '% Disk Write Time'
     }
-    {
-        name: 'PhysicalDisk4'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Disk Transfers/sec'
-        }
+  }
+  {
+    name: 'PhysicalDisk4'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Disk Transfers/sec'
     }
-    {
-        name: 'PhysicalDisk5'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Disk Reads/sec'
-        }
+  }
+  {
+    name: 'PhysicalDisk5'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Disk Reads/sec'
     }
-    {
-        name: 'PhysicalDisk6'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Disk Writes/sec'
-        }
+  }
+  {
+    name: 'PhysicalDisk6'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Disk Writes/sec'
     }
-    {
-        name: 'PhysicalDisk7'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Disk Bytes/sec'
-        }
+  }
+  {
+    name: 'PhysicalDisk7'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Disk Bytes/sec'
     }
-    {
-        name: 'PhysicalDisk8'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Disk Read Bytes/sec'
-        }
+  }
+  {
+    name: 'PhysicalDisk8'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Disk Read Bytes/sec'
     }
-    {
-        name: 'PhysicalDisk9'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Disk Write Bytes/sec'
-        }
+  }
+  {
+    name: 'PhysicalDisk9'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Disk Write Bytes/sec'
     }
-    {
-        name: 'PhysicalDisk10'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Avg. Disk Queue Length'
-        }
+  }
+  {
+    name: 'PhysicalDisk10'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Avg. Disk Queue Length'
     }
-    {
-        name: 'PhysicalDisk11'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Avg. Disk Read Queue Length'
-        }
+  }
+  {
+    name: 'PhysicalDisk11'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Avg. Disk Read Queue Length'
     }
-    {
-        name: 'PhysicalDisk12'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Avg. Disk Write Queue Length'
-        }
+  }
+  {
+    name: 'PhysicalDisk12'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Avg. Disk Write Queue Length'
     }
-    {
-        name: 'PhysicalDisk13'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'PhysicalDisk'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Disk Transfers/sec'
-        }
+  }
+  {
+    name: 'PhysicalDisk13'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'PhysicalDisk'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Disk Transfers/sec'
     }
-    {
-        name: 'Memory1'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Memory'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Available MBytes'
-        }
+  }
+  {
+    name: 'Memory1'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Memory'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Available MBytes'
     }
-    {
-        name: 'Memory2'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Memory'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: '% Committed Bytes In Use'
-        }
+  }
+  {
+    name: 'Memory2'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Memory'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: '% Committed Bytes In Use'
     }
-    {
-        name: 'Network1'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Network Adapter'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Bytes Received/sec'
-        }
+  }
+  {
+    name: 'PMemory'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Process'
+      instanceName: '*'
+      intervalSeconds: 60
+      counterName: 'Working Set - Private'
     }
-    {
-        name: 'Network2'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Network Adapter'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Bytes Sent/sec'
-        }
+  }
+  {
+    name: 'Network1'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Network Adapter'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Bytes Received/sec'
     }
-    {
-        name: 'Network3'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Network Adapter'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Bytes Total/sec'
-        }
+  }
+  {
+    name: 'Network2'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Network Adapter'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Bytes Sent/sec'
     }
-    {
-        name: 'CPU1'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Processor'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: '% Processor Time'
-        }
+  }
+  {
+    name: 'Network3'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Network Adapter'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Bytes Total/sec'
     }
-    {
-        name: 'CPU2'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Processor'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: '% Privileged Time'
-        }
+  }
+  {
+    name: 'CPU1'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Processor'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: '% Processor Time'
     }
-    {
-        name: 'CPU3'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Processor'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: '% User Time'
-        }
+  }
+  {
+    name: 'CPU2'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Processor'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: '% Privileged Time'
     }
-    {
-        name: 'CPU5'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'Processor Information'
-            instanceName: '_Total'
-            intervalSeconds: 10
-            counterName: 'Processor Frequency'
-        }
+  }
+  {
+    name: 'CPU3'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Processor'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: '% User Time'
     }
-    {
-        name: 'CPU6'
-        kind: 'WindowsPerformanceCounter'
-        properties: {
-            objectName: 'System'
-            instanceName: '*'
-            intervalSeconds: 10
-            counterName: 'Processor Queue Length'
-        }
+  }
+  {
+    name: 'CPU5'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Processor Information'
+      instanceName: '_Total'
+      intervalSeconds: 10
+      counterName: 'Processor Frequency'
     }
-    {
-        name: 'System'
-        kind: 'WindowsEvent'
-        properties: {
-            eventLogName: 'System'
-            eventTypes: [
-                {
-                    eventType: 'Error'
-                }
-                {
-                    eventType: 'Warning'
-                }
-            ]
-        }
+  }
+  {
+    name: 'CPU6'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'System'
+      instanceName: '*'
+      intervalSeconds: 10
+      counterName: 'Processor Queue Length'
     }
-    {
-        name: 'Application'
-        kind: 'WindowsEvent'
-        properties: {
-            eventLogName: 'Application'
-            eventTypes: [
-                {
-                    eventType: 'Error'
-                }
-                {
-                    eventType: 'Warning'
-                }
-            ]
-        }
+  }
+  {
+    name: 'CPU7'
+    kind: 'WindowsPerformanceCounter'
+    properties: {
+      objectName: 'Process'
+      instanceName: '*'
+      intervalSeconds: 60
+      counterName: '% Processor Time'
     }
-    {
-        name: 'DSCEventLogs'
-        kind: 'WindowsEvent'
-        properties: {
-            eventLogName: 'Microsoft-Windows-DSC/Operational'
-            eventTypes: [
-                {
-                    eventType: 'Error'
-                }
-                {
-                    eventType: 'Warning'
-                }
-                {
-                    eventType: 'Information'
-                }
-            ]
+  }
+  {
+    name: 'System'
+    kind: 'WindowsEvent'
+    properties: {
+      eventLogName: 'System'
+      eventTypes: [
+        {
+          eventType: 'Error'
         }
-    }
-    {
-        name: 'TSSessionManager'
-        kind: 'WindowsEvent'
-        properties: {
-            eventLogName: 'Microsoft-Windows-TerminalServices-LocalSessionManager/Operational'
-            eventTypes: [
-                {
-                    eventType: 'Error'
-                }
-                {
-                    eventType: 'Warning'
-                }
-                {
-                    eventType: 'Information'
-                }
-            ]
+        {
+          eventType: 'Warning'
         }
+      ]
     }
-    {
-        name: 'Linux'
-        kind: 'LinuxPerformanceObject'
-        properties: {
-            performanceCounters: [
-                {
-                    counterName: '% Used Inodes'
-                }
-                {
-                    counterName: 'Free Megabytes'
-                }
-                {
-                    counterName: '% Used Space'
-                }
-                {
-                    counterName: 'Disk Transfers/sec'
-                }
-                {
-                    counterName: 'Disk Reads/sec'
-                }
-                {
-                    counterName: 'Disk Writes/sec'
-                }
-            ]
-            objectName: 'Logical Disk'
-            instanceName: '*'
-            intervalSeconds: 10
+  }
+  {
+    name: 'Application'
+    kind: 'WindowsEvent'
+    properties: {
+      eventLogName: 'Application'
+      eventTypes: [
+        {
+          eventType: 'Error'
         }
-    }
-    {
-        name: 'LinuxPerfCollection'
-        kind: 'LinuxPerformanceCollection'
-        properties: {
-            state: 'Enabled'
+        {
+          eventType: 'Warning'
         }
+      ]
     }
-    {
-        name: 'IISLog'
-        kind: 'IISLogs'
-        properties: {
-            state: 'OnPremiseEnabled'
+  }
+  {
+    name: 'DSCEventLogs'
+    kind: 'WindowsEvent'
+    properties: {
+      eventLogName: 'Microsoft-Windows-DSC/Operational'
+      eventTypes: [
+        {
+          eventType: 'Error'
         }
-    }
-    {
-        name: 'Syslog'
-        kind: 'LinuxSyslog'
-        properties: {
-            syslogName: 'kern'
-            syslogSeverities: [
-                {
-                    severity: 'emerg'
-                }
-                {
-                    severity: 'alert'
-                }
-                {
-                    severity: 'crit'
-                }
-                {
-                    severity: 'err'
-                }
-                {
-                    severity: 'warning'
-                }
-            ]
+        {
+          eventType: 'Warning'
         }
-    }
-    {
-        name: 'SyslogCollection'
-        kind: 'LinuxSyslogCollection'
-        properties: {
-            state: 'Enabled'
+        {
+          eventType: 'Information'
         }
+      ]
     }
+  }
+  {
+    name: 'TSSessionManager'
+    kind: 'WindowsEvent'
+    properties: {
+      eventLogName: 'Microsoft-Windows-TerminalServices-LocalSessionManager/Operational'
+      eventTypes: [
+        {
+          eventType: 'Error'
+        }
+        {
+          eventType: 'Warning'
+        }
+        {
+          eventType: 'Information'
+        }
+      ]
+    }
+  }
+  {
+    name: 'Linux'
+    kind: 'LinuxPerformanceObject'
+    properties: {
+      performanceCounters: [
+        {
+          counterName: '% Used Inodes'
+        }
+        {
+          counterName: 'Free Megabytes'
+        }
+        {
+          counterName: '% Used Space'
+        }
+        {
+          counterName: 'Disk Transfers/sec'
+        }
+        {
+          counterName: 'Disk Reads/sec'
+        }
+        {
+          counterName: 'Disk Writes/sec'
+        }
+      ]
+      objectName: 'Logical Disk'
+      instanceName: '*'
+      intervalSeconds: 10
+    }
+  }
+  {
+    name: 'LinuxPerfCollection'
+    kind: 'LinuxPerformanceCollection'
+    properties: {
+      state: 'Enabled'
+    }
+  }
+  {
+    name: 'IISLog'
+    kind: 'IISLogs'
+    properties: {
+      state: 'OnPremiseEnabled'
+    }
+  }
+  {
+    name: 'Syslog'
+    kind: 'LinuxSyslog'
+    properties: {
+      syslogName: 'kern'
+      syslogSeverities: [
+        {
+          severity: 'emerg'
+        }
+        {
+          severity: 'alert'
+        }
+        {
+          severity: 'crit'
+        }
+        {
+          severity: 'err'
+        }
+        {
+          severity: 'warning'
+        }
+      ]
+    }
+  }
+  {
+    name: 'SyslogCollection'
+    kind: 'LinuxSyslogCollection'
+    properties: {
+      state: 'Enabled'
+    }
+  }
 ]
-var solutions = [
-    'AzureAutomation'
-    'Updates'
-    'Security'
-    'AgentHealthAssessment'
-    'ChangeTracking'
-    'AzureActivity'
-    'ADAssessment'
-    'ADReplication'
-    'SQLAssessment'
-    'ServiceMap'
-    'AntiMalware'
-    'DnsAnalytics'
-    'ApplicationInsights'
-    'AzureWebAppsAnalytics'
-    'AzureNSGAnalytics'
-    'AlertManagement'
-    'CapacityPerformance'
-    'NetworkMonitoring'
-    'Containers'
-    'ContainerInsights'
-    'ServiceFabric'
-    'InfrastructureInsights'
-    'VMInsights'
-    'SecurityInsights'
 
-    // testing
-    'SQLAdvancedThreatProtection'
-    'WindowsDefenderATP'
-    'KeyVaultAnalytics'
-    'AzureSQLAnalytics'
-    'BehaviorAnalyticsInsights'
+var solutions = contains(DeploymentInfo, 'OMSSolutions') ? DeploymentInfo.OMSSolutions : [
+  'AzureAutomation'
+  'Updates'
+  'Security'
+  'AgentHealthAssessment'
+  'ChangeTracking'
+  'AzureActivity'
+  'ADAssessment'
+  'ADReplication'
+  'SQLAssessment'
+  'AntiMalware'
+  'DnsAnalytics'
+  'AzureWebAppsAnalytics'
+  'AzureNSGAnalytics'
+  'AlertManagement'
+  'CapacityPerformance'
+  'NetworkMonitoring'
+  'Containers'
+  'ContainerInsights'
+  'ServiceFabric'
+  'InfrastructureInsights'
+  'VMInsights'
+  'SecurityInsights'
 
-    // EOL
-    // 'WireData2'
-    // 'AzureAppGatewayAnalytics'
-    // 'KeyVault'
+  // testing
+  'SQLAdvancedThreatProtection'
+  'WindowsDefenderATP'
+  'KeyVaultAnalytics'
+  'AzureSQLAnalytics'
+  'BehaviorAnalyticsInsights'
+
+  // EOL
+  // 'WireData2'
+  // 'AzureAppGatewayAnalytics'
+  // 'KeyVault'
+  // 'ApplicationInsights'
+  // 'ServiceMap'
 ]
 var aaAssets = {
-    modules: [
-        {
-            name: 'xPSDesiredStateConfiguration'
-            url: 'https://www.powershellgallery.com/api/v2/package/xPSDesiredStateConfiguration/7.0.0.0'
-        }
-        {
-            name: 'xActiveDirectory'
-            url: 'https://www.powershellgallery.com/api/v2/package/xActiveDirectory/2.16.0.0'
-        }
-        {
-            name: 'xStorage'
-            url: 'https://www.powershellgallery.com/api/v2/package/xStorage/3.2.0.0'
-        }
-        {
-            name: 'xPendingReboot'
-            url: 'https://www.powershellgallery.com/api/v2/package/xPendingReboot/0.3.0.0'
-        }
-        {
-            name: 'xComputerManagement'
-            url: 'https://www.powershellgallery.com/api/v2/package/xComputerManagement/3.0.0.0'
-        }
-        {
-            name: 'xWebAdministration'
-            url: 'https://www.powershellgallery.com/api/v2/package/xWebAdministration/1.18.0.0'
-        }
-        {
-            name: 'xSQLServer'
-            url: 'https://www.powershellgallery.com/api/v2/package/xSQLServer/8.2.0.0'
-        }
-        {
-            name: 'xFailOverCluster'
-            url: 'https://www.powershellgallery.com/api/v2/package/xFailOverCluster/1.8.0.0'
-        }
-        {
-            name: 'xNetworking'
-            url: 'https://www.powershellgallery.com/api/v2/package/xNetworking/5.2.0.0'
-        }
-        {
-            name: 'SecurityPolicyDsc'
-            url: 'https://www.powershellgallery.com/api/v2/package/SecurityPolicyDsc/2.0.0.0'
-        }
-        {
-            name: 'xTimeZone'
-            url: 'https://www.powershellgallery.com/api/v2/package/xTimeZone/1.6.0.0'
-        }
-        {
-            name: 'xSystemSecurity'
-            url: 'https://www.powershellgallery.com/api/v2/package/xSystemSecurity/1.2.0.0'
-        }
-        {
-            name: 'xRemoteDesktopSessionHost'
-            url: 'https://www.powershellgallery.com/api/v2/package/xRemoteDesktopSessionHost/1.4.0.0'
-        }
-        {
-            name: 'xRemoteDesktopAdmin'
-            url: 'https://www.powershellgallery.com/api/v2/package/xRemoteDesktopAdmin/1.1.0.0'
-        }
-        {
-            name: 'xDSCFirewall'
-            url: 'https://www.powershellgallery.com/api/v2/package/xDSCFirewall/1.6.21'
-        }
-        {
-            name: 'xWindowsUpdate'
-            url: 'https://www.powershellgallery.com/api/v2/package/xWindowsUpdate/2.7.0.0'
-        }
-        {
-            name: 'PowerShellModule'
-            url: 'https://www.powershellgallery.com/api/v2/package/PowerShellModule/0.3'
-        }
-        {
-            name: 'xDnsServer'
-            url: 'https://www.powershellgallery.com/api/v2/package/xDnsServer/1.8.0.0'
-        }
-        {
-            name: 'xSmbShare'
-            url: 'https://www.powershellgallery.com/api/v2/package/xSmbShare/2.0.0.0'
-        }
-    ]
+  modules: [
+    {
+      name: 'xPSDesiredStateConfiguration'
+      url: 'https://www.powershellgallery.com/api/v2/package/xPSDesiredStateConfiguration/7.0.0.0'
+    }
+    {
+      name: 'xActiveDirectory'
+      url: 'https://www.powershellgallery.com/api/v2/package/xActiveDirectory/2.16.0.0'
+    }
+    {
+      name: 'xStorage'
+      url: 'https://www.powershellgallery.com/api/v2/package/xStorage/3.2.0.0'
+    }
+    {
+      name: 'xPendingReboot'
+      url: 'https://www.powershellgallery.com/api/v2/package/xPendingReboot/0.3.0.0'
+    }
+    {
+      name: 'xComputerManagement'
+      url: 'https://www.powershellgallery.com/api/v2/package/xComputerManagement/3.0.0.0'
+    }
+    {
+      name: 'xWebAdministration'
+      url: 'https://www.powershellgallery.com/api/v2/package/xWebAdministration/1.18.0.0'
+    }
+    {
+      name: 'xSQLServer'
+      url: 'https://www.powershellgallery.com/api/v2/package/xSQLServer/8.2.0.0'
+    }
+    {
+      name: 'xFailOverCluster'
+      url: 'https://www.powershellgallery.com/api/v2/package/xFailOverCluster/1.8.0.0'
+    }
+    {
+      name: 'xNetworking'
+      url: 'https://www.powershellgallery.com/api/v2/package/xNetworking/5.2.0.0'
+    }
+    {
+      name: 'SecurityPolicyDsc'
+      url: 'https://www.powershellgallery.com/api/v2/package/SecurityPolicyDsc/2.0.0.0'
+    }
+    {
+      name: 'xTimeZone'
+      url: 'https://www.powershellgallery.com/api/v2/package/xTimeZone/1.6.0.0'
+    }
+    {
+      name: 'xSystemSecurity'
+      url: 'https://www.powershellgallery.com/api/v2/package/xSystemSecurity/1.2.0.0'
+    }
+    {
+      name: 'xRemoteDesktopSessionHost'
+      url: 'https://www.powershellgallery.com/api/v2/package/xRemoteDesktopSessionHost/1.4.0.0'
+    }
+    {
+      name: 'xRemoteDesktopAdmin'
+      url: 'https://www.powershellgallery.com/api/v2/package/xRemoteDesktopAdmin/1.1.0.0'
+    }
+    {
+      name: 'xDSCFirewall'
+      url: 'https://www.powershellgallery.com/api/v2/package/xDSCFirewall/1.6.21'
+    }
+    {
+      name: 'xWindowsUpdate'
+      url: 'https://www.powershellgallery.com/api/v2/package/xWindowsUpdate/2.7.0.0'
+    }
+    {
+      name: 'PowerShellModule'
+      url: 'https://www.powershellgallery.com/api/v2/package/PowerShellModule/0.3'
+    }
+    {
+      name: 'xDnsServer'
+      url: 'https://www.powershellgallery.com/api/v2/package/xDnsServer/1.8.0.0'
+    }
+    {
+      name: 'xSmbShare'
+      url: 'https://www.powershellgallery.com/api/v2/package/xSmbShare/2.0.0.0'
+    }
+  ]
 }
 var alertInfo = [
-    {
-        search: {
-            name: 'Buffer Cache Hit Ratio2'
-            category: 'SQL Performance'
-            query: 'Alert | where AlertName == "Buffer Cache Hit Ratio is too low" and AlertState != "Closed"'
-        }
-        alert: {
-            displayName: 'Buffer Cache Hit Ratio'
-            description: 'Buffer Cache Hit Ratio perfmon counter information goes here.'
-            severity: 'Warning'
-            enabled: 'true'
-            thresholdOperator: 'gt'
-            thresholdValue: 0
-            schedule: {
-                interval: 15
-                timeSpan: 60
-            }
-            throttleMinutes: 60
-            emailNotification: {
-                recipients: Global.alertRecipients
-                subject: 'buffer hit cache ratio hooya'
-            }
-        }
+  {
+    search: {
+      name: 'Buffer Cache Hit Ratio2'
+      category: 'SQL Performance'
+      query: 'Alert | where AlertName == "Buffer Cache Hit Ratio is too low" and AlertState != "Closed"'
     }
-    {
-        search: {
-            query: 'Type=Event EventID=20 Source="Microsoft-Windows-WindowsUpdateClient" EventLog="System" TimeGenerated>NOW-24HOURS | Measure Count() By Computer'
-            name: 'A Software Update Installation Failed 1'
-            category: 'Software Updates'
-        }
+    alert: {
+      displayName: 'Buffer Cache Hit Ratio'
+      description: 'Buffer Cache Hit Ratio perfmon counter information goes here.'
+      severity: 'Warning'
+      enabled: 'true'
+      thresholdOperator: 'gt'
+      thresholdValue: 0
+      schedule: {
+        interval: 15
+        timeSpan: 60
+      }
+      throttleMinutes: 60
+      emailNotification: {
+        recipients: Global.alertRecipients
+        subject: 'buffer hit cache ratio hooya'
+      }
     }
-    {
-        search: {
-            query: 'Type=Event EventID=20 Source="Microsoft-Windows-WindowsUpdateClient" EventLog="System" TimeGenerated>NOW-168HOURS'
-            name: 'A Software Update Installation Failed 2'
-            category: 'Software Updates'
-        }
+  }
+  {
+    search: {
+      query: 'Type=Event EventID=20 Source="Microsoft-Windows-WindowsUpdateClient" EventLog="System" TimeGenerated>NOW-24HOURS | Measure Count() By Computer'
+      name: 'A Software Update Installation Failed 1'
+      category: 'Software Updates'
     }
-    {
-        search: {
-            query: 'Type=Event EventID=4202 Source="TCPIP" EventLog="System" TimeGenerated>NOW-24HOURS | Measure Count() By Computer'
-            name: 'A Network adatper was disconnected from the network'
-            category: 'Networking'
-        }
+  }
+  {
+    search: {
+      query: 'Type=Event EventID=20 Source="Microsoft-Windows-WindowsUpdateClient" EventLog="System" TimeGenerated>NOW-168HOURS'
+      name: 'A Software Update Installation Failed 2'
+      category: 'Software Updates'
     }
-    {
-        search: {
-            query: 'Type=Event EventID=4198 OR EventID=4199 Source="TCPIP" EventLog="System" TimeGenerated>NOW-24HOURS'
-            name: 'Duplicate IP address has been detected'
-            category: 'Networking'
-        }
+  }
+  {
+    search: {
+      query: 'Type=Event EventID=4202 Source="TCPIP" EventLog="System" TimeGenerated>NOW-24HOURS | Measure Count() By Computer'
+      name: 'A Network adatper was disconnected from the network'
+      category: 'Networking'
     }
-    {
-        search: {
-            query: 'Type=Event EventID=98 Source="Microsoft-Windows-Ntfs" EventLog="System" TimeGenerated>NOW-24HOURS | Measure Count() By Computer'
-            name: 'NTFS File System Corruption'
-            category: 'NTFS'
-        }
+  }
+  {
+    search: {
+      query: 'Type=Event EventID=4198 OR EventID=4199 Source="TCPIP" EventLog="System" TimeGenerated>NOW-24HOURS'
+      name: 'Duplicate IP address has been detected'
+      category: 'Networking'
     }
-    {
-        search: {
-            query: 'Type=Event EventID=40 OR EventID=36 Source="DISK" EventLog="System" TimeGenerated>NOW-24HOURS | Measure Count() By Compute'
-            name: 'NTFS Quouta treshold limit reached'
-            category: 'NTFS'
-        }
+  }
+  {
+    search: {
+      query: 'Type=Event EventID=98 Source="Microsoft-Windows-Ntfs" EventLog="System" TimeGenerated>NOW-24HOURS | Measure Count() By Computer'
+      name: 'NTFS File System Corruption'
+      category: 'NTFS'
     }
+  }
+  {
+    search: {
+      query: 'Type=Event EventID=40 OR EventID=36 Source="DISK" EventLog="System" TimeGenerated>NOW-24HOURS | Measure Count() By Compute'
+      name: 'NTFS Quouta treshold limit reached'
+      category: 'NTFS'
+    }
+  }
 ]
 
 resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' = {
-    name: AAName
-    location: (contains(Global, 'AALocation') ? Global.AALocation : resourceGroup().location)
-    properties: {
-        sku: {
-            name: AAserviceTier
-        }
+  name: AAName
+  location: (contains(Global, 'AALocation') ? Global.AALocation : resourceGroup().location)
+  properties: {
+    sku: {
+      name: AAserviceTier
     }
+  }
 }
 
 resource AADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
-    name: 'service'
-    scope: AA
-    properties: {
-        workspaceId: OMS.id
-        logs: [
-            {
-                category: 'JobLogs'
-                enabled: true
-                retentionPolicy: {
-                    days: 0
-                    enabled: false
-                }
-            }
-            {
-                category: 'JobStreams'
-                enabled: true
-                retentionPolicy: {
-                    days: 0
-                    enabled: false
-                }
-            }
-            {
-                category: 'DscNodeStatus'
-                enabled: true
-                retentionPolicy: {
-                    days: 0
-                    enabled: false
-                }
-            }
-        ]
-        metrics: [
-            {
-                timeGrain: 'PT5M'
-                enabled: true
-                retentionPolicy: {
-                    enabled: false
-                    days: 0
-                }
-            }
-        ]
-    }
+  name: 'service'
+  scope: AA
+  properties: {
+    workspaceId: OMS.id
+    logs: [
+      {
+        category: 'JobLogs'
+        enabled: true
+        retentionPolicy: {
+          days: 0
+          enabled: false
+        }
+      }
+      {
+        category: 'JobStreams'
+        enabled: true
+        retentionPolicy: {
+          days: 0
+          enabled: false
+        }
+      }
+      {
+        category: 'DscNodeStatus'
+        enabled: true
+        retentionPolicy: {
+          days: 0
+          enabled: false
+        }
+      }
+    ]
+    metrics: [
+      {
+        timeGrain: 'PT5M'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+  }
 }
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
-    name: OMSWorkspaceName
-    location: resourceGroup().location
-    properties: {
-        sku: {
-            name: serviceTier
-        }
-        retentionInDays: dataRetention
-        features: {
-            legacy: 0
-            searchVersion: 1
-            enableLogAccessUsingOnlyResourcePermissions: true
-        }
-        workspaceCapping: {
-            dailyQuotaGb: 1
-        }
-        publicNetworkAccessForIngestion: 'Enabled'
-        publicNetworkAccessForQuery: 'Enabled'
+  name: OMSWorkspaceName
+  location: resourceGroup().location
+  properties: {
+    sku: {
+      name: serviceTier
     }
+    retentionInDays: dataRetention
+    features: {
+      legacy: 0
+      searchVersion: 1
+      enableLogAccessUsingOnlyResourcePermissions: true
+    }
+    workspaceCapping: {
+      dailyQuotaGb: OMSDailyLimitGB[Environment]
+    }
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+  }
 }
 
 resource OMSDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
-    name: 'service'
-    scope: OMS
-    properties: {
-        workspaceId: OMS.id
-        logs: [
-            {
-                category: 'Audit'
-                enabled: true
-            }
-        ]
-        metrics: [
-            {
-                timeGrain: 'PT5M'
-                enabled: true
-                retentionPolicy: {
-                    enabled: false
-                    days: 0
-                }
-            }
-        ]
-    }
+  name: 'service'
+  scope: OMS
+  properties: {
+    workspaceId: OMS.id
+    logs: [
+      {
+        category: 'Audit'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        timeGrain: 'PT5M'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+  }
 }
 
 resource OMSAutomation 'Microsoft.OperationalInsights/workspaces/linkedServices@2015-11-01-preview' = {
-    parent: OMS
-    name: 'Automation'
-    properties: {
-        resourceId: AA.id
-    }
+  parent: OMS
+  name: 'Automation'
+  properties: {
+    resourceId: AA.id
+  }
 }
+
+// resource autoManageConfig 'Microsoft.Automanage/configurationProfiles@2022-05-04' = {
+//   name: AutoManageName
+//   location: resourceGroup().location
+//   properties: {
+//     configuration: {
+//       'Antimalware/Enable': true
+//       'Antimalware/EnableRealTimeProtection': true
+//       'Antimalware/RunScheduledScan': true
+//       'Antimalware/ScanType': 'Quick'
+//       'Antimalware/ScanDay': '7'
+//       'Antimalware/ScanTimeInMinutes': '120'
+//       'AzureSecurityBaseline/Enable': true
+//       'AzureSecurityBaseline/AssignmentType': 'Audit'
+//       'AzureSecurityCenter/Enable': true
+//       'Backup/Enable': false
+//       // 'Backup/PolicyName': 'dailyBackupPolicy'
+//       // 'Backup/TimeZone': Global.shutdownSchedulerTimeZone
+//       // 'Backup/InstantRpRetentionRangeInDays': '2'
+//       // 'Backup/SchedulePolicy/ScheduleRunFrequency': 'Daily'
+//       // 'Backup/SchedulePolicy/ScheduleRunTimes': [
+//       //     '2017-01-26T00:00:00Z'
+//       // ]
+//       // 'Backup/SchedulePolicy/SchedulePolicyType': 'SimpleSchedulePolicy'
+//       // 'Backup/RetentionPolicy/RetentionPolicyType': 'LongTermRetentionPolicy'
+//       // 'Backup/RetentionPolicy/DailySchedule/RetentionTimes': [
+//       //     '2017-01-26T00:00:00Z'
+//       // ]
+//       // 'Backup/RetentionPolicy/DailySchedule/RetentionDuration/Count': '180'
+//       // 'Backup/RetentionPolicy/DailySchedule/RetentionDuration/DurationType': 'Days'
+//       'BootDiagnostics/Enable': true
+//       'ChangeTrackingAndInventory/Enable': true
+//       'LogAnalytics/Enable': true
+//       'LogAnalytics/Reprovision': false
+//       'LogAnalytics/Workspace': OMS.id
+//       'UpdateManagement/Enable': true
+//       'VMInsights/Enable': true
+//       // 'Tags/ResourceGroup': {
+//       //   'foo': 'rg'
+//       // }
+//       // 'Tags/AzureAutomation': {
+//       //   'foo': 'automationAccount'
+//       // }
+//       // 'Tags/LogAnalyticsWorkspace': {
+//       //   'foo': 'workspace'
+//       // }
+//       // 'Tags/RecoveryVault': {
+//       //   'foo': 'recoveryVault'
+//       // }
+//     }
+//   }
+// }
 
 @batchSize(1)
 resource updateConfigWindows3 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: if (bool(Stage.OMSUpdateMonthly)) {
-    parent: AA
-    name: 'Update-Third-Saturday-Windows-Zone${zone}'
-    properties: {
-        updateConfiguration: {
-            operatingSystem: 'Windows'
-            windows: {
-                #disable-next-line BCP036
-                includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
-                excludedKbNumbers: []
-                includedKbNumbers: []
-                rebootSetting: 'IfRequired'
-            }
-            duration: 'PT2H'
-            // azureVirtualMachines: []
-            // nonAzureComputerNames: []
-            targets: {
-                azureQueries: [
-                    {
-                        scope: [
-                            resourceGroup().id
-                        ]
-                        tagSettings: {
-                            tags: {
-                                zone: [
-                                    zone
-                                ]
-                            }
-                            filterOperator: 'Any'
-                        }
-                        locations: []
-                    }
+  parent: AA
+  name: 'Update-Third-Saturday-Windows-Zone${zone}'
+  properties: {
+    updateConfiguration: {
+      operatingSystem: 'Windows'
+      windows: {
+        #disable-next-line BCP036
+        includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
+        excludedKbNumbers: []
+        includedKbNumbers: []
+        rebootSetting: 'IfRequired'
+      }
+      duration: 'PT2H'
+      // azureVirtualMachines: []
+      // nonAzureComputerNames: []
+      targets: {
+        azureQueries: [
+          {
+            scope: [
+              resourceGroup().id
+            ]
+            tagSettings: {
+              tags: {
+                zone: [
+                  zone
                 ]
+              }
+              filterOperator: 'Any'
             }
-        }
-        tasks: {
-            // postTask: {
-            //     parameters:
-            //     source:
-            // }
-            // preTask: {
-            //     parameters:
-            //     source:
-            // }
-        }
-        scheduleInfo: {
-            isEnabled: patchingEnabled.windowsMonthly
-            frequency: 'Month'
-            timeZone: Global.patchSchedulerTimeZone
-            interval: 1
-            startTime: dateTimeAdd('${20 + int(zone)}:00', 'P1D') // offset the start time based on the zone
-            advancedSchedule: {
-                monthlyOccurrences: [
-                    {
-                        day: 'Saturday'
-                        occurrence: 3
-                    }
-                ]
-            }
-        }
+            locations: []
+          }
+        ]
+      }
     }
+    tasks: {
+      // postTask: {
+      //     parameters:
+      //     source:
+      // }
+      // preTask: {
+      //     parameters:
+      //     source:
+      // }
+    }
+    scheduleInfo: {
+      isEnabled: patchingEnabled.windowsMonthly
+      frequency: 'Month'
+      timeZone: Global.patchSchedulerTimeZone
+      interval: 1
+      startTime: dateTimeAdd('${20 + int(zone)}:00', 'P1D') // offset the start time based on the zone
+      advancedSchedule: {
+        monthlyOccurrences: [
+          {
+            day: 'Saturday'
+            occurrence: 3
+          }
+        ]
+      }
+    }
+  }
 }]
 
 @batchSize(1)
 resource updateConfigWindows 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = [for (zone, index) in patchingZones: if (bool(Stage.OMSUpdateWeekly)) {
-    parent: AA
-    name: 'Update-Twice-Weekly-Windows-Zone${zone}'
-    properties: {
-        updateConfiguration: {
-            operatingSystem: 'Windows'
-            windows: {
-                #disable-next-line BCP036
-                includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
-                excludedKbNumbers: []
-                includedKbNumbers: []
-                rebootSetting: 'IfRequired'
-            }
-            duration: 'PT2H'
-            // azureVirtualMachines: []
-            // nonAzureComputerNames: []
-            targets: {
-                azureQueries: [
-                    {
-                        scope: [
-                            resourceGroup().id
-                        ]
-                        tagSettings: {
-                            tags: {
-                                zone: [
-                                    zone
-                                ]
-                            }
-                            filterOperator: 'Any'
-                        }
-                        locations: []
-                    }
+  parent: AA
+  name: 'Update-Twice-Weekly-Windows-Zone${zone}'
+  properties: {
+    updateConfiguration: {
+      operatingSystem: 'Windows'
+      windows: {
+        #disable-next-line BCP036
+        includedUpdateClassifications: 'Critical, Definition, FeaturePack, Security, ServicePack, Tools, UpdateRollup, Updates'
+        excludedKbNumbers: []
+        includedKbNumbers: []
+        rebootSetting: 'IfRequired'
+      }
+      duration: 'PT2H'
+      // azureVirtualMachines: []
+      // nonAzureComputerNames: []
+      targets: {
+        azureQueries: [
+          {
+            scope: [
+              resourceGroup().id
+            ]
+            tagSettings: {
+              tags: {
+                zone: [
+                  zone
                 ]
+              }
+              filterOperator: 'Any'
             }
-        }
-        tasks: {}
-        scheduleInfo: {
-            isEnabled: patchingEnabled.windowsWeekly
-            frequency: 'Week'
-            interval: 1
-            timeZone: Global.patchSchedulerTimeZone
-            startTime: dateTimeAdd('${12 + int(zone)}:00', 'P1D') // offset the start time based on the zone
-            advancedSchedule: {
-                weekDays: [
-                    'Wednesday'
-                    'Thursday'
-                ]
-            }
-        }
+            locations: []
+          }
+        ]
+      }
     }
+    tasks: {}
+    scheduleInfo: {
+      isEnabled: patchingEnabled.windowsWeekly
+      frequency: 'Week'
+      interval: 1
+      timeZone: Global.patchSchedulerTimeZone
+      startTime: dateTimeAdd('${12 + int(zone)}:00', 'P1D') // offset the start time based on the zone
+      advancedSchedule: {
+        weekDays: [
+          'Wednesday'
+          'Thursday'
+        ]
+      }
+    }
+  }
 }]
 
 /*
@@ -1029,255 +1118,182 @@ resource updateConfigLinux 'Microsoft.Automation/automationAccounts/softwareUpda
 */
 
 resource VMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (bool(Extensions.VMInsights)) {
-    name: '${DeploymentURI}VMInsights'
-    location: resourceGroup().location
-    properties: {
-        description: 'Data collection rule for VM Insights health.'
-        dataSources: {
-            windowsEventLogs: [
-                {
-                    name: 'cloudSecurityTeamEvents'
-                    streams: [
-                        'Microsoft-WindowsEvent'
-                    ]
-                    #disable-next-line BCP037
-                    scheduledTransferPeriod: 'PT1M'
-                    xPathQueries: [
-                        'Security!'
-                    ]
-                }
-                {
-                    name: 'appTeam1AppEvents'
-                    streams: [
-                        'Microsoft-WindowsEvent'
-                    ]
-                    #disable-next-line BCP037
-                    scheduledTransferPeriod: 'PT5M'
-                    xPathQueries: [
-                        'System![System[(Level = 1 or Level = 2 or Level = 3)]]'
-                        'Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]'
-                    ]
-                }
-            ]
-            syslog: [
-                {
-                    name: 'cronSyslog'
-                    streams: [
-                        'Microsoft-Syslog'
-                    ]
-                    facilityNames: [
-                        'cron'
-                    ]
-                    logLevels: [
-                        'Debug'
-                        'Critical'
-                        'Emergency'
-                    ]
-                }
-                {
-                    name: 'syslogBase'
-                    streams: [
-                        'Microsoft-Syslog'
-                    ]
-                    facilityNames: [
-                        'syslog'
-                    ]
-                    logLevels: [
-                        'Alert'
-                        'Critical'
-                        'Emergency'
-                    ]
-                }
-            ]
-            performanceCounters: [
-                {
-                    name: 'VMHealthPerfCounters'
-                    #disable-next-line BCP037
-                    scheduledTransferPeriod: 'PT1M'
-                    samplingFrequencyInSeconds: 30
-                    counterSpecifiers: [
-                        '\\Memory\\Available Bytes'
-                        '\\Memory\\Committed Bytes'
-                        '\\Processor(_Total)\\% Processor Time'
-                        '\\LogicalDisk(*)\\% Free Space'
-                        '\\LogicalDisk(_Total)\\Free Megabytes'
-                        '\\PhysicalDisk(_Total)\\Avg. Disk Queue Length'
-                    ]
-                    streams: [
-                        'Microsoft-Perf'
-                    ]
-                }
-                {
-                    name: 'appTeamExtraCounters'
-                    streams: [
-                        'Microsoft-Perf'
-                    ]
-                    #disable-next-line BCP037
-                    scheduledTransferPeriod: 'PT5M'
-                    samplingFrequencyInSeconds: 30
-                    counterSpecifiers: [
-                        '\\Process(_Total)\\Thread Count'
-                    ]
-                }
-            ]
-            extensions: [
-                {
-                    name: 'Microsoft-VMInsights-Health'
-                    streams: [
-                        #disable-next-line BCP034
-                        'Microsoft-HealthStateChange'
-                    ]
-                    extensionName: 'HealthExtension'
-                    extensionSettings: {
-                        schemaVersion: '1.0'
-                        contentVersion: ''
-                        healthRuleOverrides: [
-                            {
-                                scopes: [
-                                    '*'
-                                ]
-                                monitors: [
-                                    'root'
-                                ]
-                                monitorConfiguration: {}
-                                alertConfiguration: {
-                                    isEnabled: true
-                                }
-                            }
-                        ]
-                    }
-                    inputDataSources: [
-                        'VMHealthPerfCounters'
-                    ]
-                }
-            ]
+  name: '${DeploymentURI}VMInsights'
+  location: resourceGroup().location
+  properties: {
+    description: 'Data collection rule for VM Insights health.'
+    dataSources: {
+      windowsEventLogs: [
+        {
+          name: 'cloudSecurityTeamEvents'
+          streams: [
+            'Microsoft-WindowsEvent'
+          ]
+          #disable-next-line BCP037
+          scheduledTransferPeriod: 'PT1M'
+          xPathQueries: [
+            'System![System[(Level = 1 or Level = 2 or Level = 3)]]'
+          ]
         }
-        destinations: {
-            logAnalytics: [
-                {
-                    workspaceResourceId: OMS.id
-                    name: 'LogAnalyticsWorkspace'
-                }
-            ]
+        {
+          name: 'appTeam1AppEvents'
+          streams: [
+            'Microsoft-WindowsEvent'
+          ]
+          #disable-next-line BCP037
+          scheduledTransferPeriod: 'PT5M'
+          xPathQueries: [
+            'System![System[(Level = 1 or Level = 2 or Level = 3)]]'
+            'Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]'
+          ]
         }
-        dataFlows: [
-            {
-                streams: [
-                    #disable-next-line BCP034
-                    'Microsoft-HealthStateChange'
-                    'Microsoft-Perf'
-                    'Microsoft-Syslog'
-                    'Microsoft-WindowsEvent'
+      ]
+      syslog: [
+        {
+          name: 'cronSyslog'
+          streams: [
+            'Microsoft-Syslog'
+          ]
+          facilityNames: [
+            'cron'
+          ]
+          logLevels: [
+            'Debug'
+            'Critical'
+            'Emergency'
+          ]
+        }
+        {
+          name: 'syslogBase'
+          streams: [
+            'Microsoft-Syslog'
+          ]
+          facilityNames: [
+            'syslog'
+          ]
+          logLevels: [
+            'Alert'
+            'Critical'
+            'Emergency'
+          ]
+        }
+      ]
+      performanceCounters: [
+        {
+          name: 'VMHealthPerfCounters'
+          #disable-next-line BCP037
+          scheduledTransferPeriod: 'PT1M'
+          samplingFrequencyInSeconds: 30
+          counterSpecifiers: [
+            '\\Memory\\Available Bytes'
+            '\\Memory\\Committed Bytes'
+            '\\Processor(_Total)\\% Processor Time'
+            '\\LogicalDisk(*)\\% Free Space'
+            '\\LogicalDisk(_Total)\\Free Megabytes'
+            '\\PhysicalDisk(_Total)\\Avg. Disk Queue Length'
+          ]
+          streams: [
+            'Microsoft-Perf'
+          ]
+        }
+        {
+          name: 'appTeamExtraCounters'
+          streams: [
+            'Microsoft-Perf'
+          ]
+          #disable-next-line BCP037
+          scheduledTransferPeriod: 'PT5M'
+          samplingFrequencyInSeconds: 30
+          counterSpecifiers: [
+            '\\Process(_Total)\\Thread Count'
+          ]
+        }
+      ]
+      extensions: [
+        {
+          name: 'Microsoft-VMInsights-Health'
+          streams: [
+            #disable-next-line BCP034
+            'Microsoft-HealthStateChange'
+          ]
+          extensionName: 'HealthExtension'
+          extensionSettings: {
+            schemaVersion: '1.0'
+            contentVersion: ''
+            healthRuleOverrides: [
+              {
+                scopes: [
+                  '*'
                 ]
-                destinations: [
-                    'LogAnalyticsWorkspace'
+                monitors: [
+                  'root'
                 ]
-            }
-        ]
+                monitorConfiguration: {}
+                alertConfiguration: {
+                  isEnabled: true
+                }
+              }
+            ]
+          }
+          inputDataSources: [
+            'VMHealthPerfCounters'
+          ]
+        }
+      ]
     }
+    destinations: {
+      logAnalytics: [
+        {
+          workspaceResourceId: OMS.id
+          name: 'LogAnalyticsWorkspace'
+        }
+      ]
+    }
+    dataFlows: [
+      {
+        streams: [
+          #disable-next-line BCP034
+          'Microsoft-HealthStateChange'
+          'Microsoft-Perf'
+          'Microsoft-Syslog'
+          'Microsoft-WindowsEvent'
+        ]
+        destinations: [
+          'LogAnalyticsWorkspace'
+        ]
+      }
+    ]
+  }
 }
 
-resource AppInsights 'Microsoft.Insights/components@2020-02-02' = {
-    name: appInsightsName
-    location: contains(Global, 'AppInsightsRegion') ? Global.AppInsightsRegion : resourceGroup().location
-    kind: 'other'
-    properties: {
-        Application_Type: 'web'
-        #disable-next-line BCP036
-        Flow_Type: 'Redfield'
-        Request_Source: 'rest'
-        // HockeyAppId: ''
-        // SamplingPercentage: null
-        WorkspaceResourceId: OMS.id
-        IngestionMode: 'LogAnalytics'
-        publicNetworkAccessForIngestion: 'Enabled'
-        //     publicNetworkAccessForQuery: '
-    }
-}
-
-resource AppInsightDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
-    name: 'service'
-    scope: AppInsights
-    properties: {
-        workspaceId: OMS.id
-        logs: [
-            {
-                enabled: true
-                category: 'AppAvailabilityResults'
-            }
-            {
-                enabled: true
-                category: 'AppBrowserTimings'
-            }
-            {
-                enabled: true
-                category: 'AppEvents'
-            }
-            {
-                enabled: true
-                category: 'AppMetrics'
-            }
-            {
-                enabled: true
-                category: 'AppDependencies'
-            }
-            {
-                enabled: true
-                category: 'AppExceptions'
-            }
-            {
-                enabled: true
-                category: 'AppPageViews'
-            }
-            {
-                enabled: true
-                category: 'AppPerformanceCounters'
-            }
-            {
-                enabled: true
-                category: 'AppRequests'
-            }
-            {
-                enabled: true
-                category: 'AppSystemEvents'
-            }
-            {
-                enabled: true
-                category: 'AppTraces'
-            }
-        ]
-        metrics: [
-            {
-                timeGrain: 'PT5M'
-                enabled: true
-                retentionPolicy: {
-                    enabled: false
-                    days: 0
-                }
-            }
-        ]
-    }
+module AppInsights 'x.insightsComponents.bicep' = {
+  name: 'dp-AppInsights-${appInsightsName}'
+  params: {
+    appInsightsLocation: contains(Global, 'AppInsightsRegion') ? Global.AppInsightsRegion : resourceGroup().location
+    appInsightsName: appInsightsName
+    WorkspaceResourceId: OMS.id
+  }
 }
 
 resource OMS_dataSources 'Microsoft.OperationalInsights/workspaces/dataSources@2020-08-01' = [for item in dataSources: if (bool(Stage.OMSDataSources)) {
-    name: item.name
-    parent: OMS
-    kind: item.kind
-    properties: item.properties
+  name: item.name
+  parent: OMS
+  kind: item.kind
+  properties: item.properties
 }]
 
 resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = [for item in solutions: if (bool(Stage.OMSSolutions)) {
+  name: '${item}(${OMSWorkspaceName})'
+  location: resourceGroup().location
+  properties: {
+    workspaceResourceId: OMS.id
+  }
+  plan: {
     name: '${item}(${OMSWorkspaceName})'
-    location: resourceGroup().location
-    properties: {
-        workspaceResourceId: OMS.id
-    }
-    plan: {
-        name: '${item}(${OMSWorkspaceName})'
-        product: 'OMSGallery/${item}'
-        promotionCode: ''
-        publisher: 'Microsoft'
-    }
+    product: 'OMSGallery/${item}'
+    promotionCode: ''
+    publisher: 'Microsoft'
+  }
 }]
 
 //  below needs review
@@ -1332,7 +1348,7 @@ resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
 //     ]
 //   }]
 
-// @description('Generated from /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AWU1-BRW-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
+// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/AWU1-BRW-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
 // resource awubrwaoatAppInsights 'Microsoft.Insights/components@2020-02-02' = {
 //   name: 'awu1brwaoat6AppInsights'
 //   location: 'westus2'
@@ -1351,7 +1367,7 @@ resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
 //   }
 // }
 
-// @description('Generated from /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/AWU1-BRW-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
+// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/AWU1-BRW-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
 // resource awubrwaoatAppInsights 'Microsoft.Insights/components@2020-02-02' = {
 //   name: 'awu1brwaoat6AppInsights'
 //   location: 'westus2'
@@ -1364,7 +1380,7 @@ resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
 //     Flow_Type: 'Redfield'
 //     Request_Source: 'rest'
 //     RetentionInDays: 90
-//     WorkspaceResourceId: '/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourcegroups/awu1-brw-aoa-rg-t6/providers/microsoft.operationalinsights/workspaces/awu1brwaoat6loganalytics'
+//     WorkspaceResourceId: '/subscriptions/{subscriptionguid}/resourcegroups/awu1-brw-aoa-rg-t6/providers/microsoft.operationalinsights/workspaces/awu1brwaoat6loganalytics'
 //     IngestionMode: 'LogAnalytics'
 //     publicNetworkAccessForIngestion: 'Enabled'
 //     publicNetworkAccessForQuery: 'Enabled'

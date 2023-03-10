@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -98,7 +105,7 @@ resource networkProfile 'Microsoft.Network/networkProfiles@2021-05-01' = [for (r
   }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rel, index) in azRelayInfo: if (azRelay[index].match && contains(rel, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rel, index) in azRelayInfo: if (azRelay[index].match && contains(rel,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-privatelinkloop${rel.name}'
   params: {
     Deployment: Deployment
@@ -109,7 +116,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = [for (rel, index) in azRelayI
   }
 }]
 
-module RCprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (rel, index) in azRelayInfo: if (azRelay[index].match && contains(rel, 'privatelinkinfo')) {
+module RCprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (rel, index) in azRelayInfo: if (azRelay[index].match && contains(rel,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-registerPrivateDNS${rel.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -117,6 +124,6 @@ module RCprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = [for (rel, index) in azRe
     providerURL: 'windows.net'
     resourceName: RELAY[index].name
     providerType: RELAY[index].type
-    Nics: contains(rel, 'privatelinkinfo') ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
+    Nics: contains(rel,'privatelinkinfo') && bool(Stage.PrivateLink) ? array(vnetPrivateLink[index].outputs.NICID) : array('na')
   }
 }]

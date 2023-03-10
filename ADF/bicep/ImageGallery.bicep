@@ -29,8 +29,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -62,3 +69,16 @@ resource gallery 'Microsoft.Compute/galleries@2021-07-01' = [for (gallery,index)
     identifier: {}
   }
 }]
+
+
+    //     {
+    //         "type": "Microsoft.Compute/galleries/applications",
+    //         "name": "[concat(parameters('galleryName'), '/', parameters('applicationName'))]",
+    //         "apiVersion": "2019-07-01",
+    //         "location": "[parameters('location')]",
+    //         "properties": {
+    //             "description": "[parameters('description')]",
+    //             "supportedOSType": "[parameters('supportedOStype')]"
+    //         }
+    //     }
+    // ]

@@ -5,16 +5,25 @@ param NICs array
 param VM object
 #disable-next-line no-unused-params
 param Global object
+param Prefix string
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP') && nic.PublicIP != null) {
+var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
+var availabilityZones = contains(excludeZones,Prefix) ? null : [
+  1
+  2
+  3
+]
+
+resource PublicIP 'Microsoft.Network/publicIPAddresses@2022-01-01' = [for (nic,index) in NICs: if (contains(nic, 'PublicIP') && nic.PublicIP != null) {
   name: '${Deployment}-${PIPprefix}${VM.Name}-publicip${index + 1}'
   location: resourceGroup().location
+  zones: contains(VM, 'zones') ? VM.zones : availabilityZones // defaults to ALL zones if not provided.
   sku: {
-    name: contains(VM, 'Zone') ? 'Standard' : 'Basic'
+    name: 'Standard' // default to Standard now, add condition later if required.
   }
   properties: {
     publicIPAllocationMethod: nic.PublicIP
@@ -32,6 +41,14 @@ resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
     logs: [
       {
         category: 'DDoSProtectionNotifications'
+        enabled: true
+      }
+      {
+        category: 'DDoSMitigationFlowLogs'
+        enabled: true
+      }
+      {
+        category: 'DDoSMitigationReports'
         enabled: true
       }
     ]

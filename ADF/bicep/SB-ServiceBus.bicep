@@ -89,7 +89,7 @@ module ServiceBus_TopicSubscriptions 'SB-ServiceBus-TopicSubscription.bicep' = [
   ]
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(SBInfo, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(SBInfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-SB-privatelinkloop${SBInfo.name}'
   params: {
     Deployment: Deployment
@@ -100,7 +100,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(SBInfo, 'private
   }
 }
 
-module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(SBInfo, 'privatelinkinfo')) {
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(SBInfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-SB-registerPrivateDNS${SBInfo.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -108,6 +108,6 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(SBInfo, 'priva
     providerURL: 'windows.net'
     resourceName: SB.name
     providerType: SB.type
-    Nics: contains(SBInfo, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('na')
+    Nics: contains(SBInfo,'privatelinkinfo') && bool(Stage.PrivateLink) ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }

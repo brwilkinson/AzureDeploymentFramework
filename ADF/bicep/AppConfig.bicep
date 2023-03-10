@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -35,65 +42,22 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
-}
-
 var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
 
-var HubRGJ = json(Global.hubRG)
+var appConfig = [for (ac,index) in appConfigurationInfo : {
+  match: ((Global.CN == '.') || contains(array(Global.CN), ac.Name))
+}]
 
-var gh = {
-  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
-  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
-  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
-  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
-}
-
-var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
-
-resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
-  name: '${Deployment}-ac${appConfigurationInfo.Name}'
-  location: resourceGroup().location
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
-    }
-  }
-  sku: {
-    name: appConfigurationInfo.sku
-  }
-  properties: {
-    publicNetworkAccess: bool(appConfigurationInfo.publicNetworkAccess) ? 'Enabled' : 'Disabled'
-    // encryption: {
-    //   keyVaultProperties: {
-    //     identityClientId: ''
-    //     keyIdentifier: 
-    //   }
-    // }
-  }
-}
-
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(appConfigurationInfo, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-privatelinkloopAC${appConfigurationInfo.name}'
+module AppConfig 'AppConfig-AC.bicep' = [for (ac,index) in appConfigurationInfo : if(appConfig[index].match) {
+  name: 'dp${Deployment}-appConfig-Deploy${ac.name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    PrivateLinkInfo: appConfigurationInfo.privateLinkInfo
-    providerType: AC.type
-    resourceName: AC.name
+    appConfigInfo: ac
+    Global: Global
+    DeploymentID: DeploymentID
+    Environment: Environment
+    Prefix: Prefix
+    Stage: Stage
   }
-}
-
-module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(appConfigurationInfo, 'privatelinkinfo')) {
-  name: 'dp${Deployment}-registerPrivateDNS${appConfigurationInfo.name}'
-  scope: resourceGroup(HubRGName)
-  params: {
-    PrivateLinkInfo: appConfigurationInfo.privateLinkInfo
-    providerURL: 'io'
-    providerType: AC.type
-    resourceName: AC.name
-    Nics: contains(appConfigurationInfo, 'privatelinkinfo') ? array(vnetPrivateLink.outputs.NICID) : array('na')
-  }
-}
+}]

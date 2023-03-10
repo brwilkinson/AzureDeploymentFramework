@@ -2,29 +2,36 @@
 param Prefix string
 
 @allowed([
-    'I'
-    'D'
-    'T'
-    'U'
-    'P'
-    'S'
-    'G'
-    'A'
+  'I'
+  'D'
+  'T'
+  'U'
+  'P'
+  'S'
+  'G'
+  'A'
 ])
 #disable-next-line no-unused-params
 param Environment string
 
 @allowed([
-    '0'
-    '1'
-    '2'
-    '3'
-    '4'
-    '5'
-    '6'
-    '7'
-    '8'
-    '9'
+  '0'
+  '1'
+  '2'
+  '3'
+  '4'
+  '5'
+  '6'
+  '7'
+  '8'
+  '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
 #disable-next-line no-unused-params
 param DeploymentID string
@@ -42,53 +49,53 @@ var Free = contains(SecurityPricingInfo, 'Free') ? SecurityPricingInfo.Free : []
 var Standard = contains(SecurityPricingInfo, 'Standard') ? SecurityPricingInfo.Standard : []
 
 var PricingInfoFree = [for (name, index) in Free: {
-    match: ((Global.CN == '.') || contains(array(Global.CN), name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), name))
 }]
 
 var PricingInfoStandard = [for (name, index) in Standard: {
-    match: ((Global.CN == '.') || contains(array(Global.CN), name))
+  match: ((Global.CN == '.') || contains(array(Global.CN), name))
 }]
 
 resource default 'Microsoft.Security/autoProvisioningSettings@2017-08-01-preview' = {
-    name: 'default'
-    properties: {
-        autoProvision: 'Off' //Log Analytics agent for Azure VMs
-    }
+  name: 'default'
+  properties: {
+    autoProvision: 'Off' //Log Analytics agent for Azure VMs
+  }
 }
 
 #disable-next-line BCP081
 resource defaultSecurityContact 'Microsoft.Security/securityContacts@2020-01-01-preview' = {
-    name: 'default'
-    properties: {
-        alertNotifications: {
-            state: 'On'
-            minimalSeverity: 'Medium'
-        }
-        notificationsByRole: {
-            state: 'On'
-            roles: [
-                'Owner'
-                'ServiceAdmin'
-            ]
-        }
-        // currently no join method, create semicolon separated string
-        emails: replace(replace(replace(string(Global.alertRecipients), '","', ';'), '["', ''), '"]', '')
+  name: 'default'
+  properties: {
+    phone: contains(Global,'phoneContact') && Global.phoneContact != '' ? Global.phoneContact : null
+    alertNotifications: {
+      state: 'On'
+      minimalSeverity: 'Medium'
     }
+    notificationsByRole: {
+      state: 'On'
+      roles: [
+        'Owner'
+        'ServiceAdmin'
+      ]
+    }
+    emails: join(Global.alertRecipients,';')
+  }
 }
 
 // toggle solutions off/free to sunset/disable them.
 module pricingFree 'sub-Security-Pricing.bicep' = [for (name, index) in Free: if (PricingInfoFree[index].match) {
-    name: 'dp-pricing-${name}-free'
-    params: {
-        pricingName: name
-        plan: 'free'
-    }
+  name: 'dp-pricing-${name}-free'
+  params: {
+    pricingName: name
+    plan: 'free'
+  }
 }]
 
 module pricingStandard 'sub-Security-Pricing.bicep' = [for (name, index) in Standard: if (PricingInfoStandard[index].match) {
-    name: 'dp-pricing-${name}-standard'
-    params: {
-        pricingName: name
-        plan: 'standard'
-    }
+  name: 'dp-pricing-${name}-standard'
+  params: {
+    pricingName: name
+    plan: 'standard'
+  }
 }]

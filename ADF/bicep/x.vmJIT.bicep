@@ -2,6 +2,7 @@ param Deployment string
 param VM object
 param Global object
 param DeploymentID string
+param Prefix string
 
 var portList = [
   3389
@@ -10,15 +11,35 @@ var portList = [
   5986
 ]
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
 var addressPrefixes = [
-  '${networkId}.0/23'
+  '${networkId.upper}.${networkId.lower}.0/21'
 ]
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
+}
+
+var SAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
+var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+var AllowIPList = concat(SAWAllowIPs,IPAddressforRemoteAccess,addressPrefixes)
 
 var ports = [for (port, index) in portList: {
   number: port
   protocol: 'TCP'
-  allowedSourceAddressPrefixes: union(Global.IPAddressforRemoteAccess,addressPrefixes)
+  allowedSourceAddressPrefixes: AllowIPList
   maxRequestAccessDuration: 'PT3H'
 }]
 

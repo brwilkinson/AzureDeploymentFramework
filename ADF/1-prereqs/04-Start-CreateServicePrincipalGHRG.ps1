@@ -115,8 +115,8 @@ d:\Repos\PlatformRelease\Scripts\Create-GhActionsSecret.ps1
 gh version 1.4.0 (2020-12-15)
 Your local repo is: https://github.com/bcage29/LogHeadersAPI.git
 Your context is:
-Name         : HA App Labs (855c22ce-7a6c-468b-ac72-1d1ef4355acf) - 11cb9e1b-bd08-4f80-bb8f-f71940c39079 - benwilk@microsoft.com
-Account      : benwilk@microsoft.com
+Name         : HA App Labs (855c22ce-7a6c-468b-ac72-1d1ef4355acf) - 11cb9e1b-bd08-4f80-bb8f-f71940c39079 - benwilk@psthing.com
+Account      : benwilk@psthing.com
 Subscription : 855c22ce-7a6c-468b-ac72-1d1ef4355acf
 Tenant       : 11cb9e1b-bd08-4f80-bb8f-f71940c39079
 

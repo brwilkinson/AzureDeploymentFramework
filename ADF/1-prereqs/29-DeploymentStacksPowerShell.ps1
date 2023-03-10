@@ -39,29 +39,29 @@ New-AzResourceGroupDeploymentStack -ResourceGroupName $rg -Name TEST01 -Template
 <#
 VERBOSE: Performing the operation "Create" on target "TEST01".
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
 Name              : TEST01
 ProvisioningState : succeeded
 UpdateBehavior    : detachResources
 CreationTime(UTC) : 10/24/2021 10:29:42 PM
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-29-43-5d167
-SnapshotId        : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-29-43-5d167
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-29-43-5d167
+SnapshotId        : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-29-43-5d167
 #>
 
 Get-AzResourceGroupDeploymentStack -ResourceGroupName $rg
 Get-AzResourceGroupDeploymentStack -ResourceGroupName $rg -Name TEST01 -ov new | get-az
 
-$snapshotName = $new[0].snapshotId | split-Path -leaf
+$snapshotName = $new[0].snapshotId | Split-Path -Leaf
 
 Get-AzResourceGroupDeploymentStackSnapshot -ResourceGroupName $rg -Name $snapshotName -StackName TEST01
 
 <#
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-29-43-5d167
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-29-43-5d167
 Name              : 2021-10-24-22-29-43-5d167
 ProvisioningState : succeeded
 UpdateBehavior    : detachResources
 CreationTime(UTC) : 10/24/2021 10:29:42 PM
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-29-43-5d167
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-29-43-5d167
 #>
 
 # Deploy again
@@ -73,14 +73,14 @@ Confirm
 The DeploymentStack 'TEST01' in Resource Group 'TEST' you're trying to create already exists. Do you want to overwrite it?
 [Y] Yes [N] No [S] Suspend [?] Help (default is "Yes"): 
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
 Name              : TEST01
 ProvisioningState : succeeded
 UpdateBehavior    : detachResources
 CreationTime(UTC) : 10/24/2021 10:29:42 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage54
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-41-09-403d1
-SnapshotId        : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-41-09-403d1
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage54
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-41-09-403d1
+SnapshotId        : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-41-09-403d1
 
 #>
 
@@ -102,14 +102,14 @@ Set-AzResourceGroupDeploymentStack -ResourceGroupName $rg -Name TEST01 -Template
 <#
 VERBOSE: Performing the operation "Create" on target "TEST01".
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
 Name              : TEST01
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 CreationTime(UTC) : 10/24/2021 10:29:42 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-45-22-e1ac3
-SnapshotId        : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-45-22-e1ac3
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-45-22-e1ac3
+SnapshotId        : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-45-22-e1ac3
 #>
 
 # deploy this time without changing, add description to deployment
@@ -119,15 +119,15 @@ Set-AzResourceGroupDeploymentStack -Description TEST01-4 -ResourceGroupName $rg 
 <#
 VERBOSE: Performing the operation "Create" on target "TEST01".
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
 Name              : TEST01
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 Description       : TEST01-4
 CreationTime(UTC) : 10/24/2021 10:29:42 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-49-16-1f60e
-SnapshotId        : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-49-16-1f60e
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-49-16-1f60e
+SnapshotId        : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-49-16-1f60e
 #>
 
 # add a loop with second storage account
@@ -137,38 +137,38 @@ Set-AzResourceGroupDeploymentStack -Description TEST01-4 -ResourceGroupName $rg 
 <#
 VERBOSE: Performing the operation "Create" on target "TEST01".
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
 Name              : TEST01
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 Description       : TEST01-4
 CreationTime(UTC) : 10/24/2021 10:29:42 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-                    /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-53-04-4d87a
-SnapshotId        : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-53-04-4d87a
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+                    /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-53-04-4d87a
+SnapshotId        : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-53-04-4d87a
 #>
 
 Get-AzResourceGroupDeploymentStack -ResourceGroupName $rg -Name TEST01 -ov new 
 
 <#
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
 Name              : TEST01
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 Description       : TEST01-4
 CreationTime(UTC) : 10/24/2021 10:29:42 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-                    /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-53-04-4d87a
-SnapshotId        : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-53-04-4d87a
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+                    /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-53-04-4d87a
+SnapshotId        : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-53-04-4d87a
 #>
 
-$new[0] | select *
+$new[0] | Select-Object *
 
 <#
 updateBehavior         : purgeResources
-id                     : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
+id                     : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01
 name                   : TEST01
 type                   : Microsoft.Resources/deploymentStacks
 systemData             : Microsoft.Azure.Management.ResourceManager.Models.SystemData
@@ -181,30 +181,30 @@ debugSetting           :
 provisioningState      : succeeded
 deploymentScope        :
 description            : TEST01-4
-managedResources       : {/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545,
-                         /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452}
-deploymentId           : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-53-04-4d87a
+managedResources       : {/subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545,
+                         /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452}
+deploymentId           : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-53-04-4d87a
 locks                  :
 error                  :
-snapshotId             : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-53-04-4d87a
-managedResourcesString : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-                         /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
+snapshotId             : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-53-04-4d87a
+managedResourcesString : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+                         /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
 #>
 
 $new[0].systemData
 
 <#
-CreatedBy          : benwilk@microsoft.com
+CreatedBy          : benwilk@psthing.com
 CreatedByType      : User
 CreatedAt          : 10/24/2021 10:29:42 PM
-LastModifiedBy     : benwilk@microsoft.com
+LastModifiedBy     : benwilk@psthing.com
 LastModifiedByType : User
 LastModifiedAt     : 10/24/2021 10:53:04 PM
 #>
 
 # manually deleted a storage account 545
 
-Get-AzResourceGroupDeploymentStack -ResourceGroupName $rg -Name TEST01 -ov new | gm
+Get-AzResourceGroupDeploymentStack -ResourceGroupName $rg -Name TEST01 -ov new | Get-Member
 
 Set-AzResourceGroupDeploymentStack -Description TEST01-4 -ResourceGroupName $rg -Name TEST01 -TemplateFile D:\Repos\ADF\ADF\bicep\foo\foo6.json -verbose -UpdateBehavior purgeResources
 
@@ -214,78 +214,78 @@ Set-AzResourceGroupDeploymentStack -Description TEST01-4 -ResourceGroupName $rg 
 #> confirmed the storage account was deleted along with the container and a new storage account was created.
 
 
-Get-AzResourceGroupDeploymentStackSnapshot -ResourceGroupName $rg -StackName TEST01 | measure
+Get-AzResourceGroupDeploymentStackSnapshot -ResourceGroupName $rg -StackName TEST01 | Measure-Object
 
 #> view all of the snapshots
 
 <#
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-29-43-5d167
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-29-43-5d167
 Name              : 2021-10-24-22-29-43-5d167
 ProvisioningState : succeeded
 UpdateBehavior    : detachResources
 CreationTime(UTC) : 10/24/2021 10:29:42 PM
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-29-43-5d167
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-29-43-5d167
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-41-09-403d1
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-41-09-403d1
 Name              : 2021-10-24-22-41-09-403d1
 ProvisioningState : succeeded
 UpdateBehavior    : detachResources
 CreationTime(UTC) : 10/24/2021 10:41:09 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage54
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-41-09-403d1
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage54
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-41-09-403d1
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-45-22-e1ac3
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-45-22-e1ac3
 Name              : 2021-10-24-22-45-22-e1ac3
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 CreationTime(UTC) : 10/24/2021 10:45:22 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-DeletedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage54
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-45-22-e1ac3
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+DeletedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage54
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-45-22-e1ac3
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-49-16-1f60e
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-49-16-1f60e
 Name              : 2021-10-24-22-49-16-1f60e
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 CreationTime(UTC) : 10/24/2021 10:49:16 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-49-16-1f60e
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-49-16-1f60e
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-53-04-4d87a
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-22-53-04-4d87a
 Name              : 2021-10-24-22-53-04-4d87a
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 CreationTime(UTC) : 10/24/2021 10:53:04 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-                    /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-53-04-4d87a
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+                    /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-22-53-04-4d87a
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-23-07-19-adfd3
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-23-07-19-adfd3
 Name              : 2021-10-24-23-07-19-adfd3
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 CreationTime(UTC) : 10/24/2021 11:07:19 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-                    /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-23-07-19-adfd3
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+                    /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-23-07-19-adfd3
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-23-07-57-83e8f
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-23-07-57-83e8f
 Name              : 2021-10-24-23-07-57-83e8f
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 CreationTime(UTC) : 10/24/2021 11:07:57 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-                    /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-23-07-57-83e8f
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+                    /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-23-07-57-83e8f
 
-Id                : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-23-11-00-3a73c
+Id                : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deploymentStacks/TEST01/snapshots/2021-10-24-23-11-00-3a73c
 Name              : 2021-10-24-23-11-00-3a73c
 ProvisioningState : succeeded
 UpdateBehavior    : purgeResources
 CreationTime(UTC) : 10/24/2021 11:11:00 PM
-ManagedResources  : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
-                    /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
-DeploymentId      : /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-23-11-00-3a73c
+ManagedResources  : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage545
+                    /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Storage/storageAccounts/footeststorage5452
+DeploymentId      : /subscriptions/{subscriptionguid}/resourceGroups/TEST/providers/Microsoft.Resources/deployments/TEST01-2021-10-24-23-11-00-3a73c
 #>
 
 #> Review snapshots, then delete storage account manually, then check snapshots again..

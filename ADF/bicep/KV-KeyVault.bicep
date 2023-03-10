@@ -5,6 +5,7 @@ param Global object
 param Prefix string
 param Environment string
 param DeploymentID string
+param Stage object
 
 var Defaults = {
   enabledForDeployment: true
@@ -90,11 +91,16 @@ var accessPolicies = [for i in range(0, ((!contains(KVInfo, 'accessPolicies')) ?
   permissions: keyVaultPermissions[KVInfo.accessPolicies[i].Permissions]
 }]
 
-var ipRules = [for ip in Global.IPAddressforRemoteAccess : {
+var SAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
+var AzureDevOpsAllowIPs = loadJsonContent('global/IPRanges-AzureDevOps.json')
+var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+var AllowIPList = concat(SAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess)
+
+var ipRules = [for ip in AllowIPList: {
   value: ip
 }]
 
-resource KV 'Microsoft.KeyVault/vaults@2019-09-01' = {
+resource KV 'Microsoft.KeyVault/vaults@2021-10-01' = {
   name: '${Deployment}-kv${KVInfo.Name}'
   location: resourceGroup().location
   properties: {
@@ -105,7 +111,7 @@ resource KV 'Microsoft.KeyVault/vaults@2019-09-01' = {
     }
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: ! contains(KVInfo, 'allNetworks') ? 'Allow' : bool(KVInfo.allNetworks) ? 'Allow' : 'Deny'
+      defaultAction: !contains(KVInfo, 'allNetworks') ? 'Allow' : bool(KVInfo.allNetworks) ? 'Allow' : 'Deny'
       ipRules: ipRules
     }
     enabledForDeployment: Defaults.enabledForDeployment
@@ -128,6 +134,14 @@ resource KVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
         category: 'AuditEvent'
         enabled: true
       }
+      {
+        category: 'AzurePolicyEvaluationDetails'
+        enabled: true
+        retentionPolicy: {
+          days: 30
+          enabled: false
+        }
+      }
     ]
     metrics: [
       {
@@ -142,20 +156,32 @@ resource KVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
   }
 }
 
+var CertIssuerInfo = contains(KVInfo, 'CertIssuerInfo') ? KVInfo.CertIssuerInfo : []
+
+module CertificateIssuer 'x.CertificateIssuer.ps1.bicep' = [for (issuer, index) in CertIssuerInfo: {
+  name: 'dp-kv-certificateissuer-${issuer.name}'
+  params: {
+    CertIssuerName: issuer.name
+    CertIssuerProvider: issuer.provider
+    Deployment: Deployment
+    vaultName: KV.name
+  }
+}]
+
 var rolesInfo = contains(KVInfo, 'rolesInfo') ? KVInfo.rolesInfo : []
 
 module RBAC 'x.RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
-    name: 'dp-rbac-role-${KV.name}-${role.name}'
-    params: {
-        resourceId: KV.id
-        Global: Global
-        roleInfo: role
-        Type: contains(role,'Type') ? role.Type : 'lookup'
-        deployment: Deployment
-    }
+  name: take(replace('dp-rbac-role-${KV.name}-${role.name}', '@', '_'), 64)
+  params: {
+    resourceId: KV.id
+    Global: Global
+    roleInfo: role
+    Type: contains(role, 'Type') ? role.Type : 'lookup'
+    deployment: Deployment
+  }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(KVInfo, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(KVInfo, 'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-KV-privatelinkloop${KVInfo.name}'
   params: {
     Deployment: Deployment
@@ -166,7 +192,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(KVInfo, 'private
   }
 }
 
-module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(KVInfo, 'privatelinkinfo')) {
+module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(KVInfo, 'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-KV-registerPrivateDNS${KVInfo.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -174,6 +200,6 @@ module KVPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(KVInfo, 'pri
     providerURL: 'azure.net'
     providerType: KV.type
     resourceName: KV.name
-    Nics: contains(KVInfo, 'privatelinkinfo') && length(KVInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
+    Nics: contains(KVInfo, 'privatelinkinfo') && bool(Stage.PrivateLink) && length(KVInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }

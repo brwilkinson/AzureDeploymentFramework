@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 param Extensions object
@@ -80,11 +87,11 @@ var VMs = [for (vm, index) in AppServers: {
     }
   }
   linuxConfiguration: {
-    enableAutomaticUpdates: true
+    // enableAutomaticUpdates: true
     provisionVmAgent: true
     patchSettings: {
-      enableHotpatching: contains(OSType[vm.OSType], 'HotPatch') ? OSType[vm.OSType].HotPatch : false
-      patchMode: contains(OSType[vm.OSType], 'patchMode') ? OSType[vm.OSType].patchMode : 'AutomaticByOS' //'AutomaticByPlatform' https://docs.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching
+      //enableHotpatching: contains(OSType[vm.OSType], 'HotPatch') ? OSType[vm.OSType].HotPatch : false
+      patchMode: contains(OSType[vm.OSType], 'patchMode') ? OSType[vm.OSType].patchMode : 'AutomaticByPlatform' // https://docs.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching
     }
   }
 }]

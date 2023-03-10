@@ -49,7 +49,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 
 var userAssignedIdentities = {
   Default: {
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
+    // '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
   }
   VMOperator: {
@@ -104,7 +104,8 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
       javaVersion: ws.stack == 'java' ? '11' : null
       javaContainer: ws.stack == 'java' ? 'JAVA' : null
       javaContainerVersion: ws.stack == 'java' ? 'SE' : null
-      alwaysOn: contains(alwaysOn,ws.stack) && FARM.kind != 'elastic' ? true : false
+      alwaysOn: contains(alwaysOn, ws.stack) && FARM.kind != 'elastic' ? true : false
+      ftpsState: contains(ws, 'ftpsState') ? ws.ftpsState : 'FtpsOnly'
     }
   }
   dependsOn: [
@@ -114,7 +115,7 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
 
 var extraSlots = contains(ws, 'extraSlots') ? ws.extraSlots : 0
 
-resource slots 'Microsoft.Web/sites/slots@2021-03-01' = [for (item, index) in range(1, extraSlots): if (contains(ws, 'extraSlots')) {
+resource slots 'Microsoft.Web/sites/slots@2022-03-01' = [for (item, index) in range(1, extraSlots): if (contains(ws, 'extraSlots')) {
   name: 'slot${item}'
   parent: WS
   location: resourceGroup().location
@@ -128,16 +129,21 @@ resource slots 'Microsoft.Web/sites/slots@2021-03-01' = [for (item, index) in ra
   }
 }]
 
-resource slotConfig 'Microsoft.Web/sites/config@2021-03-01' = {
-  name: 'slotConfigNames'
-  parent: WS
-  properties: {
-    appSettingNames: [
-      // 'abc'
-      'def'
-    ]
-  }
-}
+//  left for slot config for ftp, however not required right now.
+// resource slotConfig 'Microsoft.Web/sites/slots/config@2022-03-01' [for (item, index) in range(1, extraSlots): if (contains(ws, 'extraSlots')) {
+//   name: 
+// }]
+
+// resource slotConfig 'Microsoft.Web/sites/config@2022-03-01' = {
+//   name: 'slotConfigNames'
+//   parent: WS
+//   properties: {
+//     appSettingNames: [
+//       // 'abc'
+//       'def'
+//     ]
+//   }
+// }
 
 // only bind with sslState disabled the very first run, via: "InitialDeploy": 1.
 module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws, 'initialDeploy') && bool(ws.initialDeploy) && contains(ws, 'customDNS') && bool(ws.customDNS)) {
@@ -162,7 +168,7 @@ resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws,
 }
 
 //  Prefer managed certs above, so will just leave integration of certs from KV till later.
-// resource certificatesKV 'Microsoft.Web/certificates@2021-03-01' = {
+// resource certificatesKV 'Microsoft.Web/certificates@2022-03-01' = {
 //   name: toLower('${WS.name}.${Global.DomainNameExt}-${Global.CertName}')
 //   location: resourceGroup().location
 //   properties: {
@@ -254,7 +260,7 @@ resource stack 'Microsoft.Web/sites/config@2021-01-15' = {
   }
 }
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws,'privatelinkinfo') && bool(Stage.PrivateLink)) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws, 'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-privatelinkloop${ws.name}'
   params: {
     Deployment: Deployment
@@ -265,7 +271,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(ws,'privatelinki
   }
 }
 
-module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws,'privatelinkinfo') && bool(Stage.PrivateLink)) {
+module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws, 'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-registerPrivateDNS${ws.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -273,7 +279,7 @@ module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws,'private
     providerURL: 'net'
     resourceName: WS.name
     providerType: WS.type
-    Nics: contains(ws,'privatelinkinfo') && bool(Stage.PrivateLink) ? array(vnetPrivateLink.outputs.NICID) : array('na')
+    Nics: contains(ws, 'privatelinkinfo') && bool(Stage.PrivateLink) ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }
 

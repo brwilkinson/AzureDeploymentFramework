@@ -8,14 +8,37 @@ param Global object
 param globalRGName string
 param Stage object
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
 }
 
-resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-  name: HubKVName
-  scope: resourceGroup(HubRGName)
+var addressPrefixes = [
+  '${networkId.upper}.${networkId.lower}.0/21'
+]
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
 }
+
+var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
+var snWAF01Name = 'snWAF01'
+var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
+
+var PL = contains(wafInfo,'privatelinkinfo') && bool(Stage.PrivateLink) ? wafInfo.privateLinkInfo : []
+
+var privateLinkInfo = [for (privateLink, index) in PL: {
+  SN: '${VnetID}/subnets/${privateLink.Subnet}'
+  GroupID: privateLink.groupId
+}]
 
 var HubKVJ = json(Global.hubKV)
 var HubRGJ = json(Global.hubRG)
@@ -35,14 +58,18 @@ var gh = {
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 
+resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+  name: '${DeploymentURI}LogAnalytics'
+}
+
+resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: HubKVName
+  scope: resourceGroup(HubRGName)
+}
+
 var Name = '${Deployment}-waf${wafInfo.Name}'
 var WAFID = resourceId('Microsoft.Network/applicationGateways', Name)
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
-var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
-var snWAF01Name = 'snWAF01'
-var SubnetRefGW = '${VnetID}/subnets/${snWAF01Name}'
 var firewallPolicy = {
   id: '${resourceGroup().id}/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/${Deployment}-wafPolicy${wafInfo.WAFPolicyName}'
 }
@@ -72,7 +99,7 @@ var Listeners = [for i in range(0, length(wafInfo.Listeners)): {
   }
 }]
 
-resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' existing = {
+resource PublicIP 'Microsoft.Network/publicIPAddresses@2022-01-01' existing = {
   name: '${Deployment}-waf${wafInfo.Name}-publicip1'
 }
 
@@ -122,7 +149,8 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-06-01' = {
       {
         name: 'appGatewayFrontendPrivate'
         properties: {
-          privateIPAddress: '${networkId}.${wafInfo.PrivateIP}'
+          #disable-next-line prefer-unquoted-property-names
+          privateIPAddress: '${networkId.upper}.${ contains(lowerLookup,'snWAF01') ? int(networkId.lower) + ( 1 * lowerLookup['snWAF01']) : networkId.lower }.${wafInfo.PrivateIP}'
           privateIPAllocationMethod: 'Static'
           subnet: {
             id: SubnetRefGW
@@ -134,9 +162,9 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-06-01' = {
       {
         name: 'appGatewayBackendPool'
         properties: {
-          backendAddresses: [for j in range(0, length((contains(wafInfo, 'FQDNs') ? wafInfo.FQDNs : wafInfo.BEIPs))): {
-            fqdn: (contains(wafInfo, 'FQDNs') ? '${replace(Deployment, '-', '')}${wafInfo.FQDNs[j]}.${Global.DomainName}' : json('null'))
-            ipAddress: (contains(wafInfo, 'BEIPs') ? '${networkIdUpper}.${wafInfo.BEIPs[j]}' : json('null'))
+          backendAddresses: [for (be, Index) in (contains(wafInfo, 'FQDNs') ? wafInfo.FQDNs : wafInfo.BEIPs): {
+            fqdn: contains(wafInfo, 'FQDNs') ? '${DeploymentURI}${be}.${Global.DomainName}' : null
+            ipAddress: contains(wafInfo, 'BEIPs') ? '${networkId.upper}.${ contains(lowerLookup,be.subnet) ? int(networkId.lower) + ( 1 * lowerLookup[be.subnet]) : networkId.lower }.${be.IP}' : null
           }]
         }
       }

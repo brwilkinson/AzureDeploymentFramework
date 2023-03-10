@@ -5,6 +5,7 @@ param Global object
 param Prefix string
 param Environment string
 param DeploymentID string
+param Stage object
 
 var HubRGJ = json(Global.hubRG)
 
@@ -102,7 +103,7 @@ module CosmosAccountDB 'Cosmos-Account-DB.bicep'= [for (cdb, index) in cosmosDat
   ]
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(cosmosAccount, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(cosmosAccount,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-Cosmos-privatelinkloop${cosmosAccount.name}'
   params: {
     Deployment: Deployment
@@ -113,7 +114,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(cosmosAccount, 'p
   }
 }
 
-module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if(contains(cosmosAccount, 'privatelinkinfo')) {
+module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if(contains(cosmosAccount,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-Cosmos-registerPrivateLinkDNS-${cosmosAccount.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -122,7 +123,7 @@ module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if(contains(cosmosA
     resourceName: CosmosAccount.name
     #disable-next-line BCP053
     providerType: '${CosmosAccount.type}/${CosmosAccount.properties.EnabledApiTypes}' // Sql etc, confirm if this works for others.
-    Nics: contains(cosmosAccount, 'privatelinkinfo') && length(cosmosAccount) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
+    Nics: contains(cosmosAccount,'privatelinkinfo') && bool(Stage.PrivateLink) && length(cosmosAccount) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }
 

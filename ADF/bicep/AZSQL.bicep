@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -80,6 +87,7 @@ module SQL 'AZSQL-SQL.bicep' = [for (sql,index) in azSQLInfo : if(azSQL[index].m
     DeploymentID: DeploymentID
     Environment: Environment
     Prefix: Prefix
+    Stage: Stage
   }
 }]
 

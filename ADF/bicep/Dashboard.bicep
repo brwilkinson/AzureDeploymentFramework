@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -32,8 +39,6 @@ param Extensions object
 param Global object
 #disable-next-line no-unused-params
 param DeploymentInfo object
-
-
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
@@ -43,6 +48,8 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 }
 
 var rgName_Monitoring = resourceGroup().name
+
+#disable-next-line decompiler-cleanup
 var prefix_var = '${Prefix}${Global.AppName}${Environment}${DeploymentID}'
 var ApplicationList = [
   {
@@ -53,9 +60,12 @@ var ApplicationList = [
   }
 ]
 
-resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_Default_Dashboard 'Microsoft.Portal/dashboards@2015-08-01-preview' = [for item in ApplicationList: {
-  location: resourceGroup().location
+resource Dashboard 'Microsoft.Portal/dashboards@2015-08-01-preview' = [for item in ApplicationList: {
   name: '${Prefix}-${Global.OrgName}-${item.AppName}-${Environment}${DeploymentID}-Default-Dashboard'
+  location: resourceGroup().location
+  tags: {
+    'hidden-title': '${Prefix}-${Global.OrgName}-${item.AppName}-${Environment}${DeploymentID}-Default-Dashboard'
+  }
   properties: {
     lenses: {
       '0': {
@@ -694,7 +704,7 @@ resource Prefix_Global_OrgName_ApplicationList_AppName_Environment_DeploymentID_
                 {
                   name: 'queryInputs'
                   value: {
-                    subscriptions: 'b8f402aa-20f7-4888-b45c-3cf086dad9c3'
+                    subscriptions: '{subscriptionguid}'
                     regions: 'AustraliaEast;AustraliaSoutheast;CentralUS;EastUS;EastUS2;Global;Multi-Region;NorthCentralUS;SouthCentralUS;WestCentralUS;WestUS;WestUS2'
                     services: ''
                     resourceGroupId: 'all'

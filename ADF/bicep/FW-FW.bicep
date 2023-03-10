@@ -4,6 +4,7 @@ param FWInfo object
 param Global object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
+param Prefix string
 
 var FWSubnetName = 'AzureFirewallSubnet'
 var Domain = split(Global.DomainName, '.')[0]
@@ -21,6 +22,7 @@ module PublicIP 'x.publicIP.bicep' = {
     VM: FWInfo
     PIPprefix: 'fw'
     Global: Global
+    Prefix: Prefix
   }
 }
 

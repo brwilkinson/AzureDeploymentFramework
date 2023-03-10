@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 param Stage object
 #disable-next-line no-unused-params
 param Extensions object
@@ -42,13 +49,13 @@ resource VNET 'Microsoft.Network/virtualNetworks@2020-11-01' existing = {
 }
 
 resource DNSPrivateZone 'Microsoft.Network/privateDnsZones@2020-06-01' = [for (pdns, index) in DNSPrivateZoneInfo: {
-  name: length(DNSPrivateZoneInfo) != 0 ? pdns.zone : 'na'
+  name: replace(pdns.zone,'{region}',resourceGroup().location)
   location: 'global'
   properties: {}
 }]
 
 resource DNSPrivateZoneVNETLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (pdns, index) in DNSPrivateZoneInfo: if(bool(pdns.linkDNS) && bool(Stage.LinkPrivateDns)) {
-  name: '${Deployment}-vn-${pdns.zone}'
+  name: '${Deployment}-vn-${replace(pdns.zone,'{region}',resourceGroup().location)}'
   parent: DNSPrivateZone[index]
   location: 'global'
   properties: {

@@ -23,6 +23,13 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
 param DeploymentID string
 #disable-next-line no-unused-params
@@ -39,11 +46,12 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 
 var CDNInfo = contains(DeploymentInfo, 'FrontDoorCDN') ? DeploymentInfo.FrontDoorCDN : []
 
-var CDN = [for (cdn, i) in CDNInfo: {
-  match: Global.CN == '.' || contains(array(Global.CN), cdn.Name)
-}]
+// var CDN = [for (cdn, i) in CDNInfo: {
+//   match: Global.CN == '.' || contains(array(Global.CN), cdn.Name)
+// }]
 
-module FD 'FD.CDN-Profiles.bicep' = [for (cdn, index) in CDNInfo: if (CDN[index].match) {
+// remove match filter on Frontdoor profile, move to afdendpoins and endpoints
+module FD 'FD.CDN-Profiles.bicep' = [for (cdn, index) in CDNInfo: {    //if (CDN[index].match) {
   name: 'dp-FD.CDN-Profiles-${cdn.name}'
   params: {
     Environment: Environment

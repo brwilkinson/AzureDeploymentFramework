@@ -4,16 +4,23 @@ param NATGWInfo object
 param Global object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
+param Prefix string
+
+var PIPCount = contains(NATGWInfo, 'PIPCount') ? NATGWInfo.PIPCount : 1
+var PIPs = [for (item, index) in range(0,PIPCount): {
+  PublicIP: 'Static'
+}]
 
 module PublicIP 'x.publicIP.bicep' = {
   name: 'dp${Deployment}-NATGW-publicIPDeploy${NATGWInfo.Name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    NICs: array(NATGWInfo)
+    NICs: array(PIPs)
     VM: NATGWInfo
     PIPprefix: 'ngw'
     Global: Global
+    Prefix: Prefix
   }
 }
 
@@ -25,10 +32,8 @@ resource NGW 'Microsoft.Network/natGateways@2021-02-01' = {
   }
   properties: {
     // idleTimeoutInMinutes: int
-    publicIpAddresses: [
-      {
-        id: PublicIP.outputs.PIPID[0]
-      }
-    ]
+    publicIpAddresses: [for (item, index) in range(0,PIPCount): {
+      id: PublicIP.outputs.PIPID[item]
+    }]
   }
 }

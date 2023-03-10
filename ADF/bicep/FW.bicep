@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 param Stage object
 #disable-next-line no-unused-params
 param Extensions object
@@ -53,5 +60,6 @@ module FireWall 'FW-FW.bicep' = [for (fw, index) in FWInfo: if(FW[index].match) 
     DeploymentURI: DeploymentURI
     FWInfo: fw
     Global: Global
+    Prefix: Prefix
   }
 }]

@@ -16,6 +16,23 @@ param devOpsPat string
 @secure()
 param sshPublic string
 
+param month string = utcNow('MM')
+param year string = utcNow('yyyy')
+
+// Use same PAT token for 3 month blocks, min PAT age is 6 months, max is 9 months
+var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) -1) % 3),2,'0')}-01', 'P9M')
+
+// Roll the SAS token one per 3 months, min length of 6 months.
+var DSCSAS = saaccountidglobalsource.listServiceSAS('2021-09-01', {
+  canonicalizedResource: '/blob/${saaccountidglobalsource.name}/${last(split(Global._artifactsLocation, '/'))}'
+  signedResource: 'c'
+  signedProtocol: 'https'
+  signedPermission: 'r'
+  signedServices: 'b'
+  signedExpiry: SASEnd
+  keyToSign: 'key1'
+}).serviceSasToken
+
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -70,7 +87,7 @@ var gh = {
 
 var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
-var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalRGJ.name}')
+var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalSAJ.name}')
 var KVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
 var AAName = toLower('${gh.hubAAPrefix}${gh.hubAAOrgName}${gh.hubAAAppName}${gh.hubAARGName}${HubAAJ.name}')
 
@@ -150,7 +167,26 @@ var secrets = [
   }
 ]
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
+var addressPrefixes = [
+  '${networkId.upper}.${networkId.lower}.0/21'
+]
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
+}
 
 var storageAccountType = Environment == 'P' ? 'Premium_LRS' : 'Standard_LRS'
 var SADiagName = '${DeploymentURI}sadiag'
@@ -283,7 +319,7 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-07-01' = {
                 name: '${Deployment}-${AppServer.Name}-nic${-index}'
                 properties: {
                   subnet: {
-                    id: '${VNetID}/subnets/sn${nic.Subnet}'
+                    id: '${VNetID}/subnets/${nic.Subnet}'
                   }
                   publicIPAddressConfiguration: !(contains(nic, 'PublicIP') && nic.PublicIP == 1) ? null : {
                     name: 'pub1'
@@ -499,8 +535,8 @@ resource VMSS 'Microsoft.Compute/virtualMachineScaleSets@2021-07-01' = {
       //             Password: devOpsPat
       //           }
       //         }
-      //         configurationUrlSasToken: Global._artifactsLocationSasToken
-      //         configurationDataUrlSasToken: Global._artifactsLocationSasToken
+      //         configurationUrlSasToken: '?${DSCSAS}'
+      //         configurationDataUrlSasToken: '?${DSCSAS}'
       //       }
       //     }
       //   }
@@ -624,12 +660,12 @@ resource AppServerDependencyAgent 'Microsoft.Compute/virtualMachineScaleSets/ext
 }
 
 resource AppServerGuestHealth 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.GuestHealthAgent)) {
-  name: '${((OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')}'
+  name: (OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
   parent: VMSS
   properties: {
     autoUpgradeMinorVersion: true
     publisher: 'Microsoft.Azure.Monitor.VirtualMachines.GuestHealth'
-    type: ((OSType[AppServer.OSType].OS == 'Windows') ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
     typeHandlerVersion: ((OSType[AppServer.OSType].OS == 'Windows') ? '1.0' : '1.0')
   }
   dependsOn: [
@@ -658,7 +694,7 @@ resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachineScaleSets/ext
 }
 
 resource AppServerAzureMonitor 'Microsoft.Compute/virtualMachineScaleSets/extensions@2021-07-01' = if (VM.match && bool(VM.Extensions.AzureMonitorAgent)) {
-  name: '${((OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')}'
+  name: ((OSType[AppServer.OSType].OS == 'Windows') ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
   parent: VMSS
   properties: {
     autoUpgradeMinorVersion: true

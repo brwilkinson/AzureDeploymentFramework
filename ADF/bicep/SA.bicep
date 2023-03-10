@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -52,9 +59,10 @@ module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: if (SAInfo[index
     DeploymentURI: DeploymentURI
     storageInfo: sa
     Global: Global
-    DeploymentID: Deployment
+    DeploymentID: DeploymentID
     Environment: Environment
     Prefix: Prefix
+    Stage: Stage
   }
   dependsOn: []
 }]

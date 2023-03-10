@@ -5,6 +5,7 @@ param Global object
 param Prefix string
 param Environment string
 param DeploymentID string
+param Stage object
 
 var HubRGJ = json(Global.hubRG)
 
@@ -172,6 +173,7 @@ resource vulnAssessments 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@
   parent: synapseWS
   properties: {
     storageContainerPath: '${SADiag.properties.primaryEndpoints.blob}sascans/'
+    storageAccountAccessKey: SADiag.listKeys().keys[1].value
     recurringScans: {
       isEnabled: true
       emailSubscriptionAdmins: true
@@ -208,7 +210,7 @@ module RBAC 'x.RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
   }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(Synapse, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(Synapse,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-Synapse-privatelinkloop${Synapse.name}'
   params: {
     Deployment: Deployment
@@ -219,7 +221,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(Synapse, 'privat
   }
 }
 
-module SynapsePrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(Synapse, 'privatelinkinfo')) {
+module SynapsePrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(Synapse,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-Synapse-registerPrivateDNS${Synapse.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -227,7 +229,7 @@ module SynapsePrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(Synapse
     providerURL: 'azuresynapse.net'
     resourceName: synapseWS.name
     providerType: synapseWS.type
-    Nics: contains(Synapse, 'privatelinkinfo') && length(Synapse) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
+    Nics: contains(Synapse,'privatelinkinfo') && bool(Stage.PrivateLink) && length(Synapse) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }
 

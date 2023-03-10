@@ -28,8 +28,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -38,7 +45,55 @@ param Global object
 param DeploymentInfo object
 param now string = utcNow('yyyy-MM-dd_hh-mm')
 
+param month string = utcNow('MM')
+param year string = utcNow('yyyy')
 
+// Use same PAT token for 3 month blocks, min PAT age is 6 months, max is 9 months
+var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) -1) % 3),2,'0')}-01', 'P9M')
+
+// Roll the SAS token one per 3 months, min length of 6 months.
+var DSCSAS = saaccountidglobalsource.listServiceSAS('2021-09-01', {
+  canonicalizedResource: '/blob/${saaccountidglobalsource.name}/${last(split(Global._artifactsLocation, '/'))}'
+  signedResource: 'c'
+  signedProtocol: 'https'
+  signedPermission: 'r'
+  signedServices: 'b'
+  signedExpiry: SASEnd
+  keyToSign: 'key1'
+}).serviceSasToken
+
+var GlobalRGJ = json(Global.GlobalRG)
+var GlobalSAJ = json(Global.GlobalSA)
+var HubRGJ = json(Global.hubRG)
+
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
+
+var gh = {
+  globalRGPrefix: contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix
+  globalRGOrgName: contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName
+  globalRGAppName: contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.AppName
+  globalRGName: contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
+  globalSAPrefix: contains(GlobalSAJ, 'Prefix') ? GlobalSAJ.Prefix : primaryPrefix
+  globalSAOrgName: contains(GlobalSAJ, 'OrgName') ? GlobalSAJ.OrgName : Global.OrgName
+  globalSAAppName: contains(GlobalSAJ, 'AppName') ? GlobalSAJ.AppName : Global.AppName
+  globalSARGName: contains(GlobalSAJ, 'RG') ? GlobalSAJ.RG : contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalSAJ.name}')
+
+resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: globalSAName
+  scope: resourceGroup(globalRGName)
+}
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
@@ -109,13 +164,13 @@ resource IMGTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2020-02-14' 
       {
         type: 'File'
         name: 'downloadBuildArtifacts1'
-        sourceUri: '${Global._artifactsLocation}/metaConfig/localhost.meta.mof${Global._artifactsLocationSasToken}'
+        sourceUri: '${Global._artifactsLocation}/metaConfig/localhost.meta.mof?${DSCSAS}'
         destination: 'd:\\metaconfig\\localhost.meta.mof'
       }
       {
         type: 'File'
         name: 'downloadBuildArtifacts2'
-        sourceUri: '${Global._artifactsLocation}/metaConfig/userinfo.txt${Global._artifactsLocationSasToken}'
+        sourceUri: '${Global._artifactsLocation}/metaConfig/userinfo.txt?${DSCSAS}'
         destination: 'd:\\userinfo.txt'
       }
       {
@@ -300,10 +355,9 @@ resource SetImageBuild 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for
 //     }
 //     storageProfile: {
 //       source: {
-       
 //         // uri: 
 //         // id: IMG[index].id //resourceId('Microsoft.Compute/galleries/images', '${image[index].imageName}')
-//         // /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore01
+//         // /subscriptions/{subscriptionguid}/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore01
 //       }
 //     }
 //   }

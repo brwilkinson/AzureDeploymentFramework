@@ -5,6 +5,7 @@ param Global object
 param Prefix string
 param Environment string
 param DeploymentID string
+param Stage object
 
 @secure()
 param vmAdminPassword string
@@ -26,18 +27,22 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource SQL 'Microsoft.Sql/servers@2020-11-01-preview' = {
+resource SADiag 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
+  name: '${DeploymentURI}sadiag'
+}
+
+resource SQL 'Microsoft.Sql/servers@2022-02-01-preview' = {
   name: toLower('${Deployment}-azsql${azSQLInfo.Name}')
   location: resourceGroup().location
   properties: {
-    administratorLogin: azSQLInfo.administratorLogin
-    administratorLoginPassword: vmAdminPassword
+    // administratorLogin: azSQLInfo.administratorLogin // Use AAD only
+    // administratorLoginPassword: vmAdminPassword // Use AAD only
     minimalTlsVersion: '1.2'
     publicNetworkAccess: bool(azSQLInfo.publicNetworkAccess) ? 'Enabled' : 'Disabled'
   }
 }
 
-resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2020-11-01-preview' = if (contains(azSQLInfo, 'AdminName')) {
+resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2022-02-01-preview' = if (contains(azSQLInfo, 'AdminName')) {
   name: 'ActiveDirectory'
   parent: SQL
   properties: {
@@ -48,7 +53,15 @@ resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2020-11-01-prev
   }
 }
 
-resource SQLAllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2020-11-01-preview' = {
+resource symbolicname 'Microsoft.Sql/servers/azureADOnlyAuthentications@2022-02-01-preview' = {
+  name: 'Default'
+  parent: SQL
+  properties: {
+    azureADOnlyAuthentication: true
+  }
+}
+
+resource SQLAllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2022-02-01-preview' = {
   name: 'AllowAllWindowsAzureIps'
   parent: SQL
   properties: {
@@ -57,7 +70,7 @@ resource SQLAllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2020-11
   }
 }
 
-resource SQLAllConnectionsAllowed 'Microsoft.Sql/servers/firewallRules@2020-11-01-preview' = {
+resource SQLAllConnectionsAllowed 'Microsoft.Sql/servers/firewallRules@2022-02-01-preview' = {
   name: 'AllConnectionsAllowed'
   parent: SQL
   properties: {
@@ -66,7 +79,57 @@ resource SQLAllConnectionsAllowed 'Microsoft.Sql/servers/firewallRules@2020-11-0
   }
 }
 
-resource SQLDB 'Microsoft.Sql/servers/databases@2020-11-01-preview' = [for (db, index) in azSQLInfo.DBInfo: {
+resource ATP 'Microsoft.Sql/servers/advancedThreatProtectionSettings@2021-11-01-preview' = {
+  name: 'default'
+  parent: SQL
+  properties: {
+    state: 'Enabled'
+  }
+}
+
+resource VA 'Microsoft.Sql/servers/sqlVulnerabilityAssessments@2022-02-01-preview' = {
+  name: 'default'
+  parent: SQL
+  properties: {
+    state: 'Enabled'
+  }
+}
+
+resource devOpsAudit 'Microsoft.Sql/servers/devOpsAuditingSettings@2021-11-01-preview' = {
+  name: 'default'
+  parent: SQL
+  properties: {
+    isAzureMonitorTargetEnabled: true
+    state: 'Enabled'
+    // storageAccountAccessKey: 'string'
+    // storageAccountSubscriptionId: 'string'
+    // storageEndpoint: 'string'
+  }
+}
+
+resource audit 'Microsoft.Sql/servers/auditingSettings@2021-11-01-preview' = {
+  name: 'default'
+  parent: SQL
+  properties: {
+    auditActionsAndGroups: [
+      'FAILED_DATABASE_AUTHENTICATION_GROUP'
+      // 'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
+      // 'BATCH_COMPLETED_GROUP'
+    ]
+    state: 'Enabled'
+    isAzureMonitorTargetEnabled: true
+    // isDevopsAuditEnabled: true
+    // isManagedIdentityInUse: true
+    // isStorageSecondaryKeyInUse: bool
+    // queueDelayMs: int
+    // retentionDays: int
+    // storageAccountAccessKey: 'string'
+    // storageAccountSubscriptionId: 'string'
+    // storageEndpoint: 'string'
+  }
+}
+
+resource SQLDB 'Microsoft.Sql/servers/databases@2022-02-01-preview' = [for (db, index) in azSQLInfo.DBInfo: {
   name: db.Name
   parent: SQL
   location: resourceGroup().location
@@ -151,7 +214,7 @@ resource SQLDBDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =
   }
 }]
 
-module SQLPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(azSQLInfo, 'privatelinkinfo')) {
+module SQLPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(azSQLInfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-SQL-privatelinkloop${azSQLInfo.name}'
   params: {
     Deployment: Deployment
@@ -162,7 +225,7 @@ module SQLPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(azSQLInfo, 'priva
   }
 }
 
-module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(azSQLInfo, 'privatelinkinfo')) {
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(azSQLInfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-SQL-registerPrivateLinkDNS-${azSQLInfo.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -170,6 +233,6 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(azSQLInfo, 'pr
     providerURL: 'windows.net'
     resourceName: SQL.name
     providerType: SQL.type
-    Nics: contains(azSQLInfo, 'privatelinkinfo') ? array(SQLPrivateLink.outputs.NICID) : array('')
+    Nics: contains(azSQLInfo,'privatelinkinfo') && bool(Stage.PrivateLink) ? array(SQLPrivateLink.outputs.NICID) : array('')
   }
 }

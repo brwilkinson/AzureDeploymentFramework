@@ -9,6 +9,7 @@ param Services array = []
 param probes array = []
 param LB object
 param Global object
+param Prefix string
 
 var lbname = '${Deployment}-lb${LB.Name}'
 
@@ -16,8 +17,33 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
+var addressPrefixes = [
+  '${networkId.upper}.${networkId.lower}.0/21'
+]
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
+}
+
+var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
+var availabilityZones = contains(excludeZones,Prefix) ? null : [
+  1
+  2
+  3
+]
 
 resource VNET 'Microsoft.Network/virtualNetworks@2020-11-01' existing = {
   name: '${Deployment}-vn'
@@ -25,17 +51,19 @@ resource VNET 'Microsoft.Network/virtualNetworks@2020-11-01' existing = {
 
 var frontendIPConfigurationsPrivate = [for (fe, index) in LB.FrontEnd: {
   name: fe.LBFEName
+  zones: availabilityZones
   properties: {
     privateIPAllocationMethod: 'Static'
-    privateIPAddress: '${((contains(fe, 'SNName') && (fe.SNName == 'MT02')) ? networkIdUpper : networkId)}.${(contains(fe, 'LBFEIP') ? fe.LBFEIP : 'NA')}'
+    privateIPAddress: contains(fe, 'LBFEIP') ? '${networkId.upper}.${contains(lowerLookup, contains(fe, 'Subnet') ? fe.Subnet : 'NA') ? int(networkId.lower) + (1 * lowerLookup[fe.Subnet]) : networkId.lower}.${fe.LBFEIP}' : 'NA'
     subnet: {
-      id: '${VNET.id}/subnets/sn${(contains(fe, 'SNName') ? fe.SNName : 'NA')}'
+      id: '${VNET.id}/subnets/${(contains(fe, 'Subnet') ? fe.Subnet : 'NA')}'
     }
   }
 }]
 
 var frontendIPConfigurationsPublic = [for (fe, index) in LB.FrontEnd: {
   name: fe.LBFEName
+  zones: availabilityZones
   properties: {
     publicIPAddress: {
       id: string(resourceId('Microsoft.Network/publicIPAddresses', '${lbname}-publicip${index + 1}'))
@@ -63,10 +91,11 @@ var NATPoolsObject = [for np in NATPools: {
 var probesObject = [for probe in probes: {
   name: probe.ProbeName
   properties: {
-    protocol: 'Tcp'
+    protocol: contains(probe,'protocol') ? probe.protocol : 'Tcp'
     port: probe.LBBEProbePort
     intervalInSeconds: 5
     numberOfProbes: 2
+    requestPath: contains(probe,'requestPath') ? probe.requestPath : null
   }
 }]
 
@@ -126,7 +155,7 @@ var NATRulesObject = [for rule in NATRules: {
 resource LBalancer 'Microsoft.Network/loadBalancers@2021-02-01' = {
   name: lbname
   location: resourceGroup().location
-  sku: ! contains(LB, 'Sku') ? null : {
+  sku: !contains(LB, 'Sku') ? null : {
     name: LB.Sku
   }
   properties: {

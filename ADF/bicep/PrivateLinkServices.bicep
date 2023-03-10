@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -68,7 +75,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' existing = {
   scope: resourceGroup(wafinfo.plRG)
 }
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(wafinfo, 'privatelinkinfo')) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(wafinfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-WAF-privatelinkloop-${wafinfo.name}'
   params: {
     Deployment: Deployment
@@ -80,7 +87,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(wafinfo, 'privat
   }
 }
 
-// module vnetPrivateLinkAdditional 'x.vNetPrivateLink.bicep' = [for (extra, index) in additionalLocations: if ((apim.VirtualNetworkType == 'None') && contains(extra, 'privatelinkinfo')) {
+// module vnetPrivateLinkAdditional 'x.vNetPrivateLink.bicep' = [for (extra, index) in additionalLocations: if ((apim.VirtualNetworkType == 'None') && contains(extra,'privatelinkinfo') && bool(Stage.PrivateLink)) {
 //   name: 'dp${replace(Deployment, Prefix, extra.prefix)}-APIM-privatelinkloop-${apim.name}'
 //   scope: resourceGroup(replace(resourceGroup().name, Prefix, extra.prefix))
 //   params: {
@@ -93,7 +100,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(wafinfo, 'privat
 //   }
 // }]
 
-// module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(wafinfo, 'privatelinkinfo')) {
+// module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(wafinfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
 //   name: 'dp${Deployment}-WAF-registerPrivateDNS-${wafinfo.name}'
 //   scope: resourceGroup(HubRGName)
 //   params: {
@@ -101,6 +108,6 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(wafinfo, 'privat
 //     providerURL: '${environment().suffixes.storage}' // '.core.windows.net' 
 //     resourceName: WAF.name
 //     providerType: WAF.type
-//     Nics: contains(wafinfo, 'privatelinkinfo') && length(wafinfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
+//     Nics: contains(wafinfo,'privatelinkinfo') && bool(Stage.PrivateLink) && length(wafinfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
 //   }
 // }

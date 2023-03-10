@@ -1,4 +1,8 @@
 {
+  "experimentalFeaturesEnabled": {
+    "extensibility": true,
+    "userDefinedTypes": true
+  },
   "analyzers": {
     "core": {
       "verbose": false,
@@ -10,7 +14,13 @@
         "no-unused-vars": {
           "level": "off"
         },
+        "no-unused-existing-resources": {
+          "level": "off"
+        },
         "no-loc-expr-outside-params": {
+          "level": "off"
+        },
+        "use-resource-id-functions": {
           "level": "off"
         }
       }
@@ -19,8 +29,10 @@
   "cloud": {
     "currentProfile": "AzureCloud",
     "credentialPrecedence": [
-      // "AzureCLI"
       "AzurePowerShell"
+      // "VisualStudioCode"
+      // "AzureCLI"
+      // 
     ]
   },
   "moduleAliases": {

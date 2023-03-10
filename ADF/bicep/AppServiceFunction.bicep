@@ -23,6 +23,13 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
 param DeploymentID string
 #disable-next-line no-unused-params
@@ -57,10 +64,18 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
 var AzureDNS = '168.63.129.16'
 var DNSServerList = contains(DeploymentInfo, 'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
-var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
+var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId.upper}.${networkId.lower}.${server}' : server]
 
 // FunctionInfo
 var WebSiteInfo = contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : []

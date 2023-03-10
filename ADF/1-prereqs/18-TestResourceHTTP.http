@@ -33,7 +33,7 @@ GET https://management.azure.com/providers/Microsoft.Billing/billingAccounts/860
 Authorization: {{Bearer}}
 
 ### 
-GET https://management.azure.com/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/providers/Microsoft.CostManagement/exports/test?api-version=2020-06-01
+GET https://management.azure.com/subscriptions/{subscriptionguid}/providers/Microsoft.CostManagement/exports/test?api-version=2020-06-01
 Authorization: {{Bearer}}
 
 ### 

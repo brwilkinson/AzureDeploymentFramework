@@ -31,6 +31,13 @@ param Environment string
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
 param DeploymentID string
 param Stage object
@@ -80,8 +87,25 @@ module dp_Deployment_RG 'sub-RG.bicep' = if ((contains(Stage, 'RG') && bool(Stag
   dependsOn: []
 }
 
-module dp_Deployment_RBAC 'sub-RBAC.bicep' = if (bool(Stage.RBAC)) {
+module dp_Deployment_RBAC 'sub-RBAC.bicep' = { // if (bool(Stage.RBAC)) {   // Filter in nested deployment, so always deploy this one.
   name: 'dp${Deployment}-RBAC'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    dp_Deployment_RG
+  ]
+}
+
+module dp_Deployment_RBAC_PIM 'sub-PIM.bicep' = if (bool(Stage.PIM)) {
+  name: 'dp${Deployment}-RBAC-PIM'
   params: {
     // move these to Splatting later
     DeploymentID: DeploymentID

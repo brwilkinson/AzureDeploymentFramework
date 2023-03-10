@@ -1,4 +1,4 @@
-param Deployment string = 'ACU1-BRW-AOA-T5'
+param Deployment string = 'ACU1-BRW-PST-D4'
 param AKSInfo object = {
   name: '01'
 }
@@ -32,16 +32,19 @@ output ManagedIdentities array = [
       {
         Name: 'Key Vault Crypto User'
       }
-    ]
-  }
-  {
-    name: AKS.properties.addonProfiles.omsAgent.identity.objectId
-    RBAC: [
       {
         Name: 'Monitoring Metrics Publisher'
       }
     ]
   }
+  // {
+  //   name: AKS.properties.addonProfiles.omsAgent.identity.objectId
+  //   RBAC: [
+  //     {
+  //       Name: 'Monitoring Metrics Publisher'
+  //     }
+  //   ]
+  // }
   {
     name: AKS.properties.addonProfiles.IngressApplicationGateway.identity.objectId
     RBAC: [

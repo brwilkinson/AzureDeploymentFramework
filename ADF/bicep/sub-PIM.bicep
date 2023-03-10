@@ -1,28 +1,35 @@
 param Prefix string
 
 @allowed([
-    'I'
-    'D'
-    'T'
-    'U'
-    'P'
-    'S'
-    'G'
-    'A'
+  'I'
+  'D'
+  'T'
+  'U'
+  'P'
+  'S'
+  'G'
+  'A'
 ])
 param Environment string
 
 @allowed([
-    '0'
-    '1'
-    '2'
-    '3'
-    '4'
-    '5'
-    '6'
-    '7'
-    '8'
-    '9'
+  '0'
+  '1'
+  '2'
+  '3'
+  '4'
+  '5'
+  '6'
+  '7'
+  '8'
+  '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
 param DeploymentID string
 param Stage object
@@ -40,21 +47,21 @@ var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${enviro}' // AZE2-BR
 var locationlookup = json(loadTextContent('./global/prefix.json'))
 var location = locationlookup[Prefix].location
 
-var rolesEligibilityInfo = contains(DeploymentInfo, 'rolesEligibilityInfo') ? DeploymentInfo.rolesEligibilityInfo : []
+var PIMInfo = contains(DeploymentInfo, 'PIMInfo') ? DeploymentInfo.PIMInfo : []
 
-module RBAC 'sub-roleEligibilityPIM-Request.bicep' = [for (role, index) in rolesEligibilityInfo: if (bool(Stage.roleEligibility)) {
-    name: 'dp-rbac-roleeligibility-${Prefix}-${role.name}'
-    params: {
-        Deployment: deployment
-        Prefix: Prefix
-        rgName: rg
-        Enviro: enviro
-        Global: Global
-        roleInfo: role
-        providerPath: ''
-        namePrefix: ''
-        providerAPI: ''
-    }
+module RBAC 'sub-PIM-ALL.bicep' = [for (role, index) in PIMInfo: if (bool(Stage.PIM)) {
+  name: 'dp-rbac-pim-${Prefix}-${role.name}'
+  params: {
+    Deployment: deployment
+    Prefix: Prefix
+    rgName: rg
+    Enviro: enviro
+    Global: Global
+    roleInfo: role
+    providerPath: ''
+    namePrefix: ''
+    providerAPI: ''
+  }
 }]
 
 output enviro string = enviro

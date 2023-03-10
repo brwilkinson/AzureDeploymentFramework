@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -307,9 +314,7 @@ var ruleGroupOverrides = [
 ]
 
 
-
-
-// @description('Generated from /subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Network/frontdoorWebApplicationFirewallPolicies/acu1brwaoat5PolicyafdAPI')
+// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Network/frontdoorWebApplicationFirewallPolicies/acu1brwaoat5PolicyafdAPI')
 // resource acubrwaoatPolicyafdAPI 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2020-11-01' = {
 //   name: 'acu1brwaoat5PolicyafdAPI'
 //   location: 'Global'
@@ -366,8 +371,9 @@ var ruleGroupOverrides = [
 //     }
 //   }
 // }
-resource ClassicFDOWASPBot 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2020-11-01' = [for (policy, index) in FDPolicyInfo: if (POLICY[index].match) {
-  name: '${DeploymentURI}Policyafd${policy.name}'
+
+resource CDNFDPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2022-05-01' = [for (policy, index) in FDPolicyInfo: if (POLICY[index].match) {
+  name: '${DeploymentURI}cdn${policy.name}policy' // no dashes or underscores allowed.
   location: 'Global'
   sku: {
     #disable-next-line BCP036
@@ -384,7 +390,7 @@ resource ClassicFDOWASPBot 'Microsoft.Network/FrontDoorWebApplicationFirewallPol
       rules: contains(policy, 'customRules') ? policy.customRules : []
     }
     managedRules: {
-      managedRuleSets: union([
+      managedRuleSets: policy.Version == 'Standard' ? null : union([
         {
           ruleSetType: 'DefaultRuleSet'
           ruleSetVersion: policy.ruleSetVersion

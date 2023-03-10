@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 param Stage object
 #disable-next-line no-unused-params
 param Extensions object
@@ -46,12 +53,13 @@ var NGW = [for (ngw, index) in NATGWInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), ngw.Name))
 }]
 
-module FireWall 'NATGW-NGW.bicep' = [for (ngw, index) in NATGWInfo: if(NGW[index].match) {
+module NATGW 'NATGW-NGW.bicep' = [for (ngw, index) in NATGWInfo: if(NGW[index].match) {
   name: 'dp${Deployment}-NATGW-Deploy${ngw.name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
     NATGWInfo: ngw
     Global: Global
+    Prefix: Prefix
   }
 }]

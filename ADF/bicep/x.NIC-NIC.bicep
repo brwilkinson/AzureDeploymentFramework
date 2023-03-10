@@ -5,9 +5,29 @@ param NIC object
 param NICNumber string
 param VM object
 param Global object
+param Prefix string
+param Type string
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
+var addressPrefixes = [
+  '${networkId.upper}.${networkId.lower}.0/21'
+]
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
+}
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
@@ -15,11 +35,11 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 
 var VNetID = resourceId('Microsoft.Network/VirtualNetworks', '${Deployment}-vn')
 
-var subnetID = '${VNetID}/subnets/sn${NIC.Subnet}'
+var subnetID = '${VNetID}/subnets/${NIC.Subnet}'
 var acceleratedNetworking = contains(NIC, 'FastNic') ? true : false
 var NICSuffix = NICNumber == '1' ? '' : NICNumber
 var IPAllocation = contains(NIC, 'StaticIP') ? 'Static' : 'Dynamic'
-var privateIPAddress = contains(NIC, 'StaticIP') ? '${((NIC.Subnet == 'MT02') ? networkIdUpper : networkId)}.${NIC.StaticIP}' : null
+var privateIPAddress = contains(NIC, 'StaticIP') ? '${networkId.upper}.${ contains(lowerLookup,contains(NIC,'Subnet') ? NIC.Subnet : 'NA') ? int(networkId.lower) + ( 1 * lowerLookup[NIC.Subnet]) : networkId.lower }.${NIC.StaticIP}' : null
 
 var publicIPAddress = ! contains(NIC, 'PublicIP') ? null : {
   id: resourceId('Microsoft.Network/publicIPAddresses', '${Deployment}-vm${VM.Name}-publicip${NICNumber}')
@@ -40,7 +60,7 @@ var loadBalancerInboundNatRules = [for (nat,index) in rules : {
 
 resource NIC1 'Microsoft.Network/networkInterfaces@2021-02-01' = if ( !( contains(NIC, 'LB') || contains(NIC, 'PLB') || contains(NIC, 'SLB') || contains(NIC, 'ISLB')) ) {
   location: resourceGroup().location
-  name: '${Deployment}-nic${NICSuffix}${VM.Name}'
+  name: '${Deployment}-${Type}${VM.Name}-NIC${NICSuffix}'
   properties: {
     enableAcceleratedNetworking: acceleratedNetworking
     ipConfigurations: [
@@ -80,7 +100,7 @@ resource NIC1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = i
 
 resource NICPLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'PLB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicplb${NICSuffix}${VM.Name}'
+  name: '${Deployment}-${Type}${VM.Name}-NICPLB${NICSuffix}'
   properties: {
     enableAcceleratedNetworking: acceleratedNetworking
     ipConfigurations: [
@@ -125,7 +145,7 @@ resource NICPLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =
 
 resource NICLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'LB')) {
   location: resourceGroup().location
-  name: '${Deployment}-niclb${NICSuffix}${VM.Name}'
+  name: '${Deployment}-${Type}${VM.Name}-NICLB${NICSuffix}'
   properties: {
     enableAcceleratedNetworking: acceleratedNetworking
     ipConfigurations: [
@@ -169,7 +189,7 @@ resource NICLBDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = 
 
 resource NICSLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(NIC, 'SLB')) {
   location: resourceGroup().location
-  name: '${Deployment}-nicslb${NICSuffix}${VM.Name}'
+  name: '${Deployment}-${Type}${VM.Name}-NICSLB${NICSuffix}'
   properties: {
     enableAcceleratedNetworking: acceleratedNetworking
     ipConfigurations: [

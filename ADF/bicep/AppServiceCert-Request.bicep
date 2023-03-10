@@ -42,6 +42,10 @@ resource certOrder 'Microsoft.CertificateRegistration/certificateOrders@2021-03-
     keySize: 2048
     productType: bool(cert.wildcard) ? 'StandardDomainValidatedWildCardSsl' : 'StandardDomainValidatedSsl'
     autoRenew: true
+    // certificates: {
+      
+    // }
+    // csr: 
   }
 }
 

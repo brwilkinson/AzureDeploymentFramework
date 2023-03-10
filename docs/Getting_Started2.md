@@ -190,7 +190,7 @@
                 
                 VERBOSE: Adding Service Principal [AzureDeploymentFramework_AZE2-BRW-ABC-RG-S1] to Global-Global.json
                 
-                benwilk@Microsoft.com                       : b8214ecb-d982-402b-8185-ca909b853eec
+                benwilk@psthing.com                       : b8214ecb-d982-402b-8185-ca909b853eec
                 AzureDeploymentFramework_AZC1-BRW-ABC-RG-S1 : 39420256-6589-4a68-a777-994809dc824b
                 AzureDeploymentFramework_AZC1-BRW-ABC-RG-D2 : 494b32a2-888f-42c5-8f44-688c18f7ab04
                 AzureDeploymentFramework_AZC1-BRW-ABC-RG-T3 : 5cf9039b-2c80-4e83-86cf-c3a383e067de

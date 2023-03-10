@@ -21,7 +21,7 @@ var roleAssignment = [for (rbac,index) in roleInfo.RBAC: {
 }]
 
 module RBACRAResource 'x.RBAC-ALL-RA-Resource.bicep' = [for (rbac, index) in roleAssignment: {
-    name: take(replace('dp-rbac-all-ra-${last(split(resourceId,'/'))}-${roleInfo.name}-${index}', '@', '_'),64)
+    name: take(replace('dp-rbac-all-ra-${index}-${last(split(resourceId,'/'))}-${roleInfo.name}', '@', '_'),64)
     params: {
         resourceId: resourceId
         description: roleInfo.name

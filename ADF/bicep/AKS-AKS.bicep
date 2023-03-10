@@ -50,20 +50,45 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 var RolesGroupsLookup = json(Global.RolesGroupsLookup)
 var objectIdLookup = json(Global.objectIdLookup)
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
+var addressPrefixes = [
+  '${networkId.upper}.${networkId.lower}.0/21'
+]
+
+var SAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
+var AzureDevOpsAllowIPs = loadJsonContent('global/IPRanges-AzureDevOps.json')
+var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+var AllowIPList = concat(SAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess,addressPrefixes)
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
+}
 
 var IngressGreenfields = {
-  effectiveApplicationGatewayId: '${subscription().id}/resourceGroups/${resourceGroup().name}-b/providers/Microsoft.Network/applicationGateways/${Deployment}-waf${AKSInfo.Name}'
+  effectiveApplicationGatewayId: '${subscription().id}/resourceGroups/${resourceGroup().name}-aks01/providers/Microsoft.Network/applicationGateways/${Deployment}-waf${AKSInfo.Name}'
   applicationGatewayName: '${Deployment}-waf${AKSInfo.Name}'
-  subnetCIDR: '${networkId}.128/25' // WAF Subnet //'${Global.networkId[0]}0.0/16'
+  // WAF Subnet 256 Addresses
+  #disable-next-line prefer-unquoted-property-names
+  subnetCIDR: '${networkId.upper}.${contains(lowerLookup, 'snWAF01') ? int(networkId.lower) + (1 * lowerLookup['snWAF01']) : networkId.lower}.0/24'
 }
 // var IngressBrownfields = {
 //   applicationGatewayId: resourceId('Microsoft.Network/applicationGateways/', '${Deployment}-waf${AKSInfo.Name}')
 // }
 
 resource IngressBrownfields 'Microsoft.Network/applicationGateways@2021-05-01' existing = {
-  name: '${Deployment}-waf${AKSInfo.Name}'
+  name: '${Deployment}-waf${AKSInfo.WAFName}'
 }
 
 var aadProfile = {
@@ -75,7 +100,9 @@ var aadProfile = {
 var podIdentityProfile = {
   enabled: bool(AKSInfo.enableRBAC)
 }
-var availabilityZones = [
+
+var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
+var availabilityZones = contains(excludeZones, Prefix) ? null : [
   '1'
   '2'
   '3'
@@ -101,6 +128,7 @@ var autoScalerProfile = {
   // skip-nodes-with-system-pods: 'string'
 }
 
+#disable-next-line decompiler-cleanup
 var Environment_var = {
   D: 'Dev'
   I: 'Int'
@@ -130,7 +158,8 @@ resource csi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' exist
   name: '${Deployment}-uaiIngressApplicationGateway'
 }
 
-resource AKS 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
+#disable-next-line BCP081
+resource AKS 'Microsoft.ContainerService/managedClusters@2022-10-02-preview' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
   location: resourceGroup().location
   identity: {
@@ -162,12 +191,12 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
       scaleDownMode: 'Delete'
       osDiskSizeGB: agentpool.osDiskSizeGb
       osType: agentpool.osType
+      osSKU: contains(agentpool, 'osSKU') && agentpool.osType == 'Linux' ? agentpool.osSKU : agentpool.osType == 'Linux' ? 'CBLMariner' : null
       maxPods: agentpool.maxPods
-      vmSize: 'Standard_DS2_v2'
+      vmSize: contains(agentpool, 'vmSize') ? agentpool.vmSize : 'Standard_DS2_v2'
       vnetSubnetID: (contains(agentpool, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', agentpool.Subnet) : resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', AKSInfo.AgentPoolsSN))
       type: 'VirtualMachineScaleSets'
-      availabilityZones: ((AKSInfo.loadBalancer == 'basic') ? null : availabilityZones)
-
+      availabilityZones: availabilityZones
       // storageProfile: 'ManagedDisks'
     }]
     linuxProfile: {
@@ -187,21 +216,22 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
       enableCSIProxy: true
     }
     securityProfile: {
-      azureDefender: {
-        enabled: true
+      defender: {
         logAnalyticsWorkspaceResourceId: OMS.id
+        securityMonitoring: {
+          enabled: true
+        }
       }
     }
     aadProfile: bool(AKSInfo.enableRBAC) ? aadProfile : null
     apiServerAccessProfile: {
-      authorizedIPRanges: bool(AKSInfo.privateCluster) ? null : Global.IPAddressforRemoteAccess
+      authorizedIPRanges: bool(AKSInfo.privateCluster) || (contains(AKSInfo,'AllowALLIPs') && bool(AKSInfo.AllowALLIPs)) ? null : AllowIPList
       enablePrivateCluster: bool(AKSInfo.privateCluster)
-      privateDNSZone: bool(AKSInfo.privateCluster) ? resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.centralus.azmk8s.io') : null
+      privateDNSZone: bool(AKSInfo.privateCluster) ? resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.${resourceGroup().location}.azmk8s.io') : null
     }
     publicNetworkAccess: bool(AKSInfo.privateCluster) ? 'Disabled' : 'Enabled'
     networkProfile: {
-      outboundType: 'loadBalancer'
-      loadBalancerSku: AKSInfo.loadBalancer
+      outboundType: 'userAssignedNATGateway'
       networkPlugin: 'azure'
       networkMode: 'transparent'
       networkPolicy: 'azure'
@@ -215,13 +245,13 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
       gitops: {
         enabled: resourceGroup().location == 'eastus' ? true : false // preview enabled in eastus/westeurope
         config: {
-          
         }
       }
       azureKeyvaultSecretsProvider: {
         enabled: true
         config: {
           enableSecretRotation: 'true'
+          rotationPollInterval: '2m'
         }
       }
       IngressApplicationGateway: {
@@ -246,6 +276,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
       omsAgent: {
         enabled: true
         config: {
+          useAADAuth: 'true'
           logAnalyticsWorkspaceResourceID: OMS.id
         }
       }
@@ -293,6 +324,22 @@ resource AKSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
         category: 'guard'
         enabled: true
       }
+      {
+        category: 'cloud-controller-manager'
+        enabled: true
+      }
+      {
+        category: 'csi-azuredisk-controller'
+        enabled: true
+      }
+      {
+        category: 'csi-azurefile-controller'
+        enabled: true
+      }
+      {
+        category: 'csi-snapshot-controller'
+        enabled: true
+      }
     ]
     metrics: [
       {
@@ -318,19 +365,20 @@ module identities 'AKS-AKS-RBAC.bicep' = {
   ]
 }
 
-module rgroleassignmentsAKSUAI 'sub-RBAC-ALL.bicep' = [for i in range(0, 4): {
-  name: 'dp${Deployment}-rgroleassignmentsAKSUAI-${(i + 1)}'
-  scope: subscription()
-  params: {
-    Deployment: Deployment
-    Prefix: Prefix
-    rgName: RGName
-    Enviro: Enviro
-    Global: Global
-    roleInfo: identities.outputs.ManagedIdentities[i]
-    providerPath: 'guid'
-    namePrefix: ''
-    providerAPI: ''
-    principalType: 'ServicePrincipal'
-  }
-}]
+// module rgroleassignmentsAKSUAI 'sub-RBAC-RA.bicep' = [for i in range(0, 3): {
+//   name: 'dp${Deployment}-rgroleassignmentsAKSUAI-${i + 1}'
+//   scope: subscription()
+//   params: {
+//     Deployment: Deployment
+//     Prefix: Prefix
+//     rgName: RGName
+//     Enviro: Enviro
+//     Global: Global
+//     roleInfo: identities.outputs.ManagedIdentities[i]
+//     providerPath: 'guid'
+//     namePrefix: ''
+//     providerAPI: ''
+//     principalType: 'ServicePrincipal'
+//     count: i
+//   }
+// }]

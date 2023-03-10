@@ -39,6 +39,7 @@ module NICDiags 'x.vNetPrivateLinkDiags.bicep' = [for (pl, index) in PrivateLink
   name: 'dp-${resourceName}-pl-${pl.groupID}-${pl.Subnet}-diags'
   params: {
     DeploymentURI: DeploymentURI
+    #disable-next-line BCP321
     NICName: last(split(subnetPrivateEndpoint[index].properties.networkInterfaces[0].id,'/'))
   }
 }]

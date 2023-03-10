@@ -28,15 +28,16 @@ param DISKS object = {
 param Global object
 
 
-
+#disable-next-line decompiler-cleanup
 var Data_var = [for i in range(0, (contains(DATA, '1') ? 1 : length(DATA.LUNS))): {
-  name: (contains(DATA, '1') ? 1 : '${Deployment}-${Name}-DATA-DATA${padLeft(DATA.LUNS[i][0], 2, '0')}')
+  name: (contains(DATA, '1') ? 1 : '${Deployment}-vm${Name}-DATA-DATA${padLeft(DATA.LUNS[i][0], 2, '0')}')
   lun: (contains(DATA, '1') ? 1 : int(DATA.LUNS[i][0]))
   caching: (contains(DATA, '1') ? 1 : DATA.caching)
   diskSizeGB: (contains(DATA, '1') ? 1 : int(DATA.LUNS[i][1]))
   createOption: (contains(DATA, '1') ? 1 : ((length(DATA.LUNS[i]) == 3) ? DATA.LUNS[i][2] : 'Empty'))
   managedDisk: (contains(DATA, '1') ? 1 : (contains(DATA, 'saType') ? json('{"storageAccountType":"${DATA.saType}"}') : json('null')))
 }]
+#disable-next-line decompiler-cleanup
 var Datass_var = [for i in range(0, (contains(DATASS, '1') ? 1 : length(DATASS.LUNS))): {
   lun: (contains(DATASS, '1') ? 1 : int(DATASS.LUNS[i][0]))
   caching: (contains(DATASS, '1') ? 1 : DATASS.caching)
@@ -44,32 +45,36 @@ var Datass_var = [for i in range(0, (contains(DATASS, '1') ? 1 : length(DATASS.L
   createOption: (contains(DATASS, '1') ? 1 : ((length(DATASS.LUNS[i]) == 3) ? DATASS.LUNS[i][2] : 'Empty'))
   managedDisk: (contains(DATASS, '1') ? 1 : (contains(DATASS, 'saType') ? json('{"storageAccountType":"${DATASS.saType}"}') : json('null')))
 }]
+#disable-next-line decompiler-cleanup
 var SOFS_var = [for i in range(0, (contains(SOFS, '1') ? 1 : length(SOFS.LUNS))): {
-  name: (contains(SOFS, '1') ? 1 : '${Deployment}-${Name}-DATA-SOFS${padLeft(SOFS.LUNS[i][0], 2, '0')}')
+  name: (contains(SOFS, '1') ? 1 : '${Deployment}-vm${Name}-DATA-SOFS${padLeft(SOFS.LUNS[i][0], 2, '0')}')
   lun: (contains(SOFS, '1') ? 1 : int(SOFS.LUNS[i][0]))
   caching: (contains(SOFS, '1') ? 1 : SOFS.caching)
   diskSizeGB: (contains(SOFS, '1') ? 1 : int(SOFS.LUNS[i][1]))
   createOption: (contains(SOFS, '1') ? 1 : ((length(SOFS.LUNS[i]) == 3) ? SOFS.LUNS[i][2] : 'Empty'))
   managedDisk: (contains(SOFS, '1') ? 1 : (contains(SOFS, 'saType') ? json('{"storageAccountType":"${SOFS.saType}"}') : json('null')))
 }]
+#disable-next-line decompiler-cleanup
 var LOGS_var = [for i in range(0, (contains(LOGS, '1') ? 1 : length(LOGS.LUNS))): {
-  name: (contains(LOGS, '1') ? 1 : '${Deployment}-${Name}-DATA-LOGS${padLeft(LOGS.LUNS[i][0], 2, '0')}')
+  name: (contains(LOGS, '1') ? 1 : '${Deployment}-vm${Name}-DATA-LOGS${padLeft(LOGS.LUNS[i][0], 2, '0')}')
   lun: (contains(LOGS, '1') ? 1 : int(LOGS.LUNS[i][0]))
   caching: (contains(LOGS, '1') ? 1 : LOGS.caching)
   diskSizeGB: (contains(LOGS, '1') ? 1 : int(LOGS.LUNS[i][1]))
   createOption: (contains(LOGS, '1') ? 1 : ((length(LOGS.LUNS[i]) == 3) ? LOGS.LUNS[i][2] : 'Empty'))
   managedDisk: (contains(LOGS, '1') ? 1 : (contains(LOGS, 'saType') ? json('{"storageAccountType":"${LOGS.saType}"}') : json('null')))
 }]
+#disable-next-line decompiler-cleanup
 var TEMPDB_var = [for i in range(0, (contains(TEMPDB, '1') ? 1 : length(TEMPDB.LUNS))): {
-  name: (contains(TEMPDB, '1') ? 1 : '${Deployment}-${Name}-DATA-TEMPDB${padLeft(TEMPDB.LUNS[i][0], 2, '0')}')
+  name: (contains(TEMPDB, '1') ? 1 : '${Deployment}-vm${Name}-DATA-TEMPDB${padLeft(TEMPDB.LUNS[i][0], 2, '0')}')
   lun: (contains(TEMPDB, '1') ? 1 : int(TEMPDB.LUNS[i][0]))
   caching: (contains(TEMPDB, '1') ? 1 : TEMPDB.caching)
   diskSizeGB: (contains(TEMPDB, '1') ? 1 : int(TEMPDB.LUNS[i][1]))
   createOption: (contains(TEMPDB, '1') ? 1 : ((length(TEMPDB.LUNS[i]) == 3) ? TEMPDB.LUNS[i][2] : 'Empty'))
   managedDisk: (contains(TEMPDB, '1') ? 1 : (contains(TEMPDB, 'saType') ? json('{"storageAccountType":"${TEMPDB.saType}"}') : json('null')))
 }]
+#disable-next-line decompiler-cleanup
 var BACKUP_var = [for i in range(0, (contains(BACKUP, '1') ? 1 : length(BACKUP.LUNS))): {
-  name: (contains(BACKUP, '1') ? 1 : '${Deployment}-${Name}-DATA-BACKUP${padLeft(BACKUP.LUNS[i][0], 2, '0')}')
+  name: (contains(BACKUP, '1') ? 1 : '${Deployment}-vm${Name}-DATA-BACKUP${padLeft(BACKUP.LUNS[i][0], 2, '0')}')
   lun: (contains(BACKUP, '1') ? 1 : int(BACKUP.LUNS[i][0]))
   caching: (contains(BACKUP, '1') ? 1 : BACKUP.caching)
   diskSizeGB: (contains(BACKUP, '1') ? 1 : int(BACKUP.LUNS[i][1]))

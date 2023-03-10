@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -83,6 +90,14 @@ resource ERGWPublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-prev
     logs: [
       {
         category: 'DDoSProtectionNotifications'
+        enabled: true
+      }
+      {
+        category: 'DDoSMitigationFlowLogs'
+        enabled: true
+      }
+      {
+        category: 'DDoSMitigationReports'
         enabled: true
       }
     ]

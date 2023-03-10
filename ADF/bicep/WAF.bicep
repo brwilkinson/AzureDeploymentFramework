@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 param Stage object
 #disable-next-line no-unused-params
 param Extensions object
@@ -53,47 +60,9 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 
 var WAFInfo = contains(DeploymentInfo, 'WAFInfo') ? DeploymentInfo.WAFInfo : []
 
+// Add custom properties here to create PublicIP
 var WAFs = [for waf in WAFInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), waf.Name))
-}]
-
-resource PublicIP 'Microsoft.Network/publicIPAddresses@2019-02-01' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {
-  name: '${Deployment}-waf${waf.Name}-publicip1'
-  location: resourceGroup().location
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    publicIPAllocationMethod: 'Static'
-    dnsSettings: {
-      domainNameLabel: toLower('${DeploymentURI}waf${waf.Name}')
-    }
-  }
-  dependsOn: []
-}]
-
-resource PublicIPDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {
-  name: 'service'
-  scope: PublicIP[index]
-  properties: {
-    workspaceId: OMS.id
-    logs: [
-      {
-        category: 'DDoSProtectionNotifications'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        timeGrain: 'PT5M'
-        enabled: true
-        retentionPolicy: {
-          enabled: false
-          days: 0
-        }
-      }
-    ]
-  }
 }]
 
 module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {
@@ -103,13 +72,10 @@ module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match)
     DeploymentURI: DeploymentURI
     DeploymentID: DeploymentID
     globalRGName: globalRGName
-    wafinfo: waf
+    wafInfo: waf
     Global: Global
     Stage: Stage
     Environment: Environment
     Prefix: Prefix
   }
-  dependsOn: [
-    PublicIP
-  ]
 }]

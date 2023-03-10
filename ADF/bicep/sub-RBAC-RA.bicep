@@ -8,6 +8,7 @@ param providerPath string
 param namePrefix string
 param providerAPI string
 param principalType string = ''
+param count int = 1
 
 targetScope = 'subscription'
 
@@ -30,6 +31,7 @@ var rolesGroupsLookup = json(Global.RolesGroupsLookup)
 
 var roleAssignment = [for rbac in roleInfo.RBAC : {
     SourceSubscriptionID: subscription().subscriptionId
+    RGNAME: contains(rbac,'RGNAME') ? rbac.RGNAME : null
     SourceRG: rgName
     RoleName: rbac.Name
     RoleID: rolesGroupsLookup[rbac.Name].Id
@@ -40,8 +42,13 @@ var roleAssignment = [for rbac in roleInfo.RBAC : {
     DestPrefix: (contains(rbac, 'Prefix') ? rbac.Prefix : Prefix)
     DestApp: (contains(rbac, 'Tenant') ? rbac.Tenant : Global.AppName)
     principalType: principalType
-    GUID: guid(subscription().subscriptionId, rgName, roleInfo.Name, rbac.Name, (contains(rbac, 'SubscriptionID') ? rbac.SubScriptionID : subscription().subscriptionId), (contains(rbac, 'RG') ? rbac.RG : Enviro), (contains(rbac, 'Prefix') ? rbac.Prefix : Prefix), (contains(rbac, 'Tenant') ? rbac.Tenant : Global.AppName))
+    GUID: guid(subscription().subscriptionId, rgName, roleInfo.Name, rbac.Name, (contains(rbac, 'SubscriptionID') ? rbac.SubScriptionID : subscription().subscriptionId), (contains(rbac,'RGNAME') ? rbac.RGNAME : contains(rbac, 'RG') ? rbac.RG : Enviro), (contains(rbac, 'Prefix') ? rbac.Prefix : Prefix), (contains(rbac, 'Tenant') ? rbac.Tenant : Global.AppName))
     FriendlyName: 'source: ${rgName} --> ${roleInfo.Name} --> ${rbac.Name} --> destination: ${(contains(rbac, 'Prefix') ? rbac.Prefix : Prefix)}-${(contains(rbac, 'RG') ? rbac.RG : Enviro)}-${(contains(rbac, 'Tenant') ? rbac.Tenant : Global.AppName)}'
+}]
+
+// Allow to deploy to Resource Group by passing in the FullName
+var roleAssignmentRGName = [for (rbac,index) in roleAssignment : {
+    RG: contains(roleInfo.RBAC[index],'RGNAME') ? rbac.RGNAME : '${rbac.DestPrefix}-${Global.OrgName}-${rbac.DestApp}-RG-${rbac.DestRG}'
 }]
 
 // // todo for MG
@@ -50,7 +57,7 @@ var roleAssignment = [for rbac in roleInfo.RBAC : {
 //     scope: tenant()
 // }]
 
-// module RBACRAMG 'sub-RBAC-ALL-RA-MG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro == 'M0') {
+// module RBACRAMG 'sub-RBAC-RA-MG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro == 'M0') {
 //     name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
 //     scope: mg[index]
 //     params:{
@@ -64,8 +71,9 @@ var roleAssignment = [for rbac in roleInfo.RBAC : {
 //     }
 // }]
 
-module RBACRASUB 'sub-RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment: if (Enviro == 'G0') {
-    name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
+
+module RBACRASUB 'sub-RBAC-RA-SUB.bicep' = [for (rbac, index) in roleAssignment: if (Enviro == 'G0') {
+    name: take(replace('dp-sub-rbac-all-ra-${count}-${index}-${Deployment}-${roleInfo.name}', '@', '_'), 64)
     scope: subscription()
     params:{
         description: roleInfo.name
@@ -78,9 +86,9 @@ module RBACRASUB 'sub-RBAC-ALL-RA.bicep' = [for (rbac, index) in roleAssignment:
     }
 }]
 
-module RBACRARG 'sub-RBAC-ALL-RA-RG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro != 'G0' && Enviro != 'M0') {
-    name: replace('dp-rbac-all-ra-${roleInfo.name}-${index}','@','_')
-    scope: resourceGroup(rbac.DestSubscriptionID,'${rbac.DestPrefix}-${Global.OrgName}-${rbac.DestApp}-RG-${rbac.DestRG}')
+module RBACRARG 'sub-RBAC-RA-RG.bicep' = [for (rbac, index) in roleAssignment: if (Enviro != 'G0' && Enviro != 'M0') {
+    name: take(replace('dp-rg-rbac-all-ra-${count}-${index}-${Deployment}-${roleInfo.name}', '@', '_'), 64)
+    scope: resourceGroup(rbac.DestSubscriptionID,roleAssignmentRGName[index].RG)
     params:{
         description: roleInfo.name
         name: rbac.GUID

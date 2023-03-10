@@ -9,11 +9,27 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource LT 'Microsoft.LoadTestService/loadtests@2021-09-01-preview' = {
+resource LT 'Microsoft.LoadTestService/loadTests@2022-12-01' = {
   name: '${Deployment}-lt${LoadTestInfo.Name}'
   location: LoadTestInfo.location //resourceGroup().location
   identity: {
     type: 'SystemAssigned'
   }
+  properties: {
+    description: '${Deployment}-lt${LoadTestInfo.Name}'
+  }
 }
 
+resource ERGWPublicIPDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'service'
+  scope: LT
+  properties: {
+    workspaceId: OMS.id
+    logs: [
+      {
+        category: 'OperationLogs'
+        enabled: true
+      }
+    ]
+  }
+}

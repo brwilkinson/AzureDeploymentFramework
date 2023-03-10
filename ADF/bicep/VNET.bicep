@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 param Stage object
 #disable-next-line no-unused-params
 param Extensions object
@@ -36,15 +43,25 @@ var resourceGroupName = resourceGroup().name
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
+
+var GlobalRGJ = json(Global.GlobalRG)
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
+  globalRGPrefix: contains(GlobalRGJ, 'Prefix') ? GlobalRGJ.Prefix : primaryPrefix
+  globalRGOrgName: contains(GlobalRGJ, 'OrgName') ? GlobalRGJ.OrgName : Global.OrgName
+  globalRGAppName: contains(GlobalRGJ, 'AppName') ? GlobalRGJ.AppName : Global.AppName
+  globalRGName: contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
   hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
   hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
 }
 
+var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 var HubVNName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-${gh.hubRGRGName}-vn'
 
@@ -56,13 +73,29 @@ var hubVNetName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(HubVNNa
 var hubVNetResourceGroupName = (contains(DeploymentInfo, 'hubRegionPrefix') ? replace(HubRGName, Prefix, DeploymentInfo.hubRegionPrefix) : HubRGName)
 var hubVNetSubscriptionID = contains(Global, 'hubSubscriptionID') ? Global.hubSubscriptionID : subscriptionId
 
-var networkId = '${Global.networkid[0]}${string((Global.networkid[1] - (2 * int(DeploymentID))))}'
-var networkIdUpper = '${Global.networkid[0]}${string((1 + (Global.networkid[1] - (2 * int(DeploymentID)))))}'
+var networkLookup = json(loadTextContent('./global/network.json'))
+var regionNumber = networkLookup[Prefix].Network
+
+var network = json(Global.Network)
+var networkId = {
+  upper: '${network.first}.${network.second - (8 * int(regionNumber)) + Global.AppId}'
+  lower: '${network.third - (8 * int(DeploymentID))}'
+}
+
 var addressPrefixes = [
-  '${networkId}.0/23'
+  '${networkId.upper}.${networkId.lower}.0/21'
 ]
+
+var lowerLookup = {
+  snWAF01: 1
+  AzureFirewallSubnet: 1
+  snFE01: 2
+  snMT01: 4
+  snBE01: 6
+}
+
 var DNSServerList = contains(DeploymentInfo, 'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
-var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
+var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId.upper}.${networkId.lower}.${server}' : server]
 
 var SubnetInfo = (contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : [])
 
@@ -112,11 +145,21 @@ var serviceEndpoints = {
   ]
 }
 
+// resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-01-01' existing = {
+//   name: toLower('${Deployment}-sfm01')
+// }
+// var SFMNSGID = resourceId('SFM_${SFM.properties.clusterId}','Microsoft.Network/networkSecurityGroups','SF-NSG')
+
 resource NSG 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = [for (sn, index) in SubnetInfo: {
   name: '${Deployment}-nsg${sn.name}'
 }]
 
-resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
+// resource ddosProtectionPlan 'Microsoft.Network/ddosProtectionPlans@2022-01-01' existing = {
+//   name: 'ddosProtection01'
+//   scope: resourceGroup(globalRGName)
+// }
+
+resource VNET 'Microsoft.Network/virtualNetworks@2022-01-01' = {
   name: '${Deployment}-vn'
   location: resourceGroup().location
   properties: {
@@ -126,13 +169,17 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
     dhcpOptions: {
       dnsServers: array(DNSServers)
     }
+    // enableDdosProtection: contains(Stage, 'VNetDDOS') && bool(Stage.VNetDDOS)
+    // ddosProtectionPlan: !(contains(Stage, 'VNetDDOS') && bool(Stage.VNetDDOS)) ? null : {
+    //   id: ddosProtectionPlan.id
+    // }
     subnets: [for (sn, index) in SubnetInfo: {
       name: sn.name
       properties: {
-        addressPrefix: '${((sn.name == 'snMT02') ? networkIdUpper : networkId)}.${sn.Prefix}'
+        addressPrefix: '${networkId.upper}.${contains(lowerLookup, sn.name) ? int(networkId.lower) + (1 * lowerLookup[sn.name]) : networkId.lower}.${sn.Prefix}'
         networkSecurityGroup: !(contains(sn, 'NSG') && bool(sn.NSG)) ? null : /*
         */ {
-          id: NSG[index].id
+          id: contains(sn, 'NSGID') ? sn.NSGID : NSG[index].id
         }
         natGateway: !(contains(sn, 'NGW') && bool(sn.NGW)) ? null : /*
         */ {
@@ -193,5 +240,5 @@ module VNETPeeringHUB 'VNET-Peering.bicep' = if (bool(Stage.VNetPeering)) {
   }
 }
 
-output VNetID string = networkId
+output VNetID array = addressPrefixes
 output subnetIdArray array = [for (item, index) in SubnetInfo: VNET.properties.subnets[index].id]

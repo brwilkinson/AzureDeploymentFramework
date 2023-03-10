@@ -23,8 +23,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -63,18 +70,19 @@ var SFInfo = [for (sfm, index) in SFMInfo: {
   match: (Global.CN == '.') || contains(array(Global.CN), sfm.name)
 }]
 
-module SFM 'SFM-Clusters.bicep' = [for (sfm, index) in SFMInfo: if (SFInfo[index].match) {
+module SFM 'SFM-Cluster.bicep' = [for (sfm, index) in SFMInfo: if (SFInfo[index].match) {
   name: 'dp${Deployment}-SFM-${sfm.name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
     sfmInfo: sfm
     Global: Global
-    DeploymentID: Deployment
+    DeploymentID: DeploymentID
     Environment: Environment
     Prefix: Prefix
     vmAdminPassword: KV.getSecret('localadmin')
-    devOpsPat: KV.getSecret('devOpsPat')
-    sshPublic: KV.getSecret('sshPublic')
+    // devOpsPat: KV.getSecret('devOpsPat')
+    // sshPublic: KV.getSecret('sshPublic')
   }
 }]
+

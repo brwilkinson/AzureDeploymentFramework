@@ -24,8 +24,15 @@ param Environment string = 'D'
   '7'
   '8'
   '9'
+  '10'
+  '11'
+  '12'
+  '13'
+  '14'
+  '15'
+  '16'
 ])
-param DeploymentID string = '1'
+param DeploymentID string
 #disable-next-line no-unused-params
 param Stage object
 #disable-next-line no-unused-params
@@ -55,23 +62,31 @@ module PublicIP 'x.publicIP.bicep' = if(contains(bst,'name')) {
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
-    NICs: array(bst)
+    NICs: [
+      {
+        PublicIP: 'Static'
+      }
+    ]
     VM: bst
     PIPprefix: 'bst'
     Global: Global
+    Prefix: Prefix
   }
 }
 
-resource Bastion 'Microsoft.Network/bastionHosts@2021-05-01' = if(contains(bst,'name')) {
+resource Bastion 'Microsoft.Network/bastionHosts@2021-08-01' = if(contains(bst,'name')) {
   name: '${Deployment}-bst${bst.name}'
   location: resourceGroup().location
   sku: {
-    name: contains(bst,'skuName') ? bst.skuName : 'Basic'
+    name: contains(bst,'skuName') ? bst.skuName : 'Standard'
   }
   properties: {
-    enableTunneling: contains(bst,'enableTunneling') ? bool(bst.enableTunneling) : false
     scaleUnits: contains(bst,'scaleUnits') ? bst.scaleUnits : 2
     dnsName: toLower('${Deployment}-${bst.name}.bastion.azure.com')
+    enableTunneling: contains(bst,'enableTunneling') ? bool(bst.enableTunneling) : false
+    // enableIpConnect: true
+    // enableFileCopy: true
+    // enableShareableLink: true
     ipConfigurations: [
       {
         name: 'IpConf'
