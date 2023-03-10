@@ -9,7 +9,7 @@ param (
 )
 
 $Artifacts = Get-Item -Path "$PSScriptRoot\.."
-Import-Module "$Artifacts\release-testing\ADOHelper.psm1" -Force -Verbose -PassThru
+Import-Module "$Artifacts\release-az\ADOHelper.psm1" -Force -Verbose -PassThru
 
 $Params = @{
     Environment = $Env
@@ -27,13 +27,13 @@ if ($DaysToExpire -lt 21)
     $Prefixes | ForEach-Object {
         $Prefix = $_
         $Global = Get-Global -Prefix $prefix -APP $App
-        # Requires ALT account on SAW
+        # If Requires Elevation in PIM
         # getpim -Resource "$Prefix-$($Global.Org)-$App-RG-$Env" -Role 'Key Vault Administrator' | setpim -duration PT15M
         # Start-Sleep -Seconds 240
-        # Not sure if ALT account will work.
-        # $new = New-PATToken
-        # $ss = ConvertTo-SecureString -String $new.token -AsPlainText -Force
-        # Set-AzKeyVaultSecret -VaultName $Global.KVName -Name DevOpsPat -SecretValue $ss -ContentType txt -Verbose
+
+        $new = New-PATToken
+        $ss = ConvertTo-SecureString -String $new.token -AsPlainText -Force
+        Set-AzKeyVaultSecret -VaultName $Global.KVName -Name DevOpsPat -SecretValue $ss -ContentType txt -Verbose
     }
 }
 else 

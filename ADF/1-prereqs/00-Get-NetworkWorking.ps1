@@ -1,4 +1,4 @@
-$all = Get-Content D:\Repos\scapim-adf\ADF\bicep\global\region.json | ConvertFrom-Json | Get-Member -MemberType NoteProperty | ForEach-Object Name
+$all = Get-Content D:\Repos\ADF\ADF\bicep\global\region.json | ConvertFrom-Json | Get-Member -MemberType NoteProperty | ForEach-Object Name
 $used = Import-Csv D:\Repos\scapim-ps\regionSummary\regionSummaryAll.csv | Group-Object Name | ForEach-Object Name
 $include = Compare-Object $all $used -IncludeEqual -ExcludeDifferent | ForEach-Object InputObject
 
@@ -8,7 +8,7 @@ $include | Measure-Object
 #> Compute these now.
 
 $NetworkLookup = @{}
-$prefix = Get-Content D:\Repos\scapim-adf\ADF\bicep\global\prefix.json | ConvertFrom-Json
+$prefix = Get-Content D:\Repos\ADF\ADF\bicep\global\prefix.json | ConvertFrom-Json
 
 $index = 0
 $prefix | Get-Member -MemberType NoteProperty | ForEach-Object {
@@ -30,4 +30,4 @@ $prefix | Get-Member -MemberType NoteProperty | ForEach-Object {
 }
 
 # this is a manual task, do not re-run to change the current list
-#$NetworkLookup | ConvertTo-Json | Set-Content -Path D:\Repos\scapim-adf\ADF\bicep\global\network.json
+#$NetworkLookup | ConvertTo-Json | Set-Content -Path D:\Repos\ADF\ADF\bicep\global\network.json

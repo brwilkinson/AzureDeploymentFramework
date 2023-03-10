@@ -28,7 +28,7 @@
 .EXAMPLE
     # load this function into memory
 
-        . D:\Repos\scapim-adf\ADF\1-prereqs\32.5-Rollback-ServiceFabricApplication.ps1
+        . D:\Repos\ADF\ADF\1-prereqs\32.5-Rollback-ServiceFabricApplication.ps1
 
     # start the rollback for an application in UAT
     

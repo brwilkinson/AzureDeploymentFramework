@@ -15,7 +15,7 @@ param (
 )
 
 $Artifacts = "$PSScriptRoot\.."
-Import-Module D:\Repos\scapim-adf\ADF\release-testing\ADOHelper.psm1 -Force
+Import-Module D:\Repos\ADF\ADF\release-az\ADOHelper.psm1 -Force
 $Global = Get-Global -Prefix $Prefix -APP $App
 $OrgName = $Global.Org
 $ProjectWeb = $Global.ADOProjectWeb

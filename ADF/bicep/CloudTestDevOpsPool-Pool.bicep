@@ -147,7 +147,7 @@ resource name_resource 'Microsoft.CloudTest/hostedpools@2020-05-07' = {
         },
         "projects": {
             "value": [
-                "Supply Chain Staging"
+                "ADF"
             ]
         },
         "vmProvider": {
@@ -202,7 +202,7 @@ resource name_resource 'Microsoft.CloudTest/hostedpools@2020-05-07' = {
             }
         },
         "organization": {
-            "value": "https://dev.azure.com/microsoftit"
+            "value": "https://dev.azure.com/AzureDeploymentFramework"
         }
     }
 }

@@ -10,7 +10,7 @@ param (
 )
 
 $Artifacts = Get-Item -Path "$PSScriptRoot\.."
-Import-Module "$Artifacts\release-testing\ADOHelper.psm1" -Force -Verbose -PassThru
+Import-Module "$Artifacts\release-az\ADOHelper.psm1" -Force -Verbose -PassThru
 
 $Params = @{
     Environment = $Env
