@@ -14,7 +14,7 @@ $App = $ResourceGroupName.split('-')[1]
 
 
 $clientid = '63f32ebc-cd2d-4d84-90ff-cd91946c6443'
-$PoolName = 'AZC1-BRW-ABC-S1-wvdhp01'
+$PoolName = 'AZC1-PE-ABC-S1-wvdhp01'
 
 # -------- MSI lookup for WVD host pools
 $WebRequest = @{

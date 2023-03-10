@@ -1,7 +1,7 @@
 $projectPath = 'D:\repos\ADF'
 $TemplatesBase = "$projectPath\ADF\templates-deploy","$projectPath\ADF\templates-base", "$projectPath\ADF\templates-nested"
 $ParamPath = 'D:\repos\AzureDeploymentFramework\ADF\tenants\ABC\azuredeploy.1.AZC1.S1.parameters.json'
-$GlobalRG = 'ACU1-BRW-AOA-RG-G1'
+$GlobalRG = 'ACU1-PE-AOA-RG-G1'
 $SpecRegion = 'centralus'
 $SpecVersion = '1.0a'
 $ForceUpdate = $true
@@ -24,7 +24,7 @@ break
 
 New-AzResourceGroupDeployment `
     -TemplateSpecId ($Spec.Id + '/versions/' + $SpecVersion) `
-    -ResourceGroupName AZC1-BRW-ABC-RG-S1 `
+    -ResourceGroupName AZC1-PE-ABC-RG-S1 `
     -TemplateParameterFile $ParamPath
 
 
@@ -35,5 +35,5 @@ $Spec = Get-AzTemplateSpec -ResourceGroupName $GlobalRG -Name foo -EA SilentlyCo
 
 New-AzResourceGroupDeployment -Name foo `
     -TemplateSpecId ($Spec.Id + '/versions/' + $SpecVersion) `
-    -ResourceGroupName AZC1-BRW-ABC-RG-S1 -TemplateParameterObject @{storageAccountType ="Standard_LRS"}
+    -ResourceGroupName AZC1-PE-ABC-RG-S1 -TemplateParameterObject @{storageAccountType ="Standard_LRS"}
 

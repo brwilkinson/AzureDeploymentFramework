@@ -1,5 +1,5 @@
 param (
-    [string]$VaultName = 'ACU1-BRW-AOA-T5-kvData2',
+    [string]$VaultName = 'ACU1-PE-AOA-T5-kvData2',
     
     [string]$AccountName = 'acu1brwaoat5sadata2',
     

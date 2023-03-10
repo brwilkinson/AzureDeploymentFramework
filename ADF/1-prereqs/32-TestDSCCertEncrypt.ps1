@@ -4,7 +4,7 @@ mkdir $DSCPath -ea 0
 Set-Location -Path $DSCPath
 $AAAccount = @{
     AutomationAccountName = 'acu1brwbotd1OMSAutomation'
-    ResourceGroupName     = 'ACU1-BRW-BOT-RG-D1'
+    ResourceGroupName     = 'ACU1-PE-BOT-RG-D1'
 }
 $ConfigName = 'Encrypted'
 

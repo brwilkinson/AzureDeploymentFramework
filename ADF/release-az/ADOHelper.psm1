@@ -37,10 +37,10 @@ function Connect-FromAzToGraph
 function Get-KVCertificateBase64
 {
     param (
-        [validateset('ACU1-BRW-HUB-P0-kvVLT01', 'AEU2-BRW-HUB-P0-kvVLT01', 'ACU1-BRW-AOA-P0-kvVLT01', 'AEU1-BRW-AOA-P0-kvVLT01', 'AWCU-BRW-AOA-P0-kvVLT01')]
-        [String]$KVName = 'ACU1-BRW-AOA-P0-kvVLT01',
+        [validateset('ACU1-PE-HUB-P0-kvVLT01', 'AEU2-PE-HUB-P0-kvVLT01', 'ACU1-PE-AOA-P0-kvVLT01', 'AEU1-PE-AOA-P0-kvVLT01', 'AWCU-PE-AOA-P0-kvVLT01')]
+        [String]$KVName = 'ACU1-PE-AOA-P0-kvVLT01',
         
-        [String]$CertificateName = 'acu1-brw-pst-d1-sfm01'
+        [String]$CertificateName = 'acu1-pe-pst-d1-sfm01'
     )
 
     try
@@ -104,10 +104,10 @@ function Get-Global
 function Get-SFMKVCertificateInformation
 {
     param (
-        [validateset('ACU1-BRW-HUB-P0-kvVLT01', 'AEU2-BRW-HUB-P0-kvVLT01', 'ACU1-BRW-AOA-P0-kvVLT01', 'AEU1-BRW-AOA-P0-kvVLT01', 'AWCU-BRW-AOA-P0-kvVLT01')]
-        [String]$KVName = 'ACU1-BRW-AOA-P0-kvVLT01',
+        [validateset('ACU1-PE-HUB-P0-kvVLT01', 'AEU2-PE-HUB-P0-kvVLT01', 'ACU1-PE-AOA-P0-kvVLT01', 'AEU1-PE-AOA-P0-kvVLT01', 'AWCU-PE-AOA-P0-kvVLT01')]
+        [String]$KVName = 'ACU1-PE-AOA-P0-kvVLT01',
         
-        [String]$CertificateName = 'acu1-brw-pst-d1-sfm01'
+        [String]$CertificateName = 'acu1-pe-pst-d1-sfm01'
     )
     
     $Cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::New(
@@ -130,7 +130,7 @@ function Get-SFMKVCertificateInformation
 function Get-PATToken
 {
     param (
-        [validateset('ACU1-BRW-HUB-P0-kvVLT01', 'AEU2-BRW-HUB-P0-kvVLT01', 'ACU1-BRW-AOA-P0-kvVLT01', 'AEU1-BRW-AOA-P0-kvVLT01', 'AWCU-BRW-AOA-P0-kvVLT01')]
+        [validateset('ACU1-PE-HUB-P0-kvVLT01', 'AEU2-PE-HUB-P0-kvVLT01', 'ACU1-PE-AOA-P0-kvVLT01', 'AEU1-PE-AOA-P0-kvVLT01', 'AWCU-PE-AOA-P0-kvVLT01')]
         [String]$KVName,
 
         [String]$SecretName = 'DevOpsPAT'
@@ -226,8 +226,8 @@ function Get-PATTokenCurrent
 function Get-ADOServiceConnection
 {
     param (
-        [String]$ConnectionName = 'ADO_AzureDeploymentFramework_ACU1-BRW-SFM-RG-D1',
-        # [String]$KVName = 'ACU1-BRW-HUB-P0-kvVLT01',
+        [String]$ConnectionName = 'ADO_AzureDeploymentFramework_ACU1-PE-SFM-RG-D1',
+        # [String]$KVName = 'ACU1-PE-HUB-P0-kvVLT01',
         [String]$AZDevOpsOrg = 'AzureDeploymentFramework',
         [String]$ADOProject = 'ADF'
     )
@@ -257,7 +257,7 @@ function Get-ADOServiceConnection
 function Set-ADOServiceConnection
 {
     param (
-        # [String]$KVName = 'ACU1-BRW-HUB-P0-kvVLT01',
+        # [String]$KVName = 'ACU1-PE-HUB-P0-kvVLT01',
         [String]$AZDevOpsOrg = 'AzureDeploymentFramework',
         [Hashtable]$Endpoint
     )

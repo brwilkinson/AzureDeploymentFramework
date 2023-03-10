@@ -1,0 +1,830 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "AEU2"
+    },
+    "Environment": {
+      "value": "P"
+    },
+    "DeploymentID": {
+      "value": "8"
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "PIM": 1,
+        "UAI": 1,
+        "SP": 1,
+        "KV": 1,
+        "OMS": 1,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
+        "OMSUpdateWeekly": 0,
+        "OMSUpdateMonthly": 0,
+        "OMSUpates": 1,
+        "SA": 1,
+        "CDN": 0,
+        "StorageSync": 0,
+        "RSV": 0,
+        "NSG": 1,
+        "NetworkWatcher": 0,
+        "FlowLogs": 0,
+        "VNet": 1, // now enabled requires "Network Contributor" to be set on the SFM RG via "SPInfo".
+        "VNetDDOS": 0,
+        "VNetPeering": 0,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 0,
+        "BastionHost": 1,
+        "CloudShellRelay": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "NATGW": 1,
+        "ERGW": 0,
+        "LB": 1,
+        "TM": 0,
+        "WAFPOLICY": 0,
+        "WAF": 0,
+        "FRONTDOORPOLICY": 0,
+        "FRONTDOOR": 0,
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 0,
+        "APPCONFIG": 1,
+        "REDIS": 0,
+        "APIM": 0,
+        "ACR": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "ManagedEnv": 0,
+        "ContainerApp": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "LT": 0,
+        "AzureSYN": 0,
+        // below require secrets from KV
+        "VMSS": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "AzureSQL": 0,
+        "SFM": 1,
+        "SFMNP": 1,
+        // VM templates
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 1,
+        "AdminCenter": 1,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 1,
+        "GuestConfig": 1,
+        "Scripts": 1,
+        "MSI": 1,
+        "CertMgmt": 0,
+        "DomainJoin": 1,
+        "AADLogin": 0,
+        "WindowsOpenSSH": 0,
+        "Antimalware": 1,
+        "VMSSAzureADEnabled": 0,
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "SFMCluster",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Storage Blob Data Reader",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HUB"
+              }
+            ]
+          },
+          {
+            "Name": "CertificateRequest",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "HUB"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "SimonAdams",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              },
+              {
+                "Name": "SCE_SF_App_Contributor"
+              },
+              // Below does not work on the first deploy since the RG has not been created
+              {
+                "Name": "Reader",
+                "RGNAME": "SFC_610b586d-c5c3-403b-9a09-355ec9a82b89"
+              }
+            ]
+          },
+          {
+            "Name": "AzureKeyVault",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "Name": "sec-scan-acr",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
+          {
+            "Name": "AzureServiceFabricResourceProvider",
+            "RBAC": [
+              {
+                "Name": "Network Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
+              }
+            ]
+          }
+        ],
+        "PIMInfo": [
+          {
+            "Name": "SimonAdams",
+            "RBAC": [
+              // Below does not work on the first deploy since the RG has not been created
+              {
+                "Name": "Virtual Machine Administrator Login",
+                "RGNAME": "SFC_610b586d-c5c3-403b-9a09-355ec9a82b89"
+              }
+            ]
+          },
+          {
+            "Name": "BenWilkinson",
+            "RBAC": [
+              // Below does not work on the first deploy since the RG has not been created
+              {
+                "Name": "Virtual Machine Administrator Login",
+                "RGNAME": "SFC_610b586d-c5c3-403b-9a09-355ec9a82b89"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}_SFM",
+            "RBAC": [
+              {
+                "Name": "SCE_SF_App_Contributor"
+              }
+            ]
+          },
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Network Contributor",
+                "RGNAME": "SFC_610b586d-c5c3-403b-9a09-355ec9a82b89"
+              },
+              // Above does not work on the first deploy since the RG has not been created
+              {
+                "Name": "Owner"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Storage Account Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Key Vault Contributor",
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "HUB"
+              }
+            ]
+          }
+        ],
+        "SubnetInfo": [ // 8 * /27 + 3 * /23
+          // {
+          //   "name": "snAD01",
+          //   "prefix": "0/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //    "NGW": 1
+          // },
+          // leave above open for DNS Resolver
+          // {
+          //   "name": "snFE02",
+          //   "prefix": "32/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //    "NGW": 1
+          // },
+          // {
+          //   "name": "snMT02",
+          //   "prefix": "64/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "delegations": "Microsoft.Web/serverfarms",
+          //    "NGW": 1
+          // },
+          // {
+          //   "name": "snMT03",
+          //   "prefix": "96/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "delegations": "Microsoft.ContainerInstance/containerGroups",
+          //    "NGW": 1
+          // },
+          // {
+          //   "name": "snAPIM01", // APIM Dedicated
+          //   "prefix": "128/27",
+          //   "NSG": 1,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //    "NGW": 1
+          // },
+          // {
+          //   "name": "snBE03",
+          //   "prefix": "160/27",
+          //   "NSG": 1,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //    "NGW": 1
+          // },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "192/26",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "NGW": 1
+          },
+          {
+            "name": "snWAF01", // WAF dedicated
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snFE01",
+            "prefix": "0/23",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "NGW": 1
+          },
+          {
+            "name": "snMT01",
+            "prefix": "0/23",
+            "NSG": 1, // Create blank NSG, SFM will remove and use it's own anyway. Comment out NSGID for intial environment deploy.
+            "NSGID": "/subscriptions/77196dc9-b5af-463b-b8de-f7e6232eae12/resourceGroups/SFC_610b586d-c5c3-403b-9a09-355ec9a82b89/providers/Microsoft.Network/networkSecurityGroups/SF-NSG",
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "NGW": 1
+          },
+          {
+            "name": "snBE01",
+            "prefix": "0/23",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "NGW": 1
+          }
+        ],
+        "NatGWInfo": [
+          {
+            "Name": "NAT01",
+            "PIPCount": 1
+          }
+        ],
+        "BastionInfo": {
+          "name": "HST01",
+          "enableTunneling": 1,
+          "scaleUnits": 2
+        },
+        "saInfo": [
+          {
+            "name": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "blob"
+              },
+              {
+                "Subnet": "snFE01",
+                "groupID": "file"
+              }
+            ],
+            "_rolesInfo": [
+              {
+                "Name": "SynapseDataContributor",
+                "Type": "UAI",
+                "RBAC": [
+                  {
+                    "Name": "Storage Blob Data Contributor"
+                  }
+                ]
+              }
+            ],
+            "_containers": [
+              {
+                "name": "vascans",
+                "_rolesInfo": [
+                  {
+                    "Name": "SynapseDataContributor",
+                    "Type": "UAI",
+                    "RBAC": [
+                      {
+                        "Name": "Storage Blob Data Contributor"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "App01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "UserAssignedIdentity": {
+              "name": "KeyVaultSecretsGetApp",
+              "permission": "SecretsGetAndList"
+            },
+            "allNetworks": 1,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ],
+            "_rolesInfo": [
+              {
+                "Name": "SimonAdams-ALT",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              },
+              {
+                "Name": "BenWilkinson-ALT",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "OMSSolutions": [
+          "AzureAutomation",
+          "ChangeTracking",
+          "AzureActivity",
+          "DnsAnalytics",
+          "AlertManagement",
+          "NetworkMonitoring",
+          "InfrastructureInsights",
+          "VMInsights",
+          "SecurityInsights",
+          // testing
+          "WindowsDefenderATP",
+          "KeyVaultAnalytics",
+          "BehaviorAnalyticsInsights",
+          "ServiceFabric"
+          // disabled
+          // "Updates",
+          // "AgentHealthAssessment",
+          // "ADAssessment",
+          // "ADReplication",
+          // "SQLAssessment",
+          // "AntiMalware",
+          // "AzureWebAppsAnalytics",
+          // "CapacityPerformance",
+          // "Containers",
+          // "ContainerInsights",
+          // "SQLAdvancedThreatProtection",
+          // "AzureSQLAnalytics",
+          // "AzureNSGAnalytics"
+        ],
+        "appConfigurationInfo": [
+          {
+            "name": "01",
+            "sku": "standard",
+            "publicNetworkAccess": 1
+          }
+        ],
+        "LBInfo": [
+          {
+            "Name": "SFM",
+            "Sku": "Standard",
+            "Type": "Private",
+            "BackEnd": [
+              "SF"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "SF",
+                "Subnet": "snMT01",
+                "LBFEIP": "250"
+              }
+            ],
+            "NATPools": [
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443
+              // }
+            ],
+            "Services": [
+              {
+                "LBFEName": "SF",
+                "LBBEName": "SF",
+                "RuleName": "SF-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              }
+              // {
+              //   "LBFEName": "API",
+              //   "LBBEName": "API",
+              //   "RuleName": "API-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
+            ]
+          },
+          {
+            "Name": "BE",
+            "Sku": "Standard",
+            "Type": "Private",
+            "BackEnd": [
+              "SF"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "SF",
+                "Subnet": "snMT01",
+                "LBFEIP": "249"
+              }
+            ],
+            "NATPools": [
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
+            ],
+            "Probes": [
+              {
+                "ProbeName": "HTTP",
+                "LBBEProbePort": 80
+              }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443
+              // }
+            ],
+            "Services": [
+              {
+                "LBFEName": "SF",
+                "LBBEName": "SF",
+                "RuleName": "SF-HTTP",
+                "LBFEPort": 80,
+                "LBBEPort": 80,
+                "ProbeName": "HTTP",
+                "DirectReturn": false
+              }
+              // {
+              //   "LBFEName": "API",
+              //   "LBBEName": "API",
+              //   "RuleName": "API-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
+            ]
+          }
+        ],
+        "SFMInfo": [
+          {
+            "name": "01",
+            "skuName": "Standard",
+            "connectionPort": 29000,
+            "gatewayPort": 29080,
+            "allowRDP": false,
+            "subnetName": "snMT01",
+            "appConfName": "01",
+            "nodeTypes": [
+              {
+                "name": "SFM",
+                "OSType": "Server2019gs",
+                "role": "SFM",
+                "isPrimary": 1,
+                "capacity": 6,
+                "placementProperties": {
+                  "OSType": "Server2019gs",
+                  "Type": "FE-Node"
+                },
+                "LB": {
+                  "Name": "SFM",
+                  "BE": "SF"
+                }
+              },
+              {
+                "name": "BE",
+                "OSType": "Server2019gs",
+                "role": "SFM",
+                "isPrimary": 0,
+                "capacity": 3,
+                "placementProperties": {
+                  "OSType": "Server2019gs",
+                  "Type": "BE-Node"
+                },
+                "LB": {
+                  "Name": "BE",
+                  "BE": "SF"
+                }
+              }
+            ],
+            "PrimaryNodeLBPorts": [
+              {
+                "port": "20003"
+              },
+              {
+                "port": "20004"
+              },
+              {
+                "port": "20005"
+              },
+              {
+                "port": "20006"
+              },
+              {
+                "port": "20007"
+              },
+              {
+                "port": "20010"
+              },
+              {
+                "port": "20011"
+              },
+              {
+                "port": "20012"
+              },
+              {
+                "port": "20013"
+              },
+              {
+                "port": "20014"
+              },
+              {
+                "port": "20015"
+              },
+              {
+                "port": "20016"
+              },
+              {
+                "port": "20017"
+              },
+              {
+                "port": "20018"
+              },
+              {
+                "port": "20020"
+              },
+              {
+                "port": "20021"
+              },
+              {
+                "port": "20022"
+              },
+              {
+                "port": "20023"
+              },
+              {
+                "port": "20024"
+              },
+              {
+                "port": "20025"
+              },
+              {
+                "port": "20026"
+              },
+              {
+                "port": "20028"
+              },
+              {
+                "port": "20029"
+              },
+              {
+                "port": "20035"
+              },
+              {
+                "port": "20036"
+              },
+              {
+                "port": "20037"
+              },
+              {
+                "port": "20038"
+              },
+              {
+                "port": "20043"
+              },
+              {
+                "port": "20044"
+              },
+              {
+                "port": "20045"
+              },
+              {
+                "port": "20046"
+              },
+              {
+                "port": "20049"
+              },
+              {
+                "port": "20051"
+              },
+              {
+                "port": "20053"
+              },
+              {
+                "port": "20063"
+              },
+              {
+                "port": "20065"
+              },
+              {
+                "port": "20067"
+              },
+              {
+                "port": "20068"
+              },
+              {
+                "port": "20070"
+              },
+              {
+                "port": "20071"
+              },
+              {
+                "port": "20072"
+              },
+              {
+                "port": "20080"
+              },
+              {
+                "port": "20084"
+              },
+              {
+                "port": "20085"
+              },
+              {
+                "port": "20088"
+              },
+              {
+                "port": "20089"
+              },
+              {
+                "port": "20090"
+              },
+              {
+                "port": "20091"
+              },
+              {
+                "port": "20092"
+              },
+              {
+                "port": "20093"
+              },
+              {
+                "port": "20094"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

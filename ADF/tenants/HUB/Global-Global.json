@@ -1,48 +1,82 @@
 {
   "Global": {
-    "_hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5",
-    "OrgName": "BRW",
+    "OrgName": "PE",
     "AppName": "HUB",
-    "SAName": "azc1brwhubg1saglobal",
-    "GlobalRGName": "AZC1-BRW-HUB-RG-G1",
+    "GlobalSA": {
+      "name": "global"
+    },
+    "GlobalRG": {
+      "name": "G1"
+    },
+    "AppId": 0,
+    "Network": {
+      "first": 10,
+      "second": 248,
+      "third": 248
+    },
     "PrimaryLocation": "CentralUS",
-    "PrimaryPrefix": "AZC1",
     "SecondaryLocation": "EastUS2",
-    "SecondaryPrefix": "AZE2",
-    "_IPAddressforRemoteAccess": [ // moved these to keyvault, remove "_" to use here
-      "73.157.100.227/32"
+    "IPAddressforRemoteAccess": [
+      "67.160.127.18/32"
     ],
     "vmAdminUserName": "brw",
-    "DomainName": "psthing.com",
-    "DomainNameExt": "psthing.com",
-    "CertThumbprint": "48B8F2B8C7DE8115804B74D8CBB4488C53492E5F",
-    "CertURLs": [
-      "*.contoso.com",
-      "*.psthing.com"
+    "sqlCredentialName": "sqladmin",
+    "MicrosoftCAThumbprints": [
+      "2f2877c5d778c31e0f29c7e371df5471bd673173",
+      "30e01761ab97e59a06b41ef20af6f2de7ef4f7b0",
+      "6c3af02e7f269aa73afd0eff2a88a4a1f04ed1e5",
+      "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
     ],
-    "GHProject": "ADF",
-    "ADOProject": "eshopondapr3",
+    "ADDomainName": "sceplatform.microsoft.com",
+    "DomainName": "sceplatform.microsoft.com",
+    "DomainNameExt": "supplychain.microsoft.com",
+    "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtRG": "ACU1-PE-AOA-RG-G1",
+    "ADOProject": "ADF",
+    "AZDevOpsOrg": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [
-      "benwilk@microsoft.com"
+      "BenWilkinson-ALT",
+      "SimonAdams-ALT",
+      "BrianWalker-ALT"
     ],
-    "apimPublisherEmail": "alerts@contoso.com",
+    "apimPublisherEmail": "benwilk@microsoft.com",
     "alertRecipients": [
-      "alerts@contoso.com"
+      "benwilk@microsoft.com",
+      "sibgeorg@microsoft.com"
     ],
     "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
     "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
-    "sqlCredentialName": "localadmin",
     "ObjectIdLookup": {
-      "benwilk@Microsoft.com": "b8214ecb-d982-402b-8185-ca909b853eec",
-      "ADF_AZC1-PSO-RG-P0": "04ae85ef-f1d2-45fe-88ca-5dd117af3102",
-      "ADF_AZC1-PSO-RG-S1": "a9a66686-b439-487e-878d-d96707ac5fbf",
-      "AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0": "4ec53643-12a7-4f96-8597-af1b1faf9020",
-      "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G1": "78ef3c2e-c2a3-4a18-a486-fd7b4d362d68",
-      "AzureDeploymentFramework_AZC1-BRW-HUB-RG-D2": "d13ce50e-bc18-460e-95be-49363dd20be5",
-      "AzureDeploymentFramework_AZC1-BRW-HUB-RG-S1": "a8038a37-5ff3-49fe-ae52-0255f2b39262",
-      "AzureDeploymentFramework_AZE2-BRW-HUB-RG-P0": "a26e8fa5-48a6-4ada-88f9-d148f0a4eca3",
-      "AzureDeploymentFramework_AZE2-BRW-HUB-RG-S1": "8d97df5b-6fca-42be-a12e-0b39270da321",
-      "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0": "891b3425-2c8e-4756-9111-c50d1244e6e5"
+      "BenWilkinson": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "BenWilkinson-ALT": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
+      "SimonAdams": "a54933b9-b921-4842-abbe-342416767d97",
+      "SimonAdams-ALT": "3fc273e5-f8f1-4d44-a950-3c3913643fc1",
+      "BrianWalker": "8e667bcd-b22b-4f39-a35f-ec4a27e4fcd6",
+      "BrianWalker-ALT": "8658da0d-84d9-4580-ba05-6c905b68b670",
+      "CathyEvans": "0ae1653d-3712-43dc-b9d2-f02f3ee6a2a1",
+      "CathyEvans-ALT": "bb07ad08-b8d9-41f4-b6c2-4783cd826977",
+      "SushmitaDas": "2a7c9ff0-5318-4c35-bf69-cd3ea51aa53f",
+      "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
+      "AKS_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
+      "Microsoft.AzureFrontDoor-Cdn": "4dbab725-22a4-44d5-ad44-c267ca38a954",
+      "Microsoft.Azure.CertificateRegistration": "ed47c2a1-bd23-4341-b39c-f4fd69138dd3",
+      "MicrosoftAzureAppService": "f8daea97-62e7-4026-becf-13c2ea98e8b4",
+      "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
+      "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
+      "SCE_PEF_SEC_DEV": "93964b9a-518a-4408-909f-87d5f821ff3e",
+      "SCE_PEF_SEC": "8bd51676-7936-448c-9339-5364777937d2",
+      "DataMapAgent001": "8d9606ff-585b-421a-afee-188d2497c7c7",
+      "DataMapAgentBlueshift001": "e393dddc-7d32-4c92-8619-23578f8de85d",
+      "SCE-Services-MI-SCEventService-PPE": "541a81d7-cc6a-4336-94be-48071a89cbee",
+      "SCE-Services-MI-SCEventService-PRD": "84f2ea4d-aa17-4f80-bd9c-fe77f9551602",
+      "AzureServiceFabricResourceProvider": "fbc587f2-66f5-4459-a027-bcd908b9d278",
+      "ADO_BRW_ACU1-SCE-HUB-RG-G0": "f9a70417-b338-4b48-bed9-240d80c1af2b",
+      "ADO_BRW_ACU1-SCE-HUB-RG-G1": "dbe84c36-8951-44b1-8fcd-d15647b12853",
+      "ADO_BRW_ACU1-SCE-HUB-RG-P0": "07dbc30d-57c2-4526-afac-9af36a800fe0",
+      "ADO_BRW_AEU2-SCE-HUB-RG-P0": "00287aaa-f9f3-4714-99ce-6790a576059e",
+      "ADO_BRW_AEU1-SCE-HUB-RG-P0": "e5bee9ee-ce9e-49fc-92b6-6c23ba0a3f25"
     }
   }
 }

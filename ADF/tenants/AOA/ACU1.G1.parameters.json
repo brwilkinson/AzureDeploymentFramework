@@ -15,14 +15,17 @@
       "value": {
         "RG": 1,
         "RBAC": 1,
+        "PIM": 0,
         "UAI": 1,
         "SP": 1,
         "KV": 0,
+        "DDOSPlan": 0,
         "OMS": 1,
         "OMSSolutions": 0,
         "OMSDataSources": 0,
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
+        "OMSUpates": 1,
         "SA": 1,
         "CDN": 0,
         "StorageSync": 0,
@@ -31,38 +34,33 @@
         "NetworkWatcher": 0,
         "FlowLogs": 0,
         "VNet": 0,
+        "VNetDDOS": 0,
         "VNetPeering": 0,
         "DNSPublicZone": 1,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 0,
         "BastionHost": 0,
+        "OICluster": 0,
+        "OIWorkspace": 0,
+        "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
         "NATGW": 0,
         "ERGW": 0,
-        "ADPrimary": 0,
-        "ADSecondary": 0,
         "LB": 0,
-        "PLB": 0,
-        "InitialDOP": 0,
-        "VMApp": 0,
-        "VMAppLinux": 0,
-        "VMSQL": 0,
-        "VMFILE": 0,
-        "VMSS": 0,
+        "TM": 0,
         "WAFPOLICY": 0,
-        "FRONTDOOR": 0,
         "WAF": 0,
+        "FRONTDOORPOLICY": 0,
+        "FRONTDOOR": 0,
         "SetExternalDNS": 0,
         "SetInternalDNS": 1,
         "APPCONFIG": 0,
         "REDIS": 0,
         "APIM": 0,
         "ACR": 0,
-        "ACI": 0,
-        "AKS": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 0,
@@ -74,8 +72,23 @@
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,
+        "LT": 0,
         "AzureSYN": 0,
-        "AzureSQL": 0
+        // below require secrets from KV
+        "VMSS": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "AzureSQL": 0,
+        "SFM": 0,
+        "SFMNP": 0,
+        // VM templates
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0
       }
     },
     "Extensions": {
@@ -114,12 +127,23 @@
                 "Prefix": "ACU1"
               }
             ]
+          },
+          {
+            "Name": "CertificatePolicy",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+            ]
           }
         ],
         "rolesInfo": [
           {
-            "Name": "BW",
+            "Name": "BenWilkinson",
             "RBAC": [
+              {
+                "Name": "Contributor"
+              },
               {
                 "Name": "Key Vault Administrator"
               }
@@ -139,7 +163,16 @@
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
-                "Name": "Contributor"
+                "Name": "CSEO DevOps Role"
+              },
+              {
+                "Name": "DeploymentScripts_Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
+              },
+              {
+                "Name": "Monitoring Contributor"
               },
               {
                 "Name": "Reader and Data Access",
@@ -172,12 +205,12 @@
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "P0"
-              },
-              {
-                "Name": "DNS Zone Contributor",
-                "RG": "P0",
-                "PREFIX": "AEU2"
               }
+              // {
+              //   "Name": "DNS Zone Contributor",
+              //   "RG": "P0",
+              //   "PREFIX": "AEU2"
+              // }
             ]
           }
         ],
@@ -195,6 +228,32 @@
           {
             "Name": "01",
             "description": "my image gallery"
+          }
+        ],
+        "OIClusterInfo": [
+          {
+            "Name": "Global01",
+            "capacity": 500
+          }
+        ],
+        "OIWorkspaceInfo": [
+          {
+            "Name": "Global01",
+            "clustername": "Global01"
+          }
+        ],
+        "AIWorkspaceInfo": [
+          {
+            "Name": "Test01",
+            "OIWorkspace": "Global01"
+          },
+          {
+            "Name": "Test02",
+            "OIWorkspace": "Global01"
+          },
+          {
+            "Name": "Test03",
+            "OIWorkspace": "Global01"
           }
         ],
         "ImageInfo": [
@@ -220,11 +279,21 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": 1,
+            "allNetworks": 0,
             "_PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "vault"
+              }
+            ],
+            "CertIssuerInfo": [
+              {
+                "name": "DigiCert",
+                "provider": "DigiCert"
+              },
+              {
+                "name": "GlobalSign",
+                "provider": "GlobalSign"
               }
             ]
           }
@@ -254,7 +323,7 @@
           "vote.psthing.com",
           "vote2.psthing.com"
         ],
-        "AppServiceCertRequestInfo" : [
+        "AppServiceCertRequestInfo": [
           {
             "name": "PSTHING-Wildcard",
             "domainName": "psthing.com",
@@ -266,4 +335,3 @@
     }
   }
 }
-

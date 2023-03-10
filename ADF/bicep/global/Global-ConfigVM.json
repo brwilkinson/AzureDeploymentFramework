@@ -194,7 +194,7 @@
   "OSType": {
     "Server2022SSIMG": {
       "imageReference": {
-        "id": "/subscriptions/{subscriptionguid}/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2022"
+        "id": "/subscriptions/{subscriptionguid}/resourceGroups/ACU1-PE-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2022"
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",
@@ -206,7 +206,7 @@
     },
     "Server2019SSIMG": {
       "imageReference": {
-        "id": "/subscriptions/{subscriptionguid}/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore27"
+        "id": "/subscriptions/{subscriptionguid}/resourceGroups/ACU1-PE-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore27"
       },
       "licenseType": "Windows_Server",
       "OS": "Windows",

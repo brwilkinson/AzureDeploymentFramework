@@ -43,8 +43,8 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
 }
 
 resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-  name: 'AWU2-BRW-AOA-P0-kvVLT01' //HubKVName
-  scope: resourceGroup('AWU2-BRW-AOA-RG-P0') //resourceGroup(HubKVRGName)
+  name: 'AWU2-PE-AOA-P0-kvVLT01' //HubKVName
+  scope: resourceGroup('AWU2-PE-AOA-RG-P0') //resourceGroup(HubKVRGName)
 }
 
 var userAssignedIdentities = {

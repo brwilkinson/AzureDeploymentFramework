@@ -9,12 +9,12 @@
 .DESCRIPTION
     Create Azure AD Service Principal used for APIM and App Service.
 .EXAMPLE
-    . .\Scripts\Create-GhActionsSecret.ps1 -rgName ACU1-BRW-HAA-RG-G1 -RoleName 'Storage Blob Data Contributor'
+    . .\Scripts\Create-GhActionsSecret.ps1 -rgName ACU1-PE-HAA-RG-G1 -RoleName 'Storage Blob Data Contributor'
 
 #>
 
 param (
-    # [string]$rgName = 'ACU1-BRW-HAA-RG-G1',
+    # [string]$rgName = 'ACU1-PE-HAA-RG-G1',
     # [string]$RoleName = 'Storage Blob Data Contributor',
     # [int]$SecretExpiryYears = 5
 )

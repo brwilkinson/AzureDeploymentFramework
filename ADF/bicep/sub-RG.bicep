@@ -40,8 +40,8 @@ param Global object
 param DeploymentInfo object
 
 var enviro = '${Environment}${DeploymentID}' // D1
-var deployment = '${Prefix}-${Global.orgname}-${Global.AppName}-${enviro}' // AZE2-BRW-HUB-D1
-var rg = '${Prefix}-${Global.orgname}-${Global.AppName}-RG-${enviro}' // AZE2-BRW-HUB-D1
+var deployment = '${Prefix}-${Global.orgname}-${Global.AppName}-${enviro}' // AZE2-PE-HUB-D1
+var rg = '${Prefix}-${Global.orgname}-${Global.AppName}-RG-${enviro}' // AZE2-PE-HUB-D1
 
 targetScope = 'subscription'
 

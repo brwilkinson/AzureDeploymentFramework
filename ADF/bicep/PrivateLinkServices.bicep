@@ -59,8 +59,8 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 
 var wafinfo = {
   name: 'AGIC02'
-  plRG: 'ACU1-BRW-AOA-RG-T5'
-  // plDeployment: 'ACU1-BRW-AOA-T5'
+  plRG: 'ACU1-PE-AOA-RG-T5'
+  // plDeployment: 'ACU1-PE-AOA-T5'
   // plDeploymentURI: 'acu1brwaoat5'
   privateLinkInfo: [
     {
@@ -71,7 +71,7 @@ var wafinfo = {
 }
 
 resource WAF 'Microsoft.Network/applicationGateways@2021-05-01' existing = {
-  name: 'ACU1-BRW-AOA-T5-wafAGIC02'
+  name: 'ACU1-PE-AOA-T5-wafAGIC02'
   scope: resourceGroup(wafinfo.plRG)
 }
 

@@ -1,10 +1,10 @@
 ###
-GET https://awcu-brw-pst-d3-apim01.psthing.com/devicecare/ HTTP/1.1
+GET https://awcu-pe-pst-d3-apim01.psthing.com/devicecare/ HTTP/1.1
 Ocp-Apim-Subscription-Key: {{subkey}}
 Ocp-Apim-Trace: true
 
 ###
-GET http://awcu-brw-pst-d3-apim01.psthing.com/echo/resource?param1=sample HTTP/1.1
+GET http://awcu-pe-pst-d3-apim01.psthing.com/echo/resource?param1=sample HTTP/1.1
 Ocp-Apim-Subscription-Key: {{subkey}}
 Ocp-Apim-Trace: true
 

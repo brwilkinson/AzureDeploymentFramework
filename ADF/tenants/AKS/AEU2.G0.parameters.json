@@ -1,0 +1,69 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "AEU2"
+    },
+    "Environment": {
+      "value": "G"
+    },
+    "DeploymentID": {
+      "value": "0"
+    },
+    "Stage": {
+      "value": {
+        "RoleDefinition": 1,
+        "Security": 0,
+        "RBAC": 0,
+        "PIM": 0,
+        "SP": 0
+      }
+    },
+    "Extensions": {
+      "value": {}
+    },
+    "DeploymentInfo": {
+      "value": {
+        "rolesInfo": [],
+        "PIMInfo": [],
+        // Manually add Owner on this service principal
+        "SPInfo": [],
+        // "SecurityPricingInfo": {
+        //   "Standard": [
+        //     "VirtualMachines",
+        //     "SqlServers",
+        //     "AppServices",
+        //     "StorageAccounts",
+        //     "SqlServerVirtualMachines",
+        //     "KeyVaults",
+        //     "Dns",
+        //     "Arm",
+        //     "Containers",
+        //     "OpenSourceRelationalDatabases",
+        //     "CosmosDbs"
+        //   ],
+        //   "Free": [
+        //     "KubernetesService",
+        //     "ContainerRegistry",
+        //     "CloudPosture"
+        //   ]
+        // },
+        "RoleDefinitionsInfo": [
+          {
+            "RoleName": "SCE_AKS_Contributor",
+            "description": "Allow actions not in DevOps Role",
+            "notActions": [],
+            "actions": [
+              "Microsoft.Resources/deploymentScripts/*",
+              "Microsoft.ContainerInstance/containerGroups/*",
+              "Microsoft.CloudTest/accounts/*",
+              "Microsoft.CloudTest/images/*",
+              "Microsoft.CloudTest/hostedpools/*"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

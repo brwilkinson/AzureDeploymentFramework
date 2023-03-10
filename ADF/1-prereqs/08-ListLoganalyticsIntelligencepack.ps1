@@ -1,4 +1,4 @@
-Get-AzOperationalInsightsIntelligencePack -ResourceGroupName ACU1-BRW-AOA-RG-T5 -WorkspaceName acu1brwaoat5LogAnalytics
+Get-AzOperationalInsightsIntelligencePack -ResourceGroupName ACU1-PE-AOA-RG-T5 -WorkspaceName acu1brwaoat5LogAnalytics
 
 <#
 

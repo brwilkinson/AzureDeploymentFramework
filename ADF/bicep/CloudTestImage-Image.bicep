@@ -91,7 +91,7 @@ resource imageContainer 'Microsoft.CloudTest/images@2020-05-07' = if( ctimage.im
     "contentVersion": "1.0.0.0",
     "parameters": {
         "name": {
-            "value": "acu1-brw-aoa-rg-p0-ubuntu"
+            "value": "acu1-pe-aoa-rg-p0-ubuntu"
         },
         "location": {
             "value": "centralus"

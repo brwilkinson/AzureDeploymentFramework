@@ -1,0 +1,20 @@
+{
+  "Global": {
+    "hubRG": {
+      "name": "P0"
+      // "Prefix": "ACU1"
+    },
+    "hubKV": {
+      "name": "VLT01"
+      // "Prefix": "ACU1"
+    },
+    "hubAA": { // Used for DSC State Configuration
+      "name": "OMSAutomation"
+    },
+    "DNSServers": [],
+    "RTName": "Hub",
+    "shutdownSchedulerTimeZone": "Pacific Standard Time",
+    "patchSchedulerTimeZone": "America/Los_Angeles",
+    "AppInsightsRegion": "westus2"
+  }
+}

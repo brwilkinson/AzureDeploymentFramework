@@ -1,0 +1,87 @@
+{
+  "Global": {
+    "OrgName": "PE",
+    "AppName": "MON",
+    "GlobalSA": {
+      "name": "global"
+    },
+    "GlobalRG": {
+      "name": "G1"
+    },
+    "AppId": 2,
+    "Network": {
+      "first": 10,
+      "second": 248,
+      "third": 248
+    },
+    "PrimaryLocation": "CentralUS",
+    "SecondaryLocation": "EastUS2",
+    "vmAdminUserName": "brw",
+    "sqlCredentialName": "sqladmin",
+    "MicrosoftCAThumbprints": [
+      "2f2877c5d778c31e0f29c7e371df5471bd673173",
+      "30e01761ab97e59a06b41ef20af6f2de7ef4f7b0",
+      "6c3af02e7f269aa73afd0eff2a88a4a1f04ed1e5",
+      "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
+    ],
+    "ADDomainName": "sceplatform.microsoft.com",
+    "DomainName": "sceplatform.microsoft.com",
+    "DomainNameExt": "supplychain.microsoft.com",
+    "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtRG": "ACU1-PE-AOA-RG-G1",
+    "ADOProject": "ADF",
+    "AZDevOpsOrg": "AzureDeploymentFramework",
+    "ServicePrincipalAdmins": [
+      "BenWilkinson-ALT",
+      "SimonAdams-ALT",
+      "BrianWalker-ALT"
+    ],
+    "apimPublisherEmail": "benwilk@microsoft.com",
+    "alertRecipients": [
+      "benwilk@microsoft.com",
+      "sibgeorg@microsoft.com"
+    ],
+    "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
+    "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
+    "ObjectIdLookup": {
+      "BenWilkinson": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "BenWilkinson-ALT": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
+      "SimonAdams": "a54933b9-b921-4842-abbe-342416767d97",
+      "SimonAdams-ALT": "3fc273e5-f8f1-4d44-a950-3c3913643fc1",
+      "BrianWalker": "8e667bcd-b22b-4f39-a35f-ec4a27e4fcd6",
+      "BrianWalker-ALT": "8658da0d-84d9-4580-ba05-6c905b68b670",
+      "MaheshGupta": "2aaabb06-1557-43f2-ac21-6ff1afa43b62",
+      "ScottWendt": "c8819b08-5021-41a6-af7d-861b1162124f",
+      "ScottWendt-ALT": "10b42683-ae86-47e3-bb48-62ca2956e3c8",
+      "SankarGowthavaram": "ae1ca091-32f5-4520-9c3a-e49675253985",
+      "SankarGowthavaram-ALT": "e318d78a-a109-4603-80bc-652378b0855c",
+      "HariharanSundaram": "0fd214d7-f52e-4eba-8b11-32fd9ef99584",
+      "HariharanSundaram-ALT": "4566e466-17a7-48ca-b285-131188f31b89",
+      "PatrickConway-ALT": "4bb829bd-299b-481a-8908-d38fd599ea39",
+      "PatrickConway": "67829728-db20-45cd-98b1-cb40820cf990",
+      "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
+      "AKS_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
+      "Microsoft.AzureFrontDoor-Cdn": "4dbab725-22a4-44d5-ad44-c267ca38a954",
+      "Microsoft.Azure.CertificateRegistration": "ed47c2a1-bd23-4341-b39c-f4fd69138dd3",
+      "MicrosoftAzureAppService": "f8daea97-62e7-4026-becf-13c2ea98e8b4",
+      "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
+      "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
+      "SCE_PEF_SEC_DEV": "93964b9a-518a-4408-909f-87d5f821ff3e",
+      "SCE_PEF_SEC": "8bd51676-7936-448c-9339-5364777937d2",
+      "DataMapAgent001": "8d9606ff-585b-421a-afee-188d2497c7c7",
+      "DataMapAgentBlueshift001": "e393dddc-7d32-4c92-8619-23578f8de85d",
+      "SCE_LA_Contributor-Contributor": "30c20555-87d5-40fc-987d-bfb042697fc8",
+      "SCE-LA-Workspace-Reader": "1446d425-fd62-4dbc-b0b0-9fa962c35386",
+      "QoSRaaSKustoCollector": "94a0c6be-576a-40cc-87a1-ae7b4134c427",
+      "Monitoring360DataClient": "df723bb1-2827-44f5-a543-640f60208e60",
+      "SCE-Services-MI-Scorecard-PRD": "1d9be4ea-9823-4ade-a897-22223f559a06",
+      "SCE-Services-MI-Scorecard-PPE": "ba727ace-b4d2-4065-be9c-862b1cab4f2c",
+      "ADO_BRW_ACU1-SCE-MON-RG-G0": "f726df49-fa00-4be8-a11f-72f2fe8d8dd9",
+      "ADO_BRW_ACU1-SCE-MON-RG-P0": "53364dea-98c1-4d72-aee8-fc35fceb56c4",
+      "ADO_BRW_ACU1-SCE-MON-RG-G1": "1105f582-7026-4378-af2b-507602c1fc7f",
+      "ADO_BRW_AEU1-SCE-MON-RG-P0": "332b3c2b-a6ad-4cea-acca-38c631fd5d27"
+    }
+  }
+}

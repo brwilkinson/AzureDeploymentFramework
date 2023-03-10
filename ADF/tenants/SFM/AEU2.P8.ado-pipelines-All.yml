@@ -1,0 +1,35 @@
+trigger: none
+  # batch: 'true'
+  # branches:
+  #   include: [ users/benwilk/shared ]
+  # paths:
+  #   include:
+  #   - ADF/tenants/SFM/AEU2.P8.parameters.json
+  #   - ADF/ext-DSC/DSC-SFM.zip
+  #   - ADF/ext-CD/SFM-ConfigurationData.psd1
+  #   - ADF/tenants/SFM/AEU2.P8.ado-pipelines-All.yml
+
+variables:
+  ORG:        SCE
+  APP :       SFM
+  
+  PREFIX:     AEU2
+  ENV:        P8
+  
+  ADOProject: ADO_BRW
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: HUB
+
+stages:
+- stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+  jobs:
+  - template: ..\..\..\.ado\ado-pipelines-ALL.yml
+    parameters:
+      ORG:        ${{ variables.ORG }}
+      APP :       ${{ variables.APP }}
+      APPPRIMARY: ${{ variables.APPPRIMARY}}
+      PREFIX:     ${{ variables.PREFIX }}
+      ENV:        ${{ variables.ENV }}
+      SP:         ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+      SPG0:       ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG
+      FullUpload: true

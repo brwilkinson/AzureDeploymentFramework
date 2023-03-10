@@ -17,7 +17,7 @@ try
         Write-Output "`nContext is: "
         $c | Select-Object Account, Subscription, Tenant, Environment | Format-List | Out-String
 
-        # $EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName ACU1-BRW-AOA-RG-S1 -FrontDoorName ACU1-BRW-AOA-S1-afd01 -Name APIM01-Gateway
+        # $EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName ACU1-PE-AOA-RG-S1 -FrontDoorName ACU1-PE-AOA-S1-afd01 -Name APIM01-Gateway
         $EndPoint = Get-AzFrontDoorFrontendEndpoint -ResourceGroupName $ResourceGroupName -FrontDoorName $FrontDoorName -Name $Name -ErrorAction stop
 
         if ($EndPoint.Vault)
@@ -26,7 +26,7 @@ try
         }
         else
         {
-            # /subscriptions/{subscriptionguid}/resourceGroups/ACU1-BRW-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-BRW-AOA-P0-kvVLT01
+            # /subscriptions/{subscriptionguid}/resourceGroups/ACU1-PE-AOA-RG-P0/providers/Microsoft.KeyVault/vaults/ACU1-PE-AOA-P0-kvVLT01
             $SecretVersion = Split-Path -Path $certificateUrl -Leaf
             $Secret = Split-Path -Path $certificateUrl
             $SecretName = Split-Path -Path $Secret -Leaf

@@ -1,18 +1,18 @@
 
 ### blob service is not tracked and will not be listed
-GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/resources?$filter=resourceType EQ 'Microsoft.Storage/storageAccounts/blobServices'&api-version=2020-01-01
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PE-ABC-RG-S1/resources?$filter=resourceType EQ 'Microsoft.Storage/storageAccounts/blobServices'&api-version=2020-01-01
 Authorization: {{Bearer}}
 
 ### you can query a specific blob service
-GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/providers/Microsoft.Storage/storageAccounts/azc1brwabcs1sadiag/blobservices?api-version=2020-08-01-preview
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PE-ABC-RG-S1/providers/Microsoft.Storage/storageAccounts/azc1brwabcs1sadiag/blobservices?api-version=2020-08-01-preview
 Authorization: {{Bearer}}
 
 ### vm extensions are tracked and will not be listed
-GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/resources?$filter=resourceType EQ 'Microsoft.Compute/VirtualMachines/extensions'&api-version=2020-01-01
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PE-ABC-RG-S1/resources?$filter=resourceType EQ 'Microsoft.Compute/VirtualMachines/extensions'&api-version=2020-01-01
 Authorization: {{Bearer}}
 
 ### only tracked resources (from RP manifest)
-GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-ABC-RG-S1/resources?api-version=2020-10-01
+GET https://management.azure.com/subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PE-ABC-RG-S1/resources?api-version=2020-10-01
 Authorization: {{Bearer}}
 
 ###
@@ -37,7 +37,7 @@ GET https://management.azure.com/subscriptions/{subscriptionguid}/providers/Micr
 Authorization: {{Bearer}}
 
 ### 
-GET https://acu1-brw-aoa-t5-kvdata2.vault.azure.net//storage/acu1brwaoat5sadata2?api-version=7.0
+GET https://acu1-pe-aoa-t5-kvdata2.vault.azure.net//storage/acu1brwaoat5sadata2?api-version=7.0
 Authorization: {{Bearer}}
 
 ###

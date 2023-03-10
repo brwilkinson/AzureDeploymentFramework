@@ -6,7 +6,7 @@
 param (
     $AZDevOpsOrg = 'AzureDeploymentFramework',
     $ADOProject = 'AzureDeploy',
-    $PrimaryKVName = 'ACU1-BRW-AOA-P0-kvVLT01',
+    $PrimaryKVName = 'ACU1-PE-AOA-P0-kvVLT01',
     $AKSServiceAccountSecretName = 'azdev-sa-0a8f5d'
 )
 

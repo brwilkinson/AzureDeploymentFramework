@@ -137,7 +137,7 @@ resource name_resource 'Microsoft.CloudTest/hostedpools@2020-05-07' = {
     "contentVersion": "1.0.0.0",
     "parameters": {
         "name": {
-            "value": "acu1-brw-aoa-rg-p0-pool01"
+            "value": "acu1-pe-aoa-rg-p0-pool01"
         },
         "location": {
             "value": "centralus"
@@ -164,7 +164,7 @@ resource name_resource 'Microsoft.CloudTest/hostedpools@2020-05-07' = {
             "value": [
                 {
                     "subscriptionId": "{subscriptionguid}",
-                    "imageName": "acu1-brw-aoa-rg-p0-ubuntu",
+                    "imageName": "acu1-pe-aoa-rg-p0-ubuntu",
                     "poolBufferPercentage": "*"
                 }
             ]

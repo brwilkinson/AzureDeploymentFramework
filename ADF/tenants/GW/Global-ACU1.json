@@ -1,0 +1,17 @@
+{
+  "Global": {
+    "hubRG": {
+      "name": "P0"
+    },
+    "hubKV": {
+      "name": "VLT01"
+    },
+    "hubAA": {
+      "name": "OMSAutomation"
+    },
+    "DNSServers": [],
+    "RTName": "Hub",
+    "shutdownSchedulerTimeZone": "Pacific Standard Time",
+    "patchSchedulerTimeZone": "America/Los_Angeles"
+  }
+}

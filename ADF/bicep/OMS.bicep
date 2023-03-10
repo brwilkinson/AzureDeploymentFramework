@@ -1348,7 +1348,7 @@ resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
 //     ]
 //   }]
 
-// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/AWU1-BRW-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
+// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/AWU1-PE-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
 // resource awubrwaoatAppInsights 'Microsoft.Insights/components@2020-02-02' = {
 //   name: 'awu1brwaoat6AppInsights'
 //   location: 'westus2'
@@ -1367,7 +1367,7 @@ resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
 //   }
 // }
 
-// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/AWU1-BRW-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
+// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/AWU1-PE-AOA-RG-T6/providers/Microsoft.Insights/components/awu1brwaoat6AppInsights')
 // resource awubrwaoatAppInsights 'Microsoft.Insights/components@2020-02-02' = {
 //   name: 'awu1brwaoat6AppInsights'
 //   location: 'westus2'
@@ -1380,7 +1380,7 @@ resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
 //     Flow_Type: 'Redfield'
 //     Request_Source: 'rest'
 //     RetentionInDays: 90
-//     WorkspaceResourceId: '/subscriptions/{subscriptionguid}/resourcegroups/awu1-brw-aoa-rg-t6/providers/microsoft.operationalinsights/workspaces/awu1brwaoat6loganalytics'
+//     WorkspaceResourceId: '/subscriptions/{subscriptionguid}/resourcegroups/awu1-pe-aoa-rg-t6/providers/microsoft.operationalinsights/workspaces/awu1brwaoat6loganalytics'
 //     IngestionMode: 'LogAnalytics'
 //     publicNetworkAccessForIngestion: 'Enabled'
 //     publicNetworkAccessForQuery: 'Enabled'

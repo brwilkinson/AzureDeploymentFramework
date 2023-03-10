@@ -1,7 +1,7 @@
-// param resourceName string = 'acu1brwaoap0sadiag/default/insights-logs-networksecuritygroupflowevent' //'acu1brwaoap0sadiag' // 'ACU1-BRW-AOA-G1-kvGlobal'
+// param resourceName string = 'acu1brwaoap0sadiag/default/insights-logs-networksecuritygroupflowevent' //'acu1brwaoap0sadiag' // 'ACU1-PE-AOA-G1-kvGlobal'
 // param resourceType string = 'Microsoft.Storage/storageAccounts/blobServices/containers'//'Microsoft.Storage/storageAccounts' //'Microsoft.KeyVault/vaults'
 
-// param resourceName string = 'AWU1-BRW-AOA-P0-vn' //'acu1brwaoap0sadiag' // 'ACU1-BRW-AOA-G1-kvGlobal'
+// param resourceName string = 'AWU1-PE-AOA-P0-vn' //'acu1brwaoap0sadiag' // 'ACU1-PE-AOA-G1-kvGlobal'
 // param resourceType string = 'Microsoft.Network/virtualNetworks'//'Microsoft.Storage/storageAccounts' //'Microsoft.KeyVault/vaults'
 
 param resourceId string

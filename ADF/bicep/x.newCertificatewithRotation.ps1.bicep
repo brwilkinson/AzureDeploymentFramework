@@ -1,10 +1,10 @@
-param VaultName string = 'ACU1-BRW-PST-P0-kvVLT01'
-param CertName string = 'acu1-brw-pst-d1-sfm01'
+param VaultName string = 'ACU1-PE-PST-P0-kvVLT01'
+param CertName string = 'acu1-pe-pst-d1-sfm01'
 param SubjectName string = 'CN=acu1-dev-sfm01.psthing.com'
 param DnsNames array = [
   'acu1-dev-sfm01.psthing.com'
   'cu1-dev-sfm01.psthing.com'
-  'acu1-brw-pst-d1-sfm01.psthing.com'
+  'acu1-pe-pst-d1-sfm01.psthing.com'
 ]
 param Force bool = false
 param userAssignedIdentityName string

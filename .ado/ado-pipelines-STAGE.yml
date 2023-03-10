@@ -2,9 +2,9 @@ parameters:
   - name: ORG
     displayName: ORG Code
     type: string
-    default: BRW
+    default: PE
     values:
-      - BRW
+      - PE
 
   - name: PREFIX
     displayName: Region Prefix

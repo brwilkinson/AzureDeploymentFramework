@@ -1,7 +1,7 @@
 param resourceGroupID string
 param deployment string
 param logStartMinsAgo int = 7
-param userAssignedIdentityName string = 'ACU1-BRW-AOA-T5-uaiMonitoringReader'
+param userAssignedIdentityName string = 'ACU1-PE-AOA-T5-uaiMonitoringReader'
 param now string = utcNow('F')
 
 resource deploymentUser 'Microsoft.Resources/deploymentScripts@2020-10-01' = {

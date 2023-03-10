@@ -41,8 +41,8 @@ param DeploymentInfo object
 targetScope = 'subscription'
 
 var enviro = '${Environment}${DeploymentID}' // D1
-var deployment = '${Prefix}-${Global.orgname}-${Global.Appname}-${enviro}' // AZE2-BRW-HUB-D1
-var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${enviro}' // AZE2-BRW-HUB-D1
+var deployment = '${Prefix}-${Global.orgname}-${Global.Appname}-${enviro}' // AZE2-PE-HUB-D1
+var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${enviro}' // AZE2-PE-HUB-D1
 
 var locationlookup = json(loadTextContent('./global/prefix.json'))
 var location = locationlookup[Prefix].location

@@ -1,0 +1,32 @@
+trigger: none
+
+schedules:
+  - cron: 0 21 * * Tue
+    branches:
+      include: [ users/benwilk/shared ]
+
+variables:
+  ORG: PE
+  APP: PST
+
+  PREFIX: ACU1
+  ENV: D1
+
+  ADOProject: ADO_BRW
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: AOA
+
+  ConnectionType: AZ
+
+stages:
+  - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+    jobs:
+      - template: ..\..\..\.ado\ado-pipelines-TEST.yml
+        parameters:
+          ORG:    ${{ variables.ORG }}
+          APP:    ${{ variables.APP }}
+          PREFIX: ${{ variables.PREFIX }}
+          ENV:    ${{ variables.ENV }}
+          SP:     ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+          SPG0:   ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG
+          ConnectionType: ${{ variables.ConnectionType }}

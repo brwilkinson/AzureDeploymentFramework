@@ -1,0 +1,33 @@
+trigger: #none
+  batch: 'true'
+  branches:
+    include: [ users/benwilk/shared ]
+  paths:
+    include:
+    - ADF/tenants/HUB/AEU1.P0.parameters.json
+
+variables:
+  ORG:        SCE
+  APP :       HUB
+  
+  PREFIX:     AEU1
+  ENV:        P0
+  
+  ADOProject: ADO_BRW
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: HUB
+  UAI: 1
+
+stages:
+- stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+  jobs:
+  - template: ..\..\..\.ado\ado-pipelines-ALL.yml
+    parameters:
+      ORG:        ${{ variables.ORG }}
+      APP :       ${{ variables.APP }}
+      APPPRIMARY: ${{ variables.APPPRIMARY}}
+      PREFIX:     ${{ variables.PREFIX }}
+      ENV:        ${{ variables.ENV }}
+      SP:         ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+      SPG0:       ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG
+      UAI:        ${{ variables.UAI }}

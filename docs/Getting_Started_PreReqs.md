@@ -39,7 +39,7 @@
     1. Replace the 3 Characters that map to the Name of your App e.g. HUB
         ```json
         "Global": {
-            "OrgName": "BRW", // "3-Letter-Company-Name"
+            "OrgName": "PE", // "3-Letter-Company-Name"
                               // e.g. This is required to ensure all public resources have a unique name
                               // This should stay the same across ALL Tenants, 
                               // only the AppName will change, be sure to keep OrgName consistent
@@ -101,18 +101,18 @@
         1. You wil see an output similar to below once the RG and Storage are created.
         1. This storage account is used for uploading Assets (for IaaS/VM Deployments) that you may need, such as software installs and also used for your Template Deployments.
         ```powershell
-        VERBOSE: Global RGName: AZC1-BRW-HUB-RG-G1
+        VERBOSE: Global RGName: AZC1-PE-HUB-RG-G1
         
-        ResourceGroupName : AZC1-BRW-HUB-RG-G1
+        ResourceGroupName : AZC1-PE-HUB-RG-G1
         Location          : centralus
         ProvisioningState : Succeeded
         Tags              :
-        ResourceId        : /subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-HUB-RG-G1
+        ResourceId        : /subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PE-HUB-RG-G1
         
         
-        ResourceGroupName           : AZC1-BRW-HUB-RG-G1
+        ResourceGroupName           : AZC1-PE-HUB-RG-G1
         StorageAccountName          : azc1brwhubg1saglobal
-        Id                          : /subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-BRW-HUB-RG-G1/providers/Microsoft.Storage/storageAccounts/azc1brwhubg1saglobal
+        Id                          : /subscriptions/1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5/resourceGroups/AZC1-PE-HUB-RG-G1/providers/Microsoft.Storage/storageAccounts/azc1brwhubg1saglobal
         Location                    : centralus
         Sku                         : Microsoft.Azure.Commands.Management.Storage.Models.PSSku
         Kind                        : StorageV2
@@ -159,10 +159,10 @@
             1. Updates the Global-Global.json file to do friendly name lookups for the ServicePrincipal to the objectid
             ```powershell
             Secret                : System.Security.SecureString
-            ServicePrincipalNames : {55ec7612-2d3a-43b8-a5b7-4a53fd905655, http://AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0}
+            ServicePrincipalNames : {55ec7612-2d3a-43b8-a5b7-4a53fd905655, http://AzureDeploymentFramework_AZC1-PE-HUB-RG-P0}
             ApplicationId         : 55ec7612-2d3a-43b8-a5b7-4a53fd905655
             ObjectType            : ServicePrincipal
-            DisplayName           : AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0
+            DisplayName           : AzureDeploymentFramework_AZC1-PE-HUB-RG-P0
             Id                    : 9b537c42-3cfc-423b-955d-a83dbbfa0ac3
             Type                  :
             
@@ -172,13 +172,13 @@
             
             ✓ Set secret AZC1_HUB_RG_P0 for brwilkinson/AzureDeploymentFramework
             
-            VERBOSE: Adding Service Principal [AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0] to Global-Global.json
+            VERBOSE: Adding Service Principal [AzureDeploymentFramework_AZC1-PE-HUB-RG-P0] to Global-Global.json
             
-            AzureDeploymentFramework_AZC1-BRW-HUB-RG-P0 : 9b537c42-3cfc-423b-955d-a83dbbfa0ac3
-            AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0 : c4acb09d-7fe0-4e50-8988-b11b67711841
-            AzureDeploymentFramework_AZC1-BRW-HUB-RG-G1 : a744f350-9757-4943-b42e-f96e88b42f96
-            AzureDeploymentFramework_AZC1-BRW-HUB-RG-D2 : 8c1101e5-d23e-4f15-bb4d-9b2156898d8f
-            AzureDeploymentFramework_AZC1-BRW-HUB-RG-S1 : 1509358e-331b-44d3-83e1-3a880832328f
+            AzureDeploymentFramework_AZC1-PE-HUB-RG-P0 : 9b537c42-3cfc-423b-955d-a83dbbfa0ac3
+            AzureDeploymentFramework_AZC1-PE-HUB-RG-G0 : c4acb09d-7fe0-4e50-8988-b11b67711841
+            AzureDeploymentFramework_AZC1-PE-HUB-RG-G1 : a744f350-9757-4943-b42e-f96e88b42f96
+            AzureDeploymentFramework_AZC1-PE-HUB-RG-D2 : 8c1101e5-d23e-4f15-bb4d-9b2156898d8f
+            AzureDeploymentFramework_AZC1-PE-HUB-RG-S1 : 1509358e-331b-44d3-83e1-3a880832328f
             ```
 
 1. BootStrap the Hub Resource Group Creation and also the Keyvaults in the Primary and Secondary Region
@@ -191,10 +191,10 @@
         ```
     1. You should see the following output
         ```powershell
-        VERBOSE: Primary HUB RGName: AZC1-BRW-HUB-RG-P0
-        VERBOSE: Primary KV Name: AZC1-BRW-HUB-P0-kvVLT01
-        VERBOSE: Secondary HUB RGName: AZE2-BRW-HUB-RG-P0
-        VERBOSE: Secondary KV Name: AZE2-BRW-HUB-P0-kvVLT01
+        VERBOSE: Primary HUB RGName: AZC1-PE-HUB-RG-P0
+        VERBOSE: Primary KV Name: AZC1-PE-HUB-P0-kvVLT01
+        VERBOSE: Secondary HUB RGName: AZE2-PE-HUB-RG-P0
+        VERBOSE: Secondary KV Name: AZE2-PE-HUB-P0-kvVLT01
         ```
     1. Following this you can manually create the following 2 Secrets
         1. localadmin, then provide the local admin password for your Virtual Machines
@@ -202,14 +202,14 @@
 1. In order to deploy from these Service Principals, they need to be delegated access over certain scopes in Azure
     1. These Role Assignments are handled within the Deployment Scripts, however there is a chicken or egg problem
     1. I would recommend 2 Manual Role assignements to get things started
-        1. Assign the [GO] Principal E.g. "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0" as Owner on the Subscription.
+        1. Assign the [GO] Principal E.g. "AzureDeploymentFramework_AZC1-PE-HUB-RG-G0" as Owner on the Subscription.
             1. This is the principal that executes all role assignments and also creates RG's.
             1. As a reminder, G0 stands for Subscription Level.
             1. This principal will do the following:
                 1. Upload files to the storage account, so inherits access via owner to the storage account keys
                 1. Deploy a Template by reading from the Keyvault (1 in each regional hub)
                 1. Then it will run the intial template deployment to Create RG's and perform RBAC Assignments on those RG's
-        1. Assign the [G0] Principal E.g. E.g. "AzureDeploymentFramework_AZC1-BRW-HUB-RG-G0" as "Key Vault Secrets User (preview)"
+        1. Assign the [G0] Principal E.g. E.g. "AzureDeploymentFramework_AZC1-PE-HUB-RG-G0" as "Key Vault Secrets User (preview)"
             1. You will want to do this on both Hubs i.e. both P0 Resource Groups.
         1. While you are setting this up, you should also assign the below RBAC Role Assignments on your own account
             1. "Owner" on Subscription

@@ -93,7 +93,7 @@ resource name_resource 'Microsoft.CloudTest/accounts@2020-05-07' = {
     "contentVersion": "1.0.0.0",
     "parameters": {
         "name": {
-            "value": "acu1-brw-aoa-rg-p0-ct01"
+            "value": "acu1-pe-aoa-rg-p0-ct01"
         },
         "location": {
             "value": "centralus"

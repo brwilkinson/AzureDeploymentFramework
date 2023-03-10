@@ -1,7 +1,7 @@
 #requires -Module Az.Accounts,Az.ServiceFabric
 
-$rgName = 'ACU1-BRW-PST-RG-D1'
-$clusterName = 'acu1-brw-pst-d1-sfm01'
+$rgName = 'ACU1-PE-PST-RG-D1'
+$clusterName = 'acu1-pe-pst-d1-sfm01'
 $NodeTypeName = 'SFM'
 $NodeName = 'SFM_5'
 

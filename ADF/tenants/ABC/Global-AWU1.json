@@ -1,0 +1,24 @@
+{
+  "Global": {
+    "hubRG": {
+      "name": "P0"
+      // "Prefix": "ACU1"
+    },
+    "hubKV": {
+      "name": "VLT01"
+      // "Prefix": "ACU1"
+    },
+    "hubAA": {
+      "name": "OMSAutomation"
+    },
+    "_networkWatcherRG": {
+      "name": "T6",
+      "Prefix": "AWU1"
+    },
+    "DNSServers": [],
+    "RTName": "Hub",
+    "shutdownSchedulerTimeZone": "Pacific Standard Time",
+    "patchSchedulerTimeZone": "America/Los_Angeles",
+    "AppInsightsRegion": "westus2"
+  }
+}

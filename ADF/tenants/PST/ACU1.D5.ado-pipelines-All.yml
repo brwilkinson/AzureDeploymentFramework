@@ -1,0 +1,31 @@
+trigger: #none
+  batch: 'true'
+  branches:
+    include: [ users/benwilk/shared ]
+  paths:
+    include:
+    - ADF/tenants/PST/ACU1.D5.parameters.json
+
+variables:
+  ORG:        PE
+  APP :       PST
+  
+  PREFIX:     ACU1
+  ENV:        D5
+  
+  ADOProject: ADO_BRW
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: AOA
+
+stages:
+- stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+  jobs:
+  - template: ..\..\..\.ado\ado-pipelines-ALL.yml
+    parameters:
+      ORG:        ${{ variables.ORG }}
+      APP :       ${{ variables.APP }}
+      APPPRIMARY: ${{ variables.APPPRIMARY}}
+      PREFIX:     ${{ variables.PREFIX }}
+      ENV:        ${{ variables.ENV }}
+      SP:         ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+      SPG0:       ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG

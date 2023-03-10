@@ -1,7 +1,7 @@
 {
   "Global": {
     "_hubSubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
-    "OrgName": "BRW",
+    "OrgName": "PE",
     "AppName": "HAA",
     "GlobalSA": {
       "name": "global"
@@ -28,7 +28,7 @@
     "DomainName": "haapp.net",
     "DomainNameExt": "haapp.net",
     "__DomainNameExtSubscriptionID": "855c22ce-7a6c-468b-ac72-1d1ef4355acf",
-    "__DomainNameExtRG": "ACU1-BRW-HAA-RG-G1",
+    "__DomainNameExtRG": "ACU1-PE-HAA-RG-G1",
     "GHProject": "ADF",
     "ADOProject": "ADF",
     "AZDevOpsOrg": "AzureDeploymentFramework",
@@ -50,15 +50,15 @@
       "AZ_SQL_Admins": "51e0aa08-f648-461b-b4af-8d5a6e9e09aa",
       "AKS_Admins": "fe3fc890-a38c-47c4-96ce-939a28a8d55a",
       "One_Commercial_Azure_Governance": "a9078895-1595-42b1-9edc-02cfaa1995bb",
-      "ADO_ADF_ACU1-BRW-HAA-RG-S1": "b33eddb4-2700-4b03-925b-b493f0eda569",
-      "ADO_ADF_ACU1-BRW-HAA-RG-D3": "88660718-340e-48e3-9d1b-8e5202725038",
-      "GH_ADF_ACU1-BRW-HAA-RG-P0": "8deb6f83-2b61-4e89-8d82-4c9e014624ca",
-      "GH_ADF_ACU1-BRW-HAA-RG-G0": "bc8132e7-8f1b-4c20-bd86-75acb80160aa",
-      "GH_ADF_ACU1-BRW-HAA-RG-G1": "437712a8-c335-4820-999c-cdb20a0a4aa5",
-      "GH_ADF_ACU1-BRW-HAA-RG-S1": "3e4747f1-cfc9-417d-85f2-4159b4881ed1",
-      "GH_ADF_AEU2-BRW-HAA-RG-P0": "fadfab20-f21d-4bdd-bf7d-dc5e9eb71216",
-      "GH_ADF_AEU2-BRW-HAA-RG-S1": "8857d48a-df84-408e-a134-f8ed912b0307",
-      "GH_ADF_ACU1-BRW-HAA-RG-D3": "da149f82-8d33-4d71-98ef-96471b0e4c93"
+      "ADO_ADF_ACU1-PE-HAA-RG-S1": "b33eddb4-2700-4b03-925b-b493f0eda569",
+      "ADO_ADF_ACU1-PE-HAA-RG-D3": "88660718-340e-48e3-9d1b-8e5202725038",
+      "GH_ADF_ACU1-PE-HAA-RG-P0": "8deb6f83-2b61-4e89-8d82-4c9e014624ca",
+      "GH_ADF_ACU1-PE-HAA-RG-G0": "bc8132e7-8f1b-4c20-bd86-75acb80160aa",
+      "GH_ADF_ACU1-PE-HAA-RG-G1": "437712a8-c335-4820-999c-cdb20a0a4aa5",
+      "GH_ADF_ACU1-PE-HAA-RG-S1": "3e4747f1-cfc9-417d-85f2-4159b4881ed1",
+      "GH_ADF_AEU2-PE-HAA-RG-P0": "fadfab20-f21d-4bdd-bf7d-dc5e9eb71216",
+      "GH_ADF_AEU2-PE-HAA-RG-S1": "8857d48a-df84-408e-a134-f8ed912b0307",
+      "GH_ADF_ACU1-PE-HAA-RG-D3": "da149f82-8d33-4d71-98ef-96471b0e4c93"
     }
   }
 }

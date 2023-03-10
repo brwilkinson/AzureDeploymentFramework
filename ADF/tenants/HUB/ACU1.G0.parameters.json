@@ -1,0 +1,118 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "G"
+    },
+    "DeploymentID": {
+      "value": "0"
+    },
+    "Stage": {
+      "value": {
+        "RoleDefinition": 1,
+        "Security": 0,
+        "RBAC": 1,
+        "PIM": 1,
+        "SP": 1
+      }
+    },
+    "Extensions": {
+      "value": {}
+    },
+    "DeploymentInfo": {
+      "value": {
+        "rolesInfo": [
+          {
+            "Name": "BenWilkinson",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          }
+        ],
+        "PIMInfo": [
+          {
+            "Name": "BenWilkinson-ALT",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Security Admin"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          // Manually add Owner on this service principal
+          {
+            "Name": "DataMapAgent001",
+            "RBAC": [
+              {
+                "Name": "Storage Blob Data Reader"
+              }
+            ]
+          }
+        ],
+        "SecurityPricingInfo": {
+          "Standard": [
+            "VirtualMachines",
+            "SqlServers",
+            "AppServices",
+            "StorageAccounts",
+            "SqlServerVirtualMachines",
+            "KeyVaults",
+            "Dns",
+            "Arm",
+            "Containers",
+            "OpenSourceRelationalDatabases",
+            "CosmosDbs"
+          ],
+          "Free": [
+            "KubernetesService",
+            "ContainerRegistry"
+          ]
+        },
+        "RoleDefinitionsInfo": [
+          {
+            "RoleName": "SCE_SF_App_Contributor",
+            "description": "Manage Service Fabric Applications",
+            "notActions": [],
+            "actions": [
+              "Microsoft.Resources/subscriptions/resourceGroups/read",
+              "Microsoft.Resources/deployments/*",
+              "Microsoft.ServiceFabric/clusters/applications/*",
+              "Microsoft.ServiceFabric/clusters/applicationTypes/*",
+              "Microsoft.ServiceFabric/managedclusters/applications/*",
+              "Microsoft.ServiceFabric/managedclusters/applicationTypes/*"
+            ]
+          },
+          {
+            "RoleName": "SCE_DeploymentScripts_Contributor",
+            "description": "Allow to deploy DeploymentScripts",
+            "notActions": [],
+            "actions": [
+              "Microsoft.Resources/deploymentScripts/*",
+              "Microsoft.ContainerInstance/containerGroups/*"
+            ]
+          },
+          {
+            "RoleName": "SCE_CloudTest_Contributor",
+            "description": "Allow to deploy CloudTest resources e.g. accounts, images and devops pools",
+            "notActions": [],
+            "actions": [
+              "Microsoft.CloudTest/accounts/*",
+              "Microsoft.CloudTest/images/*",
+              "Microsoft.CloudTest/hostedpools/*"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

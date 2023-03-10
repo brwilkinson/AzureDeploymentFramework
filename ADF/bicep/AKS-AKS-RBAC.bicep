@@ -1,4 +1,4 @@
-param Deployment string = 'ACU1-BRW-PST-D4'
+param Deployment string = 'ACU1-PE-PST-D4'
 param AKSInfo object = {
   name: '01'
 }

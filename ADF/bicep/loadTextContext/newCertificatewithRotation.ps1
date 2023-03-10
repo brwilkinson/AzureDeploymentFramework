@@ -2,9 +2,9 @@ param (
     [validateset('MSPKI', 'AME')]
     [string]$IssuerName = 'MSPKI',
 
-    [string]$VaultName = 'ACU1-BRW-PST-P0-kvVLT01',
+    [string]$VaultName = 'ACU1-PE-PST-P0-kvVLT01',
     
-    [string]$CertName = 'acu1-brw-pst-d1-sfm01',
+    [string]$CertName = 'acu1-pe-pst-d1-sfm01',
 
     [string]$SubjectName = 'CN=acu1-dev-sfm01.psthing.com',
 

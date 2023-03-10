@@ -1,0 +1,72 @@
+trigger: none
+  # batch: "true"
+  # branches:
+  #   include: [users/benwilk/shared]
+  # tags:
+  #   exclude: [NoBuild]
+
+parameters:
+  - name: STAGE
+    displayName: Deployment Stage
+    type: string
+    default: FD.CDN
+    values:
+      - 00-ALL-SUB
+      - 01-ALL-RG
+      - FD.CDN
+      - FD.CDNPolicy
+      - SA
+      - WAF
+      - APIM
+      - TM
+      - NATGW
+
+
+  - name: CN
+    displayName: AFD Endpoint
+    type: string
+    default: 'cdn01'
+    values:
+      - '.'
+      - cdn01
+      - apim01
+      - APIM01
+      - shared01apim01
+      - shared01cdn01
+
+  - name: CN2
+    displayName: Endpoint
+    type: string
+    default: 'acu1scegwd1sadata1'
+    values:
+      - '.'
+      - acu1scegwd1sadata1
+      - sit-script
+
+variables:
+  ORG: SCE
+  APP: GW
+
+  PREFIX: ACU1
+  ENV: D1
+
+  ADOProject: ADO_BRW
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: GW
+
+stages:
+  - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+    jobs:
+      - template: ..\..\..\.ado\ado-pipelines-STAGE.yml
+        parameters:
+          ORG:        ${{ variables.ORG }}
+          APP:        ${{ variables.APP }}
+          APPPRIMARY: ${{ variables.APPPRIMARY}}
+          PREFIX:     ${{ variables.PREFIX }}
+          ENV:        ${{ variables.ENV }}
+          SP:         ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+          SPG0:       ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG
+          STAGE:      ${{ parameters.STAGE }}
+          CN:         ${{ parameters.CN }}
+          CN2:        ${{ parameters.CN2 }}
+          POOLPrefix: 'aeu2'

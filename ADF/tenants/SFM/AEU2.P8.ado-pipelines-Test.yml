@@ -1,0 +1,30 @@
+trigger: none
+
+variables:
+  ORG: SCE
+  APP: SFM
+
+  PREFIX: AEU2
+  ENV: P8
+
+  ADOProject: ADO_BRW
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: HUB
+
+  # Use manual connection name, since no current naming standard
+  ConnectionName: SC-SharedSFM-Cluster-PROD-EUS2
+  ConnectionType: SF
+
+stages:
+  - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+    jobs:
+      - template: ..\..\..\.ado\ado-pipelines-TEST.yml
+        parameters:
+          ORG:    ${{ variables.ORG }}
+          APP:    ${{ variables.APP }}
+          PREFIX: ${{ variables.PREFIX }}
+          ENV:    ${{ variables.ENV }}
+          SP:     ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+          SPG0:   ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG
+          ConnectionName: ${{ variables.ConnectionName }}
+          ConnectionType: ${{ variables.ConnectionType }}

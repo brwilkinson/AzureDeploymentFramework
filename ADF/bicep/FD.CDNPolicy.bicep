@@ -314,7 +314,7 @@ var ruleGroupOverrides = [
 ]
 
 
-// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/ACU1-BRW-AOA-RG-T5/providers/Microsoft.Network/frontdoorWebApplicationFirewallPolicies/acu1brwaoat5PolicyafdAPI')
+// @description('Generated from /subscriptions/{subscriptionguid}/resourceGroups/ACU1-PE-AOA-RG-T5/providers/Microsoft.Network/frontdoorWebApplicationFirewallPolicies/acu1brwaoat5PolicyafdAPI')
 // resource acubrwaoatPolicyafdAPI 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2020-11-01' = {
 //   name: 'acu1brwaoat5PolicyafdAPI'
 //   location: 'Global'

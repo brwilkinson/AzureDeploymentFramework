@@ -1,5 +1,5 @@
 param apim object = {
-  name: 'ACU1-BRW-AOA-T5-apim01'
+  name: 'ACU1-PE-AOA-T5-apim01'
 }
 param apis array = [
   {

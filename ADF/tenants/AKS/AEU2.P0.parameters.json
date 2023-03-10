@@ -1,0 +1,207 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "AEU2"
+    },
+    "Environment": {
+      "value": "P"
+    },
+    "DeploymentID": {
+      "value": "0"
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 0,
+        "PIM": 0,
+        "UAI": 1,
+        "SP": 1,
+        "KV": 0,
+        "OMS": 0,
+        "DASHBOARD": 0,
+        "OMSSolutions": 0,
+        "OMSDataSources": 0,
+        "OMSUpdateWeekly": 0,
+        "OMSUpdateMonthly": 0,
+        "SA": 0,
+        "ACR": 0,
+        "RSV": 0,
+        "NSG": 0,
+        "NetworkWatcher": 0,
+        "FlowLogs": 0,
+        "VNet": 0,
+        "DNSResolver": 0,
+        "VNetDDOS": 0,
+        "VNetPeering": 0,
+        "DNSPrivateZone": 0,
+        "DNSPublicZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 0,
+        "BastionHost": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "NATGW": 0,
+        "ERGW": 0,
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 0,
+        "CloudTestAccount": 1,
+        "CloudTestImages": 1,
+        "CloudTestHostedPool": 1
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "DependencyAgent": 0,
+        "AzureMonitorAgent": 0,
+        "GuestHealthAgent": 0,
+        "VMInsights": 0,
+        "AdminCenter": 0,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 0,
+        "GuestConfig": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "AADLogin": 0,
+        "Antimalware": 0,
+        "VMSSAzureADEnabled": 0,
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "name": "Global",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+              //Manually Add Owner to this Managed identity run all Global Deployments on the 
+              // 1ES Hosted DevOps Agents to replace G0 Service Principal.
+            ]
+          }
+        ],
+        "rolesInfo": [],
+        "SPInfo": [
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "CSEO DevOps Role"
+              },
+              {
+                "Name": "SCE_AKS_Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
+              },
+              {
+                "Name": "Monitoring Contributor"
+              },
+              {
+                "Name": "Key Vault Secrets User"
+              },
+              {
+                "Name": "Network Contributor"
+              }
+            ]
+          }
+        ],
+        "CloudTestAccountInfo": [
+          {
+            "Name": "01",
+            "accessControlUsers": [
+              "benwilk@microsoft.com",
+              "mibishen@microsoft.com",
+              "satishnaidi@microsoft.com",
+              "krnukala@microsoft.com"
+            ],
+            "systemAccounts": []
+          }
+        ],
+        "CloudTestImageInfo": [
+          {
+            "Name": "MMSUbuntu22.04-Secure",
+            "imageType": "SharedGallery"
+          },
+          {
+            "Name": "MMSWindows2022-Secure",
+            "imageType": "SharedGallery"
+          }
+        ],
+        "CloudTestDevOpsPoolInfo": [
+          // {
+          //   "Name": "01",
+          //   "Role": "Global",
+          //   "ImageName": "MMSUbuntu22.04-Secure",
+          //   "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
+          //   "skuTier": "Premium",
+          //   "vmProvider": "vm",
+          //   "maxPoolSize": 15,
+          //   "VssAdminAccounts": [
+          // "benwilk@microsoft.com",
+          // "mibishen@microsoft.com",
+          // "satishnaidi@microsoft.com",
+          // "krnukala@microsoft.com"
+          //   ]
+          // },
+          {
+            "Name": "02",
+            "Role": "Global",
+            "ImageName": "MMSWindows2022-Secure",
+            "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
+            "skuTier": "Premium",
+            "vmProvider": "vm",
+            "maxPoolSize": 15,
+            "VssAdminAccounts": [
+              "benwilk@microsoft.com",
+              "mibishen@microsoft.com",
+              "satishnaidi@microsoft.com",
+              "krnukala@microsoft.com"
+            ]
+          },
+          {
+            "Name": "WIN01",
+            "Role": "None",
+            "ImageName": "MMSWindows2022-Secure",
+            "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
+            "skuTier": "Premium",
+            "vmProvider": "vm",
+            "maxPoolSize": 15,
+            "VssAdminAccounts": [
+              "benwilk@microsoft.com",
+              "mibishen@microsoft.com",
+              "satishnaidi@microsoft.com",
+              "krnukala@microsoft.com"
+            ]
+          },
+          {
+            "Name": "UBU01",
+            "Role": "None",
+            "ImageName": "MMSUbuntu22.04-Secure",
+            "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
+            "skuTier": "Premium",
+            "vmProvider": "vm",
+            "maxPoolSize": 15,
+            "VssAdminAccounts": [
+              "benwilk@microsoft.com",
+              "mibishen@microsoft.com",
+              "satishnaidi@microsoft.com",
+              "krnukala@microsoft.com"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

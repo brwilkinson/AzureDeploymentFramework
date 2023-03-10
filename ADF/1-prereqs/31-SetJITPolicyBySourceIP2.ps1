@@ -28,7 +28,7 @@ function Set-JITAccessPolicy
         [parameter(ValueFromPipeline)]
         $VMName = '.',
         [parameter(ValueFromPipeline)]
-        $RGName = 'ACU1-BRW-AOA-RG-D2',
+        $RGName = 'ACU1-PE-AOA-RG-D2',
         [System.Collections.Generic.List[System.String]]$SourceIPs = @(
             '192.127.0.2'
         ),

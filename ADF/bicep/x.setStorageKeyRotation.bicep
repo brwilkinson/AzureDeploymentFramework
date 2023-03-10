@@ -1,5 +1,5 @@
 param storageAccountName string = 'acu1brwaoat5sadata2'
-param keyvaultName string = 'ACU1-BRW-AOA-T5-kvData2'
+param keyvaultName string = 'ACU1-PE-AOA-T5-kvData2'
 
 @allowed([
   'key1'
@@ -21,7 +21,7 @@ User Assigned Identity requires RBAC:
       Storage Account: [Storage Account Key Operator Service Role]
       Storage Account: [Storage Account Contributor]
 ''')
-param userAssignedIdentityName string = 'ACU1-BRW-AOA-T5-uaiStorageKeyRotation'
+param userAssignedIdentityName string = 'ACU1-PE-AOA-T5-uaiStorageKeyRotation'
 
 param now string = utcNow('F')
 

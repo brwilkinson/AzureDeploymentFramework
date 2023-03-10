@@ -11,7 +11,7 @@
 .EXAMPLE
     # manually passs in the source kvname and the destination kvname to sync
 
-    .\03-Start-AzureKVSync.ps1 -primaryKVName ACU1-BRW-AOA-P0-kvVLT01 -SecondaryKVName AWU1-BRW-AOA-P0-kvVLT01
+    .\03-Start-AzureKVSync.ps1 -primaryKVName ACU1-PE-AOA-P0-kvVLT01 -SecondaryKVName AWU1-PE-AOA-P0-kvVLT01
 
 .INPUTS
     Inputs (if any)

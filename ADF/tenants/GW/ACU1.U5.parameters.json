@@ -1,0 +1,1056 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Prefix": {
+      "value": "ACU1"
+    },
+    "Environment": {
+      "value": "U"
+    },
+    "DeploymentID": {
+      "value": "5"
+    },
+    "Stage": {
+      "value": {
+        "RG": 1,
+        "RBAC": 1,
+        "PIM": 1,
+        "UAI": 1,
+        "SP": 1,
+        "KV": 0,
+        "OMS": 1, //
+        "OMSSolutions": 1, //
+        "OMSDataSources": 0,
+        "OMSUpdateWeekly": 0,
+        "OMSUpdateMonthly": 0,
+        "OMSUpates": 0,
+        "SA": 1, //
+        "CDN": 0,
+        "StorageSync": 0,
+        "RSV": 0,
+        "NSG": 1,
+        "NetworkWatcher": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "VNetDDOS": 0,
+        "VNetPeering": 0,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
+        "PrivateLink": 0,
+        "BastionHost": 0,
+        "CloudShellRelay": 0,
+        "RT": 0,
+        "FW": 0,
+        "VNGW": 0,
+        "NATGW": 1, //
+        "ERGW": 0,
+        "LB": 0,
+        "TM": 0,
+        "WAFPOLICY": 1, //
+        "WAF": 1, //
+        "FRONTDOORPOLICY": 1, //
+        "FRONTDOOR": 1, //
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 0,
+        "APPCONFIG": 0,
+        "REDIS": 0,
+        "APIM": 0, //
+        "ACR": 0,
+        "SQLMI": 0,
+        "CosmosDB": 0,
+        "DASHBOARD": 0,
+        "ServerFarm": 0,
+        "WebSite": 0,
+        "WebSiteContainer": 0,
+        "ManagedEnv": 0,
+        "ContainerApp": 0,
+        "MySQLDB": 0,
+        "Function": 0,
+        "SB": 0,
+        "LT": 0,
+        "AzureSYN": 0,
+        // below require secrets from KV
+        "VMSS": 0,
+        "ACI": 0,
+        "AKS": 0,
+        "AzureSQL": 0,
+        "SFM": 0,
+        "SFMNP": 0,
+        // VM templates
+        "ADPrimary": 0,
+        "ADSecondary": 0,
+        "InitialDOP": 0,
+        "VMApp": 0,
+        "VMAppLinux": 0,
+        "VMSQL": 0,
+        "VMFILE": 0
+      }
+    },
+    "Extensions": {
+      "value": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 9,
+        "DependencyAgent": 0,
+        "AzureMonitorAgent": 0,
+        "GuestHealthAgent": 0,
+        "VMInsights": 0,
+        "AdminCenter": 0,
+        "BackupWindowsWorkloadSQL": 0,
+        "DSC": 0,
+        "GuestConfig": 0,
+        "Scripts": 0,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "AADLogin": 0,
+        "WindowsOpenSSH": 0,
+        "Antimalware": 0,
+        "VMSSAzureADEnabled": 0,
+        "SqlIaasExtension": 0,
+        "AzureDefender": 0
+      }
+    },
+    "DeploymentInfo": {
+      "value": {
+        "uaiInfo": [
+          {
+            "Name": "CertificateRequest",
+            "RBAC": [
+              {
+                "Name": "Key Vault Reader",
+                "RG": "P0",
+                "Tenant": "GW"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "GW"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "GW"
+              }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Reader",
+                "RG": "P0",
+                "Tenant": "GW"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "GW"
+              },
+              {
+                "Name": "Key Vault Secrets User"
+              }
+            ]
+          }
+        ],
+        "rolesInfo": [
+          {
+            "Name": "SimonAdams",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
+          {
+            "Name": "PrasannaSolanke",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
+          {
+            "Name": "YuzuLi",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
+          {
+            "Name": "PierreMariani",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
+          {
+            "Name": "AbeIsleem",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
+          {
+            "Name": "AzureKeyVault",
+            "RBAC": [
+              {
+                "Name": "Storage Account Key Operator Service Role"
+              }
+            ]
+          },
+          {
+            "Name": "sec-scan-acr",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          }
+        ],
+        "PIMInfo": [
+          {
+            "Name": "BenWilkinson-ALT",
+            "RBAC": [
+              {
+                "Name": "Network Contributor"
+              },
+              {
+                "Name": "Contributor"
+              }
+            ]
+          }
+        ],
+        "SPInfo": [
+          {
+            "Name": "ADO_{ADOProject}_{RGNAME}",
+            "RBAC": [
+              {
+                "Name": "Contributor" //"CSEO DevOps Role"
+              },
+              {
+                "Name": "SCE_GW_Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
+              },
+              {
+                "Name": "Network Contributor"
+              },
+              {
+                "Name": "Monitoring Contributor"
+              },
+              {
+                "Name": "DNS Zone Contributor",
+                "RG": "G1",
+                "Tenant": "GW",
+                "PREFIX": "ACU1"
+              },
+              {
+                "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Tenant": "GW",
+                "PREFIX": "ACU1"
+              },
+              {
+                "Name": "Storage Account Contributor",
+                "RG": "G1",
+                "Tenant": "GW",
+                "PREFIX": "ACU1"
+              },
+              {
+                "Name": "Log Analytics Contributor",
+                "RG": "G1",
+                "Tenant": "GW",
+                "PREFIX": "ACU1"
+              },
+              {
+                "Name": "Key Vault Reader",
+                "RG": "P0",
+                "Tenant": "GW"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "GW"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "GW"
+              }
+              // {
+              //   "Name": "Network Contributor",
+              //   "RG": "U5",
+              //   "Tenant": "GW",
+              //   "PREFIX": "AEU1"
+              // },
+              // {
+              //   "Name": "Log Analytics Contributor",
+              //   "RG": "U5",
+              //   "Tenant": "GW",
+              //   "PREFIX": "AEU1"
+              // }
+              // {
+              //   "Name": "DNS Zone Contributor",
+              //   "RG": "P0",
+              //   "Tenant": "GW"
+              // },
+              // {
+              //   "Name": "DNS Zone Contributor",
+              //   "RG": "P0",
+              //   "Tenant": "GW",
+              //   "PREFIX": "AEU2"
+              // }
+            ]
+          }
+        ],
+        "SubnetInfo": [ // 8 * /27 + 3 * /23
+          // {
+          //   "name": "snAD01",
+          //   "prefix": "0/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //    "NGW": 1
+          // },
+          // leave above open for DNS Resolver
+          // {
+          //   "name": "snFE02",
+          //   "prefix": "32/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //    "NGW": 1
+          // },
+          // {
+          //   "name": "snMT02",
+          //   "prefix": "64/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "delegations": "Microsoft.Web/serverfarms",
+          //    "NGW": 1
+          // },
+          // {
+          //   "name": "snMT03",
+          //   "prefix": "96/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "delegations": "Microsoft.ContainerInstance/containerGroups",
+          //    "NGW": 1
+          // },
+          {
+            "name": "snAPIM01", // APIM Dedicated
+            "prefix": "128/27",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0,
+            "NGW": 1
+          },
+          {
+            "name": "snAPIM02", // APIM Dedicated test migration to Zones
+            "prefix": "160/27",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0,
+            "NGW": 1
+          },
+          // {
+          //   "name": "AzureBastionSubnet",
+          //   "prefix": "192/26",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "NGW": 1
+          // },
+          {
+            "name": "snWAF01", // WAF dedicated
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 0
+          }
+          // {
+          //   "name": "snFE01",
+          //   "prefix": "0/23",
+          //   "NSG": 1,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "NGW": 1
+          // },
+          // {
+          //   "name": "snMT01",
+          //   "prefix": "0/23",
+          //   "NSG": 1,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "NGW": 1
+          // },
+          // {
+          //   "name": "snBE01",
+          //   "prefix": "0/23",
+          //   "NSG": 1,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "NGW": 1
+          // }
+        ],
+        "NatGWInfo": [
+          {
+            "Name": "NAT01",
+            "PIPCount": 1
+          }
+        ],
+        "saInfo": [
+          {
+            "name": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
+          },
+          {
+            "name": "data1",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "containers": [
+              {
+                "name": "$web"
+              }
+            ]
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "App01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "allNetworks": 1,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "vault"
+              }
+            ],
+            "_rolesInfo": [
+              {
+                "Name": "SimonAdams",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              },
+              {
+                "Name": "BenWilkinson",
+                "RBAC": [
+                  {
+                    "Name": "Key Vault Administrator"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "RedisInfo": [
+          {
+            "Name": "APIM01",
+            "sku": "C1",
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snBE01",
+                "groupID": "redisCache"
+              }
+            ]
+          }
+        ],
+        "AzSQLInfo": [
+          {
+            "Name": "APIM01",
+            "administratorLogin": "brw",
+            "AdminName": "SCE_PEF_SEC",
+            "publicNetworkAccess": 1,
+            "allNetworks": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "sqlServer"
+              }
+            ],
+            "DBInfo": [
+              {
+                "Name": "SCEABAC",
+                "skuName": "S1"
+              }
+            ]
+          }
+        ],
+        "TMInfo": [
+          {
+            "Name": "APIM01",
+            "enabled": 1,
+            "routing": "Weighted",
+            "ttl": 300,
+            "monitoringport": 443,
+            "monitoringpath": "/status-0123456789abcdef",
+            "monitoringcustomHeaders": [
+              {
+                "name": "host",
+                "value": "ACU1-SCE-GW-U5-apim01.supplychain.microsoft.com"
+              }
+            ],
+            "trafficViewEnrollmentStatus": "Enabled",
+            "endpoints": [
+              // {
+              //   "name": "sfm01",
+              //   "prefix": "acu1",
+              //   "weight": 1,
+              //   "eptype": "external"
+              // },
+              // {
+              //   "name": "sfm01",
+              //   "prefix": "aeu1",
+              //   "weight": 1,
+              //   "eptype": "external"
+              // }
+            ]
+          }
+        ],
+        "FrontDoorPolicyInfo": [
+          {
+            "Name": "shared01apim01",
+            "Version": "Premium", //Classic,Standard,Premium
+            "State": "Enabled",
+            "Mode": "Detection",
+            "ruleSetVersion": "1.0",
+            "customRules": [],
+            "exclusions": [],
+            "ruleGroupOverrides": [],
+            "enableBotRule": 1,
+            "botRuleGroupOverrides": [],
+            "botexclusions": []
+          },
+          {
+            "Name": "shared01cdn01",
+            "Version": "Premium", //Classic,Standard,Premium
+            "State": "Enabled",
+            "Mode": "Detection",
+            "ruleSetVersion": "1.0",
+            "customRules": [],
+            "exclusions": [],
+            "ruleGroupOverrides": [],
+            "enableBotRule": 1,
+            "botRuleGroupOverrides": [],
+            "botexclusions": []
+          }
+        ],
+        "FrontDoorCDN": [
+          {
+            "name": "shared01",
+            "skuName": "Premium", // "Premium"|"Standard"
+            "adfEndpoints": [
+              {
+                "name": "cdn01",
+                "state": "Enabled",
+                "policyattached": 1,
+                "endPoints": [
+                  {
+                    "name": "acu1scegwu5sadata1",
+                    "zone": "sceplatform.microsoft.com",
+                    "probePath": "/",
+                    "sessionAffinity": 1,
+                    "origins": [
+                      {
+                        "name": "acu1scegwu5sadata1",
+                        "hostname": "acu1scegwu5sadata1.z19.web.core.windows.net",
+                        "enabled": 1
+                      }
+                    ]
+                  },
+                  {
+                    "name": "uat-script",
+                    "_excludeCustomDomain": 1,
+                    "zone": "supplychain.microsoft.com",
+                    "rulesName": "script",
+                    "probePath": "/",
+                    "sessionAffinity": 1,
+                    "origins": [
+                      {
+                        "name": "uatscriptstorageaccnt",
+                        "hostname": "uatscriptstorageaccnt.z19.web.core.windows.net",
+                        "enabled": 1
+                      },
+                      {
+                        "name": "uatscriptstorageaccnt-secondary",
+                        "hostname": "uatscriptstorageaccnt-secondary.z19.web.core.windows.net",
+                        "enabled": 1,
+                        "priority": 2
+                      }
+                    ]
+                  },
+                  {
+                    "name": "ppe-monitoring360",
+                    "zone": "microsoft.com",
+                    "probePath": "/",
+                    "sessionAffinity": 1,
+                    "origins": [
+                      {
+                        "name": "monitoring360uat",
+                        "hostname": "monitoring360uat.z22.web.core.windows.net",
+                        "enabled": 1
+                      },
+                      {
+                        "name": "monitoring360uat-secondary",
+                        "hostname": "monitoring360uat-secondary.z22.web.core.windows.net",
+                        "enabled": 1,
+                        "priority": 2
+                      }
+                    ]
+                  },
+                  {
+                    "name": "availability-uat",
+                    "zone": "supplychain.microsoft.com",
+                    "rulesName": "script",
+                    "probePath": "/",
+                    "sessionAffinity": 1,
+                    "origins": [
+                      {
+                        "name": "scoutagehubuat",
+                        "hostname": "scoutagehubuat.z13.web.core.windows.net",
+                        "enabled": 1
+                      },
+                      {
+                        "name": "scoutagehubuat-secondary",
+                        "hostname": "scoutagehubuat-secondary.z13.web.core.windows.net",
+                        "enabled": 1,
+                        "priority": 2
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "apim01",
+                "state": "Enabled",
+                "policyattached": 1,
+                "endPoints": [
+                  // {
+                  //   "name": "api.ppe",
+                  //   "excludeCustomDomain": 1,
+                  //   "zone": "supplychain.microsoft.com",
+                  //   "probePath": "/status-0123456789abcdef",
+                  //   "probeRequest": "GET",
+                  //   "sessionAffinity": 1,
+                  //   "origins": [
+                  //     {
+                  //       "name": "aeu1scegwu5wafapim01",
+                  //       "hostname": "aeu1scegwu5wafapim01.eastus.cloudapp.azure.com",
+                  //       "hostHeader": "api.ppe.supplychain.microsoft.com",
+                  //       "enabled": 1,
+                  //       "priority": 1,
+                  // "checkCert": 0
+                  //     },
+                  //     {
+                  //       "name": "acu1scegwu5wafapim01",
+                  //       "hostname": "acu1scegwu5wafapim01.centralus.cloudapp.azure.com",
+                  //       "hostHeader": "api.ppe.supplychain.microsoft.com",
+                  //       "enabled": 1,
+                  //       "priority": 1,
+                  // "checkCert": 0
+                  //     }
+                  //   ]
+                  // },
+                  {
+                    "name": "acu1-sce-gw-u5-apim01",
+                    "zone": "supplychain.microsoft.com",
+                    "probePath": "/status-0123456789abcdef",
+                    "probeRequest": "GET",
+                    "sessionAffinity": 1,
+                    "origins": [
+                      {
+                        "name": "aeu1-sce-gw-u5-wafapim01",
+                        "hostname": "aeu1-sce-gw-u5-wafapim01-1.eastus.cloudapp.azure.com",
+                        "hostHeader": "ACU1-SCE-GW-U5-apim01.supplychain.microsoft.com",
+                        "enabled": 1,
+                        "priority": 1,
+                        "checkCert": 0
+                      },
+                      {
+                        "name": "acu1-sce-gw-u5-wafapim01",
+                        "hostname": "acu1-sce-gw-u5-wafapim01-1.centralus.cloudapp.azure.com",
+                        "hostHeader": "ACU1-SCE-GW-U5-apim01.supplychain.microsoft.com",
+                        "enabled": 1,
+                        "priority": 1,
+                        "checkCert": 0
+                      },
+                      {
+                        "name": "aeu1scegwu5wafapim01",
+                        "hostname": "aeu1scegwu5wafapim01.eastus.cloudapp.azure.com",
+                        "hostHeader": "ACU1-SCE-GW-U5-apim01.supplychain.microsoft.com",
+                        "enabled": 1,
+                        "priority": 1,
+                        "checkCert": 0
+                      },
+                      {
+                        "name": "acu1scegwu5wafapim01",
+                        "hostname": "acu1scegwu5wafapim01.centralus.cloudapp.azure.com",
+                        "hostHeader": "ACU1-SCE-GW-U5-apim01.supplychain.microsoft.com",
+                        "enabled": 1,
+                        "priority": 1,
+                        "checkCert": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "APIMInfo": [
+          {
+            "name": "01",
+            "apimSku": "Premium",
+            "Subnet": "snAPIM01",
+            "virtualNetworkType": "Internal",
+            "_redisCache": "APIM01",
+            "stv1": 1,
+            "capacity": 1,
+            "_publicAccess": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snAPIM01",
+                "groupID": "Gateway"
+              }
+            ],
+            "SSLCerts": [
+              {
+                "name": "api.ppe",
+                "zone": "supplychain.microsoft.com",
+                "createCert": 1
+              },
+              {
+                "name": "edi.ppe",
+                "zone": "supplychain.microsoft.com",
+                "createCert": 1
+              }
+            ],
+            "additionalLocations": [
+              {
+                "prefix": "AEU1",
+                "Subnet": "snAPIM01",
+                "capacity": 1,
+                "_privateLinkInfo": [
+                  {
+                    "Subnet": "snAPIM01",
+                    "groupID": "Gateway"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "_LBInfo": [
+          {
+            "Name": "APIM",
+            "Sku": "Standard",
+            "Type": "Public",
+            "BackEnd": [
+              "APIM"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "APIM",
+                "PublicIP": "Static"
+              }
+            ],
+            "NATPools": [
+              // {
+              //   "Name": "RDP",
+              //   "frontendPortRangeStart": 3389,
+              //   "frontendPortRangeEnd": 4500,
+              //   "enableFloatingIP": false,
+              //   "backendPort": 3389,
+              //   "idleTimeoutInMinutes": 4,
+              //   "protocol": "Tcp",
+              //   "LBFEName": "API"
+              // }
+            ],
+            "Probes": [
+              // {
+              //   "ProbeName": "HTTP",
+              //   "LBBEProbePort": 80
+              // }
+              {
+                "ProbeName": "HTTPS",
+                "LBBEProbePort": 443,
+                "protocol": "Tcp"
+              }
+            ],
+            "Services": [
+              {
+                "LBFEName": "APIM",
+                "LBBEName": "APIM",
+                "RuleName": "APIM-HTTPS",
+                "LBFEPort": 443,
+                "LBBEPort": 443,
+                "ProbeName": "HTTPS",
+                "DirectReturn": false
+              }
+            ]
+          }
+        ],
+        "OMSSolutions": [
+          "AzureAutomation",
+          "ChangeTracking",
+          "AzureActivity",
+          "AlertManagement",
+          "SecurityInsights",
+          "AzureNSGAnalytics",
+          "NetworkMonitoring"
+        ],
+        "WAFPolicyInfo": [
+          {
+            "Name": "APIM01",
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
+            "enableBotRule": 1,
+            "customRules": [],
+            "exclusions": []
+          }
+        ],
+        "WAFInfo": [
+          {
+            "Name": "APIM01",
+            "WAFPolicyAttached": 1,
+            "WAFPolicyName": "APIM01",
+            "WAFTier": "WAF_v2",
+            "PrivateIP": "250",
+            "rewriteRuleSetCollectionName": "APIM01",
+            "SSLCerts": [
+              {
+                "name": "ACU1-SCE-GW-U5-apim01",
+                "zone": "supplychain.microsoft.com",
+                "createCert": 1
+              },
+              {
+                "name": "api.ppe",
+                "zone": "supplychain.microsoft.com",
+                "createCert": 1
+              },
+              {
+                "name": "edi.ppe",
+                "zone": "supplychain.microsoft.com",
+                "createCert": 1
+              }
+              // {
+              //   "name": "ustrl-dev",
+              //   "zone": "mp.microsoft.com",
+              //   "createCert": 1
+              // },
+              // {
+              //   "name": "ustrl-int",
+              //   "zone": "mp.microsoft.com",
+              //   "createCert": 1
+              // }
+            ],
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "application gateway"
+              }
+            ],
+            "backendAddressPools": [
+              {
+                // Add LB from each subnet to allow moving from stv1 to stv2
+                "name": "apim01",
+                "BEIPs": [
+                  {
+                    "ip": "132",
+                    "subnet": "APIM01"
+                  },
+                  {
+                    "ip": "164",
+                    "subnet": "APIM02"
+                  }
+                ]
+              }
+            ],
+            "pathRules": [],
+            "probes": [
+              {
+                "Name": "apim01",
+                "HostName": "ACU1-SCE-GW-U5-apim01.supplychain.microsoft.com",
+                "Path": "/status-0123456789abcdef",
+                "Protocol": "https",
+                "useBE": 0
+              }
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "apim01",
+                "hostnameFromBE": 0,
+                "HostName": "ACU1-SCE-GW-U5-apim01.supplychain.microsoft.com"
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": 443,
+                "Protocol": "https",
+                "Cert": "ACU1-SCE-GW-U5-apim01-supplychain-microsoft-com",
+                "Domain": "supplychain.microsoft.com",
+                "Hostname": "ACU1-SCE-GW-U5-apim01",
+                "HostnameExcludePrefix": 1,
+                "BackEnd": "apim01",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "supplychain.microsoft.com",
+                "Hostname": "ACU1-SCE-GW-U5-apim01",
+                "HostnameExcludePrefix": 1,
+                "BackEnd": "apim01",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              },
+              {
+                "Port": 443,
+                "BackendPort": 443,
+                "Protocol": "https",
+                "Cert": "api-ppe-supplychain-microsoft-com",
+                "Domain": "supplychain.microsoft.com",
+                "Hostname": "api.ppe",
+                "HostnameExcludePrefix": 1,
+                "BackEnd": "apim01",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "supplychain.microsoft.com",
+                "Hostname": "api.ppe",
+                "HostnameExcludePrefix": 1,
+                "BackEnd": "apim01",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              },
+              {
+                "Port": 443,
+                "BackendPort": 443,
+                "Protocol": "https",
+                "Cert": "edi-ppe-supplychain-microsoft-com",
+                "Domain": "supplychain.microsoft.com",
+                "Hostname": "edi.ppe",
+                "HostnameExcludePrefix": 1,
+                "BackEnd": "apim01",
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "supplychain.microsoft.com",
+                "Hostname": "edi.ppe",
+                "HostnameExcludePrefix": 1,
+                "BackEnd": "apim01",
+                "Interface": "Public",
+                "httpsRedirect": 1
+              }
+              // {
+              //   "Port": 443,
+              //   "BackendPort": 443,
+              //   "Protocol": "https",
+              //   "Cert": "ustrl-dev-mp-microsoft-com",
+              //   "Domain": "mp.microsoft.com",
+              //   "Hostname": "ustrl-dev",
+              //   "HostnameExcludePrefix": 1,
+              //   "BackEnd": "apim01",
+              //   "Interface": "Public",
+              //   "rewriteRuleSet": "deviceCare-dev"
+              // },
+              // {
+              //   "Port": 80,
+              //   "Protocol": "http",
+              //   "Domain": "mp.microsoft.com",
+              //   "Hostname": "ustrl-dev",
+              //   "HostnameExcludePrefix": 1,
+              //   "BackEnd": "apim01",
+              //   "Interface": "Public",
+              //   "httpsRedirect": 1
+              // },
+              // {
+              //   "Port": 443,
+              //   "BackendPort": 443,
+              //   "Protocol": "https",
+              //   "Cert": "ustrl-int-mp-microsoft-com",
+              //   "Domain": "mp.microsoft.com",
+              //   "Hostname": "ustrl-int",
+              //   "HostnameExcludePrefix": 1,
+              //   "BackEnd": "apim01",
+              //   "Interface": "Public",
+              //   "rewriteRuleSet": "deviceCare"
+              // },
+              // {
+              //   "Port": 80,
+              //   "Protocol": "http",
+              //   "Domain": "mp.microsoft.com",
+              //   "Hostname": "ustrl-int",
+              //   "HostnameExcludePrefix": 1,
+              //   "BackEnd": "apim01",
+              //   "Interface": "Public",
+              //   "httpsRedirect": 1
+              // }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

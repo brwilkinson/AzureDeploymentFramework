@@ -65,7 +65,7 @@
     1. Replace the 3 Characters that map to the Name of your App, in this case ABC, you can leave ABC (unless you cloned it for a different App Name).
         ```json
           "Global": {
-            "OrgName": "BRW",
+            "OrgName": "PE",
             "AppName": "AOA",
             "GlobalSA": {
               "name": "global"
@@ -175,10 +175,10 @@
             1. Updates the Global-Global.json file to do friendly name lookups for the ServicePrincipal to the objectid
                 ```powershell
                 Secret                : System.Security.SecureString
-                ServicePrincipalNames : {7e12ee90-b923-443a-94a0-7defeed41202, http://AzureDeploymentFramework_AZE2-BRW-ABC-RG-S1}
+                ServicePrincipalNames : {7e12ee90-b923-443a-94a0-7defeed41202, http://AzureDeploymentFramework_AZE2-PE-ABC-RG-S1}
                 ApplicationId         : 7e12ee90-b923-443a-94a0-7defeed41202
                 ObjectType            : ServicePrincipal
-                DisplayName           : AzureDeploymentFramework_AZE2-BRW-ABC-RG-S1
+                DisplayName           : AzureDeploymentFramework_AZE2-PE-ABC-RG-S1
                 Id                    : 29ff09fe-c261-46e9-9566-d4c834d1521f
                 Type                  :
                 
@@ -188,13 +188,13 @@
                 
                 ✓ Set secret AZE2_BRW_ABC_RG_S1 for brwilkinson/AzureDeploymentFramework
                 
-                VERBOSE: Adding Service Principal [AzureDeploymentFramework_AZE2-BRW-ABC-RG-S1] to Global-Global.json
+                VERBOSE: Adding Service Principal [AzureDeploymentFramework_AZE2-PE-ABC-RG-S1] to Global-Global.json
                 
                 benwilk@psthing.com                       : b8214ecb-d982-402b-8185-ca909b853eec
-                AzureDeploymentFramework_AZC1-BRW-ABC-RG-S1 : 39420256-6589-4a68-a777-994809dc824b
-                AzureDeploymentFramework_AZC1-BRW-ABC-RG-D2 : 494b32a2-888f-42c5-8f44-688c18f7ab04
-                AzureDeploymentFramework_AZC1-BRW-ABC-RG-T3 : 5cf9039b-2c80-4e83-86cf-c3a383e067de
-                AzureDeploymentFramework_AZE2-BRW-ABC-RG-S1 : 29ff09fe-c261-46e9-9566-d4c834d1521f
+                AzureDeploymentFramework_AZC1-PE-ABC-RG-S1 : 39420256-6589-4a68-a777-994809dc824b
+                AzureDeploymentFramework_AZC1-PE-ABC-RG-D2 : 494b32a2-888f-42c5-8f44-688c18f7ab04
+                AzureDeploymentFramework_AZC1-PE-ABC-RG-T3 : 5cf9039b-2c80-4e83-86cf-c3a383e067de
+                AzureDeploymentFramework_AZE2-PE-ABC-RG-S1 : 29ff09fe-c261-46e9-9566-d4c834d1521f
                 ```
 1. That now completes the Setup
     1. however we can now work on ensuring the correct Workflows are present
@@ -207,7 +207,7 @@
         ```json
         "SPInfo": [
                   {
-                    "Name": "AzureDeploymentFramework_AZC1-BRW-ABC-RG-S1",
+                    "Name": "AzureDeploymentFramework_AZC1-PE-ABC-RG-S1",
                     "RBAC": [
                       {
                         "Name": "Contributor"

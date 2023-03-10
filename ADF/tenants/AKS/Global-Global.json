@@ -1,0 +1,91 @@
+{
+  "Global": {
+    "OrgName": "PE",
+    "AppName": "AKS",
+    "GlobalSA": {
+      "name": "global"
+    },
+    "GlobalRG": {
+      "name": "G1"
+    },
+    "AppId": 4,
+    "Network": {
+      "first": 10,
+      "second": 248,
+      "third": 248
+    },
+    "PrimaryLocation": "EastUS2",
+    "SecondaryLocation": "CentralUS",
+    "vmAdminUserName": "brw",
+    "sqlCredentialName": "sqladmin",
+    "MicrosoftCAThumbprints": [
+      "2f2877c5d778c31e0f29c7e371df5471bd673173",
+      "30e01761ab97e59a06b41ef20af6f2de7ef4f7b0",
+      "6c3af02e7f269aa73afd0eff2a88a4a1f04ed1e5",
+      "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
+    ],
+    "ADDomainName": "sceplatform.microsoft.com",
+    "DomainName": "sceplatform.microsoft.com",
+    "DomainNameExt": "supplychain.microsoft.com",
+    "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtRG": "ACU1-PE-AOA-RG-G1",
+    "ADOProject": "ADF",
+    "AZDevOpsOrg": "AzureDeploymentFramework",
+    "ServicePrincipalAdmins": [
+      "BenWilkinson-ALT",
+      "MilindBishen-ALT",
+      "SatishNaidi-ALT",
+      "KrishnaNukala-ALT"
+    ],
+    "apimPublisherEmail": "benwilk@microsoft.com",
+    "alertRecipients": [
+      "benwilk@microsoft.com",
+      "mibishen@microsoft.com",
+      "satishnaidi@microsoft.com",
+      "krnukala@microsoft.com"
+    ],
+    "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
+    "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
+    "ObjectIdLookup": {
+      "BenWilkinson": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "BenWilkinson-ALT": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
+      "ImranUllah": "c751aa7d-a858-4902-802b-ff07d295f2ac",
+      "ImranUllah-ALT": "3622f545-8064-4cc9-afe9-ed3e8737ce97",
+      "MilindBishen": "0df8a4c3-80b2-4c1f-80dd-31a4ef21bf1b",
+      "MilindBishen-ALT": "607b0346-1be6-48e0-8ff3-83cb099be536",
+      "KrishnaNukala": "48bb4a17-5a0e-462c-8651-2fdd2faeceba",
+      "KrishnaNukala-ALT": "2f79b28a-f6c1-46e6-a696-1edb4a518afc",
+      "PreranaPrajapat": "7fb01877-c2c6-4709-b81f-9eb26bf5faf5",
+      "PreranaPrajapat-ALT": "b995f034-767e-475a-acb0-2aaf2e884424",
+      "SatishNaidi": "c75cfbb7-c008-4697-bdca-44576214d811",
+      "SatishNaidi-ALT": "11be5431-a2bd-4ee6-bcd2-4d52eb14ebfa",
+      "SaurabhBhargava": "f35c57b9-4277-4dec-b319-3b61810f19ba",
+      "SaurabhBhargava-ALT": "7f8c0f16-6187-4b6e-9e6e-e59155d41ce2",
+      "RaajavelChandrasekar": "4d01b033-98d9-4509-84e5-2817eee3227b",
+      "RaajavelChandrasekar-ALT": "2d213cf8-075e-40b9-9f03-defd8e27d274",
+      "ManishSharma": "3a92a27a-3bfe-4576-af2e-0e17ec5dce34",
+      "ManishSharma-ALT": "42e6fa9b-56b2-4acc-86ee-2393ece090ec",
+      "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
+      "AKS_Admins": "7dd0250b-e8b2-408a-b9cc-691dda6eca47",
+      "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
+      "Microsoft.AzureFrontDoor-Cdn": "4dbab725-22a4-44d5-ad44-c267ca38a954",
+      "Microsoft.Azure.CertificateRegistration": "ed47c2a1-bd23-4341-b39c-f4fd69138dd3",
+      "MicrosoftAzureAppService": "f8daea97-62e7-4026-becf-13c2ea98e8b4",
+      "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
+      "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
+      "SCE_PEF_SEC_DEV": "93964b9a-518a-4408-909f-87d5f821ff3e",
+      "SCE_PEF_SEC": "8bd51676-7936-448c-9339-5364777937d2",
+      "DataMapAgent001": "8d9606ff-585b-421a-afee-188d2497c7c7",
+      "DataMapAgentBlueshift001": "e393dddc-7d32-4c92-8619-23578f8de85d",
+      "Supply_Chain_AKS_Cluster_Super_Admins_PROD": "5ed4bc10-2faf-4567-955b-37d0fde64761",
+      "Supply_Chain_AKS_Super_Admins_SIT": "cf8f836e-e108-4c47-bbf9-4a861f9738fc",
+      "Supply_Chain_AKS_Super_Admins_UAT": "0d7325ee-f5bf-45b1-b207-ad9006a78948",
+      "AKS_Default_SG": "117cf14f-164c-4a5f-b463-b2ae20348a14",
+      "SCE_AKS_Team": "7dd0250b-e8b2-408a-b9cc-691dda6eca47",
+      "Supply_Chain_AKS_Platform_Team": "ee8df657-03cf-4377-b2c6-49b9d9b36255",
+      "ADO_BRW_AEU2-SCE-AKS-RG-G0": "354414f8-6d67-4156-b1e7-5c0a58162b18",
+      "ADO_BRW_AEU2-SCE-AKS-RG-P0": "9845bd34-b6ce-4f89-844d-986f21d66a25"
+    }
+  }
+}

@@ -1,8 +1,8 @@
-$DNSRG = 'ACU1-BRW-AOA-RG-G1'
+$DNSRG = 'ACU1-PE-AOA-RG-G1'
 $zone = 'psthing.com'
 
 # cleanup FrontDoor Dangling DNS
-$fdname = 'acu1-brw-haa-d3-afd02.azurefd.net'
+$fdname = 'acu1-pe-haa-d3-afd02.azurefd.net'
 $fdname = 'azurefd.net'
 Get-AzDnsRecordSet -ResourceGroupName $DNSRG -ZoneName $zone -RecordType CNAME | 
     where {$_.records[0].cname -match $fdname} | 

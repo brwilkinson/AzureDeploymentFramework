@@ -1,0 +1,70 @@
+trigger: none
+  # batch: "true"
+  # branches:
+  #   include: [users/benwilk/shared]
+  # tags:
+  #   exclude: [NoBuild]
+
+parameters:
+  - name: STAGE
+    displayName: Deployment Stage
+    type: string
+    default: APIM
+    values:
+      - 00-ALL-SUB
+      - 01-ALL-RG
+      - WAF
+      - SA
+      - APIM
+      - REDIS
+      - KV
+      - VNET
+      - LB
+
+  - name: CN
+    displayName: CN
+    type: string
+    default: '01'
+    values:
+      - '.'
+      - diag
+      - App01
+      - APIM01
+      - '01'
+      - APIM
+
+  - name: CN2
+    displayName: CN2
+    type: string
+    default: '.'
+    values:
+      - '.'
+      - acu1brwpstd2sadata1
+      - sitscriptstorageaccnt
+
+variables:
+  ORG: PE
+  APP: PST
+
+  PREFIX: AWCU
+  ENV: D3
+
+  ADOProject: ADO_BRW
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: AOA
+
+stages:
+  - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+    jobs:
+      - template: ..\..\..\.ado\ado-pipelines-STAGE.yml
+        parameters:
+          ORG:        ${{ variables.ORG }}
+          APP:        ${{ variables.APP }}
+          APPPRIMARY: ${{ variables.APPPRIMARY}}
+          PREFIX:     ${{ variables.PREFIX }}
+          ENV:        ${{ variables.ENV }}
+          SP:         ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+          SPG0:       ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG
+          STAGE:      ${{ parameters.STAGE }}
+          CN:         ${{ parameters.CN }}
+          CN2:        ${{ parameters.CN2 }}

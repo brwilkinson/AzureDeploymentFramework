@@ -15,22 +15,25 @@
       "value": {
         "RG": 1,
         "RBAC": 1,
+        "PIM": 0,
         "UAI": 1,
-        "SP": 0,
+        "SP": 1,
         "KV": 1,
         "OMS": 1,
+        "DASHBOARD": 0,
         "OMSSolutions": 1,
         "OMSDataSources": 1,
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
         "SA": 1,
-        "CDN": 0,
-        "StorageSync": 0,
-        "RSV": 1,
+        "ACR": 0,
+        "RSV": 0,
         "NSG": 1,
         "NetworkWatcher": 1,
         "FlowLogs": 1,
         "VNet": 1,
+        "DNSResolver": 1,
+        "VNetDDOS": 0,
         "VNetPeering": 0,
         "DNSPrivateZone": 1,
         "DNSPublicZone": 0,
@@ -44,37 +47,11 @@
         "ERGW": 0,
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "LB": 0,
-        "InitialDOP": 0,
-        "VMApp": 0,
-        "VMAppLinux": 0,
-        "VMSQL": 0,
-        "VMFILE": 0,
-        "VMSS": 0,
-        "WAFPOLICY": 0,
-        "FRONTDOOR": 0,
-        "WAF": 0,
         "SetExternalDNS": 0,
-        "SetInternalDNS": 0,
-        "APPCONFIG": 0,
-        "REDIS": 0,
-        "APIM": 0,
-        "ACR": 0,
-        "ACI": 0,
-        "AKS": 0,
-        "SQLMI": 0,
-        "CosmosDB": 0,
-        "DASHBOARD": 1,
-        "ServerFarm": 0,
-        "WebSite": 0,
-        "WebSiteContainer": 0,
-        "ManagedEnv": 0,
-        "ContainerApp": 0,
-        "MySQLDB": 0,
-        "Function": 0,
-        "SB": 0,
-        "AzureSYN": 0,
-        "AzureSQL": 0
+        "SetInternalDNS": 1,
+        "CloudTestAccount": 1,
+        "CloudTestImages": 1,
+        "CloudTestHostedPool": 1
       }
     },
     "Extensions": {
@@ -93,7 +70,7 @@
         "MSI": 1,
         "CertMgmt": 0,
         "DomainJoin": 0,
-        "AADLogin": 1,
+        "AADLogin": 0,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
         "SqlIaasExtension": 0,
@@ -103,6 +80,28 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
+          {
+            "name": "Global",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+              //Manually Add Owner to this Managed identity run all Global Deployments on the 
+              // 1ES Hosted DevOps Agents to replace G0 Service Principal.
+            ]
+          },
+          {
+            "name": "DNSZoneManager",
+            "RBAC": []
+          },
+          {
+            "Name": "CertificatePolicy",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              }
+            ]
+          },
           {
             "name": "StorageAccountFileContributor",
             "RBAC": [
@@ -180,10 +179,42 @@
               }
             ]
           }
+          // {
+          //   "name": "MonitoringReader",
+          //   "RBAC": [
+          //     {
+          //       "Name": "Monitoring Reader"
+          //     },
+          //     {
+          //       "Name": "Monitoring Reader",
+          //       "RG": "D3",
+          //       "Tenant": "PST",
+          //       "Prefix": "AWCU"
+          //     },
+          //     {
+          //       "Name": "Monitoring Reader",
+          //       "RG": "D4",
+          //       "Tenant": "PST",
+          //       "Prefix": "ACU1"
+          //     },
+          //     {
+          //       "Name": "Monitoring Reader",
+          //       "RG": "D1",
+          //       "Tenant": "PST",
+          //       "Prefix": "ACU1"
+          //     },
+          //     {
+          //       "Name": "Monitoring Reader",
+          //       "RG": "D2",
+          //       "Tenant": "PST",
+          //       "Prefix": "ACU1"
+          //     }
+          //   ]
+          // }
         ],
         "rolesInfo": [
           {
-            "Name": "BW",
+            "Name": "BenWilkinson",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -193,6 +224,28 @@
               },
               {
                 "Name": "Virtual Machine Administrator Login"
+              },
+              {
+                "Name": "Grafana Admin"
+              }
+            ]
+          },
+                    {
+            "Name": "MilindBishen",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
+          {
+            "Name": "SimonAdams",
+            "RBAC": [
+              {
+                "Name": "Key Vault Administrator"
+              },
+              {
+                "Name": "Grafana Admin"
               }
             ]
           },
@@ -203,9 +256,27 @@
                 "Name": "Key Vault Administrator"
               }
             ]
+          },
+          {
+            "Name": "SushmitaDas",
+            "RBAC": [
+              {
+                "Name": "Security Admin"
+              }
+            ]
           }
         ],
         "SPInfo": [
+          {
+            "Name": "1ES_Resource_Management", // for 1ES container images to get secret for ACR image pull
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "AOA"
+              }
+            ]
+          },
           {
             "Name": "Microsoft.AzureFrontDoor-Cdn",
             "RBAC": [
@@ -240,140 +311,141 @@
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
-                "Name": "ACRPush"
+                "Name": "CSEO DevOps Role"
               },
               {
-                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
-              }
-            ]
-          },
-          {
-            "Name": "GH_{GHProject}_{RGNAME}",
-            "RBAC": [
-              {
-                "Name": "Contributor"
+                "Name": "DeploymentScripts_Contributor"
               },
               {
-                "Name": "User Access Administrator"
+                "Name": "CloudTest_Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
+              },
+              {
+                "Name": "Monitoring Contributor"
               },
               {
                 "Name": "Reader and Data Access",
                 "RG": "G1",
+                "Prefix": "ACU1",
                 "Tenant": "AOA"
               },
               {
                 "Name": "Storage Account Key Operator Service Role",
                 "RG": "G1",
+                "Prefix": "ACU1",
                 "Tenant": "AOA"
               },
               {
                 "Name": "Log Analytics Contributor",
                 "RG": "G1",
+                "Prefix": "ACU1",
                 "Tenant": "AOA"
               },
               {
-                "Name": "Automation_Account_Contributor",
-                "RG": "P0",
-                "Tenant": "AOA"
+                "Name": "Key Vault Secrets User"
               },
               {
-                "Name": "Key_Vault_Reader",
-                "RG": "P0",
-                "Tenant": "AOA"
-              },
-              {
-                "Name": "Key Vault Secrets User",
-                "RG": "P0",
-                "Tenant": "AOA"
-              },
-              {
-                "Name": "Network Contributor",
-                "RG": "P0",
-                "Tenant": "AOA"
-              },
-              {
-                "Name": "DNS Zone Contributor",
-                "RG": "P0",
-                "Tenant": "AOA"
-              },
-              {
-                "Name": "DNS Zone Contributor",
-                "RG": "P0",
-                "Tenant": "AOA",
-                "PREFIX": "AEU2"
+                "Name": "Network Contributor"
               }
             ]
           }
         ],
         //  in Secondary Hub, override peer (primary) Hub
         "hubRegionPrefix": "ACU1",
-        "SubnetInfo": [
+        "SubnetInfo": [ // 8 * /27 + 3 * /23
           {
-            "name": "snWAF01",
+            "name": "snDNS01",
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1
-          },
-          {
-            "name": "snFE01",
-            "prefix": "32/27",
-            "NSG": 1,
-            "Route": 0,
-            "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.Network/dnsResolvers"
           },
           {
             "name": "snAD01",
-            "prefix": "64/28",
+            "prefix": "32/27",
             "NSG": 1,
-            "Route": 0,
-            "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1
-          },
-          {
-            "name": "snBE01",
-            "prefix": "80/28",
-            "NSG": 1,
-            "Route": 0,
-            "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1
-          },
-          {
-            "name": "AzureBastionSubnet",
-            "prefix": "96/27",
-            "NSG": 1,
-            "Route": 0,
-            "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1
-          },
-          {
-            "name": "AzureFirewallSubnet",
-            "prefix": "128/26",
-            "NSG": 0
-          },
-          {
-            "name": "GatewaySubnet",
-            "prefix": "192/27",
-            "NSG": 0
-          },
-          {
-            "name": "snMT01",
-            "prefix": "224/27",
-            "NSG": 1,
-            "Route": 0,
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1
           },
           {
             "name": "snMT02",
-            "prefix": "0/24",
+            "prefix": "64/27",
             "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snMT03",
+            "prefix": "96/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.ContainerInstance/containerGroups"
+          },
+          {
+            "name": "GatewaySubnet",
+            "prefix": "128/26",
+            "NSG": 0,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "192/26",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "AzureFirewallSubnet",
+            "prefix": "0/24",
+            "NSG": 0,
             "Route": 0,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snFE01",
+            "prefix": "0/23",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snMT01",
+            "prefix": "0/23",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
+          {
+            "name": "snBE01",
+            "prefix": "0/23",
+            "NSG": 1,
+            "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1
           }
         ],
+        "DNSServers": [
+          "10.176.248.4"
+        ],
+        "DNSResolverInfo": {
+          "name": "01",
+          "SN": "snDNS01"
+          // "PrivateIP": "10" // not supported at this time default to .4
+        },
+        "BastionInfo": {
+          "name": "HST01",
+          "enableTunneling": 1,
+          "scaleUnits": 2
+        },
         "networkWatcherInfo": {
           "name": "networkwatcher"
         },
@@ -435,7 +507,7 @@
           },
           {
             "linkDNS": 1,
-            "zone": "privatelink.eastus2.azmk8s.io",
+            "zone": "privatelink.{region}.azmk8s.io",
             "Autoregistration": false
           },
           {
@@ -496,7 +568,7 @@
                 "groupID": "vault"
               }
             ],
-            "rolesInfo": [
+            "_rolesInfo": [
               {
                 "Name": "MicrosoftAzureAppService",
                 "RBAC": [
@@ -505,8 +577,48 @@
                   }
                 ]
               }
+            ],
+            "CertIssuerInfo": [
+              {
+                "name": "DigiCert",
+                "provider": "DigiCert"
+              },
+              {
+                "name": "GlobalSign",
+                "provider": "GlobalSign"
+              }
             ]
           }
+        ],
+        "OMSSolutions": [
+          "AzureAutomation",
+          "ChangeTracking",
+          "AzureActivity",
+          "DnsAnalytics",
+          "AlertManagement",
+          "NetworkMonitoring",
+          "InfrastructureInsights",
+          "VMInsights",
+          "SecurityInsights",
+          // testing
+          "WindowsDefenderATP",
+          "KeyVaultAnalytics",
+          "BehaviorAnalyticsInsights",
+          "ServiceFabric"
+          // disabled
+          // "Updates",
+          // "AgentHealthAssessment",
+          // "ADAssessment",
+          // "ADReplication",
+          // "SQLAssessment",
+          // "AntiMalware",
+          // "AzureWebAppsAnalytics",
+          // "CapacityPerformance",
+          // "Containers",
+          // "ContainerInsights",
+          // "SQLAdvancedThreatProtection",
+          // "AzureSQLAnalytics",
+          // "AzureNSGAnalytics"
         ],
         "azRelayInfo": [
           {
@@ -519,87 +631,95 @@
             ]
           }
         ],
-        "VNGWInfo": [
+        "GrafanaInfo": [
           {
-            "Name": "VNGW01",
-            "skuname": "VpnGw2",
-            "skutier": "VpnGw2",
-            "gatewayType": "VPN",
-            "vpnType": "RouteBased",
-            "vpnGen": "Generation2",
-            "localNetworkGateway": {
-              "name": "PSO",
-              "gatewayIpAddress": "52.154.217.25",
-              "addressPrefixes": [
-                "10.0.128.0/20"
-              ],
-              "bgpEnabled": 1,
-              "bgpSettings": {
-                "asn": 65514,
-                "bgpPeeringAddress": "10.0.144.222",
-                "peerWeight": 0
-              }
-            },
-            "ConnectionOptions": {
-              "EnableConnection": 1,
-              "sharedKey": "ApplesForBreakfast" // you likely want a param for this from KV
-            }
+            "Name": "01",
+            "Identity": "Default"
           }
         ],
-        "RTInfo": [
+        "CloudTestAccountInfo": [
           {
-            "Name": "Hub",
-            "Routes": [
-              {
-                "Name": "Default-Azure-FW",
-                "addressPrefix": "0.0.0.0/0",
-                "nextHopIpAddress": "FW01",
-                "nextHopType": "VirtualAppliance"
-              }
+            "Name": "01",
+            "accessControlUsers": [
+              "benwilk@microsoft.com",
+              "sibgeorg@microsoft.com"
+            ],
+            "systemAccounts": []
+          }
+        ],
+        "CloudTestImageInfo": [
+          {
+            "Name": "MMSUbuntu22.04-Secure",
+            "imageType": "SharedGallery"
+          },
+          {
+            "Name": "MMSWindows2022-Secure",
+            "imageType": "SharedGallery"
+          }
+          //  https://eng.ms/docs/cloud-ai-platform/devdiv/one-engineering-system-1es/1es-docs/1es-hosted-azure-devops-pools/containers
+          //  Currently no support for Managed Identity
+          // {
+          //   "Name": "onebranch-windows-ltsc2022-vse2022",
+          //   "imageType": "Container",
+          //   "image": "onebranch.azurecr.io/windows/ltsc2022/vse2022:latest",
+          //   "subscriptionId": "",
+          //   "osType": "windows"
+
+          // }
+        ],
+        "CloudTestDevOpsPoolInfo": [
+          {
+            "Name": "01",
+            "Role": "Global",
+            "ImageName": "MMSUbuntu22.04-Secure",
+            "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
+            "skuTier": "Premium",
+            "vmProvider": "vm",
+            "maxPoolSize": 15,
+            "VssAdminAccounts": [
+              "benwilk@microsoft.com",
+              "sibgeorg@microsoft.com"
             ]
-          }
-        ],
-        "ERGWInfo": [
+          },
           {
-            "Name": "ERGW",
-            "skuname": "ErGw2AZ",
-            "skutier": "ErGw2AZ",
-            "skucapacity": 2,
-            "gatewayType": "ExpressRoute",
-            "vpnType": "PolicyBased",
-            "ERConnectionOptions": {
-              "EREnableConnection": false,
-              "peerid": "/subscriptions/e17fe3b9-caf3-4e15-9437-30089ea78f1e/resourceGroups/PROD_Azure_EUS_Network_RG/providers/Microsoft.Network/expressRouteCircuits/PROD_Azure_ER_EUS",
-              "authorizationKeyold": "[parameters('ERAuthKey')]",
-              "authorizationKey": "abc",
-              "connectionType": "ExpressRoute"
-            }
-          }
-        ],
-        "FWInfo": [
+            "Name": "02",
+            "Role": "Global",
+            "ImageName": "MMSWindows2022-Secure",
+            "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
+            "skuTier": "Premium",
+            "vmProvider": "vm",
+            "maxPoolSize": 15,
+            "VssAdminAccounts": [
+              "benwilk@microsoft.com",
+              "sibgeorg@microsoft.com"
+            ]
+          },
+          //  https://eng.ms/docs/cloud-ai-platform/devdiv/one-engineering-system-1es/1es-docs/1es-hosted-azure-devops-pools/containers
+          //  Currently no support for Managed Identity with AciSku
+          // {
+          //   "Name": "03",
+          //   "Role": "Global",
+          //   "ImageName": "onebranch-windows-ltsc2022-vse2022",
+          //   "skuName": "AciSku",
+          //   "skuTier": "Standard",
+          //   "vmProvider": "aci",
+          //   "maxPoolSize": 15,
+          //   "AcrClientId": "ToDo",
+          //   "AcrClientSecretName": "ToDo"
+          // },
           {
-            "Name": "FW01",
-            "threatIntelMode": "Alert"
-          }
-        ],
-        "natRulesInfo": [
-          {
-            "Name": "JMP01",
-            "priority": "20000",
-            "actionType": "DNAT",
-            "rule": {
-              "name": "JMP01-RDP-Allow",
-              "sourceAddresses": [
-                "73.157.100.227"
-              ],
-              "destinationPorts": [
-                "3389"
-              ],
-              "protocols": [
-                "Any"
-              ],
-              "translatedAddress": "172.16.137.62"
-            }
+            "Name": "UBU01",
+            "Role": "None",
+            "ImageName": "MMSUbuntu22.04-Secure",
+            "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
+            "skuTier": "Premium",
+            "vmProvider": "vm",
+            "maxPoolSize": 15,
+            "VssAdminAccounts": [
+              "benwilk@microsoft.com",
+              "sibgeorg@microsoft.com",
+              "mibishen@microsoft.com"
+            ]
           }
         ],
         "ASRInfo": [
@@ -619,6 +739,7 @@
         ],
         "Appservers": {
           "ADPrimary": [
+            // move back to AD Domain because of conditional access policies
             {
               "Name": "DC01",
               "Role": "ADp",
@@ -630,7 +751,7 @@
               "Zone": 1,
               "NICs": [
                 {
-                  "Subnet": "AD01",
+                  "Subnet": "snAD01",
                   "Primary": 1,
                   "StaticIP": "75"
                 }
@@ -638,6 +759,7 @@
             }
           ],
           "ADSecondary": [
+            // move back to AD Domain because of conditional access policies
             {
               "Name": "DC02",
               "Role": "ADs",
@@ -648,7 +770,7 @@
               "Zone": 2,
               "NICs": [
                 {
-                  "Subnet": "AD01",
+                  "Subnet": "snAD01",
                   "Primary": 1,
                   "StaticIP": "76"
                 }

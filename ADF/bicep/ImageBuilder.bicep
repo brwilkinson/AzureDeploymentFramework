@@ -357,7 +357,7 @@ resource SetImageBuild 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for
 //       source: {
 //         // uri: 
 //         // id: IMG[index].id //resourceId('Microsoft.Compute/galleries/images', '${image[index].imageName}')
-//         // /subscriptions/{subscriptionguid}/resourceGroups/ACU1-BRW-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore01
+//         // /subscriptions/{subscriptionguid}/resourceGroups/ACU1-PE-AOA-RG-G1/providers/Microsoft.Compute/galleries/acu1brwaoag1gallery01/images/vmss2019webnetcore01
 //       }
 //     }
 //   }
