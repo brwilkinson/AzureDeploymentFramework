@@ -13,7 +13,7 @@
     },
     "Stage": {
       "value": {
-        "RoleDefinition": 1,
+        "RoleDefinition": 0,
         "Security": 0,
         "RBAC": 0,
         "PIM": 0,
@@ -29,40 +29,27 @@
         "PIMInfo": [],
         // Manually add Owner on this service principal
         "SPInfo": [],
-        // "SecurityPricingInfo": {
-        //   "Standard": [
-        //     "VirtualMachines",
-        //     "SqlServers",
-        //     "AppServices",
-        //     "StorageAccounts",
-        //     "SqlServerVirtualMachines",
-        //     "KeyVaults",
-        //     "Dns",
-        //     "Arm",
-        //     "Containers",
-        //     "OpenSourceRelationalDatabases",
-        //     "CosmosDbs"
-        //   ],
-        //   "Free": [
-        //     "KubernetesService",
-        //     "ContainerRegistry",
-        //     "CloudPosture"
-        //   ]
-        // },
-        "RoleDefinitionsInfo": [
-          {
-            "RoleName": "PE_AKS_Contributor",
-            "description": "Allow actions not in DevOps Role",
-            "notActions": [],
-            "actions": [
-              "Microsoft.Resources/deploymentScripts/*",
-              "Microsoft.ContainerInstance/containerGroups/*",
-              "Microsoft.CloudTest/accounts/*",
-              "Microsoft.CloudTest/images/*",
-              "Microsoft.CloudTest/hostedpools/*"
-            ]
-          }
-        ]
+        "SecurityPricingInfo": {
+          "Standard": [
+            "VirtualMachines",
+            "SqlServers",
+            "AppServices",
+            "StorageAccounts",
+            "SqlServerVirtualMachines",
+            "KeyVaults",
+            "Dns",
+            "Arm",
+            "Containers",
+            "OpenSourceRelationalDatabases",
+            "CosmosDbs"
+          ],
+          "Free": [
+            "KubernetesService",
+            "ContainerRegistry",
+            "CloudPosture"
+          ]
+        },
+        "RoleDefinitionsInfo": []
       }
     }
   }

@@ -230,14 +230,6 @@
               }
             ]
           },
-                    {
-            "Name": "MilindBishen",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
           {
             "Name": "SimonAdams",
             "RBAC": [
@@ -254,14 +246,6 @@
             "RBAC": [
               {
                 "Name": "Key Vault Administrator"
-              }
-            ]
-          },
-          {
-            "Name": "SushmitaDas",
-            "RBAC": [
-              {
-                "Name": "Security Admin"
               }
             ]
           }
@@ -659,12 +643,11 @@
           //  https://eng.ms/docs/cloud-ai-platform/devdiv/one-engineering-system-1es/1es-docs/1es-hosted-azure-devops-pools/containers
           //  Currently no support for Managed Identity
           // {
-          //   "Name": "onebranch-windows-ltsc2022-vse2022",
+          //   "Name": "mcr-windows-ltsc2022-vse2022",
           //   "imageType": "Container",
-          //   "image": "onebranch.azurecr.io/windows/ltsc2022/vse2022:latest",
+          //   "image": "mcr.azurecr.io/windows/ltsc2022/vse2022:latest",
           //   "subscriptionId": "",
           //   "osType": "windows"
-
           // }
         ],
         "CloudTestDevOpsPoolInfo": [
@@ -681,12 +664,11 @@
               "simadams@psthing.com"
             ]
           },
-          //  https://eng.ms/docs/cloud-ai-platform/devdiv/one-engineering-system-1es/1es-docs/1es-hosted-azure-devops-pools/containers
           //  Currently no support for Managed Identity with AciSku
           // {
           //   "Name": "03",
           //   "Role": "Global",
-          //   "ImageName": "onebranch-windows-ltsc2022-vse2022",
+          //   "ImageName": "mcr-windows-ltsc2022-vse2022",
           //   "skuName": "AciSku",
           //   "skuTier": "Standard",
           //   "vmProvider": "aci",

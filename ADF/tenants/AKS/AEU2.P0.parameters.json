@@ -148,30 +148,6 @@
             "VssAdminAccounts": [
               "benwilk@psthing.com"
             ]
-          },
-          {
-            "Name": "WIN01",
-            "Role": "None",
-            "ImageName": "MMSWindows2022-Secure",
-            "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
-            "skuTier": "Premium",
-            "vmProvider": "vm",
-            "maxPoolSize": 15,
-            "VssAdminAccounts": [
-              "benwilk@psthing.com"
-            ]
-          },
-          {
-            "Name": "UBU01",
-            "Role": "None",
-            "ImageName": "MMSUbuntu22.04-Secure",
-            "skuName": "Standard_D4s_v3", // https://msit.powerbi.com/groups/me/reports/939367b4-36cd-4fe9-b8fe-f1923e2a1a28/ReportSection?experience=power-bi
-            "skuTier": "Premium",
-            "vmProvider": "vm",
-            "maxPoolSize": 15,
-            "VssAdminAccounts": [
-              "benwilk@psthing.com"
-            ]
           }
         ]
       }
