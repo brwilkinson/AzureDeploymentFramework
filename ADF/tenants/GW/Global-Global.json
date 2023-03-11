@@ -1,6 +1,6 @@
 {
   "Global": {
-    "OrgName": "PE",
+    "OrgName": "PE", //<--- Change this to your unique 2 or 3 letter OrgName
     "AppName": "GW",
     "GlobalSA": {
       "name": "global"

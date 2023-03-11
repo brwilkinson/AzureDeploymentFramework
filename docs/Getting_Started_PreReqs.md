@@ -39,7 +39,7 @@
     1. Replace the 3 Characters that map to the Name of your App e.g. HUB
         ```json
         "Global": {
-            "OrgName": "PE", // "3-Letter-Company-Name"
+            "OrgName": "PE", //<--- Change this to your unique 2 or 3 letter OrgName // "3-Letter-Company-Name"
                               // e.g. This is required to ensure all public resources have a unique name
                               // This should stay the same across ALL Tenants, 
                               // only the AppName will change, be sure to keep OrgName consistent

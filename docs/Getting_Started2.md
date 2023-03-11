@@ -65,7 +65,7 @@
     1. Replace the 3 Characters that map to the Name of your App, in this case ABC, you can leave ABC (unless you cloned it for a different App Name).
         ```json
           "Global": {
-            "OrgName": "PE",
+            "OrgName": "PE", //<--- Change this to your unique 2 or 3 letter OrgName
             "AppName": "AOA",
             "GlobalSA": {
               "name": "global"

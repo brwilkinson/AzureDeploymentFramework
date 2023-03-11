@@ -165,7 +165,7 @@ The name of any resource is determined via the following method.
     ```json
     "Global": {
         "hubSubscriptionID": "1f0713fe-9b12-4c8f-ab0c-26aba7aaa3e5", // Optional if different from current
-        "OrgName": "FAB",
+        "OrgName": "PE", //<--- Change this to your unique 2 or 3 letter OrgName
         "AppName": "HUB",
     ```
     - The references to these can be seen above on the Deployment variable
