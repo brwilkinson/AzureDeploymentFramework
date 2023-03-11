@@ -14,8 +14,8 @@
       "second": 248,
       "third": 248
     },
-    "PrimaryLocation": "EastUS2",
-    "SecondaryLocation": "CentralUS",
+    "PrimaryLocation": "CentralUS",
+    "SecondaryLocation": "EastUS2",
     "vmAdminUserName": "brw",
     "sqlCredentialName": "sqladmin",
     "MicrosoftCAThumbprints": [

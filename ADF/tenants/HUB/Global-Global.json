@@ -17,7 +17,7 @@
     "PrimaryLocation": "CentralUS",
     "SecondaryLocation": "EastUS2",
     "IPAddressforRemoteAccess": [
-      "67.160.127.18/32"
+      "62.162.123.81/32"
     ],
     "vmAdminUserName": "brw",
     "sqlCredentialName": "sqladmin",
