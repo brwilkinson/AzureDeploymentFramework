@@ -1236,22 +1236,6 @@
       "Id": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
       "Description": "Can read all monitoring data."
     },
-    "MSFT BENWILK AIRS 1 DevOps Role": {
-      "Id": "4ad6cce9-207a-524e-ab87-4385180ec282",
-      "Description": "DSRE-approved custom role for MSFT BENWILK AIRS 1 Developers in compliance with PTA (Protect the Admin) and LPA (Least Privileged Access) guidelines."
-    },
-    "MSFT BENWILK AIRS 2 DevOps Role": {
-      "Id": "ccdd343c-b38c-5db2-8722-16912f99463d",
-      "Description": "DSRE-approved custom role for MSFT BENWILK AIRS 2 Developers in compliance with PTA (Protect the Admin) and LPA (Least Privileged Access) guidelines."
-    },
-    "MSFT BENWILK AIRS 3 DevOps Role": {
-      "Id": "f12e0d67-28fc-5e71-b40b-6a2b7266a2b1",
-      "Description": "DSRE-approved custom role for MSFT BENWILK AIRS 3 Developers in compliance with PTA (Protect the Admin) and LPA (Least Privileged Access) guidelines."
-    },
-    "MSFT BENWILK AIRS 4 DevOps Role": {
-      "Id": "6c1ccd67-b308-593d-8711-b80fc9183291",
-      "Description": "DSRE-approved custom role for MSFT BENWILK AIRS 4 Developers in compliance with PTA (Protect the Admin) and LPA (Least Privileged Access) guidelines."
-    },
     "Network Contributor": {
       "Id": "4d97b98b-1d4f-4787-a291-c67834d212e7",
       "Description": "Lets you manage networks, but not access to them."

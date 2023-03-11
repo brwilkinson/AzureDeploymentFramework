@@ -141,7 +141,6 @@
             "notActions": [],
             "actions": [
               "Microsoft.ProviderHub/*",
-              // "Private.SupplyChainDevice/*",    // no provider registered
               "Microsoft.Resources/deployments/*"
             ]
           },
