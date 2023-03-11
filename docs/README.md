@@ -7,7 +7,7 @@
 - V1 in armjson branch - created 2022
 
 #### This project is currently in Preview. [[ADF Source]](https://github.com/brwilkinson/AzureDeploymentFramework)
-- If you have previously forked this project, I recommend to pull in recent commits [Feb 2022]
+- If you have previously forked this project, I recommend to pull in recent commits [Mar 2023]
 - The project setup steps have been streamlined.
 
 * * *
