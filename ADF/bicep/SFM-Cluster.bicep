@@ -129,7 +129,6 @@ resource LB 'Microsoft.Network/loadBalancers@2021-05-01' existing = [for (nt, in
   name: '${Deployment}-lb${nt.LB.Name}'
 }]
 
-#disable-next-line BCP081
 resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-10-01-preview' = {
   name: sfmname
   location: resourceGroup().location
@@ -141,7 +140,7 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-10-01-preview' = {
     // 'hidden-title': sfmname
   }
   properties: {
-    useCustomVNet: true
+    useCustomVnet: true
     loadBalancingRules: primaryNodeLBRules
     // clusterCodeVersion: '8.2.1486.9590'
     clusterUpgradeMode: 'Automatic'

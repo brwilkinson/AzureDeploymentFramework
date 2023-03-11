@@ -208,12 +208,6 @@ var userAssignedIdentities = {
   }
 }
 
-var azureActiveDirectory = {
-  clientApplication: Global.clientApplication
-  clusterApplication: Global.clusterApplication
-  tenantId: subscription().tenantId
-}
-
 var WAFBE = contains(AppServer, 'WAFBE') ? AppServer.WAFBE : []
 var LBBE = contains(AppServer, 'LBBE') ? AppServer.LBBE : []
 var NATPools = contains(AppServer, 'NATName') ? AppServer.NATName : []

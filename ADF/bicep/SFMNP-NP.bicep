@@ -165,7 +165,6 @@ var NodeInfo = [for (nt, index) in sfmInfo.nodeTypes: {
 }]
 
 @batchSize(1) // only update 1 at a time
-#disable-next-line BCP081
 resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-10-01-preview' = [for (nt, index) in sfmInfo.nodeTypes: if (NodeInfo[index].match) {
   name: nt.name
   parent: SFM
