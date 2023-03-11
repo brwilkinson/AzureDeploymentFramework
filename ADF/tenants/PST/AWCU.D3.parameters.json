@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {
+  "parameters": { // APIM - Workspaces
     "Prefix": {
       "value": "AWCU"
     },
@@ -431,7 +431,7 @@
           {
             "Name": "APIM01",
             "administratorLogin": "brw",
-            "AdminName": "PE_PEF_SEC_DEV",
+            "AdminName": "PE_INF_SEC_DEV",
             "publicNetworkAccess": 1,
             "allNetworks": 0,
             "privateLinkInfo": [

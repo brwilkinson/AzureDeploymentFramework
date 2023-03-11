@@ -499,7 +499,7 @@
           {
             "Name": "APIM01",
             "administratorLogin": "brw",
-            "AdminName": "PE_PEF_SEC",
+            "AdminName": "PE_INF_SEC",
             "publicNetworkAccess": 1,
             "allNetworks": 0,
             "_privateLinkInfo": [
