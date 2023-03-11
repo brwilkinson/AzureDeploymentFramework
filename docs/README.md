@@ -1,5 +1,11 @@
 
-## Azure Deployment Framework [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/).
+## Azure Deployment Framework - V3 [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/).
+
+#### This is now Version 3
+- V3 is main branch - created March 2023
+- V2 in ADFv2 branch - created March 2023
+- V1 in armjson branch - created 2022
+
 #### This project is currently in Preview. [[ADF Source]](https://github.com/brwilkinson/AzureDeploymentFramework)
 - If you have previously forked this project, I recommend to pull in recent commits [Feb 2022]
 - The project setup steps have been streamlined.
