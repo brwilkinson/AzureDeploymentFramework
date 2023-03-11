@@ -160,7 +160,7 @@
               // Below does not work on the first deploy since the RG has not been created
               {
                 "Name": "Reader",
-                "RGNAME": "SFC_610b586d-c5c3-403b-9a09-355ec9a82b89"
+                "RGNAME": "SFC_473b113c-1ba9-4c65-a1ce-1f2c6241967c"
               }
             ]
           },
@@ -199,7 +199,7 @@
               // Below does not work on the first deploy since the RG has not been created
               {
                 "Name": "Virtual Machine Administrator Login",
-                "RGNAME": "SFC_610b586d-c5c3-403b-9a09-355ec9a82b89"
+                "RGNAME": "SFC_473b113c-1ba9-4c65-a1ce-1f2c6241967c"
               }
             ]
           },
@@ -209,7 +209,7 @@
               // Below does not work on the first deploy since the RG has not been created
               {
                 "Name": "Virtual Machine Administrator Login",
-                "RGNAME": "SFC_610b586d-c5c3-403b-9a09-355ec9a82b89"
+                "RGNAME": "SFC_473b113c-1ba9-4c65-a1ce-1f2c6241967c"
               }
             ]
           }
@@ -228,7 +228,7 @@
             "RBAC": [
               {
                 "Name": "Network Contributor",
-                "RGNAME": "SFC_610b586d-c5c3-403b-9a09-355ec9a82b89"
+                "RGNAME": "SFC_473b113c-1ba9-4c65-a1ce-1f2c6241967c"
               },
               // Above does not work on the first deploy since the RG has not been created
               {
@@ -353,7 +353,7 @@
             "name": "snMT01",
             "prefix": "0/23",
             "NSG": 1, // Create blank NSG, SFM will remove and use it's own anyway. Comment out NSGID for intial environment deploy.
-            "NSGID": "/subscriptions/77196dc9-b5af-463b-b8de-f7e6232eae12/resourceGroups/SFC_610b586d-c5c3-403b-9a09-355ec9a82b89/providers/Microsoft.Network/networkSecurityGroups/SF-NSG",
+            "NSGID": "/subscriptions/77196dc9-b5af-463b-b8de-f7e6232eae12/resourceGroups/SFC_473b113c-1ba9-4c65-a1ce-1f2c6241967c/providers/Microsoft.Network/networkSecurityGroups/SF-NSG",
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
@@ -685,141 +685,6 @@
               },
               {
                 "port": "20010"
-              },
-              {
-                "port": "20011"
-              },
-              {
-                "port": "20012"
-              },
-              {
-                "port": "20013"
-              },
-              {
-                "port": "20014"
-              },
-              {
-                "port": "20015"
-              },
-              {
-                "port": "20016"
-              },
-              {
-                "port": "20017"
-              },
-              {
-                "port": "20018"
-              },
-              {
-                "port": "20020"
-              },
-              {
-                "port": "20021"
-              },
-              {
-                "port": "20022"
-              },
-              {
-                "port": "20023"
-              },
-              {
-                "port": "20024"
-              },
-              {
-                "port": "20025"
-              },
-              {
-                "port": "20026"
-              },
-              {
-                "port": "20028"
-              },
-              {
-                "port": "20029"
-              },
-              {
-                "port": "20035"
-              },
-              {
-                "port": "20036"
-              },
-              {
-                "port": "20037"
-              },
-              {
-                "port": "20038"
-              },
-              {
-                "port": "20043"
-              },
-              {
-                "port": "20044"
-              },
-              {
-                "port": "20045"
-              },
-              {
-                "port": "20046"
-              },
-              {
-                "port": "20049"
-              },
-              {
-                "port": "20051"
-              },
-              {
-                "port": "20053"
-              },
-              {
-                "port": "20063"
-              },
-              {
-                "port": "20065"
-              },
-              {
-                "port": "20067"
-              },
-              {
-                "port": "20068"
-              },
-              {
-                "port": "20070"
-              },
-              {
-                "port": "20071"
-              },
-              {
-                "port": "20072"
-              },
-              {
-                "port": "20080"
-              },
-              {
-                "port": "20084"
-              },
-              {
-                "port": "20085"
-              },
-              {
-                "port": "20088"
-              },
-              {
-                "port": "20089"
-              },
-              {
-                "port": "20090"
-              },
-              {
-                "port": "20091"
-              },
-              {
-                "port": "20092"
-              },
-              {
-                "port": "20093"
-              },
-              {
-                "port": "20094"
               }
             ]
           }

@@ -224,7 +224,7 @@
               // Below does not work on the first deploy since the RG has not been created
               {
                 "Name": "Virtual Machine Administrator Login",
-                "RGNAME": "SFC_7ed641c4-237c-4775-bd00-e8ff3393e719"
+                "RGNAME": "SFC_40d19395-55bc-4831-9bf8-92e58cd3f6b9"
               }
             ]
           },
@@ -237,7 +237,7 @@
               // Below does not work on the first deploy since the RG has not been created
               {
                 "Name": "Virtual Machine Administrator Login",
-                "RGNAME": "SFC_7ed641c4-237c-4775-bd00-e8ff3393e719"
+                "RGNAME": "SFC_40d19395-55bc-4831-9bf8-92e58cd3f6b9"
               }
             ]
           }
@@ -248,7 +248,7 @@
             "RBAC": [
               {
                 "Name": "Network Contributor",
-                "RGNAME": "SFC_7ed641c4-237c-4775-bd00-e8ff3393e719"
+                "RGNAME": "SFC_40d19395-55bc-4831-9bf8-92e58cd3f6b9"
               },
               // Above does not work on the first deploy since the RG has not been created
               {
@@ -376,7 +376,7 @@
             "name": "snMT01",
             "prefix": "0/23",
             "NSG": 1, // Create blank NSG, SFM will remove and use it's own anyway.
-            "NSGID": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/SFC_7ed641c4-237c-4775-bd00-e8ff3393e719/providers/Microsoft.Network/networkSecurityGroups/SF-NSG",
+            "NSGID": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/SFC_40d19395-55bc-4831-9bf8-92e58cd3f6b9/providers/Microsoft.Network/networkSecurityGroups/SF-NSG",
             "NSGRuleName": "SFM",
             // "serviceEndpoints": "Microsoft.Storage",
             "Route": 0, //1
@@ -791,7 +791,7 @@
               //   // "priority": 1,
               //   "weight": 1,
               //   "eptype": "azure",
-              //   "rgname": "SFC_7ed641c4-237c-4775-bd00-e8ff3393e719",
+              //   "rgname": "SFC_40d19395-55bc-4831-9bf8-92e58cd3f6b9",
               //   "resnameprefix": "PublicIP-"
               // },
               {
@@ -871,141 +871,6 @@
               },
               {
                 "port": "20010"
-              },
-              {
-                "port": "20011"
-              },
-              {
-                "port": "20012"
-              },
-              {
-                "port": "20013"
-              },
-              {
-                "port": "20014"
-              },
-              {
-                "port": "20015"
-              },
-              {
-                "port": "20016"
-              },
-              {
-                "port": "20017"
-              },
-              {
-                "port": "20018"
-              },
-              {
-                "port": "20020"
-              },
-              {
-                "port": "20021"
-              },
-              {
-                "port": "20022"
-              },
-              {
-                "port": "20023"
-              },
-              {
-                "port": "20024"
-              },
-              {
-                "port": "20025"
-              },
-              {
-                "port": "20026"
-              },
-              {
-                "port": "20028"
-              },
-              {
-                "port": "20029"
-              },
-              {
-                "port": "20035"
-              },
-              {
-                "port": "20036"
-              },
-              {
-                "port": "20037"
-              },
-              {
-                "port": "20038"
-              },
-              {
-                "port": "20043"
-              },
-              {
-                "port": "20044"
-              },
-              {
-                "port": "20045"
-              },
-              {
-                "port": "20046"
-              },
-              {
-                "port": "20049"
-              },
-              {
-                "port": "20051"
-              },
-              {
-                "port": "20053"
-              },
-              {
-                "port": "20063"
-              },
-              {
-                "port": "20065"
-              },
-              {
-                "port": "20067"
-              },
-              {
-                "port": "20068"
-              },
-              {
-                "port": "20070"
-              },
-              {
-                "port": "20071"
-              },
-              {
-                "port": "20072"
-              },
-              {
-                "port": "20080"
-              },
-              {
-                "port": "20084"
-              },
-              {
-                "port": "20085"
-              },
-              {
-                "port": "20088"
-              },
-              {
-                "port": "20089"
-              },
-              {
-                "port": "20090"
-              },
-              {
-                "port": "20091"
-              },
-              {
-                "port": "20092"
-              },
-              {
-                "port": "20093"
-              },
-              {
-                "port": "20094"
               }
             ]
           }
