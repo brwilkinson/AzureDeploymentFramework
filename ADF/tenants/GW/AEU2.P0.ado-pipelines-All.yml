@@ -7,7 +7,7 @@ trigger: #none
     - ADF/tenants/GW/AEU2.P0.parameters.json
 
 variables:
-  ORG:        SCE
+  ORG:        PE
   APP :       GW
   
   PREFIX:     AEU2

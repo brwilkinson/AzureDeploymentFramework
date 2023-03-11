@@ -27,7 +27,7 @@ parameters:
       - '01'
 
 variables:
-  ORG: SCE
+  ORG: PE
   APP: SFM
 
   PREFIX: ACU1

@@ -10,7 +10,7 @@ trigger: none
   #   - ADF/tenants/SFM/ACU1.P8.ado-pipelines-All.yml
 
 variables:
-  ORG:        SCE
+  ORG:        PE
   APP :       SFM
   
   PREFIX:     ACU1

@@ -105,7 +105,7 @@
         ],
         "PIMInfo": [
           {
-            "Name": "SimonAdams-ALT",
+            "Name": "SimonAdams-ADM",
             "RBAC": [
               {
                 "Name": "Key Vault Administrator"
@@ -113,7 +113,7 @@
             ]
           },
           {
-            "Name": "BenWilkinson-ALT",
+            "Name": "BenWilkinson-ADM",
             "RBAC": [
               {
                 "Name": "Key Vault Administrator"
@@ -440,8 +440,8 @@
           {
             "Name": "01",
             "accessControlUsers": [
-              "benwilk@microsoft.com",
-              "sibgeorg@microsoft.com"
+              "benwilk@psthing.com",
+              "simadams@psthing.com"
             ],
             "systemAccounts": []
           }
@@ -466,8 +466,8 @@
           //   "vmProvider": "vm",
           //   "maxPoolSize": 15,
           //   "VssAdminAccounts": [
-          //     "benwilk@microsoft.com",
-          //     "sibgeorg@microsoft.com"
+          //     "benwilk@psthing.com",
+          //     "simadams@psthing.com"
           //   ]
           // },
           {
@@ -479,8 +479,8 @@
             "vmProvider": "vm",
             "maxPoolSize": 15,
             "VssAdminAccounts": [
-              "benwilk@microsoft.com",
-              "sibgeorg@microsoft.com"
+              "benwilk@psthing.com",
+              "simadams@psthing.com"
             ]
           }
         ]

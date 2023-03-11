@@ -7,7 +7,7 @@ trigger: #none
     - ADF/tenants/HUB/AEU2.P0.parameters.json
 
 variables:
-  ORG:        SCE
+  ORG:        PE
   APP :       HUB
   
   PREFIX:     AEU2

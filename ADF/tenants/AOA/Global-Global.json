@@ -29,7 +29,7 @@
       "6c3af02e7f269aa73afd0eff2a88a4a1f04ed1e5",
       "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
     ],
-    "ADDomainName": "sceplatform.microsoft.com",
+    "ADDomainName": "psthing.com",
     "DomainName": "psthing.com",
     "DomainNameExt": "psthing.com",
     "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
@@ -38,29 +38,16 @@
     "ADOProject": "ADF",
     "AZDevOpsOrg": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [
-      "BenWilkinson",
-      "SimonAdams",
-      "BrianWalker",
-      "BenWilkinson-ALT"
+      "BenWilkinson"
     ],
-    "phoneContact": "9178437243",
-    "apimPublisherEmail": "benwilk@microsoft.com",
+    "apimPublisherEmail": "benwilk@psthing.com",
     "alertRecipients": [
-      "benwilk@microsoft.com"
+      "benwilk@psthing.com"
     ],
     "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
     "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
     "ObjectIdLookup": {
       "BenWilkinson": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
-      "BenWilkinson-ALT": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
-      "SimonAdams": "a54933b9-b921-4842-abbe-342416767d97",
-      "SimonAdams-ALT": "3fc273e5-f8f1-4d44-a950-3c3913643fc1",
-      "MilindBishen": "0df8a4c3-80b2-4c1f-80dd-31a4ef21bf1b",
-      "MilindBishen-ALT": "607b0346-1be6-48e0-8ff3-83cb099be536",
-      "BrianWalker": "8e667bcd-b22b-4f39-a35f-ec4a27e4fcd6",
-      "CathyEvans": "0ae1653d-3712-43dc-b9d2-f02f3ee6a2a1",
-      "AshishChole": "2e661424-50f6-4bf0-bb56-dec5c576456e",
-      "SushmitaDas": "2a7c9ff0-5318-4c35-bf69-cd3ea51aa53f",
       "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
       "AKS_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
       "AZ_SQL_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
@@ -71,12 +58,8 @@
       "Logic_Runner_4@microsoft.onmicrosoft.com": "fdd71a51-494b-456a-a3dc-a9ae9e0889a6",
       "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
-      "SCE_PEF_SEC_DEV": "93964b9a-518a-4408-909f-87d5f821ff3e",
-      "SCE_PEF_SEC": "8bd51676-7936-448c-9339-5364777937d2",
       "1ES_Resource_Management": "21d72402-ddc9-4dbf-8511-0739c5a7e479",
       "AzureServiceFabricResourceProvider": "fbc587f2-66f5-4459-a027-bcd908b9d278",
-      "SCE-Services-MI-SCEventService-PPE": "541a81d7-cc6a-4336-94be-48071a89cbee",
-      "SCE-Services-MI-SCEventService-PRD": "84f2ea4d-aa17-4f80-bd9c-fe77f9551602",
       "ADO_ADF_ACU1-PE-AOA-RG-T5": "a62aa5bc-5b8e-4a79-9d9d-3facdab59e8c",
       "ADO_BRW_ACU1-PE-AOA-RG-G0": "311e50fe-8037-47d1-874f-efe94e97c1fd",
       "ADO_BRW_ACU1-PE-AOA-RG-G1": "3c2f4536-9e10-41af-8879-79e0fdbc8838",

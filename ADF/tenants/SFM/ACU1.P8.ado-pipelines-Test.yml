@@ -1,7 +1,7 @@
 trigger: none
 
 variables:
-  ORG: SCE
+  ORG: PE
   APP: SFM
 
   PREFIX: ACU1

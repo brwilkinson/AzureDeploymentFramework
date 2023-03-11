@@ -7,7 +7,7 @@ schedules:
   always: true
 
 variables:
-  ORG: SCE
+  ORG: PE
   APP: SFM
 
   PREFIX: ACU1

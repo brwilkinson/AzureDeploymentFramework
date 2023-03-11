@@ -143,7 +143,7 @@ function Get-PATToken
 
 function Get-ADOAuthorization
 {
-    # Don't use SC-ALT account to try connect to ADO, use PAT token from user.
+    # Don't use SC-ADM account to try connect to ADO, use PAT token from user.
     if ($env:USERDOMAIN -match 'NORTHAMERICA|REDMOND|FAREAST' -and (-not ((Get-AzContext | ForEach-Object account | ForEach-Object id) -match 'SC-')))
     {
         # AAD app to get onbehalf user_impersonation scoped token

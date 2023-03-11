@@ -16,7 +16,7 @@ parameters:
       - '.'
 
 variables:
-  ORG: SCE
+  ORG: PE
   APP: AKS
 
   PREFIX: AEU2

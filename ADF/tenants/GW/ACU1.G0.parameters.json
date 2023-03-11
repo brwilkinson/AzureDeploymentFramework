@@ -45,7 +45,7 @@
         ],
         "PIMInfo": [
           {
-            "Name": "SimonAdams-ALT",
+            "Name": "SimonAdams-ADM",
             "RBAC": [
               {
                 "Name": "Owner"
@@ -53,21 +53,13 @@
             ]
           },
           {
-            "Name": "BenWilkinson-ALT",
+            "Name": "BenWilkinson-ADM",
             "RBAC": [
               {
                 "Name": "Owner"
               },
               {
                 "Name": "Key Vault Administrator"
-              }
-            ]
-          },
-          {
-            "Name": "SankarGowthavaram-ALT",
-            "RBAC": [
-              {
-                "Name": "Owner"
               }
             ]
           }

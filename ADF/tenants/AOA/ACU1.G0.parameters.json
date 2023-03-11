@@ -41,14 +41,6 @@
             ]
           },
           {
-            "Name": "BenWilkinson-ALT",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
             "Name": "SimonAdams",
             "RBAC": [
               {
@@ -86,7 +78,7 @@
         ],
         "PIMInfo": [
           {
-            "Name": "BenWilkinson-ALT",
+            "Name": "BenWilkinson-ADM",
             "RBAC": [
               {
                 "Name": "Owner"
@@ -100,7 +92,7 @@
             ]
           },
           {
-            "Name": "SimonAdams-ALT",
+            "Name": "SimonAdams-ADM",
             "RBAC": [
               {
                 "Name": "Owner"

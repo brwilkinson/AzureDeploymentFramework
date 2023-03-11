@@ -30,9 +30,9 @@
       "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
     ],
     "CertName": "PSTHING-WildCard",
-    "ADDomainName": "sceplatform.microsoft.com",
-    "DomainName": "sceplatform.microsoft.com",
-    "DomainNameExt": "sceplatform.microsoft.com",
+    "ADDomainName": "psthing.com",
+    "DomainName": "psthing.com",
+    "DomainNameExt": "psthing.com",
     "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "__DomainNameExtRG": "ACU1-PE-AOA-RG-G1",
@@ -61,26 +61,23 @@
       }
     },
     "ServicePrincipalAdmins": [
-      "BenWilkinson-ALT",
-      "SimonAdams-ALT",
-      "BrianWalker-ALT"
+      "BenWilkinson"
     ],
-    "apimPublisherEmail": "benwilk@microsoft.com",
+    "apimPublisherEmail": "benwilk@psthing.com",
     "alertRecipients": [
-      "benwilk@microsoft.com",
-      "sibgeorg@microsoft.com"
+      "benwilk@psthing.com"
     ],
     "clusterApplication": "e339d587-44e0-4d14-9d96-53eca83c3500",
     "clientApplication": "1ed6cff0-5226-4bb3-9055-096e9fc6feec",
     "ObjectIdLookup": {
       "BenWilkinson": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
-      "BenWilkinson-ALT": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
+      "BenWilkinson-ADM": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
       "SimonAdams": "a54933b9-b921-4842-abbe-342416767d97",
-      "SimonAdams-ALT": "3fc273e5-f8f1-4d44-a950-3c3913643fc1",
-      "BrianWalker": "8e667bcd-b22b-4f39-a35f-ec4a27e4fcd6",
-      "BrianWalker-ALT": "8658da0d-84d9-4580-ba05-6c905b68b670",
+      "SimonAdams-ADM": "3fc273e5-f8f1-4d44-a950-3c3913643fc1",
+      "JessicaBobo": "8e667bcd-b22b-4f39-a35f-ec4a27e4fcd6",
+      "JessicaBobo-ADM": "8658da0d-84d9-4580-ba05-6c905b68b670",
       "CathyEvans": "0ae1653d-3712-43dc-b9d2-f02f3ee6a2a1",
-      "CathyEvans-ALT": "bb07ad08-b8d9-41f4-b6c2-4783cd826977",
+      "CathyEvans-ADM": "bb07ad08-b8d9-41f4-b6c2-4783cd826977",
       "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
       "AKS_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
       "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
@@ -90,14 +87,14 @@
       "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
       "AzureServiceFabricResourceProvider": "fbc587f2-66f5-4459-a027-bcd908b9d278",
-      "ADO_BRW_AEU2-SCE-SFM-RG-P8": "542ddfaf-4e5b-4d60-8f80-c4b15262c675",
-      "ADO_BRW_ACU1-SCE-SFM-RG-D1": "280a955f-4724-46d0-b2c4-53458b4e5f3e",
-      "ADO_BRW_ACU1-SCE-SFM-RG-U5": "26cbf317-507c-4dc6-b64d-99bf678307b6",
-      "ADO_BRW_ACU1-SCE-SFM-RG-P8": "d15f26de-f667-49bb-abb7-13e52eae8b28",
-      "ADO_BRW_AEU2-SCE-SFM-RG-P8_SFM": "880b4458-bc59-4def-9281-ea6632ed5bd1",
-      "ADO_BRW_ACU1-SCE-SFM-RG-D1_SFM": "bfd6145d-6ef7-4cb5-b306-4fc749e4c68a",
-      "ADO_BRW_ACU1-SCE-SFM-RG-U5_SFM": "04f3cd2b-3a5c-486a-9d79-bc501c46307c",
-      "ADO_BRW_ACU1-SCE-SFM-RG-P8_SFM": "949182a7-327a-4dbe-b1e3-3523a56541d7"
+      "ADO_BRW_AEU2-PE-SFM-RG-P8": "542ddfaf-4e5b-4d60-8f80-c4b15262c675",
+      "ADO_BRW_ACU1-PE-SFM-RG-D1": "280a955f-4724-46d0-b2c4-53458b4e5f3e",
+      "ADO_BRW_ACU1-PE-SFM-RG-U5": "26cbf317-507c-4dc6-b64d-99bf678307b6",
+      "ADO_BRW_ACU1-PE-SFM-RG-P8": "d15f26de-f667-49bb-abb7-13e52eae8b28",
+      "ADO_BRW_AEU2-PE-SFM-RG-P8_SFM": "880b4458-bc59-4def-9281-ea6632ed5bd1",
+      "ADO_BRW_ACU1-PE-SFM-RG-D1_SFM": "bfd6145d-6ef7-4cb5-b306-4fc749e4c68a",
+      "ADO_BRW_ACU1-PE-SFM-RG-U5_SFM": "04f3cd2b-3a5c-486a-9d79-bc501c46307c",
+      "ADO_BRW_ACU1-PE-SFM-RG-P8_SFM": "949182a7-327a-4dbe-b1e3-3523a56541d7"
     }
   }
 }

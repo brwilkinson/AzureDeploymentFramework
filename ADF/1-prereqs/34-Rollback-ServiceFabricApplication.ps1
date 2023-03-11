@@ -66,8 +66,8 @@ function Start-SFMRoleBackApplication
         'aeu2' { 'eastus2' }
     }
 
-    # $clusterName = $prefix + '-sce-sfm-' + $environment + '-sfm01'
-    $clusterHostName = $prefix + '-sce-sfm-' + $environment + '-sfm01.' + $regionName + '.cloudapp.azure.com:' + $port
+    # $clusterName = $prefix + '-pe-sfm-' + $environment + '-sfm01'
+    $clusterHostName = $prefix + '-pe-sfm-' + $environment + '-sfm01.' + $regionName + '.cloudapp.azure.com:' + $port
 
     $ServercertthumbprintLookup = @{
         'u5' = 'a3c835378a8066e5Adc6fc8101e288f2fe033850'

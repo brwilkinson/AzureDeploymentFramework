@@ -208,20 +208,6 @@
                 "Name": "Contributor"
               }
             ]
-          },
-          {
-            "Name": "BenWilkinson-ALT",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              },
-              {
-                "Name": "Key Vault Administrator"
-              },
-              {
-                "Name": "Virtual Machine Administrator Login"
-              }
-            ]
           }
         ],
         "SPInfo": [

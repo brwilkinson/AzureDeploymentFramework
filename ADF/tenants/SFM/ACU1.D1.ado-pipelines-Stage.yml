@@ -28,7 +28,7 @@ parameters:
       - AppServers
 
 variables:
-  ORG: SCE
+  ORG: PE
   APP: SFM
 
   PREFIX: ACU1

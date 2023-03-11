@@ -95,7 +95,7 @@
         ],
         "PIMInfo": [
           {
-            "Name": "SimonAdams-ALT",
+            "Name": "SimonAdams-ADM",
             "RBAC": [
               {
                 "Name": "Key Vault Administrator"
@@ -103,7 +103,7 @@
             ]
           },
           {
-            "Name": "BenWilkinson-ALT",
+            "Name": "BenWilkinson-ADM",
             "RBAC": [
               {
                 "Name": "Key Vault Administrator"

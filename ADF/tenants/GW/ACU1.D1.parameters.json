@@ -447,7 +447,7 @@
             "monitoringcustomHeaders": [
               {
                 "name": "host",
-                "value": "ACU1-SCE-GW-D1-apim01.supplychain.microsoft.com"
+                "value": "ACU1-PE-GW-D1-apim01.psthing.com"
               }
             ],
             "trafficViewEnrollmentStatus": "Enabled",
@@ -507,7 +507,7 @@
                 "endPoints": [
                   {
                     "name": "acu1scegwd1sadata1",
-                    "zone": "sceplatform.microsoft.com",
+                    "zone": "psthing.com",
                     "probePath": "/",
                     "sessionAffinity": 1,
                     "origins": [
@@ -520,7 +520,7 @@
                   },
                   {
                     "name": "sit-script",
-                    "zone": "supplychain.microsoft.com",
+                    "zone": "psthing.com",
                     "rulesName": "script",
                     "probePath": "/",
                     "sessionAffinity": 1,
@@ -553,7 +553,7 @@
                   },
                   {
                     "name": "availability-dev",
-                    "zone": "supplychain.microsoft.com",
+                    "zone": "psthing.com",
                     "rulesName": "script",
                     "probePath": "/",
                     "sessionAffinity": 1,
@@ -601,12 +601,12 @@
             "SSLCerts": [
               {
                 "name": "api.ppe",
-                "zone": "supplychain.microsoft.com",
+                "zone": "psthing.com",
                 "createCert": 1
               },
               {
                 "name": "edi.ppe",
-                "zone": "supplychain.microsoft.com",
+                "zone": "psthing.com",
                 "createCert": 1
               }
             ],
@@ -664,7 +664,7 @@
             "SSLCerts": [
               {
                 "name": "availability",
-                "zone": "supplychain.microsoft.com",
+                "zone": "psthing.com",
                 "createCert": 1
               }
             ],
@@ -726,7 +726,7 @@
                 "BackendPort": 443,
                 "Protocol": "https",
                 "Cert": "availability-supplychain-microsoft-com",
-                "Domain": "supplychain.microsoft.com",
+                "Domain": "psthing.com",
                 "Hostname": "availability",
                 "HostnameExcludePrefix": 1,
                 "Interface": "Public"
@@ -734,7 +734,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "supplychain.microsoft.com",
+                "Domain": "psthing.com",
                 "Hostname": "availability",
                 "HostnameExcludePrefix": 1,
                 "Interface": "Public",

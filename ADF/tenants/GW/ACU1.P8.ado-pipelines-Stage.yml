@@ -43,7 +43,7 @@ parameters:
       - monitoring360
 
 variables:
-  ORG: SCE
+  ORG: PE
   APP: GW
 
   PREFIX: ACU1

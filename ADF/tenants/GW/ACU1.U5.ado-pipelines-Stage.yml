@@ -44,10 +44,10 @@ parameters:
       - uat-script
       - ppe-monitoring360
       - api.ppe
-      - acu1-sce-gw-u5-apim01
+      - acu1-pe-gw-u5-apim01
 
 variables:
-  ORG: SCE
+  ORG: PE
   APP: GW
 
   PREFIX: ACU1

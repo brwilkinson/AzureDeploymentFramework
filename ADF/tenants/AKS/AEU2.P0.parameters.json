@@ -121,10 +121,10 @@
           {
             "Name": "01",
             "accessControlUsers": [
-              "benwilk@microsoft.com",
-              "mibishen@microsoft.com",
-              "satishnaidi@microsoft.com",
-              "krnukala@microsoft.com"
+              "benwilk@psthing.com",
+              "mibishen@psthing.com",
+              "satishnaidi@psthing.com",
+              "krnukala@psthing.com"
             ],
             "systemAccounts": []
           }
@@ -149,10 +149,10 @@
           //   "vmProvider": "vm",
           //   "maxPoolSize": 15,
           //   "VssAdminAccounts": [
-          // "benwilk@microsoft.com",
-          // "mibishen@microsoft.com",
-          // "satishnaidi@microsoft.com",
-          // "krnukala@microsoft.com"
+          // "benwilk@psthing.com",
+          // "mibishen@psthing.com",
+          // "satishnaidi@psthing.com",
+          // "krnukala@psthing.com"
           //   ]
           // },
           {
@@ -164,10 +164,10 @@
             "vmProvider": "vm",
             "maxPoolSize": 15,
             "VssAdminAccounts": [
-              "benwilk@microsoft.com",
-              "mibishen@microsoft.com",
-              "satishnaidi@microsoft.com",
-              "krnukala@microsoft.com"
+              "benwilk@psthing.com",
+              "mibishen@psthing.com",
+              "satishnaidi@psthing.com",
+              "krnukala@psthing.com"
             ]
           },
           {
@@ -179,10 +179,10 @@
             "vmProvider": "vm",
             "maxPoolSize": 15,
             "VssAdminAccounts": [
-              "benwilk@microsoft.com",
-              "mibishen@microsoft.com",
-              "satishnaidi@microsoft.com",
-              "krnukala@microsoft.com"
+              "benwilk@psthing.com",
+              "mibishen@psthing.com",
+              "satishnaidi@psthing.com",
+              "krnukala@psthing.com"
             ]
           },
           {
@@ -194,10 +194,10 @@
             "vmProvider": "vm",
             "maxPoolSize": 15,
             "VssAdminAccounts": [
-              "benwilk@microsoft.com",
-              "mibishen@microsoft.com",
-              "satishnaidi@microsoft.com",
-              "krnukala@microsoft.com"
+              "benwilk@psthing.com",
+              "mibishen@psthing.com",
+              "satishnaidi@psthing.com",
+              "krnukala@psthing.com"
             ]
           }
         ]

@@ -7,7 +7,7 @@ trigger: #none
     - ADF/tenants/HUB/ACU1.G1.parameters.json
 
 variables:
-  ORG:        SCE
+  ORG:        PE
   APP :       HUB
   
   PREFIX:     ACU1

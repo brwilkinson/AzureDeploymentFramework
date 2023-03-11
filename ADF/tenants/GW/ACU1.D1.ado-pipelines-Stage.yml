@@ -44,7 +44,7 @@ parameters:
       - sit-script
 
 variables:
-  ORG: SCE
+  ORG: PE
   APP: GW
 
   PREFIX: ACU1

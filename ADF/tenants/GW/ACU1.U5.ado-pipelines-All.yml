@@ -8,7 +8,7 @@ trigger: none
   #   - ADF/tenants/GW/ACU1.U5.ado-pipelines-All.yml
 
 variables:
-  ORG:        SCE
+  ORG:        PE
   APP :       GW
   
   PREFIX:     ACU1
