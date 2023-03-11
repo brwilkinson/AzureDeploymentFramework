@@ -229,7 +229,7 @@
                 "Name": "Contributor" //"CSEO DevOps Role"
               },
               {
-                "Name": "SCE_GW_Contributor"
+                "Name": "PE_GW_Contributor"
               },
               {
                 "Name": "Managed Identity Operator"
@@ -506,14 +506,14 @@
                 "policyattached": 1,
                 "endPoints": [
                   {
-                    "name": "acu1scegwd1sadata1",
+                    "name": "acu1gwd1sadata1",
                     "zone": "psthing.com",
                     "probePath": "/",
                     "sessionAffinity": 1,
                     "origins": [
                       {
-                        "name": "acu1scegwd1sadata1",
-                        "hostname": "acu1scegwd1sadata1.z19.web.core.windows.net",
+                        "name": "acu1gwd1sadata1",
+                        "hostname": "acu1gwd1sadata1.z19.web.core.windows.net",
                         "enabled": 1
                       }
                     ]

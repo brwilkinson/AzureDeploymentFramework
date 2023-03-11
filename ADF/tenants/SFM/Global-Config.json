@@ -1296,11 +1296,11 @@
       "Id": "f58310d9-a9f6-439a-9e8d-f62e7b41a168",
       "Description": "Manage access to Azure resources by assigning roles using Azure RBAC. This role does not allow you to manage access using other ways, such as Azure Policy."
     },
-    "SCE_DeploymentScripts_Contributor": {
+    "PE_DeploymentScripts_Contributor": {
       "Id": "57005d2a-26c3-5c9e-afa1-cffc984bc616",
       "Description": "Allow to deploy DeploymentScripts"
     },
-    "SCE_SF_App_Contributor": {
+    "PE_SF_App_Contributor": {
       "Id": "8e7fa28e-4b4b-536f-b38a-d3058e3558e3",
       "Description": "Manage Service Fabric Applications"
     },

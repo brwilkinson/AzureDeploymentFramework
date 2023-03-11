@@ -97,7 +97,7 @@
         },
         "RoleDefinitionsInfo": [
           {
-            "RoleName": "SCE_GW_Contributor",
+            "RoleName": "PE_GW_Contributor",
             "description": "Allow actions not in DevOps Role",
             "notActions": [],
             "actions": [

@@ -37,10 +37,10 @@ parameters:
   - name: CN2
     displayName: Endpoint
     type: string
-    default: 'acu1scegwd1sadata1'
+    default: 'acu1gwd1sadata1'
     values:
       - '.'
-      - acu1scegwd1sadata1
+      - acu1gwd1sadata1
       - sit-script
 
 variables:

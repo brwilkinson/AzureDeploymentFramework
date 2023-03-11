@@ -233,7 +233,7 @@
                 "Name": "Contributor" //"CSEO DevOps Role"
               },
               {
-                "Name": "SCE_GW_Contributor"
+                "Name": "PE_GW_Contributor"
               },
               {
                 "Name": "Managed Identity Operator"
@@ -502,7 +502,7 @@
           {
             "Name": "APIM01",
             "administratorLogin": "brw",
-            "AdminName": "SCE_PEF_SEC",
+            "AdminName": "PE_PEF_SEC",
             "publicNetworkAccess": 1,
             "allNetworks": 0,
             "_privateLinkInfo": [
@@ -513,7 +513,7 @@
             ],
             "DBInfo": [
               {
-                "Name": "SCEABAC",
+                "Name": "ABAC",
                 "skuName": "S1"
               }
             ]
@@ -596,14 +596,14 @@
                 "state": "Enabled",
                 "endPoints": [
                   {
-                    "name": "acu1scegwp8sadata1",
+                    "name": "acu1gwp8sadata1",
                     "zone": "psthing.com",
                     "probePath": "/",
                     "sessionAffinity": 1,
                     "origins": [
                       {
-                        "name": "acu1scegwp8sadata1",
-                        "hostname": "acu1scegwp8sadata1.z19.web.core.windows.net",
+                        "name": "acu1gwp8sadata1",
+                        "hostname": "acu1gwp8sadata1.z19.web.core.windows.net",
                         "enabled": 1
                       }
                     ]

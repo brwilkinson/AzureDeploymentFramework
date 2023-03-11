@@ -431,7 +431,7 @@
           {
             "Name": "APIM01",
             "administratorLogin": "brw",
-            "AdminName": "SCE_PEF_SEC_DEV",
+            "AdminName": "PE_PEF_SEC_DEV",
             "publicNetworkAccess": 1,
             "allNetworks": 0,
             "privateLinkInfo": [
@@ -442,7 +442,7 @@
             ],
             "DBInfo": [
               {
-                "Name": "SCEABAC",
+                "Name": "ABAC",
                 "skuName": "S1"
               }
             ]

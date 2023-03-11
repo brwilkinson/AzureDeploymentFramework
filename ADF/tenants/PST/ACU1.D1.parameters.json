@@ -187,16 +187,6 @@
             ]
           },
           {
-            "Name": "SCE-Services-MI-SCEventService-PPE",
-            "RBAC": [
-              {
-                "Name": "Key Vault Secrets User",
-                "RG": "P0",
-                "Tenant": "AOA"
-              }
-            ]
-          },
-          {
             "Name": "AzureKeyVault",
             "RBAC": [
               {

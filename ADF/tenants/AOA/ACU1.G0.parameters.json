@@ -66,14 +66,6 @@
                 "Name": "Reader"
               }
             ]
-          },
-          {
-            "Name": "SCE_PEF_SEC_DEV",
-            "RBAC": [
-              {
-                "Name": "Azure Service Deploy Release Management Contributor"
-              }
-            ]
           }
         ],
         "PIMInfo": [

@@ -51,7 +51,7 @@
         // },
         "RoleDefinitionsInfo": [
           {
-            "RoleName": "SCE_AKS_Contributor",
+            "RoleName": "PE_AKS_Contributor",
             "description": "Allow actions not in DevOps Role",
             "notActions": [],
             "actions": [

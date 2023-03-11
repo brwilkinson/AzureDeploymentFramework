@@ -80,7 +80,7 @@
         },
         "RoleDefinitionsInfo": [
           {
-            "RoleName": "SCE_SF_App_Contributor",
+            "RoleName": "PE_SF_App_Contributor",
             "description": "Manage Service Fabric Applications",
             "notActions": [],
             "actions": [
@@ -93,7 +93,7 @@
             ]
           },
           {
-            "RoleName": "SCE_DeploymentScripts_Contributor",
+            "RoleName": "PE_DeploymentScripts_Contributor",
             "description": "Allow to deploy DeploymentScripts",
             "notActions": [],
             "actions": [
@@ -102,7 +102,7 @@
             ]
           },
           {
-            "RoleName": "SCE_CloudTest_Contributor",
+            "RoleName": "PE_CloudTest_Contributor",
             "description": "Allow to deploy CloudTest resources e.g. accounts, images and devops pools",
             "notActions": [],
             "actions": [

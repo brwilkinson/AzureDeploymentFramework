@@ -233,7 +233,7 @@
                 "Name": "Contributor" //"CSEO DevOps Role"
               },
               {
-                "Name": "SCE_GW_Contributor"
+                "Name": "PE_GW_Contributor"
               },
               {
                 "Name": "Managed Identity Operator"
@@ -502,7 +502,7 @@
           {
             "Name": "APIM01",
             "administratorLogin": "brw",
-            "AdminName": "SCE_PEF_SEC",
+            "AdminName": "PE_PEF_SEC",
             "publicNetworkAccess": 1,
             "allNetworks": 0,
             "_privateLinkInfo": [
@@ -513,7 +513,7 @@
             ],
             "DBInfo": [
               {
-                "Name": "SCEABAC",
+                "Name": "ABAC",
                 "skuName": "S1"
               }
             ]
@@ -589,14 +589,14 @@
                 "policyattached": 1,
                 "endPoints": [
                   {
-                    "name": "acu1scegwu5sadata1",
+                    "name": "acu1gwu5sadata1",
                     "zone": "psthing.com",
                     "probePath": "/",
                     "sessionAffinity": 1,
                     "origins": [
                       {
-                        "name": "acu1scegwu5sadata1",
-                        "hostname": "acu1scegwu5sadata1.z19.web.core.windows.net",
+                        "name": "acu1gwu5sadata1",
+                        "hostname": "acu1gwu5sadata1.z19.web.core.windows.net",
                         "enabled": 1
                       }
                     ]
@@ -677,16 +677,16 @@
                   //   "sessionAffinity": 1,
                   //   "origins": [
                   //     {
-                  //       "name": "aeu1scegwu5wafapim01",
-                  //       "hostname": "aeu1scegwu5wafapim01.eastus.cloudapp.azure.com",
+                  //       "name": "aeu1gwu5wafapim01",
+                  //       "hostname": "aeu1gwu5wafapim01.eastus.cloudapp.azure.com",
                   //       "hostHeader": "api.ppe.psthing.com",
                   //       "enabled": 1,
                   //       "priority": 1,
                   // "checkCert": 0
                   //     },
                   //     {
-                  //       "name": "acu1scegwu5wafapim01",
-                  //       "hostname": "acu1scegwu5wafapim01.centralus.cloudapp.azure.com",
+                  //       "name": "acu1gwu5wafapim01",
+                  //       "hostname": "acu1gwu5wafapim01.centralus.cloudapp.azure.com",
                   //       "hostHeader": "api.ppe.psthing.com",
                   //       "enabled": 1,
                   //       "priority": 1,
@@ -718,16 +718,16 @@
                         "checkCert": 0
                       },
                       {
-                        "name": "aeu1scegwu5wafapim01",
-                        "hostname": "aeu1scegwu5wafapim01.eastus.cloudapp.azure.com",
+                        "name": "aeu1gwu5wafapim01",
+                        "hostname": "aeu1gwu5wafapim01.eastus.cloudapp.azure.com",
                         "hostHeader": "ACU1-PE-GW-U5-apim01.psthing.com",
                         "enabled": 1,
                         "priority": 1,
                         "checkCert": 0
                       },
                       {
-                        "name": "acu1scegwu5wafapim01",
-                        "hostname": "acu1scegwu5wafapim01.centralus.cloudapp.azure.com",
+                        "name": "acu1gwu5wafapim01",
+                        "hostname": "acu1gwu5wafapim01.centralus.cloudapp.azure.com",
                         "hostHeader": "ACU1-PE-GW-U5-apim01.psthing.com",
                         "enabled": 1,
                         "priority": 1,

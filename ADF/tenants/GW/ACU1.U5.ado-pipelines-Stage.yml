@@ -40,7 +40,7 @@ parameters:
     default: '.'
     values:
       - '.'
-      - acu1scegwu5sadata1
+      - acu1gwu5sadata1
       - uat-script
       - ppe-monitoring360
       - api.ppe

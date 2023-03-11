@@ -155,7 +155,7 @@
                 "Name": "Reader"
               },
               {
-                "Name": "SCE_SF_App_Contributor"
+                "Name": "PE_SF_App_Contributor"
               },
               // Below does not work on the first deploy since the RG has not been created
               {
@@ -227,7 +227,7 @@
             "Name": "ADO_{ADOProject}_{RGNAME}_SFM",
             "RBAC": [
               {
-                "Name": "SCE_SF_App_Contributor"
+                "Name": "PE_SF_App_Contributor"
               }
             ]
           },

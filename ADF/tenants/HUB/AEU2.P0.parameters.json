@@ -107,38 +107,7 @@
             ]
           }
         ],
-        "rolesInfo": [
-          // {
-          //   "Name": "SimonAdams",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Reader"
-          //     },
-          //     {
-          //       "Name": "Virtual Machine Administrator Login"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "Name": "BenWilkinson",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Reader"
-          //     },
-          //     {
-          //       "Name": "Virtual Machine Administrator Login"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "Name": "SCE-Services-MI-SCEventService-PRD",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Key Vault Secrets User"
-          //     }
-          //   ]
-          // }
-        ],
+        "rolesInfo": [],
         "SPInfo": [
           {
             "Name": "ADO_{ADOProject}_{RGNAME}",
@@ -147,7 +116,7 @@
                 "Name": "CSEO DevOps Role"
               },
               {
-                "Name": "SCE_DeploymentScripts_Contributor"
+                "Name": "PE_DeploymentScripts_Contributor"
               },
               {
                 "Name": "Managed Identity Operator"

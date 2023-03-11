@@ -588,7 +588,7 @@
             "AppGateway": 1,
             "AutoScale": 0,
             "aksAADAdminGroups": [
-              "SCE_PEF_SEC_DEV"
+              "PE_PEF_SEC_DEV"
             ],
             "AgentPools": [
               {

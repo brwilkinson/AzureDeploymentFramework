@@ -1344,7 +1344,7 @@
       "Id": "f58310d9-a9f6-439a-9e8d-f62e7b41a168",
       "Description": "Manage access to Azure resources by assigning roles using Azure RBAC. This role does not allow you to manage access using other ways, such as Azure Policy."
     },
-    "SCE_GW_Contributor": {
+    "PE_GW_Contributor": {
       "Id": "f0abd98b-4bd2-5bf9-9c33-adb52fd47ae4",
       "Description": "Allow actions not in DevOps Role"
     },

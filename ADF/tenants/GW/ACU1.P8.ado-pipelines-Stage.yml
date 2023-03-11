@@ -35,10 +35,10 @@ parameters:
   - name: CN2
     displayName: Endpoint
     type: string
-    default: 'acu1scegwp8sadata1'
+    default: 'acu1gwp8sadata1'
     values:
       - '.'
-      - acu1scegwp8sadata1
+      - acu1gwp8sadata1
       - script
       - monitoring360
 

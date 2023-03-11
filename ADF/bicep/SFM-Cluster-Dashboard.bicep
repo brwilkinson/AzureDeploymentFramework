@@ -425,7 +425,7 @@ var MarkdownParts = [
     }
     settings: {
       content: replace(replace(replace(replace(replace(replace(replace(replace('''
-  #### Service Fabric Managed - SCE Common Infra.
+  #### Service Fabric Managed - PE Common.
 
   __{RG} Build__
 
@@ -473,7 +473,7 @@ var MarkdownParts = [
     }
     settings: {
       content: replace(replace(replace(replace(replace('''
-  #### Service Fabric Managed - SCE Common Infra.
+  #### Service Fabric Managed - PE Common.
 
   __{RG} Build__
 
