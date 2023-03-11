@@ -672,11 +672,6 @@
                 "name": "api.ppe",
                 "zone": "psthing.com",
                 "createCert": 1
-              },
-              {
-                "name": "edi.ppe",
-                "zone": "psthing.com",
-                "createCert": 1
               }
             ],
             "additionalLocations": [
@@ -782,22 +777,7 @@
                 "name": "api.ppe",
                 "zone": "psthing.com",
                 "createCert": 1
-              },
-              {
-                "name": "edi.ppe",
-                "zone": "psthing.com",
-                "createCert": 1
               }
-              // {
-              //   "name": "ustrl-dev",
-              //   "zone": "mp.microsoft.com",
-              //   "createCert": 1
-              // },
-              // {
-              //   "name": "ustrl-int",
-              //   "zone": "mp.microsoft.com",
-              //   "createCert": 1
-              // }
             ],
             "_privateLinkInfo": [
               {
@@ -871,93 +851,7 @@
                 "BackEnd": "apim01",
                 "Interface": "Public",
                 "httpsRedirect": 1
-              },
-              {
-                "Port": 443,
-                "BackendPort": 443,
-                "Protocol": "https",
-                "Cert": "api-ppe-psthing-com",
-                "Domain": "psthing.com",
-                "Hostname": "api.ppe",
-                "HostnameExcludePrefix": 1,
-                "BackEnd": "apim01",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "psthing.com",
-                "Hostname": "api.ppe",
-                "HostnameExcludePrefix": 1,
-                "BackEnd": "apim01",
-                "Interface": "Public",
-                "httpsRedirect": 1
-              },
-              {
-                "Port": 443,
-                "BackendPort": 443,
-                "Protocol": "https",
-                "Cert": "edi-ppe-psthing-com",
-                "Domain": "psthing.com",
-                "Hostname": "edi.ppe",
-                "HostnameExcludePrefix": 1,
-                "BackEnd": "apim01",
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "psthing.com",
-                "Hostname": "edi.ppe",
-                "HostnameExcludePrefix": 1,
-                "BackEnd": "apim01",
-                "Interface": "Public",
-                "httpsRedirect": 1
               }
-              // {
-              //   "Port": 443,
-              //   "BackendPort": 443,
-              //   "Protocol": "https",
-              //   "Cert": "ustrl-dev-mp-microsoft-com",
-              //   "Domain": "mp.microsoft.com",
-              //   "Hostname": "ustrl-dev",
-              //   "HostnameExcludePrefix": 1,
-              //   "BackEnd": "apim01",
-              //   "Interface": "Public",
-              //   "rewriteRuleSet": "deviceCare-dev"
-              // },
-              // {
-              //   "Port": 80,
-              //   "Protocol": "http",
-              //   "Domain": "mp.microsoft.com",
-              //   "Hostname": "ustrl-dev",
-              //   "HostnameExcludePrefix": 1,
-              //   "BackEnd": "apim01",
-              //   "Interface": "Public",
-              //   "httpsRedirect": 1
-              // },
-              // {
-              //   "Port": 443,
-              //   "BackendPort": 443,
-              //   "Protocol": "https",
-              //   "Cert": "ustrl-int-mp-microsoft-com",
-              //   "Domain": "mp.microsoft.com",
-              //   "Hostname": "ustrl-int",
-              //   "HostnameExcludePrefix": 1,
-              //   "BackEnd": "apim01",
-              //   "Interface": "Public",
-              //   "rewriteRuleSet": "deviceCare"
-              // },
-              // {
-              //   "Port": 80,
-              //   "Protocol": "http",
-              //   "Domain": "mp.microsoft.com",
-              //   "Hostname": "ustrl-int",
-              //   "HostnameExcludePrefix": 1,
-              //   "BackEnd": "apim01",
-              //   "Interface": "Public",
-              //   "httpsRedirect": 1
-              // }
             ]
           }
         ]

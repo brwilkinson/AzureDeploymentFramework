@@ -15,6 +15,7 @@
 
 - [Naming Standards](./Naming_Standards.md)
 - [Naming Standards Prefix](./Naming_Standards_Prefix.md)
+- [Naming Standards Friendly](./Naming_Standards_Friendly.md)
 - [Naming Standards Bicep](./Naming_Standards_Bicep.md)
 
 ### Tools and Setup

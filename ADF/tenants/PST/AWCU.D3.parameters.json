@@ -576,28 +576,6 @@
                 "_HostnameExcludePrefix": 0,
                 "Interface": "Public",
                 "httpsRedirect": 1
-              },
-              {
-                "Port": 443,
-                "BackendPort": 443,
-                "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
-                "Hostname": "ustrl-dev",
-                "_HostnameExcludePrefix": 0,
-                "BackEnd": "apim01",
-                "Interface": "Public",
-                "rewriteRuleSet": "deviceCare"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "psthing.com",
-                "Hostname": "ustrl-dev",
-                "_HostnameExcludePrefix": 0,
-                "BackEnd": "apim01",
-                "Interface": "Public",
-                "httpsRedirect": 1
               }
             ]
           }

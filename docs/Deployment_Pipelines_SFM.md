@@ -6,7 +6,7 @@
 * * *
 
 
-## Environment Information [Deployment Pipelines]  
+## Environment Information [Deployment Pipelines]
 #### TODO update from Azure DevOps Pipelines to GitHub Actions on these links
 <br/>
 
@@ -18,6 +18,7 @@
 #### G1 - Global Resources
 
 [![Build Status](https://dev.azure.com/AzureDeploymentFramework/ADF/_apis/build/status/G1%20-%20%5BGlobal%20RG%20Deployment%5D?branchName=main)](https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=7&branchName=main)
+
 
 
 * * *
