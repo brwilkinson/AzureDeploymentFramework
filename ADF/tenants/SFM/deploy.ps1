@@ -76,18 +76,31 @@ Set-ADOAZServiceConnection -App $App -Prefix ACU1 -Suffix '_SFM' -Environments D
 ##########################################################
 # Deploy Environment
 
-# 1) Set Deployment information
-AzSetSC -App $App -Enviro D1
+# 1) Set Deployment information - Subscription
+AzSetSC -App $App -Enviro G0
+
+# Global - Only Needed in primary Region (for subscription deployment)
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
+
+# 2) Set Deployment information - Optional Global
+AzSetSC -App $App -Enviro G0
 
 # Global - Only Needed in primary Region
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\01-ALL-RG.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
 
-# 2) Set Deployment information
+# 3) Set Deployment information - Hub
+AzSetSC -App $App -Enviro P0
+
+# Global - Only Needed in primary Region
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
+
+# 4) Set Deployment information - Dev Environment
 AzSetSC -App $App -Enviro D1
 
 # Global - Only Needed in secondary Region
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\01-ALL-RG.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
 
 # Repeat above for other environments, however can do those in yaml pipelines instead

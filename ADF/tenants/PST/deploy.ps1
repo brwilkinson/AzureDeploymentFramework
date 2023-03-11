@@ -61,24 +61,30 @@ $IDs | ForEach-Object {
 ##########################################################
 # Deploy Environment
 
-# 1) Set Deployment information <-- manually set environment as needed.
-AzSetSC -App $App -Enviro P0
+# 1) Set Deployment information - Subscription
+AzSetSC -App $App -Enviro G0
 
-# Shared HUB Services Primary
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep
-AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\01-ALL-RG.bicep
+# Global - Only Needed in primary Region (for subscription deployment)
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
 
-# 2) Set Deployment information
-AzSetSC -App $App -Enviro P0
+# 2) Set Deployment information - Optional Global
+AzSetSC -App $App -Enviro G0
 
-# Shared HUB Services Secondary
+# Global - Only Needed in primary Region
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
 
-# 3) Set Deployment information
+# 3) Set Deployment information - Hub
+AzSetSC -App $App -Enviro P0
+
+# Global - Only Needed in primary Region
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
+AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
+
+# 4) Set Deployment information - Dev Environment
 AzSetSC -App $App -Enviro D1
 
-# Dev Environment Primary Region
+# Global - Only Needed in secondary Region
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
 
