@@ -164,38 +164,6 @@
             ]
           },
           {
-            "Name": "PrasannaSolanke",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "YuzuLi",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "PierreMariani",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "AbeIsleem",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
             "Name": "AzureKeyVault",
             "RBAC": [
               {

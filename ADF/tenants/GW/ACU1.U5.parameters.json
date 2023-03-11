@@ -164,38 +164,6 @@
             ]
           },
           {
-            "Name": "PrasannaSolanke",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "YuzuLi",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "PierreMariani",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "AbeIsleem",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
             "Name": "AzureKeyVault",
             "RBAC": [
               {
@@ -429,7 +397,7 @@
           },
           {
             "name": "data1",
-            "skuName": "Standard_LRS",
+            "skuName": "Standard_RAGZRS",
             "allNetworks": 1,
             "logging": {
               "r": 0,
@@ -595,64 +563,10 @@
                         "name": "acu1gwu5sadata1",
                         "hostname": "acu1gwu5sadata1.z19.web.core.windows.net",
                         "enabled": 1
-                      }
-                    ]
-                  },
-                  {
-                    "name": "uat-script",
-                    "_excludeCustomDomain": 1,
-                    "zone": "psthing.com",
-                    "rulesName": "script",
-                    "probePath": "/",
-                    "sessionAffinity": 1,
-                    "origins": [
-                      {
-                        "name": "uatscriptstorageaccnt",
-                        "hostname": "uatscriptstorageaccnt.z19.web.core.windows.net",
-                        "enabled": 1
                       },
                       {
-                        "name": "uatscriptstorageaccnt-secondary",
-                        "hostname": "uatscriptstorageaccnt-secondary.z19.web.core.windows.net",
-                        "enabled": 1,
-                        "priority": 2
-                      }
-                    ]
-                  },
-                  {
-                    "name": "ppe-monitoring360",
-                    "zone": "microsoft.com",
-                    "probePath": "/",
-                    "sessionAffinity": 1,
-                    "origins": [
-                      {
-                        "name": "monitoring360uat",
-                        "hostname": "monitoring360uat.z22.web.core.windows.net",
-                        "enabled": 1
-                      },
-                      {
-                        "name": "monitoring360uat-secondary",
-                        "hostname": "monitoring360uat-secondary.z22.web.core.windows.net",
-                        "enabled": 1,
-                        "priority": 2
-                      }
-                    ]
-                  },
-                  {
-                    "name": "availability-uat",
-                    "zone": "psthing.com",
-                    "rulesName": "script",
-                    "probePath": "/",
-                    "sessionAffinity": 1,
-                    "origins": [
-                      {
-                        "name": "scoutagehubuat",
-                        "hostname": "scoutagehubuat.z13.web.core.windows.net",
-                        "enabled": 1
-                      },
-                      {
-                        "name": "scoutagehubuat-secondary",
-                        "hostname": "scoutagehubuat-secondary.z13.web.core.windows.net",
+                        "name": "acu1gwu5sadata1-secondary",
+                        "hostname": "acu1gwu5sadata1-secondary.z19.web.core.windows.net",
                         "enabled": 1,
                         "priority": 2
                       }
@@ -679,7 +593,7 @@
                   //       "hostHeader": "api.ppe.psthing.com",
                   //       "enabled": 1,
                   //       "priority": 1,
-                  // "checkCert": 0
+                  //       "checkCert": 0
                   //     },
                   //     {
                   //       "name": "acu1gwu5wafapim01",
@@ -687,7 +601,7 @@
                   //       "hostHeader": "api.ppe.psthing.com",
                   //       "enabled": 1,
                   //       "priority": 1,
-                  // "checkCert": 0
+                  //       "checkCert": 0
                   //     }
                   //   ]
                   // },
@@ -941,7 +855,7 @@
                 "Port": 443,
                 "BackendPort": 443,
                 "Protocol": "https",
-                "Cert": "ACU1-PE-GW-U5-apim01-supplychain-microsoft-com",
+                "Cert": "ACU1-PE-GW-U5-apim01-psthing-com",
                 "Domain": "psthing.com",
                 "Hostname": "ACU1-PE-GW-U5-apim01",
                 "HostnameExcludePrefix": 1,
@@ -962,7 +876,7 @@
                 "Port": 443,
                 "BackendPort": 443,
                 "Protocol": "https",
-                "Cert": "api-ppe-supplychain-microsoft-com",
+                "Cert": "api-ppe-psthing-com",
                 "Domain": "psthing.com",
                 "Hostname": "api.ppe",
                 "HostnameExcludePrefix": 1,
@@ -983,7 +897,7 @@
                 "Port": 443,
                 "BackendPort": 443,
                 "Protocol": "https",
-                "Cert": "edi-ppe-supplychain-microsoft-com",
+                "Cert": "edi-ppe-psthing-com",
                 "Domain": "psthing.com",
                 "Hostname": "edi.ppe",
                 "HostnameExcludePrefix": 1,

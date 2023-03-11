@@ -172,38 +172,6 @@
             ]
           },
           {
-            "Name": "PrasannaSolanke",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "YuzuLi",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "PierreMariani",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "AbeIsleem",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
             "Name": "AzureKeyVault",
             "RBAC": [
               {
@@ -514,59 +482,6 @@
                         "enabled": 1
                       }
                     ]
-                  },
-                  {
-                    "name": "sit-script",
-                    "zone": "psthing.com",
-                    "rulesName": "script",
-                    "probePath": "/",
-                    "sessionAffinity": 1,
-                    "origins": [
-                      {
-                        "name": "sitscriptstorageaccnt",
-                        "hostname": "sitscriptstorageaccnt.z19.web.core.windows.net",
-                        "enabled": 1
-                      }
-                    ]
-                  },
-                  {
-                    "name": "sit-monitoring360",
-                    "zone": "microsoft.com",
-                    "probePath": "/",
-                    "sessionAffinity": 1,
-                    "origins": [
-                      {
-                        "name": "monitoring360ci",
-                        "hostname": "monitoring360ci.z22.web.core.windows.net",
-                        "enabled": 1
-                      },
-                      {
-                        "name": "monitoring360ci-secondary",
-                        "hostname": "monitoring360ci-secondary.z22.web.core.windows.net",
-                        "enabled": 1,
-                        "priority": 2
-                      }
-                    ]
-                  },
-                  {
-                    "name": "availability-dev",
-                    "zone": "psthing.com",
-                    "rulesName": "script",
-                    "probePath": "/",
-                    "sessionAffinity": 1,
-                    "origins": [
-                      {
-                        "name": "scoutagehubdev",
-                        "hostname": "scoutagehubdev.z13.web.core.windows.net",
-                        "enabled": 1
-                      },
-                      {
-                        "name": "scoutagehubdev-secondary",
-                        "hostname": "scoutagehubdev-secondary.z13.web.core.windows.net",
-                        "enabled": 1,
-                        "priority": 2
-                      }
-                    ]
                   }
                 ]
               },
@@ -600,11 +515,6 @@
                 "name": "api.ppe",
                 "zone": "psthing.com",
                 "createCert": 1
-              },
-              {
-                "name": "edi.ppe",
-                "zone": "psthing.com",
-                "createCert": 1
               }
             ],
             "additionalLocations": [
@@ -630,115 +540,6 @@
           "SecurityInsights",
           "AzureNSGAnalytics",
           "NetworkMonitoring"
-        ],
-        "WAFPolicyInfo": [
-          {
-            "Name": "CDN01",
-            "State": "Enabled",
-            "Mode": "Prevention",
-            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
-            "enableBotRule": 1,
-            "customRules": [],
-            "exclusions": []
-          }
-          // {
-          //   "Name": "APIM01",
-          //   "State": "Enabled",
-          //   "Mode": "Detection",
-          //   "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
-          //   "enableBotRule": 1,
-          //   "customRules": [],
-          //   "exclusions": [],
-          //   "ruleGroupOverrides": []
-          // }
-        ],
-        "WAFInfo": [
-          {
-            "Name": "CDN01",
-            "WAFPolicyAttached": 1,
-            "WAFTier": "WAF_v2",
-            "PrivateIP": "250",
-            "SSLCerts": [
-              {
-                "name": "availability",
-                "zone": "psthing.com",
-                "createCert": 1
-              }
-            ],
-            "_privateLinkInfo": [
-              {
-                "Subnet": "snFE01",
-                "groupID": "application gateway"
-              }
-            ],
-            "backendAddressPools": [
-              {
-                "name": "availability",
-                "FQDNs": [
-                  {
-                    "fq": 1,
-                    "fqdn": "scoutagehubprod.z13.web.core.windows.net"
-                  },
-                  {
-                    "fq": 1,
-                    "fqdn": "scoutagehubprod-secondary.z13.web.core.windows.net"
-                  }
-                ]
-              }
-            ],
-            "pathRules": [],
-            "probes": [
-              {
-                "Name": "probe01",
-                "Path": "/",
-                "Protocol": "https",
-                "useBE": 1
-              }
-            ],
-            "frontEndPorts": [
-              {
-                "Port": 80
-              },
-              {
-                "Port": 443
-              }
-            ],
-            "BackendHttp": [
-              {
-                "Port": 80,
-                "Protocol": "http"
-              },
-              {
-                "Port": 443,
-                "Protocol": "https",
-                "CookieBasedAffinity": "Disabled",
-                "RequestTimeout": 600,
-                "probeName": "probe01",
-                "hostnameFromBE": 1
-              }
-            ],
-            "Listeners": [
-              {
-                "Port": 443,
-                "BackendPort": 443,
-                "Protocol": "https",
-                "Cert": "availability-supplychain-microsoft-com",
-                "Domain": "psthing.com",
-                "Hostname": "availability",
-                "HostnameExcludePrefix": 1,
-                "Interface": "Public"
-              },
-              {
-                "Port": 80,
-                "Protocol": "http",
-                "Domain": "psthing.com",
-                "Hostname": "availability",
-                "HostnameExcludePrefix": 1,
-                "Interface": "Public",
-                "httpsRedirect": 1
-              }
-            ]
-          }
         ]
       }
     }
