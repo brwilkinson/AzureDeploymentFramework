@@ -66,14 +66,6 @@
         ],
         "SPInfo": [
           // Manually add Owner on this service principal
-          {
-            "Name": "DataMapAgent001",
-            "RBAC": [
-              {
-                "Name": "Storage Blob Data Reader"
-              }
-            ]
-          }
         ],
         "SecurityPricingInfo": {
           "Standard": [
@@ -95,20 +87,7 @@
             "CloudPosture"
           ]
         },
-        "RoleDefinitionsInfo": [
-          {
-            "RoleName": "PE_GW_Contributor",
-            "description": "Allow actions not in DevOps Role",
-            "notActions": [],
-            "actions": [
-              "Microsoft.Resources/deploymentScripts/*",
-              "Microsoft.ContainerInstance/containerGroups/*",
-              "Microsoft.CloudTest/accounts/*",
-              "Microsoft.CloudTest/images/*",
-              "Microsoft.CloudTest/hostedpools/*"
-            ]
-          }
-        ]
+        "RoleDefinitionsInfo": []
       }
     }
   }

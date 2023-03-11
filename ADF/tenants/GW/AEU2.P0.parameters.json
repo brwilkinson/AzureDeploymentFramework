@@ -127,10 +127,7 @@
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
-                "Name": "Contributor" //"CSEO DevOps Role"
-              },
-              {
-                "Name": "PE_GW_Contributor"
+                "Name": "Contributor"
               },
               {
                 "Name": "Managed Identity Operator"

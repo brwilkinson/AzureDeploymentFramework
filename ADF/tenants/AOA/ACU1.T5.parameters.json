@@ -326,7 +326,7 @@
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
-                "Name": "CSEO DevOps Role"
+                "Name": "Contributor"
               },
               {
                 "Name": "DeploymentScripts_Contributor"

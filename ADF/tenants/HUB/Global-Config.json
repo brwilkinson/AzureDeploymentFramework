@@ -672,10 +672,6 @@
       "Id": "72fafb9e-0641-4937-9268-a91bfd8191a3",
       "Description": "Can view cost data and configuration (e.g. budgets, exports)"
     },
-    "CSEO DevOps Role": {
-      "Id": "5f1f3104-b054-47df-866e-526944a43f0d",
-      "Description": "DSRE-approved custom role for CSEO Developers in compliance with PTA (Protect the Admin) and LPA (Least Privileged Access) guidelines."
-    },
     "Data Box Contributor": {
       "Id": "add466c9-e687-43fc-8d98-dfcf8d720be5",
       "Description": "Lets you manage everything under Data Box Service except giving access to others."

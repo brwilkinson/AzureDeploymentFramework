@@ -1344,10 +1344,6 @@
       "Id": "f58310d9-a9f6-439a-9e8d-f62e7b41a168",
       "Description": "Manage access to Azure resources by assigning roles using Azure RBAC. This role does not allow you to manage access using other ways, such as Azure Policy."
     },
-    "PE_GW_Contributor": {
-      "Id": "f0abd98b-4bd2-5bf9-9c33-adb52fd47ae4",
-      "Description": "Allow actions not in DevOps Role"
-    },
     "Scheduled Patching Contributor": {
       "Id": "cd08ab90-6b14-449c-ad9a-8f8e549482c6",
       "Description": "Provides access to manage maintenance configurations with maintenance scope InGuestPatch and corresponding configuration assignments"

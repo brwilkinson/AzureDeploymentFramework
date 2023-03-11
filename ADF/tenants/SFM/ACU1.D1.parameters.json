@@ -240,7 +240,7 @@
               },
               // Above does not work on the first deploy since the RG has not been created
               {
-                "Name": "CSEO DevOps Role"
+                "Name": "Contributor"
               },
               {
                 "Name": "Reader and Data Access",
