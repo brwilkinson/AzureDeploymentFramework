@@ -47,7 +47,6 @@ $IDs | ForEach-Object {
     }
 }
 
-
 # Moved this to manually run for Reader assignment, to be run on SAW device.
 $IDs = @(
     'todo',
