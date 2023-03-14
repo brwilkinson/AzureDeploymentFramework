@@ -242,24 +242,6 @@ var NSGDefault = {
           description: '[Required] Allow traffic from Service Fabric Resource Provider.'
         }
       }
-      // {
-      //   name: 'AllowCorpNet'
-      //   properties: {
-      //     protocol: '*'
-      //     sourcePortRange: '*'
-      //     sourceAddressPrefix: 'CorpNetPublic'
-      //     destinationAddressPrefix: 'VirtualNetwork'
-      //     destinationPortRanges: [
-      //       '3389'
-      //       '19000'
-      //       '19080'
-      //     ]
-      //     access: 'Allow'
-      //     priority: 1010
-      //     direction: 'Inbound'
-      //     description: 'Allow RDP, SFX and Service Fabric client access from CorpNet.'
-      //   }
-      // }
     ]
   SNAPIM01: [
     // Rules for API Management as documented here: https://docs.microsoft.com/en-us/azure/api-management/api-management-using-with-vnet

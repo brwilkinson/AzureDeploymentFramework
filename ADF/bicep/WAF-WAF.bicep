@@ -88,18 +88,18 @@ var SSLpolicyLookup = {
 var rewriteRuleSetLookup = {
   APIM01: [
     {
-      name: 'deviceCare'
+      name: 'MyApi01'
       properties: {
         rewriteRules: [
           {
-            name: 'deviceCare'
+            name: 'MyApi01'
             ruleSequence: 100
             // conditions: []
             actionSet: {
               // requestHeaderConfigurations: []
               // responseHeaderConfigurations: []
               urlConfiguration: {
-                modifiedPath: 'devicecare{var_uri_path}'
+                modifiedPath: 'MyApi01{var_uri_path}'
                 reroute: false
               }
             }
@@ -108,18 +108,18 @@ var rewriteRuleSetLookup = {
       }
     }
     {
-      name: 'deviceCare-dev'
+      name: 'MyApi01-dev'
       properties: {
         rewriteRules: [
           {
-            name: 'deviceCare-dev'
+            name: 'MyApi01-dev'
             ruleSequence: 100
             // conditions: []
             actionSet: {
               // requestHeaderConfigurations: []
               // responseHeaderConfigurations: []
               urlConfiguration: {
-                modifiedPath: 'dev/devicecare{var_uri_path}'
+                modifiedPath: 'dev/MyApi01{var_uri_path}'
                 reroute: false
               }
             }
