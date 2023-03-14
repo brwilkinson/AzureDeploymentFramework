@@ -8,7 +8,9 @@
 
 #### This project is currently in Preview. [[ADF Source]](https://github.com/brwilkinson/AzureDeploymentFramework)
 - If you have previously forked this project, I recommend to pull in recent commits [Mar 2023]
-- The project setup steps have been streamlined.
+  - The project setup steps have been streamlined.
+  - Automatic network setup.
+  - Advanced template capabilities around Zero Trust.
 
 * * *
 
