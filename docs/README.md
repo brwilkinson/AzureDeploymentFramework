@@ -75,7 +75,7 @@
 - [Documentation - What is ADF, Observations on ARM (Bicep) Templates Etc.](https://brwilkinson.github.io/AzureDeploymentFramework/)
 - [Documentation - Ready to Deploy? Getting Started Steps](https://brwilkinson.github.io/AzureDeploymentFramework/Getting_Started)
 
-**Full list of templates:**
+##### **Full list of templates:**
 
 ![Bicep_Templates](./Bicep_Templates.png)
 
