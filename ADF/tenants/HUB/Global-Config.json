@@ -120,14 +120,6 @@
       "Id": "d63b75f7-47ea-4f27-92ac-e0d173aaf093",
       "Description": "Grants read access to Autonomous Development Platform data."
     },
-    "Avere Cluster Create": {
-      "Id": "a7b1b19a-0e83-4fe5-935c-faaefbfd18c3",
-      "Description": "Avere cluster create role used by the Avere controller to create a vFXT cluster."
-    },
-    "Avere Cluster Runtime Operator": {
-      "Id": "e078ab98-ef3a-4c9a-aba7-12f5172b45d0",
-      "Description": "Avere cluster runtime role used by Avere clusters running in subscriptions, for the purpose of failing over IP addresses, accessing BLOB storage, etc"
-    },
     "Avere Contributor": {
       "Id": "4f8fab4f-1852-4a58-a46a-8eaf358af14a",
       "Description": "Can create and manage an Avere vFXT cluster."
@@ -244,6 +236,10 @@
       "Id": "2b629674-e913-4c01-ae53-ef4638d8f975",
       "Description": "Allows send access to Azure Event Hubs resources."
     },
+    "Azure Extension for SQL Server Deployment": {
+      "Id": "7392c568-9289-4bde-aaaa-b7131215889d",
+      "Description": "Microsoft.AzureArcData service role to enable deployment of Azure Extension for SQL Server"
+    },
     "Azure Front Door Domain Contributor": {
       "Id": "0ab34830-df19-4f8c-b84e-aa85b8afa6e8",
       "Description": "Can manage Azure Front Door domains, but can't grant access to other users."
@@ -356,22 +352,6 @@
       "Id": "69a216fc-b8fb-44d8-bc22-1f3c2cd27a39",
       "Description": "Allows for send access to Azure Service Bus resources."
     },
-    "Azure Service Deploy Release Management Contributor": {
-      "Id": "21d96096-b162-414a-8302-d8354f9d91b2",
-      "Description": "Contributor role for services deploying through Azure Service Deploy."
-    },
-    "Azure Service Deploy Release Management Key Vault Secrets User": {
-      "Id": "260691e6-68c2-47cf-bd4a-97d5fd4dbcd5",
-      "Description": "Read secret and certificate contents. Only works for key vaults that use the 'Azure role-based access control' permission model."
-    },
-    "Azure Service Deploy Release Management Restricted Owner": {
-      "Id": "94ddc4bc-25f5-4f3e-b527-c587da93cfe4",
-      "Description": "Restricted owner role for services deploying through Azure Service Deploy."
-    },
-    "Azure Service Deploy Test Release Management Key Vault Secrets User": {
-      "Id": "87d31636-ad85-4caa-802d-1535972b5612",
-      "Description": "Read secret and certificate contents. Only works for key vaults that use the 'Azure role-based access control' permission model."
-    },
     "Azure Spring Apps Connect Role": {
       "Id": "80558df3-64f9-4c0f-b32d-e5094b036b0b",
       "Description": "Azure Spring Apps Connect Role"
@@ -448,6 +428,10 @@
       "Id": "a795c7a0-d4a2-40c1-ae25-d81f01202912",
       "Description": "Can view backup services, but can't make changes"
     },
+    "Bayer Ag Powered Services CWUM Solution User Role": {
+      "Id": "a9b99099-ead7-47db-8fcf-072597a61dfa",
+      "Description": "Provide access to CWUM Solution by Bayer Ag Powered Services"
+    },
     "Bayer Ag Powered Services GDU Solution": {
       "Id": "c4bc862a-3b64-4a35-a021-a380c159b042",
       "Description": "Provide access to GDU Solution by Bayer Ag Powered Services"
@@ -475,10 +459,6 @@
     "Blueprint Operator": {
       "Id": "437d2ced-4a38-4302-8479-ed2bcb43d090",
       "Description": "Can assign existing published blueprints, but cannot create new blueprints. NOTE: this only works if the assignment is done with a user-assigned managed identity."
-    },
-    "CAL-Custom-Role": {
-      "Id": "7b266cd7-0bba-4ae2-8423-90ede5e1e898",
-      "Description": "Lets SAP Cloud Appliance Library application manage Network and Compute services, manage Resource Groups and Management locks."
     },
     "CDN Endpoint Contributor": {
       "Id": "426e0c7f-0c7e-4658-b36f-ff54d6c29b45",
@@ -848,14 +828,6 @@
       "Id": "361898ef-9ed1-48c2-849c-a832951106bb",
       "Description": "Can view Azure AD Domain Services and related network configurations"
     },
-    "Dsms Role (deprecated)": {
-      "Id": "b91f4c0b-46e3-47bb-a242-eecfe23b3b5b",
-      "Description": "Custom role used by Dsms to perform operations. Can list and regnerate storage account keys."
-    },
-    "Dsms Role (do not use)": {
-      "Id": "7aff565e-6c55-448d-83db-ccf482c6da2f",
-      "Description": "Custom role used by Dsms to perform operations. Can list and regnerate storage account keys."
-    },
     "Elastic SAN Owner": {
       "Id": "80dcbedb-47ef-405d-95bd-188a1b4ac406",
       "Description": "Allows for full access to all resources under Azure Elastic SAN including changing network security policies to unblock data path access"
@@ -900,10 +872,6 @@
       "Id": "49632ef5-d9ac-41f4-b8e7-bbe587fa74a1",
       "Description": "Experimentation Reader"
     },
-    "ExpressRoute Administrator": {
-      "Id": "a48d7896-14b4-4889-afef-fbb65a96e5a2",
-      "Description": "Can create, delete and manage ExpressRoutes"
-    },
     "FHIR Data Contributor": {
       "Id": "5a1fc7df-4bf1-4951-a576-89034ee01acd",
       "Description": "Role allows user or principal full access to FHIR Data"
@@ -931,14 +899,6 @@
     "FHIR SMART User": {
       "Id": "4ba50f17-9666-485c-a643-ff00808643f0",
       "Description": "Role allows user to access FHIR Service according to SMART on FHIR specification"
-    },
-    "GenevaWarmPathResourceContributor": {
-      "Id": "9f15f5f5-77bd-413a-aa88-4b9c68b1e7bc",
-      "Description": "Can manage service bus and storage accounts."
-    },
-    "GenevaWarmPathStorageBlobContributor": {
-      "Id": "a16c43ca-2d67-4dcd-9ded-6412f5edc51a",
-      "Description": "Geneva Warm Path Storage Blob Contributor"
     },
     "Grafana Admin": {
       "Id": "22926164-76b3-42b3-bc55-97df8dab3e41",
@@ -1056,6 +1016,10 @@
       "Id": "ee361c5d-f7b5-4119-b4b6-892157c8f64c",
       "Description": "Knowledge Read permission to consume Enterprise Graph Knowledge using entity search and graph query"
     },
+    "Kubernetes Agentless Operator": {
+      "Id": "d5a2ae44-610b-4500-93be-660a0c5f5ca6",
+      "Description": "Grants Microsoft Defender for Cloud access to Azure Kubernetes Services"
+    },
     "Kubernetes Cluster - Azure Arc Onboarding": {
       "Id": "34e09817-6cbe-4d01-b1a2-e0eac5743d41",
       "Description": "Role definition to authorize any user/service to create connectedClusters resource"
@@ -1103,6 +1067,14 @@
     "Load Test Reader": {
       "Id": "3ae3fb29-0000-4ccd-bf80-542e7b26e081",
       "Description": "View and list all load tests and load test resources but can not make any changes"
+    },
+    "LocalNGFirewallAdministrator role": {
+      "Id": "a8835c7d-b5cb-47fa-b6f0-65ea10ce07a2",
+      "Description": "Allows user to create, modify, describe, or delete NGFirewalls."
+    },
+    "LocalRulestacksAdministrator role": {
+      "Id": "bfc3b73d-c6ff-45eb-9a5f-40298295bf20",
+      "Description": "Allows users to create, modify, describe, or delete Rulestacks."
     },
     "Log Analytics Contributor": {
       "Id": "92aaf0da-9dab-42b6-94a3-d43ce8d16293",
@@ -1156,10 +1128,6 @@
       "Id": "ac63b705-f282-497d-ac71-919bf39d939d",
       "Description": "Management Group Reader Role"
     },
-    "masterreader": {
-      "Id": "a48d7796-14b4-4889-afef-fbb65a93e5a2",
-      "Description": "Lets you view everything, but not make any changes."
-    },
     "Media Services Account Administrator": {
       "Id": "054126f8-9a2b-4f1c-a9ad-eca461f08466",
       "Description": "Create, read, modify, and delete Media Services accounts; read-only access to other Media Services resources."
@@ -1179,10 +1147,6 @@
     "Media Services Streaming Endpoints Administrator": {
       "Id": "99dba123-b5fe-44d5-874c-ced7199a5804",
       "Description": "Create, read, modify, and delete Streaming Endpoints; read-only access to other Media Services resources."
-    },
-    "Microsoft OneAsset Reader": {
-      "Id": "fd1bb084-1503-4bd2-99c0-630220046786",
-      "Description": "This role is for Microsoft OneAsset team (CSEO) to track internal security compliance and resource utilization."
     },
     "Microsoft Sentinel Automation Contributor": {
       "Id": "f4c81013-99ee-4d62-a7ee-b3f1f648599a",
@@ -1224,6 +1188,10 @@
       "Id": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
       "Description": "Can read all monitoring data."
     },
+    "MySQL Backup And Export Operator": {
+      "Id": "d18ad5f3-1baf-4119-b49b-d944edb1f9d0",
+      "Description": "Grants full access to manage backup and export resources"
+    },
     "Network Contributor": {
       "Id": "4d97b98b-1d4f-4787-a291-c67834d212e7",
       "Description": "Lets you manage networks, but not access to them."
@@ -1247,10 +1215,6 @@
     "Object Understanding Account Reader": {
       "Id": "d18777c0-1514-4662-8490-608db7d334b6",
       "Description": "Lets you read ingestion jobs for an object understanding account."
-    },
-    "Office DevOps": {
-      "Id": "7fd64851-3279-459b-b614-e2b2ba760f5b",
-      "Description": "Custom access for developers to operations but not secrets."
     },
     "Owner": {
       "Id": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
@@ -1331,18 +1295,6 @@
     "Role Based Access Control Administrator (Preview)": {
       "Id": "f58310d9-a9f6-439a-9e8d-f62e7b41a168",
       "Description": "Manage access to Azure resources by assigning roles using Azure RBAC. This role does not allow you to manage access using other ways, such as Azure Policy."
-    },
-    "PE_CloudTest_Contributor": {
-      "Id": "f9867237-60ce-5605-86a0-05971de1e85b",
-      "Description": "Allow to deploy CloudTest resources e.g. accounts, images and devops pools"
-    },
-    "PE_DeploymentScripts_Contributor": {
-      "Id": "57005d2a-26c3-5c9e-afa1-cffc984bc616",
-      "Description": "Allow to deploy DeploymentScripts"
-    },
-    "PE_SF_App_Contributor": {
-      "Id": "8e7fa28e-4b4b-536f-b38a-d3058e3558e3",
-      "Description": "Manage Service Fabric Applications"
     },
     "Scheduled Patching Contributor": {
       "Id": "cd08ab90-6b14-449c-ad9a-8f8e549482c6",
@@ -1471,6 +1423,18 @@
     "SQL Server Contributor": {
       "Id": "6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437",
       "Description": "Lets you manage SQL servers and databases, but not access to them, and not their security -related policies."
+    },
+    "SqlDb Migration Role": {
+      "Id": "189207d4-bb67-4208-a635-b06afe8b2c57",
+      "Description": "Role for SqlDb migration"
+    },
+    "SqlMI Migration Role": {
+      "Id": "1d335eef-eee1-47fe-a9e0-53214eba8872",
+      "Description": "Role for SqlMI migration"
+    },
+    "SqlVM Migration Role": {
+      "Id": "ae8036db-e102-405b-a1b9-bae082ea436d",
+      "Description": "Role for SqlVM migration"
     },
     "Storage Account Backup Contributor": {
       "Id": "e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1",

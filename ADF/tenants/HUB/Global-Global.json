@@ -1,6 +1,6 @@
 {
   "Global": {
-    "OrgName": "PE", //<--- Change this to your unique 2 or 3 letter OrgName
+    "OrgName": "PE",
     "AppName": "HUB",
     "GlobalSA": {
       "name": "global"
@@ -43,16 +43,10 @@
       "benwilk@psthing.com"
     ],
     "ObjectIdLookup": {
-      "BenWilkinson": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
-      "BenWilkinson-ADM": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
-      "SimonAdams": "a54933b9-b921-4842-abbe-342416767d97",
-      "SimonAdams-ADM": "3fc273e5-f8f1-4d44-a950-3c3913643fc1",
-      "JessicaBobo": "8e667bcd-b22b-4f39-a35f-ec4a27e4fcd6",
-      "JessicaBobo-ADM": "8658da0d-84d9-4580-ba05-6c905b68b670",
-      "CathyEvans": "0ae1653d-3712-43dc-b9d2-f02f3ee6a2a1",
-      "CathyEvans-ADM": "bb07ad08-b8d9-41f4-b6c2-4783cd826977",
+      "BenWilkinson": "9bce7f53-71d0-4f3f-be0d-f00dfab17de4",
+      "brwilkinson": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",
       "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
-      "AKS_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "AKS_Admins": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",
       "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
       "Microsoft.AzureFrontDoor-Cdn": "4dbab725-22a4-44d5-ad44-c267ca38a954",
       "Microsoft.Azure.CertificateRegistration": "ed47c2a1-bd23-4341-b39c-f4fd69138dd3",
@@ -60,11 +54,10 @@
       "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
       "AzureServiceFabricResourceProvider": "fbc587f2-66f5-4459-a027-bcd908b9d278",
-      "ADO_BRW_ACU1-PE-HUB-RG-G0": "f9a70417-b338-4b48-bed9-240d80c1af2b",
-      "ADO_BRW_ACU1-PE-HUB-RG-G1": "dbe84c36-8951-44b1-8fcd-d15647b12853",
-      "ADO_BRW_ACU1-PE-HUB-RG-P0": "07dbc30d-57c2-4526-afac-9af36a800fe0",
-      "ADO_BRW_AEU2-PE-HUB-RG-P0": "00287aaa-f9f3-4714-99ce-6790a576059e",
-      "ADO_BRW_AEU1-PE-HUB-RG-P0": "e5bee9ee-ce9e-49fc-92b6-6c23ba0a3f25"
+      "ADO_ADF_ACU1-PE-HUB-RG-G0": "4f3e8446-060f-45f4-b4f1-8104b4a83162",
+      "ADO_ADF_ACU1-PE-HUB-RG-G1": "c0b703c8-69bd-4a98-a92a-f9a56dcad122",
+      "ADO_ADF_ACU1-PE-HUB-RG-P0": "b3056389-ade3-423b-b509-16e6f64e025c",
+      "ADO_ADF_AEU2-PE-HUB-RG-P0": "d191166c-2c57-4a76-aefe-02b8205a9318"
     }
   }
 }

@@ -4,7 +4,7 @@ param (
 Import-Module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -Force
 Import-Module -Name "$PSScriptRoot\..\..\release-az\ADOHelper.psm1" -Force
 # 1) Set Deployment information
-AzSetSC -App $App -Enviro G1
+AzSet -App $App -Enviro G0
 break
 # F8 to run individual steps
 
@@ -17,14 +17,14 @@ break
 getpim -Resource ACU1-PE-HUB-RG-P0 | setpim -duration PT8H
 
 # App pipelines in AZD New or update Owner
-New-ADOAZServiceConnection -Prefix ACU1 -App $App -Environments G0, G1, P0
-New-ADOAZServiceConnection -Prefix AEU2 -App $App -Environments P0
-New-ADOAZServiceConnection -Prefix AEU1 -App $App -Environments P0
+New-ADOAZServiceConnection -Prefix ACU1 -App $App -IncludeReaderOnSubscription -Environments G0, G1, P0
+New-ADOAZServiceConnection -Prefix AEU2 -App $App -IncludeReaderOnSubscription -Environments P0
+# New-ADOAZServiceConnection -Prefix AEU1 -App $App -Environments P0
 
 # update secrets
-Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 360 -Environments G0, G1, P0
+Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 370 -Environments G0, G1, P0
 Set-ADOAZServiceConnection -Prefix AEU2 -App $App -RenewDays 360 -Environments P0
-Set-ADOAZServiceConnection -Prefix AEU1 -App $App -RenewDays 360 -Environments P0
+# Set-ADOAZServiceConnection -Prefix AEU1 -App $App -RenewDays 360 -Environments P0
 
 Get-AzUserAssignedIdentity -ResourceGroupName AEU1-PE-HUB-RG-P0 -Name AEU1-PE-HUB-P0-uaiGlobal | ForEach-Object PrincipalId
 
@@ -47,48 +47,48 @@ $IDs | ForEach-Object {
 }
 
 # Moved this to manually run for Reader assignment
-$IDs = @(
-    'todo',
-    'todo'
-)
-$Scope = '/subscriptions/{TODO-AddSubscriptionId}'
-$IDs | ForEach-Object {
-    $r = Get-AzRoleAssignment -Scope $Scope -ObjectId $_ -RoleDefinitionName Reader
-    if ($r)
-    {
-        $r
-    }
-    else
-    {
-        New-AzRoleAssignment -Scope $Scope -ObjectId $_ -RoleDefinitionName Reader
-    }
-}
+# $IDs = @(
+#     'todo',
+#     'todo'
+# )
+# $Scope = '/subscriptions/{TODO-AddSubscriptionId}'
+# $IDs | ForEach-Object {
+#     $r = Get-AzRoleAssignment -Scope $Scope -ObjectId $_ -RoleDefinitionName Reader
+#     if ($r)
+#     {
+#         $r
+#     }
+#     else
+#     {
+#         New-AzRoleAssignment -Scope $Scope -ObjectId $_ -RoleDefinitionName Reader
+#     }
+# }
 
 ##########################################################
 # Deploy Environment
 
 # 1) Set Deployment information - Subscription
-AzSetSC -App $App -Enviro G0
+AzSet -App $App -Enviro G0
 
 # Global - Only Needed in primary Region (for subscription deployment)
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
 
 # 2) Set Deployment information - Optional Global
-AzSetSC -App $App -Enviro G0
+AzSet -App $App -Enviro G0
 
 # Global - Only Needed in primary Region
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
 
 # 3) Set Deployment information - Hub
-AzSetSC -App $App -Enviro P0
+AzSet -App $App -Enviro P0
 
 # Global - Only Needed in primary Region
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
 
 # 4) Set Deployment information - Dev Environment
-AzSetSC -App $App -Enviro D1
+AzSet -App $App -Enviro D1
 
 # Global - Only Needed in secondary Region
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep

@@ -143,19 +143,17 @@ function Get-PATToken
 
 function Get-ADOAuthorization
 {
-    # Don't use SC-ADM account to try connect to ADO, use PAT token from user.
-    if ($env:USERDOMAIN -match 'NORTHAMERICA|REDMOND|FAREAST' -and (-not ((Get-AzContext | ForEach-Object account | ForEach-Object id) -match 'SC-')))
-    {
-        # AAD app to get onbehalf user_impersonation scoped token
-        "Bearer $(Get-AzAccessToken -ResourceUrl '499b84ac-1321-427f-aa17-267ca6975798' | ForEach-Object token)"
-    }
-    else 
-    {
-        # Default to CentralUS primary for looking up PAT token
-        $KVName = Get-Global -Prefix ACU1 -App $App | ForEach-Object KVName
-        Write-Warning "Using Prefix [ACU1] App [$App] to KeyVault [$KVName]"
-        "Basic $(Get-PATToken -KVName $KVName)"
-    }
+    # AAD app to get onbehalf user_impersonation scoped token
+    "Bearer $(Get-AzAccessToken -ResourceUrl '499b84ac-1321-427f-aa17-267ca6975798' | ForEach-Object token)"
+
+    # Need to get pattoken if cannot use oauth to connect to ado
+    # else 
+    # {
+    #     # Default to CentralUS primary for looking up PAT token
+    #     $KVName = Get-Global -Prefix ACU1 -App $App | ForEach-Object KVName
+    #     Write-Warning "Using Prefix [ACU1] App [$App] to KeyVault [$KVName]"
+    #     "Basic $(Get-PATToken -KVName $KVName)"
+    # }
 }
 
 function New-PATToken
@@ -183,7 +181,7 @@ function New-PATToken
     } | ConvertTo-Json
 
     $uri = "https://vssps.dev.azure.com/$AZDevOpsOrg/_apis/tokens/pats?api-version=7.1-preview.1"
-    $paterror = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -Body $Body -ContentType $contentType -OV r @ProxyParams | 
+    $paterror = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -Body $Body -ContentType $contentType -OV r | 
         ForEach-Object Content | ConvertFrom-Json -Depth 5 -ov token | ForEach-Object patTokenError
     if ($paterror -eq 'none')
     {
@@ -213,12 +211,12 @@ function Get-PATTokenCurrent
     if ($PatName -eq 'ALL')
     {
         $uri = "https://vssps.dev.azure.com/$AZDevOpsOrg/_apis/tokens/pats?api-version=7.1-preview.1"
-        Invoke-WebRequest -Uri $uri -Method Get -Headers $headers -OV r @ProxyParams | ForEach-Object Content | ConvertFrom-Json | ForEach-Object patTokens
+        Invoke-WebRequest -Uri $uri -Method Get -Headers $headers -OV r | ForEach-Object Content | ConvertFrom-Json | ForEach-Object patTokens
     }
     else 
     {
         $uri = "https://vssps.dev.azure.com/$AZDevOpsOrg/_apis/tokens/pats?displayFilterOption=active&sortByOption=displayDate&isSortAscending=false&api-version=7.1-preview.1"
-        Invoke-WebRequest -Uri $uri -Method Get -Headers $headers -OV r @ProxyParams | ForEach-Object Content | ConvertFrom-Json | ForEach-Object patTokens | 
+        Invoke-WebRequest -Uri $uri -Method Get -Headers $headers -OV r | ForEach-Object Content | ConvertFrom-Json | ForEach-Object patTokens | 
             Where-Object displayName -Match $PatName
     }
 }
@@ -226,7 +224,7 @@ function Get-PATTokenCurrent
 function Get-ADOServiceConnection
 {
     param (
-        [String]$ConnectionName = 'ADO_AzureDeploymentFramework_ACU1-PE-SFM-RG-D1',
+        [String]$ConnectionName = 'ADO_ADF_ACU1-PE-HUB-RG-G0',
         # [String]$KVName = 'ACU1-PE-HUB-P0-kvVLT01',
         [String]$AZDevOpsOrg = 'AzureDeploymentFramework',
         [String]$ADOProject = 'ADF'
@@ -240,7 +238,7 @@ function Get-ADOServiceConnection
     }
 
     $uri = "https://dev.azure.com/$AZDevOpsOrg/$ADOProject/_apis/serviceendpoint/endpoints?endpointNames=$ConnectionName&api-version=7.1-preview.4"
-    $r = Invoke-WebRequest -Uri $uri -Method GET -Headers $headers @ProxyParams | ConvertFrom-Json | ForEach-Object value
+    $r = Invoke-WebRequest -Uri $uri -Method GET -Headers $headers | ConvertFrom-Json | ForEach-Object value
     
     if ($r)
     {
@@ -272,7 +270,7 @@ function Set-ADOServiceConnection
     $EndpointJson = $Endpoint | ConvertTo-Json -Depth 10
     $CurrentId = $Endpoint.id
     $uri = "https://dev.azure.com/$AZDevOpsOrg/_apis/serviceendpoint/endpoints/${CurrentId}?api-version=7.1-preview.4"
-    Invoke-WebRequest -Uri $uri -Method PUT -Headers $headers -Body $EndpointJson -ContentType 'application/json' -OV result @ProxyParams
+    Invoke-WebRequest -Uri $uri -Method PUT -Headers $headers -Body $EndpointJson -ContentType 'application/json' -OV result
 
     if ($result.StatusCode -eq 200)
     {
@@ -304,7 +302,7 @@ function New-ADOServiceConnection
 
     # $EndpointJson = $Endpoint | ConvertTo-Json -Depth 10
     $uri = "https://dev.azure.com/$AZDevOpsOrg/_apis/serviceendpoint/endpoints/?api-version=7.1-preview.4"
-    Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -Body $EndpointJson -ContentType 'application/json' -OV result @ProxyParams
+    Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -Body $EndpointJson -ContentType 'application/json' -OV result
 
     if ($result.StatusCode -eq 200)
     {
@@ -332,7 +330,7 @@ function Set-ADOSFMServiceConnection
         [String]$App = 'SFM',
 
         [String]$ConnectionType = 'ServiceFabric',
-        [String]$NamePrefix = 'ADO_AzureDeploymentFramework'
+        [String]$NamePrefix = 'ADO_ADF'
 
     )
 
@@ -500,7 +498,7 @@ function Get-ADOProfile
         Accept        = 'application/json'
     }
     $uri = 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=7.1-preview.3'
-    $r = Invoke-WebRequest -Uri $uri -Method GET -Headers $headers @ProxyParams    
+    $r = Invoke-WebRequest -Uri $uri -Method GET -Headers $headers    
 
     if ($r.StatusCode -eq 200)
     {
@@ -785,7 +783,7 @@ function New-ADOAZServiceConnection
             if ($IncludeReaderOnSubscription)
             {
                 $SPParams['Role'] = 'Reader'
-                $SPParams['Scope'] = '/subscriptions/$SubscriptionID'
+                $SPParams['Scope'] = "/subscriptions/$SubscriptionID"
             }
             New-AzADServicePrincipal -DisplayName $ServicePrincipalName @SPParams
             $appID = Get-AzADApplication -DisplayName $ServicePrincipalName

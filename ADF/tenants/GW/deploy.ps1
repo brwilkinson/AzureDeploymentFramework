@@ -5,7 +5,7 @@ $Base = $PSScriptRoot
 Import-Module -Name "$Base\..\..\release-az\azSet.psm1" -Force
 Import-Module -Name "$Base\..\..\release-az\ADOHelper.psm1" -Force
 # 1) Set Deployment information
-AzSetSC -App $App -Enviro G0
+AzSet -App $App -Enviro G0
 break
 # F8 to run individual steps
 
@@ -75,14 +75,14 @@ $Providers | ForEach-Object {
 # Deploy Environment
 
 # 1) Set Deployment information
-AzSetSC -App $App -Enviro D1
+AzSet -App $App -Enviro D1
 
 # Global - Only Needed in primary Region
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\01-ALL-RG.bicep
 
 # 2) Set Deployment information
-AzSetSC -App $App -Enviro D1
+AzSet -App $App -Enviro D1
 
 # Global - Only Needed in secondary Region
 AzDeploy @Current -Prefix AEU2 -TF ADF:\bicep\00-ALL-SUB.bicep
