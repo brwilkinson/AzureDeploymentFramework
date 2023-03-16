@@ -20,6 +20,8 @@ else
 }
 
 # https://learn.microsoft.com/en-us/azure/key-vault/certificates/how-to-integrate-certificate-authority#before-you-begin
+# https://docs.digicert.com/en/certcentral/certificate-tools/azure-key-vault-integration-guide.html
+# https://docs.digicert.com/en/certcentral/certificate-tools/azure-key-vault-integration-guide/order-an-ssl-tls-certificate-from-key-vault-account.html
 
 <#
     $AdminDetails = New-AzKeyVaultCertificateAdministratorDetail -FirstName user -LastName name -EmailAddress username@microsoft.com
