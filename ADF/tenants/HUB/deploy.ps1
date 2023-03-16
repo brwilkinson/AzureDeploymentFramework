@@ -22,7 +22,7 @@ New-ADOAZServiceConnection -Prefix AEU2 -App $App -IncludeReaderOnSubscription -
 # New-ADOAZServiceConnection -Prefix AEU1 -App $App -Environments P0
 
 # update secrets
-Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 370 -Environments G0, G1, P0
+Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 360 -Environments G0, G1, P0
 Set-ADOAZServiceConnection -Prefix AEU2 -App $App -RenewDays 360 -Environments P0
 # Set-ADOAZServiceConnection -Prefix AEU1 -App $App -RenewDays 360 -Environments P0
 

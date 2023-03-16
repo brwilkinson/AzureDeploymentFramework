@@ -1,10 +1,11 @@
 trigger: #none
   batch: 'true'
   branches:
-    include: [ users/benwilk/shared ]
+    include: [ main ]
   paths:
     include:
     - ADF/tenants/HUB/ACU1.G1.parameters.json
+    - ADF/tenants/HUB/ACU1.G1.ado-pipelines-All.yml
 
 variables:
   ORG:        PE

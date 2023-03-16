@@ -15,7 +15,7 @@
       "value": {
         "RG": 1,
         "RBAC": 1,
-        "PIM": 1,
+        "PIM": 0,
         "UAI": 1,
         "SP": 1,
         "KV": 1,
@@ -163,9 +163,6 @@
                 "Name": "Contributor"
               },
               {
-                "Name": "PE_DeploymentScripts_Contributor"
-              },
-              {
                 "Name": "Managed Identity Operator"
               },
               {
@@ -173,7 +170,9 @@
               },
               {
                 "Name": "Reader and Data Access",
-                "RG": "G1"
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HUB"
               }
             ]
           }
