@@ -59,12 +59,12 @@
       "1ES_Resource_Management": "21d72402-ddc9-4dbf-8511-0739c5a7e479",
       "AzureServiceFabricResourceProvider": "fbc587f2-66f5-4459-a027-bcd908b9d278",
       "ADO_ADF_ACU1-PE-AOA-RG-T5": "a62aa5bc-5b8e-4a79-9d9d-3facdab59e8c",
-      "ADO_BRW_ACU1-PE-AOA-RG-G0": "311e50fe-8037-47d1-874f-efe94e97c1fd",
-      "ADO_BRW_ACU1-PE-AOA-RG-G1": "3c2f4536-9e10-41af-8879-79e0fdbc8838",
-      "ADO_BRW_ACU1-PE-AOA-RG-P0": "b5a3931c-c122-438a-bf9f-7cecfebd9714",
-      "ADO_BRW_ACU1-PE-AOA-RG-T5": "ef2c0ab2-9b8b-4065-8447-bcdf7e8bb055",
-      "ADO_BRW_AEU1-PE-AOA-RG-P0": "219ecf3e-11b0-451d-b604-7ecb1a88292f",
-      "ADO_BRW_AWCU-PE-AOA-RG-P0": "5bcfd044-d908-4ad8-9dc2-aafada75f480"
+      "ADO_ADF_ACU1-PE-AOA-RG-G0": "311e50fe-8037-47d1-874f-efe94e97c1fd",
+      "ADO_ADF_ACU1-PE-AOA-RG-G1": "3c2f4536-9e10-41af-8879-79e0fdbc8838",
+      "ADO_ADF_ACU1-PE-AOA-RG-P0": "b5a3931c-c122-438a-bf9f-7cecfebd9714",
+      "ADO_ADF_ACU1-PE-AOA-RG-T5": "ef2c0ab2-9b8b-4065-8447-bcdf7e8bb055",
+      "ADO_ADF_AEU1-PE-AOA-RG-P0": "219ecf3e-11b0-451d-b604-7ecb1a88292f",
+      "ADO_ADF_AWCU-PE-AOA-RG-P0": "5bcfd044-d908-4ad8-9dc2-aafada75f480"
     }
   }
 }

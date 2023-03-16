@@ -23,7 +23,7 @@ variables:
   PREFIX: ACU1
   ENV: G0
 
-  ADOProject: ADO_BRW
+  ADOProject: ADO_ADF
   PREFIXPRIMARY: ACU1
   APPPRIMARY: HUB
   UAI: 0

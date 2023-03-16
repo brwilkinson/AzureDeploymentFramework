@@ -85,14 +85,14 @@
       "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
       "AzureServiceFabricResourceProvider": "fbc587f2-66f5-4459-a027-bcd908b9d278",
-      "ADO_BRW_AEU2-PE-SFM-RG-P8": "542ddfaf-4e5b-4d60-8f80-c4b15262c675",
-      "ADO_BRW_ACU1-PE-SFM-RG-D1": "280a955f-4724-46d0-b2c4-53458b4e5f3e",
-      "ADO_BRW_ACU1-PE-SFM-RG-U5": "26cbf317-507c-4dc6-b64d-99bf678307b6",
-      "ADO_BRW_ACU1-PE-SFM-RG-P8": "d15f26de-f667-49bb-abb7-13e52eae8b28",
-      "ADO_BRW_AEU2-PE-SFM-RG-P8_SFM": "880b4458-bc59-4def-9281-ea6632ed5bd1",
-      "ADO_BRW_ACU1-PE-SFM-RG-D1_SFM": "bfd6145d-6ef7-4cb5-b306-4fc749e4c68a",
-      "ADO_BRW_ACU1-PE-SFM-RG-U5_SFM": "04f3cd2b-3a5c-486a-9d79-bc501c46307c",
-      "ADO_BRW_ACU1-PE-SFM-RG-P8_SFM": "949182a7-327a-4dbe-b1e3-3523a56541d7"
+      "ADO_ADF_AEU2-PE-SFM-RG-P8": "542ddfaf-4e5b-4d60-8f80-c4b15262c675",
+      "ADO_ADF_ACU1-PE-SFM-RG-D1": "280a955f-4724-46d0-b2c4-53458b4e5f3e",
+      "ADO_ADF_ACU1-PE-SFM-RG-U5": "26cbf317-507c-4dc6-b64d-99bf678307b6",
+      "ADO_ADF_ACU1-PE-SFM-RG-P8": "d15f26de-f667-49bb-abb7-13e52eae8b28",
+      "ADO_ADF_AEU2-PE-SFM-RG-P8_SFM": "880b4458-bc59-4def-9281-ea6632ed5bd1",
+      "ADO_ADF_ACU1-PE-SFM-RG-D1_SFM": "bfd6145d-6ef7-4cb5-b306-4fc749e4c68a",
+      "ADO_ADF_ACU1-PE-SFM-RG-U5_SFM": "04f3cd2b-3a5c-486a-9d79-bc501c46307c",
+      "ADO_ADF_ACU1-PE-SFM-RG-P8_SFM": "949182a7-327a-4dbe-b1e3-3523a56541d7"
     }
   }
 }

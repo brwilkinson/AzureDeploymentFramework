@@ -12,7 +12,7 @@ variables:
   PREFIX:     AEU2
   ENV:        P0
   
-  ADOProject: ADO_BRW
+  ADOProject: ADO_ADF
   PREFIXPRIMARY: AEU2
   APPPRIMARY: AKS
   UAI: 0

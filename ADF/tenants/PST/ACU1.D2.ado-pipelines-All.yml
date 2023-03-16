@@ -16,7 +16,7 @@ variables:
   PREFIX:     ACU1
   ENV:        D2
   
-  ADOProject: ADO_BRW
+  ADOProject: ADO_ADF
   PREFIXPRIMARY: ACU1
   APPPRIMARY: AOA
 

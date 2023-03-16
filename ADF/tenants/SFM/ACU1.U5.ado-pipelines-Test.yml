@@ -13,7 +13,7 @@ variables:
   PREFIX: ACU1
   ENV: U5
 
-  ADOProject: ADO_BRW
+  ADOProject: ADO_ADF
   PREFIXPRIMARY: ACU1
   APPPRIMARY: HUB
 

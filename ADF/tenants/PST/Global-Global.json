@@ -71,14 +71,14 @@
       "MicrosoftAzureAppService": "f8daea97-62e7-4026-becf-13c2ea98e8b4",
       "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
-      "ADO_BRW_ACU1-PE-PST-RG-D1": "1f74e079-6782-427c-88e2-f0467d43317e",
-      "ADO_BRW_ACU1-PE-PST-RG-G0": "48f2d5dd-1fac-4c76-a291-acadf1d0b1e8",
-      "ADO_BRW_ACU1-PE-PST-RG-P0": "c714a3f3-08d5-4477-80ef-174141148ba9",
-      "ADO_BRW_ACU1-PE-PST-RG-U2": "76422dcb-7885-41ba-8a74-6afd33fe05b9",
-      "ADO_BRW_ACU1-PE-PST-RG-D2": "23837702-543d-4607-8285-3b41aa2ebd8d",
-      "ADO_BRW_AWCU-PE-PST-RG-D3": "3b1f7f6e-b5f3-4e11-9ef0-7c729687167a",
-      "ADO_BRW_ACU1-PE-PST-RG-D4": "df48d08c-3ce5-4d1b-bf7c-c3cdeb91f0af",
-      "ADO_BRW_ACU1-PE-PST-RG-D5": "7225c6c5-2e21-4fb5-b9f4-e84bdf50e4fb"
+      "ADO_ADF_ACU1-PE-PST-RG-D1": "1f74e079-6782-427c-88e2-f0467d43317e",
+      "ADO_ADF_ACU1-PE-PST-RG-G0": "48f2d5dd-1fac-4c76-a291-acadf1d0b1e8",
+      "ADO_ADF_ACU1-PE-PST-RG-P0": "c714a3f3-08d5-4477-80ef-174141148ba9",
+      "ADO_ADF_ACU1-PE-PST-RG-U2": "76422dcb-7885-41ba-8a74-6afd33fe05b9",
+      "ADO_ADF_ACU1-PE-PST-RG-D2": "23837702-543d-4607-8285-3b41aa2ebd8d",
+      "ADO_ADF_AWCU-PE-PST-RG-D3": "3b1f7f6e-b5f3-4e11-9ef0-7c729687167a",
+      "ADO_ADF_ACU1-PE-PST-RG-D4": "df48d08c-3ce5-4d1b-bf7c-c3cdeb91f0af",
+      "ADO_ADF_ACU1-PE-PST-RG-D5": "7225c6c5-2e21-4fb5-b9f4-e84bdf50e4fb"
     }
   }
 }

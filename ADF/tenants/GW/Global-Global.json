@@ -79,16 +79,16 @@
       "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
       "AzureServiceFabricResourceProvider": "fbc587f2-66f5-4459-a027-bcd908b9d278",
-      "ADO_BRW_ACU1-PE-GW-RG-D1": "b1be1e7c-dea7-485a-be04-490c63fdfa57",
-      "ADO_BRW_ACU1-PE-GW-RG-U5": "b080e39d-2781-46c7-bed4-cd7e65311b96",
-      "ADO_BRW_ACU1-PE-GW-RG-P8": "fdf76919-6cbb-4f37-846f-62d2c640327c",
-      "ADO_BRW_AEU2-PE-GW-RG-P8": "f5bf6e18-d727-4bc2-beb4-65413a604734",
-      "ADO_BRW_AEU1-PE-GW-RG-P8": "ca7f24ec-b14b-4d52-bba4-6cd2e12ca8f0",
-      "ADO_BRW_AEU1-PE-GW-RG-U5": "2757a662-8d3e-458c-b7fd-477089c117b1",
-      "ADO_BRW_AEU2-PE-GW-RG-P0": "182f51a3-8789-4cc0-a23b-073fa186038f",
-      "ADO_BRW_ACU1-PE-GW-RG-G0": "a27845e2-7a8c-4b42-90f7-3de71761575c",
-      "ADO_BRW_ACU1-PE-GW-RG-G1": "bd2e53e0-28c8-483e-9e46-f479d09228ab",
-      "ADO_BRW_ACU1-PE-GW-RG-P0": "e2ffacef-3de1-472f-830f-420379e19d79"
+      "ADO_ADF_ACU1-PE-GW-RG-D1": "b1be1e7c-dea7-485a-be04-490c63fdfa57",
+      "ADO_ADF_ACU1-PE-GW-RG-U5": "b080e39d-2781-46c7-bed4-cd7e65311b96",
+      "ADO_ADF_ACU1-PE-GW-RG-P8": "fdf76919-6cbb-4f37-846f-62d2c640327c",
+      "ADO_ADF_AEU2-PE-GW-RG-P8": "f5bf6e18-d727-4bc2-beb4-65413a604734",
+      "ADO_ADF_AEU1-PE-GW-RG-P8": "ca7f24ec-b14b-4d52-bba4-6cd2e12ca8f0",
+      "ADO_ADF_AEU1-PE-GW-RG-U5": "2757a662-8d3e-458c-b7fd-477089c117b1",
+      "ADO_ADF_AEU2-PE-GW-RG-P0": "182f51a3-8789-4cc0-a23b-073fa186038f",
+      "ADO_ADF_ACU1-PE-GW-RG-G0": "a27845e2-7a8c-4b42-90f7-3de71761575c",
+      "ADO_ADF_ACU1-PE-GW-RG-G1": "bd2e53e0-28c8-483e-9e46-f479d09228ab",
+      "ADO_ADF_ACU1-PE-GW-RG-P0": "e2ffacef-3de1-472f-830f-420379e19d79"
     }
   }
 }
