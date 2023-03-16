@@ -61,7 +61,7 @@ parameters:
   - name: UAI
     displayName: Switch to use the UAI for Global
     type: string
-    default: 1
+    default: 0
     values:
       - 0
       - 1

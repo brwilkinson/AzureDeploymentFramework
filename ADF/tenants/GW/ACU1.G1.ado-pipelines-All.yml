@@ -16,7 +16,7 @@ variables:
   ADOProject: ADO_BRW
   PREFIXPRIMARY: ACU1
   APPPRIMARY: GW
-  UAI: 1
+  UAI: 0
 
 stages:
 - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
