@@ -4,8 +4,8 @@ trigger: #none
     include: [ main ]
   paths:
     include:
-    - ADF\tenants\HUB\ACU1.G0.parameters.json
-    - ADF\tenants\HUB\ACU1.G0.ado-pipelines-Stage.yml
+    - ADF/tenants/HUB/ACU1.G0.parameters.json
+    - ADF/tenants/HUB/ACU1.G0.ado-pipelines-Stage.yml
 
 parameters:
   - name: STAGE
