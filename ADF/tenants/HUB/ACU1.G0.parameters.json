@@ -14,7 +14,7 @@
     "Stage": {
       "value": {
         "RoleDefinition": 1,
-        "Security": 0,
+        "Security": 1,
         "RBAC": 1,
         "PIM": 0,
         "SP": 0
@@ -69,7 +69,8 @@
             "Arm",
             "Containers",
             "OpenSourceRelationalDatabases",
-            "CosmosDbs"
+            "CosmosDbs",
+            "CloudPosture"
           ],
           "Free": [
             "KubernetesService",
