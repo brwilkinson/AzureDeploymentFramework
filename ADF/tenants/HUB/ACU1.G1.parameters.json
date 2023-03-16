@@ -147,7 +147,7 @@
           //   ]
           // },
           {
-            "Name": "BenWilkinson",
+            "Name": "brwilkinson",
             "RBAC": [
               {
                 "Name": "Storage Blob Data Owner"
