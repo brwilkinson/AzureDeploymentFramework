@@ -271,6 +271,7 @@ module dp_Deployment_DNSResolver 'DNSResolver.bicep' = if (contains(Stage, 'DNSR
   ]
 }
 
+/*
 module dp_Deployment_CloudTestAccount 'CloudTestAccount.bicep' = if (contains(Stage, 'CloudTestAccount') && bool(Stage.CloudTestAccount)) {
   name: 'dp${Deployment}-CloudTestAccount'
   params: {
@@ -321,6 +322,7 @@ module dp_Deployment_CloudTestHostedPool 'CloudTestDevOpsPool.bicep' = if (conta
     dp_Deployment_VNET
   ]
 }
+*/
 
 module dp_Deployment_KV 'KV.bicep' = if (bool(Stage.KV)) {
   name: 'dp${Deployment}-KV'

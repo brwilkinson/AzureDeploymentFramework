@@ -80,7 +80,7 @@ resource imageContainer 'Microsoft.CloudTest/images@2020-05-07' = if( ctimage.im
         image: ctimage.image
         osType: osTypeLookup[ctimage.image]
         cpuCores: 1
-        memoryInGb: 0.5
+        memoryInGb: json('0.5')
     }
 }
 
