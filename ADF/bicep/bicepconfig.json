@@ -1,22 +1,22 @@
 {
   "experimentalFeaturesEnabled": {
     // "extensibility": true,
-    "userDefinedTypes": true
+    // "userDefinedTypes": true // breaks splatting
   },
   "analyzers": {
     "core": {
       "verbose": false,
       "enabled": true,
       "rules": {
-        // "no-unused-params": {
-        //   "level": "off"
-        // },
-        // "no-unused-vars": {
-        //   "level": "off"
-        // },
-        // "no-unused-existing-resources": {
-        //   "level": "off"
-        // },
+        "no-unused-params": {
+          "level": "off"
+        },
+        "no-unused-vars": {
+          "level": "off"
+        },
+        "no-unused-existing-resources": {
+          "level": "off"
+        },
         "no-loc-expr-outside-params": {
           "level": "off"
         },
