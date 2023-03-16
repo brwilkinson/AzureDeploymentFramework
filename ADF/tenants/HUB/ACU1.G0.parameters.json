@@ -16,7 +16,7 @@
         "RoleDefinition": 1,
         "Security": 0,
         "RBAC": 1,
-        "PIM": 1,
+        "PIM": 0,
         "SP": 0
       }
     },
