@@ -1,6 +1,6 @@
 {
   "experimentalFeaturesEnabled": {
-    "extensibility": true,
+    // "extensibility": true,
     "userDefinedTypes": true
   },
   "analyzers": {
