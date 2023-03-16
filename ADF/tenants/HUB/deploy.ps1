@@ -26,14 +26,14 @@ Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 370 -Environments G
 Set-ADOAZServiceConnection -Prefix AEU2 -App $App -RenewDays 360 -Environments P0
 # Set-ADOAZServiceConnection -Prefix AEU1 -App $App -RenewDays 360 -Environments P0
 
-Get-AzUserAssignedIdentity -ResourceGroupName AEU1-PE-HUB-RG-P0 -Name AEU1-PE-HUB-P0-uaiGlobal | ForEach-Object PrincipalId
+# Get-AzUserAssignedIdentity -ResourceGroupName AEU1-PE-HUB-RG-P0 -Name AEU1-PE-HUB-P0-uaiGlobal | ForEach-Object PrincipalId
 
-# Moved this to manually run for Owner assignment
+# Manually run for Owner assignment to onboard new tenant
 $IDs = @(
-    # 'f9a70417-b338-4b48-bed9-240d80c1af2b' # SP GO
-    'todo' # uaiGlobal PrincipalId
+    '4f3e8446-060f-45f4-b4f1-8104b4a83162' # SP GO
+    # 'todo' # uaiGlobal PrincipalId
 )
-$Scope = '/subscriptions/{TODO-AddSubscriptionId}'
+$Scope = '/subscriptions/fe8c6f31-247d-4941-a62d-fde7a2185aca'
 $IDs | ForEach-Object {
     $r = Get-AzRoleAssignment -Scope $Scope -ObjectId $_ -RoleDefinitionName Owner
     if ($r)
@@ -46,12 +46,12 @@ $IDs | ForEach-Object {
     }
 }
 
-# Moved this to manually run for Reader assignment
+# Use -IncludeReaderOnSubscription to setup and SP creation time
 # $IDs = @(
 #     'todo',
 #     'todo'
 # )
-# $Scope = '/subscriptions/{TODO-AddSubscriptionId}'
+# $Scope = '/subscriptions/fe8c6f31-247d-4941-a62d-fde7a2185aca'
 # $IDs | ForEach-Object {
 #     $r = Get-AzRoleAssignment -Scope $Scope -ObjectId $_ -RoleDefinitionName Reader
 #     if ($r)

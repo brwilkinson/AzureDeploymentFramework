@@ -36,14 +36,14 @@
     "ADOProject": "ADF",
     "AZDevOpsOrg": "AzureDeploymentFramework",
     "ServicePrincipalAdmins": [
-      "BenWilkinson"
+      "BenWilkinson-ADM"
     ],
     "apimPublisherEmail": "benwilk@psthing.com",
     "alertRecipients": [
       "benwilk@psthing.com"
     ],
     "ObjectIdLookup": {
-      "BenWilkinson": "9bce7f53-71d0-4f3f-be0d-f00dfab17de4",
+      "BenWilkinson-ADM": "9bce7f53-71d0-4f3f-be0d-f00dfab17de4",
       "brwilkinson": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",
       "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
       "AKS_Admins": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",

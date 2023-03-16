@@ -14,7 +14,7 @@
     "Stage": {
       "value": {
         "RoleDefinition": 1,
-        "Security": 0,
+        "Security": 1,
         "RBAC": 1,
         "PIM": 1,
         "SP": 1
@@ -27,7 +27,7 @@
       "value": {
         "rolesInfo": [
           {
-            "Name": "BenWilkinson",
+            "Name": "BenWilkinson-ADM",
             "RBAC": [
               {
                 "Name": "Reader"
@@ -39,6 +39,12 @@
           {
             "Name": "BenWilkinson-ADM",
             "RBAC": [
+              {
+                "Name": "User Access Administrator"
+              },
+              {
+                "Name": "Owner"
+              },
               {
                 "Name": "Key Vault Administrator"
               },
