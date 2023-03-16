@@ -130,6 +130,9 @@
             "RBAC": [
               {
                 "Name": "Contributor"
+              },
+              {
+                "Name": "Key Vault Administrator"
               }
             ]
           }
@@ -151,6 +154,9 @@
             "RBAC": [
               {
                 "Name": "Storage Blob Data Owner"
+              },
+              {
+                "Name": "Key Vault Administrator"
               }
             ]
           }
