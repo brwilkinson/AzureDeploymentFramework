@@ -237,6 +237,7 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
 }
 
 resource WSVirtualNetwork 'Microsoft.Web/sites/config@2021-01-15' = if (contains(ws, 'subnet')) {
+  #disable-next-line use-parent-property
   name: '${WS.name}/virtualNetwork'
   properties: {
     subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', ws.subnet)

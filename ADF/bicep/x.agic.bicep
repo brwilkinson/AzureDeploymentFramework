@@ -78,7 +78,7 @@ var SSLpolicyLookup = {
     policyName: 'AppGwSslPolicy20170401S'
     policyType: 'Predefined'
   }
-  Default: json('null')
+  Default: null
 }
 var Listeners = [for i in range(0, length(wafInfo.Listeners)): {
   name: wafInfo.Listeners[i].Port
@@ -86,16 +86,16 @@ var Listeners = [for i in range(0, length(wafInfo.Listeners)): {
     id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', '${Deployment}-waf${Name}', 'appGatewayBackendPool')
   }
   backendHttpSettings: {
-    id: (contains(wafInfo.Listeners[i], 'BackendPort') ? resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', '${Deployment}-waf${Name}', 'appGatewayBackendHttpSettings${wafInfo.Listeners[i].BackendPort}') : json('null'))
+    id: (contains(wafInfo.Listeners[i], 'BackendPort') ? resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', '${Deployment}-waf${Name}', 'appGatewayBackendHttpSettings${wafInfo.Listeners[i].BackendPort}') : null)
   }
   redirectConfiguration: {
     id: resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', '${Deployment}-waf${Name}', 'redirectConfiguration-${wafInfo.Listeners[i].Hostname}-80')
   }
   sslCertificate: {
-    id: (contains(wafInfo.Listeners[i], 'Cert') ? resourceId('Microsoft.Network/applicationGateways/sslCertificates', '${Deployment}-waf${Name}', wafInfo.Listeners[i].Cert) : json('null'))
+    id: (contains(wafInfo.Listeners[i], 'Cert') ? resourceId('Microsoft.Network/applicationGateways/sslCertificates', '${Deployment}-waf${Name}', wafInfo.Listeners[i].Cert) : null)
   }
   urlPathMap: {
-    id: (contains(wafInfo.Listeners[i], 'pathRules') ? resourceId('Microsoft.Network/applicationGateways/urlPathMaps', '${Deployment}-waf${Name}', wafInfo.Listeners[i].pathRules) : json('null'))
+    id: (contains(wafInfo.Listeners[i], 'pathRules') ? resourceId('Microsoft.Network/applicationGateways/urlPathMaps', '${Deployment}-waf${Name}', wafInfo.Listeners[i].pathRules) : null)
   }
 }]
 
@@ -114,8 +114,8 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-06-01' = {
   }
   properties: {
     forceFirewallPolicyAssociation: true
-    sslPolicy: (contains(wafInfo, 'SSLPolicy') ? SSLpolicyLookup[wafInfo.SSLPolicy] : json('null'))
-    firewallPolicy: ((contains(wafInfo, 'WAFPolicyAttached') && (wafInfo.WAFPolicyAttached == bool('true'))) ? firewallPolicy : json('null'))
+    sslPolicy: (contains(wafInfo, 'SSLPolicy') ? SSLpolicyLookup[wafInfo.SSLPolicy] : null)
+    firewallPolicy: ((contains(wafInfo, 'WAFPolicyAttached') && (wafInfo.WAFPolicyAttached == bool('true'))) ? firewallPolicy : null)
     sku: {
       name: wafInfo.WAFSize
       tier: wafInfo.WAFTier
@@ -227,7 +227,7 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-06-01' = {
         protocol: wafInfo.Listeners[j].Protocol
         hostName: toLower('${Deployment}-${wafInfo.Listeners[j].Hostname}.${wafInfo.Listeners[j].Domain}')
         requireServerNameIndication: (wafInfo.Listeners[j].Protocol == 'https')
-        sslCertificate: ((wafInfo.Listeners[j].Protocol == 'https') ? Listeners[j].sslCertificate : json('null'))
+        sslCertificate: ((wafInfo.Listeners[j].Protocol == 'https') ? Listeners[j].sslCertificate : null)
       }
     }]
     requestRoutingRules: [for j in range(0, length(wafInfo.Listeners)): {
@@ -237,10 +237,10 @@ resource WAF 'Microsoft.Network/applicationGateways@2020-06-01' = {
         httpListener: {
           id: '${WAFID}/httpListeners/httpListener-${(contains(wafInfo.Listeners[j], 'pathRules') ? 'PathBasedRouting' : 'Basic')}-${wafInfo.Listeners[j].Hostname}-${wafInfo.Listeners[j].Port}'
         }
-        backendAddressPool: ((wafInfo.Listeners[j].Protocol == 'https') ? Listeners[j].backendAddressPool : json('null'))
-        backendHttpSettings: ((wafInfo.Listeners[j].Protocol == 'https') ? Listeners[j].backendHttpSettings : json('null'))
-        redirectConfiguration: ((wafInfo.Listeners[j].Protocol == 'http') ? Listeners[j].redirectConfiguration : json('null'))
-        urlPathMap: (contains(wafInfo.Listeners[j], 'pathRules') ? Listeners[j].urlPathMap : json('null'))
+        backendAddressPool: ((wafInfo.Listeners[j].Protocol == 'https') ? Listeners[j].backendAddressPool : null)
+        backendHttpSettings: ((wafInfo.Listeners[j].Protocol == 'https') ? Listeners[j].backendHttpSettings : null)
+        redirectConfiguration: ((wafInfo.Listeners[j].Protocol == 'http') ? Listeners[j].redirectConfiguration : null)
+        urlPathMap: (contains(wafInfo.Listeners[j], 'pathRules') ? Listeners[j].urlPathMap : null)
       }
     }]
     redirectConfigurations: [for j in range(0, length(wafInfo.Listeners)): {

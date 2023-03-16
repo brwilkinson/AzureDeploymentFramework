@@ -63,7 +63,7 @@ resource ASP 'Microsoft.Web/serverfarms@2021-01-01' = [for (item, index) in appS
   kind: item.kind
   properties: {
     perSiteScaling: item.perSiteScaling
-    maximumElasticWorkerCount: (contains(item, 'maxWorkerCount') ? item.maxWorkerCount : json('null'))
+    maximumElasticWorkerCount: (contains(item, 'maxWorkerCount') ? item.maxWorkerCount : null)
     reserved: item.reserved
     targetWorkerCount: item.skucapacity
   }

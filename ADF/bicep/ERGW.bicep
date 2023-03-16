@@ -155,7 +155,7 @@ resource ERGWConnection 'Microsoft.Network/connections@2018-11-01' = [for (item,
     enableBgp: false
     usePolicyBasedTrafficSelectors: false
     ipsecPolicies: []
-    authorizationKey: (contains(item.ERConnectionOptions, 'ERAuthKey') ? item.ERConnectionOptions.ERAuthKey : json('null'))
+    authorizationKey: (contains(item.ERConnectionOptions, 'ERAuthKey') ? item.ERConnectionOptions.ERAuthKey : null)
     peer: {
       id: item.ERConnectionOptions.peerid
     }

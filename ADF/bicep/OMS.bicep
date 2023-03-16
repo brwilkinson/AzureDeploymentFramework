@@ -1340,7 +1340,7 @@ resource OMS_solutions 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
 //       Throttling: {
 //         DurationInMinutes: item.alert.throttleMinutes
 //       }
-//       emailNotification: (contains(item.alert, 'emailNotification') ? item.alert.emailNotification : json('null'))
+//       emailNotification: (contains(item.alert, 'emailNotification') ? item.alert.emailNotification : null)
 //     }
 //     dependsOn: [
 //       'Microsoft.OperationalInsights/workspaces/${OMSworkspaceName_var}/savedSearches/${toLower(item.search.category)}|${toLower(item.search.name)}'

@@ -74,7 +74,7 @@ var VM = [for (vm, index) in AppServers: {
   match: Global.CN == '.' || contains(array(Global.CN), vm.Name)
   name: vm.Name
   Extensions: contains(OSType[vm.OSType], 'RoleExtensions') ? union(Extensions, OSType[vm.OSType].RoleExtensions) : Extensions
-  DataDisk: contains(vm, 'DDRole') ? DataDiskInfo[vm.DDRole] : json('null')
+  DataDisk: contains(vm, 'DDRole') ? DataDiskInfo[vm.DDRole] : null
   NodeType: toLower(concat(Global.AppName, vm.Name))
   vmHostName: toLower('${Environment}${DeploymentID}${vm.Name}')
   Name: '${Prefix}${Global.AppName}-${Environment}${DeploymentID}-${vm.Name}'

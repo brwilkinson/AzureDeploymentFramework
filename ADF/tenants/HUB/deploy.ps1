@@ -1,8 +1,9 @@
 param (
     [string]$App = 'HUB'
 )
-Import-Module -Name "$PSScriptRoot\..\..\release-az\azSet.psm1" -Force
-Import-Module -Name "$PSScriptRoot\..\..\release-az\ADOHelper.psm1" -Force
+$Base = $PSScriptRoot
+Import-Module -Name "$Base\..\..\release-az\azSet.psm1" -Force
+Import-Module -Name "$Base\..\..\release-az\ADOHelper.psm1" -Force
 # 1) Set Deployment information
 AzSet -App $App -Enviro G0
 break
@@ -26,12 +27,9 @@ Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 360 -Environments G
 Set-ADOAZServiceConnection -Prefix AEU2 -App $App -RenewDays 360 -Environments P0
 # Set-ADOAZServiceConnection -Prefix AEU1 -App $App -RenewDays 360 -Environments P0
 
-# Get-AzUserAssignedIdentity -ResourceGroupName AEU1-PE-HUB-RG-P0 -Name AEU1-PE-HUB-P0-uaiGlobal | ForEach-Object PrincipalId
-
 # Manually run for Owner assignment to onboard new tenant
 $IDs = @(
     '4f3e8446-060f-45f4-b4f1-8104b4a83162' # SP GO
-    # 'todo' # uaiGlobal PrincipalId
 )
 $Scope = '/subscriptions/fe8c6f31-247d-4941-a62d-fde7a2185aca'
 $IDs | ForEach-Object {
@@ -46,23 +44,11 @@ $IDs | ForEach-Object {
     }
 }
 
-# Use -IncludeReaderOnSubscription to setup and SP creation time
-# $IDs = @(
-#     'todo',
-#     'todo'
-# )
-# $Scope = '/subscriptions/fe8c6f31-247d-4941-a62d-fde7a2185aca'
-# $IDs | ForEach-Object {
-#     $r = Get-AzRoleAssignment -Scope $Scope -ObjectId $_ -RoleDefinitionName Reader
-#     if ($r)
-#     {
-#         $r
-#     }
-#     else
-#     {
-#         New-AzRoleAssignment -Scope $Scope -ObjectId $_ -RoleDefinitionName Reader
-#     }
-# }
+# Register Providers in new Subscription
+$Providers = Get-Content -Path $base\..\..\bicep\global\resourceProviders.txt
+$Providers | ForEach-Object {
+    Register-AzResourceProvider -ProviderNamespace $_
+}
 
 ##########################################################
 # Deploy Environment

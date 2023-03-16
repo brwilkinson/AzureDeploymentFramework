@@ -35,7 +35,7 @@ var Data_var = [for i in range(0, (contains(DATA, '1') ? 1 : length(DATA.LUNS)))
   caching: (contains(DATA, '1') ? 1 : DATA.caching)
   diskSizeGB: (contains(DATA, '1') ? 1 : int(DATA.LUNS[i][1]))
   createOption: (contains(DATA, '1') ? 1 : ((length(DATA.LUNS[i]) == 3) ? DATA.LUNS[i][2] : 'Empty'))
-  managedDisk: (contains(DATA, '1') ? 1 : (contains(DATA, 'saType') ? json('{"storageAccountType":"${DATA.saType}"}') : json('null')))
+  managedDisk: (contains(DATA, '1') ? 1 : (contains(DATA, 'saType') ? json('{"storageAccountType":"${DATA.saType}"}') : null))
 }]
 #disable-next-line decompiler-cleanup
 var Datass_var = [for i in range(0, (contains(DATASS, '1') ? 1 : length(DATASS.LUNS))): {
@@ -43,7 +43,7 @@ var Datass_var = [for i in range(0, (contains(DATASS, '1') ? 1 : length(DATASS.L
   caching: (contains(DATASS, '1') ? 1 : DATASS.caching)
   diskSizeGB: (contains(DATASS, '1') ? 1 : int(DATASS.LUNS[i][1]))
   createOption: (contains(DATASS, '1') ? 1 : ((length(DATASS.LUNS[i]) == 3) ? DATASS.LUNS[i][2] : 'Empty'))
-  managedDisk: (contains(DATASS, '1') ? 1 : (contains(DATASS, 'saType') ? json('{"storageAccountType":"${DATASS.saType}"}') : json('null')))
+  managedDisk: (contains(DATASS, '1') ? 1 : (contains(DATASS, 'saType') ? json('{"storageAccountType":"${DATASS.saType}"}') : null))
 }]
 #disable-next-line decompiler-cleanup
 var SOFS_var = [for i in range(0, (contains(SOFS, '1') ? 1 : length(SOFS.LUNS))): {
@@ -52,7 +52,7 @@ var SOFS_var = [for i in range(0, (contains(SOFS, '1') ? 1 : length(SOFS.LUNS)))
   caching: (contains(SOFS, '1') ? 1 : SOFS.caching)
   diskSizeGB: (contains(SOFS, '1') ? 1 : int(SOFS.LUNS[i][1]))
   createOption: (contains(SOFS, '1') ? 1 : ((length(SOFS.LUNS[i]) == 3) ? SOFS.LUNS[i][2] : 'Empty'))
-  managedDisk: (contains(SOFS, '1') ? 1 : (contains(SOFS, 'saType') ? json('{"storageAccountType":"${SOFS.saType}"}') : json('null')))
+  managedDisk: (contains(SOFS, '1') ? 1 : (contains(SOFS, 'saType') ? json('{"storageAccountType":"${SOFS.saType}"}') : null))
 }]
 #disable-next-line decompiler-cleanup
 var LOGS_var = [for i in range(0, (contains(LOGS, '1') ? 1 : length(LOGS.LUNS))): {
@@ -61,7 +61,7 @@ var LOGS_var = [for i in range(0, (contains(LOGS, '1') ? 1 : length(LOGS.LUNS)))
   caching: (contains(LOGS, '1') ? 1 : LOGS.caching)
   diskSizeGB: (contains(LOGS, '1') ? 1 : int(LOGS.LUNS[i][1]))
   createOption: (contains(LOGS, '1') ? 1 : ((length(LOGS.LUNS[i]) == 3) ? LOGS.LUNS[i][2] : 'Empty'))
-  managedDisk: (contains(LOGS, '1') ? 1 : (contains(LOGS, 'saType') ? json('{"storageAccountType":"${LOGS.saType}"}') : json('null')))
+  managedDisk: (contains(LOGS, '1') ? 1 : (contains(LOGS, 'saType') ? json('{"storageAccountType":"${LOGS.saType}"}') : null))
 }]
 #disable-next-line decompiler-cleanup
 var TEMPDB_var = [for i in range(0, (contains(TEMPDB, '1') ? 1 : length(TEMPDB.LUNS))): {
@@ -70,7 +70,7 @@ var TEMPDB_var = [for i in range(0, (contains(TEMPDB, '1') ? 1 : length(TEMPDB.L
   caching: (contains(TEMPDB, '1') ? 1 : TEMPDB.caching)
   diskSizeGB: (contains(TEMPDB, '1') ? 1 : int(TEMPDB.LUNS[i][1]))
   createOption: (contains(TEMPDB, '1') ? 1 : ((length(TEMPDB.LUNS[i]) == 3) ? TEMPDB.LUNS[i][2] : 'Empty'))
-  managedDisk: (contains(TEMPDB, '1') ? 1 : (contains(TEMPDB, 'saType') ? json('{"storageAccountType":"${TEMPDB.saType}"}') : json('null')))
+  managedDisk: (contains(TEMPDB, '1') ? 1 : (contains(TEMPDB, 'saType') ? json('{"storageAccountType":"${TEMPDB.saType}"}') : null))
 }]
 #disable-next-line decompiler-cleanup
 var BACKUP_var = [for i in range(0, (contains(BACKUP, '1') ? 1 : length(BACKUP.LUNS))): {
@@ -79,7 +79,7 @@ var BACKUP_var = [for i in range(0, (contains(BACKUP, '1') ? 1 : length(BACKUP.L
   caching: (contains(BACKUP, '1') ? 1 : BACKUP.caching)
   diskSizeGB: (contains(BACKUP, '1') ? 1 : int(BACKUP.LUNS[i][1]))
   createOption: (contains(BACKUP, '1') ? 1 : ((length(BACKUP.LUNS[i]) == 3) ? BACKUP.LUNS[i][2] : 'Empty'))
-  managedDisk: (contains(BACKUP, '1') ? 1 : (contains(BACKUP, 'saType') ? json('{"storageAccountType":"${BACKUP.saType}"}') : json('null')))
+  managedDisk: (contains(BACKUP, '1') ? 1 : (contains(BACKUP, 'saType') ? json('{"storageAccountType":"${BACKUP.saType}"}') : null))
 }]
 
 output SOFS array = (contains(SOFS, '1') ? array('no SOFS disks') : SOFS_var)

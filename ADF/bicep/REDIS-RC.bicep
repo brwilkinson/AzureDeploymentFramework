@@ -144,7 +144,7 @@ module RCprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if ( contains(rc, 'privat
   }
 }
 
-// resource RCCS 'Microsoft.Cache/Redis/Microsoft.AppConfiguration/configurationStores/keyValues@2020-07-01-preview' = [for rc in RedisInfo: if (!(appConfigurationInfo == json('null'))) {
+// resource RCCS 'Microsoft.Cache/Redis/Microsoft.AppConfiguration/configurationStores/keyValues@2020-07-01-preview' = [for rc in RedisInfo: if (!(appConfigurationInfo == null)) {
 //   name: '${toLower('${Deployment}-rc${rc.Name}')}/${Deployment}-ac${(contains(appConfigurationInfo, 'Name') ? appConfigurationInfo.Name : '')}/RedisKey-${rc.Name}'
 
 //   properties: {
