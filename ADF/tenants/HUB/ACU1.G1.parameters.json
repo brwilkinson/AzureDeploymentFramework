@@ -205,7 +205,9 @@
                 "groupID": "vault"
               }
             ],
-            "CertIssuerInfo": [
+            // Needs updating to support public providers
+            //  https://learn.microsoft.com/en-us/azure/key-vault/certificates/how-to-integrate-certificate-authority#before-you-begin
+            "_CertIssuerInfo": [
               {
                 "name": "DigiCert",
                 "provider": "DigiCert"
