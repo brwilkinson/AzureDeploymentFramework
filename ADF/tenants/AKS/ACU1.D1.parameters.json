@@ -234,11 +234,11 @@
                 "Prefix": "ACU1",
                 "Tenant": "HUB"
               },
-              {
-                "Name": "Automation_Account_Contributor",
-                "RG": "P0",
-                "Tenant": "HUB"
-              },
+              // {
+              //   "Name": "Automation_Account_Contributor",
+              //   "RG": "P0",
+              //   "Tenant": "HUB"
+              // },
               {
                 "Name": "Key_Vault_Reader",
                 "RG": "P0",
