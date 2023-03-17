@@ -166,14 +166,14 @@
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
-                "Name": "Contributor"
+                "Name": "Contributor" // Add below on top of this just in case there was a way to replace Contributor
               },
-              {
-                "Name": "Managed Identity Operator"
-              },
-              {
-                "Name": "Monitoring Contributor"
-              },
+              // {
+              //   "Name": "Managed Identity Operator"
+              // },
+              // {
+              //   "Name": "Monitoring Contributor"
+              // },
               {
                 "Name": "Reader and Data Access",
                 "RG": "G1",

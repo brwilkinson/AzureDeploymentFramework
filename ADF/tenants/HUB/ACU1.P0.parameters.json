@@ -121,17 +121,20 @@
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
               {
-                "Name": "Contributor"
+                "Name": "Contributor" // Add below on top of this just in case there was a way to replace Contributor
               },
-              {
-                "Name": "PE_DeploymentScripts_Contributor"
-              },
-              {
-                "Name": "Managed Identity Operator"
-              },
-              {
-                "Name": "Monitoring Contributor"
-              },
+              // {
+              //   "Name": "Managed Identity Operator"
+              // },
+              // {
+              //   "Name": "Monitoring Contributor"
+              // },
+              // {
+              //   "Name": "Key Vault Secrets User"
+              // },
+              // {
+              //   "Name": "Network Contributor"
+              // },
               {
                 "Name": "Reader and Data Access",
                 "RG": "G1",
@@ -149,12 +152,6 @@
                 "RG": "G1",
                 "Prefix": "ACU1",
                 "Tenant": "HUB"
-              },
-              {
-                "Name": "Key Vault Secrets User"
-              },
-              {
-                "Name": "Network Contributor"
               }
             ]
           }
@@ -353,7 +350,7 @@
             "PurgeProtection": true,
             "RbacAuthorization": true,
             "allNetworks": 1,
-            "_PrivateLinkInfo": [
+            "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
                 "groupID": "vault"
@@ -377,7 +374,7 @@
                 ]
               }
             ],
-            "CertIssuerInfo": [
+            "_CertIssuerInfo": [
               {
                 "name": "DigiCert",
                 "provider": "DigiCert"
