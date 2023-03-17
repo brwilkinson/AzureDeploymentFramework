@@ -109,14 +109,6 @@
                 "Name": "Key Vault Administrator"
               }
             ]
-          },
-          {
-            "Name": "BenWilkinson",
-            "RBAC": [
-              {
-                "Name": "Key Vault Secrets User"
-              }
-            ]
           }
         ],
         "rolesInfo": [
