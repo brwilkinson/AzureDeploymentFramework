@@ -173,14 +173,14 @@
               }
             ]
           },
-          {
-            "Name": "AzureKeyVault",
-            "RBAC": [
-              {
-                "Name": "Storage Account Key Operator Service Role"
-              }
-            ]
-          },
+          // {
+          //   "Name": "AzureKeyVault",
+          //   "RBAC": [
+          //     {
+          //       "Name": "Storage Account Key Operator Service Role"
+          //     }
+          //   ]
+          // },
           {
             "Name": "sec-scan-acr",
             "RBAC": [
