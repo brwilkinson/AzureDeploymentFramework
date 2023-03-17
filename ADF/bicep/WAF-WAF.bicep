@@ -178,27 +178,6 @@ module createCertswithRotation 'x.newCertificatewithRotation.ps1.bicep' = [for (
   }
 }]
 
-
-// old naming for WAF Publi IPs
-// name: '${Deployment}-waf${waf.Name}-publicip1'
-// new name in common public  ip template
-module PublicIPDeploy 'x.publicIP.bicep' = {
-  name: 'dp${Deployment}-WAF-publicIPDeploy${wafInfo.Name}'
-  params: {
-    Deployment: Deployment
-    DeploymentURI: DeploymentURI
-    NICs: [
-      {
-        PublicIP: 'Static'
-      }
-    ]
-    VM: wafInfo
-    PIPprefix: 'waf'
-    Global: Global
-    Prefix: Prefix
-  }
-}
-
 resource PublicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' existing = {
   name: '${Deployment}-waf${wafInfo.Name}-publicip1'
 }
@@ -408,7 +387,6 @@ resource WAF 'Microsoft.Network/applicationGateways@2022-01-01' = {
     }]
   }
   dependsOn: [
-    PublicIPDeploy
     createCertswithRotation
   ]
 }
@@ -467,7 +445,6 @@ module SetWAFDNSCNAME 'x.DNS.Public.CNAME.bicep' = [for (list, index) in wafInfo
   }
   dependsOn: [
     WAFDiag
-    PublicIPDeploy
   ]
 }]
 

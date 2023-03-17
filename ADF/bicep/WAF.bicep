@@ -65,6 +65,27 @@ var WAFs = [for waf in WAFInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), waf.Name))
 }]
 
+// old naming for WAF Publi IPs
+// name: '${Deployment}-waf${waf.Name}-publicip1'
+// new name in common public  ip template
+module PublicIPDeploy 'x.publicIP.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {
+  name: 'dp${Deployment}-WAF-publicIPDeploy${waf.Name}'
+  params: {
+    Deployment: Deployment
+    DeploymentURI: DeploymentURI
+    NICs: [
+      {
+        PublicIP: 'Static'
+      }
+    ]
+    VM: waf
+    PIPprefix: 'waf'
+    Global: Global
+    Prefix: Prefix
+  }
+}]
+
+
 module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match) {
   name: 'dp${Deployment}-WAFDeploy${waf.Name}'
   params: {
@@ -78,4 +99,7 @@ module WAF 'WAF-WAF.bicep' = [for (waf,index) in WAFInfo: if (WAFs[index].match)
     Environment: Environment
     Prefix: Prefix
   }
+  dependsOn: [
+    PublicIPDeploy
+  ]
 }]
