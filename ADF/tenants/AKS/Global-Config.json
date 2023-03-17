@@ -12,10 +12,6 @@
       "Id": "6cef56e8-d556-48e5-a04f-b8e64114680f",
       "Description": "acr image signer"
     },
-    "AcrImportImage": {
-      "Id": "5f933f4d-d451-4e23-8edb-b1a4181f092a",
-      "Description": "Can import images to registry"
-    },
     "AcrPull": {
       "Id": "7f951dda-4ed3-4680-a7ca-43fe172d538d",
       "Description": "acr pull"
@@ -47,10 +43,6 @@
     "AgFood Platform Service Reader": {
       "Id": "7ec7ccdc-f61e-41fe-9aaf-980df0a44eba",
       "Description": "Provides read access to AgFood Platform Service"
-    },
-    "AKS Purge - Delete Role": {
-      "Id": "afdd280f-4743-42a6-86cd-d1a2909ab7a5",
-      "Description": "ACR Purge Delete capabilities without Contributor / Onwer Access"
     },
     "AnyBuild Builder": {
       "Id": "a2138dac-4907-4679-a376-736901ed8ad8",
@@ -127,14 +119,6 @@
     "Autonomous Development Platform Data Reader (Preview)": {
       "Id": "d63b75f7-47ea-4f27-92ac-e0d173aaf093",
       "Description": "Grants read access to Autonomous Development Platform data."
-    },
-    "Avere Cluster Create": {
-      "Id": "a7b1b19a-0e83-4fe5-935c-faaefbfd18c3",
-      "Description": "Avere cluster create role used by the Avere controller to create a vFXT cluster."
-    },
-    "Avere Cluster Runtime Operator": {
-      "Id": "e078ab98-ef3a-4c9a-aba7-12f5172b45d0",
-      "Description": "Avere cluster runtime role used by Avere clusters running in subscriptions, for the purpose of failing over IP addresses, accessing BLOB storage, etc"
     },
     "Avere Contributor": {
       "Id": "4f8fab4f-1852-4a58-a46a-8eaf358af14a",
@@ -252,6 +236,10 @@
       "Id": "2b629674-e913-4c01-ae53-ef4638d8f975",
       "Description": "Allows send access to Azure Event Hubs resources."
     },
+    "Azure Extension for SQL Server Deployment": {
+      "Id": "7392c568-9289-4bde-aaaa-b7131215889d",
+      "Description": "Microsoft.AzureArcData service role to enable deployment of Azure Extension for SQL Server"
+    },
     "Azure Front Door Domain Contributor": {
       "Id": "0ab34830-df19-4f8c-b84e-aa85b8afa6e8",
       "Description": "Can manage Azure Front Door domains, but can't grant access to other users."
@@ -364,22 +352,6 @@
       "Id": "69a216fc-b8fb-44d8-bc22-1f3c2cd27a39",
       "Description": "Allows for send access to Azure Service Bus resources."
     },
-    "Azure Service Deploy Release Management Contributor": {
-      "Id": "21d96096-b162-414a-8302-d8354f9d91b2",
-      "Description": "Contributor role for services deploying through Azure Service Deploy."
-    },
-    "Azure Service Deploy Release Management Key Vault Secrets User": {
-      "Id": "260691e6-68c2-47cf-bd4a-97d5fd4dbcd5",
-      "Description": "Read secret and certificate contents. Only works for key vaults that use the 'Azure role-based access control' permission model."
-    },
-    "Azure Service Deploy Release Management Restricted Owner": {
-      "Id": "94ddc4bc-25f5-4f3e-b527-c587da93cfe4",
-      "Description": "Restricted owner role for services deploying through Azure Service Deploy."
-    },
-    "Azure Service Deploy Test Release Management Key Vault Secrets User": {
-      "Id": "87d31636-ad85-4caa-802d-1535972b5612",
-      "Description": "Read secret and certificate contents. Only works for key vaults that use the 'Azure role-based access control' permission model."
-    },
     "Azure Spring Apps Connect Role": {
       "Id": "80558df3-64f9-4c0f-b32d-e5094b036b0b",
       "Description": "Azure Spring Apps Connect Role"
@@ -487,10 +459,6 @@
     "Blueprint Operator": {
       "Id": "437d2ced-4a38-4302-8479-ed2bcb43d090",
       "Description": "Can assign existing published blueprints, but cannot create new blueprints. NOTE: this only works if the assignment is done with a user-assigned managed identity."
-    },
-    "CAL-Custom-Role": {
-      "Id": "7b266cd7-0bba-4ae2-8423-90ede5e1e898",
-      "Description": "Lets SAP Cloud Appliance Library application manage Network and Compute services, manage Resource Groups and Management locks."
     },
     "CDN Endpoint Contributor": {
       "Id": "426e0c7f-0c7e-4658-b36f-ff54d6c29b45",
@@ -860,14 +828,6 @@
       "Id": "361898ef-9ed1-48c2-849c-a832951106bb",
       "Description": "Can view Azure AD Domain Services and related network configurations"
     },
-    "Dsms Role (deprecated)": {
-      "Id": "b91f4c0b-46e3-47bb-a242-eecfe23b3b5b",
-      "Description": "Custom role used by Dsms to perform operations. Can list and regnerate storage account keys."
-    },
-    "Dsms Role (do not use)": {
-      "Id": "7aff565e-6c55-448d-83db-ccf482c6da2f",
-      "Description": "Custom role used by Dsms to perform operations. Can list and regnerate storage account keys."
-    },
     "Elastic SAN Owner": {
       "Id": "80dcbedb-47ef-405d-95bd-188a1b4ac406",
       "Description": "Allows for full access to all resources under Azure Elastic SAN including changing network security policies to unblock data path access"
@@ -912,10 +872,6 @@
       "Id": "49632ef5-d9ac-41f4-b8e7-bbe587fa74a1",
       "Description": "Experimentation Reader"
     },
-    "ExpressRoute Administrator": {
-      "Id": "a48d7896-14b4-4889-afef-fbb65a96e5a2",
-      "Description": "Can create, delete and manage ExpressRoutes"
-    },
     "FHIR Data Contributor": {
       "Id": "5a1fc7df-4bf1-4951-a576-89034ee01acd",
       "Description": "Role allows user or principal full access to FHIR Data"
@@ -943,14 +899,6 @@
     "FHIR SMART User": {
       "Id": "4ba50f17-9666-485c-a643-ff00808643f0",
       "Description": "Role allows user to access FHIR Service according to SMART on FHIR specification"
-    },
-    "GenevaWarmPathResourceContributor": {
-      "Id": "9f15f5f5-77bd-413a-aa88-4b9c68b1e7bc",
-      "Description": "Can manage service bus and storage accounts."
-    },
-    "GenevaWarmPathStorageBlobContributor": {
-      "Id": "a16c43ca-2d67-4dcd-9ded-6412f5edc51a",
-      "Description": "Geneva Warm Path Storage Blob Contributor"
     },
     "Grafana Admin": {
       "Id": "22926164-76b3-42b3-bc55-97df8dab3e41",
@@ -1180,10 +1128,6 @@
       "Id": "ac63b705-f282-497d-ac71-919bf39d939d",
       "Description": "Management Group Reader Role"
     },
-    "masterreader": {
-      "Id": "a48d7796-14b4-4889-afef-fbb65a93e5a2",
-      "Description": "Lets you view everything, but not make any changes."
-    },
     "Media Services Account Administrator": {
       "Id": "054126f8-9a2b-4f1c-a9ad-eca461f08466",
       "Description": "Create, read, modify, and delete Media Services accounts; read-only access to other Media Services resources."
@@ -1203,10 +1147,6 @@
     "Media Services Streaming Endpoints Administrator": {
       "Id": "99dba123-b5fe-44d5-874c-ced7199a5804",
       "Description": "Create, read, modify, and delete Streaming Endpoints; read-only access to other Media Services resources."
-    },
-    "Microsoft OneAsset Reader": {
-      "Id": "fd1bb084-1503-4bd2-99c0-630220046786",
-      "Description": "This role is for Microsoft OneAsset team (CSEO) to track internal security compliance and resource utilization."
     },
     "Microsoft Sentinel Automation Contributor": {
       "Id": "f4c81013-99ee-4d62-a7ee-b3f1f648599a",
@@ -1276,13 +1216,13 @@
       "Id": "d18777c0-1514-4662-8490-608db7d334b6",
       "Description": "Lets you read ingestion jobs for an object understanding account."
     },
-    "Office DevOps": {
-      "Id": "7fd64851-3279-459b-b614-e2b2ba760f5b",
-      "Description": "Custom access for developers to operations but not secrets."
-    },
     "Owner": {
       "Id": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
       "Description": "Grants full access to manage all resources, including the ability to assign roles in Azure RBAC."
+    },
+    "PE_SF_App_Contributor": {
+      "Id": "07d3b4c1-5fdf-589e-ab84-eb7ac5b35374",
+      "Description": "Manage Service Fabric Applications"
     },
     "PlayFab Contributor": {
       "Id": "0c8b84dc-067c-4039-9615-fa1a4b77c726",
@@ -1587,10 +1527,6 @@
     "Test Base Reader": {
       "Id": "15e0f5a1-3450-4248-8e25-e2afe88a9e85",
       "Description": "Let you view and download packages and test results."
-    },
-    "Test Delete Role": {
-      "Id": "62032767-d80c-4497-bae5-b4b385453f68",
-      "Description": "Testing to Delete ACR Purge Command"
     },
     "Traffic Manager Contributor": {
       "Id": "a4b10055-b0c7-44c2-b00f-c7b5b3550cf7",

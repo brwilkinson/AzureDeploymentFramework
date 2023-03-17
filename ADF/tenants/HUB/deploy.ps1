@@ -45,7 +45,7 @@ $IDs | ForEach-Object {
 }
 
 # Register Providers in new Subscription
-$Providers = Get-Content -Path $base\..\..\bicep\global\resourceProviders.txt
+$Providers = Get-Content -Path ADF:\bicep\global\resourceProviders.txt
 $Providers | ForEach-Object {
     Register-AzResourceProvider -ProviderNamespace $_
 }

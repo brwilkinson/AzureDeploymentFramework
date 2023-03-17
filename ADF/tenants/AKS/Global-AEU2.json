@@ -1,15 +1,16 @@
 {
   "Global": {
     "hubRG": {
-      "name": "P0"
+      "name": "P0",
+      "Prefix": "ACU1"
     },
     "hubKV": {
       "name": "VLT01",
-      "Prefix": "ACU1",
       "AppName": "HUB"
     },
     "hubAA": {
-      "name": "P0"
+      "name": "P0",
+      "AppName": "HUB"
     },
     "DNSServers": [],
     "AALocation": "EastUS",

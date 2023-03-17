@@ -1,15 +1,16 @@
 {
   "Global": {
     "hubRG": {
-      "name": "P0"
+      "name": "P0",
+      "AppName": "HUB"
     },
     "hubKV": {
       "name": "VLT01",
-      "Prefix": "ACU1",
       "AppName": "HUB"
     },
     "hubAA": {
-      "name": "OMSAutomation"
+      "name": "OMSAutomation",
+      "AppName": "HUB"
     },
     "DNSServers": [],
     "RTName": "Hub",
