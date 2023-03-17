@@ -1,6 +1,6 @@
 {
   "Global": {
-    "OrgName": "PE", //<--- Change this to your unique 2 or 3 letter OrgName
+    "OrgName": "PE",
     "AppName": "SFM",
     "GlobalSA": {
       "name": "global",
@@ -18,9 +18,6 @@
     },
     "PrimaryLocation": "CentralUS",
     "SecondaryLocation": "EastUS2",
-    // "IPAddressforRemoteAccess": [
-    //   "24.19.185.89/32"
-    // ],
     "vmAdminUserName": "brw",
     "sqlCredentialName": "sqladmin",
     "MicrosoftCAThumbprints": [
@@ -61,38 +58,22 @@
       }
     },
     "ServicePrincipalAdmins": [
-      "BenWilkinson"
+      "BenWilkinson-ADM"
     ],
     "apimPublisherEmail": "benwilk@psthing.com",
     "alertRecipients": [
       "benwilk@psthing.com"
     ],
     "ObjectIdLookup": {
-      "BenWilkinson": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
-      "BenWilkinson-ADM": "b9f49fac-97b5-4b0a-b090-cf4fdf6a3b69",
-      "SimonAdams": "a54933b9-b921-4842-abbe-342416767d97",
-      "SimonAdams-ADM": "3fc273e5-f8f1-4d44-a950-3c3913643fc1",
-      "JessicaBobo": "8e667bcd-b22b-4f39-a35f-ec4a27e4fcd6",
-      "JessicaBobo-ADM": "8658da0d-84d9-4580-ba05-6c905b68b670",
-      "CathyEvans": "0ae1653d-3712-43dc-b9d2-f02f3ee6a2a1",
-      "CathyEvans-ADM": "bb07ad08-b8d9-41f4-b6c2-4783cd826977",
-      "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
-      "AKS_Admins": "528b1170-7a6c-4970-94bb-0eb34e1ae947",
+      "BenWilkinson-ADM": "9bce7f53-71d0-4f3f-be0d-f00dfab17de4",
+      "brwilkinson": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",
       "Microsoft.Azure.Frontdoor": "21bf1420-2ed9-48b9-bf6d-ece1337d4fd1",
       "Microsoft.AzureFrontDoor-Cdn": "4dbab725-22a4-44d5-ad44-c267ca38a954",
       "Microsoft.Azure.CertificateRegistration": "ed47c2a1-bd23-4341-b39c-f4fd69138dd3",
       "MicrosoftAzureAppService": "f8daea97-62e7-4026-becf-13c2ea98e8b4",
-      "sec-scan-acr": "933b2294-7959-4e6f-a006-3e75ab109a4e",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
       "AzureServiceFabricResourceProvider": "fbc587f2-66f5-4459-a027-bcd908b9d278",
-      "ADO_ADF_AEU2-PE-SFM-RG-P8": "542ddfaf-4e5b-4d60-8f80-c4b15262c675",
-      "ADO_ADF_ACU1-PE-SFM-RG-D1": "280a955f-4724-46d0-b2c4-53458b4e5f3e",
-      "ADO_ADF_ACU1-PE-SFM-RG-U5": "26cbf317-507c-4dc6-b64d-99bf678307b6",
-      "ADO_ADF_ACU1-PE-SFM-RG-P8": "d15f26de-f667-49bb-abb7-13e52eae8b28",
-      "ADO_ADF_AEU2-PE-SFM-RG-P8_SFM": "880b4458-bc59-4def-9281-ea6632ed5bd1",
-      "ADO_ADF_ACU1-PE-SFM-RG-D1_SFM": "bfd6145d-6ef7-4cb5-b306-4fc749e4c68a",
-      "ADO_ADF_ACU1-PE-SFM-RG-U5_SFM": "04f3cd2b-3a5c-486a-9d79-bc501c46307c",
-      "ADO_ADF_ACU1-PE-SFM-RG-P8_SFM": "949182a7-327a-4dbe-b1e3-3523a56541d7"
+      "ADO_ADF_ACU1-PE-SFM-RG-D1": "f7d899bb-d0e9-457e-a704-41ce2f29d8f5"
     }
   }
 }
