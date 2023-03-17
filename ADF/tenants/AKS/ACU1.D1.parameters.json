@@ -523,22 +523,22 @@
               }
             ],
             "Listeners": [
-              // {
-              //   "Port": 443,
-              //   "BackendPort": "443",
-              //   "Protocol": "https",
-              //   "Cert": "AGIC01",
-              //   "Domain": "psthing.com",
-              //   "Hostname": "AGIC01",
-              //   "Interface": "Public"
-              // },
+              {
+                "Port": 443,
+                "BackendPort": "443",
+                "Protocol": "https",
+                "Cert": "AGIC01",
+                "Domain": "psthing.com",
+                "Hostname": "AGIC01",
+                "Interface": "Public"
+              },
               {
                 "Port": 80,
                 "Protocol": "http",
                 "Domain": "psthing.com",
                 "Hostname": "AGIC01",
                 "Interface": "Public",
-                "httpsRedirect": 0
+                "httpsRedirect": 1
               }
             ]
           }
