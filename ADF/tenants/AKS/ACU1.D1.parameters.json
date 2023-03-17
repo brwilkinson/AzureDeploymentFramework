@@ -507,7 +507,12 @@
               }
             ],
             "pathRules": [],
-            "probes": [],
+            "probes": [
+              {
+                "ProbeName": "AGIC01",
+                "LBBEProbePort": 443
+              }
+            ],
             "frontEndPorts": [
               {
                 "Port": 80
@@ -519,7 +524,8 @@
             "BackendHttp": [
               {
                 "Port": 443,
-                "Protocol": "https"
+                "Protocol": "https",
+                "probeName": "AGIC01"
               }
             ],
             "Listeners": [
