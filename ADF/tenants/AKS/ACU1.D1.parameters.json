@@ -39,7 +39,7 @@
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 1,
-        "BastionHost": 1,
+        "BastionHost": 0,
         "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
