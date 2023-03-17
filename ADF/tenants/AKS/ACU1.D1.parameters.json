@@ -49,7 +49,7 @@
         "LB": 0,
         "TM": 0,
         "WAFPOLICY": 1,
-        "WAF": 0, //
+        "WAF": 1, //
         "FRONTDOORPOLICY": 0,
         "FRONTDOOR": 0,
         "SetExternalDNS": 0,
@@ -358,7 +358,9 @@
             "NGW": 1
           }
         ],
-        "DNSServers": ["10.192.248.4"],
+        "DNSServers": [
+          "10.192.248.4"
+        ],
         "NatGWInfo": [
           {
             "Name": "NAT01",
@@ -484,9 +486,12 @@
             "PrivateIP": "240",
             "SSLCerts": [
               {
-                "name": "PSTHING-WildCard",
-                "_zone": "psthing.com",
-                "_createCert": 0
+                "name": "AGIC01",
+                "zone": "psthing.com",
+                "createCert": 1,
+                "DnsNames": [
+                  "*.psthing.com"
+                ]
               }
             ],
             "_privateLinkInfo": [
@@ -522,7 +527,7 @@
                 "Port": 443,
                 "BackendPort": "443",
                 "Protocol": "https",
-                "Cert": "PSTHING-WildCard",
+                "Cert": "AGIC01",
                 "Domain": "psthing.com",
                 "Hostname": "AGIC01",
                 "Interface": "Public"

@@ -1,6 +1,6 @@
 param (
-    [validateset('MSPKI', 'AME')]
-    [string]$IssuerName = 'MSPKI',
+    [validateset('DigiCert', 'GlobalSign', 'Self')]
+    [string]$IssuerName = 'Self',
 
     [string]$VaultName = 'ACU1-PE-PST-P0-kvVLT01',
     
