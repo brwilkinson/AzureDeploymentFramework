@@ -49,7 +49,7 @@
         "LB": 0,
         "TM": 0,
         "WAFPOLICY": 1,
-        "WAF": 1,
+        "WAF": 0, //
         "FRONTDOORPOLICY": 0,
         "FRONTDOOR": 0,
         "SetExternalDNS": 0,
@@ -74,7 +74,7 @@
         // below require secrets from KV
         "VMSS": 0,
         "ACI": 0,
-        "AKS": 1,
+        "AKS": 0, //
         "AzureSQL": 0,
         "SFM": 0,
         "SFMNP": 0,
@@ -366,9 +366,7 @@
             "NGW": 1
           }
         ],
-        "DNSServers": [
-          "10.192.248.4"
-        ],
+        "DNSServers": ["10.192.248.4"],
         "NatGWInfo": [
           {
             "Name": "NAT01",
