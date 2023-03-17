@@ -52,14 +52,6 @@
             ]
           },
           {
-            "Name": "AshishChole",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
             "Name": "CathyEvans",
             "RBAC": [
               {

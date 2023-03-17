@@ -9,7 +9,7 @@
       "value": "D"
     },
     "DeploymentID": {
-      "value": "4"
+      "value": "1"
     },
     "Stage": {
       "value": {
@@ -121,7 +121,7 @@
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               }
             ]
           },
@@ -131,17 +131,17 @@
               {
                 "Name": "Private DNS Zone Contributor",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Key Vault Certificates Officer",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Network Contributor"
@@ -154,12 +154,12 @@
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Key Vault Certificates Officer",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               }
             ]
           }
@@ -167,22 +167,6 @@
         "rolesInfo": [
           {
             "Name": "BenWilkinson",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              }
-            ]
-          },
-          {
-            "Name": "SimonAdams",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              }
-            ]
-          },
-          {
-            "Name": "CathyEvans",
             "RBAC": [
               {
                 "Name": "Contributor"
@@ -214,71 +198,71 @@
               {
                 "Name": "Contributor"
               },
-              {
-                "Name": "DeploymentScripts_Contributor"
-              },
-              {
-                "Name": "Managed Identity Operator"
-              },
-              {
-                "Name": "Monitoring Contributor"
-              },
-              {
-                "Name": "Load Test Owner"
-              },
+              // {
+              //   "Name": "DeploymentScripts_Contributor"
+              // },
+              // {
+              //   "Name": "Managed Identity Operator"
+              // },
+              // {
+              //   "Name": "Monitoring Contributor"
+              // },
+              // {
+              //   "Name": "Load Test Owner"
+              // },
               {
                 "Name": "DNS Zone Contributor",
                 "RG": "G1",
                 "Prefix": "ACU1",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Reader and Data Access",
                 "RG": "G1",
                 "Prefix": "ACU1",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Storage Account Contributor",
                 "RG": "G1",
                 "Prefix": "ACU1",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Log Analytics Contributor",
                 "RG": "G1",
                 "Prefix": "ACU1",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Automation_Account_Contributor",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Key_Vault_Reader",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               },
               {
                 "Name": "Network Contributor",
                 "RG": "P0",
-                "Tenant": "AOA"
+                "Tenant": "HUB"
               }
               // {
               //   "Name": "DNS Zone Contributor",
               //   "RG": "P0",
-              //   "Tenant": "AOA"
+              //   "Tenant": "HUB"
               // },
               // {
               //   "Name": "DNS Zone Contributor",
               //   "RG": "P0",
-              //   "Tenant": "AOA",
+              //   "Tenant": "HUB",
               //   "PREFIX": "AEU2"
               // }
             ]
