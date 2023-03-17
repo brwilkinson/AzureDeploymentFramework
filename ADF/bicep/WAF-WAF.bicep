@@ -144,7 +144,7 @@ var Listeners = [for listener in wafInfo.Listeners: {
     id: resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', Name, 'redirectConfiguration-${listener.Hostname}-80')
   }
   sslCertificate: {
-    id: contains(listener, 'Cert') ? resourceId('Microsoft.Network/applicationGateways/sslCertificates', Name, listener.Cert) : null
+    id: contains(listener, 'Cert') ? resourceId('Microsoft.Network/applicationGateways/sslCertificates', Name, replace(toLower('${listener.Cert}${contains(listener, 'Domain') ? '.${listener.Domain}' : null}'), '.', '-')) : null
   }
   urlPathMap: {
     id: contains(listener, 'pathRules') ? resourceId('Microsoft.Network/applicationGateways/urlPathMaps', Name, listener.pathRules) : null
