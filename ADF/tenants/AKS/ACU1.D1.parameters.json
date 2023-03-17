@@ -538,7 +538,7 @@
                 "Domain": "psthing.com",
                 "Hostname": "AGIC01",
                 "Interface": "Public",
-                "httpsRedirect": 1
+                "httpsRedirect": 0
               }
             ]
           }
