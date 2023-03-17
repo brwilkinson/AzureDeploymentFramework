@@ -172,7 +172,7 @@
                 "Name": "Contributor"
               }
             ]
-          },
+          }
           // {
           //   "Name": "AzureKeyVault",
           //   "RBAC": [
@@ -180,15 +180,7 @@
           //       "Name": "Storage Account Key Operator Service Role"
           //     }
           //   ]
-          // },
-          {
-            "Name": "sec-scan-acr",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          }
+          // }
         ],
         "PIMInfo": [],
         "SPInfo": [
