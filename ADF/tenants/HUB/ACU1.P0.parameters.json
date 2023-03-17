@@ -22,22 +22,23 @@
         "OMS": 1,
         "DASHBOARD": 0,
         "OMSSolutions": 1,
-        "OMSDataSources": 0,
+        "OMSDataSources": 1,
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
         "SA": 1,
         "ACR": 0,
         "RSV": 0,
-        "NSG": 0,
+        "NSG": 1,
         "NetworkWatcher": 1,
-        "FlowLogs": 0,
-        "VNet": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
+        "DNSResolver": 1,
         "VNetDDOS": 0,
         "VNetPeering": 0,
-        "DNSPrivateZone": 0,
+        "DNSPrivateZone": 1,
         "DNSPublicZone": 0,
-        "LinkPrivateDns": 0,
-        "PrivateLink": 0,
+        "LinkPrivateDns": 1,
+        "PrivateLink": 1,
         "BastionHost": 0,
         "RT": 0,
         "FW": 0,
@@ -47,7 +48,10 @@
         "ADPrimary": 0,
         "ADSecondary": 0,
         "SetExternalDNS": 0,
-        "SetInternalDNS": 0
+        "SetInternalDNS": 1,
+        "CloudTestAccount": 0,
+        "CloudTestImages": 0,
+        "CloudTestHostedPool": 0
       }
     },
     "Extensions": {
@@ -58,14 +62,14 @@
         "AzureMonitorAgent": 1,
         "GuestHealthAgent": 1,
         "VMInsights": 1,
-        "AdminCenter": 1,
+        "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
         "DSC": 1,
         "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 1,
+        "DomainJoin": 0,
         "AADLogin": 0,
         "Antimalware": 1,
         "VMSSAzureADEnabled": 1,
@@ -158,11 +162,12 @@
         ],
         "SubnetInfo": [ // 8 * /27 + 3 * /23
           {
-            "name": "snFE02",
+            "name": "snDNS01",
             "prefix": "0/27",
             "NSG": 1,
             "FlowLogEnabled": 1,
-            "FlowAnalyticsEnabled": 1
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.Network/dnsResolvers"
           },
           {
             "name": "snAD01",
@@ -234,6 +239,17 @@
             "FlowAnalyticsEnabled": 1
           }
         ],
+        "DNSServers": ["10.192.248.4"],
+        "DNSResolverInfo": {
+          "name": "01",
+          "SN": "snDNS01"
+          // "PrivateIP": "10" // not supported at this time default to .4
+        },
+        "BastionInfo": {
+          "name": "HST01",
+          "enableTunneling": 1,
+          "scaleUnits": 2
+        },
         "networkWatcherInfo": {
           "name": "networkwatcher"
         },
@@ -328,7 +344,7 @@
           {
             "name": "diag",
             "skuName": "Standard_LRS",
-            "allNetworks": 1,
+            "allNetworks": 0,
             "logging": {
               "r": 0,
               "w": 0,
@@ -391,7 +407,6 @@
           "ChangeTracking",
           "AzureActivity",
           "DnsAnalytics",
-          "AzureNSGAnalytics",
           "AlertManagement",
           "NetworkMonitoring",
           "InfrastructureInsights",
@@ -399,8 +414,9 @@
           "SecurityInsights",
           // testing
           "WindowsDefenderATP",
-          "KeyVaultAnalytics"
-          // "BehaviorAnalyticsInsights"
+          "KeyVaultAnalytics",
+          "BehaviorAnalyticsInsights",
+          "ServiceFabric"
           // disabled
           // "Updates",
           // "AgentHealthAssessment",
