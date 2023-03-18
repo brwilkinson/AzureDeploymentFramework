@@ -112,7 +112,7 @@ var ipRules = [for ip in AllowIPList: {
   // }]
 
 resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
-  name: toLower('${DeploymentURI}registry${cr.Name}')
+  name: toLower('${DeploymentURI}acr${cr.Name}')
   location: resourceGroup().location
   sku: {
     name: cr.SKU
