@@ -26,7 +26,7 @@
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
         "SA": 1,
-        "ACR": 1,
+        "ACR": 0,
         "RSV": 0,
         "NSG": 1,
         "NetworkWatcher": 1,
@@ -370,7 +370,7 @@
             "RbacAuthorization": true,
             "allNetworks": 1,
             "PrivateLinkInfo": [
-              {ContainerRegistryACR
+              {
                 "Subnet": "snMT02",
                 "groupID": "vault"
               }
@@ -408,7 +408,7 @@
         "ContainerRegistry": [
           {
             "Name": "01",
-            "SKU": "Premium", // "Standard",
+            "SKU": "Standard",
             "adminUserEnabled": true
           }
         ],
