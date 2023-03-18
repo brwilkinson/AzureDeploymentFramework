@@ -62,9 +62,22 @@ var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('microsoft.insights/components', AppInsightsName)
 
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
+
+var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
+var availabilityZones = contains(excludeZones, Prefix) ? 'Disabled' : 'Enabled'
+
+var PAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
+var AzureDevOpsAllowIPs = loadJsonContent('global/IPRanges-AzureDevOps.json')
+var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+var AllowIPList = concat(PAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess)
+
+var ipRules = [for ip in AllowIPList: {
+  value: ip
+  action: 'Allow'
+}]
 
 // var storageInfo = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
   //   name: toLower('reg${cr.Name}')
@@ -98,7 +111,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
   //   dependsOn: []
   // }]
 
-resource ACR 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
+resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
   name: toLower('${DeploymentURI}registry${cr.Name}')
   location: resourceGroup().location
   sku: {
@@ -107,7 +120,30 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = [for 
   properties: {
     adminUserEnabled: cr.adminUserEnabled
     dataEndpointEnabled: true
-    zoneRedundancy: contains(cr,'NoZone') ? (bool(cr.NoZone) ? 'Disabled' : 'Enabled') : 'Enabled' // Some regions do not support zones
+    zoneRedundancy: availabilityZones
+    publicNetworkAccess: 'Disabled'
+    networkRuleBypassOptions: 'AzureServices'
+    networkRuleSet: {
+      defaultAction: 'Deny'
+      ipRules: ipRules
+    }
+    policies: {
+      azureADAuthenticationAsArmPolicy: {
+        status: 'enabled'
+      }
+      softDeletePolicy: {
+        status: 'enabled'
+        retentionDays: 15
+      }
+      retentionPolicy: {
+        days: 90
+        status: 'disabled'
+      }
+      trustPolicy: {
+        status: 'enabled'
+        type: 'Notary'
+      }
+    }
   }
 }]
 

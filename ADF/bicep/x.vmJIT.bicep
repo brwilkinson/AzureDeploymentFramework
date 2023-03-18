@@ -32,9 +32,9 @@ var lowerLookup = {
   snBE01: 6
 }
 
-var SAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
+var PAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
 var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-var AllowIPList = concat(SAWAllowIPs,IPAddressforRemoteAccess,addressPrefixes)
+var AllowIPList = concat(PAWAllowIPs,IPAddressforRemoteAccess,addressPrefixes)
 
 var ports = [for (port, index) in portList: {
   number: port

@@ -63,10 +63,10 @@ var addressPrefixes = [
   '${networkId.upper}.${networkId.lower}.0/21'
 ]
 
-var SAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
+var PAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
 var AzureDevOpsAllowIPs = loadJsonContent('global/IPRanges-AzureDevOps.json')
 var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-var AllowIPList = concat(SAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess,addressPrefixes)
+var AllowIPList = concat(PAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess,addressPrefixes)
 
 var lowerLookup = {
   snWAF01: 1

@@ -91,10 +91,10 @@ var accessPolicies = [for i in range(0, ((!contains(KVInfo, 'accessPolicies')) ?
   permissions: keyVaultPermissions[KVInfo.accessPolicies[i].Permissions]
 }]
 
-var SAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
+var PAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
 var AzureDevOpsAllowIPs = loadJsonContent('global/IPRanges-AzureDevOps.json')
 var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-var AllowIPList = concat(SAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess)
+var AllowIPList = concat(PAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess)
 
 var ipRules = [for ip in AllowIPList: {
   value: ip
