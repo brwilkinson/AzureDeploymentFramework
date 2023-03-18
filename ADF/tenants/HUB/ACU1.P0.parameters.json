@@ -26,7 +26,7 @@
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
         "SA": 1,
-        "ACR": 0,
+        "ACR": 1,
         "RSV": 0,
         "NSG": 1,
         "NetworkWatcher": 1,
@@ -370,7 +370,7 @@
             "RbacAuthorization": true,
             "allNetworks": 1,
             "PrivateLinkInfo": [
-              {
+              {ContainerRegistryACR
                 "Subnet": "snMT02",
                 "groupID": "vault"
               }
@@ -403,6 +403,13 @@
                 "provider": "GlobalSign"
               }
             ]
+          }
+        ],
+        "ContainerRegistry": [
+          {
+            "Name": "01",
+            "SKU": "Premium", // "Standard",
+            "adminUserEnabled": true
           }
         ],
         "OMSSolutions": [
