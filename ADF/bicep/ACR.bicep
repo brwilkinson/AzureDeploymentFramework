@@ -132,11 +132,11 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = [for 
         status: 'enabled'
       }
       softDeletePolicy: {
-        status: 'enabled'
+        status: 'disabled' // not compatible with Geo redundancy
         retentionDays: 15
       }
       retentionPolicy: {
-        days: 90
+        days: 15
         status: 'disabled'
       }
       trustPolicy: {
