@@ -246,8 +246,8 @@
         ],
         "ContainerRegistry": [
           {
-            "Name": "01",
-            "SKU": "Standard",
+            "Name": "global",
+            "SKU": "Premium",
             "adminUserEnabled": true
           }
         ]

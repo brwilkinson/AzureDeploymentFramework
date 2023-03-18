@@ -6,6 +6,10 @@
       "name": "global",
       "AppName": "AOA"
     },
+    "GlobalACR": {
+      "name": "global",
+      "AppName": "AOA"
+    },
     "GlobalRG": {
       "name": "G1",
       "AppName": "AOA"

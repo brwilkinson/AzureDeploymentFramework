@@ -6,6 +6,10 @@
       "name": "global",
       "AppName": "HUB"
     },
+    "GlobalACR": {
+      "name": "global",
+      "AppName": "HUB"
+    },
     "GlobalRG": {
       "name": "G1",
       "AppName": "HUB"
