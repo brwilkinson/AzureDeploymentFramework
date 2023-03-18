@@ -48,7 +48,7 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 var Domain = split(Global.DomainName, '.')[0]
 var subscriptionId = subscription().subscriptionId
 var resourceGroupName = resourceGroup().name
-var SubnetInfo = DeploymentInfo.SubnetInfo
+var SubnetInfo = contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : []
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var subnetResourceId = '${VnetID}/subnets/snMT01'
 

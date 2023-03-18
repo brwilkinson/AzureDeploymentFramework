@@ -248,7 +248,13 @@
           {
             "Name": "global",
             "SKU": "Premium",
-            "adminUserEnabled": true
+            "adminUserEnabled": true,
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "registry"
+              }
+            ]
           }
         ]
       }
