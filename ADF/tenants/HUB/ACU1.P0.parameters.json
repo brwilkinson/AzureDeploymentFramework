@@ -405,13 +405,6 @@
             ]
           }
         ],
-        "ContainerRegistry": [
-          {
-            "Name": "01",
-            "SKU": "Standard",
-            "adminUserEnabled": true
-          }
-        ],
         "OMSSolutions": [
           "AzureAutomation",
           "ChangeTracking",

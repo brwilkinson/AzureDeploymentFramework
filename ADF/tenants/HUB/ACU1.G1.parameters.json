@@ -27,6 +27,7 @@
         "OMSUpdateMonthly": 0,
         "OMSUpates": 0,
         "SA": 1,
+        "ACR": 1,
         "CDN": 0,
         "StorageSync": 0,
         "RSV": 0,
@@ -58,7 +59,6 @@
         "APPCONFIG": 0,
         "REDIS": 0,
         "APIM": 0,
-        "ACR": 0,
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 0,
@@ -242,6 +242,13 @@
                 "name": "source"
               }
             ]
+          }
+        ],
+        "ContainerRegistry": [
+          {
+            "Name": "01",
+            "SKU": "Standard",
+            "adminUserEnabled": true
           }
         ]
       }
