@@ -121,7 +121,7 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = [for 
     adminUserEnabled: cr.adminUserEnabled
     dataEndpointEnabled: true
     zoneRedundancy: availabilityZones
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
     networkRuleBypassOptions: 'AzureServices'
     networkRuleSet: {
       defaultAction: 'Deny'
