@@ -17,7 +17,7 @@ Get-AzVMSize -Location $Location | Where-Object { $_.NumberofCores -eq 4 } | Sel
 # sort by memory
 Get-AzVMSize -Location $Location | where NumberofCores -eq 2 |
 Sort -Property MemoryInMB | 
-Select -Property MaxDataDiskCount, MemoryInMB,Name,NumberOfCores, OSDiskSizeInMB | ft -AutoSize
+Select -Property MaxDataDiskCount, MemoryInMB,Name,NumberOfCores,OSDiskSizeInMB, | ft -AutoSize
 
     
 

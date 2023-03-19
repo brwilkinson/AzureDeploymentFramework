@@ -571,6 +571,7 @@
             "BrownFields": 1,
             "AppGateway": 1,
             "AutoScale": 0,
+            "enableDefender": 0,
             "aksAADAdminGroups": [
               "brwilkinson"
             ],
@@ -580,10 +581,10 @@
                 "count": 3,
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
-                "osSKU": "CBLMariner",
+                "osSKU": "Mariner2",
                 "maxPods": 16,
                 "storageProfile": "ManagedDisks",
-                "_vmSize": "Standard_D1_v2",
+                "vmSize": "Standard_D2plds_v5",
                 "mode": "System"
               },
               {
@@ -592,10 +593,10 @@
                 "maxcount": 4,
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
-                "osSKU": "CBLMariner",
+                "osSKU": "Mariner2",
                 "maxPods": 50,
                 "storageProfile": "ManagedDisks",
-                "_vmSize": "Standard_D1_v2",
+                "vmSize": "Standard_D2plds_v5",
                 "mode": "User"
               }
               // {
@@ -605,7 +606,7 @@
               //   "osType": "Linux",
               //   "maxPods": 50,
               //   "storageProfile": "ManagedDisks",
-              //   "_vmSize": "Standard_D1_v2",
+              //   "vmSize": "Standard_D2plds_v5",
               //   "mode": "User"
               // }
             ]

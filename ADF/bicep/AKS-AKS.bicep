@@ -209,7 +209,6 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
       type: 'VirtualMachineScaleSets'
       availabilityZones: availabilityZones
       // storageProfile: 'ManagedDisks'
-      
     }]
     linuxProfile: {
       adminUsername: (contains(AKSInfo, 'AdminUser') ? AKSInfo.AdminUser : Global.vmAdminUserName)
@@ -228,10 +227,10 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
       enableCSIProxy: true
     }
     securityProfile: {
-      defender: {
-        logAnalyticsWorkspaceResourceId: OMS.id
+      defender: { // not supported on ARM CPU/Size
+        logAnalyticsWorkspaceResourceId: contains(AKSInfo, 'enableDefender') && ! bool(AKSInfo.enableDefender) ? null : OMS.id
         securityMonitoring: {
-          enabled: true
+          enabled: contains(AKSInfo, 'enableDefender') ? bool(AKSInfo.enableDefender) : true
         }
       }
     }
