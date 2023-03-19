@@ -35,16 +35,27 @@ var ladCfg = computeGlobal.ladCfg
 var DataDiskInfo = computeGlobal.DataDiskInfo
 var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
 
+var GlobalRGJ = json(Global.GlobalRG)
+var GlobalACRJ = json(Global.GlobalACR)
 var HubRGJ = json(Global.hubRG)
+
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
 
 var gh = {
   hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
   hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
   hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
   hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  globalACRPrefix: contains(GlobalACRJ, 'Prefix') ? GlobalACRJ.Prefix : primaryPrefix
+  globalACROrgName: contains(GlobalACRJ, 'OrgName') ? GlobalACRJ.OrgName : Global.OrgName
+  globalACRAppName: contains(GlobalACRJ, 'AppName') ? GlobalACRJ.AppName : Global.AppName
+  globalACRRGName: contains(GlobalACRJ, 'RG') ? GlobalACRJ.RG : contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
 }
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var globalACRName = toLower('${gh.globalACRPrefix}${gh.globalACROrgName}${gh.globalACRAppName}${gh.globalACRRGName}ACR${GlobalACRJ.name}')
 
 // roles are unique per subscription leave this as runtime parameters
 var RolesGroupsLookup = json(Global.RolesGroupsLookup)
@@ -65,8 +76,8 @@ var addressPrefixes = [
 
 var PAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
 var AzureDevOpsAllowIPs = loadJsonContent('global/IPRanges-AzureDevOps.json')
-var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-var AllowIPList = concat(PAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess,addressPrefixes)
+var IPAddressforRemoteAccess = contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+var AllowIPList = concat(PAWAllowIPs, AzureDevOpsAllowIPs, IPAddressforRemoteAccess, addressPrefixes)
 
 var lowerLookup = {
   snWAF01: 1
@@ -159,7 +170,7 @@ resource csi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' exist
 }
 
 #disable-next-line BCP081
-resource AKS 'Microsoft.ContainerService/managedClusters@2022-10-02-preview' = {
+resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
   location: resourceGroup().location
   identity: {
@@ -225,7 +236,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-10-02-preview' = {
     }
     aadProfile: bool(AKSInfo.enableRBAC) ? aadProfile : null
     apiServerAccessProfile: {
-      authorizedIPRanges: bool(AKSInfo.privateCluster) || (contains(AKSInfo,'AllowALLIPs') && bool(AKSInfo.AllowALLIPs)) ? null : AllowIPList
+      authorizedIPRanges: bool(AKSInfo.privateCluster) || (contains(AKSInfo, 'AllowALLIPs') && bool(AKSInfo.AllowALLIPs)) ? null : AllowIPList
       enablePrivateCluster: bool(AKSInfo.privateCluster)
       privateDNSZone: bool(AKSInfo.privateCluster) ? resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.${resourceGroup().location}.azmk8s.io') : null
     }
@@ -239,13 +250,16 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-10-02-preview' = {
       dnsServiceIP: '10.0.0.10'
       dockerBridgeCidr: '172.17.0.1/16'
     }
+    oidcIssuerProfile: {
+      enabled: true
+    }
+    
     autoScalerProfile: bool(AKSInfo.AutoScale) ? autoScalerProfile : null
     podIdentityProfile: bool(AKSInfo.podIdentity) ? podIdentityProfile : null
     addonProfiles: {
       gitops: {
         enabled: resourceGroup().location == 'eastus' ? true : false // preview enabled in eastus/westeurope
-        config: {
-        }
+        config: {}
       }
       azureKeyvaultSecretsProvider: {
         enabled: true
