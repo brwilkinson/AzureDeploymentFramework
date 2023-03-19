@@ -10,12 +10,12 @@ param Stage object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
 
-@secure()
-param vmAdminPassword string
+// @secure()
+// param vmAdminPassword string
 
-@secure()
-#disable-next-line no-unused-params
-param devOpsPat string
+// @secure()
+// #disable-next-line no-unused-params
+// param devOpsPat string
 
 @secure()
 param sshPublic string

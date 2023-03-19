@@ -83,8 +83,8 @@ module AKSAll 'AKS-AKS.bicep' = [for (aks, index) in AKSInfo: if (AKS[index].mat
     AKSInfo: aks
     Global: Global
     Stage: Stage
-    vmAdminPassword: KV.getSecret('localadmin')
-    devOpsPat: KV.getSecret('devOpsPat')
+    // vmAdminPassword: KV.getSecret('localadmin')
+    // devOpsPat: KV.getSecret('devOpsPat')
     sshPublic: KV.getSecret('sshPublic')
   }
 }]

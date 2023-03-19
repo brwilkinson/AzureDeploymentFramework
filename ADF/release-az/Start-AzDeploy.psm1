@@ -369,7 +369,8 @@ Function global:Start-AzDeploy
                         
                         $global:err = Resolve-AzError -Last
                         $err
-                        $err | foreach Message
+                        $m = $err | foreach Message
+                        throw $m
                     }
                 }
             }
