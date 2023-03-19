@@ -368,7 +368,7 @@
             "softDelete": true,
             "PurgeProtection": true,
             "RbacAuthorization": true,
-            "allNetworks": 0,
+            "allNetworks": 1, // Currently needed for Cert Management from DeploymentScripts
             "PrivateLinkInfo": [
               {
                 "Subnet": "snMT02",
