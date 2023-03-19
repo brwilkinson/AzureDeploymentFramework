@@ -220,12 +220,12 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
         ]
       }
     }
-    windowsProfile: {
-      adminUsername: (contains(AKSInfo, 'AdminUser') ? AKSInfo.AdminUser : Global.vmAdminUserName)
-      adminPassword: vmAdminPassword
-      licenseType: 'Windows_Server'
-      enableCSIProxy: true
-    }
+    // windowsProfile: {
+    //   adminUsername: (contains(AKSInfo, 'AdminUser') ? AKSInfo.AdminUser : Global.vmAdminUserName)
+    //   adminPassword: vmAdminPassword
+    //   licenseType: 'Windows_Server'
+    //   enableCSIProxy: true
+    // }
     securityProfile: {
       defender: { // not supported on ARM CPU/Size
         logAnalyticsWorkspaceResourceId: contains(AKSInfo, 'enableDefender') && ! bool(AKSInfo.enableDefender) ? null : OMS.id
