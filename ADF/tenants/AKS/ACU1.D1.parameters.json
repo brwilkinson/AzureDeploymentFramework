@@ -74,7 +74,7 @@
         // below require secrets from KV
         "VMSS": 0,
         "ACI": 0,
-        "AKS": 1, //
+        "AKS": 0, //
         "AzureSQL": 0,
         "SFM": 0,
         "SFMNP": 0,
