@@ -209,6 +209,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
       type: 'VirtualMachineScaleSets'
       availabilityZones: availabilityZones
       // storageProfile: 'ManagedDisks'
+      
     }]
     linuxProfile: {
       adminUsername: (contains(AKSInfo, 'AdminUser') ? AKSInfo.AdminUser : Global.vmAdminUserName)

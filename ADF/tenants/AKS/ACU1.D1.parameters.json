@@ -572,7 +572,7 @@
             "AppGateway": 1,
             "AutoScale": 0,
             "aksAADAdminGroups": [
-              "PE_INF_SEC_DEV"
+              "brwilkinson"
             ],
             "AgentPools": [
               {
