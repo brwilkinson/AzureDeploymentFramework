@@ -365,7 +365,7 @@ Function global:Start-AzDeploy
                     {
                         # Add logging trying to get info on the following:
                         # The request was canceled due to the configured
-                        # HttpClient.Timeout of 100 seconds elapsing.
+                        # HttpClient.Timeout of 100 seconds elapsing
                         
                         $global:err = Resolve-AzError -Last
                         $err

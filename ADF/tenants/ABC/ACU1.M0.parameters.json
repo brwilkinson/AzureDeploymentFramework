@@ -37,7 +37,7 @@
           }
         ],
         "RoleDefinitionsInfo": [
-          {
+          { //  Use "Desktop Virtualization Virtual Machine Contributor" role instead of defining the custom role below
             "RoleName": "Key_Vault_Reader",
             "description": "Lets you run deployments from the KeyVault",
             "notActions": [],
