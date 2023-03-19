@@ -233,7 +233,7 @@
                         "Tenant": "HUB"
                       },
                       {
-                        "Name": "Key_Vault_Reader",
+                        "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
                         "RG": "P0",
                         "Tenant": "HUB"
                       },

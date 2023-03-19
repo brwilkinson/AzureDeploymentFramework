@@ -231,11 +231,11 @@
               //   "RG": "P0",
               //   "Tenant": "HUB"
               // },
-              // {
-              //   "Name": "Key_Vault_Reader",
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // },
+              {
+                "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
+                "RG": "P0",
+                "Tenant": "HUB"
+              },
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
