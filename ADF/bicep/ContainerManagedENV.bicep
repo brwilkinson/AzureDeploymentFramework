@@ -65,6 +65,10 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, in
   kind: 'containerenvironment'
   properties: {
     zoneRedundant: availabilityZones
+    vnetConfiguration: {
+      infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', kubeenv.Subnet) : null
+      internal: true
+    }
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {

@@ -455,7 +455,8 @@
         ],
         "managedEnvInfo": [
           {
-            "Name": "01"
+            "Name": "01",
+            "Subnet": "snMT01"
           }
         ],
         "containerAppInfo": [
