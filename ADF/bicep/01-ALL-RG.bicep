@@ -498,7 +498,7 @@ module dp_Deployment_FW '?' = if (contains(Stage, 'FW') && bool(Stage.FW)) {
 // }
 
 
-module dp_Deployment_ManagedENV 'LB.bicep' = if (contains(Stage, 'ManagedEnv') && bool(Stage.ManagedEnv)) {
+module dp_Deployment_ManagedENV 'ContainerManagedENV.bicep' = if (contains(Stage, 'ManagedEnv') && bool(Stage.ManagedEnv)) {
   name: 'dp${Deployment}-ManagedENV'
   params: {
     // move these to Splatting later
@@ -518,7 +518,7 @@ module dp_Deployment_ManagedENV 'LB.bicep' = if (contains(Stage, 'ManagedEnv') &
   ]
 }
 
-module dp_Deployment_ContainerAPP 'LB.bicep' = if (contains(Stage, 'ContainerApp') && bool(Stage.ContainerApp)) {
+module dp_Deployment_ContainerAPP 'ContainerApp.bicep' = if (contains(Stage, 'ContainerApp') && bool(Stage.ContainerApp)) {
   name: 'dp${Deployment}-ContainerAPP'
   params: {
     // move these to Splatting later
