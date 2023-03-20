@@ -56,13 +56,15 @@ var kubeEnv = [for (kubeenv, index) in managedEnvInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), kubeenv.name))
 }]
 
+var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
+var availabilityZones = contains(excludeZones,Prefix) ? false : true
+
 resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, index) in managedEnvInfo: if (kubeEnv[index].match) {
   name: toLower('${Deployment}-kube${kubeenv.Name}')
   location: contains(kubeenv, 'location') ? kubeenv.location : resourceGroup().location
   kind: 'containerenvironment'
   properties: {
-    environmentType: 'Managed'
-    internalLoadBalancerEnabled: contains(kubeenv, 'internalLoadBalancerEnabled') ? bool(kubeenv.internalLoadBalancerEnabled) : false
+    zoneRedundant: availabilityZones
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
@@ -70,15 +72,19 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, in
         sharedKey: OMS.listKeys().primarySharedKey
       }
     }
-    containerAppsConfiguration: {
-      // internalOnly: false
-      // appSubnetResourceId: 
-      // controlPlaneSubnetResourceId:
-      // dockerBridgeCidr:
-      // platformReservedCidr:
-      // platformReservedDnsIP:
-      daprAIInstrumentationKey: AppInsights.properties.InstrumentationKey
-    }
+    
+    // environmentType: 'Managed'
+    // internalLoadBalancerEnabled: contains(kubeenv, 'internalLoadBalancerEnabled') ? bool(kubeenv.internalLoadBalancerEnabled) : false
+
+    // containerAppsConfiguration: {
+    //   // internalOnly: false
+    //   // appSubnetResourceId: 
+    //   // controlPlaneSubnetResourceId:
+    //   // dockerBridgeCidr:
+    //   // platformReservedCidr:
+    //   // platformReservedDnsIP:
+    //   daprAIInstrumentationKey: AppInsights.properties.InstrumentationKey
+    // }
   }
 }]
 
