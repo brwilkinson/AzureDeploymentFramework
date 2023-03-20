@@ -66,14 +66,14 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, in
     name: contains(kubeenv, 'skuName') ? kubeenv.skuName : 'Consumption'
   }
   properties: {
-    zoneRedundant: availabilityZones
-    vnetConfiguration: {
-      infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', kubeenv.Subnet) : null
-      internal: true
-      // outboundSettings: {
-      //   outBoundType: 'LoadBalancer'
-      // }
-    }
+    // zoneRedundant: availabilityZones
+    // vnetConfiguration: {
+    //   infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', kubeenv.Subnet) : null
+    //   internal: true
+    //   // outboundSettings: {
+    //   //   outBoundType: 'LoadBalancer'
+    //   // }
+    // }
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
