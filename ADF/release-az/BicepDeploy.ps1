@@ -4,8 +4,8 @@ param (
     [String]$Env,
     [string]$Prefix,
     [String]$stage,
-    [ValidateSet('ADF', 'GW', 'SFM', 'HUB', 'AOA', 'PST', 'MON', 'AKS')]
-    [String]$APP = 'ADF',
+    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+    [string]$App = 'ADF',
     [switch]$FullUpload,
     [string]$CN = '.',
     [string]$CN2 = '.'

@@ -3,8 +3,8 @@
 param (
     [String]$Env = 'd1',
     [string]$Prefix = 'ACU1',
-    [ValidateSet('ADF', 'GW', 'SFM', 'HUB', 'AOA', 'PST', 'MON', 'AKS')]
-    [String]$APP = 'SFM',
+    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+    [string]$App = 'SFM',
     [ValidateSet('AZ', 'SF')]
     [String]$TYPE = 'SF'
 )

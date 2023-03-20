@@ -1,0 +1,32 @@
+trigger: none
+  # batch: 'true'
+  # branches:
+  #   include: [ main ]
+  # paths:
+  #   include:
+  #   - ADF/tenants/AKS/ACU1.D1.parameters.json
+  #   - ADF/tenants/AKS/ACU1.D1.ado-pipelines-All.yml
+
+variables:
+  ORG:        PE
+  APP :       AKS
+  
+  PREFIX:     ACU1
+  ENV:        D1
+  
+  ADOProject: ADO_ADF
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: HUB
+
+stages:
+- stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+  jobs:
+  - template: ..\..\..\.ado\ado-pipelines-ALL.yml
+    parameters:
+      ORG:        ${{ variables.ORG }}
+      APP :       ${{ variables.APP }}
+      APPPRIMARY: ${{ variables.APPPRIMARY}}
+      PREFIX:     ${{ variables.PREFIX }}
+      ENV:        ${{ variables.ENV }}
+      SP:         ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+      SPG0:       ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG

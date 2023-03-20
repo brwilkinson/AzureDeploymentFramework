@@ -4,8 +4,8 @@ param (
     [ValidateSet('P0')]
     [String]$Env = 'P0',
     [string[]]$Prefixes = ('ACU1', 'AEU2'),
-    [ValidateSet('HUB', 'AOA')]
-    [String]$APP = 'HUB'
+    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+    [string]$App = 'HUB'
 )
 
 $Artifacts = Get-Item -Path "$PSScriptRoot\.."

@@ -61,8 +61,8 @@ function Get-SFMCommonName
         [String]$Env = 'd1',
         [ValidateSet('ACU1', 'AEU2', 'AEU1', 'AWCU')]
         [string]$Prefix = 'ACU1',
-        [ValidateSet('ADF', 'GW', 'SFM', 'HUB', 'AOA', 'PST', 'MON', 'AKS')]
-        [String]$APP = 'PST'
+        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+        [string]$App = 'PST'
     )
     
     Get-AzServiceFabricManagedCluster | Where-Object DnsName -Match "$Prefix-(.+)-$app-$Env" |
@@ -75,8 +75,8 @@ function Get-Global
     param (
         [ValidateSet('ACU1', 'AEU2', 'AEU1', 'AWCU')]
         [string]$Prefix = 'ACU1',
-        [ValidateSet('ADF', 'GW', 'SFM', 'HUB', 'AOA', 'PST', 'MON', 'AKS')]
-        [String]$APP = 'PST'
+        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+        [string]$App = 'PST'
     )
     
     $Artifacts = Get-Item -Path "$PSScriptRoot/.."
@@ -326,8 +326,8 @@ function Set-ADOSFMServiceConnection
         [validateset('d1', 'u5', 'p8')]
         [string]$Environment = 'd1',
 
-        [ValidateSet('ADF', 'GW', 'SFM', 'HUB', 'AOA', 'PST', 'MON', 'AKS')]
-        [String]$App = 'SFM',
+        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+        [string]$App = 'SFM',
 
         [String]$ConnectionType = 'ServiceFabric',
         [String]$NamePrefix = 'ADO_ADF'
@@ -389,8 +389,8 @@ function Set-ADOAZServiceConnection
         
         [String[]]$Environments = ('D1'),
 
-        [ValidateSet('ADF', 'GW', 'SFM', 'HUB', 'AOA', 'PST', 'MON', 'AKS')]
-        [String]$App = 'SFM',
+        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+        [string]$App = 'SFM',
         [int]$SecretAgeDays = 365,
         [int]$RenewDays = 20,
         [string]$Suffix
@@ -730,8 +730,8 @@ function New-ADOAZServiceConnection
         
         [String[]]$Environments = ('D16'),
 
-        [ValidateSet('ADF', 'GW', 'SFM', 'HUB', 'AOA', 'PST', 'MON', 'AKS')]
-        [String]$App = 'PST',
+        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+        [string]$App = 'PST',
         [int]$SecretAgeDays = 365,
         [switch]$IncludeReaderOnSubscription,
         [string]$Suffix

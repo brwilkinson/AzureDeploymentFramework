@@ -33,6 +33,7 @@ parameters:
       - PST
       - MON
       - AKS
+      - LAB
 
   - name: APPPRIMARY
     displayName: App/Tenant PRIMARY Name
