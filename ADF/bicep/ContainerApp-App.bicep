@@ -60,6 +60,12 @@ resource managedENV 'Microsoft.App/managedEnvironments@2022-10-01' existing = {
 resource containerAPP 'Microsoft.App/containerApps@2022-10-01' = {
   name: toLower('${managedENV.name}-app${containerAppInfo.name}')
   location: resourceGroup().location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${UAI.id}': {}
+    }
+  }
   properties: {
     managedEnvironmentId: managedENV.id
     configuration: {
