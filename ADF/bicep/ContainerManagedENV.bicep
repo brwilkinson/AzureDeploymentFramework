@@ -56,7 +56,7 @@ var kubeEnv = [for (kubeenv, index) in managedEnvInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), kubeenv.name))
 }]
 
-resource KUBE 'Microsoft.App/managedEnvironments@2022-01-01-preview' = [for (kubeenv, index) in managedEnvInfo: if (kubeEnv[index].match) {
+resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, index) in managedEnvInfo: if (kubeEnv[index].match) {
   name: toLower('${Deployment}-kube${kubeenv.Name}')
   location: contains(kubeenv, 'location') ? kubeenv.location : resourceGroup().location
   kind: 'containerenvironment'

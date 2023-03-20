@@ -16,11 +16,11 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
-resource managedENV 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
+resource managedENV 'Microsoft.App/managedEnvironments@2022-10-01' existing = {
   name: toLower('${Deployment}-kube${containerAppInfo.kubeENV}')
 }
 
-resource containerAPP 'Microsoft.App/containerApps@2022-01-01-preview' = {
+resource containerAPP 'Microsoft.App/containerApps@2022-10-01' = {
   name: toLower('${managedENV.name}-app${containerAppInfo.name}')
   location: resourceGroup().location
   properties: {

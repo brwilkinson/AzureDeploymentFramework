@@ -29,12 +29,12 @@
         "CDN": 0,
         "StorageSync": 0,
         "RSV": 0,
-        "NSG": 1,
+        "NSG": 1, //
         "NetworkWatcher": 0,
-        "FlowLogs": 1,
-        "VNet": 1,
+        "FlowLogs": 1, //
+        "VNet": 1, //
         "VNetDDOS": 0,
-        "VNetPeering": 1,
+        "VNetPeering": 1, //
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
@@ -426,17 +426,18 @@
           "AzureAutomation",
           "ChangeTracking",
           "AzureActivity",
-          "DnsAnalytics",
+          // "DnsAnalytics",
           "AlertManagement",
-          "NetworkMonitoring",
+          // "NetworkMonitoring",
           "InfrastructureInsights",
           "VMInsights",
           "SecurityInsights",
           // testing
           "WindowsDefenderATP",
           "KeyVaultAnalytics",
-          "BehaviorAnalyticsInsights",
-          "ServiceFabric"
+          "BehaviorAnalyticsInsights"
+          // "ServiceFabric"
+
           // disabled
           // "Updates",
           // "AgentHealthAssessment",
