@@ -9,7 +9,7 @@ parameters:
   - name: STAGE
     displayName: Deployment Stage
     type: string
-    default: ContainerManagedENV
+    default: ContainerApp
     values:
       - 00-ALL-SUB
       - 01-ALL-RG
