@@ -116,6 +116,16 @@
       "value": {
         "uaiInfo": [
           {
+            "name": "GlobalAcrPull",
+            "RBAC": [
+              {
+                "Name": "AcrPull",
+                "RG": "G1",
+                "Tenant": "HUB"
+              }
+            ]
+          },
+          {
             "name": "KeyVaultSecretsGet",
             "RBAC": [
               {
@@ -437,7 +447,6 @@
           "KeyVaultAnalytics",
           "BehaviorAnalyticsInsights"
           // "ServiceFabric"
-
           // disabled
           // "Updates",
           // "AgentHealthAssessment",
@@ -456,7 +465,8 @@
         "managedEnvInfo": [
           {
             "Name": "01",
-            "Subnet": "snMT01"
+            "Subnet": "snMT01",
+            "skuName": "Consumption"
           }
         ],
         "containerAppInfo": [

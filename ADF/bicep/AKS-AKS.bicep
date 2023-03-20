@@ -165,7 +165,7 @@ var MSILookup = {
 }
 var aksAADAdminLookup = [for i in range(0, ((!contains(AKSInfo, 'aksAADAdminGroups')) ? 0 : length(AKSInfo.aksAADAdminGroups))): objectIdLookup[AKSInfo.aksAADAdminGroups[i]]]
 
-resource csi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
   name: '${Deployment}-uaiIngressApplicationGateway'
 }
 
@@ -176,7 +176,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-      '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', '${Deployment}-uaiIngressApplicationGateway')}': {}
+      '${UAI.id}': {}
     }
   }
   sku: {

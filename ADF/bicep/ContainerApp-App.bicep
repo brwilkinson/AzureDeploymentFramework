@@ -16,6 +16,36 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
+var GlobalRGJ = json(Global.GlobalRG)
+var GlobalACRJ = json(Global.GlobalACR)
+var HubRGJ = json(Global.hubRG)
+
+var regionLookup = json(loadTextContent('./global/region.json'))
+var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
+
+var gh = {
+  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
+  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
+  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
+  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+
+  globalACRPrefix: contains(GlobalACRJ, 'Prefix') ? GlobalACRJ.Prefix : primaryPrefix
+  globalACROrgName: contains(GlobalACRJ, 'OrgName') ? GlobalACRJ.OrgName : Global.OrgName
+  globalACRAppName: contains(GlobalACRJ, 'AppName') ? GlobalACRJ.AppName : Global.AppName
+  globalACRRGName: contains(GlobalACRJ, 'RG') ? GlobalACRJ.RG : contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+}
+
+var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var globalACRName = toLower('${gh.globalACRPrefix}${gh.globalACROrgName}${gh.globalACRAppName}${gh.globalACRRGName}ACR${GlobalACRJ.name}')
+
+resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existing = {
+  name: toLower(globalACRName)
+}
+
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+  name: '${Deployment}-GlobalAcrPull'
+}
+
 resource managedENV 'Microsoft.App/managedEnvironments@2022-10-01' existing = {
   name: toLower('${Deployment}-kube${containerAppInfo.kubeENV}')
 }
@@ -30,6 +60,7 @@ resource containerAPP 'Microsoft.App/containerApps@2022-10-01' = {
       ingress: {
         external: true
         targetPort: 80
+        allowInsecure: false
         transport: 'auto'
         traffic: [
           {
@@ -37,9 +68,13 @@ resource containerAPP 'Microsoft.App/containerApps@2022-10-01' = {
             latestRevision: true
           }
         ]
-        allowInsecure: false
       }
-      registries: []
+      registries: [
+        {
+          identity: UAI.id
+          server: ACR.properties.loginServer
+        }
+      ]
     }
     template: {
       containers: [
