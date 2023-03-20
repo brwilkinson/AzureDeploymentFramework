@@ -49,7 +49,7 @@ var kApp = [for (kubeapp, index) in containerAppInfo: {
 }]
 
 module kubeApp 'ContainerApp-App.bicep' = [for (ka, index) in containerAppInfo: if (kApp[index].match) {
-  name: 'dp${Deployment}-KubeApp-${ka.name}'
+  name: 'dp${Deployment}-ContainerApp-${ka.name}'
   params: {
     Deployment: Deployment
     DeploymentURI: DeploymentURI

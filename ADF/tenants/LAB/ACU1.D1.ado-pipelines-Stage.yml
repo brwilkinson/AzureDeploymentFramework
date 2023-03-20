@@ -9,7 +9,7 @@ parameters:
   - name: STAGE
     displayName: Deployment Stage
     type: string
-    default: ManagedEnv
+    default: ContainerManagedENV
     values:
       - 00-ALL-SUB
       - 01-ALL-RG
@@ -19,7 +19,7 @@ parameters:
       - VNET
       - WAF
       - WAFPOLICY
-      - ManagedEnv
+      - ContainerManagedENV
       - ContainerApp
 
   - name: CN
