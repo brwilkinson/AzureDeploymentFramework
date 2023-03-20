@@ -67,13 +67,13 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, in
   }
   properties: {
     zoneRedundant: availabilityZones
-    // vnetConfiguration: {
-    //   infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', kubeenv.Subnet) : null
-    //   internal: true
-    //   outboundSettings: {
-    //     outBoundType: 'LoadBalancer'
-    //   }
-    // }
+    vnetConfiguration: {
+      infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', kubeenv.Subnet) : null
+      internal: true
+      // outboundSettings: {
+      //   outBoundType: 'LoadBalancer'
+      // }
+    }
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {

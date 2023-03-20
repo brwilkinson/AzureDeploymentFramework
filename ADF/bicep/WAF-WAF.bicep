@@ -30,6 +30,7 @@ var lowerLookup = {
 }
 
 var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
+#disable-next-line BCP036
 var availabilityZones = contains(excludeZones, Prefix) ? [] : [
   1
   2
