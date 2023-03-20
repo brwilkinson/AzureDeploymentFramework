@@ -57,7 +57,7 @@ var kubeEnv = [for (kubeenv, index) in managedEnvInfo: {
 }]
 
 var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
-var availabilityZones = contains(excludeZones,Prefix) ? false : true
+var availabilityZones = contains(excludeZones, Prefix) ? false : true
 
 resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, index) in managedEnvInfo: if (kubeEnv[index].match) {
   name: toLower('${Deployment}-kube${kubeenv.Name}')
@@ -66,7 +66,7 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, in
   properties: {
     zoneRedundant: availabilityZones
     vnetConfiguration: {
-      infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', kubeenv.Subnet) : null
+      infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', kubeenv.Subnet) : null
       internal: true
     }
     appLogsConfiguration: {
@@ -76,7 +76,7 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, in
         sharedKey: OMS.listKeys().primarySharedKey
       }
     }
-    
+
     // environmentType: 'Managed'
     // internalLoadBalancerEnabled: contains(kubeenv, 'internalLoadBalancerEnabled') ? bool(kubeenv.internalLoadBalancerEnabled) : false
 
@@ -91,4 +91,3 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, in
     // }
   }
 }]
-
