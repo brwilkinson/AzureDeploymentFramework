@@ -5,7 +5,7 @@ param Deployment string
 param logStartMinsAgo int = 7
 param now string = utcNow('F')
 
-resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: '${Deployment}-uaiCertificatePolicy'
 }
 

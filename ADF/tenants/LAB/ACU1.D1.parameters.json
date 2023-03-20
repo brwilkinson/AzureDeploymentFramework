@@ -471,7 +471,7 @@
         ],
         "containerAppInfo": [
           {
-            "Name": "HW01",
+            "Name": "01",
             "kubeENV": "01"
           }
         ]

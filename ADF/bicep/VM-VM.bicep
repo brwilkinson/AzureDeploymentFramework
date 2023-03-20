@@ -618,12 +618,12 @@ resource AppServerDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-
   ]
 }
 
-// resource UAILocal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+// resource UAILocal 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
 //   name: '${Deployment}-uaiStorageAccountOperator'
 //   scope: resourceGroup(RGName)
 // }
 
-resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAIGlobal 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: '${Deployment}-uaiStorageAccountFileContributor'
   scope: resourceGroup(RGName)
 }

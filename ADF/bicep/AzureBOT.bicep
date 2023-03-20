@@ -52,7 +52,7 @@ var azBOT = [for (bot,index) in azBOTInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), bot.Name))
 }]
 
-resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: '${Deployment}-uaiKeyVaultSecretsGet'
 }
 

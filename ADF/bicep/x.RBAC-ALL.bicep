@@ -8,7 +8,7 @@ param deployment string
 var objectIdLookup = json(Global.objectIdLookup)
 var rolesGroupsLookup = json(Global.RolesGroupsLookup)
 
-resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
     name: '${deployment}-uai${roleInfo.name}'
 }
 

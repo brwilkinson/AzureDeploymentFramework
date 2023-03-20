@@ -49,7 +49,7 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existin
   scope: resourceGroup(globalRGName)
 }
 
-resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: '${Deployment}-GlobalAcrPull'
 }
 
@@ -76,12 +76,12 @@ resource containerAPP 'Microsoft.App/containerApps@2022-10-01' = {
           }
         ]
       }
-      registries: [
-        {
-          identity: UAI.id
-          server: ACR.properties.loginServer
-        }
-      ]
+      // registries: [
+      //   {
+      //     identity: UAI.id
+      //     server: ACR.properties.loginServer
+      //   }
+      // ]
     }
     template: {
       containers: [

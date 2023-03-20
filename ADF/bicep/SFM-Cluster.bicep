@@ -66,7 +66,7 @@ var EnvironmentLookup = {
   P: 'Prod'
 }
 
-resource UAICert 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAICert 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: '${Deployment}-uaiCertificateRequest'
 }
 
@@ -117,7 +117,7 @@ var primaryNodeLBRules = [for (rule, index) in sfmInfo.PrimaryNodeLBPorts: {
   loadDistribution: 'Default'
 }]
 
-resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: '${Deployment}-uaiSFMCluster'
 }
 

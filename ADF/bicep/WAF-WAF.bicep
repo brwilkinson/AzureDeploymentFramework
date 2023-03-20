@@ -161,7 +161,7 @@ var BackendHttp = [for be in wafInfo.BackendHttp: {
   }
 }]
 
-resource UAICert 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource UAICert 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: '${Deployment}-uaiCertificateRequest'
 }
 
