@@ -9,7 +9,7 @@ param Environment string
 param DeploymentID string
 param Stage object
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 

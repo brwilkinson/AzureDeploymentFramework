@@ -60,7 +60,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   scope: resourceGroup(HubKVRGName)
 }
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 

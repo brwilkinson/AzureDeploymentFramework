@@ -13,7 +13,7 @@ param Prefix string
 
 var lbname = '${Deployment}-lb${LB.Name}'
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 

@@ -11,11 +11,11 @@ var prefixLookup = json(loadTextContent('./global/prefix.json'))
 var regionLookup = json(loadTextContent('./global/region.json'))
 var pairedPrefix = regionLookup[prefixLookup[Prefix].pairedRegion].PREFIX
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource OMSSecondary 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMSSecondary 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${toLower(DeploymentURIPaired)}LogAnalytics'
 }
 

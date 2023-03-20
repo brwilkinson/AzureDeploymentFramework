@@ -42,7 +42,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = [for (ai, index) in AIWorkspaceInfo: if (AI[index].match) {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = [for (ai, index) in AIWorkspaceInfo: if (AI[index].match) {
   name: '${contains(ai,'OIDeployment') ? ai.OIDeployment : Deployment}-law${ai.OIWorkspace}'
 }]
 

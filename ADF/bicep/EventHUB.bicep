@@ -84,7 +84,7 @@ var eventHubInfo = [
     location: 'EastUS2'
   }
 ]
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 

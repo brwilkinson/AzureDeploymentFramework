@@ -44,7 +44,7 @@ var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var computeGlobal = json(loadTextContent('./global/Global-ConfigVM.json'))
 var OSType = computeGlobal.OSType
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
     name: '${DeploymentURI}LogAnalytics'
 }
 

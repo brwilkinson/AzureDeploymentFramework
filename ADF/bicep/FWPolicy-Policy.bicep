@@ -12,7 +12,7 @@ resource FWSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existin
   name: '${Deployment}-vn/${FWSubnetName}'
 }
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 

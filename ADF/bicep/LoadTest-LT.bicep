@@ -5,7 +5,7 @@ param Global object
 #disable-next-line no-unused-params
 param now string = utcNow('F')
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 

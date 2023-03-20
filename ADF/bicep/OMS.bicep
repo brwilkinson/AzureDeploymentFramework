@@ -848,7 +848,7 @@ resource AADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview
   }
 }
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: OMSWorkspaceName
   location: resourceGroup().location
   properties: {
