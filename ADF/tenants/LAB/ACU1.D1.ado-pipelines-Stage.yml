@@ -9,7 +9,7 @@ parameters:
   - name: STAGE
     displayName: Deployment Stage
     type: string
-    default: AKS
+    default: ManagedEnv
     values:
       - 00-ALL-SUB
       - 01-ALL-RG
@@ -19,6 +19,8 @@ parameters:
       - VNET
       - WAF
       - WAFPOLICY
+      - ManagedEnv
+      - ContainerApp
 
   - name: CN
     displayName: Deployment Stage
@@ -28,6 +30,7 @@ parameters:
       - '.'
       - '01'
       - AGIC01
+      - HW01
 
 variables:
   ORG: PE
