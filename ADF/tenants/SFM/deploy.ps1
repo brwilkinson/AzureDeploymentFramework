@@ -16,7 +16,7 @@ break
 New-ADOAZServiceConnection -Prefix ACU1 -App $App -IncludeReaderOnSubscription -Environments D1 #, U5, P8
 # New-ADOAZServiceConnection -Prefix AEU2 -App $App -IncludeReaderOnSubscription -Environments P8
 
-New-ADOAZServiceConnection -Prefix ACU1 -App $App -Suffix '_SFM' -Environments D1 #, U5, P8
+New-ADOAZServiceConnection -Prefix ACU1 -App $App -IncludeReaderOnSubscription -Suffix '_SFM' -Environments D1 #, U5, P8
 # New-ADOAZServiceConnection -Prefix AEU2 -App $App -Suffix '_SFM' -Environments P8
 
 # update secrets
