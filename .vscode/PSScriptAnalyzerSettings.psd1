@@ -8,7 +8,9 @@
         'PSAvoidTrailingWhitespace',
         'PSAvoidUsingWriteHost',
         'PSUseConsistentWhitespace',
-        'PSAvoidOverwritingBuiltinCmdlets'
+        'PSAvoidOverwritingBuiltinCmdlets',
+        'PSAvoidGlobalVars',
+        'UseSupportsShouldProcess'
     )
 
     Rules        = @{

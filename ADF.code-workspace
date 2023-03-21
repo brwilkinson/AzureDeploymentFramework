@@ -8,6 +8,7 @@
         "window.title": "${activeFolderLong}",
         "azureResourceManagerTools.autoDetectJsonTemplates": true,
         "azureResourceManagerTools.checkForLatestSchema": true,
+        // https://learn.microsoft.com/en-us/powershell/utility-modules/psscriptanalyzer/rules/readme?view=ps-modules
         "powershell.scriptAnalysis.settingsPath": "./.vscode/PSScriptAnalyzerSettings.psd1",
         "powershell.codeFormatting.addWhitespaceAroundPipe": true,
         "powershell.codeFormatting.alignPropertyValuePairs": true,

@@ -145,6 +145,7 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-10-01-preview' = {
     // clusterCodeVersion: '8.2.1486.9590'
     clusterUpgradeMode: 'Automatic'
     zonalResiliency: true
+    // zonalUpdateMode: 'Standard'
     // isPrivateClusterCodeVersion: false
     clusterUpgradeCadence: contains(WaveUpgrade, Environment) ? WaveUpgrade[Environment] : 'Wave1'
     adminUserName: contains(sfmInfo, 'AdminUser') ? sfmInfo.AdminUser : Global.vmAdminUserName
