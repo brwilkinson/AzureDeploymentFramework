@@ -39,7 +39,7 @@
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 0,
-        "BastionHost": 1,
+        "BastionHost": 0,
         "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
@@ -149,19 +149,19 @@
         ],
         "rolesInfo": [
           {
-            "Name": "SimonAdams",
+            "Name": "brwilkinson",
             "RBAC": [
               {
-                "Name": "Reader"
+                "Name": "Contributor"
               },
               {
                 "Name": "PE_SF_App_Contributor"
-              },
-              // Below does not work on the first deploy since the RG has not been created
-              {
-                "Name": "Reader",
-                "RGNAME": "SFC_f99fd2e0-9449-4d24-9cd8-46aefeb4ac6b"
               }
+              // Below does not work on the first deploy since the RG has not been created
+              // {
+              //   "Name": "Reader",
+              //   "RGNAME": "SFC_f99fd2e0-9449-4d24-9cd8-46aefeb4ac6b"
+              // }
             ]
           },
           {
@@ -169,14 +169,6 @@
             "RBAC": [
               {
                 "Name": "Storage Account Key Operator Service Role"
-              }
-            ]
-          },
-          {
-            "Name": "sec-scan-acr",
-            "RBAC": [
-              {
-                "Name": "Reader"
               }
             ]
           },
@@ -234,10 +226,10 @@
           {
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
-              {
-                "Name": "Network Contributor",
-                "RGNAME": "SFC_f99fd2e0-9449-4d24-9cd8-46aefeb4ac6b"
-              },
+              // {
+              //   "Name": "Network Contributor",
+              //   "RGNAME": "SFC_f99fd2e0-9449-4d24-9cd8-46aefeb4ac6b"
+              // },
               // Above does not work on the first deploy since the RG has not been created
               {
                 "Name": "Contributor"
@@ -360,8 +352,7 @@
           {
             "name": "snMT01",
             "prefix": "0/23",
-            "NSG": 1, // Create blank NSG, SFM will remove and use it's own anyway. Comment out NSGID for intial environment deploy.
-            "NSGID": "/subscriptions/77196dc9-b5af-463b-b8de-f7e6232eae12/resourceGroups/SFC_f99fd2e0-9449-4d24-9cd8-46aefeb4ac6b/providers/Microsoft.Network/networkSecurityGroups/SF-NSG",
+            "NSG": 1,
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
@@ -383,7 +374,7 @@
             "PIPCount": 1
           }
         ],
-        "BastionInfo": {
+        "_BastionInfo": {
           "name": "HST01",
           "enableTunneling": 1,
           "scaleUnits": 2

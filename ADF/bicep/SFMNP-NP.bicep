@@ -15,18 +15,18 @@ param month string = utcNow('MM')
 param year string = utcNow('yyyy')
 
 // Use same PAT token for 3 month blocks, min PAT age is 6 months, max is 9 months
-var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) -1) % 3),2,'0')}-01', 'P9M')
+var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) - 1) % 3), 2, '0')}-01', 'P9M')
 
 // Roll the SAS token one per 3 months, min length of 6 months.
 var DSCSAS = saaccountidglobalsource.listServiceSAS('2021-09-01', {
-  canonicalizedResource: '/blob/${saaccountidglobalsource.name}/${last(split(Global._artifactsLocation, '/'))}'
-  signedResource: 'c'
-  signedProtocol: 'https'
-  signedPermission: 'r'
-  signedServices: 'b'
-  signedExpiry: SASEnd
-  keyToSign: 'key1'
-}).serviceSasToken
+    canonicalizedResource: '/blob/${saaccountidglobalsource.name}/${last(split(Global._artifactsLocation, '/'))}'
+    signedResource: 'c'
+    signedProtocol: 'https'
+    signedPermission: 'r'
+    signedServices: 'b'
+    signedExpiry: SASEnd
+    keyToSign: 'key1'
+  }).serviceSasToken
 
 // os config now shared across subscriptions
 var computeGlobal = json(loadTextContent('./global/Global-ConfigVM.json'))
@@ -156,6 +156,14 @@ resource AppConfig 'Microsoft.AppConfiguration/configurationStores@2021-10-01-pr
   name: '${Deployment}-appconf${sfmInfo.appConfName}'
 }
 
+var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
+#disable-next-line BCP036
+var availabilityZones = contains(excludeZones, Prefix) ? null : [
+  1
+  2
+  3
+]
+
 resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-01-01' existing = {
   name: sfmname
 }
@@ -175,6 +183,7 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-10-01-
     useDefaultPublicLoadBalancer: bool(nt.isPrimary)
     isPrimary: contains(nt, 'isPrimary') ? bool(nt.isPrimary) : false
     // subnetId: contains(nt, 'useCustomVNet') && bool(nt.useCustomVNet) ? '${VNET.id}/subnets/${sfmInfo.subnetName}' : null
+    zones: availabilityZones
     vmSize: computeSizeLookupOptions['${nt.ROLE}-${AppServerSizeLookup[Environment]}']
     vmImagePublisher: OSType[nt.OSType].imageReference.publisher //'MicrosoftWindowsServer'
     vmImageOffer: OSType[nt.OSType].imageReference.Offer //'WindowsServer'
@@ -220,42 +229,42 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-10-01-
           autoUpgradeMinorVersion: true
         }
       }
-      {
-        name: 'Microsoft.Azure.Geneva.GenevaMonitoring'
-        properties: {
-          publisher: 'Microsoft.Azure.Geneva'
-          type: 'GenevaMonitoring'
-          typeHandlerVersion: '2.0'
-          enableAutomaticUpgrade: true
-          protectedSettings: {}
-          settings: {}
-        }
-      }
-      {
-        name: 'DependencyAgent'
-        properties: {
-          publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-          type: OSType[nt.OSType].OS == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
-          typeHandlerVersion: '9.5'
-          autoUpgradeMinorVersion: true
-          enableAutomaticUpgrade: true
-        }
-      }
-      {
-        name: 'MonitoringAgent'
-        properties: {
-          publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-          type: OSType[nt.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
-          typeHandlerVersion: OSType[nt.OSType].OS == 'Windows' ? '1.0' : '1.4'
-          autoUpgradeMinorVersion: true
-          settings: {
-            workspaceId: OMS.properties.customerId
-          }
-          protectedSettings: {
-            workspaceKey: OMS.listKeys().primarySharedKey
-          }
-        }
-      }
+      // {
+      //   name: 'Microsoft.Azure.Geneva.GenevaMonitoring'
+      //   properties: {
+      //     publisher: 'Microsoft.Azure.Geneva'
+      //     type: 'GenevaMonitoring'
+      //     typeHandlerVersion: '2.0'
+      //     enableAutomaticUpgrade: true
+      //     protectedSettings: {}
+      //     settings: {}
+      //   }
+      // }
+      // {
+      //   name: 'DependencyAgent'
+      //   properties: {
+      //     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+      //     type: OSType[nt.OSType].OS == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
+      //     typeHandlerVersion: '9.5'
+      //     autoUpgradeMinorVersion: true
+      //     enableAutomaticUpgrade: true
+      //   }
+      // }
+      // {
+      //   name: 'MonitoringAgent'
+      //   properties: {
+      //     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+      //     type: OSType[nt.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
+      //     typeHandlerVersion: OSType[nt.OSType].OS == 'Windows' ? '1.0' : '1.4'
+      //     autoUpgradeMinorVersion: true
+      //     settings: {
+      //       workspaceId: OMS.properties.customerId
+      //     }
+      //     protectedSettings: {
+      //       workspaceKey: OMS.listKeys().primarySharedKey
+      //     }
+      //   }
+      // }
       {
         name: OSType[nt.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
         properties: {
@@ -301,6 +310,14 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-10-01-
           publisher: 'Microsoft.Azure.Monitor'
           type: OSType[nt.OSType].OS == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
           typeHandlerVersion: OSType[nt.OSType].OS == 'Windows' ? '1.0' : '1.5'
+          settings: {
+            authentication: {
+              managedIdentity: {
+                'identifier-name': 'mi_res_id'
+                'identifier-value': UAI.id
+              }
+            }
+          }
         }
       }
       {
