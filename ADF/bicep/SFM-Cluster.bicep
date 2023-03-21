@@ -70,9 +70,11 @@ resource UAICert 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' e
   name: '${Deployment}-uaiCertificateRequest'
 }
 
-var thumbPrints = Global.DomainNameExt == 'psthing.com' ? Global.CertThumbprint : join(Global.MicrosoftCAThumbprints,',')
+// var thumbPrints = Global.DomainNameExt == 'psthing.com' ? Global.CertThumbprint : join(Global.MicrosoftCAThumbprints,',')
+var thumbPrints = join(Global.MicrosoftCAThumbprints,',')
 
-module createCertswithRotation 'x.newCertificatewithRotation.ps1.bicep' = if( Global.DomainNameExt != 'psthing.com') {
+
+module createCertswithRotation 'x.newCertificatewithRotation.ps1.bicep' = { // if( Global.DomainNameExt != 'psthing.com') {
   name: toLower('dp-createCert-${sfmname}')
   params: {
     userAssignedIdentityName: UAICert.name

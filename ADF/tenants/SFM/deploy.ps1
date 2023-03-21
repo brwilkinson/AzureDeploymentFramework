@@ -36,7 +36,7 @@ AzSet -App $App -Enviro D1
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
 
-# Deploy only AKS layer for testing.
+# Deploy only SFM layer for testing.
 AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\SFM.bicep
 
 # Repeat above for other environments, however can do those in yaml pipelines instead
