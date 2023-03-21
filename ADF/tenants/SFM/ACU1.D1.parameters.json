@@ -34,7 +34,7 @@
         "FlowLogs": 1,
         "VNet": 1, // now enabled requires "Network Contributor" to be set on the SFM RG via "SPInfo".
         "VNetDDOS": 0,
-        "VNetPeering": 0,
+        "VNetPeering": 1,
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,

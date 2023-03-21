@@ -12,7 +12,9 @@
       "name": "OMSAutomation",
       "AppName": "HUB"
     },
-    "DNSServers": [],
+    "DNSServers": [
+      "10.192.248.4"
+    ],
     "RTName": "Hub",
     "shutdownSchedulerTimeZone": "Pacific Standard Time",
     "patchSchedulerTimeZone": "America/Los_Angeles"

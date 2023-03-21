@@ -14,7 +14,7 @@ parameters:
       - Bastion
       - OMS
       - NATGW
-      - VM
+      - VNET
 
   - name: CN
     displayName: Deployment Stage
