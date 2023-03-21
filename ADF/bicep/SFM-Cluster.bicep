@@ -17,6 +17,7 @@ param vmAdminPassword string
 // @secure()
 // param sshPublic string
 
+var objectIdLookup = json(Global.objectIdLookup)
 
 var HubRGJ = json(Global.hubRG)
 var HubKVJ = json(Global.hubKV)
@@ -87,21 +88,9 @@ module createCertswithRotation 'x.newCertificatewithRotation.ps1.bicep' = { // i
 }
 
 var AAD = {
-  D: {
-    tenantId: '37380a0e-e99d-40a4-a94c-69f58a856f01'
-    clusterApplication: '761d7e3d-6e78-4e94-b5ba-b0309a59d1a1'
-    clientApplication: '867364fe-9a18-4993-81f0-ac220bc850b6'
-  }
-  U: {
-    tenantId: '37380a0e-e99d-40a4-a94c-69f58a856f01'
-    clusterApplication: '9795fe56-7098-4e78-86c5-0625897cc2a9'
-    clientApplication: '39fecb42-4182-4b26-8311-a548791f7090'
-  }
-  P: {
-    tenantId: '37380a0e-e99d-40a4-a94c-69f58a856f01'
-    clusterApplication: '3d432919-fae1-4ea1-a842-855e5632f5ac'
-    clientApplication: '2985379a-dcb6-4e37-8ac1-8e5219b2986e'
-  }
+    tenantId: tenant().tenantId
+    clusterApplication: objectIdLookup['ADO_${Global.ADOProject}_${resourceGroup().name}_SFM']
+    clientApplication: objectIdLookup['ADO_${Global.ADOProject}_${resourceGroup().name}_SFM']
 }
 
 var WaveUpgrade = {
@@ -168,7 +157,7 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-10-01-preview' = {
         issuerThumbprint: thumbPrints
       }
     ]
-    azureActiveDirectory: AAD[Environment]
+    azureActiveDirectory: AAD
     addonFeatures: [
       'DnsService'
       'ResourceMonitorService'
