@@ -154,7 +154,7 @@
     "API-D": "Standard_D4s_v3",
     "API-S": "Standard_D2s_v3",
     "SFM-P": "Standard_D4s_v3",
-    "SFM-D": "Standard_D2s_v3",
+    "SFM-D": "Standard_D2plds_v5",
     "SFM-U": "Standard_D2s_v3",
     "CTNR-P": "Standard_D4s_v3",
     "CTNR-D": "Standard_D2s_v3",
