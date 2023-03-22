@@ -156,7 +156,7 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-10-01-preview' = {
         issuerThumbprint: thumbPrints
       }
     ]
-    azureActiveDirectory: AAD
+    // azureActiveDirectory: AAD // disable to test
     addonFeatures: [
       'DnsService'
       'ResourceMonitorService'
