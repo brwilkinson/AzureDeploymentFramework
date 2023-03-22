@@ -182,7 +182,7 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-10-01-
     }
     useDefaultPublicLoadBalancer: bool(nt.isPrimary)
     isPrimary: contains(nt, 'isPrimary') ? bool(nt.isPrimary) : false
-    // subnetId: contains(nt, 'useCustomVNet') && bool(nt.useCustomVNet) ? '${VNET.id}/subnets/${sfmInfo.subnetName}' : null
+    subnetId: contains(nt, 'useCustomVNet') && bool(nt.useCustomVNet) ? '${VNET.id}/subnets/${sfmInfo.subnetName}' : null
     zones: availabilityZones
     vmSize: computeSizeLookupOptions['${nt.ROLE}-${AppServerSizeLookup[Environment]}']
     vmImagePublisher: OSType[nt.OSType].imageReference.publisher //'MicrosoftWindowsServer'
