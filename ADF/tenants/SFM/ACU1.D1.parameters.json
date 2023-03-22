@@ -651,6 +651,7 @@
             "gatewayPort": 29080,
             "allowRDP": false,
             "subnetName": "snMT01",
+            "useCustomVNet": 1,
             "appConfName": "01",
             "nodeTypes": [
               {
