@@ -163,7 +163,7 @@
               //   "RGNAME": "SFC_f99fd2e0-9449-4d24-9cd8-46aefeb4ac6b"
               // }
             ]
-          }
+          },
           // {
           //   "Name": "AzureKeyVault",
           //   "RBAC": [
@@ -172,17 +172,17 @@
           //     }
           //   ]
           // },
-          // {
-          //   "Name": "AzureServiceFabricResourceProvider",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Network Contributor"
-          //     },
-          //     {
-          //       "Name": "Managed Identity Operator"
-          //     }
-          //   ]
-          // }
+          {
+            "Name": "AzureServiceFabricResourceProvider",
+            "RBAC": [
+              {
+                "Name": "Network Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
+              }
+            ]
+          }
         ],
         "PIMInfo": [
           {
