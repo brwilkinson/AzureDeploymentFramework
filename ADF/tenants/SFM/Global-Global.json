@@ -43,22 +43,22 @@
     "AZDevOpsBuild": "https://dev.azure.com/AzureDeploymentFramework/ADF/_build/latest?definitionId=",
     "pipelineInfo": {
       "D": {
-        "branch": "dev",
-        "definitionId": "39183"
+        "branch": "main",
+        "definitionId": "49"
       },
       "U": {
-        "branch": "dev",
-        "definitionId": "39189"
+        "branch": "main",
+        "definitionId": "49"
       },
       "P": {
         "branch": "main",
-        "definitionId": "39319"
+        "definitionId": "49"
       }
     },
     "pipelineInfoSecondary": {
       "P": {
         "branch": "main",
-        "definitionId": "39319"
+        "definitionId": "49"
       }
     },
     "ServicePrincipalAdmins": [
