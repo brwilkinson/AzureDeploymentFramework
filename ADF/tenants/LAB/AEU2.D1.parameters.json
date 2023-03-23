@@ -241,21 +241,21 @@
               //   "RG": "P0",
               //   "Tenant": "HUB"
               // },
-              {
-                "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
-                "RG": "P0",
-                "Tenant": "HUB"
-              },
-              {
-                "Name": "Key Vault Secrets User",
-                "RG": "P0",
-                "Tenant": "HUB"
-              },
-              {
-                "Name": "Network Contributor",
-                "RG": "P0",
-                "Tenant": "HUB"
-              }
+              // {
+              //   "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
+              //   "RG": "P0",
+              //   "Tenant": "HUB"
+              // },
+              // {
+              //   "Name": "Key Vault Secrets User",
+              //   "RG": "P0",
+              //   "Tenant": "HUB"
+              // },
+              // {
+              //   "Name": "Network Contributor",
+              //   "RG": "P0",
+              //   "Tenant": "HUB"
+              // }
               // {
               //   "Name": "DNS Zone Contributor",
               //   "RG": "P0",

@@ -581,7 +581,7 @@
                 "osSKU": "Mariner2",
                 "maxPods": 16,
                 "storageProfile": "ManagedDisks",
-                "vmSize": "Standard_D2plds_v5",
+                "vmSize": "Standard_D2plds_v5", // Standard_D2ads_v5
                 "mode": "System"
               },
               {
