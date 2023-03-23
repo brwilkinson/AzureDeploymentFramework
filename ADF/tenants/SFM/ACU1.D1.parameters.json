@@ -353,6 +353,8 @@
             "name": "snMT01",
             "prefix": "0/23",
             "NSG": 1,
+            "NSGRuleName": "SFM",
+            "serviceEndpoints": "Microsoft.Storage",
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
