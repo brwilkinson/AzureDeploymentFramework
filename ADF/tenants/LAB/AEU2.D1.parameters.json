@@ -481,7 +481,7 @@
             "AppSVCPlan": "WPS01",
             "stack": "dotnet",
             "saname": "diag",
-            "customDNS": 0,
+            "customDNS": 1,
             "initialDeploy": 1,
             "_privateLinkInfo": [
               {
