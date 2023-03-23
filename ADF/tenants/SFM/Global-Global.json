@@ -80,8 +80,8 @@
       "AzureServiceFabricResourceProvider": "001c2da4-c605-41c6-be8d-2ff92677f791",
       "ADO_ADF_ACU1-PE-SFM-RG-D1": "f7d899bb-d0e9-457e-a704-41ce2f29d8f5",
       "ADO_ADF_ACU1-PE-SFM-RG-D1_SFM": "35c9f190-3722-490f-9274-a0a20c38838a",
-      "acu1-pe-sfm-d1-smf01_Cluster": "8f8e825f-8176-49b3-9764-0632b4620f91",
-      "acu1-pe-sfm-d1-smf01_Client": "fd1af032-9dfe-4f55-841e-1b95e9615ca0"
+      "acu1-pe-sfm-d1-sfm01_Cluster": "8f8e825f-8176-49b3-9764-0632b4620f91",
+      "acu1-pe-sfm-d1-sfm01_Client": "fd1af032-9dfe-4f55-841e-1b95e9615ca0"
       
     }
   }
