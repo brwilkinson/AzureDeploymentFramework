@@ -79,7 +79,10 @@
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
       "AzureServiceFabricResourceProvider": "001c2da4-c605-41c6-be8d-2ff92677f791",
       "ADO_ADF_ACU1-PE-SFM-RG-D1": "f7d899bb-d0e9-457e-a704-41ce2f29d8f5",
-      "ADO_ADF_ACU1-PE-SFM-RG-D1_SFM": "35c9f190-3722-490f-9274-a0a20c38838a"
+      "ADO_ADF_ACU1-PE-SFM-RG-D1_SFM": "35c9f190-3722-490f-9274-a0a20c38838a",
+      "acu1-pe-sfm-d1-smf01_cluster": "8f8e825f-8176-49b3-9764-0632b4620f91",
+      "acu1-pe-sfm-d1-smf01_client": "fd1af032-9dfe-4f55-841e-1b95e9615ca0"
+      
     }
   }
 }

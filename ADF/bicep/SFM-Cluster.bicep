@@ -89,8 +89,8 @@ module createCertswithRotation 'x.newCertificatewithRotation.ps1.bicep' = { // i
 
 var AAD = {
     tenantId: tenant().tenantId
-    clusterApplication: objectIdLookup['ADO_${Global.ADOProject}_${resourceGroup().name}_SFM']
-    clientApplication: objectIdLookup['ADO_${Global.ADOProject}_${resourceGroup().name}_SFM']
+    clusterApplication: objectIdLookup['${sfmname}_Cluster']
+    clientApplication: objectIdLookup['${sfmname}_Client']
 }
 
 var WaveUpgrade = {
