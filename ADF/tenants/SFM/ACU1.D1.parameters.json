@@ -354,7 +354,7 @@
             "prefix": "0/23",
             "NSG": 1,
             "NSGRuleName": "SFM",
-            "serviceEndpoints": "Microsoft.Storage",
+            "serviceEndpoints": "Microsoft.Storage", // Confirm this once docs are released
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
