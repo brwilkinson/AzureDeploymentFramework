@@ -72,7 +72,7 @@ resource UAICert 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' e
 }
 
 // var thumbPrints = Global.DomainNameExt == 'psthing.com' ? Global.CertThumbprint : join(Global.MicrosoftCAThumbprints,',')
-var thumbPrints = join(Global.MicrosoftCAThumbprints,',')
+// var thumbPrints = join(Global.MicrosoftCAThumbprints,',')
 
 
 module createCertswithRotation 'x.newCertificatewithRotation.ps1.bicep' = { // if( Global.DomainNameExt != 'psthing.com') {
@@ -153,7 +153,8 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-10-01-preview' = {
       {
         isAdmin: true
         commonName: commonName
-        issuerThumbprint: thumbPrints
+        // issuerThumbprint: thumbPrints
+        issuerThumbprint: Global.DomainNameExt == 'psthing.com' ? createCertswithRotation.outputs.ThumbprintOut : join(Global.MicrosoftCAThumbprints,',')
       }
     ]
     azureActiveDirectory: AAD
