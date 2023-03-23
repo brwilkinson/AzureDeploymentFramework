@@ -304,7 +304,7 @@
           //   "FlowLogEnabled": 1,
           //   "FlowAnalyticsEnabled": 1,
           //   "delegations": "Microsoft.ContainerInstance/containerGroups",
-          //    "NGW": 1
+          //   "NGW": 1
           // },
           // {
           //   "name": "snAPIM01", // APIM Dedicated
