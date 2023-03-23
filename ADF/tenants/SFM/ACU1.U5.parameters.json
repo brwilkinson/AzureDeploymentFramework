@@ -34,12 +34,12 @@
         "FlowLogs": 1,
         "VNet": 1, // now enabled requires "Network Contributor" to be set on the SFM RG via "SPInfo".
         "VNetDDOS": 0,
-        "VNetPeering": 0,
+        "VNetPeering": 1,
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 0,
-        "BastionHost": 1,
+        "BastionHost": 0,
         "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
@@ -149,37 +149,29 @@
         ],
         "rolesInfo": [
           {
-            "Name": "SimonAdams",
+            "Name": "brwilkinson",
             "RBAC": [
               {
-                "Name": "Reader"
+                "Name": "Contributor"
               },
               {
                 "Name": "PE_SF_App_Contributor"
-              },
+              }
               // Below does not work on the first deploy since the RG has not been created
-              {
-                "Name": "Reader",
-                "RGNAME": "SFC_7b97254f-394f-4387-867C-531b2e1ebbf5"
-              }
+              // {
+              //   "Name": "Reader",
+              //   "RGNAME": "SFC_f99fd2e0-9449-4d24-9cd8-46aefeb4ac6b"
+              // }
             ]
           },
-          {
-            "Name": "AzureKeyVault",
-            "RBAC": [
-              {
-                "Name": "Storage Account Key Operator Service Role"
-              }
-            ]
-          },
-          {
-            "Name": "sec-scan-acr",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
+          // {
+          //   "Name": "AzureKeyVault",
+          //   "RBAC": [
+          //     {
+          //       "Name": "Storage Account Key Operator Service Role"
+          //     }
+          //   ]
+          // },
           {
             "Name": "AzureServiceFabricResourceProvider",
             "RBAC": [
@@ -234,13 +226,13 @@
           {
             "Name": "ADO_{ADOProject}_{RGNAME}",
             "RBAC": [
-              {
-                "Name": "Network Contributor",
-                "RGNAME": "SFC_7b97254f-394f-4387-867C-531b2e1ebbf5"
-              },
+              // {
+              //   "Name": "Network Contributor",
+              //   "RGNAME": "SFC_7b97254f-394f-4387-867C-531b2e1ebbf5"
+              // },
               // Above does not work on the first deploy since the RG has not been created
               {
-                "Name": "Owner"
+                "Name": "Contributor"
               },
               {
                 "Name": "Reader and Data Access",
@@ -312,7 +304,7 @@
           //   "FlowLogEnabled": 1,
           //   "FlowAnalyticsEnabled": 1,
           //   "delegations": "Microsoft.ContainerInstance/containerGroups",
-          //    "NGW": 1
+          //   "NGW": 1
           // },
           // {
           //   "name": "snAPIM01", // APIM Dedicated
@@ -360,8 +352,9 @@
           {
             "name": "snMT01",
             "prefix": "0/23",
-            "NSG": 1, // Create blank NSG, SFM will remove and use it's own anyway. Comment out NSGID for intial environment deploy.
-            "NSGID": "/subscriptions/77196dc9-b5af-463b-b8de-f7e6232eae12/resourceGroups/SFC_7b97254f-394f-4387-867C-531b2e1ebbf5/providers/Microsoft.Network/networkSecurityGroups/SF-NSG",
+            "NSG": 1,
+            "NSGRuleName": "SFM",
+            "serviceEndpoints": "Microsoft.Storage", // Confirm this once docs are released
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
@@ -383,7 +376,7 @@
             "PIPCount": 1
           }
         ],
-        "BastionInfo": {
+        "_BastionInfo": {
           "name": "HST01",
           "enableTunneling": 1,
           "scaleUnits": 2
@@ -660,6 +653,7 @@
             "gatewayPort": 29080,
             "allowRDP": false,
             "subnetName": "snMT01",
+            "useCustomVNet": 1,
             "appConfName": "01",
             "nodeTypes": [
               {
