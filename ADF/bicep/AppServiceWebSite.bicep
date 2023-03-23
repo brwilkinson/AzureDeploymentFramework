@@ -72,10 +72,10 @@ var WSInfo = [for (ws, index) in WebSiteInfo: {
 // merge appConfig, move this to the websiteInfo as a property to pass in these from the param file
 var myAppConfig = {
   default: {
-    
+
   }
   php: {
-    
+
   }
   dotnet: {
     ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
@@ -88,7 +88,7 @@ var myAppConfig = {
     XDT_MicrosoftApplicationInsights_Mode: 'default'
   }
   java: {
-    
+
   }
 }
 
@@ -162,7 +162,7 @@ module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSit
     appprefix: 'ws'
     Deployment: Deployment
     appConfigCustom: myAppConfig[ws.stack]
-    appConfigCurrent: appsettingsCurrent[index].list().properties
+    appConfigCurrent: contains(ws, 'initialDeploy') && bool(ws.initialDeploy) ? {} : appsettingsCurrent[index].list().propertie
     appConfigNew: {
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
@@ -172,4 +172,3 @@ module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSit
     website[index]
   ]
 }]
-

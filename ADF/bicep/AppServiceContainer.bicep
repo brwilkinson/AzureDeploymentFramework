@@ -178,7 +178,7 @@ module containerSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebS
     appprefix: 'ws'
     Deployment: Deployment
     appConfigCustom: myAppConfig
-    appConfigCurrent: appsettingsCurrent[index].list().properties
+    appConfigCurrent: contains(ws, 'initialDeploy') && bool(ws.initialDeploy) ? {} : appsettingsCurrent[index].list().propertie
     appConfigNew: {
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
