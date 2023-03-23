@@ -16,7 +16,7 @@
         "RG": 1,
         "RBAC": 1,
         "PIM": 0,
-        "UAI": 1,
+        "UAI": 0,
         "SP": 1,
         "KV": 0,
         "OMS": 1,
@@ -235,7 +235,7 @@
                 "RG": "G1",
                 "Prefix": "ACU1",
                 "Tenant": "HUB"
-              },
+              }
               // {
               //   "Name": "Automation_Account_Contributor",
               //   "RG": "P0",
