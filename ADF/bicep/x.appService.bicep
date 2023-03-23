@@ -155,7 +155,7 @@ module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws, 'initialDeploy')
   }
 }
 
-resource certificates 'Microsoft.Web/certificates@2021-02-01' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
+resource certificates 'Microsoft.Web/certificates@2022-03-01' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: toLower('${WS.name}.${Global.DomainNameExt}')
   location: resourceGroup().location
   properties: {
@@ -187,7 +187,7 @@ module wsBindingSNI 'x.appServiceBinding.bicep' = if (contains(ws, 'customDNS') 
     externalDNS: Global.DomainNameExt
     siteName: WS.name
     sslState: 'SniEnabled'
-    thumbprint: certificates.properties.thumbprint
+    thumbprint: contains(ws, 'customDNS') && bool(ws.customDNS) ? certificates.properties.thumbprint : 'NA'
   }
 }
 
@@ -199,7 +199,7 @@ module wsBindingSNI 'x.appServiceBinding.bicep' = if (contains(ws, 'customDNS') 
 //     hostNameType: 'Verified'
 //     sslState: 'SniEnabled'
 //     customHostNameDnsRecordType: 'CName'
-//     thumbprint: certificates.properties.thumbprint
+//     thumbprint: contains(ws, 'customDNS') && bool(ws.customDNS) ? certificates.properties.thumbprint : 'NA'
 //   }
 // }
 
