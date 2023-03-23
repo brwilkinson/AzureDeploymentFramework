@@ -26,6 +26,9 @@ Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 360 -Environments D
 Set-ADOAZServiceConnection -Prefix ACU1 -App $App -Suffix '_SFM' -RenewDays 360 -Environments D1 #, U5, P8
 # Set-ADOAZServiceConnection -Prefix AEU2 -App $App -Suffix '_SFM' -RenewDays 360 -Environments P8
 
+# Create AAD Application, manually add to Global-Global
+https://github.com/brwilkinson/service-fabric-aad-helpers/blob/master/run.ps1 #<-- sample to create AAD app for SFM.
+
 ##########################################################
 # Deploy Environment
 
