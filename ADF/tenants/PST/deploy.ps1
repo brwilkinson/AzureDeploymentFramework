@@ -21,6 +21,9 @@ New-ADOAZServiceConnection -Prefix AWCU -App $App -Environments D3
 Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 360 -Environments D1, D2, D4, G0, P0
 Set-ADOAZServiceConnection -Prefix AWCU -App $App -RenewDays 400 -Environments D3
 
+# Create AAD Application, manually add to Global-Global
+https://github.com/brwilkinson/service-fabric-aad-helpers/blob/master/run.ps1 #<-- sample to create AAD app
+
 # Moved this to manually run for Owner assignment
 $IDs = @(
     # 'todo' # SP GO
