@@ -1,0 +1,59 @@
+trigger: none
+  # batch: "true"
+  # branches:
+  #   include: [users/benwilk/shared]
+  # tags:
+  #   exclude: [NoBuild]
+
+parameters:
+  - name: STAGE
+    displayName: Deployment Stage
+    type: string
+    default: ContainerApp
+    values:
+      - 00-ALL-SUB
+      - 01-ALL-RG
+      - AKS
+      - Bastion
+      - OMS
+      - VNET
+      - WAF
+      - WAFPOLICY
+      - ContainerManagedENV
+      - ContainerApp
+
+  - name: CN
+    displayName: Deployment Stage
+    type: string
+    default: '01'
+    values:
+      - '.'
+      - '01'
+      - AGIC01
+      - HW01
+
+variables:
+  ORG: PE
+  APP: LAB
+
+  PREFIX: AEU2
+  ENV: D1
+
+  ADOProject: ADO_ADF
+  PREFIXPRIMARY: ACU1
+  APPPRIMARY: HUB
+
+stages:
+  - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
+    jobs:
+      - template: ..\..\..\.ado\ado-pipelines-STAGE.yml
+        parameters:
+          ORG:        ${{ variables.ORG }}
+          APP:        ${{ variables.APP }}
+          APPPRIMARY: ${{ variables.APPPRIMARY}}
+          PREFIX:     ${{ variables.PREFIX }}
+          ENV:        ${{ variables.ENV }}
+          SP:         ${{ variables.ADOProject }}_${{ variables.PREFIX }}-${{ variables.ORG }}-${{ variables.APP }}-RG
+          SPG0:       ${{ variables.ADOProject }}_${{ variables.PREFIXPRIMARY }}-${{ variables.ORG }}-${{ variables.APPPRIMARY }}-RG
+          STAGE:      ${{ parameters.STAGE }}
+          CN:         ${{ parameters.CN }}

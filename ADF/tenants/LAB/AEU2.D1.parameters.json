@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": { // AKS
     "Prefix": {
-      "value": "ACU1"
+      "value": "AEU2"
     },
     "Environment": {
       "value": "D"
@@ -20,7 +20,7 @@
         "SP": 1,
         "KV": 0,
         "OMS": 1,
-        "OMSSolutions": 1,
+        "OMSSolutions": 0,
         "OMSDataSources": 1,
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
@@ -29,22 +29,22 @@
         "CDN": 0,
         "StorageSync": 0,
         "RSV": 0,
-        "NSG": 1, //
+        "NSG": 0,
         "NetworkWatcher": 0,
-        "FlowLogs": 1, //
-        "VNet": 1, //
+        "FlowLogs": 0,
+        "VNet": 0,
         "VNetDDOS": 0,
-        "VNetPeering": 1, //
+        "VNetPeering": 0,
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
-        "PrivateLink": 1,
+        "PrivateLink": 0,
         "BastionHost": 0,
         "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
-        "NATGW": 1,
+        "NATGW": 0,
         "ERGW": 0,
         "LB": 0,
         "TM": 0,
@@ -61,11 +61,11 @@
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 0,
-        "ServerFarm": 0,
-        "WebSite": 0,
+        "ServerFarm": 1,
+        "WebSite": 1,
         "WebSiteContainer": 0,
-        "ManagedEnv": 1,
-        "ContainerApp": 1,
+        "ManagedEnv": 0,
+        "ContainerApp": 0,
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,
@@ -462,17 +462,33 @@
           // "AzureSQLAnalytics",
           // "AzureNSGAnalytics"
         ],
-        "managedEnvInfo": [
+        "appServiceplanInfo": [
           {
-            "Name": "01",
-            "Subnet": "snMT01",
-            "skuName": "Consumption"
+            "Name": "WPS01",
+            "kind": "app",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skucapacity": 1,
+            "deploy": 1
           }
         ],
-        "containerAppInfo": [
+        "WebSiteInfo": [
           {
-            "Name": "01",
-            "kubeENV": "01"
+            "Name": "WPS01",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "dotnet",
+            "saname": "diag",
+            "customDNS": 0,
+            "initialDeploy": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
           }
         ]
       }

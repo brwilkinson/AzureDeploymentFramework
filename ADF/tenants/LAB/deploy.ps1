@@ -14,7 +14,7 @@ break
 
 # App pipelines in AZD New or update Owner
 New-ADOAZServiceConnection -Prefix ACU1 -App $App -IncludeReaderOnSubscription -Environments D1 #, U5, P8
-# New-ADOAZServiceConnection -Prefix AEU2 -App $App -IncludeReaderOnSubscription -Environments D1 #, U5, P8
+New-ADOAZServiceConnection -Prefix AEU2 -App $App -IncludeReaderOnSubscription -Environments D1 #, U5, P8
 
 # update secrets
 Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 360 -Environments D1 #, U5, P8
