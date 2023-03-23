@@ -162,7 +162,7 @@ module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSit
     appprefix: 'ws'
     Deployment: Deployment
     appConfigCustom: myAppConfig[ws.stack]
-    appConfigCurrent: contains(ws, 'initialDeploy') && bool(ws.initialDeploy) ? {} : appsettingsCurrent[index].list().propertie
+    appConfigCurrent: contains(ws, 'initialDeploy') && bool(ws.initialDeploy) ? {} : appsettingsCurrent[index].list().properties
     appConfigNew: {
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
