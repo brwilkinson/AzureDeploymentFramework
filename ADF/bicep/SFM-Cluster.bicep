@@ -153,7 +153,7 @@ resource SFM 'Microsoft.ServiceFabric/managedClusters@2022-10-01-preview' = {
       {
         isAdmin: true
         commonName: commonName
-        // issuerThumbprint: thumbPrints
+        // issuerThumbprint: thumbPrints // best not to outputs since it will be better to use  the predetermined list of issuers.
         issuerThumbprint: Global.DomainNameExt == 'psthing.com' ? createCertswithRotation.outputs.ThumbprintOut : join(Global.MicrosoftCAThumbprints,',')
       }
     ]
