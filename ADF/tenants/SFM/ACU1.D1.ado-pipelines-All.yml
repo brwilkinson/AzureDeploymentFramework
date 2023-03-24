@@ -1,13 +1,13 @@
-trigger: #none
-  batch: 'true'
-  branches:
-    include: [ main ]
-  paths:
-    include:
-    - ADF/tenants/SFM/ACU1.D1.parameters.json
-    - ADF/tenants/SFM/ACU1.D1.ado-pipelines-All.yml
-    - ADF/ext-DSC/DSC-SFM.zip
-    - ADF/ext-CD/SFM-ConfigurationData.psd1
+trigger: none
+  # batch: 'true'
+  # branches:
+  #   include: [ main ]
+  # paths:
+  #   include:
+  #   - ADF/tenants/SFM/ACU1.D1.parameters.json
+  #   - ADF/tenants/SFM/ACU1.D1.ado-pipelines-All.yml
+  #   - ADF/ext-DSC/DSC-SFM.zip
+  #   - ADF/ext-CD/SFM-ConfigurationData.psd1
 
 variables:
   ORG:        PE
