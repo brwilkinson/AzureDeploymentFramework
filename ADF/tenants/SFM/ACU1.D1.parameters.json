@@ -670,22 +670,22 @@
                   "Name": "SFM",
                   "BE": "SF"
                 }
-              },
-              {
-                "name": "BE",
-                "OSType": "Server2019gs",
-                "role": "SFM",
-                "isPrimary": 0,
-                "capacity": 3,
-                "placementProperties": {
-                  "OSType": "Server2019gs",
-                  "Type": "BE-Node"
-                },
-                "LB": {
-                  "Name": "BE",
-                  "BE": "SF"
-                }
               }
+              // {
+              //   "name": "BE",
+              //   "OSType": "Server2019gs",
+              //   "role": "SFM",
+              //   "isPrimary": 0,
+              //   "capacity": 3,
+              //   "placementProperties": {
+              //     "OSType": "Server2019gs",
+              //     "Type": "BE-Node"
+              //   },
+              //   "LB": {
+              //     "Name": "BE",
+              //     "BE": "SF"
+              //   }
+              // }
             ],
             "PrimaryNodeLBPorts": [
               {

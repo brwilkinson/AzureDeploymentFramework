@@ -280,19 +280,31 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-10-01-
         properties: {
           publisher: 'Microsoft.Azure.KeyVault'
           type: 'KeyVaultForWindows'
-          typeHandlerVersion: '1.0'
+          typeHandlerVersion: '3.0'
           autoUpgradeMinorVersion: true
           enableAutomaticUpgrade: true
           forceUpdateTag: '1'
           settings: {
             secretsManagementSettings: {
               pollingIntervalInS: '14400'
-              certificateStoreName: 'MY'
-              certificateStoreLocation: 'LocalMachine'
               // linkOnRenewal: false
               requireInitialSync: true
               observedCertificates: [
-                cert.properties.secretUri
+                {
+                  url: cert.properties.secretUri
+                  certificateStoreName: 'MY'
+                  certificateStoreLocation: 'LocalMachine'
+                }
+                {
+                  url: cert.properties.secretUri
+                  certificateStoreName: 'Root'
+                  certificateStoreLocation: 'LocalMachine'
+                }
+                {
+                  url: cert.properties.secretUri
+                  certificateStoreName: 'CA'
+                  certificateStoreLocation: 'LocalMachine'
+                }
               ]
             }
             authenticationSettings: {

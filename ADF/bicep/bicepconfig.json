@@ -1,7 +1,9 @@
 {
   "experimentalFeaturesEnabled": {
-    // "extensibility": true,
-    // "userDefinedTypes": true // breaks splatting
+    "paramsFiles": false,
+    "extensibility": false,
+    "resourceTypedParamsAndOutputs": false,
+    "userDefinedTypes": false
   },
   "analyzers": {
     "core": {
