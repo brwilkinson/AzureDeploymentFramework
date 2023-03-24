@@ -120,12 +120,12 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = [for 
   }
   properties: {
     adminUserEnabled: cr.adminUserEnabled
-    dataEndpointEnabled: true
-    zoneRedundancy: availabilityZones
-    publicNetworkAccess: 'Enabled'
-    networkRuleBypassOptions: 'AzureServices'
+    dataEndpointEnabled: cr.SKU == 'Premium' ? true : null
+    zoneRedundancy: cr.SKU == 'Premium' ? availabilityZones : 'Disabled'
+    publicNetworkAccess: cr.SKU == 'Premium' ? 'Enabled' : null
+    networkRuleBypassOptions: cr.SKU == 'Premium' ? 'AzureServices' : null
     networkRuleSet: cr.SKU == 'Premium' ? networkRuleSet : null
-    policies: {
+    policies: cr.SKU == 'Premium' ? {
       azureADAuthenticationAsArmPolicy: {
         status: 'enabled'
       }
@@ -141,7 +141,7 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = [for 
         status: 'enabled'
         type: 'Notary'
       }
-    }
+    } : null
   }
 }]
 
