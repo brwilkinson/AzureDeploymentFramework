@@ -1,6 +1,5 @@
 param Prefix string
 
-
 @allowed([
   'I'
   'D'
@@ -40,8 +39,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -61,7 +58,6 @@ var ACRInfo = [for (acr, index) in ContainerRegistry: {
 var AppInsightsName = '${DeploymentURI}AppInsights'
 var AppInsightsID = resourceId('microsoft.insights/components', AppInsightsName)
 
-
 resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
@@ -71,45 +67,50 @@ var availabilityZones = contains(excludeZones, Prefix) ? 'Disabled' : 'Enabled'
 
 var PAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
 var AzureDevOpsAllowIPs = loadJsonContent('global/IPRanges-AzureDevOps.json')
-var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-var AllowIPList = concat(PAWAllowIPs,AzureDevOpsAllowIPs,IPAddressforRemoteAccess)
+var IPAddressforRemoteAccess = contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+var AllowIPList = concat(PAWAllowIPs, AzureDevOpsAllowIPs, IPAddressforRemoteAccess)
 
 var ipRules = [for ip in AllowIPList: {
   value: ip
   action: 'Allow'
 }]
 
+var networkRuleSet = {
+  defaultAction: 'Deny'
+  ipRules: ipRules
+}
+
 // var storageInfo = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
-  //   name: toLower('reg${cr.Name}')
-  //   skuName: 'Standard_LRS'
-  //   allNetworks: 0
-  //   logging: {
-  //     r: 0
-  //     w: 0
-  //     d: 1
-  //   }
-  //   blobVersioning: 1
-  //   changeFeed: 1
-  //   softDeletePolicy: {
-  //     enabled: 1
-  //     days: 7
-  //   }
-  // }]
-  
-  // module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: {
-  //   name: 'dp${Deployment}-storageDeploy${sa.name}'
-  //   params: {
-  //     Deployment: Deployment
-  //     DeploymentURI: DeploymentURI
-  //     DeploymentID: DeploymentID
-  //     Environment: Environment
-  //     storageInfo: sa
-  //     Global: Global
-  //     Stage: Stage
-  //     OMSworkspaceId: OMS.id
-  //   }
-  //   dependsOn: []
-  // }]
+//   name: toLower('reg${cr.Name}')
+//   skuName: 'Standard_LRS'
+//   allNetworks: 0
+//   logging: {
+//     r: 0
+//     w: 0
+//     d: 1
+//   }
+//   blobVersioning: 1
+//   changeFeed: 1
+//   softDeletePolicy: {
+//     enabled: 1
+//     days: 7
+//   }
+// }]
+
+// module SA 'SA-Storage.bicep' = [for (sa, index) in storageInfo: {
+//   name: 'dp${Deployment}-storageDeploy${sa.name}'
+//   params: {
+//     Deployment: Deployment
+//     DeploymentURI: DeploymentURI
+//     DeploymentID: DeploymentID
+//     Environment: Environment
+//     storageInfo: sa
+//     Global: Global
+//     Stage: Stage
+//     OMSworkspaceId: OMS.id
+//   }
+//   dependsOn: []
+// }]
 
 resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = [for (cr, index) in ContainerRegistry: if (ACRInfo[index].match) {
   name: toLower('${DeploymentURI}acr${cr.Name}')
@@ -123,10 +124,7 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = [for 
     zoneRedundancy: availabilityZones
     publicNetworkAccess: 'Enabled'
     networkRuleBypassOptions: 'AzureServices'
-    networkRuleSet: {
-      defaultAction: 'Deny'
-      ipRules: ipRules
-    }
+    networkRuleSet: cr.SKU == 'Premium' ? networkRuleSet : null
     policies: {
       azureADAuthenticationAsArmPolicy: {
         status: 'enabled'

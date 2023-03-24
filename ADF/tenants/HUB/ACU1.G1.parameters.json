@@ -247,7 +247,7 @@
         "ContainerRegistry": [
           {
             "Name": "global",
-            "SKU": "Premium",
+            "SKU": "Basic",
             "adminUserEnabled": true,
             "_PrivateLinkInfo": [
               {
