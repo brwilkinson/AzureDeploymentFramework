@@ -116,6 +116,16 @@
       "value": {
         "uaiInfo": [
           {
+            "name": "GlobalAcrPull",
+            "RBAC": [
+              {
+                "Name": "AcrPull",
+                "RG": "G1",
+                "Tenant": "HUB"
+              }
+            ]
+          },
+          {
             "name": "KeyVaultSecretsGet",
             "RBAC": [
               {
