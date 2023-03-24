@@ -13,7 +13,7 @@
       "AppName": "HUB"
     },
     "DNSServers": [
-      "10.192.248.4"
+      // "10.192.248.4" // Use Azure DNS for now instead of DNSForwarder
     ],
     "RTName": "Hub",
     "shutdownSchedulerTimeZone": "Pacific Standard Time",
