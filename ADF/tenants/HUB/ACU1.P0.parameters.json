@@ -240,9 +240,6 @@
             "FlowAnalyticsEnabled": 1
           }
         ],
-        "DNSServers": [
-          "10.192.248.4"
-        ],
         "DNSResolverInfo": {
           "name": "01",
           "SN": "snDNS01"

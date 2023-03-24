@@ -1,0 +1,462 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.15.78.2575",
+      "templateHash": "5373155678778132836"
+    }
+  },
+  "parameters": {
+    "Prefix": {
+      "type": "string"
+    },
+    "Environment": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "I",
+        "D",
+        "T",
+        "U",
+        "P",
+        "S",
+        "G",
+        "A"
+      ]
+    },
+    "DeploymentID": {
+      "type": "string",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16"
+      ]
+    },
+    "Stage": {
+      "type": "object"
+    },
+    "Extensions": {
+      "type": "object"
+    },
+    "Global": {
+      "type": "object"
+    },
+    "DeploymentInfo": {
+      "type": "object"
+    },
+    "deploymentTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]"
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "ACI",
+        "count": "[length(variables('ACIInfo'))]",
+        "input": {
+          "match": "[or(equals(parameters('Global').CN, '.'), contains(array(parameters('Global').CN), variables('ACIInfo')[copyIndex('ACI')].Name))]"
+        }
+      }
+    ],
+    "$fxv#0": "{\r\n  \"francecentral\": {\r\n    \"displayname\": \"France Central\",\r\n    \"location\": \"francecentral\",\r\n    \"PREFIX\": \"AFC1\",\r\n    \"pairedRegion\": \"francesouth\"\r\n  },\r\n  \"southeastasia\": {\r\n    \"displayname\": \"Southeast Asia\",\r\n    \"location\": \"southeastasia\",\r\n    \"PREFIX\": \"ASA1\",\r\n    \"pairedRegion\": \"eastasia\"\r\n  },\r\n  \"southafricawest\": {\r\n    \"displayname\": \"South Africa West\",\r\n    \"location\": \"southafricawest\",\r\n    \"PREFIX\": \"ASAW\",\r\n    \"pairedRegion\": \"southafricanorth\"\r\n  },\r\n  \"eastus2\": {\r\n    \"displayname\": \"East US 2\",\r\n    \"location\": \"eastus2\",\r\n    \"PREFIX\": \"AEU2\",\r\n    \"pairedRegion\": \"centralus\"\r\n  },\r\n  \"eastus\": {\r\n    \"displayname\": \"East US\",\r\n    \"location\": \"eastus\",\r\n    \"PREFIX\": \"AEU1\",\r\n    \"pairedRegion\": \"westus\"\r\n  },\r\n  \"jioindiawest\": {\r\n    \"displayname\": \"Jio India West\",\r\n    \"location\": \"jioindiawest\",\r\n    \"PREFIX\": \"AJIW\",\r\n    \"pairedRegion\": \"jioindiacentral\"\r\n  },\r\n  \"westcentralus\": {\r\n    \"displayname\": \"West Central US\",\r\n    \"location\": \"westcentralus\",\r\n    \"PREFIX\": \"AWCU\",\r\n    \"pairedRegion\": \"westus2\"\r\n  },\r\n  \"koreacentral\": {\r\n    \"displayname\": \"Korea Central\",\r\n    \"location\": \"koreacentral\",\r\n    \"PREFIX\": \"AKC1\",\r\n    \"pairedRegion\": \"koreasouth\"\r\n  },\r\n  \"uaecentral\": {\r\n    \"displayname\": \"UAE Central\",\r\n    \"location\": \"uaecentral\",\r\n    \"PREFIX\": \"AUC1\",\r\n    \"pairedRegion\": \"uaenorth\"\r\n  },\r\n  \"westus\": {\r\n    \"displayname\": \"West US\",\r\n    \"location\": \"westus\",\r\n    \"PREFIX\": \"AWU1\",\r\n    \"pairedRegion\": \"eastus\"\r\n  },\r\n  \"southafricanorth\": {\r\n    \"displayname\": \"South Africa North\",\r\n    \"location\": \"southafricanorth\",\r\n    \"PREFIX\": \"ASAN\",\r\n    \"pairedRegion\": \"southafricawest\"\r\n  },\r\n  \"australiacentral2\": {\r\n    \"displayname\": \"Australia Central 2\",\r\n    \"location\": \"australiacentral2\",\r\n    \"PREFIX\": \"AAC2\",\r\n    \"pairedRegion\": \"australiacentral2\"\r\n  },\r\n  \"francesouth\": {\r\n    \"displayname\": \"France South\",\r\n    \"location\": \"francesouth\",\r\n    \"PREFIX\": \"AFS1\",\r\n    \"pairedRegion\": \"francecentral\"\r\n  },\r\n  \"ukwest\": {\r\n    \"displayname\": \"UK West\",\r\n    \"location\": \"ukwest\",\r\n    \"PREFIX\": \"AUW1\",\r\n    \"pairedRegion\": \"uksouth\"\r\n  },\r\n  \"southindia\": {\r\n    \"displayname\": \"South India\",\r\n    \"location\": \"southindia\",\r\n    \"PREFIX\": \"ASI1\",\r\n    \"pairedRegion\": \"centralindia\"\r\n  },\r\n  \"centralus\": {\r\n    \"displayname\": \"Central US\",\r\n    \"location\": \"centralus\",\r\n    \"PREFIX\": \"ACU1\",\r\n    \"pairedRegion\": \"eastus2\"\r\n  },\r\n  \"germanynorth\": {\r\n    \"displayname\": \"Germany North\",\r\n    \"location\": \"germanynorth\",\r\n    \"PREFIX\": \"AGN1\",\r\n    \"pairedRegion\": \"germanywestcentral\"\r\n  },\r\n  \"koreasouth\": {\r\n    \"displayname\": \"Korea South\",\r\n    \"location\": \"koreasouth\",\r\n    \"PREFIX\": \"AKS1\",\r\n    \"pairedRegion\": \"koreacentral\"\r\n  },\r\n  \"westindia\": {\r\n    \"displayname\": \"West India\",\r\n    \"location\": \"westindia\",\r\n    \"PREFIX\": \"AWI1\",\r\n    \"pairedRegion\": \"southindia\"\r\n  },\r\n  \"westus2\": {\r\n    \"displayname\": \"West US 2\",\r\n    \"location\": \"westus2\",\r\n    \"PREFIX\": \"AWU2\",\r\n    \"pairedRegion\": \"westcentralus\"\r\n  },\r\n  \"northcentralus\": {\r\n    \"displayname\": \"North Central US\",\r\n    \"location\": \"northcentralus\",\r\n    \"PREFIX\": \"ANCU\",\r\n    \"pairedRegion\": \"southcentralus\"\r\n  },\r\n  \"westeurope\": {\r\n    \"displayname\": \"West Europe\",\r\n    \"location\": \"westeurope\",\r\n    \"PREFIX\": \"AWEU\",\r\n    \"pairedRegion\": \"northeurope\"\r\n  },\r\n  \"canadacentral\": {\r\n    \"displayname\": \"Canada Central\",\r\n    \"location\": \"canadacentral\",\r\n    \"PREFIX\": \"ACC1\",\r\n    \"pairedRegion\": \"canadaeast\"\r\n  },\r\n  \"southcentralus\": {\r\n    \"displayname\": \"South Central US\",\r\n    \"location\": \"southcentralus\",\r\n    \"PREFIX\": \"ASCU\",\r\n    \"pairedRegion\": \"northcentralus\"\r\n  },\r\n  \"norwayeast\": {\r\n    \"displayname\": \"Norway East\",\r\n    \"location\": \"norwayeast\",\r\n    \"PREFIX\": \"ANE1\",\r\n    \"pairedRegion\": \"norwaywest\"\r\n  },\r\n  \"japanwest\": {\r\n    \"displayname\": \"Japan West\",\r\n    \"location\": \"japanwest\",\r\n    \"PREFIX\": \"AJW1\",\r\n    \"pairedRegion\": \"japaneast\"\r\n  },\r\n  \"norwaywest\": {\r\n    \"displayname\": \"Norway West\",\r\n    \"location\": \"norwaywest\",\r\n    \"PREFIX\": \"ANW1\",\r\n    \"pairedRegion\": \"norwayeast\"\r\n  },\r\n  \"jioindiacentral\": {\r\n    \"displayname\": \"Jio India Central\",\r\n    \"location\": \"jioindiacentral\",\r\n    \"PREFIX\": \"AJIC\",\r\n    \"pairedRegion\": \"jioindiawest\"\r\n  },\r\n  \"centralindia\": {\r\n    \"displayname\": \"Central India\",\r\n    \"location\": \"centralindia\",\r\n    \"PREFIX\": \"ACI1\",\r\n    \"pairedRegion\": \"southindia\"\r\n  },\r\n  \"westus3\": {\r\n    \"displayname\": \"West US 3\",\r\n    \"location\": \"westus3\",\r\n    \"PREFIX\": \"AWU3\",\r\n    \"pairedRegion\": \"eastus\"\r\n  },\r\n  \"brazilsouth\": {\r\n    \"displayname\": \"Brazil South\",\r\n    \"location\": \"brazilsouth\",\r\n    \"PREFIX\": \"ABS1\",\r\n    \"pairedRegion\": \"southcentralus\"\r\n  },\r\n  \"eastasia\": {\r\n    \"displayname\": \"East Asia\",\r\n    \"location\": \"eastasia\",\r\n    \"PREFIX\": \"AEA1\",\r\n    \"pairedRegion\": \"southeastasia\"\r\n  },\r\n  \"swedencentral\": {\r\n    \"displayname\": \"Sweden Central\",\r\n    \"location\": \"swedencentral\",\r\n    \"PREFIX\": \"ASC1\",\r\n    \"pairedRegion\": \"swedensouth\"\r\n  },\r\n  \"uksouth\": {\r\n    \"displayname\": \"UK South\",\r\n    \"location\": \"uksouth\",\r\n    \"PREFIX\": \"AUS1\",\r\n    \"pairedRegion\": \"ukwest\"\r\n  },\r\n  \"switzerlandnorth\": {\r\n    \"displayname\": \"Switzerland North\",\r\n    \"location\": \"switzerlandnorth\",\r\n    \"PREFIX\": \"ASN1\",\r\n    \"pairedRegion\": \"switzerlandwest\"\r\n  },\r\n  \"canadaeast\": {\r\n    \"displayname\": \"Canada East\",\r\n    \"location\": \"canadaeast\",\r\n    \"PREFIX\": \"ACE1\",\r\n    \"pairedRegion\": \"canadacentral\"\r\n  },\r\n  \"australiasoutheast\": {\r\n    \"displayname\": \"Australia Southeast\",\r\n    \"location\": \"australiasoutheast\",\r\n    \"PREFIX\": \"AAS1\",\r\n    \"pairedRegion\": \"australiaeast\"\r\n  },\r\n  \"northeurope\": {\r\n    \"displayname\": \"North Europe\",\r\n    \"location\": \"northeurope\",\r\n    \"PREFIX\": \"ANEU\",\r\n    \"pairedRegion\": \"westeurope\"\r\n  },\r\n  \"germanywestcentral\": {\r\n    \"displayname\": \"Germany West Central\",\r\n    \"location\": \"germanywestcentral\",\r\n    \"PREFIX\": \"AGWC\",\r\n    \"pairedRegion\": \"germanynorth\"\r\n  },\r\n  \"japaneast\": {\r\n    \"displayname\": \"Japan East\",\r\n    \"location\": \"japaneast\",\r\n    \"PREFIX\": \"AJE1\",\r\n    \"pairedRegion\": \"japanwest\"\r\n  },\r\n  \"uaenorth\": {\r\n    \"displayname\": \"UAE North\",\r\n    \"location\": \"uaenorth\",\r\n    \"PREFIX\": \"AUN1\",\r\n    \"pairedRegion\": \"uaecentral\"\r\n  },\r\n  \"australiaeast\": {\r\n    \"displayname\": \"Australia East\",\r\n    \"location\": \"australiaeast\",\r\n    \"PREFIX\": \"AAE1\",\r\n    \"pairedRegion\": \"australiasoutheast\"\r\n  },\r\n  \"switzerlandwest\": {\r\n    \"displayname\": \"Switzerland West\",\r\n    \"location\": \"switzerlandwest\",\r\n    \"PREFIX\": \"ASW1\",\r\n    \"pairedRegion\": \"switzerlandnorth\"\r\n  },\r\n  \"australiacentral\": {\r\n    \"displayname\": \"Australia Central\",\r\n    \"location\": \"australiacentral\",\r\n    \"PREFIX\": \"AAC1\",\r\n    \"pairedRegion\": \"australiacentral\"\r\n  },\r\n  \"brazilsoutheast\": {\r\n    \"displayname\": \"Brazil Southeast\",\r\n    \"location\": \"brazilsoutheast\",\r\n    \"PREFIX\": \"ABSE\",\r\n    \"pairedRegion\": \"brazilsouth\"\r\n  }\r\n}\r\n",
+    "Deployment": "[format('{0}-{1}-{2}-{3}{4}', parameters('Prefix'), parameters('Global').OrgName, parameters('Global').Appname, parameters('Environment'), parameters('DeploymentID'))]",
+    "DeploymentURI": "[toLower(format('{0}{1}{2}{3}{4}', parameters('Prefix'), parameters('Global').OrgName, parameters('Global').Appname, parameters('Environment'), parameters('DeploymentID')))]",
+    "GlobalRGJ": "[json(parameters('Global').GlobalRG)]",
+    "regionLookup": "[json(variables('$fxv#0'))]",
+    "primaryPrefix": "[variables('regionLookup')[parameters('Global').PrimaryLocation].prefix]",
+    "gh": {
+      "globalRGPrefix": "[if(contains(variables('GlobalRGJ'), 'Prefix'), variables('GlobalRGJ').Prefix, variables('primaryPrefix'))]",
+      "globalRGOrgName": "[if(contains(variables('GlobalRGJ'), 'OrgName'), variables('GlobalRGJ').OrgName, parameters('Global').OrgName)]",
+      "globalRGAppName": "[if(contains(variables('GlobalRGJ'), 'AppName'), variables('GlobalRGJ').AppName, parameters('Global').AppName)]",
+      "globalRGName": "[if(contains(variables('GlobalRGJ'), 'name'), variables('GlobalRGJ').name, format('{0}{1}', parameters('Environment'), parameters('DeploymentID')))]"
+    },
+    "globalRGName": "[format('{0}-{1}-{2}-RG-{3}', variables('gh').globalRGPrefix, variables('gh').globalRGOrgName, variables('gh').globalRGAppName, variables('gh').globalRGName)]",
+    "ACIInfo": "[if(contains(parameters('DeploymentInfo'), 'ACIInfo'), parameters('DeploymentInfo').ACIInfo, createArray())]",
+    "AppVault": "[format('{0}-kvApp01', variables('Deployment'))]"
+  },
+  "resources": [
+    {
+      "copy": {
+        "name": "ACG",
+        "count": "[length(variables('ACIInfo'))]"
+      },
+      "condition": "[variables('ACI')[copyIndex()].match]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('dp{0}-ACI-containergroupDeploy{1}', variables('Deployment'), variables('ACIInfo')[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "Prefix": {
+            "value": "[parameters('Prefix')]"
+          },
+          "Deployment": {
+            "value": "[variables('Deployment')]"
+          },
+          "DeploymentURI": {
+            "value": "[variables('DeploymentURI')]"
+          },
+          "DeploymentID": {
+            "value": "[parameters('DeploymentID')]"
+          },
+          "Environment": {
+            "value": "[parameters('Environment')]"
+          },
+          "globalRGName": {
+            "value": "[variables('globalRGName')]"
+          },
+          "ACIInfo": {
+            "value": "[variables('ACIInfo')[copyIndex()]]"
+          },
+          "Global": {
+            "value": "[parameters('Global')]"
+          },
+          "Stage": {
+            "value": "[parameters('Stage')]"
+          },
+          "WebUser": {
+            "reference": {
+              "keyVault": {
+                "id": "[resourceId('Microsoft.KeyVault/vaults', variables('AppVault'))]"
+              },
+              "secretName": "WebUser"
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.15.78.2575",
+              "templateHash": "7145498668117425137"
+            }
+          },
+          "parameters": {
+            "Prefix": {
+              "type": "string"
+            },
+            "Deployment": {
+              "type": "string"
+            },
+            "DeploymentURI": {
+              "type": "string"
+            },
+            "DeploymentID": {
+              "type": "string"
+            },
+            "Environment": {
+              "type": "string"
+            },
+            "ACIInfo": {
+              "type": "object"
+            },
+            "Global": {
+              "type": "object"
+            },
+            "globalRGName": {
+              "type": "string"
+            },
+            "Stage": {
+              "type": "object"
+            },
+            "WebUser": {
+              "type": "securestring"
+            },
+            "now": {
+              "type": "string",
+              "defaultValue": "[utcNow('F')]"
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "Instances",
+                "count": "[length(range(0, parameters('ACIInfo').InstanceCount))]",
+                "input": {
+                  "name": "[format('{0}-{1}', parameters('ACIInfo').Name, copyIndex('Instances'))]",
+                  "location": "[if(contains(parameters('ACIInfo'), 'locations'), parameters('ACIInfo').locations[mod(copyIndex('Instances'), length(parameters('ACIInfo').locations))], resourceGroup().location)]"
+                }
+              },
+              {
+                "name": "ENVVARS",
+                "count": "[length(variables('EnvironmentVARS'))]",
+                "input": {
+                  "name": "[variables('EnvironmentVARS')[copyIndex('ENVVARS')].name]",
+                  "value": "[if(contains(variables('EnvironmentVARS')[copyIndex('ENVVARS')], 'value'), replace(variables('EnvironmentVARS')[copyIndex('ENVVARS')].value, '{Deployment}', parameters('Deployment')), null())]",
+                  "secureValue": "[if(contains(variables('EnvironmentVARS')[copyIndex('ENVVARS')], 'secureValue'), replace(variables('EnvironmentVARS')[copyIndex('ENVVARS')].secureValue, '{WebUser}', parameters('WebUser')), null())]"
+                }
+              },
+              {
+                "name": "Mounts",
+                "count": "[length(variables('diskMounts'))]",
+                "input": {
+                  "name": "[variables('diskMounts')[copyIndex('Mounts')].name]",
+                  "readOnly": false,
+                  "mountPath": "[variables('diskMounts')[copyIndex('Mounts')].mountPath]"
+                }
+              },
+              {
+                "name": "ports",
+                "count": "[length(parameters('ACIInfo').ports)]",
+                "input": {
+                  "protocol": "TCP",
+                  "port": "[parameters('ACIInfo').ports[copyIndex('ports')]]"
+                }
+              }
+            ],
+            "userAssignedIdentities": {
+              "Default": {
+                "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', format('{0}-uaiKeyVaultSecretsGet', parameters('Deployment'))))]": {},
+                "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', format('{0}-uaiStorageAccountOperatorGlobal', parameters('Deployment'))))]": {},
+                "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', format('{0}-uaiStorageAccountFileContributor', parameters('Deployment'))))]": {}
+              }
+            },
+            "HubRGJ": "[json(parameters('Global').hubRG)]",
+            "gh": {
+              "hubRGPrefix": "[if(contains(variables('HubRGJ'), 'Prefix'), variables('HubRGJ').Prefix, parameters('Prefix'))]",
+              "hubRGOrgName": "[if(contains(variables('HubRGJ'), 'OrgName'), variables('HubRGJ').OrgName, parameters('Global').OrgName)]",
+              "hubRGAppName": "[if(contains(variables('HubRGJ'), 'AppName'), variables('HubRGJ').AppName, parameters('Global').AppName)]",
+              "hubRGRGName": "[if(contains(variables('HubRGJ'), 'name'), variables('HubRGJ').name, if(contains(variables('HubRGJ'), 'name'), variables('HubRGJ').name, format('{0}{1}', parameters('Environment'), parameters('DeploymentID'))))]"
+            },
+            "HubRGName": "[format('{0}-{1}-{2}-RG-{3}', variables('gh').hubRGPrefix, variables('gh').hubRGOrgName, variables('gh').hubRGAppName, variables('gh').hubRGRGName)]",
+            "EnvironmentVARS": "[if(contains(parameters('ACIInfo'), 'environmentVariables'), parameters('ACIInfo').environmentVariables, createArray())]",
+            "diskMounts": "[if(contains(parameters('ACIInfo'), 'volumeMounts'), parameters('ACIInfo').volumeMounts, createArray())]"
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "ACI",
+                "count": "[length(variables('Instances'))]"
+              },
+              "type": "Microsoft.ContainerInstance/containerGroups",
+              "apiVersion": "2021-07-01",
+              "name": "[format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name)]",
+              "location": "[variables('Instances')[copyIndex()].location]",
+              "identity": {
+                "type": "SystemAssigned, UserAssigned",
+                "userAssignedIdentities": "[variables('userAssignedIdentities').Default]"
+              },
+              "properties": {
+                "copy": [
+                  {
+                    "name": "containers",
+                    "count": "[length(range(0, parameters('ACIInfo').scaleCount))]",
+                    "input": {
+                      "name": "[format('{0}-{1}', variables('Instances')[copyIndex()].name, range(0, parameters('ACIInfo').scaleCount)[copyIndex('containers')])]",
+                      "properties": {
+                        "image": "[parameters('ACIInfo').image]",
+                        "command": "[if(contains(parameters('ACIInfo'), 'command'), parameters('ACIInfo').command, null())]",
+                        "ports": "[variables('ports')]",
+                        "environmentVariables": "[if(contains(parameters('ACIInfo'), 'environmentVariables'), variables('ENVVARS'), null())]",
+                        "volumeMounts": "[variables('Mounts')]",
+                        "resources": {
+                          "requests": {
+                            "memoryInGB": "[parameters('ACIInfo').memoryInGB]",
+                            "cpu": "[parameters('ACIInfo').cpu]"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "name": "volumes",
+                    "count": "[length(variables('diskMounts'))]",
+                    "input": {
+                      "name": "[variables('diskMounts')[copyIndex('volumes')].name]",
+                      "azureFile": {
+                        "shareName": "[variables('diskMounts')[copyIndex('volumes')].name]",
+                        "readOnly": false,
+                        "storageAccountName": "[format('{0}sa{1}', parameters('DeploymentURI'), variables('diskMounts')[copyIndex('volumes')].storageAccount)]",
+                        "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts/', format('{0}sa{1}', parameters('DeploymentURI'), variables('diskMounts')[copyIndex('volumes')].storageAccount)), '2016-01-01').keys[0].value]"
+                      }
+                    }
+                  }
+                ],
+                "sku": "Standard",
+                "initContainers": [],
+                "restartPolicy": "Always",
+                "ipAddress": {
+                  "ports": "[variables('ports')]",
+                  "type": "[if(bool(parameters('ACIInfo').isPublic), 'Public', 'Private')]",
+                  "dnsNameLabel": "[if(bool(parameters('ACIInfo').isPublic), toLower(format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name)), null())]"
+                },
+                "subnetIds": "[if(not(and(not(bool(parameters('ACIInfo').isPublic)), contains(parameters('ACIInfo'), 'subnetName'))), createArray(), createArray(createObject('id', format('{0}/subnets/{1}', resourceId('Microsoft.Network/virtualNetworks', format('{0}-vn', parameters('Deployment'))), parameters('ACIInfo').subnetName))))]",
+                "osType": "Linux",
+                "diagnostics": {
+                  "logAnalytics": {
+                    "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', format('{0}LogAnalytics', parameters('DeploymentURI'))), '2022-10-01').customerId]",
+                    "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', format('{0}LogAnalytics', parameters('DeploymentURI'))), '2022-10-01').primarySharedKey]",
+                    "logType": "ContainerInsights",
+                    "metadata": {}
+                  }
+                }
+              }
+            },
+            {
+              "copy": {
+                "name": "ACIDNS",
+                "count": "[length(variables('Instances'))]"
+              },
+              "condition": "[bool(parameters('ACIInfo').isPublic)]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('setdns-public-{0}-ACI-{1}-{2}', parameters('Deployment'), variables('Instances')[copyIndex()].name, parameters('Global').DomainNameExt)]",
+              "subscriptionId": "[if(contains(parameters('Global'), 'DomainNameExtSubscriptionID'), parameters('Global').DomainNameExtSubscriptionID, subscription().subscriptionId)]",
+              "resourceGroup": "[if(contains(parameters('Global'), 'DomainNameExtRG'), parameters('Global').DomainNameExtRG, parameters('globalRGName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "hostname": {
+                    "value": "[toLower(format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name))]"
+                  },
+                  "cname": {
+                    "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups', format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name)), '2021-07-01').ipAddress.fqdn]"
+                  },
+                  "Global": {
+                    "value": "[parameters('Global')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.15.78.2575",
+                      "templateHash": "10922570008170070599"
+                    }
+                  },
+                  "parameters": {
+                    "hostname": {
+                      "type": "string"
+                    },
+                    "cname": {
+                      "type": "string"
+                    },
+                    "Global": {
+                      "type": "object"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/dnsZones/CNAME",
+                      "apiVersion": "2018-05-01",
+                      "name": "[format('{0}/{1}', parameters('Global').DomainNameExt, parameters('hostname'))]",
+                      "properties": {
+                        "TTL": 3600,
+                        "metadata": {},
+                        "CNAMERecord": {
+                          "cname": "[parameters('cname')]"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ContainerInstance/containerGroups', format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name))]",
+                "[resourceId('Microsoft.ContainerInstance/containerGroups', format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "SetACIDNSAInternal",
+                "count": "[length(variables('Instances'))]"
+              },
+              "condition": "[not(bool(parameters('ACIInfo').isPublic))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('setdns-private-{0}-ACI-{1}-{2}', parameters('Deployment'), variables('Instances')[copyIndex()].name, parameters('Global').DomainNameExt)]",
+              "subscriptionId": "[subscription().subscriptionId]",
+              "resourceGroup": "[variables('HubRGName')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "hostname": {
+                    "value": "[toLower(format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name))]"
+                  },
+                  "ipv4Address": {
+                    "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups', format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name)), '2021-07-01').ipAddress.ip]"
+                  },
+                  "Global": {
+                    "value": "[parameters('Global')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.15.78.2575",
+                      "templateHash": "1268935496275655929"
+                    }
+                  },
+                  "parameters": {
+                    "hostname": {
+                      "type": "string"
+                    },
+                    "ipv4Address": {
+                      "type": "string"
+                    },
+                    "Global": {
+                      "type": "object"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/privateDnsZones/A",
+                      "apiVersion": "2020-06-01",
+                      "name": "[format('{0}/{1}', parameters('Global').DomainName, parameters('hostname'))]",
+                      "properties": {
+                        "ttl": 3600,
+                        "metadata": {},
+                        "aRecords": [
+                          {
+                            "ipv4Address": "[parameters('ipv4Address')]"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ContainerInstance/containerGroups', format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name))]",
+                "[resourceId('Microsoft.ContainerInstance/containerGroups', format('{0}-aci-{1}', parameters('Deployment'), variables('Instances')[copyIndex()].name))]"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
