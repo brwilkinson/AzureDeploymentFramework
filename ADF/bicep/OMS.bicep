@@ -77,7 +77,17 @@ var OMSDailyLimitGB = {
   T: 5
 }
 
+var ChangeTrackingIntervalMinutes = 30
+
 var dataSources = [
+  {
+    name: 'ChangeTrackingServices_CollectionFrequency'
+    kind: 'ChangeTrackingServices'
+    properties: {
+      ListType: 'BlackList'
+      CollectionTimeInterval: ChangeTrackingIntervalMinutes * 60
+    }
+  }
   {
     name: 'AzureActivityLog'
     kind: 'AzureActivityLog'
