@@ -214,35 +214,70 @@ var NSGDefault = {
   SNFE01: []
   // Rules for service fabric, not documented yet.
   SFM: [
-      {
-        name: 'AllowAzureLoadBalancer'
-        properties: {
-          access: 'Allow'
-          destinationAddressPrefix: 'VirtualNetwork'
-          destinationPortRange: '*'
-          direction: 'Inbound'
-          priority: 1100
-          protocol: '*'
-          sourceAddressPrefix: 'AzureLoadBalancer'
-          sourcePortRange: '*'
-          description: '[Required] Allow traffic from Azure Load Balancer.'
-        }
+    {
+      name: 'AllowServiceFabricGatewayToSFRP'
+      properties: {
+        description: '[Required] This is required rule to allow SFRP to connect to the cluster.'
+        access: 'Allow'
+        destinationAddressPrefix: 'VirtualNetwork'
+          destinationPortRanges: [
+            '29000'
+            '29080'
+          ]
+        direction: 'Inbound'
+        priority: 1100
+        protocol: 'Tcp'
+        sourceAddressPrefix: 'ServiceFabric'
+        sourcePortRange: '*'
+
       }
-      {
-        name: 'AllowSFRP'
-        properties: {
-          access: 'Allow'
-          destinationAddressPrefix: 'VirtualNetwork'
-          destinationPortRange: '*'
-          direction: 'Inbound'
-          priority: 1110
-          protocol: '*'
-          sourceAddressPrefix: 'ServiceFabric'
-          sourcePortRange: '*'
-          description: '[Required] Allow traffic from Service Fabric Resource Provider.'
-        }
+    }
+    {
+      name: 'AllowServiceFabricGatewayToLB'
+      properties: {
+        description: '[Required] Allow traffic from Azure Load Balancer.'
+        access: 'Allow'
+        destinationAddressPrefix: 'VirtualNetwork'
+        destinationPortRange: '*'
+        direction: 'Inbound'
+        priority: 1110
+        protocol: '*'
+        sourceAddressPrefix: 'AzureLoadBalancer'
+        sourcePortRange: '*'
       }
-    ]
+    }
+    {
+      name: 'SFMC_AllowServiceFabricGatewayPorts'
+      properties: {
+        description: 'Optional rule to open SF cluster gateway ports. To override add a custom NSG rule for gateway ports in priority range 1000-3000.'
+        protocol: 'tcp'
+        sourcePortRange: '*'
+        sourceAddressPrefix: '*'
+        destinationAddressPrefix: 'VirtualNetwork'
+        access: 'Allow'
+        priority: 1120
+        direction: 'Inbound'
+        destinationPortRanges: [
+          '29000'
+          '29080'
+        ]
+      }
+    }
+    {
+      name: 'AllowSFExtensionToDLC'
+      properties: {
+        description: 'This is required rule to allow SF Extension to connect to download center to download the cab. This rule cannot be overridden.'
+        protocol: '*'
+        sourcePortRange: '*'
+        destinationPortRange: '*'
+        sourceAddressPrefix: '*'
+        destinationAddressPrefix: 'AzureFrontDoor.FirstParty'
+        access: 'Allow'
+        priority: 2100
+        direction: 'Outbound'
+      }
+    }
+  ]
   SNAPIM01: [
     // Rules for API Management as documented here: https://docs.microsoft.com/en-us/azure/api-management/api-management-using-with-vnet
     {
