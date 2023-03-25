@@ -358,7 +358,7 @@ Function global:Start-AzDeploy
                 {
                     try
                     {
-                        $Common['ErrorAction'] = 'stop'
+                        # $Common['ErrorAction'] = 'stop'
                         $global:r = New-AzResourceGroupDeployment @Common @TemplateArgs @OptionalParameters
                     }
                     catch

@@ -50,7 +50,7 @@ resource ACR 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existin
 }
 
 resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
-  name: '${Deployment}-GlobalAcrPull'
+  name: '${Deployment}-uaiGlobalAcrPull'
 }
 
 resource managedENV 'Microsoft.App/managedEnvironments@2022-10-01' existing = {
@@ -100,10 +100,10 @@ resource containerAPP 'Microsoft.App/containerApps@2022-10-01' = {
             memory: '0.5Gi'
           }
           args: [
-            
+
           ]
           env: [
-            
+
           ]
         }
       ]
