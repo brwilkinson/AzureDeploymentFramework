@@ -122,12 +122,37 @@
                 "Name": "AcrPull",
                 "RG": "G1",
                 "Tenant": "HUB"
+              }
+            ]
+          },
+          {
+            "name": "ML",
+            "RBAC": [
+              {
+                "Name": "AcrPull",
+                "RG": "G1",
+                "Tenant": "HUB"
               },
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
                 "Tenant": "HUB"
+              },
+              {
+                "Name": "Key Vault Reader",
+                "RG": "P0",
+                "Tenant": "HUB"
               }
+              // {
+              //   "Name": "Key Vault Administrator",
+              //   "RG": "P0",
+              //   "Tenant": "HUB"
+              // },
+              // {
+              //   "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
+              //   "RG": "P0",
+              //   "Tenant": "HUB"
+              // }
             ]
           },
           {
@@ -635,6 +660,14 @@
           {
             "Name": "02",
             "kubeENV": "01"
+          }
+        ],
+        "MLWorkspaceInfo": [
+          {
+            "Name": "03",
+            "UAI": "ML",
+            "skuTier": "Basic" //Enterprise
+            // "KV": "App01"
           }
         ]
       }
