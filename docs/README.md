@@ -78,7 +78,7 @@
 - [Documentation - Ready to Deploy? Getting Started Steps](https://brwilkinson.github.io/AzureDeploymentFramework/Getting_Started)
 
 ##### **Full list of templates:**
-
+view: [ADF/bicep](https://github.com/brwilkinson/AzureDeploymentFramework/tree/main/ADF/bicep)
 ![Bicep_Templates](./Bicep_Templates.png)
 
 ##### Any Feedback on this project is welcome, please feel free to reach out or ask questions, open a 'Discussions' or 'Issues'.
