@@ -122,6 +122,11 @@
                 "Name": "AcrPull",
                 "RG": "G1",
                 "Tenant": "HUB"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB"
               }
             ]
           },

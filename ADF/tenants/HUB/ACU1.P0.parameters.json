@@ -254,11 +254,11 @@
           "name": "networkwatcher"
         },
         "DNSPrivateZoneInfo": [
-          {
-            "linkDNS": 1,
-            "zone": "psthing.com",
-            "Autoregistration": false
-          },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "psthing.com",
+          //   "Autoregistration": false
+          // },
           {
             "linkDNS": 1,
             "zone": "privatelink.vaultcore.azure.net",
