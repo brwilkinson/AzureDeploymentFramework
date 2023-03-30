@@ -11,12 +11,12 @@ variables:
   ORG:        PE
   APP :       AKS
   
-  PREFIX:     ACU1
+  PREFIX:     AEU2
   ENV:        D1
   
   ADOProject: ADO_ADF
-  PREFIXPRIMARY: ACU1
-  APPPRIMARY: HUB
+  PREFIXPRIMARY: AEU2
+  APPPRIMARY: CTL
 
 stages:
 - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}

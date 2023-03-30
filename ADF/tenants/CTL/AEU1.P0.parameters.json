@@ -3,13 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
-      "value": "ACU1"
+      "value": "AEU1"
     },
     "Environment": {
-      "value": "G"
+      "value": "P"
     },
     "DeploymentID": {
-      "value": "1"
+      "value": "0"
     },
     "Stage": {
       "value": {
@@ -17,76 +17,41 @@
         "RBAC": 1,
         "PIM": 0,
         "UAI": 1,
-        "SP": 1,
+        "SP": 0,
         "KV": 1,
-        "DDOSPlan": 0,
         "OMS": 1,
-        "OMSSolutions": 1,
+        "DASHBOARD": 0,
+        "OMSSolutions": 0,
         "OMSDataSources": 0,
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
-        "OMSUpates": 0,
         "SA": 1,
         "ACR": 1,
-        "CDN": 0,
-        "StorageSync": 0,
         "RSV": 0,
         "NSG": 0,
-        "NetworkWatcher": 0,
+        "NetworkWatcher": 1,
         "FlowLogs": 0,
         "VNet": 0,
+        "DNSResolver": 0,
         "VNetDDOS": 0,
         "VNetPeering": 0,
-        "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
+        "DNSPublicZone": 0,
         "LinkPrivateDns": 0,
         "PrivateLink": 0,
         "BastionHost": 0,
-        "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
         "NATGW": 0,
         "ERGW": 0,
-        "LB": 0,
-        "TM": 0,
-        "WAFPOLICY": 0,
-        "WAF": 0,
-        "FRONTDOORPOLICY": 0,
-        "FRONTDOOR": 0,
-        "SetExternalDNS": 0,
-        "SetInternalDNS": 0,
-        "APPCONFIG": 0,
-        "REDIS": 0,
-        "APIM": 0,
-        "SQLMI": 0,
-        "CosmosDB": 0,
-        "DASHBOARD": 0,
-        "ServerFarm": 0,
-        "WebSite": 0,
-        "WebSiteContainer": 0,
-        "ManagedEnv": 0,
-        "ContainerApp": 0,
-        "MySQLDB": 0,
-        "Function": 0,
-        "SB": 0,
-        "LT": 0,
-        "AzureSYN": 0,
-        // below require secrets from KV
-        "VMSS": 0,
-        "ACI": 0,
-        "AKS": 0,
-        "AzureSQL": 0,
-        "SFM": 0,
-        "SFMNP": 0,
-        // VM templates
         "ADPrimary": 0,
         "ADSecondary": 0,
-        "InitialDOP": 0,
-        "VMApp": 0,
-        "VMAppLinux": 0,
-        "VMSQL": 0,
-        "VMFILE": 0
+        "SetExternalDNS": 0,
+        "SetInternalDNS": 0,
+        "CloudTestAccount": 0,
+        "CloudTestImages": 0,
+        "CloudTestHostedPool": 0
       }
     },
     "Extensions": {
@@ -116,6 +81,10 @@
       "value": {
         "uaiInfo": [
           {
+            "name": "DNSZoneManager",
+            "RBAC": []
+          },
+          {
             "Name": "CertificatePolicy",
             "RBAC": [
               {
@@ -124,37 +93,10 @@
             ]
           }
         ],
-        "PIMInfo": [
-          {
-            "Name": "BenWilkinson-ADM",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              },
-              {
-                "Name": "Key Vault Administrator"
-              }
-            ]
-          }
-        ],
         "rolesInfo": [
-          // {
-          //   "Name": "SimonAdams",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Reader"
-          //     },
-          //     {
-          //       "Name": "Virtual Machine Administrator Login"
-          //     }
-          //   ]
-          // },
           {
             "Name": "brwilkinson",
             "RBAC": [
-              {
-                "Name": "Storage Blob Data Owner"
-              },
               {
                 "Name": "Key Vault Administrator"
               }
@@ -168,14 +110,20 @@
               {
                 "Name": "Contributor" // Add below on top of this just in case there was a way to replace Contributor
               },
-              // {
-              //   "Name": "Managed Identity Operator"
-              // },
-              // {
-              //   "Name": "Monitoring Contributor"
-              // },
               {
                 "Name": "Reader and Data Access",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Storage Account Key Operator Service Role",
+                "RG": "G1",
+                "Prefix": "ACU1",
+                "Tenant": "HUB"
+              },
+              {
+                "Name": "Log Analytics Contributor",
                 "RG": "G1",
                 "Prefix": "ACU1",
                 "Tenant": "HUB"
@@ -183,42 +131,9 @@
             ]
           }
         ],
-        "OMSSolutions": [
-          "Security",
-          "ChangeTracking",
-          "AzureActivity",
-          "AlertManagement",
-          "SecurityInsights",
-          "KeyVaultAnalytics"
-        ],
-        "KVInfo": [
-          {
-            "Name": "Global",
-            "skuName": "standard",
-            "softDelete": true,
-            "PurgeProtection": true,
-            "RbacAuthorization": true,
-            "allNetworks": 1,
-            "_PrivateLinkInfo": [
-              {
-                "Subnet": "snMT02",
-                "groupID": "vault"
-              }
-            ],
-            // Needs updating to support public providers
-            //  https://learn.microsoft.com/en-us/azure/key-vault/certificates/how-to-integrate-certificate-authority#before-you-begin
-            "_CertIssuerInfo": [
-              {
-                "name": "DigiCert",
-                "provider": "DigiCert"
-              },
-              {
-                "name": "GlobalSign",
-                "provider": "GlobalSign"
-              }
-            ]
-          }
-        ],
+        "networkWatcherInfo": {
+          "name": "networkwatcher"
+        },
         "saInfo": [
           {
             "name": "global",
@@ -240,6 +155,38 @@
             "containers": [
               {
                 "name": "source"
+              }
+            ]
+          },
+          {
+            "name": "diag",
+            "skuName": "Standard_LRS",
+            "allNetworks": 0,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            }
+          }
+        ],
+        "KVInfo": [
+          {
+            "Name": "VLT01",
+            "skuName": "standard",
+            "softDelete": true,
+            "PurgeProtection": true,
+            "RbacAuthorization": true,
+            "allNetworks": 1, // Currently needed for Cert Management from DeploymentScripts
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "vault"
               }
             ]
           }

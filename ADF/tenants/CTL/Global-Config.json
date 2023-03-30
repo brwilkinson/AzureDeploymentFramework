@@ -64,6 +64,30 @@
       "Id": "71522526-b88f-4d52-b57f-d31fc3546d0d",
       "Description": "Read-only access to service and APIs"
     },
+    "API Management Service Workspace API Developer": {
+      "Id": "9565a273-41b9-4368-97d2-aeb0c976a9b3",
+      "Description": "Has read access to tags and products and write access to allow: assigning APIs to products, assigning tags to products and APIs. This role should be assigned on the service scope."
+    },
+    "API Management Service Workspace API Product Manager": {
+      "Id": "d59a3e9c-6d52-4a5a-aeed-6bf3cf0e31da",
+      "Description": "Has the same access as API Management Service Workspace API Developer as well as read access to users and write access to allow assigning users to groups. This role should be assigned on the service scope."
+    },
+    "API Management Workspace API Developer": {
+      "Id": "56328988-075d-4c6a-8766-d93edd6725b6",
+      "Description": "Has read access to entities in the workspace and read and write access to entities for editing APIs. This role should be assigned on the workspace scope."
+    },
+    "API Management Workspace API Product Manager": {
+      "Id": "73c2c328-d004-4c5e-938c-35c6f5679a1f",
+      "Description": "Has read access to entities in the workspace and read and write access to entities for publishing APIs. This role should be assigned on the workspace scope."
+    },
+    "API Management Workspace Contributor": {
+      "Id": "0c34c906-8d99-4cb7-8bb7-33f5b0a1a799",
+      "Description": "Can manage the workspace and view, but not modify its members. This role should be assigned on the workspace scope."
+    },
+    "API Management Workspace Reader": {
+      "Id": "ef1c2c96-4a77-49e8-b9a4-6179fe1d2fd2",
+      "Description": "Has read-only access to entities in the workspace. This role should be assigned on the workspace scope."
+    },
     "App Configuration Data Owner": {
       "Id": "5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b",
       "Description": "Allows full access to App Configuration data."
@@ -1220,10 +1244,6 @@
       "Id": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
       "Description": "Grants full access to manage all resources, including the ability to assign roles in Azure RBAC."
     },
-    "PE_SF_App_Contributor": {
-      "Id": "07d3b4c1-5fdf-589e-ab84-eb7ac5b35374",
-      "Description": "Manage Service Fabric Applications"
-    },
     "PlayFab Contributor": {
       "Id": "0c8b84dc-067c-4039-9615-fa1a4b77c726",
       "Description": "Provides contributor access to PlayFab resources"
@@ -1579,6 +1599,18 @@
     "Windows Admin Center Administrator Login": {
       "Id": "a6333a3e-0164-44c3-b281-7a577aff287f",
       "Description": "Let's you manage the OS of your resource via Windows Admin Center as an administrator."
+    },
+    "Windows365NetworkInterfaceContributor": {
+      "Id": "1f135831-5bbe-4924-9016-264044c00788",
+      "Description": "Create NICs and join it to virtual machine in another tenant. This role is used in Windows365 scenarios."
+    },
+    "Windows365NetworkUser": {
+      "Id": "7eabc9a4-85f7-4f71-b8ab-75daaccc1033",
+      "Description": "Read the virtual network informations, and join the virtual network to virtual machine in another tenant. This role is used in Windows365 scenarios."
+    },
+    "Windows365SubscriptionReader": {
+      "Id": "3d55a8f6-4133-418d-8051-facdb1735758",
+      "Description": "Read subscriptions, images, azure firewalls. This role is used in Windows365 scenarios."
     },
     "Workbook Contributor": {
       "Id": "e8ddcd69-c73f-4f9f-9844-4100522f16ad",

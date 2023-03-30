@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": { // AKS
     "Prefix": {
-      "value": "ACU1"
+      "value": "AEU1"
     },
     "Environment": {
       "value": "D"
@@ -44,7 +44,7 @@
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
-        "NATGW": 0,
+        "NATGW": 1,
         "ERGW": 0,
         "LB": 0,
         "TM": 0,
@@ -74,7 +74,7 @@
         // below require secrets from KV
         "VMSS": 0,
         "ACI": 0,
-        "AKS": 0, //
+        "AKS": 1, //
         "AzureSQL": 0,
         "SFM": 0,
         "SFMNP": 0,
@@ -356,7 +356,7 @@
             "Route": 0, //1
             "FlowLogEnabled": 0,
             "FlowAnalyticsEnabled": 0,
-            "NGW": 0
+            "NGW": 1
           }
           // {
           //   "name": "snBE01",
@@ -367,6 +367,12 @@
           //   "FlowAnalyticsEnabled": 1,
           //   "NGW": 1
           // }
+        ],
+        "NatGWInfo": [
+          {
+            "Name": "NAT01",
+            "PIPCount": 1
+          }
         ],
         "saInfo": [
           {
@@ -418,25 +424,25 @@
             "AgentPools": [
               {
                 "name": "cblmariner01",
-                "count": 3,
+                "count": 1,
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
                 "osSKU": "Mariner2",
-                "maxPods": 16,
+                "maxPods": 32,
                 "storageProfile": "ManagedDisks",
-                "vmSize": "Standard_D2plds_v5", // Standard_D2ads_v5
+                "vmSize": "Standard_D2ps_v5", //"Standard_D2plds_v5", // Standard_D2ads_v5 // Standard_D2ps_v5
                 "mode": "System"
               },
               {
                 "name": "cblmariner02",
-                "count": 3,
-                "maxcount": 4,
+                "count": 1,
+                "maxcount": 1,
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
                 "osSKU": "Mariner2",
-                "maxPods": 50,
+                "maxPods": 32,
                 "storageProfile": "ManagedDisks",
-                "vmSize": "Standard_D2plds_v5",
+                "vmSize": "Standard_D2ps_v5",
                 "mode": "User"
               }
               // {

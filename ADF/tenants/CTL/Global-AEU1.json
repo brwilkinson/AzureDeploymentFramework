@@ -1,16 +1,13 @@
 {
   "Global": {
     "hubRG": {
-      "name": "P0",
-      "AppName": "HUB"
+      "name": "P0"
     },
     "hubKV": {
-      "name": "VLT01",
-      "AppName": "HUB"
+      "name": "VLT01"
     },
     "hubAA": {
-      "name": "OMSAutomation",
-      "AppName": "HUB"
+      "name": "OMSAutomation"
     },
     "DNSServers": [],
     "AALocation": "EastUS",

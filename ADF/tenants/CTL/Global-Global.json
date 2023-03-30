@@ -3,13 +3,14 @@
     "OrgName": "PE",
     "AppName": "CTL",
     "GlobalSA": {
-      "name": "global"
+      "name": "global",
+      "RG": "P0"
     },
     "GlobalACR": {
       "name": "global"
     },
     "GlobalRG": {
-      "name": "G1"
+      "name": "P0"
     },
     "AppId": 6,
     "Network": {
@@ -17,8 +18,8 @@
       "second": 248,
       "third": 248
     },
-    "PrimaryLocation": "CentralUS",
-    "SecondaryLocation": "EastUS2",
+    "PrimaryLocation": "EastUS",
+    "SecondaryLocation": "WestUS",
     "vmAdminUserName": "brw",
     "sqlCredentialName": "sqladmin",
     "MicrosoftCAThumbprints": [
@@ -41,7 +42,7 @@
     ],
     "ObjectIdLookup": {
       "BenWilkinson-ADM": "9bce7f53-71d0-4f3f-be0d-f00dfab17de4",
-      "brwilkinson": "8b899164-b723-43cf-adf8-6df2c96f780f",
+      "brwilkinson": "c859c859-2003-48a0-b8fd-5cc04eaaac5c",
       "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
       "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
       "ADO_ADF_ACU1-PE-AKS-RG-D1": "e3cd060f-8ebf-43eb-9bea-40ffc9e20883"
