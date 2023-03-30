@@ -4,10 +4,7 @@ function Global:AzSet
         [parameter(Mandatory)]
         [string]$Enviro,
         [parameter(Mandatory)]
-        [ValidateScript({
-                $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
-                if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
-            })]
+        [ValidateSet('ADF', 'AKS', 'AOA', 'GW', 'HUB', 'LAB', 'MON', 'PST', 'SFM', 'CTL')]
         [string]$App
     )
     # F5 to load
