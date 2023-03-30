@@ -30,7 +30,7 @@ $pubname = 'MicrosoftCBLMariner'
 Get-AzVMImageOffer -Location $location -Publisher $pubName | Select-Object Offer
 
 $pubname = 'Microsoft.Powershell'   # Ext
-$pubname = 'Microsoft.Azure.ActiveDirectory.LinuxSSH'  # ext
+# $pubname = 'Microsoft.Azure.ActiveDirectory.LinuxSSH'  # ext
 $pubname = 'Microsoft.Azure.ActiveDirectory' # ext
 $pubname = 'Microsoft.Azure.OpenSSH' #Ext
 $pubname = 'Microsoft.Azure.Monitoring.DependencyAgent'  # ext
@@ -47,6 +47,8 @@ $ExtType = 'AzureMonitorLinuxAgent'
 $ExtType = 'AzureMonitorWindowsAgent'
 $ExtType = 'MicrosoftMonitoringAgent'
 $ExtType = 'OmsAgentForLinux'
+$ExtType = 'AADSSHLoginForLinux'
+$ExtType = 'AADLoginForWindows'
 Get-AzVMExtensionImage -Location $location -PublisherName $pubname -Type $ExtType | Select-Object PublisherName, Type, Version
 
 # 3 retrieve the SKUs of the offering
