@@ -225,7 +225,7 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-10-01-
         properties: {
           publisher: 'Microsoft.Azure.ActiveDirectory'
           type: OSType[nt.OSType].OS == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginForLinux'
-          typeHandlerVersion: '1.0'
+          typeHandlerVersion: OSType[nt.OSType].OS == 'Windows' ? '2.0' : '1.0'
           autoUpgradeMinorVersion: true
         }
       }
