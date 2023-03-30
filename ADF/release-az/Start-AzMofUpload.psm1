@@ -13,7 +13,10 @@ Function global:Start-AzMofUpload
         [validateset('A5', 'D2', 'P1', 'P0', 'S1', 'T3', 'S2', 'S3', 'D3', 'D4', 'D5', 'D6', 'D7', 'U8', 'P9', 'G0', 'G1', 'M0', 'T0')]
         [string]$Environment = 'G1',
     
-        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
+        [ValidateScript({
+        $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
+        if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+    })]
         [alias('AppName')]
         [string] $App = 'AOA',
     

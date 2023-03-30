@@ -3,7 +3,10 @@
 param (
     [String]$Env = 'd1',
     [string]$Prefix = 'ACU1',
-    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
+    [ValidateScript({
+            $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
+            if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+        })]
     [string]$App = 'SFM',
     [ValidateSet('AZ', 'SF')]
     [String]$TYPE = 'SF'

@@ -1,5 +1,10 @@
 #requires -Modules Az.Accounts,Az.KeyVault,Az.ServiceFabric
 
+function validateTenant
+{
+    Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name
+}
+
 function Connect-FromAzToGraph
 {
     param (
@@ -61,7 +66,10 @@ function Get-SFMCommonName
         [String]$Env = 'd1',
         [ValidateSet('ACU1', 'AEU2', 'AEU1', 'AWCU')]
         [string]$Prefix = 'ACU1',
-        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
+        [ValidateScript({
+                $tenants = validateTenant
+                if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+            })]
         [string]$App = 'PST'
     )
     
@@ -75,7 +83,10 @@ function Get-Global
     param (
         [ValidateSet('ACU1', 'AEU2', 'AEU1', 'AWCU')]
         [string]$Prefix = 'ACU1',
-        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
+        [ValidateScript({
+                $tenants = validateTenant
+                if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+            })]
         [string]$App = 'PST'
     )
     
@@ -326,7 +337,10 @@ function Set-ADOSFMServiceConnection
         [validateset('d1', 'u5', 'p8')]
         [string]$Environment = 'd1',
 
-        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
+        [ValidateScript({
+                $tenants = validateTenant
+                if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+            })]
         [string]$App = 'SFM',
 
         [String]$ConnectionType = 'ServiceFabric',
@@ -389,7 +403,10 @@ function Set-ADOAZServiceConnection
         
         [String[]]$Environments = ('D1'),
 
-        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
+        [ValidateScript({
+                $tenants = validateTenant
+                if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+            })]
         [string]$App = 'SFM',
         [int]$SecretAgeDays = 365,
         [int]$RenewDays = 20,
@@ -730,7 +747,10 @@ function New-ADOAZServiceConnection
         
         [String[]]$Environments = ('D16'),
 
-        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
+        [ValidateScript({
+                $tenants = validateTenant
+                if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+            })]
         [string]$App = 'PST',
         [int]$SecretAgeDays = 365,
         [switch]$IncludeReaderOnSubscription,
