@@ -32,7 +32,7 @@ Function global:Start-AzDeploy
         # [validateset('T0', 'P0', 'S1', 'S2', 'S3', 'D2', 'D3', 'T4', 'T5', 'T6', 'U6', 'P7', 'G0', 'G1', 'M0', 'A0')]
         [string] $Deployment,
 
-        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+        [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
         [alias('AppName')]
         [string] $App = 'AOA',
 

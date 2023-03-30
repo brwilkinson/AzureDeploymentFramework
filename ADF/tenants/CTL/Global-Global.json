@@ -1,0 +1,50 @@
+{
+  "Global": {
+    "OrgName": "PE",
+    "AppName": "CTL",
+    "GlobalSA": {
+      "name": "global"
+    },
+    "GlobalACR": {
+      "name": "global"
+    },
+    "GlobalRG": {
+      "name": "G1"
+    },
+    "AppId": 6,
+    "Network": {
+      "first": 10,
+      "second": 248,
+      "third": 248
+    },
+    "PrimaryLocation": "CentralUS",
+    "SecondaryLocation": "EastUS2",
+    "vmAdminUserName": "brw",
+    "sqlCredentialName": "sqladmin",
+    "MicrosoftCAThumbprints": [
+      "2f2877c5d778c31e0f29c7e371df5471bd673173",
+      "30e01761ab97e59a06b41ef20af6f2de7ef4f7b0",
+      "6c3af02e7f269aa73afd0eff2a88a4a1f04ed1e5",
+      "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
+    ],
+    "ADDomainName": "psthing.com",
+    "DomainName": "psthing.com",
+    "DomainNameExt": "psthing.com",
+    "ADOProject": "ADF",
+    "AZDevOpsOrg": "mybrw12354",
+    "ServicePrincipalAdmins": [
+      "BenWilkinson-ADM"
+    ],
+    "apimPublisherEmail": "benwilk@psthing.com",
+    "alertRecipients": [
+      "benwilk@psthing.com"
+    ],
+    "ObjectIdLookup": {
+      "BenWilkinson-ADM": "9bce7f53-71d0-4f3f-be0d-f00dfab17de4",
+      "brwilkinson": "8b899164-b723-43cf-adf8-6df2c96f780f",
+      "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
+      "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927",
+      "ADO_ADF_ACU1-PE-AKS-RG-D1": "e3cd060f-8ebf-43eb-9bea-40ffc9e20883"
+    }
+  }
+}

@@ -2,7 +2,7 @@ param (
     [alias('Dir', 'Path')]
     [string] $Artifacts = (Get-Item -Path "$PSScriptRoot\.."),
 
-    [validateset('ADF', 'PSO', 'HUB', 'ABC', 'AOA', 'HAA')]
+    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
     [alias('AppName')]
     [string] $App = 'AOA',
 

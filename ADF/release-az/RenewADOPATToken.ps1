@@ -4,7 +4,7 @@ param (
     [ValidateSet('P0')]
     [String]$Env = 'P0',
     [string[]]$Prefixes = ('ACU1', 'AEU2'),
-    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
     [string]$App = 'HUB'
 )
 

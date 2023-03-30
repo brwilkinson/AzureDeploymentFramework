@@ -8,7 +8,7 @@ param (
         
     [String[]]$Environments = ('D16'),
 
-    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM')]
+    [ValidateSet('ADF','AKS','AOA','GW','HUB','LAB','MON','PST','SFM','CTL')]
     [string]$App = 'PST',
     [int]$SecretAgeDays = 365,
     [switch]$IncludeReaderOnSubscription
