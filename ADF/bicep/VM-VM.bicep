@@ -456,7 +456,7 @@ resource AppServerAADLogin 'Microsoft.Compute/virtualMachines/extensions@2022-03
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
-    publisher: OSType[AppServer.OSType].OS == 'Windows' ? 'Microsoft.Azure.ActiveDirectory' : 'Microsoft.Azure.ActiveDirectory'
+    publisher: 'Microsoft.Azure.ActiveDirectory'
     type: OSType[AppServer.OSType].OS == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginForLinux'
     typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '2.0' : '1.0'
     autoUpgradeMinorVersion: true
@@ -469,7 +469,7 @@ resource AzureDefenderForServers 'Microsoft.Compute/virtualMachines/extensions@2
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.Azure.AzureDefenderForServers'
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'MDE.Windows' : 'MDE.Linux')
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'MDE.Windows' : 'MDE.Linux'
     typeHandlerVersion: '1.0'
     autoUpgradeMinorVersion: true
     settings: {
@@ -486,7 +486,7 @@ resource AzureGuestConfig 'Microsoft.Compute/virtualMachines/extensions@2022-03-
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.GuestConfiguration'
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'ConfigurationForWindows' : 'ConfigurationForLinux')
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'ConfigurationForWindows' : 'ConfigurationForLinux'
     typeHandlerVersion: '1.2'
     autoUpgradeMinorVersion: true
     settings: {}
@@ -547,9 +547,9 @@ resource AppServerDSCPull 'Microsoft.Compute/virtualMachines/extensions@2021-03-
     displayName: 'Powershell.DSC.Pull'
   }
   properties: {
-    publisher: (OSType[AppServer.OSType].OS == 'Windows' ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions')
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'DSC' : 'DSCForLinux')
-    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '2.77' : '2.0')
+    publisher: OSType[AppServer.OSType].OS == 'Windows' ? 'Microsoft.Powershell' : 'Microsoft.OSTCExtensions'
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'DSC' : 'DSCForLinux'
+    typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '2.77' : '2.0'
     autoUpgradeMinorVersion: true
     protectedSettings: {
       Items: {
@@ -651,7 +651,7 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' 
         storageAccountId: saaccountidglobalsource.id
         deployment: Deployment
         networkid: '${networkId.upper}.${ contains(lowerLookup,AppServer.NICs[0].subnet) ? int(networkId.lower) + ( 1 * lowerLookup[AppServer.NICs[0].subnet]) : networkId.lower }.'
-        appInfo: (contains(AppServer, 'AppInfo') ? string(VM.AppInfo) : '')
+        appInfo: contains(AppServer, 'AppInfo') ? string(VM.AppInfo) : ''
         DataDiskInfo: string(VM.DataDisk)
         // clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAILocal.properties.clientId
         clientIDGlobal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAIGlobal.properties.clientId
@@ -690,12 +690,12 @@ resource AppServerDiags 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.Azure.Diagnostics'
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'IaaSDiagnostics' : 'LinuxDiagnostic')
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'IaaSDiagnostics' : 'LinuxDiagnostic'
     typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.9' : '3.0')
     autoUpgradeMinorVersion: true
     settings: {
-      WadCfg: (OSType[AppServer.OSType].OS == 'Windows' ? WadCfg : null)
-      ladCfg: (OSType[AppServer.OSType].OS == 'Windows' ? null : ladCfg)
+      WadCfg: OSType[AppServer.OSType].OS == 'Windows' ? WadCfg : null
+      ladCfg: OSType[AppServer.OSType].OS == 'Windows' ? null : ladCfg
       StorageAccount: saaccountiddiag
       StorageType: 'TableAndBlob'
     }
@@ -714,7 +714,7 @@ resource AppServerDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux')
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
     typeHandlerVersion: '9.5'
     autoUpgradeMinorVersion: true
   }
@@ -722,14 +722,14 @@ resource AppServerDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@
 
 // SF ✅
 resource AppServerAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.AzureMonitorAgent)) {
-  name: (OSType[AppServer.OSType].OS == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
+  name: OSType[AppServer.OSType].OS == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
     autoUpgradeMinorVersion: true
     publisher: 'Microsoft.Azure.Monitor'
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent')
-    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.5')
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
+    typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.5'
   }
 }
 
@@ -740,8 +740,8 @@ resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@
   location: resourceGroup().location
   properties: {
     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux')
-    typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.4')
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
+    typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.4'
     autoUpgradeMinorVersion: true
     settings: {
       workspaceId: OMS.properties.customerId
@@ -759,7 +759,7 @@ resource AppServerGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020
   properties: {
     autoUpgradeMinorVersion: true
     publisher: 'Microsoft.Azure.Monitor.VirtualMachines.GuestHealth'
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
     typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.0')
   }
 }

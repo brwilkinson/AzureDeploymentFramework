@@ -223,8 +223,8 @@ resource nodeType 'Microsoft.ServiceFabric/managedClusters/nodeTypes@2022-10-01-
       {
         name: 'AADLogin'
         properties: {
-          publisher: ((OSType[nt.OSType].OS == 'Windows') ? 'Microsoft.Azure.ActiveDirectory' : 'Microsoft.Azure.ActiveDirectory.LinuxSSH')
-          type: ((OSType[nt.OSType].OS == 'Windows') ? 'AADLoginForWindows' : 'AADLoginForLinux')
+          publisher: 'Microsoft.Azure.ActiveDirectory'
+          type: OSType[nt.OSType].OS == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginForLinux'
           typeHandlerVersion: '1.0'
           autoUpgradeMinorVersion: true
         }
