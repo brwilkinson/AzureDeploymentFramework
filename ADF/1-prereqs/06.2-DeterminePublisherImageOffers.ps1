@@ -11,6 +11,7 @@ break
 $Location = 'eastus2'
 $Location = 'centralus'
 $Location = 'westus'
+$Location = 'eastus'
 Get-AzVMImagePublisher -Location $location | Select-Object PublisherName 
 
 # 2 obtain offerings from the publisher

@@ -457,7 +457,7 @@ resource AppServerAADLogin 'Microsoft.Compute/virtualMachines/extensions@2022-03
   location: resourceGroup().location
   properties: {
     publisher: (OSType[AppServer.OSType].OS == 'Windows' ? 'Microsoft.Azure.ActiveDirectory' : 'Microsoft.Azure.ActiveDirectory.LinuxSSH')
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginForLinux')
+    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'AADLoginForWindows' : 'AADLoginForLinux')
     typeHandlerVersion: '1.0'
     autoUpgradeMinorVersion: true
   }
