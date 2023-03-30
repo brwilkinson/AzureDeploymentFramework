@@ -26,6 +26,7 @@ Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -Featur
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-ScaleDownModePreview
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-GitOps
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-ExtensionManager
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName NodeOSUpgradeChannelPreview
 
 Register-AzResourceProvider -ProviderNamespace microsoft.containerservice
 Register-AzResourceProvider -ProviderNamespace microsoft.Kubernetes

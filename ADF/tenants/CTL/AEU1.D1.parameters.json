@@ -180,6 +180,9 @@
             "RBAC": [
               {
                 "Name": "Contributor"
+              },
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
               }
             ]
           }
@@ -405,7 +408,7 @@
         "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.25.4", // 1.23.8, 1.24.0
+            "Version": "1.25.5", // 1.23.8, 1.24.0
             "skuTier": "Free", //Free
             "enableRBAC": 1,
             "enableOSM": 1,
@@ -416,32 +419,30 @@
             "WAFName": "AGIC01",
             "BrownFields": 1,
             "AppGateway": 0,
-            "AutoScale": 0,
+            "AutoScale": 1,
             "enableDefender": 0,
             "aksAADAdminGroups": [
               "brwilkinson"
             ],
             "AgentPools": [
               {
-                "name": "cblmariner01",
+                "name": "system01",
                 "count": 1,
-                "osDiskSizeGb": 30,
+                "osDiskSizeGb": 0, // 0 use default size
                 "osType": "Linux",
-                "osSKU": "Mariner2",
-                "maxPods": 32,
-                "storageProfile": "ManagedDisks",
+                "osSKU": "Mariner",
+                "maxPods": 110,
                 "vmSize": "Standard_D2ps_v5", //"Standard_D2plds_v5", // Standard_D2ads_v5 // Standard_D2ps_v5
                 "mode": "System"
               },
               {
-                "name": "cblmariner02",
-                "count": 1,
+                "name": "user01",
+                "count": 0,
                 "maxcount": 1,
-                "osDiskSizeGb": 30,
+                "osDiskSizeGb": 0,
                 "osType": "Linux",
-                "osSKU": "Mariner2",
-                "maxPods": 32,
-                "storageProfile": "ManagedDisks",
+                "osSKU": "Mariner",
+                "maxPods": 110,
                 "vmSize": "Standard_D2ps_v5",
                 "mode": "User"
               }
@@ -451,7 +452,6 @@
               //   "osDiskSizeGb": 30,
               //   "osType": "Linux",
               //   "maxPods": 50,
-              //   "storageProfile": "ManagedDisks",
               //   "vmSize": "Standard_D2plds_v5",
               //   "mode": "User"
               // }

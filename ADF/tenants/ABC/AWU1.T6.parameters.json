@@ -809,7 +809,6 @@
                 "osDiskSizeGb": 30,
                 "osType": "Linux",
                 "maxPods": 16,
-                "storageProfile": "ManagedDisks",
                 "_vmSize": "Standard_D1_v2",
                 "ASName": "JMP",
                 "mode": "System"
@@ -820,7 +819,6 @@
               //   "osDiskSizeGb": 30,
               //   "osType": "Linux",
               //   "maxPods": 50,
-              //   "storageProfile": "ManagedDisks",
               //   "_vmSize": "Standard_D1_v2",
               //   "ASName": "JMP",
               //   "mode": "User"
@@ -831,7 +829,6 @@
               //   "osDiskSizeGb": 30,
               //   "osType": "Linux",
               //   "maxPods": 50,
-              //   "storageProfile": "ManagedDisks",
               //   "_vmSize": "Standard_D1_v2",
               //   "ASName": "JMP",
               //   "mode": "User"

@@ -120,23 +120,24 @@ var availabilityZones = contains(excludeZones, Prefix) ? null : [
 ]
 
 var autoScalerProfile = {
-  // balance-similar-node-groups: 'string'
-  // expander: 'string'
-  // max-empty-bulk-delete: 'string'
-  // max-graceful-termination-sec: 'string'
-  // max-node-provision-time: 'string'
-  // max-total-unready-percentage: 'string'
-  // new-pod-scale-up-delay: 'string'
-  // ok-total-unready-count: 'string'
-  // scale-down-delay-after-add: 'string'
-  // scale-down-delay-after-delete: 'string'
-  // scale-down-delay-after-failure: 'string'
-  // scale-down-unneeded-time: 'string'
-  // scale-down-unready-time: 'string'
-  // scale-down-utilization-threshold: 'string'
-  // scan-interval: 'string'
-  // skip-nodes-with-local-storage: 'string'
-  // skip-nodes-with-system-pods: 'string'
+  #disable-next-line prefer-unquoted-property-names
+  'expander': 'random'
+  'balance-similar-node-groups': false
+  'max-empty-bulk-delete': '10'
+  'max-graceful-termination-sec': '600'
+  'max-node-provision-time': '15m'
+  'max-total-unready-percentage': '45'
+  'new-pod-scale-up-delay': '0s'
+  'ok-total-unready-count': '3'
+  'scale-down-delay-after-add': '10m'
+  'scale-down-delay-after-delete': '10s'
+  'scale-down-delay-after-failure': '3m'
+  'scale-down-unneeded-time': '10m'
+  'scale-down-unready-time': '20m'
+  'scale-down-utilization-threshold': '0.5'
+  'skip-nodes-with-system-pods': true
+  'scan-interval': '10s'
+  'skip-nodes-with-local-storage': false
 }
 
 #disable-next-line decompiler-cleanup
@@ -169,7 +170,6 @@ resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' exist
   name: '${Deployment}-uaiIngressApplicationGateway'
 }
 
-#disable-next-line BCP081
 resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
   location: resourceGroup().location
@@ -202,7 +202,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
       scaleDownMode: 'Delete'
       osDiskSizeGB: agentpool.osDiskSizeGb
       osType: agentpool.osType
-      osSKU: contains(agentpool, 'osSKU') && agentpool.osType == 'Linux' ? agentpool.osSKU : agentpool.osType == 'Linux' ? 'CBLMariner' : null
+      osSKU: contains(agentpool, 'osSKU') && agentpool.osType == 'Linux' ? agentpool.osSKU : agentpool.osType == 'Linux' ? 'Mariner' : null
       maxPods: agentpool.maxPods
       vmSize: contains(agentpool, 'vmSize') ? agentpool.vmSize : 'Standard_DS2_v2'
       vnetSubnetID: (contains(agentpool, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', agentpool.Subnet) : resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', AKSInfo.AgentPoolsSN))
@@ -227,8 +227,8 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
       enableCSIProxy: true
     }
     securityProfile: {
-      defender: { // not supported on ARM CPU/Size
-        logAnalyticsWorkspaceResourceId: contains(AKSInfo, 'enableDefender') && ! bool(AKSInfo.enableDefender) ? null : OMS.id
+      defender: {// not supported on ARM CPU/Size
+        logAnalyticsWorkspaceResourceId: contains(AKSInfo, 'enableDefender') && !bool(AKSInfo.enableDefender) ? null : OMS.id
         securityMonitoring: {
           enabled: contains(AKSInfo, 'enableDefender') ? bool(AKSInfo.enableDefender) : true
         }
@@ -253,13 +253,19 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
     oidcIssuerProfile: {
       enabled: true
     }
-    
+    autoUpgradeProfile: {//https://learn.microsoft.com/en-us/azure/aks/auto-upgrade-cluster#using-cluster-auto-upgrade
+      upgradeChannel: 'stable'
+      nodeOSUpgradeChannel: 'NodeImage'
+    }
     autoScalerProfile: bool(AKSInfo.AutoScale) ? autoScalerProfile : null
     podIdentityProfile: bool(AKSInfo.podIdentity) ? podIdentityProfile : null
     addonProfiles: {
       gitops: {
         enabled: resourceGroup().location == 'eastus' ? true : false // preview enabled in eastus/westeurope
         config: {}
+      }
+      'ingress/webApplicationRouting': {
+        enabled: true
       }
       azureKeyvaultSecretsProvider: {
         enabled: true
@@ -270,9 +276,9 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
       }
       IngressApplicationGateway: {
         enabled: bool(AKSInfo.AppGateway)
-        config: !bool(AKSInfo.BrownFields) ? IngressGreenfields : {
+        config: bool(AKSInfo.AppGateway) ? !bool(AKSInfo.BrownFields) ? IngressGreenfields : {
           applicationGatewayId: IngressBrownfields.id
-        }
+        } : null
       }
       openServiceMesh: {
         enabled: contains(AKSInfo, 'enableOSM') ? bool(AKSInfo.enableOSM) : false
@@ -282,12 +288,15 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
         enabled: false
       }
       azurePolicy: {
-        enabled: false
+        enabled: true
         config: {
           version: 'v2'
         }
       }
-      omsAgent: {
+      kubeDashboard: {
+        enabled: true
+      }
+      omsagent: {
         enabled: true
         config: {
           useAADAuth: 'true'
