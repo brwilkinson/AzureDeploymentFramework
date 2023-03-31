@@ -385,6 +385,7 @@ resource AKSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
+/*
 resource monitorAccount 'Microsoft.Monitor/accounts@2021-06-03-preview' existing = {
   name: '${DeploymentURI}Monitor'
 }
@@ -573,6 +574,7 @@ resource NodeRecordingRulesRuleGroupAEUPECTLDaks 'Microsoft.AlertsManagement/pro
     ]
   }
 }
+*/
 
 module identities 'AKS-AKS-RBAC.bicep' = {
   name: 'dp-identities-${Deployment}-aks${AKSInfo.Name}'

@@ -814,11 +814,19 @@ resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' = {
   }
 }
 
+
+
+/*
 resource monitorAccount 'Microsoft.Monitor/accounts@2021-06-03-preview' = {
   name: '${DeploymentURI}Monitor'
   location: resourceGroup().location
   properties: {
+    #disable-next-line BCP037
     publicNetworkAccess: 'Enabled'
+    defaultIngestionSettings: {
+      dataCollectionEndpointResourceId: dataCollectorEPLinux.id
+      dataCollectionRuleResourceId: dataCollectorEPLinuxRule.id
+    }
   }
 }
 
@@ -842,6 +850,7 @@ resource dataCollectorEPLinuxRule 'Microsoft.Insights/dataCollectionRules@2021-0
   properties: {
     dataCollectionEndpointId: dataCollectorEPLinux.id
     dataSources: {
+      #disable-next-line BCP037
       prometheusForwarder: [
         {
           streams: [
@@ -853,10 +862,10 @@ resource dataCollectorEPLinuxRule 'Microsoft.Insights/dataCollectionRules@2021-0
       ]
     }
     destinations: {
+      #disable-next-line BCP037
       monitoringAccounts: [
         {
           accountResourceId: monitorAccount.id
-          accountId: '993f2cd9-01c1-4ea5-b059-09a0bdaa7e0c'
           name: 'MonitoringAccount1'
         }
       ]
@@ -873,6 +882,7 @@ resource dataCollectorEPLinuxRule 'Microsoft.Insights/dataCollectionRules@2021-0
     ]
   }
 }
+*/
 
 resource AADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'

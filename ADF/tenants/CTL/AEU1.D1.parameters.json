@@ -48,7 +48,7 @@
         "ERGW": 0,
         "LB": 0,
         "TM": 0,
-        "WAFPOLICY": 1,
+        "WAFPOLICY": 0,
         "WAF": 0, //
         "FRONTDOORPOLICY": 0,
         "FRONTDOOR": 0,
