@@ -95,6 +95,23 @@ module dp_Deployment_OMS 'OMS.bicep' = if (bool(Stage.OMS)) {
   dependsOn: []
 }
 
+module dp_Deployment_Grafana 'Grafana.bicep' = if (bool(Stage.Grafana)) {
+  name: 'dp${Deployment}-Grafana'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    dp_Deployment_OMS
+  ]
+}
+
 module dp_Deployment_SA 'SA.bicep' = if (bool(Stage.SA)) {
   name: 'dp${Deployment}-SA'
   params: {

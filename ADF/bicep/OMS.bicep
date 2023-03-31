@@ -814,6 +814,66 @@ resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' = {
   }
 }
 
+resource monitorAccount 'Microsoft.Monitor/accounts@2021-06-03-preview' = {
+  name: '${DeploymentURI}Monitor'
+  location: resourceGroup().location
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
+resource dataCollectorEPLinux 'Microsoft.Insights/dataCollectionEndpoints@2021-09-01-preview' = {
+  name: '${DeploymentURI}Monitor-Linux'
+  location: resourceGroup().location
+  kind: 'Linux'
+  properties: {}
+}
+
+// resource dataCollectorEPWindows 'Microsoft.Insights/dataCollectionEndpoints@2021-09-01-preview' = {
+//   name: '${DeploymentURI}Monitor-Windows'
+//   location: resourceGroup().location
+//   kind: 'Windows'
+//   properties: {}
+// }
+
+resource dataCollectorEPLinuxRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
+  name: '${DeploymentURI}Monitor-Linux-Rule'
+  location: resourceGroup().location
+  properties: {
+    dataCollectionEndpointId: dataCollectorEPLinux.id
+    dataSources: {
+      prometheusForwarder: [
+        {
+          streams: [
+            'Microsoft-PrometheusMetrics'
+          ]
+          labelIncludeFilter: {}
+          name: 'PrometheusDataSource'
+        }
+      ]
+    }
+    destinations: {
+      monitoringAccounts: [
+        {
+          accountResourceId: monitorAccount.id
+          accountId: '993f2cd9-01c1-4ea5-b059-09a0bdaa7e0c'
+          name: 'MonitoringAccount1'
+        }
+      ]
+    }
+    dataFlows: [
+      {
+        streams: [
+          'Microsoft-PrometheusMetrics'
+        ]
+        destinations: [
+          'MonitoringAccount1'
+        ]
+      }
+    ]
+  }
+}
+
 resource AADiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
   scope: AA

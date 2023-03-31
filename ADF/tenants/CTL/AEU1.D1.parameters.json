@@ -36,8 +36,8 @@
         "VNetDDOS": 0,
         "VNetPeering": 0,
         "DNSPublicZone": 0,
-        "DNSPrivateZone": 0,
-        "LinkPrivateDns": 0,
+        "DNSPrivateZone": 1,
+        "LinkPrivateDns": 1,
         "PrivateLink": 0,
         "BastionHost": 0,
         "CloudShellRelay": 0,
@@ -61,6 +61,7 @@
         "SQLMI": 0,
         "CosmosDB": 0,
         "DASHBOARD": 0,
+        "Grafana": 0,
         "ServerFarm": 0,
         "WebSite": 0,
         "WebSiteContainer": 0,
@@ -138,24 +139,21 @@
           {
             "name": "IngressApplicationGateway",
             "RBAC": [
-              // {
-              //   "Name": "Private DNS Zone Contributor",
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // },
-              // {
-              //   "Name": "Key Vault Certificates Officer",
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // },
-              // {
-              //   "Name": "Key Vault Secrets User",
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // },
-              // {
-              //   "Name": "Network Contributor"
-              // }
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0"
+              },
+              {
+                "Name": "Network Contributor"
+              }
             ]
           },
           {
@@ -172,6 +170,38 @@
               //   "Tenant": "HUB"
               // }
             ]
+          },
+          {
+            "name": "MonitoringReader",
+            "RBAC": [
+              {
+                "Name": "Monitoring Reader"
+              }
+              // {
+              //   "Name": "Monitoring Reader",
+              //   "RG": "D3",
+              //   "Tenant": "PST",
+              //   "Prefix": "AWCU"
+              // },
+              // {
+              //   "Name": "Monitoring Reader",
+              //   "RG": "D4",
+              //   "Tenant": "PST",
+              //   "Prefix": "ACU1"
+              // },
+              // {
+              //   "Name": "Monitoring Reader",
+              //   "RG": "D1",
+              //   "Tenant": "PST",
+              //   "Prefix": "ACU1"
+              // },
+              // {
+              //   "Name": "Monitoring Reader",
+              //   "RG": "D2",
+              //   "Tenant": "PST",
+              //   "Prefix": "ACU1"
+              // }
+            ]
           }
         ],
         "rolesInfo": [
@@ -183,6 +213,20 @@
               },
               {
                 "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              },
+              {
+                "Name": "Grafana Admin"
+              }
+            ]
+          },
+          {
+            "Name": "grafanaUser",
+            "RBAC": [
+              {
+                "Name": "Azure Kubernetes Service RBAC Cluster Admin"
+              },
+              {
+                "Name": "Grafana Admin"
               }
             ]
           }
@@ -360,21 +404,28 @@
             "FlowLogEnabled": 0,
             "FlowAnalyticsEnabled": 0,
             "NGW": 1
+          },
+          {
+            "name": "snMT02",
+            "prefix": "0/23",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "NGW": 1
           }
-          // {
-          //   "name": "snBE01",
-          //   "prefix": "0/23",
-          //   "NSG": 1,
-          //   "Route": 0, //1
-          //   "FlowLogEnabled": 1,
-          //   "FlowAnalyticsEnabled": 1,
-          //   "NGW": 1
-          // }
         ],
         "NatGWInfo": [
           {
             "Name": "NAT01",
             "PIPCount": 1
+          }
+        ],
+        "DNSPrivateZoneInfo": [
+          {
+            "linkDNS": 1,
+            "zone": "psthing.com",
+            "Autoregistration": false
           }
         ],
         "saInfo": [
@@ -405,6 +456,12 @@
             ]
           }
         ],
+        "GrafanaInfo": [
+          {
+            "Name": "01",
+            "Identity": "Default"
+          }
+        ],
         "AKSInfo": [
           {
             "Name": "01",
@@ -420,7 +477,8 @@
             "BrownFields": 1,
             "AppGateway": 0,
             "AutoScale": 1,
-            "enableDefender": 0,
+            "enableDefender": 1,
+            "enablePolicy": 0,
             "aksAADAdminGroups": [
               "brwilkinson"
             ],
@@ -432,29 +490,22 @@
                 "osType": "Linux",
                 "osSKU": "Mariner",
                 "maxPods": 110,
-                "vmSize": "Standard_D2ps_v5", //"Standard_D2plds_v5", // Standard_D2ads_v5 // Standard_D2ps_v5
-                "mode": "System"
+                "vmSize": "Standard_D2ads_v5", // AMD --> "Standard_D2plds_v5", Standard_D2ps_v5 // NON AMD Standard_D2ads_v5
+                "mode": "System",
+                "subnet": "snMT01"
               },
               {
                 "name": "user01",
-                "count": 0,
+                "count": 1,
                 "maxcount": 1,
                 "osDiskSizeGb": 0,
                 "osType": "Linux",
                 "osSKU": "Mariner",
-                "maxPods": 110,
-                "vmSize": "Standard_D2ps_v5",
-                "mode": "User"
+                "maxPods": 250,
+                "vmSize": "Standard_D2ads_v5",
+                "mode": "User",
+                "subnet": "snMT02"
               }
-              // {
-              //   "name": "winctr1",
-              //   "count": 2,
-              //   "osDiskSizeGb": 30,
-              //   "osType": "Linux",
-              //   "maxPods": 50,
-              //   "vmSize": "Standard_D2plds_v5",
-              //   "mode": "User"
-              // }
             ]
           }
         ]
