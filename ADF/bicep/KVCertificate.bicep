@@ -64,13 +64,13 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var KVCertsInfo = contains(DeploymentInfo, 'KVCertsInfo') ? DeploymentInfo.KVCertsInfo : []
+var KVCertInfo = contains(DeploymentInfo, 'KVCertInfo') ? DeploymentInfo.KVCertInfo : []
 
-var CertInfo = [for (cert, index) in KVCertsInfo: {
+var CertInfo = [for (cert, index) in KVCertInfo: {
   match: (Global.CN == '.') || contains(array(Global.CN), cert.name)
 }]
 
-module SFM 'KVCertificate-Cert.bicep' = [for (cert, index) in KVCertsInfo: if (CertInfo[index].match) {
+module SFM 'KVCertificate-Cert.bicep' = [for (cert, index) in KVCertInfo: if (CertInfo[index].match) {
   name: 'dp${Deployment}-Cert-${cert.name}'
   params: {
     Deployment: Deployment
