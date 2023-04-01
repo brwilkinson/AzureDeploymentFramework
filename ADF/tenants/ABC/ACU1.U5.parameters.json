@@ -107,7 +107,7 @@
       "value": {
         "uaiInfo": [
           {
-            "name": "IngressApplicationGateway",
+            "name": "AKSCluster",
             "RBAC": [
               {
                 "Name": "Private DNS Zone Contributor",
@@ -126,6 +126,9 @@
               },
               {
                 "Name": "Network Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
               }
             ]
           },

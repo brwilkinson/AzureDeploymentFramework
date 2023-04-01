@@ -26,7 +26,7 @@ to other scopes E.g. tenant, subscription, Prefix (region) or App (tenant)
 ```json
         "uaiInfo": [
           {
-            "name": "IngressApplicationGateway",
+            "name": "AKSCluster",
             "RBAC": [
               {
                 "Name": "Private DNS Zone Contributor",
@@ -45,6 +45,9 @@ to other scopes E.g. tenant, subscription, Prefix (region) or App (tenant)
               },
               {
                 "Name": "Network Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
               }
             ]
           }

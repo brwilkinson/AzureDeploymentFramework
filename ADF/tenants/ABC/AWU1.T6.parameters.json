@@ -110,7 +110,7 @@
       "value": {
         "uaiInfo": [
           // {
-          //   "name": "IngressApplicationGateway",
+          //   "name": "AKSCluster",
           //   "RBAC": [
           //     {
           //       "Name": "Private DNS Zone Contributor",
@@ -129,7 +129,10 @@
           //     },
           //     {
           //       "Name": "Network Contributor"
-          //     }
+          //     },
+              // {
+              //   "Name": "Managed Identity Operator"
+              // }
           //   ]
           // },
           // {
@@ -789,49 +792,48 @@
         "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.22.4", // "1.20.2","1.19.7","1.19.6", "1.18.14"
-            "skuTier": "Paid", //Free
-            "enableRBAC": 1,
-            "podIdentity": 1,
+            "Version": "1.25.5", // 1.23.8, 1.24.0
+            "skuTier": "Free", //Free
+            "podIdentity": 0,
             "privateCluster": 0,
-            "AgentPoolsSN": "snMT02",
-            "WAFName": "01",
-            "loadBalancer": "basic", //"basic","standard"
-            "BrownFields": 0,
+            "AllowALLIPs": 1, // Add in NAT Public IP to allow range for VMSSCSE to work.
+            "AgentPoolsSN": "snMT01",
+            "WAFName": "AGIC01",
+            "BrownFields": 1,
             "AppGateway": 0,
+            "AutoScale": 1,
+            "enableRBAC": 1,
+            "enableOSM": 1,
+            "enableIngressAppRouting": 1,
+            "enableDefender": 0,
+            "enablePolicy": 0,
+            "enableaciConnector": 0,
             "aksAADAdminGroups": [
-              "AKS_Admins"
+              "brwilkinson"
             ],
             "AgentPools": [
               {
-                "name": "linctr",
-                "count": 2,
-                "osDiskSizeGb": 30,
+                "name": "system01",
+                "count": 1,
+                "osDiskSizeGb": 0, // 0 use default size
                 "osType": "Linux",
-                "maxPods": 16,
-                "_vmSize": "Standard_D1_v2",
-                "ASName": "JMP",
-                "mode": "System"
+                "osSKU": "Mariner",
+                "maxPods": 110,
+                "vmSize": "Standard_B4ms", // "Standard_D2ads_v5", // AMD --> "Standard_D2plds_v5", Standard_D2ps_v5 // NON AMD Standard_D2ads_v5
+                "mode": "System",
+                "subnet": "snMT01"
               }
               // {
-              //   "name": "winctr",
-              //   "count": 2,
-              //   "osDiskSizeGb": 30,
+              //   "name": "user01",
+              //   "count": 1,
+              //   "maxcount": 1,
+              //   "osDiskSizeGb": 0,
               //   "osType": "Linux",
-              //   "maxPods": 50,
-              //   "_vmSize": "Standard_D1_v2",
-              //   "ASName": "JMP",
-              //   "mode": "User"
-              // }
-              // {
-              //   "name": "linctr2",
-              //   "count": 2,
-              //   "osDiskSizeGb": 30,
-              //   "osType": "Linux",
-              //   "maxPods": 50,
-              //   "_vmSize": "Standard_D1_v2",
-              //   "ASName": "JMP",
-              //   "mode": "User"
+              //   "osSKU": "Mariner",
+              //   "maxPods": 250,
+              //   "vmSize": "Standard_D2ads_v5",
+              //   "mode": "User",
+              //   "subnet": "snMT02"
               // }
             ]
           }

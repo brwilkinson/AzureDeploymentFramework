@@ -167,7 +167,7 @@ var MSILookup = {
 var aksAADAdminLookup = [for i in range(0, ((!contains(AKSInfo, 'aksAADAdminGroups')) ? 0 : length(AKSInfo.aksAADAdminGroups))): objectIdLookup[AKSInfo.aksAADAdminGroups[i]]]
 
 resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
-  name: '${Deployment}-uaiIngressApplicationGateway'
+  name: '${Deployment}-uaiAKSCluster'
 }
 
 resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
@@ -217,6 +217,13 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
             keyData: sshPublic
           }
         ]
+      }
+    }
+    identityProfile: {
+      kubeletidentity: {
+        clientId: UAI.properties.principalId
+        objectId: UAI.properties.principalId
+        resourceId: UAI.id
       }
     }
     windowsProfile: {
@@ -269,7 +276,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
     podIdentityProfile: bool(AKSInfo.podIdentity) ? podIdentityProfile : null
     ingressProfile: {
       webAppRouting: {
-        enabled: true
+        enabled: bool(AKSInfo.?enableIngressAppRouting)
         // dnsZoneResourceId:
       }
     }
@@ -295,9 +302,6 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
         enabled: contains(AKSInfo, 'enableOSM') ? bool(AKSInfo.enableOSM) : false
         config: {}
       }
-      httpApplicationRouting: {
-        enabled: false
-      }
       azurepolicy: {
         enabled: contains(AKSInfo, 'enablePolicy') ? bool(AKSInfo.enablePolicy) : false
         config: {
@@ -312,12 +316,27 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
         }
       }
       aciConnectorLinux: {
-        enabled: true
+        enabled: bool(AKSInfo.?enableaciConnector)
         config: {
           SubnetName: 'snMT01'
         }
       }
+      httpApplicationRouting: {
+        enabled: false
+      }
     }
+  }
+}
+
+module identities 'AKS-AKS-RBAC.bicep' = {
+  name: 'dp-identities-${Deployment}-aks${AKSInfo.Name}'
+  params: {
+    AKS: AKS
+    Deployment: Deployment
+    DeploymentID: DeploymentID
+    Prefix: Prefix
+    Global: Global
+    Environment: Environment
   }
 }
 
@@ -575,37 +594,3 @@ resource NodeRecordingRulesRuleGroupAEUPECTLDaks 'Microsoft.AlertsManagement/pro
   }
 }
 */
-
-module identities 'AKS-AKS-RBAC.bicep' = {
-  name: 'dp-identities-${Deployment}-aks${AKSInfo.Name}'
-  params: {
-    AKSInfo: AKSInfo
-    Deployment: Deployment
-    DeploymentID: DeploymentID
-    Prefix: Prefix
-    Global: Global
-    Environment: Environment
-  }
-  dependsOn: [
-    // AKS
-  ]
-}
-
-var totalIdentities = 4
-module rgroleassignmentsAKSUAI 'sub-RBAC-RA.bicep' = [for i in range(0, totalIdentities): {
-  name: 'dp${Deployment}-rgroleassignmentsAKSUAI-${i + 1}'
-  scope: subscription()
-  params: {
-    Deployment: Deployment
-    Prefix: Prefix
-    rgName: RGName
-    Enviro: Enviro
-    Global: Global
-    roleInfo: identities.outputs.UAI[i].value
-    providerPath: 'guid'
-    namePrefix: ''
-    providerAPI: ''
-    principalType: 'ServicePrincipal'
-    count: i
-  }
-}]

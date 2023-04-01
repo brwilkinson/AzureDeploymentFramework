@@ -3,16 +3,16 @@ param Global object
 param Prefix string
 param DeploymentID string
 param Environment string
-param AKSInfo object = {
+param AKS object = {
   name: '01'
 }
 
-resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' existing = {
-  name: '${Deployment}-aks${AKSInfo.Name}'
-}
+var RGName = '${Prefix}-${Global.OrgName}-${Global.AppName}-RG-${Environment}${DeploymentID}'
+var Enviro = '${Environment}${DeploymentID}'
 
 var GlobalRGJ = json(Global.GlobalRG)
 var GlobalACRJ = json(Global.GlobalACR)
+var HubKVJ = json(Global.hubKV)
 var HubRGJ = json(Global.hubRG)
 
 var regionLookup = json(loadTextContent('./global/region.json'))
@@ -28,33 +28,15 @@ var gh = {
   globalACROrgName: contains(GlobalACRJ, 'OrgName') ? GlobalACRJ.OrgName : Global.OrgName
   globalACRAppName: contains(GlobalACRJ, 'AppName') ? GlobalACRJ.AppName : Global.AppName
   globalACRRGName: contains(GlobalACRJ, 'RG') ? GlobalACRJ.RG : contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+
+  // use local keyvault or hub keyvault ?
+  // hubKVPrefix: contains(HubKVJ, 'Prefix') ? HubKVJ.Prefix : Prefix
+  // hubKVOrgName: contains(HubKVJ, 'OrgName') ? HubKVJ.OrgName : Global.OrgName
+  // hubKVAppName: contains(HubKVJ, 'AppName') ? HubKVJ.AppName : Global.AppName
+  // hubKVRGName: contains(HubKVJ, 'RG') ? HubKVJ.RG : HubRGJ.name
 }
 
 var ManagedIdentities = {
-  azureKeyvaultSecretsProvider: {
-    name: AKS.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.objectId
-    RBAC: [
-      // {
-      //   Name: 'Contributor'
-      // }
-    ]
-  }
-  aciConnectorLinux: {
-    name: AKS.properties.addonProfiles.aciConnectorLinux.identity.objectId
-    RBAC: [
-      // {
-      //   Name: 'Contributor'
-      // }
-    ]
-  }
-  gitops: {
-    name: AKS.properties.addonProfiles.gitops.identity.objectId
-    RBAC: [
-      // {
-      //   Name: 'Contributor'
-      // }
-    ]
-  }
   identityProfile: {
     name: AKS.properties.identityProfile.kubeletidentity.objectId
     RBAC: [
@@ -66,14 +48,55 @@ var ManagedIdentities = {
       }
     ]
   }
-  // ingressProfile: {
-  //   name: AKS.properties.ingressProfile.webAppRouting.identity.objectId
-  //   RBAC: [
-  //     {
-  //       Name: 'Contributor'
-  //     }
-  //   ]
-  // }
+  azureKeyvaultSecretsProvider: {
+    name: AKS.properties.addonProfiles.azureKeyvaultSecretsProvider.?identity.?objectId ?? 0
+    RBAC: [
+      // {
+      //   Name: 'Key Vault Secrets User'
+      // }
+    ]
+  }
+  gitops: {
+    name: AKS.properties.addonProfiles.gitops.?identity.?objectId ?? 0
+    RBAC: [
+      // {
+      //   Name: 'Contributor'
+      // }
+    ]
+  }
+  aciConnectorLinux: {
+    name: AKS.properties.addonProfiles.aciConnectorLinux.?identity.?objectId ?? 0
+    RBAC: [
+      // {
+      //   Name: 'Contributor'
+      // }
+    ]
+  }
+  ingressProfile: {
+    name: AKS.properties.?ingressProfile.?webAppRouting.?identity.?objectId ?? 0
+    RBAC: [
+      // {
+      //   Name: 'Contributor'
+      // }
+    ]
+  }
 }
 
-output UAI array = items(ManagedIdentities)
+var totalIdentities = items(ManagedIdentities)
+
+module rgroleassignmentsAKSUAI 'sub-RBAC-RA.bicep' = [for (role, index) in totalIdentities: if (role.value.name != 0) {
+  name: take(replace('dp${Deployment}-rgRA-AKS-UAI-${role.key}-${index + 1}', '@', '_'), 64)
+  scope: subscription()
+  params: {
+    Deployment: Deployment
+    Prefix: Prefix
+    rgName: RGName
+    Enviro: Enviro
+    Global: Global
+    roleInfo: role.value
+    providerPath: 'guid'
+    namePrefix: ''
+    providerAPI: ''
+    principalType: 'ServicePrincipal'
+  }
+}]
