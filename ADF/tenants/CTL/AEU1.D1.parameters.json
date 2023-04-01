@@ -163,16 +163,14 @@
           {
             "Name": "CertificateRequest",
             "RBAC": [
-              // {
-              //   "Name": "Key Vault Secrets User",
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // },
-              // {
-              //   "Name": "Key Vault Certificates Officer",
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // }
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0"
+              }
             ]
           },
           {

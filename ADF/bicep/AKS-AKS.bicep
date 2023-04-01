@@ -174,7 +174,7 @@ resource DNSExternal 'Microsoft.Network/dnsZones@2018-05-01' existing = {
   name: Global.DomainNameExt
 }
 
-resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
+resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
   location: resourceGroup().location
   identity: {
@@ -184,7 +184,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
     }
   }
   sku: {
-    name: 'Basic'
+    name: 'Base' // Basic
     tier: AKSInfo.skuTier
   }
   tags: {

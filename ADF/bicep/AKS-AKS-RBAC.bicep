@@ -88,6 +88,14 @@ var ManagedIdentities = {
         RG: gh.hubRGRGName
         Tenant: gh.hubRGAppName
       }
+      {
+        Name: 'Key Vault Secrets User'
+      }
+      {
+        Name: 'Key Vault Secrets User'
+        RG: gh.hubRGRGName
+        Tenant: gh.hubRGAppName
+      }
     ]
   }
 }
@@ -110,3 +118,5 @@ module rgroleassignmentsAKSUAI 'sub-RBAC-RA.bicep' = [for (role, index) in total
     principalType: 'ServicePrincipal'
   }
 }]
+
+output totalIdentities array = totalIdentities
