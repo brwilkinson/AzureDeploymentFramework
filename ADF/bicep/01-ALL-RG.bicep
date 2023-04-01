@@ -614,6 +614,25 @@ module dp_Deployment_SFMNP 'SFMNP.bicep' = if (contains(Stage, 'SFMNP') && bool(
   ]
 }
 
+module dp_Deployment_KVCert 'KVCertificate.bicep' = if (bool(Stage.?KVCert)) {
+  name: 'dp${Deployment}-KVCertificate'
+  params: {
+    // move these to Splatting later
+    DeploymentID: DeploymentID
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    Extensions: Extensions
+    Global: Global
+    Prefix: Prefix
+    Stage: Stage
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_DNSResolver
+    dp_Deployment_KV
+  ]
+}
+
 module dp_Deployment_TM 'TM.bicep' = if (contains(Stage, 'TM') && bool(Stage.TM)) {
   name: 'dp${Deployment}-TM'
   params: {

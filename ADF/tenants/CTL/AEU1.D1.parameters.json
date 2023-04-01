@@ -19,6 +19,7 @@
         "UAI": 1,
         "SP": 0,
         "KV": 0,
+        "KVCert": 1,
         "OMS": 1,
         "OMSSolutions": 0,
         "OMSDataSources": 0,
@@ -35,7 +36,7 @@
         "VNet": 1,
         "VNetDDOS": 0,
         "VNetPeering": 0,
-        "DNSPublicZone": 0,
+        "DNSPublicZone": 1,
         "DNSPrivateZone": 1,
         "LinkPrivateDns": 1,
         "PrivateLink": 0,
@@ -431,6 +432,11 @@
             "Autoregistration": false
           }
         ],
+        "DNSPublicZoneInfo": [
+          "psthing.com",
+          "vote.psthing.com",
+          "vote2.psthing.com"
+        ],
         "saInfo": [
           {
             "name": "diag",
@@ -465,6 +471,14 @@
             "Identity": "Default"
           }
         ],
+        "KVCertsInfo": [
+          {
+            "Name": "aks-helloworld",
+            "DNSNames": [
+              "aks-helloworld.psthing.com"
+            ]
+          }
+        ],
         "AKSInfo": [
           {
             "Name": "01",
@@ -479,8 +493,9 @@
             "AppGateway": 0,
             "AutoScale": 1,
             "enableRBAC": 1,
-            "enableOSM": 1,
+            "enableOSM": 0,
             "enableIngressAppRouting": 1,
+            "enableAppRoutingDNS": 1,
             "enableDefender": 0,
             "enablePolicy": 0,
             "enableaciConnector": 0,

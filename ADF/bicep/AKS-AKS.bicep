@@ -170,6 +170,10 @@ resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' exist
   name: '${Deployment}-uaiAKSCluster'
 }
 
+resource DNSExternal 'Microsoft.Network/dnsZones@2018-05-01' existing = {
+  name: Global.DomainNameExt
+}
+
 resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
   name: '${Deployment}-aks${AKSInfo.Name}'
   location: resourceGroup().location
@@ -277,7 +281,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2022-11-02-preview' = {
     ingressProfile: {
       webAppRouting: {
         enabled: bool(AKSInfo.?enableIngressAppRouting)
-        // dnsZoneResourceId:
+        dnsZoneResourceId: bool(AKSInfo.?enableAppRoutingDNS) ? DNSExternal.id : null
       }
     }
     addonProfiles: {

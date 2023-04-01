@@ -51,9 +51,14 @@ var ManagedIdentities = {
   azureKeyvaultSecretsProvider: {
     name: AKS.properties.addonProfiles.azureKeyvaultSecretsProvider.?identity.?objectId ?? 0
     RBAC: [
-      // {
-      //   Name: 'Key Vault Secrets User'
-      // }
+      {
+        Name: 'Key Vault Secrets User'
+      }
+      {
+        Name: 'Key Vault Secrets User'
+        RG: gh.hubRGRGName
+        Tenant: gh.hubRGAppName
+      }
     ]
   }
   gitops: {
@@ -75,9 +80,14 @@ var ManagedIdentities = {
   ingressProfile: {
     name: AKS.properties.?ingressProfile.?webAppRouting.?identity.?objectId ?? 0
     RBAC: [
-      // {
-      //   Name: 'Contributor'
-      // }
+      {
+        Name: 'DNS Zone Contributor'
+      }
+      {
+        Name: 'DNS Zone Contributor'
+        RG: gh.hubRGRGName
+        Tenant: gh.hubRGAppName
+      }
     ]
   }
 }
