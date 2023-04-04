@@ -172,6 +172,12 @@ resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' exist
 
 resource DNSExternal 'Microsoft.Network/dnsZones@2018-05-01' existing = {
   name: Global.DomainNameExt
+  scope: resourceGroup(HubRGName)
+}
+
+resource DNSAKSPrivate 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+  name: 'privatelink.${resourceGroup().location}.azmk8s.io'
+  scope: resourceGroup(HubRGName)
 }
 
 resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
@@ -257,7 +263,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
     apiServerAccessProfile: {
       authorizedIPRanges: bool(AKSInfo.privateCluster) || (contains(AKSInfo, 'AllowALLIPs') && bool(AKSInfo.AllowALLIPs)) ? null : AllowIPList
       enablePrivateCluster: bool(AKSInfo.privateCluster)
-      privateDNSZone: bool(AKSInfo.privateCluster) ? resourceId(HubRGName, 'Microsoft.Network/privateDnsZones', 'privatelink.${resourceGroup().location}.azmk8s.io') : null
+      privateDNSZone: bool(AKSInfo.privateCluster) ? DNSAKSPrivate.id : null
     }
     publicNetworkAccess: bool(AKSInfo.privateCluster) ? 'Disabled' : 'Enabled'
     networkProfile: {

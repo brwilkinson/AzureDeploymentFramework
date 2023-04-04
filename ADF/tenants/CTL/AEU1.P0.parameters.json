@@ -28,15 +28,15 @@
         "SA": 1,
         "ACR": 1,
         "RSV": 0,
-        "NSG": 0,
+        "NSG": 1,
         "NetworkWatcher": 1,
-        "FlowLogs": 0,
-        "VNet": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
         "DNSResolver": 0,
         "VNetDDOS": 0,
         "VNetPeering": 0,
         "DNSPrivateZone": 0,
-        "DNSPublicZone": 0,
+        "DNSPublicZone": 1,
         "LinkPrivateDns": 0,
         "PrivateLink": 0,
         "BastionHost": 0,
@@ -131,9 +131,183 @@
             ]
           }
         ],
+        "SubnetInfo": [ // 8 * /27 + 3 * /23
+          {
+            "name": "snDNS01",
+            "prefix": "0/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.Network/dnsResolvers"
+          }
+          // {
+          //   "name": "snAD01",
+          //   "prefix": "32/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // },
+          // {
+          //   "name": "snMT02",
+          //   "prefix": "64/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // },
+          // {
+          //   "name": "snMT03",
+          //   "prefix": "96/27",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1,
+          //   "delegations": "Microsoft.ContainerInstance/containerGroups"
+          // },
+          // {
+          //   "name": "GatewaySubnet",
+          //   "prefix": "128/26",
+          //   "NSG": 0,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // },
+          // {
+          //   "name": "AzureBastionSubnet",
+          //   "prefix": "192/26",
+          //   "NSG": 1,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // },
+          // {
+          //   "name": "AzureFirewallSubnet",
+          //   "prefix": "0/24",
+          //   "NSG": 0,
+          //   "Route": 0,
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // },
+          // {
+          //   "name": "snFE01",
+          //   "prefix": "0/23",
+          //   "NSG": 1,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // },
+          // {
+          //   "name": "snMT01",
+          //   "prefix": "0/23",
+          //   "NSG": 1,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // },
+          // {
+          //   "name": "snBE01",
+          //   "prefix": "0/23",
+          //   "NSG": 1,
+          //   "Route": 0, //1
+          //   "FlowLogEnabled": 1,
+          //   "FlowAnalyticsEnabled": 1
+          // }
+        ],
+        "DNSPublicZoneInfo": [
+          "psthing.com"
+        ],
+        "DNSResolverInfo": {
+          "name": "01",
+          "SN": "snDNS01"
+          // "PrivateIP": "10" // not supported at this time default to .4
+        },
         "networkWatcherInfo": {
           "name": "networkwatcher"
         },
+        "DNSPrivateZoneInfo": [
+          {
+            "linkDNS": 1,
+            "zone": "psthing.com",
+            "Autoregistration": false
+          },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.vaultcore.azure.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.azurewebsites.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.file.core.windows.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.blob.core.windows.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.queue.core.windows.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.afs.azure.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.servicebus.windows.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.database.windows.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.azconfig.io",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.azurecr.io",
+          //   "Autoregistration": false
+          // },
+          {
+            "linkDNS": 1,
+            "zone": "privatelink.{region}.azmk8s.io",
+            "Autoregistration": false
+          }
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.mongo.cosmos.azure.com",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.documents.azure.com",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.redis.cache.windows.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.sql.azuresynapse.net",
+          //   "Autoregistration": false
+          // },
+          // {
+          //   "linkDNS": 1,
+          //   "zone": "privatelink.azure-api.net",
+          //   "Autoregistration": false
+          // }
+        ],
         "saInfo": [
           {
             "name": "global",

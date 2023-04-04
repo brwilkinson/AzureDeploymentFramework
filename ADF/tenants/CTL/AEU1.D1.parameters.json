@@ -35,10 +35,10 @@
         "FlowLogs": 0,
         "VNet": 1,
         "VNetDDOS": 0,
-        "VNetPeering": 0,
-        "DNSPublicZone": 1,
-        "DNSPrivateZone": 1,
-        "LinkPrivateDns": 1,
+        "VNetPeering": 1,
+        "DNSPublicZone": 0,
+        "DNSPrivateZone": 0,
+        "LinkPrivateDns": 0,
         "PrivateLink": 0,
         "BastionHost": 0,
         "CloudShellRelay": 0,
@@ -433,11 +433,6 @@
             "Autoregistration": false
           }
         ],
-        "DNSPublicZoneInfo": [
-          "psthing.com",
-          "vote.psthing.com",
-          "vote2.psthing.com"
-        ],
         "saInfo": [
           {
             "name": "diag",
@@ -477,6 +472,56 @@
             "Name": "aks-helloworld",
             "DNSNames": [
               "aks-helloworld.psthing.com"
+            ]
+          }
+        ],
+        "cosmosDBInfo": [
+          {
+            "Name": "eshop-sql",
+            "Kind": "GlobalDocumentDB", //GlobalDocumentDB, MongoDB, Parse
+            "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
+            "enableMultipleWriteLocations": true,
+            "enableAutomaticFailover": true,
+            "locations": [
+              {
+                "location": "PrimaryLocation",
+                "failoverPriority": 0,
+                "isZoneRedundant": true
+              },
+              {
+                "location": "SecondaryLocation",
+                "failoverPriority": 1,
+                "isZoneRedundant": false
+              }
+            ],
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "SQL"
+              }
+            ],
+            "_databases": [
+              {
+                "databaseName": "customers",
+                "containers": [
+                  {
+                    "containerName": "Info",
+                    "partitionKeyPaths": [
+                      "/myPartitionKey"
+                    ],
+                    "indexingPolicyPathInclude": [
+                      {
+                        "path": "/*"
+                      }
+                    ],
+                    "indexingPolicyPathExclude": [
+                      {
+                        "path": "/myPathToNotIndex/*"
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
           }
         ],

@@ -95,7 +95,7 @@ module dp_Deployment_OMS 'OMS.bicep' = if (bool(Stage.OMS)) {
   dependsOn: []
 }
 
-module dp_Deployment_Grafana 'Grafana.bicep' = if (bool(Stage.Grafana)) {
+module dp_Deployment_Grafana 'Grafana.bicep' = if (contains(Stage, 'Grafana') && bool(Stage.Grafana)) {
   name: 'dp${Deployment}-Grafana'
   params: {
     // move these to Splatting later
@@ -614,7 +614,7 @@ module dp_Deployment_SFMNP 'SFMNP.bicep' = if (contains(Stage, 'SFMNP') && bool(
   ]
 }
 
-module dp_Deployment_KVCert 'KVCertificate.bicep' = if (bool(Stage.?KVCert)) {
+module dp_Deployment_KVCert 'KVCertificate.bicep' = if (contains(Stage, 'KVCert') && bool(Stage.KVCert)) {
   name: 'dp${Deployment}-KVCertificate'
   params: {
     // move these to Splatting later

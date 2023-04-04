@@ -24,7 +24,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 
 var locations = [for (cdb,index) in cosmosAccount.locations: {
   failoverPriority: cdb.failoverPriority
-  locationName: Global[cdb.location]
+  locationName: cdb.location == 'SecondaryLocation' || cdb.location == 'PrimaryLocation' ? Global[cdb.location] : cdb.location
   isZoneRedundant: cdb.isZoneRedundant
 }]
 

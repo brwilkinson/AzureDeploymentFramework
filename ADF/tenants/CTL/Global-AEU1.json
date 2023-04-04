@@ -9,7 +9,9 @@
     "hubAA": {
       "name": "OMSAutomation"
     },
-    "DNSServers": [],
+    "DNSServers": [
+      // "10.182.248.4"
+    ],
     "AALocation": "EastUS",
     "RTName": "Hub",
     "shutdownSchedulerTimeZone": "Eastern Standard Time",
