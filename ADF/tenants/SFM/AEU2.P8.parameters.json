@@ -307,7 +307,8 @@
           //   "NGW": 1
           // },
           // {
-          //   "name": "snAPIM01", // APIM Dedicated
+          //   "name": "snAPIM01",
+          //   "NSGRuleName": "APIM", // APIM Dedicated
           //   "prefix": "128/27",
           //   "NSG": 1,
           //   "Route": 0, //1
@@ -351,9 +352,9 @@
           },
           {
             "name": "snMT01",
+            "NSGRuleName": "SFM",
             "prefix": "0/23",
             "NSG": 1,
-            "NSGRuleName": "SFM",
             "serviceEndpoints": "Microsoft.Storage", // Confirm this once docs are released
             "Route": 0, //1
             "FlowLogEnabled": 1,

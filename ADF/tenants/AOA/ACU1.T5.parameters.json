@@ -416,7 +416,8 @@
           //    "NGW": 1
           // },
           // {
-          //   "name": "snAPIM01", // APIM Dedicated
+          //   "name": "snAPIM01",
+          //   "NSGRuleName": "APIM", // APIM Dedicated
           //   "prefix": "128/27",
           //   "NSG": 1,
           //   "Route": 0, //1

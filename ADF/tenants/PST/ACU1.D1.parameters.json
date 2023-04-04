@@ -330,7 +330,8 @@
           //    "NGW": 1
           // },
           // {
-          //   "name": "snAPIM01", // APIM Dedicated
+          //   "name": "snAPIM01",
+          //   "NSGRuleName": "APIM", // APIM Dedicated
           //   "prefix": "128/27",
           //   "NSG": 1,
           //   "Route": 0, //1
@@ -374,11 +375,10 @@
           },
           {
             "name": "snMT01",
-            "prefix": "0/23",
-            "NSG": 1, // Create blank NSG, SFM will remove and use it's own anyway.
-            "NSGID": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/SFC_40d19395-55bc-4831-9bf8-92e58cd3f6b9/providers/Microsoft.Network/networkSecurityGroups/SF-NSG",
             "NSGRuleName": "SFM",
-            // "serviceEndpoints": "Microsoft.Storage",
+            "prefix": "0/23",
+            "NSG": 1,
+            "serviceEndpoints": "Microsoft.Storage", // Confirm this once docs are released
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
