@@ -500,8 +500,8 @@ var NSGDefault = {
           '10255'
           '30000-32767'
         ]
-        sourceAddressPrefix: 'AzureLoadBalancer'
-        destinationAddressPrefix: 'VirtualNetwork'
+        sourceAddressPrefix: 'Internet'
+        destinationAddressPrefix: '*'
         access: 'Allow'
         priority: 1000
         direction: 'Inbound'
