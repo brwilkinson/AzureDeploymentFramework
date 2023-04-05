@@ -475,56 +475,6 @@
             ]
           }
         ],
-        "cosmosDBInfo": [
-          {
-            "Name": "eshop-sql",
-            "Kind": "GlobalDocumentDB", //GlobalDocumentDB, MongoDB, Parse
-            "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
-            "enableMultipleWriteLocations": true,
-            "enableAutomaticFailover": true,
-            "locations": [
-              {
-                "location": "PrimaryLocation",
-                "failoverPriority": 0,
-                "isZoneRedundant": true
-              },
-              {
-                "location": "SecondaryLocation",
-                "failoverPriority": 1,
-                "isZoneRedundant": false
-              }
-            ],
-            "_privateLinkInfo": [
-              {
-                "Subnet": "snMT02",
-                "groupID": "SQL"
-              }
-            ],
-            "_databases": [
-              {
-                "databaseName": "customers",
-                "containers": [
-                  {
-                    "containerName": "Info",
-                    "partitionKeyPaths": [
-                      "/myPartitionKey"
-                    ],
-                    "indexingPolicyPathInclude": [
-                      {
-                        "path": "/*"
-                      }
-                    ],
-                    "indexingPolicyPathExclude": [
-                      {
-                        "path": "/myPathToNotIndex/*"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ],
         "AKSInfo": [
           {
             "Name": "01",
