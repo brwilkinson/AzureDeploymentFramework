@@ -88,7 +88,7 @@ module pricingFree 'sub-Security-Pricing.bicep' = [for (name, index) in Free: if
   name: 'dp-pricing-${name}-free'
   params: {
     pricingName: name
-    plan: 'free'
+    plan: 'Free'
   }
 }]
 
@@ -96,6 +96,6 @@ module pricingStandard 'sub-Security-Pricing.bicep' = [for (name, index) in Stan
   name: 'dp-pricing-${name}-standard'
   params: {
     pricingName: name
-    plan: 'standard'
+    plan: 'Standard'
   }
 }]

@@ -17,7 +17,7 @@
           "level": "off"
         },
         "no-unused-existing-resources": {
-          "level": "off"
+          "level": "warning"
         },
         "no-loc-expr-outside-params": {
           "level": "off"

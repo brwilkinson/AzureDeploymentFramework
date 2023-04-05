@@ -68,7 +68,7 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-09-01' = {
     networkAcls: {
       #disable-next-line BCP036
       bypass: 'Logging, Metrics, AzureServices'
-      defaultAction: ! contains(storageInfo, 'allNetworks') ? 'Allow' : bool(storageInfo.allNetworks) ? 'Allow' : 'Deny'
+      defaultAction: !contains(storageInfo, 'allNetworks') ? 'Allow' : bool(storageInfo.allNetworks) ? 'Allow' : 'Deny'
     }
     supportsHttpsTrafficOnly: true
     minimumTlsVersion: 'TLS1_2'
@@ -89,14 +89,14 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-09-01' = {
 var rolesInfo = contains(storageInfo, 'rolesInfo') ? storageInfo.rolesInfo : []
 
 module RBAC 'x.RBAC-ALL.bicep' = [for (role, index) in rolesInfo: {
-    name: 'dp-rbac-role-${storageInfo.name}-${role.name}'
-    params: {
-        resourceId: SA.id
-        Global: Global
-        roleInfo: role
-        Type: contains(role,'Type') ? role.Type : 'lookup'
-        deployment: Deployment
-    }
+  name: 'dp-rbac-role-${storageInfo.name}-${role.name}'
+  params: {
+    resourceId: SA.id
+    Global: Global
+    roleInfo: role
+    Type: contains(role, 'Type') ? role.Type : 'lookup'
+    deployment: Deployment
+  }
 }]
 
 module storageKeyRotationKey1 'x.setStorageKeyRotation.bicep' = if (contains(storageInfo, 'storageKeyRotation')) {
@@ -125,7 +125,7 @@ module storageKeyRotationKey2 'x.setStorageKeyRotation.bicep' = if (contains(sto
 }
 
 // Disable for hierarchical namespace/datalake
-resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = if(!(contains(storageInfo, 'isHnsEnabled') && bool(storageInfo.isHnsEnabled))) {
+resource SABlobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = if (!(contains(storageInfo, 'isHnsEnabled') && bool(storageInfo.isHnsEnabled))) {
   name: 'default'
   parent: SA
   properties: {
@@ -410,7 +410,7 @@ module SAFileShares 'x.storageFileShare.bicep' = [for (share, index) in fileShar
 }]
 
 module SAContainers 'x.storageContainer.bicep' = [for (container, index) in containers: {
-  name: replace('dp${Deployment}-SA-${storageInfo.name}-Container-${container.name}','$','_')
+  name: replace('dp${Deployment}-SA-${storageInfo.name}-Container-${container.name}', '$', '_')
   params: {
     SAName: SA.name
     container: container
@@ -419,7 +419,26 @@ module SAContainers 'x.storageContainer.bicep' = [for (container, index) in cont
   }
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
+var defenderSAOverrideenabled = false
+resource defenderSA 'Microsoft.Security/DefenderForStorageSettings@2022-12-01-preview' = {
+  name: 'current'
+  scope: SA
+  properties: {
+    isEnabled: defenderSAOverrideenabled
+    malwareScanning: {
+      onUpload: {
+        isEnabled: defenderSAOverrideenabled
+        capGBPerMonth: 5000
+      }
+    }
+    sensitiveDataDiscovery: {
+      isEnabled: defenderSAOverrideenabled
+    }
+    overrideSubscriptionLevelSettings: defenderSAOverrideenabled
+  }
+}
+
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo, 'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-SA-privatelinkloop-${storageInfo.name}'
   params: {
     Deployment: Deployment
@@ -430,9 +449,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(storageInfo,'pri
   }
 }
 
-
-
-module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo,'privatelinkinfo') && bool(Stage.PrivateLink)) {
+module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo, 'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-SA-registerPrivateDNS-${storageInfo.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -440,6 +457,6 @@ module privateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(storageInfo,'p
     providerURL: environment().suffixes.storage // '.core.windows.net'
     providerType: SA.type
     resourceName: SA.name
-    Nics: contains(storageInfo,'privatelinkinfo') && bool(Stage.PrivateLink) && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
+    Nics: contains(storageInfo, 'privatelinkinfo') && bool(Stage.PrivateLink) && length(storageInfo) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('')
   }
 }
