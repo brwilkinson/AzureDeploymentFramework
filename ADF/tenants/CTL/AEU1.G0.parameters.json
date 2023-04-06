@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
-      "value": "ACU1"
+      "value": "AEU1"
     },
     "Environment": {
       "value": "G"

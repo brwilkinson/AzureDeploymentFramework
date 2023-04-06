@@ -108,7 +108,7 @@ module verifyDNS 'x.DNS.Public.TXT.bicep' = if (contains(ep, 'zone') && ep.zone 
   name: 'dp-AddDNSVerifyTXT-${ep.name}'
   scope: resourceGroup((contains(Global, 'DomainNameExtSubscriptionID') ? Global.DomainNameExtSubscriptionID : subscription().subscriptionId), (contains(Global, 'DomainNameExtRG') ? Global.DomainNameExtRG : globalRGName))
   params: {
-    name: '_dnsauth.${ep.name}'
+    name: '_dnsauth'
     DomainNameExt: Global.DomainNameExt
     value: !(contains(ep, 'excludeCustomDomain') && bool(ep.excludeCustomDomain)) ? customDomains.properties.validationProperties.validationToken : 'na'
   }

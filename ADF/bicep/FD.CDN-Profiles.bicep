@@ -43,9 +43,9 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 //   parent: KV
 // }
 
-resource FDWAFPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2020-11-01' existing = if (contains(cdn, 'WAFPolicy')) {
-  name: '${DeploymentURI}cdn${cdn.WAFPolicy}-policy'
-}
+// resource FDWAFPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2020-11-01' existing = if (contains(cdn, 'WAFPolicy')) {
+//   name: '${DeploymentURI}cdn${cdn.WAFPolicy}-policy'
+// }
 
 resource CDNProfile 'Microsoft.Cdn/profiles@2021-06-01' = {
   name: toLower('${DeploymentURI}cdn${cdn.name}')
