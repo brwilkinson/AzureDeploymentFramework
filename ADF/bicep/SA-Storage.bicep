@@ -420,7 +420,7 @@ module SAContainers 'x.storageContainer.bicep' = [for (container, index) in cont
   }
 }]
 
-var defenderSAOverrideenabled = false
+var defenderSAOverrideenabled = 'false'
 resource defenderSA 'Microsoft.Security/DefenderForStorageSettings@2022-12-01-preview' = {
   name: 'current'
   scope: SA
