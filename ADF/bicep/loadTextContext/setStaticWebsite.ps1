@@ -21,7 +21,7 @@ function Get-StaticWebSiteState
                 Authorization  = "$($t.Type) $($t.Token)"
                 'x-ms-date'    = [datetime]::UtcNow.ToString('R')
                 'x-ms-version' = '2019-12-12'
-                contenttype    = 'application/xml'
+                ContentType    = 'application/xml'
                 ErrorAction    = 'Stop'
                 Verbose        = $true
             }
