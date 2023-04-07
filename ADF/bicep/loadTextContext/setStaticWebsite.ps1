@@ -22,7 +22,7 @@ function Get-StaticWebSiteState
                 'x-ms-date'    = [datetime]::UtcNow.ToString('R')
                 'x-ms-version' = '2019-12-12'
                 contenttype    = 'application/xml'
-                ErrorActions   = 'Stop'
+                ErrorAction    = 'Stop'
                 Verbose        = $true
             }
         }
