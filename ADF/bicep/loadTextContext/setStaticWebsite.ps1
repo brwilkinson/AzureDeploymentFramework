@@ -55,8 +55,8 @@ else
     $SkipSet = $false
     try
     {
-        $ctx = New-AzStorageContext -StorageAccountName $storageAccountName -ErrorAction Stop
         Write-Host "Settings Static website state to [$StaticWebsiteState]"
+        $ctx = New-AzStorageContext -StorageAccountName $storageAccountName -ErrorAction Stop
         switch ($StaticWebsiteState)
         {
             'Enabled'
