@@ -459,6 +459,27 @@
                 "groupID": "file"
               }
             ]
+          },
+          {
+            "name": "data1",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "containers": [
+              {
+                "name": "$web"
+              }
+            ]
           }
         ],
         "GrafanaInfo": [
