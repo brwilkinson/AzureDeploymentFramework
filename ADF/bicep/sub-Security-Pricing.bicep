@@ -10,7 +10,7 @@ var subPlan = {
     VirtualMachines: 'P2' // 'P1'
 }
 
-var OnUploadMalwareScanning = false
+var OnUploadMalwareScanning = true
 
 // https://learn.microsoft.com/en-us/rest/api/defenderforcloud/pricings/list?tabs=HTTP
 var extensions = {
