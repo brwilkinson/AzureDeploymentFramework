@@ -117,6 +117,22 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
+          {
+            "Name": "Reader",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
+          {
+            "Name": "EnableStaticWebsite",
+            "RBAC": [
+              {
+                "Name": "Storage Account Contributor"
+              }
+            ]
+          },
           // {
           //   "name": "GlobalAcrPull",
           //   "RBAC": [
