@@ -731,8 +731,7 @@
             "kind": "app",
             "AppSVCPlan": "WPS01",
             "saname": "diag",
-            "customDNS": 1,
-            "initialDeploy": 1
+            "customDNS": 1
           }
         ],
         "WebSiteContainerInfo": [
@@ -743,8 +742,7 @@
             "stack": "default",
             "saname": "data",
             "registry": "01",
-            "customDNS": 1,
-            "initialDeploy": 1
+            "customDNS": 1
             // "registryENV": "t5"
           }
         ],
@@ -757,8 +755,7 @@
             "stack": "dotnet",
             "Subnet": "snMT01",
             "preWarmedCount": 1,
-            "customDNS": 1,
-            "initialDeploy": 0
+            "customDNS": 1
           },
           {
             "Name": "PS02",
@@ -768,8 +765,7 @@
             "stack": "powershell",
             "Subnet": "snMT01",
             "preWarmedCount": 1,
-            "customDNS": 1,
-            "initialDeploy": 1
+            "customDNS": 1
           }
         ],
         "appConfigurationInfo": {

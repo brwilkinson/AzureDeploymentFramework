@@ -92,10 +92,6 @@ var myAppConfig = {
   }
 }
 
-resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-03-01' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: '${Deployment}-ws${ws.Name}/appsettings'
-}]
-
 module website 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
   name: 'dp${Deployment}-ws${ws.Name}'
   params: {
@@ -155,20 +151,25 @@ module website 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInf
   }
 }]
 
+module testResourcExists 'x.testResourceExists.ps1.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: 'testResourcExists-${Deployment}-ws${ws.Name}-config-appsettings'
+  params: {
+    resourceId: '${website[index].outputs.WebSiteId}/config/appsettings'
+    userAssignedIdentityName: 'AEU1-PE-CTL-D1-uaiReader'
+  }
+}]
+
 module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
   name: 'dp${Deployment}-ws${ws.Name}-settings'
   params: {
     ws: ws
     appprefix: 'ws'
     Deployment: Deployment
-    appConfigCustom: myAppConfig[ws.stack]
-    appConfigCurrent: contains(ws, 'initialDeploy') && bool(ws.initialDeploy) ? {} : appsettingsCurrent[index].list().properties
+    appConfigCustom: contains(ws,'stack') ? myAppConfig[ws.stack] : myAppConfig.default
+    setAppConfigCurrent: testResourcExists[index].outputs.Exists
     appConfigNew: {
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
     }
   }
-  dependsOn: [
-    website[index]
-  ]
 }]

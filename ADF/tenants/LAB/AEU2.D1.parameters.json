@@ -486,7 +486,6 @@
             "stack": "dotnet",
             "saname": "diag",
             "customDNS": 0,
-            "initialDeploy": 0,
             "_privateLinkInfo": [
               {
                 "Subnet": "snFE01",

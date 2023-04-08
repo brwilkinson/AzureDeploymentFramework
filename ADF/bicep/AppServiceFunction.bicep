@@ -95,10 +95,6 @@ resource SA 'Microsoft.Storage/storageAccounts@2021-04-01' existing = [for (ws, 
   name: '${DeploymentURI}sa${ws.saname}'
 }]
 
-resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-01-15' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: '${Deployment}-fn${ws.Name}/appsettings'
-}]
-
 module functionApp 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
   name: 'dp${Deployment}-fn${ws.Name}'
   params: {
@@ -125,6 +121,14 @@ module functionApp 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (W
   }
 }]
 
+module testResourcExists 'x.testResourceExists.ps1.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: 'testResourcExists-${Deployment}-ws${ws.Name}'
+  params: {
+    resourceId: '${functionApp[index].outputs.WebSiteId}/appsettings/config'
+    userAssignedIdentityName: 'AEU1-PE-CTL-D1-uaiReader'
+  }
+}]
+
 module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
   name: 'dp${Deployment}-fn${ws.Name}-settings'
   params: {
@@ -132,7 +136,8 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
     appprefix: 'fn'
     Deployment: Deployment
     appConfigCustom: myAppConfig
-    appConfigCurrent: contains(ws,'initialDeploy') && bool(ws.initialDeploy) ? {} : appsettingsCurrent[index].list().properties
+    // This list() will fail the first time, however will not block the deployment and this functions correctly
+    setAppConfigCurrent: testResourcExists[index].outputs.Exists
     appConfigNew: {
       // https://docs.microsoft.com/en-us/azure/azure-functions/configure-networking-how-to
       // https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
@@ -150,7 +155,4 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
       AzureWebJobsDisableHomepage: 'true'
     }
   }
-  dependsOn: [
-    functionApp[index]
-  ]
 }]

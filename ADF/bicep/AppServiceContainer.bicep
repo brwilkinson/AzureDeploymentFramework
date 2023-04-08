@@ -171,6 +171,14 @@ module container 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSI
   }
 }]
 
+module testResourcExists 'x.testResourceExists.ps1.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
+  name: 'testResourcExists-${Deployment}-ws${ws.Name}'
+  params: {
+    resourceId: '${container[index].outputs.WebSiteId}/appsettings/config'
+    userAssignedIdentityName: 'AEU1-PE-CTL-D1-uaiReader'
+  }
+}]
+
 module containerSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
   name: 'dp${Deployment}-ws${ws.Name}-settings'
   params: {
@@ -178,7 +186,7 @@ module containerSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebS
     appprefix: 'ws'
     Deployment: Deployment
     appConfigCustom: myAppConfig
-    appConfigCurrent: contains(ws, 'initialDeploy') && bool(ws.initialDeploy) ? {} : appsettingsCurrent[index].list().properties
+    setAppConfigCurrent: testResourcExists[index].outputs.Exists
     appConfigNew: {
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
@@ -204,7 +212,4 @@ resource ACRWebhook 'Microsoft.ContainerRegistry/registries/webhooks@2020-11-01-
       'push'
     ]
   }
-  dependsOn: [
-    container[index]
-  ]
 }]

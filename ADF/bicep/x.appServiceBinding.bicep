@@ -1,5 +1,6 @@
 param siteName string
 param externalDNS string
+param skipDeploy bool = false
 
 @allowed([
   'SniEnabled'
@@ -8,7 +9,7 @@ param externalDNS string
 param sslState string
 param thumbprint string = ''
 
-resource extDNSBinding 'Microsoft.Web/sites/hostNameBindings@2021-02-01' = {
+resource extDNSBinding 'Microsoft.Web/sites/hostNameBindings@2021-02-01' = if (!skipDeploy) {
   name: toLower('${siteName}/${siteName}.${externalDNS}')
   properties: {
     siteName: siteName

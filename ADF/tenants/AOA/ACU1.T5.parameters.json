@@ -700,7 +700,6 @@
             "stack": "dotnet",
             "saname": "diag",
             "customDNS": 1,
-            "initialDeploy": 1,
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -717,8 +716,7 @@
             "stack": "default",
             "saname": "data",
             "registry": "01",
-            "customDNS": 1,
-            "initialDeploy": 1
+            "customDNS": 1
             // "registryENV": "t5"
           }
         ],
@@ -732,7 +730,6 @@
             "_Subnet": "snMT01",
             "preWarmedCount": 1,
             "customDNS": 1,
-            "initialDeploy": 0,
             "extraSlots": 0
           }
         ],

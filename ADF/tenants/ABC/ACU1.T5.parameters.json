@@ -1259,7 +1259,6 @@
             "stack": "java",
             "saname": "diag",
             "customDNS": 1,
-            "initialDeploy": 1,
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -1274,7 +1273,6 @@
             "stack": "php",
             "saname": "diag",
             "customDNS": 1,
-            "initialDeploy": 1,
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -1289,7 +1287,6 @@
             "stack": "dotnet",
             "saname": "diag",
             "customDNS": 1,
-            "initialDeploy": 1,
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -1304,7 +1301,6 @@
             "stack": "node",
             "saname": "diag",
             "customDNS": 1,
-            "initialDeploy": 1,
             "privateLinkInfo": [
               {
                 "Subnet": "snFE01",
@@ -1321,8 +1317,7 @@
             "stack": "default",
             "saname": "data",
             "registry": "01",
-            "customDNS": 1,
-            "initialDeploy": 1
+            "customDNS": 1
             // "registryENV": "t5"
           }
         ],
@@ -1336,7 +1331,6 @@
             "_Subnet": "snMT01",
             "preWarmedCount": 1,
             "customDNS": 1,
-            "initialDeploy": 0,
             "extraSlots": 1
           },
           {
@@ -1347,8 +1341,7 @@
             "stack": "powershell",
             "Subnet": "snMT01",
             "preWarmedCount": 1,
-            "customDNS": 1,
-            "initialDeploy": 1
+            "customDNS": 1
           }
         ],
         "appConfigurationInfo": {

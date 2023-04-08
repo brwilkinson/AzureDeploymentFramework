@@ -143,16 +143,15 @@
           //     // }
           //   ]
           // },
-          // {
-          //   "name": "KeyVaultSecretsGet",
-          //   "RBAC": [
-          //     // {
-          //     //   "Name": "Key Vault Secrets User",
-          //     //   "RG": "P0",
-          //     //   "Tenant": "HUB"
-          //     // }
-          //   ]
-          // },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0"
+              }
+            ]
+          },
           {
             "name": "AKSCluster",
             "RBAC": [
@@ -622,6 +621,79 @@
               //   "subnet": "snMT02"
               // }
             ]
+          }
+        ],
+        "appServiceplanInfo": [
+          {
+            "Name": "ASP01",
+            "kind": "elastic",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "EP1",
+            "skutier": "ElasticPremium",
+            "skucapacity": 1,
+            "maxWorkerCount": 100,
+            "deploy": 1
+          },
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skucapacity": 1,
+            "deploy": 1
+          },
+          {
+            "Name": "CTR01",
+            "kind": "linux",
+            "perSiteScaling": false,
+            "reserved": true, //true for containers
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skucapacity": 1,
+            "deploy": 1
+          }
+        ],
+        "WebSiteInfo": [
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "dotnet",
+            "saname": "diag",
+            "customDNS": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          }
+        ],
+        "WebSiteContainerInfo": [
+          {
+            "Name": "CTR01",
+            "kind": "app,linux,container",
+            "AppSVCPlan": "CTR01",
+            "stack": "default",
+            "saname": "data",
+            "registry": "01",
+            "customDNS": 1
+            // "registryENV": "t5"
+          }
+        ],
+        "FunctionInfo": [
+          {
+            "Name": "DIS03",
+            "kind": "functionapp",
+            "AppSVCPlan": "ASP01",
+            "saname": "data1",
+            "stack": "dotnet",
+            "_Subnet": "snMT01",
+            "preWarmedCount": 1,
+            "customDNS": 1
           }
         ]
       }

@@ -145,13 +145,22 @@ resource slots 'Microsoft.Web/sites/slots@2022-03-01' = [for (item, index) in ra
 //   }
 // }
 
-// only bind with sslState disabled the very first run, via: "InitialDeploy": 1.
-module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws, 'initialDeploy') && bool(ws.initialDeploy) && contains(ws, 'customDNS') && bool(ws.customDNS)) {
+module testResourcExists 'x.testResourceExists.ps1.bicep' = {
+  name: 'testResourcExists-${Deployment}-${appprefix}${ws.Name}'
+  params: {
+    resourceId: WS.id
+    userAssignedIdentityName: 'AEU1-PE-CTL-D1-uaiReader'
+  }
+}
+
+// only bind with sslState disabled the very first run, via: "testResourcExists"
+module wsBinding 'x.appServiceBinding.bicep' = if (contains(ws, 'customDNS') && bool(ws.customDNS)) {
   name: 'dp-binding-${ws.name}'
   params: {
     externalDNS: Global.DomainNameExt
     siteName: WS.name
     sslState: 'Disabled'
+    skipDeploy: testResourcExists.outputs.Exists
   }
 }
 
@@ -285,4 +294,5 @@ module webprivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(ws, 'privat
 }
 
 output WebSite object = WS
+output WebSiteId string = WS.id
 output Thumbprint string = contains(ws, 'customDNS') && bool(ws.customDNS) ? certificates.properties.thumbprint : 'NA'
