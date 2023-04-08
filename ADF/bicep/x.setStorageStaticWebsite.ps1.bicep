@@ -31,5 +31,5 @@ resource setStorageStaticWebsite 'Microsoft.Resources/deploymentScripts@2020-10-
   }
 }
 
-output SkipSet string = setStorageStaticWebsite.properties.outputs.SkipSet
+output SkipSet bool = bool(int(setStorageStaticWebsite.properties.outputs.SkipSet))
 output StaticWebsiteState string = setStorageStaticWebsite.properties.outputs.StaticWebsiteState

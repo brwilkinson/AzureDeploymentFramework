@@ -46,13 +46,13 @@ $currentStaticWebsiteState = Get-StaticWebSiteState -storageAccountName $storage
 
 if ($currentStaticWebsiteState -eq $StaticWebsiteState)
 {
-    $SkipSet = $true
+    $SkipSet = '1'
     $finalStaticWebsiteState = $currentStaticWebsiteState
     Write-Host "Static website state is already [$StaticWebsiteState]"
 }
 else 
 {
-    $SkipSet = $false
+    $SkipSet = '0'
     try
     {
         Write-Host "Settings Static website state to [$StaticWebsiteState]"
