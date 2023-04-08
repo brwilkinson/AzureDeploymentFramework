@@ -5,7 +5,7 @@ param storageAccountName string
   'Enabled'
   'Disabled'
 ])
-param StaticWebsiteState string = 'Enabled'
+param staticWebsiteState string = 'Enabled'
 
 param userAssignedIdentityName string
 param now string = utcNow('F')
@@ -22,7 +22,7 @@ resource setStorageStaticWebsite 'Microsoft.Resources/deploymentScripts@2020-10-
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '7.5.0'
-    arguments: ' -IndexDocument ${IndexDocument} -ErrorDocument404Path ${ErrorDocument404Path} -storageAccountName ${storageAccountName} -StaticWebsiteState ${StaticWebsiteState}'
+    arguments: ' -IndexDocument ${IndexDocument} -ErrorDocument404Path ${ErrorDocument404Path} -storageAccountName ${storageAccountName} -StaticWebsiteState ${staticWebsiteState}'
     scriptContent: loadTextContent('../bicep/loadTextContext/setStorageStaticWebsite.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'
