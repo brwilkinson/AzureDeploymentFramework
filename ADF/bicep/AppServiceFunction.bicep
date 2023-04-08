@@ -122,9 +122,9 @@ module functionApp 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (W
 }]
 
 module testResourcExists 'x.testResourceExists.ps1.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: 'testResourcExists-${Deployment}-ws${ws.Name}'
+  name: 'testResourcExists-${Deployment}-ws${ws.Name}-config-appsettings'
   params: {
-    resourceId: '${functionApp[index].outputs.WebSiteId}/appsettings/config'
+    resourceId: '${functionApp[index].outputs.WebSiteId}/config/appsettings'
     userAssignedIdentityName: 'AEU1-PE-CTL-D1-uaiReader'
   }
 }]

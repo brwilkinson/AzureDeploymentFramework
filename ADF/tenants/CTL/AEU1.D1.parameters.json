@@ -680,7 +680,7 @@
             "stack": "default",
             "saname": "data",
             "registry": "01",
-            "customDNS": 1
+            "customDNS": 0
             // "registryENV": "t5"
           }
         ],
@@ -693,7 +693,7 @@
             "stack": "dotnet",
             "_Subnet": "snMT01",
             "preWarmedCount": 1,
-            "customDNS": 1
+            "customDNS": 0
           }
         ]
       }
