@@ -22,17 +22,19 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var locations = [for (cdb,index) in cosmosAccount.locations: {
+var locations = [for (cdb, index) in cosmosAccount.locations: {
   failoverPriority: cdb.failoverPriority
   locationName: cdb.location == 'SecondaryLocation' || cdb.location == 'PrimaryLocation' ? Global[cdb.location] : cdb.location
   isZoneRedundant: cdb.isZoneRedundant
 }]
 
-resource CosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
+#disable-next-line BCP081
+resource CosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-03-15-preview' = {
   name: toLower('${Deployment}-cosmos-${cosmosAccount.Name}')
-  kind: cosmosAccount.Kind
+  kind: cosmosAccount.Kind // GlobalDocumentDB
   location: resourceGroup().location
   properties: {
+    minimalTlsVersion: 'Tls12'
     consistencyPolicy: {
       defaultConsistencyLevel: cosmosAccount.defaultConsistencyLevel
     }
@@ -41,7 +43,23 @@ resource CosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' = {
     enableAutomaticFailover: cosmosAccount.enableAutomaticFailover
     databaseAccountOfferType: 'Standard'
     locations: locations
-    
+    capabilities: [
+      {
+        name: 'EnableServerless'
+      }
+    ]
+    enableFreeTier: false
+    capacity: {
+      totalThroughputLimit: 4000
+    }
+    backupPolicy: {
+      type: 'Periodic'
+      periodicModeProperties: {
+        backupIntervalInMinutes: 240
+        backupRetentionIntervalInHours: 8
+        backupStorageRedundancy: 'Geo'
+      }
+    }
   }
 }
 
@@ -89,9 +107,9 @@ resource CosmosDBDiag 'microsoft.insights/diagnosticSettings@2017-05-01-preview'
   }
 }
 
-var cosmosDatabases = contains(cosmosAccount,'databases') ? cosmosAccount.databases : []
+var cosmosDatabases = contains(cosmosAccount, 'databases') ? cosmosAccount.databases : []
 
-module CosmosAccountDB 'Cosmos-Account-DB.bicep'= [for (cdb, index) in cosmosDatabases : {
+module CosmosAccountDB 'Cosmos-Account-DB.bicep' = [for (cdb, index) in cosmosDatabases: {
   name: 'dp${Deployment}-Cosmos-DeployDB${cdb.databaseName}'
   params: {
     cosmosAccount: cosmosAccount
@@ -103,7 +121,7 @@ module CosmosAccountDB 'Cosmos-Account-DB.bicep'= [for (cdb, index) in cosmosDat
   ]
 }]
 
-module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(cosmosAccount,'privatelinkinfo') && bool(Stage.PrivateLink)) {
+module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if (contains(cosmosAccount, 'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-Cosmos-privatelinkloop${cosmosAccount.name}'
   params: {
     Deployment: Deployment
@@ -114,7 +132,7 @@ module vnetPrivateLink 'x.vNetPrivateLink.bicep' = if(contains(cosmosAccount,'pr
   }
 }
 
-module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if(contains(cosmosAccount,'privatelinkinfo') && bool(Stage.PrivateLink)) {
+module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if (contains(cosmosAccount, 'privatelinkinfo') && bool(Stage.PrivateLink)) {
   name: 'dp${Deployment}-Cosmos-registerPrivateLinkDNS-${cosmosAccount.name}'
   scope: resourceGroup(HubRGName)
   params: {
@@ -123,7 +141,7 @@ module CosmosDBPrivateLinkDNS 'x.vNetprivateLinkDNS.bicep' = if(contains(cosmosA
     resourceName: CosmosAccount.name
     #disable-next-line BCP053
     providerType: '${CosmosAccount.type}/${CosmosAccount.properties.EnabledApiTypes}' // Sql etc, confirm if this works for others.
-    Nics: contains(cosmosAccount,'privatelinkinfo') && bool(Stage.PrivateLink) && length(cosmosAccount) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
+    Nics: contains(cosmosAccount, 'privatelinkinfo') && bool(Stage.PrivateLink) && length(cosmosAccount) != 0 ? array(vnetPrivateLink.outputs.NICID) : array('na')
   }
 }
 

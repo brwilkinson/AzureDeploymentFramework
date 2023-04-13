@@ -1,9 +1,10 @@
 {
   "experimentalFeaturesEnabled": {
-    "paramsFiles": false,
-    "extensibility": false,
-    "resourceTypedParamsAndOutputs": false,
-    "userDefinedTypes": false
+    // "paramsFiles": false,
+    // "extensibility": false,
+    // "resourceTypedParamsAndOutputs": false,
+    // "userDefinedTypes": false
+    // "symbolicNameCodegen": true
   },
   "analyzers": {
     "core": {

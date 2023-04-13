@@ -27,39 +27,46 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource SADiag 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
+resource SADiag 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: '${DeploymentURI}sadiag'
 }
 
-resource SQL 'Microsoft.Sql/servers@2022-02-01-preview' = {
+resource SQL 'Microsoft.Sql/servers@2020-11-01-preview' = {
   name: toLower('${Deployment}-azsql${azSQLInfo.Name}')
-  location: resourceGroup().location
+  location: azSQLInfo.?location ?? resourceGroup().location
   properties: {
-    // administratorLogin: azSQLInfo.administratorLogin // Use AAD only
-    // administratorLoginPassword: vmAdminPassword // Use AAD only
     minimalTlsVersion: '1.2'
     publicNetworkAccess: bool(azSQLInfo.publicNetworkAccess) ? 'Enabled' : 'Disabled'
+    administrators: {
+      administratorType: 'ActiveDirectory'
+      login: azSQLInfo.AdminLogin
+      sid: objectIdLookup[azSQLInfo.AdminName]
+      tenantId: tenant().tenantId
+      principalType: azSQLInfo.?principalType ?? 'Group'
+      azureADOnlyAuthentication: true
+    }
   }
 }
 
-resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2022-02-01-preview' = if (contains(azSQLInfo, 'AdminName')) {
-  name: 'ActiveDirectory'
-  parent: SQL
-  properties: {
-    administratorType: 'ActiveDirectory'
-    login: azSQLInfo.AdminName
-    sid: objectIdLookup[azSQLInfo.AdminName]
-    tenantId: tenant().tenantId
-  }
-}
+// resource SQLAdministrators 'Microsoft.Sql/servers/administrators@2022-08-01-preview' = if (contains(azSQLInfo, 'AdminName')) {
+//   name: 'ActiveDirectory'
+//   parent: SQL
+//   properties: {
+//     administratorType: 'ActiveDirectory'
+//     login: azSQLInfo.AdminLogin
+//     sid: objectIdLookup[azSQLInfo.AdminName]
+//     tenantId: tenant().tenantId
+//     principalType: 'User'
+//   }
+// }
 
-resource symbolicname 'Microsoft.Sql/servers/azureADOnlyAuthentications@2022-02-01-preview' = {
-  name: 'Default'
-  parent: SQL
-  properties: {
-    azureADOnlyAuthentication: true
-  }
-}
+// resource symbolicname 'Microsoft.Sql/servers/azureADOnlyAuthentications@2022-02-01-preview' = {
+//   name: 'Default'
+//   parent: SQL
+//   properties: {
+//     azureADOnlyAuthentication: true
+//   }
+// }
 
 resource SQLAllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2022-02-01-preview' = {
   name: 'AllowAllWindowsAzureIps'
@@ -132,7 +139,7 @@ resource audit 'Microsoft.Sql/servers/auditingSettings@2021-11-01-preview' = {
 resource SQLDB 'Microsoft.Sql/servers/databases@2022-02-01-preview' = [for (db, index) in azSQLInfo.DBInfo: {
   name: db.Name
   parent: SQL
-  location: resourceGroup().location
+  location: azSQLInfo.?location ?? resourceGroup().location
   sku: {
     name: db.skuName
   }

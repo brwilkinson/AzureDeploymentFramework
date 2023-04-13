@@ -511,6 +511,48 @@
             ]
           }
         ],
+        "AzSQLInfo": [
+          {
+            "Name": "APIM01",
+            "AdminLogin": "brwilkinson@outlook.com",
+            "AdminName": "brwilkinson",
+            "principalType": "User",
+            "publicNetworkAccess": 1,
+            "allNetworks": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "sqlServer"
+              }
+            ],
+            "DBInfo": [
+              {
+                "Name": "ABAC01",
+                "skuName": "S1"
+              },
+              {
+                "Name": "ABAC02",
+                "skuName": "S1"
+              }
+            ] // TODO add failover group ADF\bicep\exports\AZSQL\failover.bicep
+          },
+          {
+            "Name": "APIM02",
+            "location": "eastus2",
+            "AdminLogin": "brwilkinson@outlook.com",
+            "AdminName": "brwilkinson",
+            "principalType": "User",
+            "publicNetworkAccess": 1,
+            "allNetworks": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "sqlServer"
+              }
+            ],
+            "DBInfo": []
+          }
+        ],
         "FrontDoorPolicyInfo": [
           {
             "Name": "shared01apim01",

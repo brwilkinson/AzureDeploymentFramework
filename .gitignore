@@ -285,5 +285,6 @@ ADF/1-prereqs/DSCResources/**
 !ADF/1-prereqs/DSCResources/info.txt
 
 ADF/bicep/demos
+ADF/bicep/demos2
 ADF/bicep/exports
 ADF/bicep/exports-samples2
