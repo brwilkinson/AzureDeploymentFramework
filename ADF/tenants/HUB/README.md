@@ -1,0 +1,12 @@
+Tenant HUB is used for Shared resource Hub.
+- This is similar to AOA, just deployed into a different Tenant
+- This closely resembles a shared resources production HUB
+  - Includes:
+    - Global 
+    - Subscription deployment
+    - Hub deployments
+      - DNS resolveer
+      - Private DNS zones
+      - Hub spoke peering
+      - Network watcher for each region
+      - Shared hub keyvault  
