@@ -31,9 +31,9 @@
       "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
     ],
     "CertName": "PSTHING-WildCard",
-    "ADDomainName": "psthing.com",
-    "DomainName": "psthing.com",
-    "DomainNameExt": "psthing.com",
+    "ADDomainName": "aginow.net",
+    "DomainName": "aginow.net",
+    "DomainNameExt": "aginow.net",
     "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
     "__DomainNameExtRG": "ACU1-PE-AOA-RG-G1",
@@ -64,9 +64,9 @@
     "ServicePrincipalAdmins": [
       "BenWilkinson-ADM"
     ],
-    "apimPublisherEmail": "benwilk@psthing.com",
+    "apimPublisherEmail": "benwilk@aginow.net",
     "alertRecipients": [
-      "benwilk@psthing.com"
+      "benwilk@aginow.net"
     ],
     "ObjectIdLookup": {
       "BenWilkinson-ADM": "9bce7f53-71d0-4f3f-be0d-f00dfab17de4",

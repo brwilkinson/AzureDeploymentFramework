@@ -473,7 +473,7 @@
               },
               {
                 "Name": "LOCUST_HOST",
-                "value": "https://acu1-pe-aoa-d3-api03.psthing.com"
+                "value": "https://acu1-pe-aoa-d3-api03.aginow.net"
               },
               {
                 "Name": "LOCUST_LOGLEVEL",
@@ -560,7 +560,7 @@
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "PLB01", // acu1-PE-AOA-s1-afd 01 - apim01 .psthing.com
+                "Name": "PLB01", // acu1-PE-AOA-s1-afd 01 - apim01 .aginow.net
                 "BEAddress": [
                   {
                     "address": "{Deployment}-api01.{Domain}"
@@ -617,7 +617,7 @@
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "GW01", // acu1-PE-AOA-s1-afd 01 - apim01 .psthing.com
+                "Name": "GW01", // acu1-PE-AOA-s1-afd 01 - apim01 .aginow.net
                 "BEAddress": [
                   {
                     "address": "{Deployment}-api02.{Domain}",
@@ -1122,7 +1122,7 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "API02",
                 "Interface": "Public"
                 // "pathRules": "map1"
@@ -1130,7 +1130,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "API02",
                 "Interface": "Public",
                 "httpsRedirect": 1
@@ -1210,7 +1210,7 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "API03",
                 "Interface": "Public"
                 // "pathRules": "map1"
@@ -1218,7 +1218,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "API03",
                 "Interface": "Public",
                 "httpsRedirect": 1

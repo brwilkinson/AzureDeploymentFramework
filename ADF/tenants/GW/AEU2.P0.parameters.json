@@ -258,7 +258,7 @@
         "DNSPrivateZoneInfo": [
           {
             "linkDNS": 1,
-            "zone": "psthing.com",
+            "zone": "aginow.net",
             "Autoregistration": false
           },
           {
@@ -437,8 +437,8 @@
           {
             "Name": "01",
             "accessControlUsers": [
-              "benwilk@psthing.com",
-              "simadams@psthing.com"
+              "benwilk@aginow.net",
+              "simadams@aginow.net"
             ],
             "systemAccounts": []
           }
@@ -463,8 +463,8 @@
             "vmProvider": "vm",
             "maxPoolSize": 15,
             "VssAdminAccounts": [
-              "benwilk@psthing.com",
-              "simadams@psthing.com"
+              "benwilk@aginow.net",
+              "simadams@aginow.net"
             ]
           }
         ]

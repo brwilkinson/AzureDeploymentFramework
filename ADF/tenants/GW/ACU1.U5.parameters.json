@@ -497,7 +497,7 @@
             "monitoringcustomHeaders": [
               {
                 "name": "host",
-                "value": "ACU1-PE-GW-U5-apim01.psthing.com"
+                "value": "ACU1-PE-GW-U5-apim01.aginow.net"
               }
             ],
             "trafficViewEnrollmentStatus": "Enabled",
@@ -557,7 +557,7 @@
                 "endPoints": [
                   {
                     "name": "acu1gwu5sadata1",
-                    "zone": "psthing.com",
+                    "zone": "aginow.net",
                     "probePath": "/",
                     "sessionAffinity": 1,
                     "origins": [
@@ -584,7 +584,7 @@
                   // {
                   //   "name": "api.ppe",
                   //   "excludeCustomDomain": 1,
-                  //   "zone": "psthing.com",
+                  //   "zone": "aginow.net",
                   //   "probePath": "/status-0123456789abcdef",
                   //   "probeRequest": "GET",
                   //   "sessionAffinity": 1,
@@ -592,7 +592,7 @@
                   //     {
                   //       "name": "aeu1gwu5wafapim01",
                   //       "hostname": "aeu1gwu5wafapim01.eastus.cloudapp.azure.com",
-                  //       "hostHeader": "api.ppe.psthing.com",
+                  //       "hostHeader": "api.ppe.aginow.net",
                   //       "enabled": 1,
                   //       "priority": 1,
                   //       "checkCert": 0
@@ -600,7 +600,7 @@
                   //     {
                   //       "name": "acu1gwu5wafapim01",
                   //       "hostname": "acu1gwu5wafapim01.centralus.cloudapp.azure.com",
-                  //       "hostHeader": "api.ppe.psthing.com",
+                  //       "hostHeader": "api.ppe.aginow.net",
                   //       "enabled": 1,
                   //       "priority": 1,
                   //       "checkCert": 0
@@ -609,7 +609,7 @@
                   // },
                   {
                     "name": "acu1-pe-gw-u5-apim01",
-                    "zone": "psthing.com",
+                    "zone": "aginow.net",
                     "probePath": "/status-0123456789abcdef",
                     "probeRequest": "GET",
                     "sessionAffinity": 1,
@@ -617,7 +617,7 @@
                       {
                         "name": "aeu1-pe-gw-u5-wafapim01",
                         "hostname": "aeu1-pe-gw-u5-wafapim01-1.eastus.cloudapp.azure.com",
-                        "hostHeader": "ACU1-PE-GW-U5-apim01.psthing.com",
+                        "hostHeader": "ACU1-PE-GW-U5-apim01.aginow.net",
                         "enabled": 1,
                         "priority": 1,
                         "checkCert": 0
@@ -625,7 +625,7 @@
                       {
                         "name": "acu1-pe-gw-u5-wafapim01",
                         "hostname": "acu1-pe-gw-u5-wafapim01-1.centralus.cloudapp.azure.com",
-                        "hostHeader": "ACU1-PE-GW-U5-apim01.psthing.com",
+                        "hostHeader": "ACU1-PE-GW-U5-apim01.aginow.net",
                         "enabled": 1,
                         "priority": 1,
                         "checkCert": 0
@@ -633,7 +633,7 @@
                       {
                         "name": "aeu1gwu5wafapim01",
                         "hostname": "aeu1gwu5wafapim01.eastus.cloudapp.azure.com",
-                        "hostHeader": "ACU1-PE-GW-U5-apim01.psthing.com",
+                        "hostHeader": "ACU1-PE-GW-U5-apim01.aginow.net",
                         "enabled": 1,
                         "priority": 1,
                         "checkCert": 0
@@ -641,7 +641,7 @@
                       {
                         "name": "acu1gwu5wafapim01",
                         "hostname": "acu1gwu5wafapim01.centralus.cloudapp.azure.com",
-                        "hostHeader": "ACU1-PE-GW-U5-apim01.psthing.com",
+                        "hostHeader": "ACU1-PE-GW-U5-apim01.aginow.net",
                         "enabled": 1,
                         "priority": 1,
                         "checkCert": 0
@@ -672,7 +672,7 @@
             "SSLCerts": [
               {
                 "name": "api.ppe",
-                "zone": "psthing.com",
+                "zone": "aginow.net",
                 "createCert": 1
               }
             ],
@@ -772,12 +772,12 @@
             "SSLCerts": [
               {
                 "name": "ACU1-PE-GW-U5-apim01",
-                "zone": "psthing.com",
+                "zone": "aginow.net",
                 "createCert": 1
               },
               {
                 "name": "api.ppe",
-                "zone": "psthing.com",
+                "zone": "aginow.net",
                 "createCert": 1
               }
             ],
@@ -807,7 +807,7 @@
             "probes": [
               {
                 "Name": "apim01",
-                "HostName": "ACU1-PE-GW-U5-apim01.psthing.com",
+                "HostName": "ACU1-PE-GW-U5-apim01.aginow.net",
                 "Path": "/status-0123456789abcdef",
                 "Protocol": "https",
                 "useBE": 0
@@ -829,7 +829,7 @@
                 "RequestTimeout": 600,
                 "probeName": "apim01",
                 "hostnameFromBE": 0,
-                "HostName": "ACU1-PE-GW-U5-apim01.psthing.com"
+                "HostName": "ACU1-PE-GW-U5-apim01.aginow.net"
               }
             ],
             "Listeners": [
@@ -838,7 +838,7 @@
                 "BackendPort": 443,
                 "Protocol": "https",
                 "Cert": "ACU1-PE-GW-U5-apim01-psthing-com",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "ACU1-PE-GW-U5-apim01",
                 "HostnameExcludePrefix": 1,
                 "BackEnd": "apim01",
@@ -847,7 +847,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "ACU1-PE-GW-U5-apim01",
                 "HostnameExcludePrefix": 1,
                 "BackEnd": "apim01",

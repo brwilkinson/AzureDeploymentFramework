@@ -598,7 +598,7 @@
           // {
           //   "name": "data6",
           //   "skuName": "Standard_RAGZRS", // "Standard_LRS",
-          //   "customdomain": "acu1brwaoat5cdnapi06.psthing.com",
+          //   "customdomain": "acu1brwaoat5cdnapi06.aginow.net",
           //   "allNetworks": 1,
           //   "logging": {
           //     "r": 0,
@@ -842,14 +842,14 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "AG01",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "AG01",
                 "Interface": "Public",
                 "httpsRedirect": 1
@@ -896,14 +896,14 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "AGIC02",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "AGIC02",
                 "Interface": "Public",
                 "httpsRedirect": 1
@@ -979,7 +979,7 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "API02",
                 "Interface": "Public"
                 // "pathRules": "map1"
@@ -987,7 +987,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "API02",
                 "Interface": "Public",
                 "httpsRedirect": 1
@@ -1067,7 +1067,7 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "API03",
                 "Interface": "Public"
                 // "pathRules": "map1"
@@ -1075,7 +1075,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "API03",
                 "Interface": "Public",
                 "httpsRedirect": 1
@@ -1474,7 +1474,7 @@
               },
               {
                 "Name": "LOCUST_HOST",
-                "value": "https://acu1-pe-aoa-d3-api03.psthing.com"
+                "value": "https://acu1-pe-aoa-d3-api03.aginow.net"
               },
               {
                 "Name": "LOCUST_LOGLEVEL",
@@ -1544,7 +1544,7 @@
               },
               {
                 "Name": "LOCUST_MASTER_NODE_HOST",
-                "value": "{Deployment}-aci-locust-master-0.psthing.com"
+                "value": "{Deployment}-aci-locust-master-0.aginow.net"
               }
             ],
             "volumeMounts": [

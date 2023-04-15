@@ -506,7 +506,7 @@
             "SSLCerts": [
               {
                 "name": "PSTHING-WildCard",
-                "_zone": "psthing.com",
+                "_zone": "aginow.net",
                 "_createCert": 0
               }
             ],
@@ -565,7 +565,7 @@
                 "BackendPort": 443,
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "apim01",
                 "_HostnameExcludePrefix": 0,
                 "Interface": "Public"
@@ -573,7 +573,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "apim01",
                 "_HostnameExcludePrefix": 0,
                 "Interface": "Public",

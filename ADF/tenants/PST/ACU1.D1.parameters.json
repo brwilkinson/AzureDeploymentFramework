@@ -573,7 +573,7 @@
         "FrontDoorCDN": [
           {
             "name": "API04", // hostname
-            "zone": "psthing.com",
+            "zone": "aginow.net",
             "state": "Enabled",
             "skuName": "Premium", // "Premium"|"Standard"
             "WAFPolicy": "API01",
@@ -593,7 +593,7 @@
                   // }
                   {
                     "name": "acu1-pe-PST-t5-apim02-2",
-                    "hostname": "acu1-pe-PST-t5-apim02-2.psthing.com",
+                    "hostname": "acu1-pe-PST-t5-apim02-2.aginow.net",
                     "enabled": 1,
                     "PrivateLinkInfo": {
                       "privateLinkId": "/subscriptions/b8f402aa-20f7-4888-b45c-3cf086dad9c3/resourceGroups/ACU1-PE-PST-RG-T5/providers/Microsoft.ApiManagement/service/ACU1-PE-PST-T5-apim02",
@@ -617,7 +617,7 @@
           },
           {
             "name": "API03", // hostname
-            "zone": "psthing.com",
+            "zone": "aginow.net",
             "state": "Enabled",
             "skuName": "Premium", // "Premium"|"Standard"
             "WAFPolicy": "API01",

@@ -521,14 +521,14 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "AGIC02",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "AGIC02",
                 "Interface": "Public",
                 "httpsRedirect": 1

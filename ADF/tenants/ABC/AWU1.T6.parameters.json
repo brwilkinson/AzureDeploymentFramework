@@ -929,7 +929,7 @@
               },
               {
                 "Name": "LOCUST_HOST",
-                "value": "https://acu1-pe-aoa-d3-api03.psthing.com"
+                "value": "https://acu1-pe-aoa-d3-api03.aginow.net"
               },
               {
                 "Name": "LOCUST_LOGLEVEL",
@@ -1045,7 +1045,7 @@
             ],
             "services": [
               {
-                "Name": "APIM03", // acu1-PE-AOA-s1-afd 01 - apim01 .psthing.com
+                "Name": "APIM03", // acu1-PE-AOA-s1-afd 01 - apim01 .aginow.net
                 "BEAddress": [
                   {
                     "address": "{Deployment}-apim03.azure-api.net",
@@ -1078,7 +1078,7 @@
                 ]
               },
               {
-                "Name": "APIM03-Scm", // acu1-PE-AOA-s1-afd 01 - apim01-scm .psthing.com
+                "Name": "APIM03-Scm", // acu1-PE-AOA-s1-afd 01 - apim01-scm .aginow.net
                 "BEAddress": [
                   {
                     "address": "{Deployment}-apim03.azure-api.net",

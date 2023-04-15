@@ -436,7 +436,7 @@
         "DNSPrivateZoneInfo": [
           {
             "linkDNS": 1,
-            "zone": "psthing.com",
+            "zone": "aginow.net",
             "Autoregistration": false
           },
           {
@@ -625,8 +625,8 @@
           {
             "Name": "01",
             "accessControlUsers": [
-              "benwilk@psthing.com",
-              "simadams@psthing.com"
+              "benwilk@aginow.net",
+              "simadams@aginow.net"
             ],
             "systemAccounts": []
           }
@@ -660,8 +660,8 @@
             "vmProvider": "vm",
             "maxPoolSize": 15,
             "VssAdminAccounts": [
-              "benwilk@psthing.com",
-              "simadams@psthing.com"
+              "benwilk@aginow.net",
+              "simadams@aginow.net"
             ]
           },
           //  Currently no support for Managed Identity with AciSku
@@ -685,9 +685,9 @@
             "vmProvider": "vm",
             "maxPoolSize": 15,
             "VssAdminAccounts": [
-              "benwilk@psthing.com",
-              "simadams@psthing.com",
-              "mibishen@psthing.com"
+              "benwilk@aginow.net",
+              "simadams@aginow.net",
+              "mibishen@aginow.net"
             ]
           }
         ],

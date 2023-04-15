@@ -284,6 +284,9 @@ gemfile.lock
 ADF/1-prereqs/DSCResources/**
 !ADF/1-prereqs/DSCResources/info.txt
 
+# personal domain information
+ADF/bicep/AppServiceDomainRegsiter.bicepparam
+
 ADF/bicep/demos
 ADF/bicep/demos2
 ADF/bicep/exports

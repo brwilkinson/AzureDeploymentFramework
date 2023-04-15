@@ -528,10 +528,10 @@
             "SSLCerts": [
               {
                 "name": "AGIC01",
-                "zone": "psthing.com",
+                "zone": "aginow.net",
                 "createCert": 1,
                 "DnsNames": [
-                  "*.psthing.com"
+                  "*.aginow.net"
                 ]
               }
             ],
@@ -580,7 +580,7 @@
                 "BackendPort": 443,
                 "Protocol": "https",
                 "Cert": "AGIC01",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "AGIC01",
                 "HostnameExcludePrefix": 1,
                 "Interface": "Public"
@@ -588,7 +588,7 @@
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "AGIC01",
                 "HostnameExcludePrefix": 1,
                 "Interface": "Public",

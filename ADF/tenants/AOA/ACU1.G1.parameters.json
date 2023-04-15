@@ -319,15 +319,15 @@
           }
         ],
         "DNSPublicZoneInfo": [
-          "psthing.com",
-          "vote.psthing.com",
-          "vote2.psthing.com"
+          "aginow.net",
+          "vote.aginow.net",
+          "vote2.aginow.net"
         ],
         "AppServiceCertRequestInfo": [
           {
             "name": "PSTHING-Wildcard",
-            "domainName": "psthing.com",
-            "domainDNS": "*.psthing.com",
+            "domainName": "aginow.net",
+            "domainDNS": "*.aginow.net",
             "wildcard": 1
           }
         ]

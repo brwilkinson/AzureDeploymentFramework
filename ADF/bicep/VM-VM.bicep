@@ -428,7 +428,7 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
 }
 
 // sf ✅
-resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.CertMgmt)) {
+resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.?CertMgmt)) {
   name: 'KVAppServerExtensionForWindows'
   parent: virtualMachine
   location: resourceGroup().location

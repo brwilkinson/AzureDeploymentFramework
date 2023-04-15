@@ -68,6 +68,7 @@ $offername = 'windowsserver-gen2preview'
 $offername = 'Windows-10'
 $offername = 'office-365'
 $offername = 'cbl-mariner'
+$offername = '0001-com-ubuntu-server-focal'
 Get-AzVMImageSku -Location $location `
     -Publisher $pubName `
     -Offer $offerName | 
@@ -97,6 +98,7 @@ $sku = 'Enterprise'
 $sku = '2022-datacenter-azure-edition'
 $sku = '2019-Datacenter-gs'
 $sku = 'cbl-mariner-2-gen2'
+$sku = '20_04-lts-gen2'
 Get-AzVMImage -Location $Location -PublisherName $pubName -Offer $offerName -Skus $SKU | #Select-Object * | ogv
     Select-Object PublisherName, skus, Offer, Version, PurchasePlanText | Format-Table -AutoSize
 

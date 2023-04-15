@@ -566,7 +566,7 @@
             "_afdverify": "AOA",
             "services": [
               {
-                "Name": "APIM01", // acu1-PE-AOA-s1-afd 01 - apim01 .psthing.com
+                "Name": "APIM01", // acu1-PE-AOA-s1-afd 01 - apim01 .aginow.net
                 "BEAddress": [
                   {
                     "address": "{Deployment}-apim01.azure-api.net",
@@ -598,7 +598,7 @@
                 ]
               },
               {
-                "Name": "APIM01-Scm", // acu1-PE-AOA-s1-afd 01 - apim01-scm .psthing.com
+                "Name": "APIM01-Scm", // acu1-PE-AOA-s1-afd 01 - apim01-scm .aginow.net
                 "BEAddress": [
                   {
                     "address": "{Deployment}-apim01.azure-api.net",
@@ -844,14 +844,14 @@
                 "BackendPort": "80",
                 "Protocol": "https",
                 "Cert": "PSTHING-WildCard",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "waf",
                 "Interface": "Public"
               },
               {
                 "Port": 80,
                 "Protocol": "http",
-                "Domain": "psthing.com",
+                "Domain": "aginow.net",
                 "Hostname": "waf",
                 "Interface": "Public",
                 "httpsRedirect": 0

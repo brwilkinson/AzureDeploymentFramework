@@ -298,6 +298,32 @@
         "GuestConfig": 0
       }
     },
+    "ubuntu-server-focal": {
+      "imageReference": {
+        "publisher": "canonical",
+        "offer": "0001-com-ubuntu-server-focal",
+        "sku": "20_04-lts-gen2",
+        "version": "latest"
+      },
+      "OS": "Linux",
+      "patchMode": "AutomaticByPlatform",
+      "OSDiskGB": 32,
+      "RoleExtensions": {
+        "MonitoringAgent": 0,
+        "IaaSDiagnostics": 0,
+        "Antimalware": 0,
+        "DependencyAgent": 0,
+        "DSC": 0,
+        "Scripts": 1,
+        "MSI": 0,
+        "CertMgmt": 0,
+        "DomainJoin": 0,
+        "AdminCenter": 0,
+        "WindowsOpenSSH": 0,
+        "GuestHealthAgent": 0,
+        "GuestConfig": 0
+      }
+    },
     "Win10O365": {
       "imageReference": {
         "publisher": "MicrosoftWindowsDesktop",

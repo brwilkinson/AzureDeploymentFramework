@@ -211,7 +211,7 @@
           // }
         ],
         "DNSPublicZoneInfo": [
-          "psthing.com"
+          "aginow.net"
         ],
         "DNSResolverInfo": {
           "name": "01",
@@ -224,7 +224,7 @@
         "DNSPrivateZoneInfo": [
           {
             "linkDNS": 1,
-            "zone": "psthing.com",
+            "zone": "aginow.net",
             "Autoregistration": false
           },
           // {
