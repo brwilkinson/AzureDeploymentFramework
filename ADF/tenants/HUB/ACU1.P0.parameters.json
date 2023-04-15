@@ -32,7 +32,7 @@
         "NetworkWatcher": 1,
         "FlowLogs": 1,
         "VNet": 1,
-        "DNSResolver": 1,
+        "DNSResolver": 0, // disable, use azure DNS unless needed too expensive on MSDN
         "VNetDDOS": 0,
         "VNetPeering": 0,
         "DNSPrivateZone": 1,
@@ -243,7 +243,7 @@
         "DNSResolverInfo": {
           "name": "01",
           "SN": "snDNS01"
-          // "PrivateIP": "10" // not supported at this time default to .4
+          // "PrivateIP": "10" // manual set not supported at this time defaults to .4
         },
         "BastionInfo": {
           "name": "HST01",
