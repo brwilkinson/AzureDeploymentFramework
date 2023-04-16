@@ -107,12 +107,12 @@
         "CertMgmt": 0,
         "DomainJoin": 0,
         "AADLogin": 0,
+        "chefClient": 0,
         "WindowsOpenSSH": 0,
         "Antimalware": 0,
         "VMSSAzureADEnabled": 0,
         "SqlIaasExtension": 0,
-        "AzureDefender": 0,
-        "chefClient": 0
+        "AzureDefender": 0
       }
     },
     "DeploymentInfo": {

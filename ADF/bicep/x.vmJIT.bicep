@@ -57,8 +57,5 @@ resource StandardJITAccess 'Microsoft.Security/locations/jitNetworkAccessPolicie
         ports: ports
       }
     ]
-    // requests: []
-    #disable-next-line BCP037
-    appendMode: true
   }
 }

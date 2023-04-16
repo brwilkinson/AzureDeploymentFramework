@@ -63,6 +63,30 @@ resource default 'Microsoft.Security/autoProvisioningSettings@2017-08-01-preview
   }
 }
 
+resource MCAS 'Microsoft.Security/settings@2022-05-01' = { //Microsoft Cloud App Security
+  name: 'MCAS'
+  kind: 'DataExportSettings'
+  properties: {
+    enabled: true
+  }
+}
+
+resource WDATP 'Microsoft.Security/settings@2022-05-01' = { //Microsoft Cloud App Security
+  name: 'WDATP'
+  kind: 'DataExportSettings'
+  properties: {
+    enabled: false
+  }
+}
+
+resource Sentinel 'Microsoft.Security/settings@2022-05-01' = {
+  name: 'Sentinel'
+  kind: 'AlertSyncSettings'
+  properties: {
+    enabled: false
+  }
+}
+
 #disable-next-line BCP081
 resource defaultSecurityContact 'Microsoft.Security/securityContacts@2020-01-01-preview' = {
   name: 'default'

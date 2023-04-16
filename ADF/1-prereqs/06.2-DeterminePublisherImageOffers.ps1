@@ -36,6 +36,8 @@ $pubname = 'Microsoft.Azure.OpenSSH' #Ext
 $pubname = 'Microsoft.Azure.Monitoring.DependencyAgent'  # ext
 $pubname = 'Microsoft.Azure.Monitor'
 $pubname = 'Microsoft.EnterpriseCloud.Monitoring'
+$pubname = 'Microsoft.Azure.AzureDefenderForServers'
+$pubname = 'Microsoft.Azure.KeyVault'
 Get-AzVMExtensionImageType -PublisherName $pubname -Location $Location
 
 # Extensions
@@ -49,6 +51,10 @@ $ExtType = 'MicrosoftMonitoringAgent'
 $ExtType = 'OmsAgentForLinux'
 $ExtType = 'AADSSHLoginForLinux'
 $ExtType = 'AADLoginForWindows'
+$ExtType = 'MDE.Windows'
+$ExtType = 'MDE.Linux'
+$ExtType = 'KeyVaultForLinux'
+$ExtType = 'KeyVaultForWindows'
 Get-AzVMExtensionImage -Location $location -PublisherName $pubname -Type $ExtType | Select-Object PublisherName, Type, Version
 
 # 3 retrieve the SKUs of the offering

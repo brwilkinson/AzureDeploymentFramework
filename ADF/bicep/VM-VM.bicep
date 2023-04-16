@@ -24,18 +24,18 @@ param month string = utcNow('MM')
 param year string = utcNow('yyyy')
 
 // Use same PAT token for 3 month blocks, min PAT age is 6 months, max is 9 months
-var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) -1) % 3),2,'0')}-01', 'P9M')
+var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) - 1) % 3), 2, '0')}-01', 'P9M')
 
 // Roll the SAS token one per 3 months, min length of 6 months.
 var DSCSAS = saaccountidglobalsource.listServiceSAS('2021-09-01', {
-  canonicalizedResource: '/blob/${saaccountidglobalsource.name}/${last(split(Global._artifactsLocation, '/'))}'
-  signedResource: 'c'
-  signedProtocol: 'https'
-  signedPermission: 'r'
-  signedServices: 'b'
-  signedExpiry: SASEnd
-  keyToSign: 'key1'
-}).serviceSasToken
+    canonicalizedResource: '/blob/${saaccountidglobalsource.name}/${last(split(Global._artifactsLocation, '/'))}'
+    signedResource: 'c'
+    signedProtocol: 'https'
+    signedPermission: 'r'
+    signedServices: 'b'
+    signedExpiry: SASEnd
+    keyToSign: 'key1'
+  }).serviceSasToken
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
@@ -164,6 +164,9 @@ resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = 
   parent: KV
 }
 
+var certUrlLatest = cert.properties.secretUri
+var certUrl = cert.properties.secretUriWithVersion
+
 var secrets = [
   {
     sourceVault: {
@@ -171,15 +174,15 @@ var secrets = [
     }
     vaultCertificates: [
       {
-        certificateUrl: cert.properties.secretUriWithVersion
+        certificateUrl: certUrl
         certificateStore: 'My'
       }
       {
-        certificateUrl: cert.properties.secretUriWithVersion
+        certificateUrl: certUrl
         certificateStore: 'Root'
       }
       {
-        certificateUrl: cert.properties.secretUriWithVersion
+        certificateUrl: certUrl
         certificateStore: 'CA'
       }
     ]
@@ -222,6 +225,10 @@ var MSILookup = {
   FIL: 'Cluster'
   OCR: 'Storage'
   WVD: 'WVD'
+}
+
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
+  name: '${Deployment}-uaiKeyVaultSecretsGet'
 }
 
 var userAssignedIdentities = {
@@ -305,7 +312,7 @@ module AppServerNIC 'x.NIC.bicep' = {
   ]
 }
 
-module DISKLOOKUP 'y.disks.bicep' = if(contains(AppServer,'DDRole')) {
+module DISKLOOKUP 'y.disks.bicep' = if (contains(AppServer, 'DDRole')) {
   name: 'dp${Deployment}-AppServer-diskLookup${AppServer.Name}'
   params: {
     Deployment: Deployment
@@ -345,8 +352,9 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-03-01' = {
       computerName: VM.vmHostName
       adminUsername: contains(AppServer, 'AdminUser') ? AppServer.AdminUser : Global.vmAdminUserName
       adminPassword: vmAdminPassword
-      customData: contains(AppServer, 'customData') ? base64(replace(AppServer.customData, '{0}', '${networkId.upper}.${ contains(lowerLookup,AppServer.NICs[0].subnet) ? int(networkId.lower) + ( 1 * lowerLookup[AppServer.NICs[0].subnet]) : networkId.lower }.')) : null
-      secrets: OSType[AppServer.OSType].OS == 'Windows' ? secrets : null
+      customData: contains(AppServer, 'customData') ? base64(replace(AppServer.customData, '{0}', '${networkId.upper}.${contains(lowerLookup, AppServer.NICs[0].subnet) ? int(networkId.lower) + (1 * lowerLookup[AppServer.NICs[0].subnet]) : networkId.lower}.')) : null
+      // Use KV extension instead
+      // secrets: OSType[AppServer.OSType].OS == 'Windows' && Global.?CertName ? secrets : null
       windowsConfiguration: OSType[AppServer.OSType].OS == 'Windows' ? VM.windowsConfiguration : null
       linuxConfiguration: OSType[AppServer.OSType].OS != 'Windows' ? VM.linuxConfiguration : null
     }
@@ -358,10 +366,10 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-03-01' = {
         diskSizeGB: OSType[AppServer.OSType].OSDiskGB
         createOption: 'FromImage'
         managedDisk: {
-          storageAccountType: contains(AppServer,'OSstorageAccountType') ? AppServer.OSstorageAccountType : storageAccountType
+          storageAccountType: contains(AppServer, 'OSstorageAccountType') ? AppServer.OSstorageAccountType : storageAccountType
         }
       }
-      dataDisks: contains(AppServer,'DDRole') ? DISKLOOKUP.outputs.DATADisks : null
+      dataDisks: contains(AppServer, 'DDRole') ? DISKLOOKUP.outputs.DATADisks : null
     }
     networkProfile: {
       networkInterfaces: [for (nic, index) in AppServer.NICs: {
@@ -393,7 +401,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-03-01' = {
 //   }
 // }
 
-module AppServerJIT 'x.vmJIT.bicep' = if(bool(AppServer.DeployJIT)) {
+module AppServerJIT 'x.vmJIT.bicep' = if (bool(AppServer.DeployJIT)) {
   name: 'dp${Deployment}-AppServer-JIT-${AppServer.Name}'
   params: {
     Deployment: Deployment
@@ -416,7 +424,7 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
     }
     notificationSettings: {
       status: contains(AppServer.shutdown, 'notification') && bool(AppServer.shutdown.notification) ? 'Enabled' : 'Disabled'
-      emailRecipient: join(Global.alertRecipients,';')
+      emailRecipient: join(Global.alertRecipients, ';')
       notificationLocale: 'en'
       timeInMinutes: 30
     }
@@ -428,23 +436,43 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
 }
 
 // sf ✅
-resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.?CertMgmt)) {
-  name: 'KVAppServerExtensionForWindows'
+resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.?CertMgmt) && Global.?CertName) {
+  name: 'KVVMExtensionForWindows'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
-    publisher: 'Microsoft.Azure.KeyVault.Edp'
-    type: 'KeyVaultForWindows'
-    typeHandlerVersion: '0.0'
+    publisher: 'Microsoft.Azure.KeyVault'
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'KeyVaultForWindows' : 'KeyVaultForLinux'
+    typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '3.0' : '2.0'
     autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+    forceUpdateTag: '1'
     settings: {
       secretsManagementSettings: {
-        pollingIntervalInS: 3600
-        certificateStoreName: 'MY'
-        certificateStoreLocation: 'LOCAL_MACHINE'
-        observedCertificates: [
-          cert.properties.secretUri
+        pollingIntervalInS: '14400'
+        // linkOnRenewal: false
+        requireInitialSync: true
+        observedCertificates: OSType[AppServer.OSType].OS == 'Linux' ? [certUrlLatest] : [
+          {
+            url: certUrlLatest
+            certificateStoreName: 'MY'
+            certificateStoreLocation: 'LocalMachine'
+          }
+          {
+            url: certUrlLatest
+            certificateStoreName: 'Root'
+            certificateStoreLocation: 'LocalMachine'
+          }
+          {
+            url: certUrlLatest
+            certificateStoreName: 'CA'
+            certificateStoreLocation: 'LocalMachine'
+          }
         ]
+      }
+      authenticationSettings: {
+        msiEndpoint: 'http://169.254.169.254/metadata/identity/oauth2/token'
+        msiClientId: UAI.properties.clientId
       }
     }
   }
@@ -470,12 +498,14 @@ resource AzureDefenderForServers 'Microsoft.Compute/virtualMachines/extensions@2
   properties: {
     publisher: 'Microsoft.Azure.AzureDefenderForServers'
     type: OSType[AppServer.OSType].OS == 'Windows' ? 'MDE.Windows' : 'MDE.Linux'
-    typeHandlerVersion: '1.0'
+    typeHandlerVersion: '1'
     autoUpgradeMinorVersion: true
     settings: {
       azureResourceId: virtualMachine.id
       defenderForServersWorkspaceId: OMS.id
       forceReOnboarding: false
+      autoUpdate: true
+      vNextEnabled: true
     }
   }
 }
@@ -650,7 +680,7 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' 
         Thumbprint: Global.CertThumbprint
         storageAccountId: saaccountidglobalsource.id
         deployment: Deployment
-        networkid: '${networkId.upper}.${ contains(lowerLookup,AppServer.NICs[0].subnet) ? int(networkId.lower) + ( 1 * lowerLookup[AppServer.NICs[0].subnet]) : networkId.lower }.'
+        networkid: '${networkId.upper}.${contains(lowerLookup, AppServer.NICs[0].subnet) ? int(networkId.lower) + (1 * lowerLookup[AppServer.NICs[0].subnet]) : networkId.lower}.'
         appInfo: contains(AppServer, 'AppInfo') ? string(VM.AppInfo) : ''
         DataDiskInfo: string(VM.DataDisk)
         // clientIDLocal: '${Environment}${DeploymentID}' == 'G0' ? '' : UAILocal.properties.clientId
@@ -811,11 +841,11 @@ resource AppServerSqlIaasExtension 'Microsoft.Compute/virtualMachines/extensions
         Enable: true
         CredentialName: Global.sqlCredentialName
       }
-        // AutoBackupSettings: {
-        //   Enable: true,
-        //   RetentionPeriod: 5
-        //   EnableEncryption: true
-        // }
+      // AutoBackupSettings: {
+      //   Enable: true,
+      //   RetentionPeriod: 5
+      //   EnableEncryption: true
+      // }
     }
     protectedSettings: {
       PrivateKeyVaultCredentialSettings: {
@@ -876,4 +906,4 @@ resource AppServerIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@
   }
 }
 
-output Disks array = contains(AppServer,'DDRole') ? DISKLOOKUP.outputs.DATADisks : []
+output Disks array = contains(AppServer, 'DDRole') ? DISKLOOKUP.outputs.DATADisks : []
