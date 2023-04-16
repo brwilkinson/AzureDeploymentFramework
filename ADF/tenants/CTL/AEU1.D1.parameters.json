@@ -104,7 +104,7 @@
         "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
-        "CertMgmt": 0,
+        "CertMgmt": 1,
         "DomainJoin": 0,
         "AADLogin": 0,
         "chefClient": 0,

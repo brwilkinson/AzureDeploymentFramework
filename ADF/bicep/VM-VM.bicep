@@ -436,7 +436,8 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
 }
 
 // sf ✅
-resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.?CertMgmt) && Global.?CertName) {
+// https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/key-vault-linux#extension-schema
+resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.CertMgmt)) {
   name: 'KVVMExtensionForWindows'
   parent: virtualMachine
   location: resourceGroup().location
@@ -451,6 +452,7 @@ resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachi
       secretsManagementSettings: {
         pollingIntervalInS: '14400'
         // linkOnRenewal: false
+        // certificateStoreLocation: '/var/lib/waagent/Microsoft.Azure.KeyVault.Store' <-- default linux location
         requireInitialSync: true
         observedCertificates: OSType[AppServer.OSType].OS == 'Linux' ? [certUrlLatest] : [
           {
