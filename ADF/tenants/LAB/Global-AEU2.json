@@ -6,7 +6,8 @@
     },
     "hubKV": {
       "name": "VLT01",
-      "AppName": "HUB"
+      "AppName": "HUB",
+      "Prefix": "ACU1"
     },
     "hubAA": {
       "name": "P0",

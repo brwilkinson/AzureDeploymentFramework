@@ -16,7 +16,7 @@
         "RG": 1,
         "RBAC": 1,
         "PIM": 0,
-        "UAI": 0,
+        "UAI": 1,
         "SP": 1,
         "KV": 0,
         "OMS": 1,
@@ -115,67 +115,85 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
+          // {
+          //   "name": "GlobalAcrPull",
+          //   "RBAC": [
+          //     {
+          //       "Name": "AcrPull",
+          //       "RG": "G1",
+          //       "Tenant": "HUB"
+          //     }
+          //   ]
+          // },
           {
-            "name": "GlobalAcrPull",
+            "Name": "Reader",
             "RBAC": [
               {
-                "Name": "AcrPull",
-                "RG": "G1",
-                "Tenant": "HUB"
+                "Name": "Reader"
               }
             ]
           },
           {
-            "name": "KeyVaultSecretsGet",
+            "name": "AppService",
             "RBAC": [
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "HUB"
-              }
-            ]
-          },
-          {
-            "name": "AKSCluster",
-            "RBAC": [
-              {
-                "Name": "Private DNS Zone Contributor",
-                "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
-                "Name": "Key Vault Certificates Officer",
-                "RG": "P0",
-                "Tenant": "HUB"
+                "Name": "Storage Account Contributor"
               },
               {
-                "Name": "Key Vault Secrets User",
-                "RG": "P0",
-                "Tenant": "HUB"
+                "Name": "Storage Queue Data Contributor"
               },
               {
-                "Name": "Network Contributor"
-              },
-              {
-                "Name": "Managed Identity Operator"
-              }
-            ]
-          },
-          {
-            "Name": "CertificateRequest",
-            "RBAC": [
-              {
-                "Name": "Key Vault Secrets User",
-                "RG": "P0",
-                "Tenant": "HUB"
-              },
-              {
-                "Name": "Key Vault Certificates Officer",
-                "RG": "P0",
-                "Tenant": "HUB"
+                "Name": "Storage Blob Data Owner"
               }
             ]
           }
+          // {
+          //   "name": "AKSCluster",
+          //   "RBAC": [
+          //     {
+          //       "Name": "Private DNS Zone Contributor",
+          //       "RG": "P0",
+          //       "Tenant": "HUB"
+          //     },
+          //     {
+          //       "Name": "Key Vault Certificates Officer",
+          //       "RG": "P0",
+          //       "Tenant": "HUB"
+          //     },
+          //     {
+          //       "Name": "Key Vault Secrets User",
+          //       "RG": "P0",
+          //       "Tenant": "HUB"
+          //     },
+          //     {
+          //       "Name": "Network Contributor"
+          //     },
+          //     {
+          //       "Name": "Managed Identity Operator"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "Name": "CertificateRequest",
+          //   "RBAC": [
+          //     {
+          //       "Name": "Key Vault Secrets User",
+          //       "RG": "P0",
+          //       "Tenant": "HUB"
+          //     },
+          //     {
+          //       "Name": "Key Vault Certificates Officer",
+          //       "RG": "P0",
+          //       "Tenant": "HUB"
+          //     }
+          //   ]
+          // }
         ],
         "rolesInfo": [
           {
@@ -404,6 +422,27 @@
                 "groupID": "file"
               }
             ]
+          },
+          {
+            "name": "data1",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "containers": [
+              {
+                "name": "$web"
+              }
+            ]
           }
         ],
         "KVInfo": [
@@ -476,6 +515,33 @@
             "skutier": "PremiumV2",
             "skucapacity": 1,
             "deploy": 1
+          },
+          {
+            "Name": "ASP01",
+            "kind": "elastic",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "EP1",
+            "skutier": "ElasticPremium",
+            "skucapacity": 1,
+            "maxWorkerCount": 100,
+            "deploy": 1
+          }
+        ],
+        "FunctionInfo": [
+          {
+            "Name": "DIS03",
+            "kind": "functionapp",
+            "AppSVCPlan": "ASP01",
+            "saname": "data1",
+            "stack": "dotnet",
+            "_Subnet": "snMT01",
+            "preWarmedCount": 1,
+            "customDNS": 0,
+            "authsettingsV2": {
+              "applicationId": "84a491fe-f713-42f9-8e13-66bfb5dcc09b", // clientid needs access to the keyvault to read the secret
+              "requireAuthentication": 1
+            }
           }
         ],
         "WebSiteInfo": [

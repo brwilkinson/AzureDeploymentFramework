@@ -175,7 +175,7 @@ module testResourcExists 'x.testResourceExists.ps1.bicep' = [for (ws, index) in 
   name: 'testResourcExists-${Deployment}-ws${ws.Name}-config-appsettings'
   params: {
     resourceId: '${container[index].outputs.WebSiteId}/config/appsettings'
-    userAssignedIdentityName: 'AEU1-PE-CTL-D1-uaiReader'
+    userAssignedIdentityName: '${Deployment}-uaiReader'
   }
 }]
 

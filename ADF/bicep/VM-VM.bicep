@@ -454,7 +454,7 @@ resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachi
         // linkOnRenewal: false
         // certificateStoreLocation: '/var/lib/waagent/Microsoft.Azure.KeyVault.Store' <-- default linux location
         requireInitialSync: true
-        observedCertificates: OSType[AppServer.OSType].OS == 'Linux' ? [certUrlLatest] : [
+        observedCertificates: OSType[AppServer.OSType].OS == 'Linux' ? [ certUrlLatest ] : [
           {
             url: certUrlLatest
             certificateStoreName: 'MY'

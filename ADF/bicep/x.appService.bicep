@@ -50,7 +50,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 var userAssignedIdentities = {
   Default: {
     // '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiStorageAccountOperator')}': {}
-    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiKeyVaultSecretsGet')}': {}
+    '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiAppService')}': {}
   }
   VMOperator: {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', '${Deployment}-uaiVMOperator')}': {}
@@ -106,12 +106,25 @@ resource WS 'Microsoft.Web/sites@2021-01-01' = {
       javaContainerVersion: ws.stack == 'java' ? 'SE' : null
       alwaysOn: contains(alwaysOn, ws.stack) && FARM.kind != 'elastic' ? true : false
       ftpsState: contains(ws, 'ftpsState') ? ws.ftpsState : 'FtpsOnly'
+
+      
     }
   }
   dependsOn: [
     WebSiteDNS
   ]
 }
+
+/*
+var test = [
+  {
+    AzureWebJobsStorage: '@Microsoft.KeyVault(SecretUri=${reference(storageConnectionStringResourceId).secretUriWithVersion})'
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=${reference(storageConnectionStringResourceId).secretUriWithVersion})'
+    APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=${reference(appInsightsKeyResourceId).secretUriWithVersion})'
+    WEBSITE_ENABLE_SYNC_UPDATE_SITE: 'true'
+  }
+]
+*/
 
 var extraSlots = contains(ws, 'extraSlots') ? ws.extraSlots : 0
 
@@ -149,7 +162,7 @@ module testResourcExists 'x.testResourceExists.ps1.bicep' = {
   name: 'testResourcExists-${Deployment}-${appprefix}${ws.Name}'
   params: {
     resourceId: WS.id
-    userAssignedIdentityName: 'AEU1-PE-CTL-D1-uaiReader'
+    userAssignedIdentityName: '${Deployment}-uaiReader'
   }
 }
 
@@ -267,6 +280,15 @@ resource stack 'Microsoft.Web/sites/config@2021-01-15' = {
   parent: WS
   properties: {
     CURRENT_STACK: ws.stack
+  }
+}
+
+module authsettingsV2 'x.appServiceAuthsettingsV2.bicep' = if (contains(ws, 'authsettingsV2')) {
+  name: 'dp${Deployment}-authsettingsV2-${ws.name}'
+  params: {
+    siteName: WS.name
+    applicationId: ws.authsettingsV2.?applicationId ?? ''
+    requireAuthentication: bool(ws.authsettingsV2.?requireAuthentication) ?? false
   }
 }
 
