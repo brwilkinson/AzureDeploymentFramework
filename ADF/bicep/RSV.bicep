@@ -39,8 +39,6 @@ param Global object
 #disable-next-line no-unused-params
 param DeploymentInfo object
 
-
-
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -48,27 +46,25 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var RSVInfo = [
-  {
-    Name: 'Vault01'
-    skuName: 'RS0'
-    skuTier: 'Standard'
-  }
-]
+var RSVInfo = {
+  Name: 'Vault01'
+  skuName: 'RS0'
+  skuTier: 'Standard'
+}
 
-resource RSV 'Microsoft.RecoveryServices/vaults@2021-01-01' = [for i in range(0, length(RSVInfo)): if (bool(Stage.RSV)) {
+resource RSV 'Microsoft.RecoveryServices/vaults@2023-02-01' = if (bool(Stage.RSV)) {
   location: resourceGroup().location
-  name: '${DeploymentURI}${RSVInfo[i].Name}'
+  name: '${DeploymentURI}${RSVInfo.Name}'
   sku: {
-    name: RSVInfo[i].skuName
-    tier: RSVInfo[i].skuTier
+    name: RSVInfo.skuName
+    tier: RSVInfo.skuTier
   }
   properties: {}
-}]
+}
 
-resource RSVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = [for i in range(0, length(RSVInfo)): if (bool(Stage.RSV)) {
+resource RSVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = if (bool(Stage.RSV)) {
   name: 'service'
-  scope: RSV[i]
+  scope: RSV
   properties: {
     workspaceId: OMS.id
     logs: [
@@ -138,4 +134,5 @@ resource RSVDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-previe
       }
     ]
   }
-}]
+}
+

@@ -759,7 +759,7 @@
         "Appservers": {
           "AppServers": [
             {
-              "Name": "UBU01",
+              "Name": "UBU02",
               "Role": "UBU",
               "_DSC": "PULL",
               "_DDRole": "64GB",
@@ -778,7 +778,7 @@
                   "Primary": 1,
                   "FastNic": 1,
                   "PublicIP": "Static",
-                  "StaticIP": "60"
+                  "StaticIP": "61"
                 }
               ]
             }

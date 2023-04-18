@@ -908,4 +908,30 @@ resource AppServerIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@
   }
 }
 
+
+var policyName = 'DefaultPolicy'
+
+resource RSV 'Microsoft.RecoveryServices/vaults@2016-06-01' existing = {
+  name: '${DeploymentURI}Vault01'
+
+  #disable-next-line BCP081
+  resource Fabric 'backupFabrics' existing = {
+    name: 'Azure'
+
+    resource protectedVM 'protectionContainers' existing = {
+      name: 'IaasVMContainer;iaasvmcontainerv2;${resourceGroup().name};${virtualMachine.name}'
+
+      resource protectedVM 'protectedItems' = {
+        name: toLower('vm;iaasvmcontainerv2;${resourceGroup().name};${virtualMachine.name}')
+        properties: {
+          friendlyName: virtualMachine.name
+          protectedItemType: 'Microsoft.ClassicCompute/virtualMachines'
+          policyId: resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', RSV.name, policyName)
+          sourceResourceId: virtualMachine.id
+        }
+      }
+    }
+  }
+}
+
 output Disks array = contains(AppServer, 'DDRole') ? DISKLOOKUP.outputs.DATADisks : []
