@@ -437,8 +437,8 @@ resource autoShutdownScheduler 'Microsoft.DevTestLab/schedules@2018-09-15' = if 
 
 // sf ✅
 // https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/key-vault-linux#extension-schema
-resource AppServerKVAppServerExtensionForWindows 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.CertMgmt)) {
-  name: 'KVVMExtensionForWindows'
+resource AppServerKVAppServerExtension 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.CertMgmt)) {
+  name: OSType[AppServer.OSType].OS == 'Windows' ? 'KeyVaultForWindows' : 'KeyVaultForLinux'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
@@ -921,7 +921,7 @@ resource RSV 'Microsoft.RecoveryServices/vaults@2016-06-01' existing = {
     resource protectedVM 'protectionContainers' existing = {
       name: 'IaasVMContainer;iaasvmcontainerv2;${resourceGroup().name};${virtualMachine.name}'
 
-      resource protectedVM 'protectedItems' = {
+      resource protectedVM 'protectedItems' = if (VM.match && bool(VM.Extensions.?protectedVM ?? 0)) {
         name: toLower('vm;iaasvmcontainerv2;${resourceGroup().name};${virtualMachine.name}')
         properties: {
           friendlyName: virtualMachine.name

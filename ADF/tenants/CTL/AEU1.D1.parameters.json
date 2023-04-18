@@ -100,6 +100,7 @@
         "VMInsights": 1,
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
+        "protectedVM": 0,
         "DSC": 1,
         "GuestConfig": 1,
         "Scripts": 1,
