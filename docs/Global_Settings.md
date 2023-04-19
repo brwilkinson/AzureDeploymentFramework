@@ -20,6 +20,30 @@
 |Global-Config.json|This file contains an export for all Role Definitions, allows translation between role name and ID|
 |Global-**{REGIONPrefix}**.json| e.g. Global-ACU1.json or Global-AEU2.json These files contain regional settings and mappings|
 
+#### Examples - Global-Config.json
+
+- The below script can be executed to generate or update the file with roles from your subscription
+  - This command can be found in the deploy.ps1 in each tenant
+  -  ADF\tenants\HUB\deploy.ps1 
+
+```powershell
+# Export all role defintions per Subscription, only needed 1 time or when new roles added
+. ADF:\1-prereqs\04.1-getRoleDefinitionTable.ps1 @Current
+```
+
+```json
+  "RolesGroupsLookup": {
+    "Access Review Operator Service Role": {
+      "Id": "76cc9ee4-d5d3-4a45-a930-26add3d73475",
+      "Description": "Lets you grant Access Review System app permissions to discover and revoke access as needed by the access review process."
+    },
+    "AcrDelete": {
+      "Id": "c2f4ef07-c644-48eb-af81-4b1b4947fb11",
+      "Description": "acr delete"
+    },
+```
+
+
 ### Examples - Global-Global.json
 
 ```json
