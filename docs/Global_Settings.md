@@ -24,7 +24,7 @@
 
 - The below script can be executed to generate or update the file with roles from your subscription
   - This command can be found in the deploy.ps1 in each tenant
-  -  ADF\tenants\HUB\deploy.ps1 
+    - ADF\tenants\HUB\deploy.ps1 
 
 ```powershell
 # Export all role defintions per Subscription, only needed 1 time or when new roles added
@@ -99,12 +99,29 @@
       "brwilkinson": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",
       "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
       "AKS_Admins": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",
-      "ADO_ADF_ACU1-PE-HUB-RG-G0": "4f3e8446-060f-45f4-b4f1-8104b4a83162"
+      "ADO_ADF_ACU1-PE-HUB-RG-G0": "4f3e8446-060f-45f4-b4f1-8104b4a83162" // These Service Principals 
+                                                                          // are automatically generated in this file
+                                                                          // see below
     }
   }
 }
 
 ```
+  - This command to generate service principals and service connection can be found in the deploy.ps1 in each tenant
+    - ADF\tenants\HUB\deploy.ps1
+  - Below commands will generate the SP lookup shown above in the Global-Global.json file
+    - One for each stamp/environment within each tenant 
+```powershell
+# App pipelines in AZD New or update Owner
+New-ADOAZServiceConnection -Prefix ACU1 -App $App -IncludeReaderOnSubscription -Environments G0, G1, P0
+New-ADOAZServiceConnection -Prefix AEU2 -App $App -IncludeReaderOnSubscription -Environments P0
+# New-ADOAZServiceConnection -Prefix AEU1 -App $App -Environments P0
+
+# update secrets
+Set-ADOAZServiceConnection -Prefix ACU1 -App $App -RenewDays 360 -Environments G0, G1, P0
+Set-ADOAZServiceConnection -Prefix AEU2 -App $App -RenewDays 360 -Environments P0
+```
+
 
 ### Examples - Global-RegionalPrefix.json
 
