@@ -10,38 +10,101 @@
 
 |Tenant/App|Description|
 |:-|:-|
-|ABC|Test|
+|HUB|A Hub Deployment for Shared Services Hub Tenant|
 
-[Link Description](https://docs.microsoft.com/en-us/contribute/markdown-reference)
+![Global Settings in HUB Tenant](Global_Settings_Examples.png)
 
-> [!NOTE]
-> Information the user should notice even if skimming.
+|File Name|Purpose|
+|:-|:-|
+|Global-Global.json|The main Global File for the tenant. Main settings including User and Group id lookups|
+|Global-Config.json|This file contains an export for all Role Definitions, allows translation between role name and ID|
+|Global-**{REGIONPrefix}**.json| e.g. Global-ACU1.json or Global-AEU2.json These files contain regional settings and mappings|
 
-> [!TIP]
-> Optional information to help a user be more successful.
+### Examples - Global-Global.json
 
-> [!IMPORTANT]
-> Essential information required for user success.
+```json
+{
+  "Global": {
+    "OrgName": "PE", // The name of the Org, this is the only value you need to change
+                     // This ensures ALL resources have a unique name
+    "AppName": "HUB", // The name of the tenant/App
+    "GlobalSA": {
+      "name": "global" // The Name of the Global storage account
+                       // will be expected to be in the global Resource Group 
+    },
+    "GlobalACR": {
+      "name": "global" // The Name of the Global container registry
+                       // will be expected to be in the global Resource Group
+    },
+    "GlobalRG": { // The Name of the Global Resource Group
+      "name": "G1"
+    },
+    "AppId": 0, // Used to ensure Networks don't overlap IP Address space per app/tenant
+                // Ensure that any 2 Tenants that need to talk over vnet peering have different
+                // AppId number. Supports 32 non overlapping address spaces each 2048 addresses/ per region
+    "Network": { // Default network base numbers, you do not need to change this.
+      "first": 10,
+      "second": 248,
+      "third": 248
+    },
+    "PrimaryLocation": "CentralUS", // Default primary location
+                                    // the Global Resource Group will be in this region
+    "SecondaryLocation": "EastUS2", // Default secondary location
+    "IPAddressforRemoteAccess": [   // Address ranges that get added to Firewall allow lists
+      "62.162.123.81/32"            // E.g. to connect to a keyvault or AKS etc
+    ],
+    "vmAdminUserName": "brw",       // Admin username
+    "sqlCredentialName": "sqladmin",// SQL Admin username
+    "ADDomainName": "aginow.net",   // Domain for internal AD
+    "DomainName": "aginow.net",     // Domain for apps private DNS
+    "DomainNameExt": "aginow.net",  // Domain for app public/External DNS
+    "_hubSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtSubscriptionID": "b8f402aa-20f7-4888-b45c-3cf086dad9c3",
+    "__DomainNameExtRG": "ACU1-PE-AOA-RG-G1",
+    "ADOProject": "ADF",                       // Azure DevOps Project Name
+    "AZDevOpsOrg": "AzureDeploymentFramework", // Azure DevOps Org Name
+    "ServicePrincipalAdmins": [                // Lookup for name of Owners on Service Principals
+      "BenWilkinson-ADM"                       // and AD Applications, as well as DevOps Connections
+    ],
+    "apimPublisherEmail": "benwilk@aginow.net",
+    "alertRecipients": [
+      "benwilk@aginow.net"
+    ],
+    "ObjectIdLookup": { // This is a table lookup for Groups, Users and Applications
+                        // This is used so that you can use a Friendly name for Role assignments in your parameter files
+      "brwilkinson": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",
+      "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
+      "AKS_Admins": "013ea2d0-e8da-41a9-bf4a-73b04841bf13",
+      "ADO_ADF_ACU1-PE-HUB-RG-G0": "4f3e8446-060f-45f4-b4f1-8104b4a83162"
+    }
+  }
+}
 
-> [!CAUTION]
-> Negative potential consequences of an action.
+```
 
-> [!WARNING]
-> Dangerous certain consequences of an action.
+### Examples - Global-RegionalPrefix.json
 
-> This is a blockquote. It is usually rendered indented and with a different background color.
-
-This text is **bold**.
-
-This text is *italic*.
-
-This text is both ***bold and italic***.
-
-
-
-# This is a first level heading (H1)
-
-## This is a second level heading (H2)
-
-
-###### This is a sixth level heading (H6)
+```json
+{
+  "Global": {
+    "hubRG": { // The Hub resource group for this region
+      "name": "P0"
+    },
+    "hubKV": { // The keyvault resource group/Name for this region
+      "name": "VLT01"
+    },
+    "hubAA": { // The Automation Account Name for this region
+      "name": "OMSAutomation"
+    },
+    "DNSServers": [ // The DNS servers for this region
+                    // Blank for Azure DNS
+                    // Used for the whole region, however can be over written in 
+                    // Any individual Stamp/Resource Group
+      // "10.192.248.4" // Use Azure DNS for now instead of DNSForwarder
+    ],
+    "RTName": "Hub",
+    "shutdownSchedulerTimeZone": "Pacific Standard Time",
+    "patchSchedulerTimeZone": "America/Los_Angeles"
+  }
+}
+```
