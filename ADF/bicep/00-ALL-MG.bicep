@@ -51,7 +51,7 @@ targetScope = 'managementGroup'
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 
 
-module dp_Deployment_ManagementGroups 'man-MG.bicep' = if (contains(Stage, 'MG') && bool(Stage.MG)) {
+module dp_Deployment_ManagementGroups 'man-MG.bicep' = if (bool(Stage.?MG ?? 0)) {
   name: 'dp${Deployment}-ManagementGroups'
   params: {
     // move these to Splatting later
@@ -67,4 +67,3 @@ module dp_Deployment_ManagementGroups 'man-MG.bicep' = if (contains(Stage, 'MG')
     // dp_Deployment_RG
   ]
 }
-

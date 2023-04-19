@@ -47,7 +47,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var NATGWInfo = contains(DeploymentInfo, 'NATGWInfo') ? DeploymentInfo.NATGWInfo : []
+var NATGWInfo = DeploymentInfo.?NATGWInfo ?? []
 
 var NGW = [for (ngw, index) in NATGWInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), ngw.Name))

@@ -57,7 +57,7 @@ var gh = {
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-var RedisInfo = contains(DeploymentInfo, 'RedisInfo') ? DeploymentInfo.RedisInfo : []
+var RedisInfo = DeploymentInfo.?RedisInfo ?? []
 
 var RCs = [for (rc, index) in RedisInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), rc.Name))

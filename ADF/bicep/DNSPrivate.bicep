@@ -42,7 +42,7 @@ param DeploymentInfo object
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 
-var DNSPrivateZoneInfo = contains(DeploymentInfo, 'DNSPrivateZoneInfo') ? DeploymentInfo.DNSPrivateZoneInfo : []
+var DNSPrivateZoneInfo = DeploymentInfo.?DNSPrivateZoneInfo ?? []
 
 resource VNET 'Microsoft.Network/virtualNetworks@2020-11-01' existing = {
   name: '${Deployment}-vn'

@@ -42,7 +42,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
+var appConfigurationInfo = DeploymentInfo.?appConfigurationInfo ?? []
 
 var appConfig = [for (ac,index) in appConfigurationInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), ac.Name))

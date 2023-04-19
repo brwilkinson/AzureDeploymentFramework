@@ -57,16 +57,12 @@ var gh = {
 
 var globalRGName = '${gh.globalRGPrefix}-${gh.globalRGOrgName}-${gh.globalRGAppName}-RG-${gh.globalRGName}'
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
-}
-
 resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
 // WebSiteContainerInfo
-var WebSiteInfo = (contains(DeploymentInfo, 'WebSiteContainerInfo') ? DeploymentInfo.WebSiteContainerInfo : [])
+var WebSiteInfo = DeploymentInfo.?WebSiteContainerInfo ?? []
 
 // merge appConfig, move this to the websiteInfo as a property to pass in these from the param file
 var myAppConfig = {
@@ -101,10 +97,6 @@ var WSInfo = [for (ws, index) in WebSiteInfo: {
 
 resource ACR 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
   name: toLower('${contains(ws, 'registryENV') ? replace(DeploymentURI, ENV, ws.registryENV) : DeploymentURI}registry${ws.registry}')
-}]
-
-resource appsettingsCurrent 'Microsoft.Web/sites/config@2021-01-15' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
-  name: '${Deployment}-ws${ws.Name}/appsettings'
 }]
 
 resource publishingcreds 'Microsoft.Web/sites/config@2021-01-01' existing = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {

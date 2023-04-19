@@ -48,10 +48,6 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
-}
-
 var networkLookup = json(loadTextContent('./global/network.json'))
 var regionNumber = networkLookup[Prefix].Network
 
@@ -62,10 +58,10 @@ var networkId = {
 }
 
 var AzureDNS = '168.63.129.16'
-var DNSServerList = contains(DeploymentInfo, 'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
+var DNSServerList = DeploymentInfo.?DNSServers ?? Global.DNSServers
 var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId.upper}.${networkId.lower}.${server}' : server]
 
-module dp_Deployment_DDOS 'VNETDDosProtection.bicep' = if (contains(Stage, 'DDOSPlan') && bool(Stage.DDOSPlan)) {
+module dp_Deployment_DDOS 'VNETDDosProtection.bicep' = if (bool(Stage.?DDOSPlan ?? 0)) {
   name: 'dp${Deployment}-DDOS'
   params: {
     // move these to Splatting later
@@ -95,7 +91,7 @@ module dp_Deployment_OMS 'OMS.bicep' = if (bool(Stage.OMS)) {
   dependsOn: []
 }
 
-module dp_Deployment_Grafana 'Grafana.bicep' = if (contains(Stage, 'Grafana') && bool(Stage.Grafana)) {
+module dp_Deployment_Grafana 'Grafana.bicep' = if (bool(Stage.?Grafana ?? 0)) {
   name: 'dp${Deployment}-Grafana'
   params: {
     // move these to Splatting later
@@ -130,7 +126,7 @@ module dp_Deployment_SA 'SA.bicep' = if (bool(Stage.SA)) {
   ]
 }
 
-module dp_Deployment_CDN 'CDN.SA.bicep' = if (contains(Stage, 'CDN') && bool(Stage.CDN)) {
+module dp_Deployment_CDN 'CDN.SA.bicep' = if (bool(Stage.?CDN ?? 0)) {
   name: 'dp${Deployment}-CDN'
   params: {
     // move these to Splatting later
@@ -271,7 +267,7 @@ module dp_Deployment_VNET 'VNET.bicep' = if (bool(Stage.VNET)) {
   ]
 }
 
-module dp_Deployment_DNSResolver 'DNSResolver.bicep' = if (contains(Stage, 'DNSResolver') && bool(Stage.DNSResolver)) {
+module dp_Deployment_DNSResolver 'DNSResolver.bicep' = if (bool(Stage.?DNSResolver ?? 0)) {
   name: 'dp${Deployment}-DNSResolver'
   params: {
     // move these to Splatting later
@@ -289,7 +285,7 @@ module dp_Deployment_DNSResolver 'DNSResolver.bicep' = if (contains(Stage, 'DNSR
 }
 
 /*
-module dp_Deployment_CloudTestAccount 'CloudTestAccount.bicep' = if (contains(Stage, 'CloudTestAccount') && bool(Stage.CloudTestAccount)) {
+module dp_Deployment_CloudTestAccount 'CloudTestAccount.bicep' = if (bool(Stage.?CloudTestAccount ?? 0)) {
   name: 'dp${Deployment}-CloudTestAccount'
   params: {
     // move these to Splatting later
@@ -306,7 +302,7 @@ module dp_Deployment_CloudTestAccount 'CloudTestAccount.bicep' = if (contains(St
   ]
 }
 
-module dp_Deployment_CloudTestImages 'CloudTestImage.bicep' = if (contains(Stage, 'CloudTestImages') && bool(Stage.CloudTestImages)) {
+module dp_Deployment_CloudTestImages 'CloudTestImage.bicep' = if (bool(Stage.?CloudTestImages ?? 0)) {
   name: 'dp${Deployment}-CloudTestImages'
   params: {
     // move these to Splatting later
@@ -323,7 +319,7 @@ module dp_Deployment_CloudTestImages 'CloudTestImage.bicep' = if (contains(Stage
   ]
 }
 
-module dp_Deployment_CloudTestHostedPool 'CloudTestDevOpsPool.bicep' = if (contains(Stage, 'CloudTestHostedPool') && bool(Stage.CloudTestHostedPool)) {
+module dp_Deployment_CloudTestHostedPool 'CloudTestDevOpsPool.bicep' = if (bool(Stage.?CloudTestHostedPool ?? 0)) {
   name: 'dp${Deployment}-CloudTestHostedPool'
   params: {
     // move these to Splatting later
@@ -395,7 +391,7 @@ module dp_Deployment_BastionHost 'Bastion.bicep' = if (bool(Stage.BastionHost)) 
   ]
 }
 
-module dp_Deployment_OICluster 'OICluster.bicep' = if (contains(Stage, 'OICluster') && bool(Stage.OICluster)) {
+module dp_Deployment_OICluster 'OICluster.bicep' = if (bool(Stage.?OICluster ?? 0)) {
   name: 'dp${Deployment}-OICluster'
   params: {
     // move these to Splatting later
@@ -413,7 +409,7 @@ module dp_Deployment_OICluster 'OICluster.bicep' = if (contains(Stage, 'OICluste
   ]
 }
 
-module dp_Deployment_OIWorkspace 'OIWorkspace.bicep' = if (contains(Stage, 'OIWorkspace') && bool(Stage.OIWorkspace)) {
+module dp_Deployment_OIWorkspace 'OIWorkspace.bicep' = if (bool(Stage.?OIWorkspace ?? 0)) {
   name: 'dp${Deployment}-OIWorkspace'
   params: {
     // move these to Splatting later
@@ -432,7 +428,7 @@ module dp_Deployment_OIWorkspace 'OIWorkspace.bicep' = if (contains(Stage, 'OIWo
   ]
 }
 
-module dp_Deployment_Relay 'CloudShellRelay.bicep' = if (contains(Stage, 'CloudShellRelay') && bool(Stage.CloudShellRelay)) {
+module dp_Deployment_Relay 'CloudShellRelay.bicep' = if (bool(Stage.?CloudShellRelay ?? 0)) {
   name: 'dp${Deployment}-Relay'
   params: {
     // move these to Splatting later
@@ -484,7 +480,7 @@ module dp_Deployment_DNSPublicZone 'DNSPublic.bicep' = if (bool(Stage.DNSPublicZ
 }
 
 /*
-module dp_Deployment_FW '?' = if (contains(Stage, 'FW') && bool(Stage.FW)) {
+module dp_Deployment_FW '?' = if (bool(Stage.?FW ?? 0)) {
   name: 'dp${Deployment}-FW'
   params: {}
   dependsOn: [
@@ -495,7 +491,7 @@ module dp_Deployment_FW '?' = if (contains(Stage, 'FW') && bool(Stage.FW)) {
 
 */
 
-// module dp_Deployment_ERGW 'ERGW.bicep' = if (contains(Stage, 'ERGW') && bool(Stage.ERGW)) {
+// module dp_Deployment_ERGW 'ERGW.bicep' = if (bool(Stage.?ERGW ?? 0)) {
 //   name: 'dp${Deployment}ERGW'
 //   params: {
 //     // move these to Splatting later
@@ -515,7 +511,7 @@ module dp_Deployment_FW '?' = if (contains(Stage, 'FW') && bool(Stage.FW)) {
 // }
 
 
-module dp_Deployment_ManagedENV 'ContainerManagedENV.bicep' = if (contains(Stage, 'ManagedEnv') && bool(Stage.ManagedEnv)) {
+module dp_Deployment_ManagedENV 'ContainerManagedENV.bicep' = if (bool(Stage.?ManagedEnv ?? 0)) {
   name: 'dp${Deployment}-ManagedENV'
   params: {
     // move these to Splatting later
@@ -535,7 +531,7 @@ module dp_Deployment_ManagedENV 'ContainerManagedENV.bicep' = if (contains(Stage
   ]
 }
 
-module dp_Deployment_ContainerAPP 'ContainerApp.bicep' = if (contains(Stage, 'ContainerApp') && bool(Stage.ContainerApp)) {
+module dp_Deployment_ContainerAPP 'ContainerApp.bicep' = if (bool(Stage.?ContainerApp ?? 0)) {
   name: 'dp${Deployment}-ContainerAPP'
   params: {
     // move these to Splatting later
@@ -555,7 +551,7 @@ module dp_Deployment_ContainerAPP 'ContainerApp.bicep' = if (contains(Stage, 'Co
   ]
 }
 
-module dp_Deployment_LB 'LB.bicep' = if (contains(Stage, 'LB') && bool(Stage.LB)) {
+module dp_Deployment_LB 'LB.bicep' = if (bool(Stage.?LB ?? 0)) {
   name: 'dp${Deployment}-LB'
   params: {
     // move these to Splatting later
@@ -573,7 +569,7 @@ module dp_Deployment_LB 'LB.bicep' = if (contains(Stage, 'LB') && bool(Stage.LB)
   ]
 }
 
-module dp_Deployment_SFM 'SFM.bicep' = if (contains(Stage, 'SFM') && bool(Stage.SFM)) {
+module dp_Deployment_SFM 'SFM.bicep' = if (bool(Stage.?SFM ?? 0)) {
   name: 'dp${Deployment}-SFM'
   params: {
     // move these to Splatting later
@@ -593,7 +589,7 @@ module dp_Deployment_SFM 'SFM.bicep' = if (contains(Stage, 'SFM') && bool(Stage.
   ]
 }
 
-module dp_Deployment_SFMNP 'SFMNP.bicep' = if (contains(Stage, 'SFMNP') && bool(Stage.SFMNP)) {
+module dp_Deployment_SFMNP 'SFMNP.bicep' = if (bool(Stage.?SFMNP ?? 0)) {
   name: 'dp${Deployment}-SFMNP'
   params: {
     // move these to Splatting later
@@ -614,7 +610,7 @@ module dp_Deployment_SFMNP 'SFMNP.bicep' = if (contains(Stage, 'SFMNP') && bool(
   ]
 }
 
-module dp_Deployment_KVCert 'KVCertificate.bicep' = if (contains(Stage, 'KVCert') && bool(Stage.KVCert)) {
+module dp_Deployment_KVCert 'KVCertificate.bicep' = if (bool(Stage.?KVCert ?? 0)) {
   name: 'dp${Deployment}-KVCertificate'
   params: {
     // move these to Splatting later
@@ -633,7 +629,7 @@ module dp_Deployment_KVCert 'KVCertificate.bicep' = if (contains(Stage, 'KVCert'
   ]
 }
 
-module dp_Deployment_TM 'TM.bicep' = if (contains(Stage, 'TM') && bool(Stage.TM)) {
+module dp_Deployment_TM 'TM.bicep' = if (bool(Stage.?TM ?? 0)) {
   name: 'dp${Deployment}-TM'
   params: {
     // move these to Splatting later
@@ -651,7 +647,7 @@ module dp_Deployment_TM 'TM.bicep' = if (contains(Stage, 'TM') && bool(Stage.TM)
   ]
 }
 
-module ADPrimary 'VM.bicep' = if (contains(Stage, 'ADPrimary') && bool(Stage.ADPrimary)) {
+module ADPrimary 'VM.bicep' = if (bool(Stage.?ADPrimary ?? 0)) {
   name: 'ADPrimary'
   params: {
     // move these to Splatting later
@@ -669,7 +665,7 @@ module ADPrimary 'VM.bicep' = if (contains(Stage, 'ADPrimary') && bool(Stage.ADP
   ]
 }
 
-module ADSecondary 'VM.bicep' = if (contains(Stage, 'ADSecondary') && bool(Stage.ADSecondary)) {
+module ADSecondary 'VM.bicep' = if (bool(Stage.?ADSecondary ?? 0)) {
   name: 'ADSecondary'
   params: {
     // move these to Splatting later
@@ -687,7 +683,7 @@ module ADSecondary 'VM.bicep' = if (contains(Stage, 'ADSecondary') && bool(Stage
   ]
 }
 
-module AppServers 'VM.bicep' = if (contains(Stage, 'VMApp') && bool(Stage.VMApp)) {
+module AppServers 'VM.bicep' = if (bool(Stage.?VMApp ?? 0)) {
   name: 'AppServers'
   params: {
     // move these to Splatting later
@@ -707,7 +703,7 @@ module AppServers 'VM.bicep' = if (contains(Stage, 'VMApp') && bool(Stage.VMApp)
   ]
 }
 
-module VMFile 'VM.bicep' = if (contains(Stage, 'VMFILE') && bool(Stage.VMFILE)) {
+module VMFile 'VM.bicep' = if (bool(Stage.?VMFILE ?? 0)) {
   name: 'VMFile'
   params: {
     // move these to Splatting later
@@ -727,7 +723,7 @@ module VMFile 'VM.bicep' = if (contains(Stage, 'VMFILE') && bool(Stage.VMFILE)) 
   ]
 }
 
-module AppServersLinux 'VM.bicep' = if (contains(Stage, 'VMAppLinux') && bool(Stage.VMAppLinux)) {
+module AppServersLinux 'VM.bicep' = if (bool(Stage.?VMAppLinux ?? 0)) {
   name: 'AppServersLinux'
   params: {
     // move these to Splatting later
@@ -748,7 +744,7 @@ module AppServersLinux 'VM.bicep' = if (contains(Stage, 'VMAppLinux') && bool(St
   ]
 }
 
-module SQLServers 'VM.bicep' = if (contains(Stage, 'VMSQL') && bool(Stage.VMSQL)) {
+module SQLServers 'VM.bicep' = if (bool(Stage.?VMSQL ?? 0)) {
   name: 'SQLServers'
   params: {
     // move these to Splatting later
@@ -782,7 +778,7 @@ module dp_Deployment_DASHBOARD 'Dashboard.bicep' = if (bool(Stage.DASHBOARD)) {
   dependsOn: []
 }
 
-module dp_Deployment_CosmosDB 'Cosmos.bicep' = if (contains(Stage, 'CosmosDB') && bool(Stage.CosmosDB)) {
+module dp_Deployment_CosmosDB 'Cosmos.bicep' = if (bool(Stage.?CosmosDB ?? 0)) {
   name: 'dp${Deployment}-CosmosDB'
   params: {
     // move these to Splatting later
@@ -800,7 +796,7 @@ module dp_Deployment_CosmosDB 'Cosmos.bicep' = if (contains(Stage, 'CosmosDB') &
   ]
 }
 
-module dp_Deployment_ServerFarm 'AppServicePlan.bicep' = if (contains(Stage, 'ServerFarm') && bool(Stage.ServerFarm)) {
+module dp_Deployment_ServerFarm 'AppServicePlan.bicep' = if (bool(Stage.?ServerFarm ?? 0)) {
   name: 'dp${Deployment}-ServerFarm'
   params: {
     // move these to Splatting later
@@ -819,7 +815,7 @@ module dp_Deployment_ServerFarm 'AppServicePlan.bicep' = if (contains(Stage, 'Se
   ]
 }
 
-module dp_Deployment_WebSite 'AppServiceWebSite.bicep' = if (contains(Stage, 'WebSite') && bool(Stage.WebSite)) {
+module dp_Deployment_WebSite 'AppServiceWebSite.bicep' = if (bool(Stage.?WebSite ?? 0)) {
   name: 'dp${Deployment}-WebSite'
   params: {
     // move these to Splatting later
@@ -839,7 +835,7 @@ module dp_Deployment_WebSite 'AppServiceWebSite.bicep' = if (contains(Stage, 'We
   ]
 }
 
-module dp_Deployment_Function 'AppServiceFunction.bicep' = if (contains(Stage, 'Function') && bool(Stage.Function)) {
+module dp_Deployment_Function 'AppServiceFunction.bicep' = if (bool(Stage.?Function ?? 0)) {
   name: 'dp${Deployment}-Function'
   params: {
     // move these to Splatting later
@@ -859,7 +855,7 @@ module dp_Deployment_Function 'AppServiceFunction.bicep' = if (contains(Stage, '
   ]
 }
 
-module dp_Deployment_Container 'AppServiceContainer.bicep' = if (contains(Stage, 'WebSiteContainer') && bool(Stage.WebSiteContainer)) {
+module dp_Deployment_Container 'AppServiceContainer.bicep' = if (bool(Stage.?WebSiteContainer ?? 0)) {
   name: 'dp${Deployment}-Container'
   params: {
     // move these to Splatting later
@@ -879,7 +875,7 @@ module dp_Deployment_Container 'AppServiceContainer.bicep' = if (contains(Stage,
   ]
 }
 
-module dp_Deployment_ACI 'ACI.bicep' = if (contains(Stage, 'ACI') && bool(Stage.ACI)) {
+module dp_Deployment_ACI 'ACI.bicep' = if (bool(Stage.?ACI ?? 0)) {
   name: 'dp${Deployment}-ACI'
   params: {
     // move these to Splatting later
@@ -896,7 +892,7 @@ module dp_Deployment_ACI 'ACI.bicep' = if (contains(Stage, 'ACI') && bool(Stage.
   ]
 }
 
-module dp_Deployment_REDIS 'REDIS.bicep' = if (contains(Stage, 'REDIS') && bool(Stage.REDIS)) {
+module dp_Deployment_REDIS 'REDIS.bicep' = if (bool(Stage.?REDIS ?? 0)) {
   name: 'dp${Deployment}-REDIS'
   params: {
     // move these to Splatting later
@@ -916,7 +912,7 @@ module dp_Deployment_REDIS 'REDIS.bicep' = if (contains(Stage, 'REDIS') && bool(
   ]
 }
 
-module dp_Deployment_APIM 'APIM.bicep' = if (contains(Stage, 'APIM') && bool(Stage.APIM)) {
+module dp_Deployment_APIM 'APIM.bicep' = if (bool(Stage.?APIM ?? 0)) {
   name: 'dp${Deployment}-APIM'
   params: {
     // move these to Splatting later
@@ -936,7 +932,7 @@ module dp_Deployment_APIM 'APIM.bicep' = if (contains(Stage, 'APIM') && bool(Sta
   ]
 }
 
-// module dp_Deployment_FRONTDOOR 'FD.bicep' = if (contains(Stage, 'FRONTDOOR') && bool(Stage.FRONTDOOR)) {
+// module dp_Deployment_FRONTDOOR 'FD.bicep' = if (bool(Stage.?FRONTDOOR ?? 0)) {
 //   name: 'dp${Deployment}-FRONTDOOR'
 //   params: {
 //     // move these to Splatting later
@@ -954,7 +950,7 @@ module dp_Deployment_APIM 'APIM.bicep' = if (contains(Stage, 'APIM') && bool(Sta
 //   ]
 // }
 
-module dp_Deployment_FRONTDOOR_CDNPOLICY 'FD.CDNPolicy.bicep' = if (contains(Stage, 'FRONTDOORPOLICY') && bool(Stage.FRONTDOORPOLICY)) {
+module dp_Deployment_FRONTDOOR_CDNPOLICY 'FD.CDNPolicy.bicep' = if (bool(Stage.?FRONTDOORPOLICY ?? 0)) {
   name: 'dp${Deployment}-FRONTDOOR-CDNPolicy'
   params: {
     // move these to Splatting later
@@ -972,7 +968,7 @@ module dp_Deployment_FRONTDOOR_CDNPOLICY 'FD.CDNPolicy.bicep' = if (contains(Sta
   ]
 }
 
-module dp_Deployment_FRONTDOOR_CDN 'FD.CDN.bicep' = if (contains(Stage, 'FRONTDOOR') && bool(Stage.FRONTDOOR)) {
+module dp_Deployment_FRONTDOOR_CDN 'FD.CDN.bicep' = if (bool(Stage.?FRONTDOOR ?? 0)) {
   name: 'dp${Deployment}-FRONTDOOR-CDN'
   params: {
     // move these to Splatting later
@@ -990,7 +986,7 @@ module dp_Deployment_FRONTDOOR_CDN 'FD.CDN.bicep' = if (contains(Stage, 'FRONTDO
   ]
 }
 
-module dp_Deployment_SB 'SB.bicep' = if (contains(Stage, 'SB') && bool(Stage.SB)) {
+module dp_Deployment_SB 'SB.bicep' = if (bool(Stage.?SB ?? 0)) {
   name: 'dp${Deployment}-SB'
   params: {
     // move these to Splatting later
@@ -1009,7 +1005,7 @@ module dp_Deployment_SB 'SB.bicep' = if (contains(Stage, 'SB') && bool(Stage.SB)
   ]
 }
 
-module dp_Deployment_APPCONFIG 'AppConfig.bicep' = if (contains(Stage, 'APPCONFIG') && bool(Stage.APPCONFIG)) {
+module dp_Deployment_APPCONFIG 'AppConfig.bicep' = if (bool(Stage.?APPCONFIG ?? 0)) {
   name: 'dp${Deployment}-APPCONFIG'
   params: {
     // move these to Splatting later
@@ -1028,7 +1024,7 @@ module dp_Deployment_APPCONFIG 'AppConfig.bicep' = if (contains(Stage, 'APPCONFI
   ]
 }
 
-module dp_Deployment_WAFPOLICY 'WAFPolicy.bicep' = if (contains(Stage, 'WAFPOLICY') && bool(Stage.WAFPOLICY)) {
+module dp_Deployment_WAFPOLICY 'WAFPolicy.bicep' = if (bool(Stage.?WAFPOLICY ?? 0)) {
   name: 'dp${Deployment}-WAFPOLICY'
   params: {
     DeploymentID: DeploymentID
@@ -1045,7 +1041,7 @@ module dp_Deployment_WAFPOLICY 'WAFPolicy.bicep' = if (contains(Stage, 'WAFPOLIC
   ]
 }
 
-module dp_Deployment_LT 'LoadTest.bicep' = if (contains(Stage, 'LT') && bool(Stage.LT)) {
+module dp_Deployment_LT 'LoadTest.bicep' = if (bool(Stage.?LT ?? 0)) {
   name: 'dp${Deployment}-LoadTest'
   params: {
     DeploymentID: DeploymentID
@@ -1061,7 +1057,7 @@ module dp_Deployment_LT 'LoadTest.bicep' = if (contains(Stage, 'LT') && bool(Sta
   ]
 }
 
-module dp_Deployment_WAF 'WAF.bicep' = if (contains(Stage, 'WAF') && bool(Stage.WAF)) {
+module dp_Deployment_WAF 'WAF.bicep' = if (bool(Stage.?WAF ?? 0)) {
   name: 'dp${Deployment}-WAF'
   params: {
     DeploymentID: DeploymentID
@@ -1081,7 +1077,7 @@ module dp_Deployment_WAF 'WAF.bicep' = if (contains(Stage, 'WAF') && bool(Stage.
   ]
 }
 
-module dp_Deployment_AKS 'AKS.bicep' = if (contains(Stage, 'AKS') && bool(Stage.AKS)) {
+module dp_Deployment_AKS 'AKS.bicep' = if (bool(Stage.?AKS ?? 0)) {
   name: 'dp${Deployment}-AKS'
   params: {
     DeploymentID: DeploymentID
@@ -1101,7 +1097,7 @@ module dp_Deployment_AKS 'AKS.bicep' = if (contains(Stage, 'AKS') && bool(Stage.
   ]
 }
 
-module VMSS 'VMSS.bicep' = if (contains(Stage, 'VMSS') && bool(Stage.VMSS)) {
+module VMSS 'VMSS.bicep' = if (bool(Stage.?VMSS ?? 0)) {
   name: 'VMSS'
   params: {
     // move these to Splatting later
@@ -1121,7 +1117,7 @@ module VMSS 'VMSS.bicep' = if (contains(Stage, 'VMSS') && bool(Stage.VMSS)) {
   ]
 }
 
-module dp_Deployment_AzureSYN 'Synapse.bicep' = if (contains(Stage, 'AzureSYN') && bool(Stage.AzureSYN)) {
+module dp_Deployment_AzureSYN 'Synapse.bicep' = if (bool(Stage.?AzureSYN ?? 0)) {
   name: 'dp${Deployment}-Synapse'
   params: {
     // move these to Splatting later
@@ -1140,7 +1136,7 @@ module dp_Deployment_AzureSYN 'Synapse.bicep' = if (contains(Stage, 'AzureSYN') 
   ]
 }
 
-module dp_Deployment_AzureSQL 'AZSQL.bicep' = if (contains(Stage, 'AzureSQL') && bool(Stage.AzureSQL)) {
+module dp_Deployment_AzureSQL 'AZSQL.bicep' = if (bool(Stage.?AzureSQL ?? 0)) {
   name: 'dp${Deployment}-AzureSQL'
   params: {
     // move these to Splatting later
@@ -1161,7 +1157,7 @@ module dp_Deployment_AzureSQL 'AZSQL.bicep' = if (contains(Stage, 'AzureSQL') &&
 
 /*
 
-module dp_Deployment_SQLMI '?' = if (contains(Stage, 'SQLMI') && bool(Stage.SQLMI)) {
+module dp_Deployment_SQLMI '?' = if (bool(Stage.?SQLMI ?? 0)) {
   name: 'dp${Deployment}-SQLMI'
   params: {
     // move these to Splatting later
@@ -1181,7 +1177,7 @@ module dp_Deployment_SQLMI '?' = if (contains(Stage, 'SQLMI') && bool(Stage.SQLM
 }
 
 
-module dp_Deployment_MySQLDB '' = if (contains(Stage, 'MySQLDB') && bool(Stage.MySQLDB)) {
+module dp_Deployment_MySQLDB '' = if (bool(Stage.?MySQLDB ?? 0)) {
   name: 'dp${Deployment}-MySQLDB'
   params: {
     // move these to Splatting later

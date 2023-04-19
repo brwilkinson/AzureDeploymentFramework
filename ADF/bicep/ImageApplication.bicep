@@ -52,7 +52,7 @@ param deploymentTime string = utcNow('u')
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var ImageApplications = contains(DeploymentInfo, 'ImageApplications') ? DeploymentInfo.ImageApplications : []
+var ImageApplications = DeploymentInfo.?ImageApplications ?? []
 
 /*
 var imgGallery = [for (gallery,index) in ImageGalleryInfo : {

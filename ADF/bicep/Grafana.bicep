@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var GrafanaInfo = contains(DeploymentInfo, 'GrafanaInfo') ? DeploymentInfo.GrafanaInfo : []
+var GrafanaInfo = DeploymentInfo.?GrafanaInfo ?? []
 
 var GF = [for (gf, index) in GrafanaInfo: {
   match: (Global.CN == '.') || contains(array(Global.CN), gf.name)

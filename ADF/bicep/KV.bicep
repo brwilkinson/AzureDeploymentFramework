@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var KeyVaultInfo = contains(DeploymentInfo, 'KVInfo') ? DeploymentInfo.KVInfo : []
+var KeyVaultInfo = DeploymentInfo.?KVInfo ?? []
 
 var KVInfo = [for (kv, index) in KeyVaultInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), kv.name))

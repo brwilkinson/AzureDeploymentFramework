@@ -57,7 +57,7 @@ var gh = {
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-var OIWorkspaceInfo = contains(DeploymentInfo, 'OIWorkspaceInfo') ? DeploymentInfo.OIWorkspaceInfo : []
+var OIWorkspaceInfo = DeploymentInfo.?OIWorkspaceInfo ?? []
 
 var OIW = [for (law, index) in OIWorkspaceInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), law.Name))

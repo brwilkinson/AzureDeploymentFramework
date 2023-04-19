@@ -50,7 +50,7 @@ var OMSWorkspaceName = '${DeploymentURI}LogAnalytics'
 var AAName = '${DeploymentURI}OMSAutomation'
 var appInsightsName = '${DeploymentURI}AppInsights'
 
-var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
+var appConfigurationInfo = DeploymentInfo.?appConfigurationInfo ?? []
 
 var dataRetention = 31
 var serviceTier = 'PerNode'

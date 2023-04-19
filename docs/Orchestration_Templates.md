@@ -85,7 +85,7 @@ E.g. Stage for Subscription Deployment G0
 
 Each of the Stages in these Deployment Orchestration Template contains a feature flag switch
 - This allows you to enable/disable the layers of the orchestration 
-    - e.g. `if (contains(Stage, 'Security') && bool(Stage.Security))`
+    - e.g. `if (bool(Stage.?Security ?? 0))`
 
 - The Stage list of feature flags exists within each individual Parameter Files.
     - [Parameter Files](./Parameter_Files.md)
@@ -178,7 +178,7 @@ module dp_Deployment_RBAC 'sub-RBAC.bicep' = if (bool(Stage.RBAC)) {
   ]
 }
 
-module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(Stage, 'RoleDefinition') && bool(Stage.RoleDefinition)) {
+module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (bool(Stage.?RoleDefinition ?? 0)) {
   name: 'dp${Deployment}-RoleDefinition'
   params: {
     DeploymentID: DeploymentID

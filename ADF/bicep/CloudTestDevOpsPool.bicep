@@ -43,7 +43,7 @@ param deploymentTime string = utcNow()
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var CloudTestDevOpsPoolInfo = contains(DeploymentInfo, 'CloudTestDevOpsPoolInfo') ? DeploymentInfo.CloudTestDevOpsPoolInfo : []
+var CloudTestDevOpsPoolInfo = DeploymentInfo.?CloudTestDevOpsPoolInfo ?? []
 
 var CTPs = [for (ctp, index) in CloudTestDevOpsPoolInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), ctp.name))

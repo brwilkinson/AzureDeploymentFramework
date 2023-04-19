@@ -106,7 +106,7 @@ var imageBuildLocation = 'westcentralus'
 var computeGlobal = json(loadTextContent('./global/Global-ConfigVM.json'))
 var OSType = computeGlobal.OSType
 
-var ImageInfo = contains(DeploymentInfo, 'ImageInfo') ? DeploymentInfo.ImageInfo : []
+var ImageInfo = DeploymentInfo.?ImageInfo ?? []
 var userAssignedIdentities = {
   Default: {
     '${resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', '${Deployment}-uaiImageBuilder')}': {}

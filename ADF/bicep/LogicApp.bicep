@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var LogicInfo = contains(DeploymentInfo, 'LogicInfo') ? DeploymentInfo.LogicInfo : []
+var LogicInfo = DeploymentInfo.?LogicInfo ?? []
 
 var LI = [for (tm, index) in LogicInfo: {
   match: (Global.CN == '.') || contains(array(Global.CN), tm.name)

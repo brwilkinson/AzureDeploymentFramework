@@ -68,9 +68,9 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   scope: resourceGroup(HubRGName)
 }
 
-var appConfigurationInfo = (contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : null)
+var appConfigurationInfo = DeploymentInfo.?appConfigurationInfo ?? null
 
-var azSQLInfo = contains(DeploymentInfo, 'azSQLInfo') ? DeploymentInfo.azSQLInfo : []
+var azSQLInfo = DeploymentInfo.?azSQLInfo ?? []
 
 var azSQL = [for (sql,index) in azSQLInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), sql.Name))

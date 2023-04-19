@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var CDNPolicyInfo = contains(DeploymentInfo, 'CDNPolicyInfo') ? DeploymentInfo.CDNPolicyInfo : []
+var CDNPolicyInfo = DeploymentInfo.?CDNPolicyInfo ?? []
 
 var POLICY = [for policy in CDNPolicyInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), policy.Name))

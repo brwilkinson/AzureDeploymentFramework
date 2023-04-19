@@ -58,7 +58,7 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 // var location = Locationlookup[Prefix]
 
 
-module dp_Deployment_Security 'sub-Security.bicep' = if ((contains(Stage, 'Security') && bool(Stage.Security)) && '${Environment}${DeploymentID}' == 'G0') {
+module dp_Deployment_Security 'sub-Security.bicep' = if (bool(Stage.?Security ?? 0) && '${Environment}${DeploymentID}' == 'G0') {
   name: 'dp${Deployment}-Security'
   params: {
     // move these to Splatting later
@@ -72,7 +72,7 @@ module dp_Deployment_Security 'sub-Security.bicep' = if ((contains(Stage, 'Secur
   }
 }
 
-module dp_Deployment_RG 'sub-RG.bicep' = if ((contains(Stage, 'RG') && bool(Stage.RG)) && (!('${Environment}${DeploymentID}' == 'G0'))) {
+module dp_Deployment_RG 'sub-RG.bicep' = if (bool(Stage.?RG ?? 0) && (!('${Environment}${DeploymentID}' == 'G0'))) {
   name: 'dp${Deployment}-RG'
   params: {
     // move these to Splatting later
@@ -121,7 +121,7 @@ module dp_Deployment_RBAC_PIM 'sub-PIM.bicep' = if (bool(Stage.PIM)) {
   ]
 }
 
-module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(Stage, 'RoleDefinition') && bool(Stage.RoleDefinition)) {
+module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (bool(Stage.?RoleDefinition ?? 0)) {
   name: 'dp${Deployment}-RoleDefinition'
   params: {
     // move these to Splatting later
@@ -138,7 +138,7 @@ module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(S
   ]
 }
 
-// module dp_Deployment_ManagementGroups 'sub-MG.bicep' = if (contains(Stage, 'mgInfo') && bool(Stage.mgInfo)) {
+// module dp_Deployment_ManagementGroups 'sub-MG.bicep' = if (bool(Stage.?mgInfo ?? 0)) {
 //   name: 'dp${Deployment}-RoleDefinition'
 //   scope: tenant().tenantId
 //   params: {
@@ -156,7 +156,7 @@ module dp_Deployment_RoleDefinition 'sub-RoleDefinitions.bicep' = if (contains(S
 //   ]
 // }
 
-// module dp_Deployment_Policy 'sub-Polic.bicep' = if (contains(Stage, 'Policy') && bool(Stage.Policy)) {
+// module dp_Deployment_Policy 'sub-Polic.bicep' = if (bool(Stage.?Policy ?? 0)) {
 //   name: 'dp${Deployment}-Policy'
 //   params: {}
 //   dependsOn: []

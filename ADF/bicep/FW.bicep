@@ -47,7 +47,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var FWInfo = contains(DeploymentInfo, 'FWInfo') ? DeploymentInfo.FWInfo : []
+var FWInfo = DeploymentInfo.?FWInfo ?? []
 
 var FW = [for (fw, index) in FWInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), fw.Name))

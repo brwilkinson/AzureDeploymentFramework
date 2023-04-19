@@ -51,7 +51,7 @@ targetScope = 'subscription'
 var locationlookup = json(loadTextContent('./global/prefix.json'))
 var location = locationlookup[Prefix].location
 
-var uaiInfo = (contains(DeploymentInfo, 'uaiInfo') ? DeploymentInfo.uaiInfo : [])
+var uaiInfo = DeploymentInfo.?uaiInfo ?? []
 
 var identity = [for uai in uaiInfo: {
   name: uai.name

@@ -42,7 +42,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var staticSiteInfo = contains(DeploymentInfo, 'staticSiteInfo') ? DeploymentInfo.staticSiteInfo : []
+var staticSiteInfo = DeploymentInfo.?staticSiteInfo ?? []
 
 var staticSite = [for (ss,index) in staticSiteInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), ss.Name))

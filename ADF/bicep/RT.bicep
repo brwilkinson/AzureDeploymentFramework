@@ -55,7 +55,7 @@ var HubDeployment = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-${g
 // var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var Domain = toUpper(split(Global.DomainName, '.')[0])
 
-var RTInfo = contains(DeploymentInfo, 'RTInfo') ? DeploymentInfo.RTInfo : []
+var RTInfo = DeploymentInfo.?RTInfo ?? []
 
 resource RT 'Microsoft.Network/routeTables@2018-11-01' = [for (RT, i) in RTInfo: {
   name: '${replace(HubVNName, 'vn', 'rt')}${Domain}${RT.Name}'

@@ -58,7 +58,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var WAFInfo = contains(DeploymentInfo, 'WAFInfo') ? DeploymentInfo.WAFInfo : []
+var WAFInfo = DeploymentInfo.?WAFInfo ?? []
 
 // Add custom properties here to create PublicIP
 var WAFs = [for waf in WAFInfo : {

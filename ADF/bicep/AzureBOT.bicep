@@ -46,7 +46,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var azBOTInfo = contains(DeploymentInfo, 'azBOTInfo') ? DeploymentInfo.azBOTInfo : []
+var azBOTInfo = DeploymentInfo.?azBOTInfo ?? []
 
 var azBOT = [for (bot,index) in azBOTInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), bot.Name))

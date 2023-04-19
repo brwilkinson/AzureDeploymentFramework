@@ -47,7 +47,7 @@ var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${enviro}' // AZE2-PE
 var locationlookup = json(loadTextContent('./global/prefix.json'))
 var location = locationlookup[Prefix].location
 
-var PIMInfo = contains(DeploymentInfo, 'PIMInfo') ? DeploymentInfo.PIMInfo : []
+var PIMInfo = DeploymentInfo.?PIMInfo ?? []
 
 module RBAC 'sub-PIM-ALL.bicep' = [for (role, index) in PIMInfo: if (bool(Stage.PIM)) {
   name: 'dp-rbac-pim-${Prefix}-${role.name}'

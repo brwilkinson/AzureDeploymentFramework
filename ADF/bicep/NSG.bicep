@@ -48,7 +48,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var subnetInfo = contains(DeploymentInfo, 'subnetInfo') ? DeploymentInfo.subnetInfo : []
+var subnetInfo = DeploymentInfo.?subnetInfo ?? []
 
 var NSGInfo = [for (subnet, index) in subnetInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), subnet.name))

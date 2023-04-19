@@ -57,7 +57,7 @@ var gh = {
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-var AIWorkspaceInfo = contains(DeploymentInfo, 'AIWorkspaceInfo') ? DeploymentInfo.AIWorkspaceInfo : []
+var AIWorkspaceInfo = DeploymentInfo.?AIWorkspaceInfo ?? []
 
 var AI = [for (ai, index) in AIWorkspaceInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), ai.Name))

@@ -43,7 +43,7 @@ param deploymentTime string = utcNow()
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var APIMInfo = contains(DeploymentInfo, 'APIMInfo') ? DeploymentInfo.APIMInfo : []
+var APIMInfo = DeploymentInfo.?APIMInfo ?? []
 
 var APIMs = [for (apim, index) in APIMInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), apim.name))

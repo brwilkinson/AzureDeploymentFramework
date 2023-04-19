@@ -44,7 +44,7 @@ param DeploymentInfo object
 
 
 
-var DNSPublicZoneInfo = contains(DeploymentInfo, 'DNSPublicZoneInfo') ? DeploymentInfo.DNSPublicZoneInfo : []
+var DNSPublicZoneInfo = DeploymentInfo.?DNSPublicZoneInfo ?? []
 
 var ZoneInfo = [for (zone, index) in DNSPublicZoneInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), zone))

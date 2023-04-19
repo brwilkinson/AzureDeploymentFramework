@@ -43,7 +43,7 @@ param deploymentTime string = utcNow()
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var CloudTestAccountInfo = contains(DeploymentInfo, 'CloudTestAccountInfo') ? DeploymentInfo.CloudTestAccountInfo : []
+var CloudTestAccountInfo = DeploymentInfo.?CloudTestAccountInfo ?? []
 
 var CTAs = [for (cta, index) in CloudTestAccountInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), cta.name))

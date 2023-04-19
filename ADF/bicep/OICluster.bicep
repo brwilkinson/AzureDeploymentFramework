@@ -57,7 +57,7 @@ var gh = {
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-var OIClusterInfo = contains(DeploymentInfo, 'OIClusterInfo') ? DeploymentInfo.OIClusterInfo : []
+var OIClusterInfo = DeploymentInfo.?OIClusterInfo ?? []
 
 var OIC = [for (oic, index) in OIClusterInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), oic.Name))

@@ -66,7 +66,7 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   scope: resourceGroup(HubRGName)
 }
 
-var AKSInfo = contains(DeploymentInfo, 'AKSInfo') ? DeploymentInfo.AKSInfo : []
+var AKSInfo = DeploymentInfo.?AKSInfo ?? []
 
 var AKS = [for i in range(0, length(AKSInfo)): {
   match: ((Global.CN == '.') || contains(array(Global.CN), DeploymentInfo.AKSInfo[i].Name))

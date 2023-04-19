@@ -50,7 +50,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
-var managedEnvInfo = (contains(DeploymentInfo, 'managedEnvInfo') ? DeploymentInfo.managedEnvInfo : [])
+var managedEnvInfo = DeploymentInfo.?managedEnvInfo ?? []
 
 var kubeEnv = [for (kubeenv, index) in managedEnvInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), kubeenv.name))

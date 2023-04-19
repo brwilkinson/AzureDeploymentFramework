@@ -43,7 +43,7 @@ param DeploymentInfo object
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 
-var networkWatcherInfo = contains(DeploymentInfo, 'networkWatcherInfo') ? DeploymentInfo.networkWatcherInfo : []
+var networkWatcherInfo = DeploymentInfo.?networkWatcherInfo ?? []
 
 resource NetworkWatcher 'Microsoft.Network/networkWatchers@2019-11-01' = {
   name: '${Deployment}-${networkWatcherInfo.name}'

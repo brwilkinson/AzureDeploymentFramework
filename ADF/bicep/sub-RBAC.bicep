@@ -47,9 +47,9 @@ var rg = '${Prefix}-${Global.orgname}-${Global.Appname}-RG-${enviro}' // AZE2-PE
 var locationlookup = json(loadTextContent('./global/prefix.json'))
 var location = locationlookup[Prefix].location
 
-var uaiinfo = contains(DeploymentInfo, 'uaiinfo') ? DeploymentInfo.uaiinfo : []
-var rolesInfo = contains(DeploymentInfo, 'rolesInfo') ? DeploymentInfo.rolesInfo : []
-var SPInfo = contains(DeploymentInfo, 'SPInfo') ? DeploymentInfo.SPInfo : []
+var uaiinfo = DeploymentInfo.?uaiinfo ?? []
+var rolesInfo = DeploymentInfo.?rolesInfo ?? []
+var SPInfo = DeploymentInfo.?SPInfo ?? []
 
 var sps = [for sp in SPInfo: {
   RBAC: sp.RBAC

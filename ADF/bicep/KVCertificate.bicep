@@ -64,7 +64,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var KVCertInfo = contains(DeploymentInfo, 'KVCertInfo') ? DeploymentInfo.KVCertInfo : []
+var KVCertInfo = DeploymentInfo.?KVCertInfo ?? []
 
 var CertInfo = [for (cert, index) in KVCertInfo: {
   match: (Global.CN == '.') || contains(array(Global.CN), cert.name)

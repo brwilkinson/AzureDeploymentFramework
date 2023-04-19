@@ -44,7 +44,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var LBInfo = contains(DeploymentInfo, 'LBInfo') ? DeploymentInfo.LBInfo : []
+var LBInfo = DeploymentInfo.?LBInfo ?? []
 
 var LB = [for (lb,Index) in LBInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), lb.Name))

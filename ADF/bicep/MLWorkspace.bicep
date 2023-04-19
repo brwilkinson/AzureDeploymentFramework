@@ -43,7 +43,7 @@ param deploymentTime string = utcNow()
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var MLWorkspaceInfo = contains(DeploymentInfo, 'MLWorkspaceInfo') ? DeploymentInfo.MLWorkspaceInfo : []
+var MLWorkspaceInfo = DeploymentInfo.?MLWorkspaceInfo ?? []
 
 var MLW = [for (cta, index) in MLWorkspaceInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), cta.name))

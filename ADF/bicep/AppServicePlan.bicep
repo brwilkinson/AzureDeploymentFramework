@@ -46,11 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: '${DeploymentURI}AppInsights'
-}
-
-var appServiceplanInfo = (contains(DeploymentInfo, 'appServiceplanInfo') ? DeploymentInfo.appServiceplanInfo : [])
+var appServiceplanInfo = DeploymentInfo.?appServiceplanInfo ?? []
 
 var ASPlanInfo = [for (asp, index) in appServiceplanInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), asp.name))

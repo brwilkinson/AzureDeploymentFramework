@@ -42,7 +42,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var containerAppInfo = contains(DeploymentInfo, 'containerAppInfo') ? DeploymentInfo.containerAppInfo : []
+var containerAppInfo = DeploymentInfo.?containerAppInfo ?? []
 
 var kApp = [for (kubeapp, index) in containerAppInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), kubeapp.name))

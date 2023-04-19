@@ -50,7 +50,7 @@ var AAName = '${DeploymentURI}OMSAutomation'
 var appInsightsName = '${DeploymentURI}AppInsights'
 var AutoManageName = '${DeploymentURI}AutoManage'
 
-var appConfigurationInfo = contains(DeploymentInfo, 'appConfigurationInfo') ? DeploymentInfo.appConfigurationInfo : []
+var appConfigurationInfo = DeploymentInfo.?appConfigurationInfo ?? []
 
 var dataRetention = 31
 var serviceTier = 'PerNode'
@@ -617,7 +617,7 @@ var dataSources = [
   }
 ]
 
-var solutions = contains(DeploymentInfo, 'OMSSolutions') ? DeploymentInfo.OMSSolutions : [
+var solutions = DeploymentInfo.?OMSSolutions ?? [
   'AzureAutomation'
   'Updates'
   'Security'

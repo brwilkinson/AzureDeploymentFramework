@@ -57,7 +57,7 @@ var gh = {
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
 
-var azRelayInfo = contains(DeploymentInfo, 'cloudshellRelayInfo') ? DeploymentInfo.cloudshellRelayInfo : []
+var azRelayInfo = DeploymentInfo.?cloudshellRelayInfo ?? []
 
 var azRelay = [for i in range(0, length(azRelayInfo)): {
   match: ((Global.CN == '.') || contains(array(Global.CN), DeploymentInfo.frontDoorInfo[i].Name))

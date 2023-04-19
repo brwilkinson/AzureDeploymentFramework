@@ -43,7 +43,7 @@ param deploymentTime string = utcNow()
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var CloudTestImageInfo = contains(DeploymentInfo, 'CloudTestImageInfo') ? DeploymentInfo.CloudTestImageInfo : []
+var CloudTestImageInfo = DeploymentInfo.?CloudTestImageInfo ?? []
 
 var CTIs = [for (cta, index) in CloudTestImageInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), cta.name))

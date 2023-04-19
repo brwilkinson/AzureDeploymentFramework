@@ -42,7 +42,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var CDNInfo = (contains(DeploymentInfo, 'CDNInfo') ? DeploymentInfo.CDNInfo : [])
+var CDNInfo = DeploymentInfo.?CDNInfo ?? []
 
 var CDN = [for (cdn, i) in CDNInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), DeploymentInfo.cdn[i].Name))

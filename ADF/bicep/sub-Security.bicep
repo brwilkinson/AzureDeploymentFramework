@@ -44,7 +44,7 @@ param DeploymentInfo object
 
 targetScope = 'subscription'
 
-var SecurityPricingInfo = contains(DeploymentInfo, 'SecurityPricingInfo') ? DeploymentInfo.SecurityPricingInfo : {}
+var SecurityPricingInfo = DeploymentInfo.?SecurityPricingInfo ?? {}
 var Free = contains(SecurityPricingInfo, 'Free') ? SecurityPricingInfo.Free : []
 var Standard = contains(SecurityPricingInfo, 'Standard') ? SecurityPricingInfo.Standard : []
 

@@ -93,11 +93,11 @@ var networkId = {
 }
 
 var AzureDNS = '168.63.129.16'
-var DNSServerList = contains(DeploymentInfo, 'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
+var DNSServerList = DeploymentInfo.?DNSServers ?? Global.DNSServers
 var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId.upper}.${networkId.lower}.${server}' : server]
 
 // FunctionInfo
-var WebSiteInfo = contains(DeploymentInfo, 'FunctionInfo') ? DeploymentInfo.FunctionInfo : []
+var WebSiteInfo = DeploymentInfo.?FunctionInfo ?? []
 
 var WSInfo = [for (ws, index) in WebSiteInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), ws.name))

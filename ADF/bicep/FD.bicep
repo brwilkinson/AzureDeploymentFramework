@@ -61,7 +61,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var frontDoorInfo = contains(DeploymentInfo, 'frontDoorInfo') ? DeploymentInfo.frontDoorInfo : []
+var frontDoorInfo = DeploymentInfo.?frontDoorInfo ?? []
 
 var frontDoor = [for fd in frontDoorInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), fd.Name))

@@ -42,7 +42,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var certOrderInfo = contains(DeploymentInfo, 'AppServiceCertRequestInfo') ? DeploymentInfo.AppServiceCertRequestInfo : []
+var certOrderInfo = DeploymentInfo.?AppServiceCertRequestInfo ?? []
 
 var WSInfo = [for (cert, index) in certOrderInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), cert.name))

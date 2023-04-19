@@ -44,7 +44,7 @@ param now string = utcNow('F')
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var CDNInfo = contains(DeploymentInfo, 'FrontDoorCDN') ? DeploymentInfo.FrontDoorCDN : []
+var CDNInfo = DeploymentInfo.?FrontDoorCDN ?? []
 
 // var CDN = [for (cdn, i) in CDNInfo: {
 //   match: Global.CN == '.' || contains(array(Global.CN), cdn.Name)

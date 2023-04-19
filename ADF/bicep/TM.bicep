@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var TMInfo = contains(DeploymentInfo, 'TMInfo') ? DeploymentInfo.TMInfo : []
+var TMInfo = DeploymentInfo.?TMInfo ?? []
 
 var TrafficManager = [for (tm, index) in TMInfo: {
   match: (Global.CN == '.') || contains(array(Global.CN), tm.name)

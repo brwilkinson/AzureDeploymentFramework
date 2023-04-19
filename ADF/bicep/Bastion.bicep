@@ -51,7 +51,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 
 var snAzureBastionSubnet = 'AzureBastionSubnet'
 
-var bst = contains(DeploymentInfo, 'BastionInfo') ? DeploymentInfo.BastionInfo : {}
+var bst = DeploymentInfo.?BastionInfo ?? {}
 
 resource BastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   name: '${Deployment}-vn/${snAzureBastionSubnet}'

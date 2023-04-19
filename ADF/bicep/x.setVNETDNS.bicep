@@ -40,7 +40,7 @@ var lowerLookup = {
   snBE01: 6
 }
 
-var SubnetInfo = (contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : [])
+var SubnetInfo = DeploymentInfo.?SubnetInfo ?? []
 
 var Domain = split(Global.DomainName, '.')[0]
 

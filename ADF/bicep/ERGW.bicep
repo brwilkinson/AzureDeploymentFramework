@@ -53,7 +53,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 
 var GatewaySubnetName = 'gatewaySubnet'
 
-var ERGWInfo = contains(DeploymentInfo, 'ERGWInfo') ? DeploymentInfo.ERGWInfo : []
+var ERGWInfo = DeploymentInfo.?ERGWInfo ?? []
 
 var GW = [for (gw, index) in ERGWInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), gw.Name))

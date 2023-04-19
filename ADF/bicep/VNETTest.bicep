@@ -84,10 +84,10 @@ var lowerLookup = {
   snBE01: 6
 }
 
-var DNSServerList = contains(DeploymentInfo, 'DNSServers') ? DeploymentInfo.DNSServers : Global.DNSServers
+var DNSServerList = DeploymentInfo.?DNSServers ?? Global.DNSServers
 var DNSServers = [for (server, index) in DNSServerList: length(server) <= 3 ? '${networkId}.${server}' : server]
 
-var SubnetInfo = (contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : [])
+var SubnetInfo = DeploymentInfo.?SubnetInfo ?? []
 
 // var Domain = split(Global.DomainName, '.')[0]
 

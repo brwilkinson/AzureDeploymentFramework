@@ -61,7 +61,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var ACIInfo = contains(DeploymentInfo, 'ACIInfo') ? DeploymentInfo.ACIInfo : []
+var ACIInfo = DeploymentInfo.?ACIInfo ?? []
 
 var ACI = [for aci in ACIInfo : {
   match: ((Global.CN == '.') || contains(array(Global.CN), aci.Name))

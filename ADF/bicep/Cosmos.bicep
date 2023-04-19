@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var cosmosDBInfo = contains(DeploymentInfo, 'cosmosDBInfo') ? DeploymentInfo.cosmosDBInfo : []
+var cosmosDBInfo = DeploymentInfo.?cosmosDBInfo ?? []
 
 var cosmosDB = [for (cosmosDb, index) in cosmosDBInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), cosmosDb.Name))

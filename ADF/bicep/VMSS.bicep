@@ -45,7 +45,7 @@ var computeGlobal = json(loadTextContent('./global/Global-ConfigVM.json'))
 var OSType = computeGlobal.OSType
 var DataDiskInfo = computeGlobal.DataDiskInfo
 
-var AppServers = contains(DeploymentInfo, 'AppServersVMSS') ? DeploymentInfo.AppServersVMSS : []
+var AppServers = DeploymentInfo.?AppServersVMSS ?? []
 
 var HubRGJ = json(Global.hubRG)
 var HubKVJ = json(Global.hubKV)

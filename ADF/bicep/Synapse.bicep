@@ -42,7 +42,7 @@ param DeploymentInfo object
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
-var SynapseInfo = contains(DeploymentInfo, 'SynapseInfo') ? DeploymentInfo.SynapseInfo : []
+var SynapseInfo = DeploymentInfo.?SynapseInfo ?? []
 
 var Synapse = [for (sap,index) in SynapseInfo : {
   match: Global.CN == '.' || contains(array(Global.CN), sap.Name)

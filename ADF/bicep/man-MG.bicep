@@ -47,7 +47,7 @@ param DeploymentInfo object
 
 targetScope = 'managementGroup'
 
-var mgInfo = contains(DeploymentInfo, 'mgInfo') ? DeploymentInfo.mgInfo : []
+var mgInfo = DeploymentInfo.?mgInfo ?? []
 
 var managementGroupInfo = [for (mg, index) in mgInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), mg.name))

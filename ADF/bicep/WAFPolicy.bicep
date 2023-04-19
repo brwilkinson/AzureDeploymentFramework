@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var WAFPolicyInfo = (contains(DeploymentInfo, 'WAFPolicyInfo') ? DeploymentInfo.WAFPolicyInfo : WAFPolicyDefault)
+var WAFPolicyInfo = DeploymentInfo.?WAFPolicyInfo ?? WAFPolicyDefault
 
 var POLICY = [for policy in WAFPolicyInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), policy.Name))

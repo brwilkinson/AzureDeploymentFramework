@@ -73,15 +73,11 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   scope: resourceGroup(HubRGName)
 }
 
-resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: '${DeploymentURI}LogAnalytics'
-}
-
 resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
-var WebSiteInfo = (contains(DeploymentInfo, 'WebSiteInfo') ? DeploymentInfo.WebSiteInfo : [])
+var WebSiteInfo = DeploymentInfo.?WebSiteInfo ?? []
 
 var WSInfo = [for (ws, index) in WebSiteInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), ws.name))

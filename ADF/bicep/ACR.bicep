@@ -45,11 +45,11 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 var Domain = split(Global.DomainName, '.')[0]
 var subscriptionId = subscription().subscriptionId
 var resourceGroupName = resourceGroup().name
-var SubnetInfo = contains(DeploymentInfo, 'SubnetInfo') ? DeploymentInfo.SubnetInfo : []
+var SubnetInfo = DeploymentInfo.?SubnetInfo ?? []
 var VnetID = resourceId('Microsoft.Network/virtualNetworks', '${Deployment}-vn')
 var subnetResourceId = '${VnetID}/subnets/snMT01'
 
-var ContainerRegistry = contains(DeploymentInfo, 'ContainerRegistry') ? DeploymentInfo.ContainerRegistry : []
+var ContainerRegistry = DeploymentInfo.?ContainerRegistry ?? []
 
 var ACRInfo = [for (acr, index) in ContainerRegistry: {
   match: ((Global.CN == '.') || contains(array(Global.CN), acr.name))

@@ -64,7 +64,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var SFMInfo = contains(DeploymentInfo, 'SFMInfo') ? DeploymentInfo.SFMInfo : []
+var SFMInfo = DeploymentInfo.?SFMInfo ?? []
 
 // var SFInfo = [for (sfm, index) in SFMInfo: {
 //   match: (Global.CN == '.') || contains(array(Global.CN), sfm.name)

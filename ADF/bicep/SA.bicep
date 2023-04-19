@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var storageInfo = contains(DeploymentInfo, 'saInfo') ? DeploymentInfo.saInfo : []
+var storageInfo = DeploymentInfo.?saInfo ?? []
 
 var SAInfo = [for (sa, index) in storageInfo: {
   match: (Global.CN == '.') || contains(array(Global.CN), sa.name)

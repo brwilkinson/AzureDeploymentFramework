@@ -46,7 +46,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-var FDPolicyInfo = contains(DeploymentInfo, 'FrontDoorPolicyInfo') ? DeploymentInfo.FrontDoorPolicyInfo : []
+var FDPolicyInfo = DeploymentInfo.?FrontDoorPolicyInfo ?? []
 
 var POLICY = [for policy in FDPolicyInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), policy.Name))
