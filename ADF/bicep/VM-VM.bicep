@@ -911,7 +911,7 @@ resource AppServerIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@
 var policyName = 'DefaultPolicy'
 
 resource RSV 'Microsoft.RecoveryServices/vaults@2016-06-01' existing = {
-  name: '${DeploymentURI}Vault01'
+  name: '${DeploymentURI}rsv01'
 
   #disable-next-line BCP081
   resource Fabric 'backupFabrics' existing = {

@@ -47,14 +47,14 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 }
 
 var RSVInfo = {
-  Name: 'Vault01'
+  Name: '01'
   skuName: 'RS0'
   skuTier: 'Standard'
 }
 
 resource RSV 'Microsoft.RecoveryServices/vaults@2023-02-01' = if (bool(Stage.RSV)) {
   location: resourceGroup().location
-  name: '${DeploymentURI}${RSVInfo.Name}'
+  name: '${DeploymentURI}rsv${RSVInfo.Name}'
   sku: {
     name: RSVInfo.skuName
     tier: RSVInfo.skuTier
