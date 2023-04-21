@@ -38,7 +38,7 @@ var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
 var GlobalRGJ = json(Global.GlobalRG)
 var GlobalACRJ = json(Global.GlobalACR)
 var HubRGJ = json(Global.hubRG)
-var GlobalDNSJ = json(Global.?GlobalDNS)
+var GlobalDNSJ = json(Global.?GlobalDNS ?? '{}')
 
 var regionLookup = json(loadTextContent('./global/region.json'))
 var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
@@ -62,6 +62,7 @@ var gh = {
 }
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
+var GlobalDNSRGName = '${gh.globalDNSPrefix}-${gh.globalDNSOrgName}-${gh.globalDNSAppName}-RG-${gh.globalDNSRGName}'
 var globalACRName = toLower('${gh.globalACRPrefix}${gh.globalACROrgName}${gh.globalACRAppName}${gh.globalACRRGName}ACR${GlobalACRJ.name}')
 
 // roles are unique per subscription leave this as runtime parameters
@@ -177,11 +178,9 @@ resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' exist
   name: '${Deployment}-uaiAKSCluster'
 }
 
-// TODO update to point to another Subscription
 resource DNSExternal 'Microsoft.Network/dnsZones@2018-05-01' existing = {
   name: Global.DomainNameExt
-  scope: resourceGroup(HubRGName)
-  // scope: subscription(Global.SubscriptionId,)
+  scope: resourceGroup(gh.globalDNSSubId,GlobalDNSRGName)
 }
 
 resource DNSAKSPrivate 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {

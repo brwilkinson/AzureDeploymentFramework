@@ -12,7 +12,7 @@
     "GlobalRG": {
       "name": "P0"
     },
-    "GlobalDNS": {
+    "_GlobalDNS": {
       "Prefix": "ACU1",
       "RG": "G1",
       "AppName": "HUB",
@@ -36,9 +36,9 @@
       "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
     ],
     "CertName": "aks-helloworld",
-    "ADDomainName": "aginow.net",
-    "DomainName": "aginow.net",
-    "DomainNameExt": "aginow.net",
+    "ADDomainName": "psthing.com",
+    "DomainName": "psthing.com",
+    "DomainNameExt": "psthing.com",
     "ADOProject": "ADF",
     "AZDevOpsOrg": "mybrw12354",
     "ServicePrincipalAdmins": [
