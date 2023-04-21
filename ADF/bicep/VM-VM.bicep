@@ -908,7 +908,6 @@ resource AppServerIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@
   }
 }
 
-
 var policyName = 'DefaultPolicy'
 
 resource RSV 'Microsoft.RecoveryServices/vaults@2016-06-01' existing = {
@@ -933,5 +932,42 @@ resource RSV 'Microsoft.RecoveryServices/vaults@2016-06-01' existing = {
     }
   }
 }
+
+/*
+resource runCommandsSetup 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = {
+  name: 'initial-${virtualMachine.name}'
+  parent: virtualMachine
+  location: resourceGroup().location
+  properties: {
+    timeoutInSeconds: (60 * 5)
+    asyncExecution: false
+    runAsUser: 'root' // virtualMachine.properties.osProfile.adminUsername
+    // outputBlobUri: '${blobURL}/log.txt'
+    // errorBlobUri: '${blobURL}/error.txt'
+    source: {
+      script: loadTextContent('setup.sh')
+    }
+  }
+}
+
+resource runCommandsInstall 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = {
+  name: 'setup-${virtualMachine.name}'
+  parent: virtualMachine
+  location: resourceGroup().location
+  properties: {
+    timeoutInSeconds: (60 * 5)
+    asyncExecution: false
+    runAsUser: 'root' // virtualMachine.properties.osProfile.adminUsername
+    // outputBlobUri: '${blobURL}/log.txt'
+    // errorBlobUri: '${blobURL}/error.txt'
+    source: {
+      script: loadTextContent('install.sh')
+    }
+  }
+  dependsOn: [
+    runCommandsSetup
+  ]
+}
+*/
 
 output Disks array = contains(AppServer, 'DDRole') ? DISKLOOKUP.outputs.DATADisks : []

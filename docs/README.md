@@ -82,8 +82,8 @@
 ![Bicep_Templates](./Bicep_Templates.png)
 
 ##### Any Feedback on this project is welcome, please feel free to reach out or ask questions, open a 'Discussions' or 'Issues'.
-- Once I have more scenarios setup and documented for this Template Project I will remove the 'Preview' Note.
-
+- This is a template project, so just clone your own version and build from there with your own tenants
+- Below diagram with DR is outdated, best to support Multi site, Multi region deployments with Geo load balancer E.g. Frontdoor.
 
 ![How](./Slides_ADF/Slide5.SVG)
 

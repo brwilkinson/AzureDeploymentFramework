@@ -760,7 +760,7 @@
         "Appservers": {
           "AppServers": [
             {
-              "Name": "UBU02",
+              "Name": "UBU01",
               "Role": "UBU",
               "_DSC": "PULL",
               "_DDRole": "64GB",

@@ -286,8 +286,8 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
     podIdentityProfile: bool(AKSInfo.podIdentity) ? podIdentityProfile : null
     ingressProfile: {
       webAppRouting: {
-        enabled: bool(AKSInfo.?enableIngressAppRouting)
-        dnsZoneResourceId: bool(AKSInfo.?enableAppRoutingDNS) ? DNSExternal.id : null
+        enabled: bool(AKSInfo.?enableIngressAppRouting ?? 0)
+        dnsZoneResourceId: bool(AKSInfo.?enableAppRoutingDNS ?? 0) ? DNSExternal.id : null
       }
     }
     addonProfiles: {

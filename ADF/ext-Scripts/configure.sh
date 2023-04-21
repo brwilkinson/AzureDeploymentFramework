@@ -1,1 +1,1 @@
-echo hello2
+echo hello

@@ -43,7 +43,7 @@ var ports = [for (port, index) in portList: {
   maxRequestAccessDuration: 'PT3H'
 }]
 
-resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-07-01' existing = {
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
   name: '${Deployment}-vm${VM.name}'
 }
 
