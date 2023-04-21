@@ -38,20 +38,27 @@ var computeSizeLookupOptions = computeGlobal.computeSizeLookupOptions
 var GlobalRGJ = json(Global.GlobalRG)
 var GlobalACRJ = json(Global.GlobalACR)
 var HubRGJ = json(Global.hubRG)
+var GlobalDNSJ = json(Global.?GlobalDNS)
 
 var regionLookup = json(loadTextContent('./global/region.json'))
 var primaryPrefix = regionLookup[Global.PrimaryLocation].prefix
 
 var gh = {
-  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
-  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
-  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
-  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+  hubRGPrefix: HubRGJ.?Prefix ?? Prefix
+  hubRGOrgName: HubRGJ.?OrgName ?? Global.OrgName
+  hubRGAppName: HubRGJ.?AppName ?? Global.AppName
+  hubRGRGName: HubRGJ.?name ?? HubRGJ.?name ?? '${Environment}${DeploymentID}'
 
-  globalACRPrefix: contains(GlobalACRJ, 'Prefix') ? GlobalACRJ.Prefix : primaryPrefix
-  globalACROrgName: contains(GlobalACRJ, 'OrgName') ? GlobalACRJ.OrgName : Global.OrgName
-  globalACRAppName: contains(GlobalACRJ, 'AppName') ? GlobalACRJ.AppName : Global.AppName
-  globalACRRGName: contains(GlobalACRJ, 'RG') ? GlobalACRJ.RG : contains(GlobalRGJ, 'name') ? GlobalRGJ.name : '${Environment}${DeploymentID}'
+  globalACRPrefix: GlobalACRJ.?Prefix ?? primaryPrefix
+  globalACROrgName: GlobalACRJ.?OrgName ?? Global.OrgName
+  globalACRAppName: GlobalACRJ.?AppName ?? Global.AppName
+  globalACRRGName: GlobalACRJ.?RG ?? GlobalRGJ.?name ?? '${Environment}${DeploymentID}'
+
+  globalDNSPrefix: GlobalDNSJ.?Prefix ?? primaryPrefix
+  globalDNSOrgName: GlobalDNSJ.?OrgName ?? Global.OrgName
+  globalDNSAppName: GlobalDNSJ.?AppName ?? Global.AppName
+  globalDNSRGName: GlobalDNSJ.?RG ?? GlobalRGJ.?name ?? '${Environment}${DeploymentID}'
+  globalDNSSubId: GlobalDNSJ.?SubId ?? subscription().subscriptionId
 }
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
@@ -170,9 +177,11 @@ resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' exist
   name: '${Deployment}-uaiAKSCluster'
 }
 
+// TODO update to point to another Subscription
 resource DNSExternal 'Microsoft.Network/dnsZones@2018-05-01' existing = {
   name: Global.DomainNameExt
   scope: resourceGroup(HubRGName)
+  // scope: subscription(Global.SubscriptionId,)
 }
 
 resource DNSAKSPrivate 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {

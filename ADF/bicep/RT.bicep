@@ -42,10 +42,10 @@ param DeploymentInfo object
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
-  hubRGPrefix: contains(HubRGJ, 'Prefix') ? HubRGJ.Prefix : Prefix
-  hubRGOrgName: contains(HubRGJ, 'OrgName') ? HubRGJ.OrgName : Global.OrgName
-  hubRGAppName: contains(HubRGJ, 'AppName') ? HubRGJ.AppName : Global.AppName
-  hubRGRGName: contains(HubRGJ, 'name') ? HubRGJ.name : contains(HubRGJ, 'name') ? HubRGJ.name : '${Environment}${DeploymentID}'
+  hubRGPrefix: HubRGJ.?Prefix ?? Prefix
+  hubRGOrgName: HubRGJ.?OrgName ?? Global.OrgName
+  hubRGAppName: HubRGJ.?AppName ?? Global.AppName
+  hubRGRGName: HubRGJ.?name ?? HubRGJ.?name ?? '${Environment}${DeploymentID}'
 }
 
 var HubVNName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-${gh.hubRGRGName}-vn'

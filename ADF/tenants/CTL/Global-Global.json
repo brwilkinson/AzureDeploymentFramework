@@ -12,6 +12,13 @@
     "GlobalRG": {
       "name": "P0"
     },
+    "GlobalDNS": {
+      "Prefix": "ACU1",
+      "RG": "G1",
+      "AppName": "HUB",
+      "Org": "PE",
+      "SubId": "fe8c6f31-247d-4941-a62d-fde7a2185aca"
+    },
     "AppId": 6,
     "Network": {
       "first": 10,
