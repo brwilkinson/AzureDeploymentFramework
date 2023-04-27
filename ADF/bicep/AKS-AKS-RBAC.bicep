@@ -69,6 +69,14 @@ var ManagedIdentities = {
       // }
     ]
   }
+  agic: {
+    name: AKS.properties.addonProfiles.IngressApplicationGateway.?identity.?objectId ?? 0
+    RBAC: [
+      {
+        Name: 'Contributor'
+      }
+    ]
+  }
   aciConnectorLinux: {
     name: AKS.properties.addonProfiles.aciConnectorLinux.?identity.?objectId ?? 0
     RBAC: [

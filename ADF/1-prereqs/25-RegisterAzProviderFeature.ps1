@@ -28,6 +28,9 @@ Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -Featur
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-ExtensionManager
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName NodeOSUpgradeChannelPreview
 Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-PrometheusAddonPreview
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AzureServiceMeshPreview
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-KedaPreview
+Register-AzProviderFeature -ProviderNamespace microsoft.containerservice -FeatureName AKS-VPAPreview
 
 Register-AzResourceProvider -ProviderNamespace microsoft.containerservice
 Register-AzResourceProvider -ProviderNamespace microsoft.Kubernetes

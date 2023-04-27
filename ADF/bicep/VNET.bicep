@@ -88,10 +88,12 @@ var addressPrefixes = [
 
 var lowerLookup = {
   snWAF01: 1
+  'waf01-subnet': 1
   AzureFirewallSubnet: 1
   snFE01: 2
   snMT01: 4
-  snBE01: 6
+  // snBE01: 6
+  snMT02: 6
 }
 
 var DNSServerList = DeploymentInfo.?DNSServers ?? Global.DNSServers
@@ -107,6 +109,14 @@ var RouteTableGlobal = {
 
 var delegations = {
   default: []
+  'Microsoft.App/environments': [
+    {
+      name: 'delegation'
+      properties: {
+        serviceName: 'Microsoft.App/environments'
+      }
+    }
+  ]
   'Microsoft.Web/serverfarms': [
     {
       name: 'delegation'
@@ -174,7 +184,8 @@ resource VNET 'Microsoft.Network/virtualNetworks@2022-01-01' = {
     //   id: ddosProtectionPlan.id
     // }
     subnets: [for (sn, index) in SubnetInfo: {
-      name: sn.name
+      // below needed for AKS AGIC
+      name: contains(sn,'AddDeploymentPrefix') ? '${Deployment}-${sn.name}' : sn.name
       properties: {
         addressPrefix: '${networkId.upper}.${contains(lowerLookup, sn.name) ? int(networkId.lower) + (1 * lowerLookup[sn.name]) : networkId.lower}.${sn.Prefix}'
         networkSecurityGroup: !(contains(sn, 'NSG') && bool(sn.NSG)) ? null : /*

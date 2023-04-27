@@ -101,6 +101,7 @@ var IngressGreenfields = {
   // WAF Subnet 256 Addresses
   #disable-next-line prefer-unquoted-property-names
   subnetCIDR: '${networkId.upper}.${contains(lowerLookup, 'snWAF01') ? int(networkId.lower) + (1 * lowerLookup['snWAF01']) : networkId.lower}.0/24'
+
 }
 // var IngressBrownfields = {
 //   applicationGatewayId: resourceId('Microsoft.Network/applicationGateways/', '${Deployment}-waf${AKSInfo.Name}')
@@ -116,6 +117,7 @@ var aadProfile = {
   adminGroupObjectIDs: bool(AKSInfo.enableRBAC) ? aksAADAdminLookup : null
   tenantID: tenant().tenantId
 }
+
 var podIdentityProfile = {
   enabled: bool(AKSInfo.enableRBAC)
 }
@@ -180,7 +182,7 @@ resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' exist
 
 resource DNSExternal 'Microsoft.Network/dnsZones@2018-05-01' existing = {
   name: Global.DomainNameExt
-  scope: resourceGroup(gh.globalDNSSubId,GlobalDNSRGName)
+  scope: resourceGroup(gh.globalDNSSubId, GlobalDNSRGName)
 }
 
 resource DNSAKSPrivate 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
@@ -199,6 +201,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
   }
   sku: {
     name: 'Base' // Basic
+    // name: 'Basic'
     tier: AKSInfo.skuTier
   }
   tags: {
@@ -252,10 +255,13 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
     }
     securityProfile: {
       defender: {// not supported on ARM CPU/Size
-        logAnalyticsWorkspaceResourceId: contains(AKSInfo, 'enableDefender') && !bool(AKSInfo.enableDefender) ? null : OMS.id
+        logAnalyticsWorkspaceResourceId: !bool(AKSInfo.enableDefender ?? false) ? null : OMS.id
         securityMonitoring: {
           enabled: contains(AKSInfo, 'enableDefender') ? bool(AKSInfo.enableDefender) : true
         }
+      }
+      workloadIdentity: {
+        enabled: true
       }
     }
     azureMonitorProfile: {
@@ -267,11 +273,37 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
         }
       }
     }
+    serviceMeshProfile: !bool(AKSInfo.?enableIstio ?? false) ? null : {
+      mode: 'Istio'
+      istio: {
+        components:{
+          ingressGateways: [
+            {
+              enabled: true
+              mode: 'External'
+            }
+          ]
+        }
+      }
+    }
+    workloadAutoScalerProfile: {
+      keda: {
+        enabled: true
+      }
+      verticalPodAutoscaler: {
+        controlledValues: 'RequestsAndLimits'
+        enabled: true
+        updateMode: 'Off'
+      }
+    }
     aadProfile: bool(AKSInfo.enableRBAC) ? aadProfile : null
     apiServerAccessProfile: {
       authorizedIPRanges: bool(AKSInfo.privateCluster) || (contains(AKSInfo, 'AllowALLIPs') && bool(AKSInfo.AllowALLIPs)) ? null : AllowIPList
       enablePrivateCluster: bool(AKSInfo.privateCluster)
       privateDNSZone: bool(AKSInfo.privateCluster) ? DNSAKSPrivate.id : null
+      enablePrivateClusterPublicFQDN: true
+      // enableVnetIntegration: true
+      // subnetId: 
     }
     publicNetworkAccess: bool(AKSInfo.privateCluster) ? 'Disabled' : 'Enabled'
     networkProfile: {
@@ -292,7 +324,7 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
     }
     autoScalerProfile: bool(AKSInfo.AutoScale) ? autoScalerProfile : null
     podIdentityProfile: bool(AKSInfo.podIdentity) ? podIdentityProfile : null
-    ingressProfile: {
+    ingressProfile: bool(AKSInfo.?enableIngressAppRouting ?? 0) ? null : {
       webAppRouting: {
         enabled: bool(AKSInfo.?enableIngressAppRouting ?? 0)
         dnsZoneResourceId: bool(AKSInfo.?enableAppRoutingDNS ?? 0) ? DNSExternal.id : null
