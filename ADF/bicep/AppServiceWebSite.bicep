@@ -37,11 +37,6 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
-param month string = utcNow('MM')
-param year string = utcNow('yyyy')
-
-// Use same PAT token for 3 month blocks, min PAT age is 6 months, max is 9 months
-var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) - 1) % 3), 2, '0')}-01', 'P9M')
 
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
@@ -83,19 +78,6 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
 
-resource sadiag 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
-  name: '${DeploymentURI}sadiag'
-}
-var SAS = sadiag.listServiceSAS('2021-09-01', {
-  canonicalizedResource: '/blob/${sadiag.name}/${last(split(Global._artifactsLocation, '/'))}'
-  signedResource: 'c'
-  signedProtocol: 'https'
-  signedPermission: 'rw'
-  signedServices: 'b'
-  signedExpiry: SASEnd
-  keyToSign: 'key1'
-}).serviceSasToken
-
 var WebSiteInfo = DeploymentInfo.?WebSiteInfo ?? []
 
 var WSInfo = [for (ws, index) in WebSiteInfo: {
@@ -105,12 +87,8 @@ var WSInfo = [for (ws, index) in WebSiteInfo: {
 
 // merge appConfig, move this to the websiteInfo as a property to pass in these from the param file
 var myAppConfig = {
-  default: {
-
-  }
-  php: {
-
-  }
+  default: {}
+  php: {}
   dotnet: {
     ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
     XDT_MicrosoftApplicationInsights_Mode: 'Recommended'
@@ -121,9 +99,7 @@ var myAppConfig = {
     XDT_MicrosoftApplicationInsights_NodeJS: '1'
     XDT_MicrosoftApplicationInsights_Mode: 'default'
   }
-  java: {
-
-  }
+  java: {}
 }
 
 module website 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
@@ -164,6 +140,30 @@ module website 'x.appService.bicep' = [for (ws, index) in WebSiteInfo: if (WSInf
           enabled: false
         }
       }
+      {
+        category: 'AppServiceAntivirusScanAuditLogs'
+        enabled: true
+        retentionPolicy: {
+          days: 30
+          enabled: false
+        }
+      }
+      {
+        category: 'AppServiceIPSecAuditLogs'
+        enabled: true
+        retentionPolicy: {
+          days: 30
+          enabled: false
+        }
+      }
+      {
+        category: 'AppServicePlatformLogs'
+        enabled: true
+        retentionPolicy: {
+          days: 30
+          enabled: false
+        }
+      }
       // supported on premium
       // {
       //   category: 'AppServiceFileAuditLogs'
@@ -193,22 +193,22 @@ module testResourcExists 'x.testResourceExists.ps1.bicep' = [for (ws, index) in 
   }
 }]
 
+// https://learn.microsoft.com/en-us/azure/app-service/reference-app-settings?tabs=kudu%2Cdotnet#app-environment
+
 module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSiteInfo: if (WSInfo[index].match) {
   name: 'dp${Deployment}-ws${ws.Name}-settings'
   params: {
     ws: ws
     appprefix: 'ws'
     Deployment: Deployment
-    appConfigCustom: contains(ws,'stack') ? myAppConfig[ws.stack] : myAppConfig.default
+    appConfigCustom: contains(ws, 'stack') ? myAppConfig[ws.stack] : myAppConfig.default
     setAppConfigCurrent: testResourcExists[index].outputs.Exists
     appConfigNew: {
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
-      MICROSOFT_PROVIDER_AUTHENTICATION_SECRET: contains(ws,'authsettingsV2') ? '@Microsoft.KeyVault(VaultName=${KV.name};SecretName=${ws.Name}-${ws.authsettingsV2.applicationId})' : null
-      DIAGNOSTICS_AZUREBLOBCONTAINERSASURL: contains(ws,'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
-      WEBSITE_HTTPLOGGING_CONTAINER_URL: contains(ws,'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
-      DIAGNOSTICS_AZUREBLOBRETENTIONINDAYS: 15
-      WEBSITE_HTTPLOGGING_RETENTION_DAYS: 15
+      MICROSOFT_PROVIDER_AUTHENTICATION_SECRET: contains(ws, 'authsettingsV2') ? '@Microsoft.KeyVault(VaultName=${KV.name};SecretName=${ws.Name}-${ws.authsettingsV2.applicationId})' : null
     }
   }
 }]
+
+

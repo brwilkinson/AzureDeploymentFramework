@@ -11,6 +11,12 @@ param Environment string
 param DeploymentID string
 param Stage object
 
+param month string = utcNow('MM')
+param year string = utcNow('yyyy')
+
+// Use same PAT token for 3 month blocks, min PAT age is 6 months, max is 9 months
+var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) - 1) % 3), 2, '0')}-01', 'P9M')
+
 var MSILookup = {
   SQL: 'Cluster'
   UTL: 'DefaultKeyVault'
@@ -46,6 +52,19 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   name: 'AWU2-PE-AOA-P0-kvVLT01' //HubKVName
   scope: resourceGroup('AWU2-PE-AOA-RG-P0') //resourceGroup(HubKVRGName)
 }
+
+resource sadiag 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+  name: '${DeploymentURI}sadiag'
+}
+var SAS = sadiag.listServiceSAS('2021-09-01', {
+    canonicalizedResource: '/blob/${sadiag.name}/${last(split(Global._artifactsLocation, '/'))}'
+    signedResource: 'c'
+    signedProtocol: 'https'
+    signedPermission: 'rw'
+    signedServices: 'b'
+    signedExpiry: SASEnd
+    keyToSign: 'key1'
+  }).serviceSasToken
 
 var userAssignedIdentities = {
   Default: {
@@ -109,6 +128,7 @@ resource WS 'Microsoft.Web/sites@2022-09-01' = {
       requestTracingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
       httpLoggingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
       detailedErrorLoggingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
+      requestTracingExpirationTime: contains(ws, 'webAppLogsContainer') ? '9999-12-31T23:59:00Z' : null
     }
   }
   dependsOn: [
@@ -256,6 +276,45 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
         }
       }
     ]
+  }
+}
+
+resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (contains(ws, 'webAppLogsContainer')) {
+  name: 'logs'
+  parent: WS
+  properties: {
+    applicationLogs: {
+      fileSystem: {
+        level: 'Off'
+      }
+      azureTableStorage: {
+        level: 'Off'
+        sasUrl: null
+      }
+      azureBlobStorage: {
+        level: 'Warning'
+        sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
+        retentionInDays: 15
+      }
+    }
+    httpLogs: {
+      fileSystem: {
+        retentionInMb: 35
+        retentionInDays: 15
+        enabled: false
+      }
+      azureBlobStorage: {
+        sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
+        retentionInDays: 15
+        enabled: true
+      }
+    }
+    failedRequestsTracing: {
+      enabled: true
+    }
+    detailedErrorMessages: {
+      enabled: true
+    }
   }
 }
 
