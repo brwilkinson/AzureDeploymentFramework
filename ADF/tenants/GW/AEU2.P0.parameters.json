@@ -182,7 +182,7 @@
             "FlowAnalyticsEnabled": 1
           },
           {
-            "name": "snMT02",
+            "name": "snBE01",
             "prefix": "64/27",
             "NSG": 1,
             "FlowLogEnabled": 1,

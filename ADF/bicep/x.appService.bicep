@@ -82,7 +82,7 @@ var alwaysOn = [
   'java'
 ]
 
-resource WS 'Microsoft.Web/sites@2021-01-01' = {
+resource WS 'Microsoft.Web/sites@2022-09-01' = {
   name: '${Deployment}-${appprefix}${ws.Name}'
   identity: {
     type: 'SystemAssigned, UserAssigned'
@@ -128,7 +128,7 @@ var test = [
 
 var extraSlots = contains(ws, 'extraSlots') ? ws.extraSlots : 0
 
-resource slots 'Microsoft.Web/sites/slots@2022-03-01' = [for (item, index) in range(1, extraSlots): if (contains(ws, 'extraSlots')) {
+resource slots 'Microsoft.Web/sites/slots@2022-09-01' = [for (item, index) in range(1, extraSlots): if (contains(ws, 'extraSlots')) {
   name: 'slot${item}'
   parent: WS
   location: resourceGroup().location
