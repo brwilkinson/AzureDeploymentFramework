@@ -106,8 +106,9 @@ resource WS 'Microsoft.Web/sites@2022-09-01' = {
       javaContainerVersion: ws.stack == 'java' ? 'SE' : null
       alwaysOn: contains(alwaysOn, ws.stack) && FARM.kind != 'elastic' ? true : false
       ftpsState: contains(ws, 'ftpsState') ? ws.ftpsState : 'FtpsOnly'
-
-      
+      requestTracingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
+      httpLoggingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
+      detailedErrorLoggingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
     }
   }
   dependsOn: [
