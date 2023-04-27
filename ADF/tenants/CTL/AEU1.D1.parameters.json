@@ -508,7 +508,7 @@
                 "name": "webapplogs"
               }
             ],
-            "_PrivateLinkInfo": [
+            "PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "blob"
@@ -756,7 +756,7 @@
         ],
         "WebSiteInfo": [
           {
-            "Name": "WPS02",
+            "Name": "WPS01",
             "kind": "app",
             "AppSVCPlan": "WPS01",
             "stack": "dotnet",

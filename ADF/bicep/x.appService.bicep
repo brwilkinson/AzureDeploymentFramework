@@ -11,6 +11,7 @@ param Environment string
 param DeploymentID string
 param Stage object
 
+param NOW string = utcNow()
 param month string = utcNow('MM')
 param year string = utcNow('yyyy')
 
@@ -53,20 +54,30 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 //   scope: resourceGroup('AWU2-PE-AOA-RG-P0') //resourceGroup(HubKVRGName)
 // }
 
-resource sadiag 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource sadiag 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: '${DeploymentURI}sadiag'
 }
 
-// https://learn.microsoft.com/en-us/rest/api/storageservices/create-account-sas
-var SAS = sadiag.listServiceSAS('2022-09-01', {
-    canonicalizedResource: '/blob/${sadiag.name}/${ws.webAppLogsContainer}'
-    signedResource: 'c'
-    signedProtocol: 'https'
-    signedPermission: 'racwdl'
-    signedServices: 'b'
-    signedExpiry: SASEnd
-    keyToSign: 'key1'
-  }).serviceSasToken
+// Create Container used for Function webAppLogsContainer
+var logDirs = [
+  'webapplicationlogs'
+  'webhttplogs'
+]
+
+var common = {
+  signedPermission: 'rwdl'
+  signedResource: 'c'
+  signedExpiry: SASEnd
+  signedVersion: '2020-04-08' //'2019-12-12'
+}
+
+var SASHttp = sadiag.listServiceSas(sadiag.apiVersion,
+  union(common, { canonicalizedResource: '/blob/${sadiag.name}/webhttplogs' }
+  )).serviceSasToken
+
+var SASApp = sadiag.listServiceSas(sadiag.apiVersion,
+  union(common, { canonicalizedResource: '/blob/${sadiag.name}/webapplicationlogs' }
+  )).serviceSasToken
 
 var userAssignedIdentities = {
   Default: {
@@ -79,7 +90,7 @@ var userAssignedIdentities = {
   }
 }
 
-resource SA 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+resource SA 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: '${DeploymentURI}sa${ws.saname}'
 }
 
@@ -258,6 +269,18 @@ module SAFileShares 'x.storageFileShare.bicep' = {
   }
 }
 
+module SALogContainer 'x.storageContainer.bicep' = [for (item, index) in logDirs: if (contains(ws, 'webAppLogsContainer')) {
+  name: 'dp${Deployment}-SA-${ws.saname}-Container-${item}'
+  params: {
+    SAName: SA.name
+    container: {
+      name: item
+    }
+    Global: Global
+    deployment: Deployment
+  }
+}]
+
 resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   name: 'service'
   scope: WS
@@ -277,6 +300,7 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
+// https://learn.microsoft.com/en-us/azure/app-service/troubleshoot-diagnostic-logs
 resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (contains(ws, 'webAppLogsContainer')) {
   name: 'logs'
   parent: WS
@@ -292,7 +316,8 @@ resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (contains(ws, 'webApp
       }
       azureBlobStorage: {
         level: 'Verbose'
-        sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
+        // sasUrl: 'https://aeu1pectld1sadiag.blob.core.windows.net/webapplogs?sp=rwdl&st=2023-04-27T07:21:16Z&se=2223-04-27T07:21:16Z&sv=2022-11-02&sr=c&sig=xJEXoeGBTHod8s68XvsSFDEqJkpum7BPTQCTKSASEDs%3D'
+        sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}webapplicationlogs?${SASApp}' : null
         retentionInDays: 15
       }
     }
@@ -303,7 +328,8 @@ resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (contains(ws, 'webApp
         enabled: false
       }
       azureBlobStorage: {
-        sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
+        // sasUrl: 'https://aeu1pectld1sadiag.blob.core.windows.net/webapplogs?sp=rwdl&st=2023-04-27T07:21:16Z&se=2223-04-27T07:21:16Z&sv=2022-11-02&sr=c&sig=xJEXoeGBTHod8s68XvsSFDEqJkpum7BPTQCTKSASEDs%3D'
+        sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}webhttplogs?${SASHttp}' : null
         retentionInDays: 15
         enabled: true
       }
