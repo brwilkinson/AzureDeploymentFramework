@@ -56,11 +56,13 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 resource sadiag 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: '${DeploymentURI}sadiag'
 }
+
+// https://learn.microsoft.com/en-us/rest/api/storageservices/create-account-sas
 var SAS = sadiag.listServiceSAS('2022-09-01', {
     canonicalizedResource: '/blob/${sadiag.name}/${ws.webAppLogsContainer}'
     signedResource: 'c'
     signedProtocol: 'https'
-    signedPermission: 'rwdl'
+    signedPermission: 'racwdl'
     signedServices: 'b'
     signedExpiry: SASEnd
     keyToSign: 'key1'
@@ -125,10 +127,6 @@ resource WS 'Microsoft.Web/sites@2022-09-01' = {
       javaContainerVersion: ws.stack == 'java' ? 'SE' : null
       alwaysOn: contains(alwaysOn, ws.stack) && FARM.kind != 'elastic' ? true : false
       ftpsState: contains(ws, 'ftpsState') ? ws.ftpsState : 'FtpsOnly'
-      requestTracingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
-      httpLoggingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
-      detailedErrorLoggingEnabled: contains(ws, 'webAppLogsContainer') ? true : false
-      requestTracingExpirationTime: contains(ws, 'webAppLogsContainer') ? '9999-12-31T23:59:00Z' : null
     }
   }
   dependsOn: [

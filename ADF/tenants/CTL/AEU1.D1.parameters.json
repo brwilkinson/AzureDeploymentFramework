@@ -756,7 +756,7 @@
         ],
         "WebSiteInfo": [
           {
-            "Name": "WPS03",
+            "Name": "WPS02",
             "kind": "app",
             "AppSVCPlan": "WPS01",
             "stack": "dotnet",
