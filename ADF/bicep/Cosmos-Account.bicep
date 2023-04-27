@@ -8,6 +8,7 @@ param DeploymentID string
 param Stage object
 
 var HubRGJ = json(Global.hubRG)
+var regionLookup = json(loadTextContent('./global/region.json'))
 
 var gh = {
   hubRGPrefix: HubRGJ.?Prefix ?? Prefix
@@ -22,14 +23,42 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
+var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
+
+// look up the secondary region to see if it supports zones
+var prefixLocations = [for (cdb, index) in cosmosAccount.locations: {
+  locationPrefix: regionLookup[cdb.location == 'SecondaryLocation' || cdb.location == 'PrimaryLocation' ? Global[cdb.location] : cdb.location].PREFIX
+}]
+
 var locations = [for (cdb, index) in cosmosAccount.locations: {
   failoverPriority: cdb.failoverPriority
   locationName: cdb.location == 'SecondaryLocation' || cdb.location == 'PrimaryLocation' ? Global[cdb.location] : cdb.location
-  isZoneRedundant: cdb.isZoneRedundant
+  isZoneRedundant: !contains(excludeZones, prefixLocations[index].locationPrefix) && cdb.isZoneRedundant
 }]
 
+var capabilities = [for (capabilities, index) in cosmosAccount.capabilities: {
+  name: capabilities
+}]
+
+var backupPolicy = {
+  Continuous: {
+    type: 'Continuous'
+    continuousModeProperties: {
+      tier: 'Continuous7Days'
+    }
+  }
+  Periodic: {
+    type: 'Periodic'
+    periodicModeProperties: {
+      backupIntervalInMinutes: 240
+      backupRetentionIntervalInHours: 8
+      backupStorageRedundancy: 'Geo'
+    }
+  }
+}
+
 #disable-next-line BCP081
-resource CosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-03-15-preview' = {
+resource CosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-03-01-preview' = {
   name: toLower('${Deployment}-cosmos-${cosmosAccount.Name}')
   kind: cosmosAccount.Kind // GlobalDocumentDB
   location: resourceGroup().location
@@ -43,23 +72,20 @@ resource CosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-03-15-preview
     enableAutomaticFailover: cosmosAccount.enableAutomaticFailover
     databaseAccountOfferType: 'Standard'
     locations: locations
-    capabilities: [
-      {
-        name: 'EnableServerless'
-      }
-    ]
+    capabilities: capabilities
     enableFreeTier: false
     capacity: {
       totalThroughputLimit: 4000
     }
-    backupPolicy: {
-      type: 'Periodic'
-      periodicModeProperties: {
-        backupIntervalInMinutes: 240
-        backupRetentionIntervalInHours: 8
-        backupStorageRedundancy: 'Geo'
-      }
+    apiProperties: {
+      serverVersion: cosmosAccount.?serverVersion ?? '3.6'
     }
+    analyticalStorageConfiguration: {
+      schemaType: 'FullFidelity'
+    }
+    publicNetworkAccess: 'Enabled'
+    isVirtualNetworkFilterEnabled: false
+    backupPolicy: backupPolicy[cosmosAccount.?backupPolicy ?? 'Continuous']
   }
 }
 
