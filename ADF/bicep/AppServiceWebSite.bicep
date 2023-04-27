@@ -37,6 +37,12 @@ param Extensions object
 param Global object
 param DeploymentInfo object
 
+param month string = utcNow('MM')
+param year string = utcNow('yyyy')
+
+// Use same PAT token for 3 month blocks, min PAT age is 6 months, max is 9 months
+var SASEnd = dateTimeAdd('${year}-${padLeft((int(month) - (int(month) - 1) % 3), 2, '0')}-01', 'P9M')
+
 var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${DeploymentID}'
 var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Environment}${DeploymentID}')
 
@@ -76,6 +82,19 @@ resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: '${DeploymentURI}AppInsights'
 }
+
+resource sadiag 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+  name: '${DeploymentURI}sadiag'
+}
+var SAS = sadiag.listServiceSAS('2021-09-01', {
+  canonicalizedResource: '/blob/${sadiag.name}/${last(split(Global._artifactsLocation, '/'))}'
+  signedResource: 'c'
+  signedProtocol: 'https'
+  signedPermission: 'rw'
+  signedServices: 'b'
+  signedExpiry: SASEnd
+  keyToSign: 'key1'
+}).serviceSasToken
 
 var WebSiteInfo = DeploymentInfo.?WebSiteInfo ?? []
 
@@ -186,6 +205,10 @@ module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSit
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
       MICROSOFT_PROVIDER_AUTHENTICATION_SECRET: contains(ws,'authsettingsV2') ? '@Microsoft.KeyVault(VaultName=${KV.name};SecretName=${ws.Name}-${ws.authsettingsV2.applicationId})' : null
+      DIAGNOSTICS_AZUREBLOBCONTAINERSASURL: contains(ws,'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
+      WEBSITE_HTTPLOGGING_CONTAINER_URL: contains(ws,'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
+      DIAGNOSTICS_AZUREBLOBRETENTIONINDAYS: 15
+      WEBSITE_HTTPLOGGING_RETENTION_DAYS: 15
     }
   }
 }]
