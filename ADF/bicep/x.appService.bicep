@@ -48,19 +48,19 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: '${DeploymentURI}LogAnalytics'
 }
 
-resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-  name: 'AWU2-PE-AOA-P0-kvVLT01' //HubKVName
-  scope: resourceGroup('AWU2-PE-AOA-RG-P0') //resourceGroup(HubKVRGName)
-}
+// resource KV 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+//   name: 'AWU2-PE-AOA-P0-kvVLT01' //HubKVName
+//   scope: resourceGroup('AWU2-PE-AOA-RG-P0') //resourceGroup(HubKVRGName)
+// }
 
 resource sadiag 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
   name: '${DeploymentURI}sadiag'
 }
 var SAS = sadiag.listServiceSAS('2021-09-01', {
-    canonicalizedResource: '/blob/${sadiag.name}/${last(split(Global._artifactsLocation, '/'))}'
+    canonicalizedResource: '/blob/${sadiag.name}/${ws.webAppLogsContainer}'
     signedResource: 'c'
     signedProtocol: 'https'
-    signedPermission: 'rw'
+    signedPermission: 'rwdlacup'
     signedServices: 'b'
     signedExpiry: SASEnd
     keyToSign: 'key1'
@@ -289,10 +289,11 @@ resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (contains(ws, 'webApp
       }
       azureTableStorage: {
         level: 'Off'
+        #disable-next-line BCP036
         sasUrl: null
       }
       azureBlobStorage: {
-        level: 'Warning'
+        level: 'Verbose'
         sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}${ws.webAppLogsContainer}?${SAS}' : null
         retentionInDays: 15
       }
