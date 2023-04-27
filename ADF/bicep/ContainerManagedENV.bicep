@@ -59,21 +59,21 @@ var kubeEnv = [for (kubeenv, index) in managedEnvInfo: {
 var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
 var availabilityZones = contains(excludeZones, Prefix) ? false : true
 
-resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, index) in managedEnvInfo: if (kubeEnv[index].match) {
+resource KUBE 'Microsoft.App/managedEnvironments@2022-11-01-preview' = [for (kubeenv, index) in managedEnvInfo: if (kubeEnv[index].match) {
   name: toLower('${Deployment}-kube${kubeenv.Name}')
   location: contains(kubeenv, 'location') ? kubeenv.location : resourceGroup().location
-  sku: {
-    name: contains(kubeenv, 'skuName') ? kubeenv.skuName : 'Consumption'
-  }
+  // sku: {
+  //   name: kubeenv.?skuName ?? 'Consumption'
+  // }
   properties: {
-    // zoneRedundant: availabilityZones
-    // vnetConfiguration: {
-    //   infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', kubeenv.Subnet) : null
-    //   internal: true
-    //   // outboundSettings: {
-    //   //   outBoundType: 'LoadBalancer'
-    //   // }
-    // }
+    // zoneRedundant: contains(kubeenv, 'Subnet') ? availabilityZones : false
+    vnetConfiguration: {
+      infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', kubeenv.Subnet) : null
+      internal: true
+      // outboundSettings: {
+      //   outBoundType: 'LoadBalancer'
+      // }
+    }
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
@@ -81,6 +81,9 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-10-01' = [for (kubeenv, in
         sharedKey: OMS.listKeys().primarySharedKey
       }
     }
+    infrastructureResourceGroup: '${resourceGroup().name}-kube'
+    workloadProfiles: kubeenv.WorkloadProfiles
+
     // environmentType: 'Managed'
     // internalLoadBalancerEnabled: contains(kubeenv, 'internalLoadBalancerEnabled') ? bool(kubeenv.internalLoadBalancerEnabled) : false
 

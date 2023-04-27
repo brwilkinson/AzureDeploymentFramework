@@ -57,7 +57,7 @@ resource managedENV 'Microsoft.App/managedEnvironments@2022-10-01' existing = {
   name: toLower('${Deployment}-kube${containerAppInfo.kubeENV}')
 }
 
-resource containerAPP 'Microsoft.App/containerApps@2022-10-01' = {
+resource containerAPP 'Microsoft.App/containerApps@2022-11-01-preview' = {
   name: toLower('${managedENV.name}-app${containerAppInfo.name}')
   location: resourceGroup().location
   identity: {
@@ -68,6 +68,7 @@ resource containerAPP 'Microsoft.App/containerApps@2022-10-01' = {
   }
   properties: {
     managedEnvironmentId: managedENV.id
+    workloadProfileName: containerAppInfo.?workloadProfileName ?? null
     configuration: {
       activeRevisionsMode: 'multiple'
       ingress: {
