@@ -53,14 +53,14 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 //   scope: resourceGroup('AWU2-PE-AOA-RG-P0') //resourceGroup(HubKVRGName)
 // }
 
-resource sadiag 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+resource sadiag 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: '${DeploymentURI}sadiag'
 }
-var SAS = sadiag.listServiceSAS('2021-09-01', {
+var SAS = sadiag.listServiceSAS('2022-09-01', {
     canonicalizedResource: '/blob/${sadiag.name}/${ws.webAppLogsContainer}'
     signedResource: 'c'
     signedProtocol: 'https'
-    signedPermission: 'rwdlacup'
+    signedPermission: 'rwdl'
     signedServices: 'b'
     signedExpiry: SASEnd
     keyToSign: 'key1'

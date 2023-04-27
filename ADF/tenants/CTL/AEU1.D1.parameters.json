@@ -493,8 +493,8 @@
             "skuName": "Standard_LRS",
             "allNetworks": 1,
             "logging": {
-              "r": 0,
-              "w": 0,
+              "r": 1,
+              "w": 1,
               "d": 1
             },
             "blobVersioning": 1,
@@ -508,7 +508,7 @@
                 "name": "webapplogs"
               }
             ],
-            "PrivateLinkInfo": [
+            "_PrivateLinkInfo": [
               {
                 "Subnet": "snFE01",
                 "groupID": "blob"
