@@ -457,6 +457,9 @@
                 "groupID": "MongoDB"
               }
             ],
+            "capabilities": [
+              "EnableServerless"
+            ],
             "locations": [
               {
                 "location": "PrimaryLocation",

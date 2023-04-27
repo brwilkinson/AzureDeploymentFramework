@@ -847,6 +847,9 @@
                 "groupID": "SQL"
               }
             ],
+            "capabilities": [
+              "EnableServerless"
+            ],
             "locations": [
               {
                 "location": "PrimaryLocation",

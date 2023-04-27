@@ -39,7 +39,7 @@
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
-        "PrivateLink": 0,
+        "PrivateLink": 1,
         "BastionHost": 0,
         "CloudShellRelay": 0,
         "RT": 0,
@@ -107,7 +107,7 @@
         "MSI": 1,
         "CertMgmt": 1,
         "DomainJoin": 0,
-        "AADLogin": 0,
+        "AADLogin": 1,
         "chefClient": 0,
         "WindowsOpenSSH": 0,
         "Antimalware": 0,
@@ -135,16 +135,16 @@
               }
             ]
           },
-          // {
-          //   "name": "GlobalAcrPull",
-          //   "RBAC": [
-          //     // {
-          //     //   "Name": "AcrPull",
-          //     //   "RG": "G1",
-          //     //   "Tenant": "HUB"
-          //     // }
-          //   ]
-          // },
+          {
+            "name": "GlobalAcrPull",
+            "RBAC": [
+              // {
+              //   "Name": "AcrPull",
+              //   "RG": "G1",
+              //   "Tenant": "HUB"
+              // }
+            ]
+          },
           {
             "name": "KeyVaultSecretsGet",
             "RBAC": [
@@ -204,6 +204,24 @@
               {
                 "Name": "Storage Queue Data Contributor",
                 "RG": "P0"
+              }
+            ]
+          },
+          {
+            "name": "AppService",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              },
+              {
+                "Name": "Storage Blob Data Owner"
               }
             ]
           }
@@ -380,15 +398,15 @@
           //   "delegations": "Microsoft.Web/serverfarms",
           //    "NGW": 1
           // },
-          // {
-          //   "name": "snMT03",
-          //   "prefix": "96/27",
-          //   "NSG": 1,
-          //   "FlowLogEnabled": 1,
-          //   "FlowAnalyticsEnabled": 1,
-          //   "delegations": "Microsoft.ContainerInstance/containerGroups",
-          //    "NGW": 1
-          // },
+          {
+            "name": "snMT03",
+            "prefix": "96/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.App/environments", //"Microsoft.ContainerInstance/containerGroups",
+            "NGW": 1
+          },
           // {
           //   "name": "snAPIM01",
           //   "NSGRuleName": "APIM", // APIM Dedicated
@@ -416,14 +434,16 @@
           //   "FlowAnalyticsEnabled": 1,
           //   "NGW": 1
           // },
-          // {
-          //   "name": "snWAF01", // WAF dedicated
-          //   "prefix": "0/24",
-          //   "NSG": 1,
-          //   "Route": 0,
-          //   "FlowLogEnabled": 1,
-          //   "FlowAnalyticsEnabled": 1
-          // },
+          {
+            "name": "waf01-subnet", // WAF dedicated
+            "NSGRuleName": "SNWAF01",
+            "AddDeploymentPrefix": 1,
+            "prefix": "0/24",
+            "NSG": 1,
+            "Route": 0,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1
+          },
           {
             "name": "snFE01",
             "prefix": "0/23",
@@ -634,6 +654,17 @@
             ]
           }
         ],
+        "WAFPolicyInfo": [
+          {
+            "Name": "AGIC01",
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
+            "enableBotRule": 1,
+            "customRules": [],
+            "exclusions": []
+          }
+        ],
         "AKSInfo": [
           {
             "Name": "01",
@@ -644,13 +675,14 @@
             "AllowALLIPs": 1, // Add in NAT Public IP to allow range for VMSSCSE to work.
             "AgentPoolsSN": "snMT01",
             "WAFName": "AGIC01",
-            "BrownFields": 1,
-            "AppGateway": 0,
+            "BrownFields": 0,
+            "AppGateway": 1,
             "AutoScale": 1,
             "enableRBAC": 1,
             "enableOSM": 0,
-            "enableIngressAppRouting": 1,
-            "enableAppRoutingDNS": 1,
+            "enableIstio": 0,
+            "enableIngressAppRouting": 0,
+            "enableAppRoutingDNS": 0,
             "enableDefender": 0,
             "enablePolicy": 0,
             "enableaciConnector": 0,
@@ -784,7 +816,59 @@
               ]
             }
           ]
-        }
+        },
+        "managedEnvInfo": [
+          {
+            "Name": "01",
+            "Subnet": "snMT03",
+            "skuName": "Consumption"
+          }
+        ],
+        "containerAppInfo": [
+          {
+            "Name": "01",
+            "kubeENV": "01"
+          }
+        ],
+        "cosmosDBInfo": [
+          {
+            "Name": "eshop-nosql01",
+            "Kind": "MongoDB", //GlobalDocumentDB, MongoDB, Parse
+            "serverVersion": "4.2",
+            "defaultConsistencyLevel": "Eventual", //Eventual, Session, BoundedStaleness, Strong, ConsistentPrefix
+            "enableMultipleWriteLocations": false,
+            "enableAutomaticFailover": true,
+            "backupPolicy": "Continuous",
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snBE02",
+                "groupID": "MongoDB"
+              }
+            ],
+            "capabilities": [
+              "EnableMongo",
+              "DisableRateLimitingResponses"
+            ],
+            "locations": [
+              {
+                "location": "PrimaryLocation",
+                "failoverPriority": 0,
+                "isZoneRedundant": true
+              },
+              {
+                "location": "SecondaryLocation",
+                "failoverPriority": 1,
+                "isZoneRedundant": true
+              }
+            ],
+            "_databases": [ // old database schema
+              {
+                "databaseName": "customers",
+                "containerName": "Info"
+              }
+            ]
+          }
+        ]
       }
     }
   }

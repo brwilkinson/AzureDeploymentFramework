@@ -234,7 +234,7 @@
             "FlowAnalyticsEnabled": 1
           },
           {
-            "name": "snBE01",
+            "name": "snMT02",
             "prefix": "0/23",
             "NSG": 1,
             "Route": 0, //1
@@ -457,6 +457,19 @@
           // "ContainerInsights",
           // "ServiceFabric",
           // "SQLAdvancedThreatProtection"
+        ],
+        "managedEnvInfo": [
+          {
+            "Name": "01",
+            "Subnet": "snMT03",
+            "skuName": "Consumption"
+          }
+        ],
+        "containerAppInfo": [
+          {
+            "Name": "01",
+            "kubeENV": "01"
+          }
         ]
       }
     }

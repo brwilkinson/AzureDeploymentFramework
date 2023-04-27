@@ -469,7 +469,7 @@
             "NGW": 0
           },
           {
-            "name": "snBE01",
+            "name": "snMT02",
             "prefix": "0/23",
             "NSG": 1,
             "Route": 0, //1

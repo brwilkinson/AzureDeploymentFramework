@@ -3,13 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": { // AKS
     "Prefix": {
-      "value": "AEU2"
+      "value": "AEU1"
     },
     "Environment": {
       "value": "D"
     },
     "DeploymentID": {
-      "value": "1"
+      "value": "2"
     },
     "Stage": {
       "value": {
@@ -17,39 +17,39 @@
         "RBAC": 1,
         "PIM": 0,
         "UAI": 1,
-        "SP": 1,
+        "SP": 0,
         "KV": 0,
         "OMS": 1,
-        "OMSSolutions": 0,
-        "OMSDataSources": 0,
+        "OMSSolutions": 1,
+        "OMSDataSources": 1,
         "OMSUpdateWeekly": 0,
         "OMSUpdateMonthly": 0,
-        "OMSUpates": 0,
+        "OMSUpates": 1,
         "SA": 1,
         "CDN": 0,
         "StorageSync": 0,
         "RSV": 0,
-        "NSG": 0,
+        "NSG": 1,
         "NetworkWatcher": 0,
-        "FlowLogs": 0,
-        "VNet": 0,
+        "FlowLogs": 1,
+        "VNet": 1,
         "VNetDDOS": 0,
-        "VNetPeering": 0,
+        "VNetPeering": 1,
         "DNSPublicZone": 0,
         "DNSPrivateZone": 0,
         "LinkPrivateDns": 0,
-        "PrivateLink": 0,
+        "PrivateLink": 1,
         "BastionHost": 0,
         "CloudShellRelay": 0,
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
-        "NATGW": 0,
+        "NATGW": 1,
         "ERGW": 0,
         "LB": 0,
         "TM": 0,
-        "WAFPOLICY": 0,
-        "WAF": 0,
+        "WAFPOLICY": 0, //
+        "WAF": 0, //
         "FRONTDOORPOLICY": 0,
         "FRONTDOOR": 0,
         "SetExternalDNS": 0,
@@ -90,20 +90,20 @@
     },
     "Extensions": {
       "value": {
-        "MonitoringAgent": 0,
-        "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
-        "AzureMonitorAgent": 0,
-        "GuestHealthAgent": 0,
-        "VMInsights": 0,
-        "AdminCenter": 0,
+        "MonitoringAgent": 1,
+        "IaaSDiagnostics": 1,
+        "DependencyAgent": 1,
+        "AzureMonitorAgent": 1,
+        "GuestHealthAgent": 1,
+        "VMInsights": 1,
+        "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
-        "DSC": 0,
-        "GuestConfig": 0,
-        "Scripts": 0,
-        "MSI": 0,
+        "DSC": 1,
+        "GuestConfig": 1,
+        "Scripts": 1,
+        "MSI": 1,
         "CertMgmt": 0,
-        "DomainJoin": 0,
+        "DomainJoin": 1,
         "AADLogin": 0,
         "WindowsOpenSSH": 0,
         "Antimalware": 1,
@@ -115,26 +115,92 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
-          // {
-          //   "name": "GlobalAcrPull",
-          //   "RBAC": [
-          //     {
-          //       "Name": "AcrPull",
-          //       "RG": "G1",
-          //       "Tenant": "HUB"
-          //     }
-          //   ]
-          // },
           {
-            "Name": "Reader",
+            "name": "GlobalAcrPull",
             "RBAC": [
               {
-                "Name": "Reader"
+                "Name": "AcrPull",
+                "RG": "G1",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               }
             ]
           },
           {
-            "name": "AppService",
+            "name": "ML",
+            "RBAC": [
+              {
+                "Name": "AcrPull",
+                "RG": "G1",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Key Vault Reader",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              }
+              // {
+              //   "Name": "Key Vault Administrator",
+              //   "RG": "P0",
+              //   "Tenant": "HUB"
+              // },
+              // {
+              //   "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
+              //   "RG": "P0",
+              //   "Tenant": "HUB"
+              // }
+            ]
+          },
+          {
+            "name": "KeyVaultSecretsGet",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              }
+            ]
+          },
+          {
+            "name": "AKSCluster",
+            "RBAC": [
+              {
+                "Name": "Private DNS Zone Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Network Contributor"
+              },
+              {
+                "Name": "Managed Identity Operator"
+              }
+            ]
+          },
+          {
+            "Name": "CertificateRequest",
             "RBAC": [
               {
                 "Name": "Key Vault Secrets User",
@@ -143,57 +209,13 @@
                 "Prefix": "ACU1"
               },
               {
-                "Name": "Storage Account Contributor"
-              },
-              {
-                "Name": "Storage Queue Data Contributor"
-              },
-              {
-                "Name": "Storage Blob Data Owner"
+                "Name": "Key Vault Certificates Officer",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               }
             ]
           }
-          // {
-          //   "name": "AKSCluster",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Private DNS Zone Contributor",
-          //       "RG": "P0",
-          //       "Tenant": "HUB"
-          //     },
-          //     {
-          //       "Name": "Key Vault Certificates Officer",
-          //       "RG": "P0",
-          //       "Tenant": "HUB"
-          //     },
-          //     {
-          //       "Name": "Key Vault Secrets User",
-          //       "RG": "P0",
-          //       "Tenant": "HUB"
-          //     },
-          //     {
-          //       "Name": "Network Contributor"
-          //     },
-          //     {
-          //       "Name": "Managed Identity Operator"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "Name": "CertificateRequest",
-          //   "RBAC": [
-          //     {
-          //       "Name": "Key Vault Secrets User",
-          //       "RG": "P0",
-          //       "Tenant": "HUB"
-          //     },
-          //     {
-          //       "Name": "Key Vault Certificates Officer",
-          //       "RG": "P0",
-          //       "Tenant": "HUB"
-          //     }
-          //   ]
-          // }
         ],
         "rolesInfo": [
           {
@@ -256,27 +278,30 @@
                 "RG": "G1",
                 "Prefix": "ACU1",
                 "Tenant": "HUB"
-              }
+              },
               // {
               //   "Name": "Automation_Account_Contributor",
               //   "RG": "P0",
               //   "Tenant": "HUB"
               // },
-              // {
-              //   "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // },
-              // {
-              //   "Name": "Key Vault Secrets User",
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // },
-              // {
-              //   "Name": "Network Contributor",
-              //   "RG": "P0",
-              //   "Tenant": "HUB"
-              // }
+              {
+                "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Network Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              }
               // {
               //   "Name": "DNS Zone Contributor",
               //   "RG": "P0",
@@ -318,15 +343,15 @@
           //   "delegations": "Microsoft.Web/serverfarms",
           //    "NGW": 1
           // },
-          // {
-          //   "name": "snMT03",
-          //   "prefix": "96/27",
-          //   "NSG": 1,
-          //   "FlowLogEnabled": 1,
-          //   "FlowAnalyticsEnabled": 1,
-          //   "delegations": "Microsoft.ContainerInstance/containerGroups",
-          //    "NGW": 1
-          // },
+          {
+            "name": "snMT03",
+            "prefix": "96/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.App/environments", //"Microsoft.ContainerInstance/containerGroups",
+            "NGW": 1
+          },
           // {
           //   "name": "snAPIM01",
           //   "NSGRuleName": "APIM", // APIM Dedicated
@@ -396,6 +421,11 @@
             "PIPCount": 1
           }
         ],
+        "BastionInfo": {
+          "name": "HST01",
+          "enableTunneling": 1,
+          "scaleUnits": 2
+        },
         "saInfo": [
           {
             "name": "diag",
@@ -420,27 +450,6 @@
               {
                 "Subnet": "snFE01",
                 "groupID": "file"
-              }
-            ]
-          },
-          {
-            "name": "data1",
-            "skuName": "Standard_LRS",
-            "allNetworks": 1,
-            "logging": {
-              "r": 0,
-              "w": 0,
-              "d": 1
-            },
-            "blobVersioning": 1,
-            "changeFeed": 1,
-            "softDeletePolicy": {
-              "enabled": 1,
-              "days": 7
-            },
-            "containers": [
-              {
-                "name": "$web"
               }
             ]
           }
@@ -479,16 +488,16 @@
           "AzureAutomation",
           "ChangeTracking",
           "AzureActivity",
-          // "DnsAnalytics",
+          "DnsAnalytics",
           "AlertManagement",
-          // "NetworkMonitoring",
+          "NetworkMonitoring",
           "InfrastructureInsights",
           "VMInsights",
           "SecurityInsights",
           // testing
           "WindowsDefenderATP",
-          "KeyVaultAnalytics",
-          "BehaviorAnalyticsInsights"
+          "KeyVaultAnalytics"
+          // "BehaviorAnalyticsInsights",
           // "ServiceFabric"
           // disabled
           // "Updates",
@@ -505,60 +514,188 @@
           // "AzureSQLAnalytics",
           // "AzureNSGAnalytics"
         ],
-        "appServiceplanInfo": [
+        "WAFPolicyInfo": [
           {
-            "Name": "WPS01",
-            "kind": "app",
-            "perSiteScaling": false,
-            "reserved": false,
-            "skuname": "P1v2",
-            "skutier": "PremiumV2",
-            "skucapacity": 1,
-            "deploy": 1
-          },
-          {
-            "Name": "ASP01",
-            "kind": "elastic",
-            "perSiteScaling": false,
-            "reserved": false,
-            "skuname": "EP1",
-            "skutier": "ElasticPremium",
-            "skucapacity": 1,
-            "maxWorkerCount": 100,
-            "deploy": 1
+            "Name": "AGIC01",
+            "State": "Enabled",
+            "Mode": "Prevention",
+            "ruleSetVersion": "3.2", // New rules engine high performance and load capabilities
+            "enableBotRule": 1,
+            "customRules": [],
+            "exclusions": []
           }
         ],
-        "FunctionInfo": [
+        "LoadTestInfo": [
           {
-            "Name": "DIS03",
-            "kind": "functionapp",
-            "AppSVCPlan": "ASP01",
-            "saname": "data1",
-            "stack": "dotnet",
-            "_Subnet": "snMT01",
-            "preWarmedCount": 1,
-            "customDNS": 0,
-            "authsettingsV2": {
-              "applicationId": "84a491fe-f713-42f9-8e13-66bfb5dcc09b", // clientid needs access to the keyvault to read the secret
-              "requireAuthentication": 1
-            }
+            "Name": "APIWebTest01",
+            "location": "westus2"
           }
         ],
-        "WebSiteInfo": [
+        "WAFInfo": [
           {
-            "Name": "WPS01",
-            "kind": "app",
-            "AppSVCPlan": "WPS01",
-            "stack": "dotnet",
-            "saname": "diag",
-            "customDNS": 0,
+            "Name": "AGIC01",
+            "WAFPolicyAttached": 1,
+            "WAFPolicyName": "AGIC01",
+            "WAFTier": "WAF_v2",
+            "PrivateIP": "240",
+            "SSLCerts": [
+              {
+                "name": "AGIC01",
+                "zone": "aginow.net",
+                "createCert": 1,
+                "DnsNames": [
+                  "*.aginow.net"
+                ]
+              }
+            ],
             "_privateLinkInfo": [
               {
-                "Subnet": "snFE01",
-                "groupID": "sites"
+                "Subnet": "snMT01",
+                "groupID": "frontendPublic"
+              }
+            ],
+            "backendAddressPools": [
+              {
+                "name": "AGIC01",
+                "BEIPs": []
+              }
+            ],
+            "pathRules": [],
+            "probes": [
+              {
+                "Name": "probe01",
+                "Path": "/",
+                "Protocol": "https",
+                "useBE": 1
+              }
+            ],
+            "frontEndPorts": [
+              {
+                "Port": 80
+              },
+              {
+                "Port": 443
+              }
+            ],
+            "BackendHttp": [
+              {
+                "Port": 443,
+                "Protocol": "https",
+                "CookieBasedAffinity": "Disabled",
+                "RequestTimeout": 600,
+                "probeName": "probe01",
+                "hostnameFromBE": 1
+              }
+            ],
+            "Listeners": [
+              {
+                "Port": 443,
+                "BackendPort": 443,
+                "Protocol": "https",
+                "Cert": "AGIC01",
+                "Domain": "aginow.net",
+                "Hostname": "AGIC01",
+                "HostnameExcludePrefix": 1,
+                "Interface": "Public"
+              },
+              {
+                "Port": 80,
+                "Protocol": "http",
+                "Domain": "aginow.net",
+                "Hostname": "AGIC01",
+                "HostnameExcludePrefix": 1,
+                "Interface": "Public",
+                "httpsRedirect": 1
               }
             ]
           }
+        ],
+        "AKSInfo": [
+          {
+            "Name": "01",
+            "Version": "1.25.5", // 1.23.8, 1.24.0
+            "skuTier": "Free", //Free
+            "podIdentity": 0,
+            "privateCluster": 0,
+            "AllowALLIPs": 1, // Add in NAT Public IP to allow range for VMSSCSE to work.
+            "AgentPoolsSN": "snMT01",
+            "WAFName": "AGIC01",
+            "BrownFields": 1,
+            "AppGateway": 0,
+            "AutoScale": 1,
+            "enableRBAC": 1,
+            "enableOSM": 1,
+            "enableIngressAppRouting": 1,
+            "enableDefender": 0,
+            "enablePolicy": 0,
+            "enableaciConnector": 0,
+            "aksAADAdminGroups": [
+              "brwilkinson"
+            ],
+            "AgentPools": [
+              {
+                "name": "system01",
+                "count": 1,
+                "osDiskSizeGb": 0, // 0 use default size
+                "osType": "Linux",
+                "osSKU": "Mariner",
+                "maxPods": 110,
+                "vmSize": "Standard_B4ms", // "Standard_D2ads_v5", // AMD --> "Standard_D2plds_v5", Standard_D2ps_v5 // NON AMD Standard_D2ads_v5
+                "mode": "System",
+                "subnet": "snMT01"
+              }
+              // {
+              //   "name": "user01",
+              //   "count": 1,
+              //   "maxcount": 1,
+              //   "osDiskSizeGb": 0,
+              //   "osType": "Linux",
+              //   "osSKU": "Mariner",
+              //   "maxPods": 250,
+              //   "vmSize": "Standard_D2ads_v5",
+              //   "mode": "User",
+              //   "subnet": "snMT02"
+              // }
+            ]
+          }
+        ],
+        "MLWorkspaceInfo": [
+          {
+            "Name": "03",
+            "UAI": "ML",
+            "skuTier": "Basic" //Enterprise
+            // "KV": "App01"
+          }
+        ],
+        "managedEnvInfo": [
+          {
+            "Name": "01",
+            "Subnet": "snMT03",
+            "workloadProfiles": [
+              {
+                "workloadProfileType": "Consumption",
+                "name": "Consumption"
+              }
+            ]
+              // {
+              //   "workloadProfileType": "D4",
+              //   "name": "Dedicated-D4",
+              //   "minimumCount": 1,
+              //   "maximumCount": 1
+              // }
+            // ]
+          }
+        ],
+        "containerAppInfo": [
+          {
+            "Name": "01",
+            "kubeENV": "01"
+          }
+          // {
+          //   "Name": "02",
+          //   "kubeENV": "01",
+          //   "workloadProfileName": "Dedicated-D4"
+          // }
         ]
       }
     }

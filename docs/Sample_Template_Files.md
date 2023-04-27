@@ -402,6 +402,9 @@ The following defines the CosmosDB
             "groupID": "MongoDB"
           }
         ],
+        "capabilities": [
+          "EnableServerless"
+        ],
         "locations": [
           {
             "location": "PrimaryLocation",
