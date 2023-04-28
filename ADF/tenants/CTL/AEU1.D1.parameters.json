@@ -762,7 +762,7 @@
             "stack": "dotnet",
             "saname": "diag",
             "customDNS": 0,
-            "webAppLogsContainer": "webapplogs",
+            "enableWebAppLogs": 1,
             "_privateLinkInfo": [
               {
                 "Subnet": "snFE01",

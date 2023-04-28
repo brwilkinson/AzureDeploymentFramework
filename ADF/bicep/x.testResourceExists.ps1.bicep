@@ -2,8 +2,14 @@ param resourceId string
 param userAssignedIdentityName string
 param now string = utcNow('F')
 
+var resourceParts = split(resourceId,'/')
+var resourceLength = length(skip(resourceParts,1))
+// last 3 segments of resourceId for deployment Name to ensure it's unique
+var resourceSegments = [for segment in range(resourceLength - 2, 3): resourceParts[segment]]
+var resourceName = replace(join(resourceSegments,'-'),'.','-')
+
 resource testResourceExists 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: take(replace('testsExists-${last(split(resourceId,'/'))}', '@', '_'), 64)
+  name: take(replace('testsExists-${resourceName}', '@', '_'), 64)
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -19,7 +25,7 @@ resource testResourceExists 'Microsoft.Resources/deploymentScripts@2020-10-01' =
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
-    timeout: 'PT3M'
+    timeout: 'PT5M'
   }
 }
 
