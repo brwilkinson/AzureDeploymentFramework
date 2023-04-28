@@ -206,6 +206,10 @@ module websiteSettings 'x.appServiceSettings.bicep' = [for (ws, index) in WebSit
     appConfigNew: {
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
+      'Logging:ApplicationInsights:Enabled': 'true'
+      'Logging:ApplicationInsights:LogLevel': 'Information'
+      'Logging:LogLevel:Default' : 'Error'
+      'Logging.LogLevel:Microsoft' : 'Warning'
       MICROSOFT_PROVIDER_AUTHENTICATION_SECRET: contains(ws, 'authsettingsV2') ? '@Microsoft.KeyVault(VaultName=${KV.name};SecretName=${ws.Name}-${ws.authsettingsV2.applicationId})' : null
     }
   }
