@@ -58,7 +58,7 @@ resource sadiag 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: '${DeploymentURI}sadiag'
 }
 
-// Create Container used for Function webAppLogsContainer
+// Create Container used for Function enableWebAppLogs
 var logDirs = [
   'webapplicationlogs'
   'webhttplogs'
@@ -269,7 +269,7 @@ module SAFileShares 'x.storageFileShare.bicep' = {
   }
 }
 
-module SALogContainer 'x.storageContainer.bicep' = [for (item, index) in logDirs: if (contains(ws, 'webAppLogsContainer')) {
+module SALogContainer 'x.storageContainer.bicep' = [for (item, index) in logDirs: if (bool(ws.?enableWebAppLogs ?? 0)) {
   name: 'dp${Deployment}-SA-${ws.saname}-Container-${item}'
   params: {
     SAName: SA.name
@@ -301,13 +301,13 @@ resource WSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
 }
 
 // https://learn.microsoft.com/en-us/azure/app-service/troubleshoot-diagnostic-logs
-resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (contains(ws, 'webAppLogsContainer')) {
+resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (bool(ws.?enableWebAppLogs ?? 0)) {
   name: 'logs'
   parent: WS
   properties: {
     applicationLogs: {
       fileSystem: {
-        level: 'Off'
+        level: 'Verbose'
       }
       azureTableStorage: {
         level: 'Off'
@@ -315,9 +315,9 @@ resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (contains(ws, 'webApp
         sasUrl: null
       }
       azureBlobStorage: {
-        level: 'Verbose'
+        level: 'Off'
         // sasUrl: 'https://aeu1pectld1sadiag.blob.core.windows.net/webapplogs?sp=rwdl&st=2023-04-27T07:21:16Z&se=2223-04-27T07:21:16Z&sv=2022-11-02&sr=c&sig=xJEXoeGBTHod8s68XvsSFDEqJkpum7BPTQCTKSASEDs%3D'
-        sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}webapplicationlogs?${SASApp}' : null
+        sasUrl: contains(ws, 'enableWebAppLogs') ? '${sadiag.properties.primaryEndpoints.blob}webapplicationlogs?${SASApp}' : null
         retentionInDays: 15
       }
     }
@@ -325,13 +325,13 @@ resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (contains(ws, 'webApp
       fileSystem: {
         retentionInMb: 35
         retentionInDays: 15
-        enabled: false
+        enabled: true
       }
       azureBlobStorage: {
         // sasUrl: 'https://aeu1pectld1sadiag.blob.core.windows.net/webapplogs?sp=rwdl&st=2023-04-27T07:21:16Z&se=2223-04-27T07:21:16Z&sv=2022-11-02&sr=c&sig=xJEXoeGBTHod8s68XvsSFDEqJkpum7BPTQCTKSASEDs%3D'
-        sasUrl: contains(ws, 'webAppLogsContainer') ? '${sadiag.properties.primaryEndpoints.blob}webhttplogs?${SASHttp}' : null
+        sasUrl: contains(ws, 'enableWebAppLogs') ? '${sadiag.properties.primaryEndpoints.blob}webhttplogs?${SASHttp}' : null
         retentionInDays: 15
-        enabled: true
+        enabled: false
       }
     }
     failedRequestsTracing: {
