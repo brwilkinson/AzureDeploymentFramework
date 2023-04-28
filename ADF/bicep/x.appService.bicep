@@ -316,7 +316,6 @@ resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (bool(ws.?enableWebAp
       }
       azureBlobStorage: {
         level: 'Off'
-        // sasUrl: 'https://aeu1pectld1sadiag.blob.core.windows.net/webapplogs?sp=rwdl&st=2023-04-27T07:21:16Z&se=2223-04-27T07:21:16Z&sv=2022-11-02&sr=c&sig=xJEXoeGBTHod8s68XvsSFDEqJkpum7BPTQCTKSASEDs%3D'
         sasUrl: contains(ws, 'enableWebAppLogs') ? '${sadiag.properties.primaryEndpoints.blob}webapplicationlogs?${SASApp}' : null
         retentionInDays: 15
       }
@@ -328,7 +327,6 @@ resource logs 'Microsoft.Web/sites/config@2022-09-01' = if (bool(ws.?enableWebAp
         enabled: true
       }
       azureBlobStorage: {
-        // sasUrl: 'https://aeu1pectld1sadiag.blob.core.windows.net/webapplogs?sp=rwdl&st=2023-04-27T07:21:16Z&se=2223-04-27T07:21:16Z&sv=2022-11-02&sr=c&sig=xJEXoeGBTHod8s68XvsSFDEqJkpum7BPTQCTKSASEDs%3D'
         sasUrl: contains(ws, 'enableWebAppLogs') ? '${sadiag.properties.primaryEndpoints.blob}webhttplogs?${SASHttp}' : null
         retentionInDays: 15
         enabled: false
