@@ -820,6 +820,31 @@
                   "StaticIP": "61"
                 }
               ]
+            },
+            {
+              "Name": "JMP01",
+              "Role": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Server2022", //"Server2022",
+              "ExcludeAdminCenter": 1,
+              "ExcludeDomainJoin": 1,
+              "OSstorageAccountType": "Standard_LRS",
+              "HotPatch": true,
+              "DeployJIT": 1,
+              "shutdown": {
+                "time": "2100",
+                "enabled": 0
+              },
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "snFE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "62"
+                }
+              ]
             }
           ]
         },
