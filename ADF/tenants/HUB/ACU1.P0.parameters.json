@@ -311,6 +311,11 @@
           },
           {
             "linkDNS": 1,
+            "zone": "privatelink.eastus.azmk8s.io",
+            "Autoregistration": false
+          },
+          {
+            "linkDNS": 1,
             "zone": "privatelink.{region}.azmk8s.io",
             "Autoregistration": false
           },

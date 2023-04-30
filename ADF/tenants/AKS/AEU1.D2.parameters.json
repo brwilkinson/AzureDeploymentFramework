@@ -380,7 +380,9 @@
             "NGW": 1
           },
           {
-            "name": "snWAF01", // WAF dedicated
+            "name": "waf01-subnet", // WAF dedicated
+            "NSGRuleName": "SNWAF01",
+            "AddDeploymentPrefix": 1,
             "prefix": "0/24",
             "NSG": 1,
             "Route": 0,
@@ -613,19 +615,21 @@
         "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.25.5", // 1.23.8, 1.24.0
+            "Version": "1.25.6", // LTS
             "skuTier": "Free", //Free
             "podIdentity": 0,
-            "privateCluster": 0,
+            "privateCluster": 1,
             "AllowALLIPs": 1, // Add in NAT Public IP to allow range for VMSSCSE to work.
             "AgentPoolsSN": "snMT01",
             "WAFName": "AGIC01",
-            "BrownFields": 1,
-            "AppGateway": 0,
+            "BrownFields": 0,
+            "AppGateway": 1,
             "AutoScale": 1,
             "enableRBAC": 1,
-            "enableOSM": 1,
-            "enableIngressAppRouting": 1,
+            "enableOSM": 0,
+            "enableIstio": 0,
+            "enableIngressAppRouting": 0,
+            "enableAppRoutingDNS": 0,
             "enableDefender": 0,
             "enablePolicy": 0,
             "enableaciConnector": 0,
@@ -677,12 +681,12 @@
                 "name": "Consumption"
               }
             ]
-              // {
-              //   "workloadProfileType": "D4",
-              //   "name": "Dedicated-D4",
-              //   "minimumCount": 1,
-              //   "maximumCount": 1
-              // }
+            // {
+            //   "workloadProfileType": "D4",
+            //   "name": "Dedicated-D4",
+            //   "minimumCount": 1,
+            //   "maximumCount": 1
+            // }
             // ]
           }
         ],

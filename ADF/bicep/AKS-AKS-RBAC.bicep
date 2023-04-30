@@ -58,6 +58,7 @@ var ManagedIdentities = {
         Name: 'Key Vault Secrets User'
         RG: gh.hubRGRGName
         Tenant: gh.hubRGAppName
+        Prefix: gh.hubRGPrefix
       }
     ]
   }
@@ -95,6 +96,7 @@ var ManagedIdentities = {
         Name: 'DNS Zone Contributor'
         RG: gh.hubRGRGName
         Tenant: gh.hubRGAppName
+        Prefix: gh.hubRGPrefix
       }
       {
         Name: 'Key Vault Secrets User'
@@ -103,6 +105,7 @@ var ManagedIdentities = {
         Name: 'Key Vault Secrets User'
         RG: gh.hubRGRGName
         Tenant: gh.hubRGAppName
+        Prefix: gh.hubRGPrefix
       }
     ]
   }

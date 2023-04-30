@@ -298,12 +298,10 @@ resource AKS 'Microsoft.ContainerService/managedClusters@2023-02-02-preview' = {
     }
     aadProfile: bool(AKSInfo.enableRBAC) ? aadProfile : null
     apiServerAccessProfile: {
-      authorizedIPRanges: bool(AKSInfo.privateCluster) || (contains(AKSInfo, 'AllowALLIPs') && bool(AKSInfo.AllowALLIPs)) ? null : AllowIPList
+      authorizedIPRanges: bool(AKSInfo.privateCluster) || bool(AKSInfo.?AllowALLIPs ?? false) ? null : AllowIPList
       enablePrivateCluster: bool(AKSInfo.privateCluster)
       privateDNSZone: bool(AKSInfo.privateCluster) ? DNSAKSPrivate.id : null
       enablePrivateClusterPublicFQDN: true
-      // enableVnetIntegration: true
-      // subnetId: 
     }
     publicNetworkAccess: bool(AKSInfo.privateCluster) ? 'Disabled' : 'Enabled'
     networkProfile: {
