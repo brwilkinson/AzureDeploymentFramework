@@ -21,7 +21,7 @@
   "resources": [
     {
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2020-08-01-preview",
+      "apiVersion": "2022-04-01",
       "scope": "[parameters('scope')]",
       "name": "[parameters('name')]",
       "properties": {

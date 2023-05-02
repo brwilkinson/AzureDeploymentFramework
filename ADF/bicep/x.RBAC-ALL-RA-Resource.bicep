@@ -11,7 +11,7 @@ param principalId string
 param principalType string = ''
 param description string
 #disable-next-line no-unused-params
-param roledescription string = '' // leave these for loggin in the portal
+param roledescription string = '' // leave these for logging in the portal
 
 // // ----------------------------------------------
 // // Implement own resourceId for any segment length
