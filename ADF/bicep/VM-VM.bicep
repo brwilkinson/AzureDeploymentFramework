@@ -96,11 +96,16 @@ var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh
 var globalSAName = toLower('${gh.globalSAPrefix}${gh.globalSAOrgName}${gh.globalSAAppName}${gh.globalSARGName}sa${GlobalSAJ.name}')
 var HubKVRGName = '${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-RG-${gh.hubKVRGName}'
 var HubKVName = toLower('${gh.hubKVPrefix}-${gh.hubKVOrgName}-${gh.hubKVAppName}-${gh.hubKVRGName}-kv${HubKVJ.name}')
-var AAName = toLower('${gh.hubAAPrefix}${gh.hubAAOrgName}${gh.hubAAAppName}${gh.hubAARGName}${HubAAJ.name}')
+var AANameHub = toLower('${gh.hubAAPrefix}${gh.hubAAOrgName}${gh.hubAAAppName}${gh.hubAARGName}${HubAAJ.name}')
+var AAName = '${DeploymentURI}OMSAutomation'
 
-resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' existing = {
+// resource AAHub 'Microsoft.Automation/automationAccounts@2021-06-22' existing = {
+//   name: AANameHub
+//   scope: resourceGroup(HubRGName)
+// }
+
+resource AA 'Microsoft.Automation/automationAccounts@2021-06-22' existing = {
   name: AAName
-  scope: resourceGroup(HubRGName)
 }
 
 resource saaccountidglobalsource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
@@ -164,8 +169,8 @@ resource cert 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' existing = 
   parent: KV
 }
 
-var certUrlLatest = cert.properties.secretUri
-var certUrl = cert.properties.secretUriWithVersion
+var certUrlLatest = VM.match && bool(VM.Extensions.CertMgmt) ? cert.properties.secretUri : ''
+var certUrl = VM.match && bool(VM.Extensions.CertMgmt) ? cert.properties.secretUriWithVersion : ''
 
 var secrets = [
   {
@@ -811,7 +816,7 @@ resource AppServerChefClient 'Microsoft.Compute/virtualMachines/extensions@2022-
   location: resourceGroup().location
   properties: {
     publisher: 'Chef.Bootstrap.WindowsAzure'
-    type: (OSType[AppServer.OSType].OS == 'Windows' ? 'ChefClient' : 'LinuxChefClient')
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'ChefClient' : 'LinuxChefClient'
     typeHandlerVersion: '1210.12'
     settings: {
       bootstrap_options: {
@@ -908,6 +913,33 @@ resource AppServerIaaSAntimalware 'Microsoft.Compute/virtualMachines/extensions@
   }
 }
 
+module HRWorker 'x.hybridRunbookWorker.bicep' = if (bool(AppServer.?HRW ?? false)) {
+  name: '${Deployment}-HRWorker-${AppServer.Name}'
+  // scope: resourceGroup(HubRGName)
+  params: {
+    AAName: AA.name
+    HRWGroupName: '${Deployment}-vn'
+    vmResourceId: virtualMachine.id
+  }
+}
+
+resource HRW 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (bool(AppServer.?HRW ?? false)) {
+  name: 'HybridWorkerExtension'
+  parent: virtualMachine
+  location: resourceGroup().location
+  properties: {
+    publisher: 'Microsoft.Azure.Automation.HybridWorker'
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'HybridWorkerForWindows' : 'HybridWorkerForLinux'
+    typeHandlerVersion: '1.1'
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+    settings: {
+      #disable-next-line BCP053
+      AutomationAccountURL: AA.properties.automationHybridServiceUrl
+    }
+  }
+}
+
 var policyName = 'DefaultPolicy'
 
 resource RSV 'Microsoft.RecoveryServices/vaults@2016-06-01' existing = {
@@ -933,41 +965,40 @@ resource RSV 'Microsoft.RecoveryServices/vaults@2016-06-01' existing = {
   }
 }
 
-/*
-resource runCommandsSetup 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = {
-  name: 'initial-${virtualMachine.name}'
+resource windowsOpenSSHExtension 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = if(OSType[AppServer.OSType].OS == 'Windows') {
+  name: 'WindowsOpenSSH'
   parent: virtualMachine
   location: resourceGroup().location
   properties: {
-    timeoutInSeconds: (60 * 5)
-    asyncExecution: false
-    runAsUser: 'root' // virtualMachine.properties.osProfile.adminUsername
-    // outputBlobUri: '${blobURL}/log.txt'
-    // errorBlobUri: '${blobURL}/error.txt'
-    source: {
-      script: loadTextContent('setup.sh')
-    }
+    publisher: 'Microsoft.Azure.OpenSSH'
+    type: 'WindowsOpenSSH'
+    typeHandlerVersion: '3.0'
   }
 }
 
-resource runCommandsInstall 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = {
-  name: 'setup-${virtualMachine.name}'
-  parent: virtualMachine
+var runCommandsScriptLookup = {
+  'setupUbuntu.sh': loadTextContent('loadTextContext/setupUbuntu.sh')
+  'setupWindows.ps1': loadTextContent('loadTextContext/setupWindows.ps1')
+}
+
+resource runCommands 'Microsoft.Compute/virtualMachines/runCommands@2022-11-01' = if(contains(AppServer,'runCommands')) {
+  name: 'runCommands'
   location: resourceGroup().location
+  parent: virtualMachine
   properties: {
-    timeoutInSeconds: (60 * 5)
+    timeoutInSeconds: (60 * 90)
     asyncExecution: false
-    runAsUser: 'root' // virtualMachine.properties.osProfile.adminUsername
-    // outputBlobUri: '${blobURL}/log.txt'
-    // errorBlobUri: '${blobURL}/error.txt'
+    runAsUser: OSType[AppServer.OSType].OS == 'Linux' ? 'root' : null
+    parameters: [
+      {
+        name: ''
+        value: virtualMachine.name
+      }
+    ]
     source: {
-      script: loadTextContent('install.sh')
+      script: runCommandsScriptLookup[AppServer.runCommands]
     }
   }
-  dependsOn: [
-    runCommandsSetup
-  ]
 }
-*/
 
 output Disks array = contains(AppServer, 'DDRole') ? DISKLOOKUP.outputs.DATADisks : []

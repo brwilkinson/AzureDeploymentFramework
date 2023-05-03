@@ -17,8 +17,8 @@
         "RBAC": 1,
         "PIM": 0,
         "UAI": 1,
-        "SP": 1,
-        "KV": 1,
+        "SP": 0,
+        "KV": 0,
         "OMS": 1,
         "DASHBOARD": 0,
         "OMSSolutions": 1,
@@ -48,9 +48,9 @@
         "ADSecondary": 0,
         "SetExternalDNS": 0,
         "SetInternalDNS": 0,
-        "CloudTestAccount": 1,
-        "CloudTestImages": 1,
-        "CloudTestHostedPool": 1
+        "CloudTestAccount": 0,
+        "CloudTestImages": 0,
+        "CloudTestHostedPool": 0
       }
     },
     "Extensions": {
@@ -98,6 +98,26 @@
             "RBAC": [
               {
                 "Name": "Key Vault Administrator"
+              }
+            ]
+          },
+          {
+            "name": "Automation",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              },
+              {
+                "Name": "Storage Blob Data Owner"
               }
             ]
           }

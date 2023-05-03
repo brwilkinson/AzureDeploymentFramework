@@ -14,6 +14,12 @@
       "name": "G1",
       "AppName": "HUB"
     },
+    "GlobalDNS": {
+      "Prefix": "ACU1",
+      "RG": "G1",
+      "AppName": "HUB",
+      "Org": "PE"
+    },
     "AppId": 4,
     "Network": {
       "first": 10,

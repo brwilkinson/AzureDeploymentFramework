@@ -98,7 +98,7 @@
         "VMInsights": 1,
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
-        "DSC": 1,
+        "DSC": 0,
         "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
@@ -109,7 +109,8 @@
         "Antimalware": 1,
         "VMSSAzureADEnabled": 0,
         "SqlIaasExtension": 0,
-        "AzureDefender": 0
+        "AzureDefender": 0,
+        "chefClient": 0
       }
     },
     "DeploymentInfo": {
@@ -196,6 +197,49 @@
               },
               {
                 "Name": "Managed Identity Operator"
+              }
+            ]
+          },
+          {
+            "name": "Automation",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              },
+              {
+                "Name": "Storage Blob Data Owner"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               }
             ]
           },
@@ -453,6 +497,11 @@
                 "Subnet": "snFE01",
                 "groupID": "file"
               }
+            ],
+            "containers": [
+              {
+                "name": "runbooks"
+              }
             ]
           }
         ],
@@ -515,6 +564,13 @@
           // "SQLAdvancedThreatProtection",
           // "AzureSQLAnalytics",
           // "AzureNSGAnalytics"
+        ],
+        "appConfigurationInfo": [
+          {
+            "name": "01",
+            "sku": "standard",
+            "publicNetworkAccess": 1
+          }
         ],
         "WAFPolicyInfo": [
           {
@@ -700,7 +756,64 @@
           //   "kubeENV": "01",
           //   "workloadProfileName": "Dedicated-D4"
           // }
-        ]
+        ],
+        "Appservers": {
+          "AppServers": [
+            {
+              "Name": "UBU01",
+              "Role": "UBU",
+              "_DSC": "PULL",
+              "_DDRole": "64GB",
+              "OSType": "ubuntu-server-focal",
+              "runCommands": "setupUbuntu.sh",
+              "OSstorageAccountType": "Standard_LRS",
+              "HotPatch": true,
+              "HRW": 1,
+              "DeployJIT": 1,
+              "_shutdown": {
+                "time": "2100",
+                "enabled": 0
+              },
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "snFE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "61"
+                }
+              ]
+            },
+            {
+              "Name": "JMP01",
+              "Role": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Server2022", //"Server2022",
+              "runCommands": "setupWindows.ps1",
+              "ExcludeAdminCenter": 1,
+              "ExcludeDomainJoin": 1,
+              "OSstorageAccountType": "Standard_LRS",
+              "HotPatch": true,
+              "HRW": 1,
+              "DeployJIT": 1,
+              "shutdown": {
+                "time": "2100",
+                "enabled": 0
+              },
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "snFE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "62"
+                }
+              ]
+            }
+          ]
+        }
       }
     }
   }

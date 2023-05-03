@@ -52,6 +52,10 @@ var AutoManageName = '${DeploymentURI}AutoManage'
 
 var appConfigurationInfo = DeploymentInfo.?appConfigurationInfo ?? []
 
+resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
+  name: '${Deployment}-uaiAutomation'
+}
+
 var dataRetention = 31
 var serviceTier = 'PerNode'
 var AAserviceTier = 'Basic' // 'Free'
@@ -804,9 +808,15 @@ var alertInfo = [
   }
 ]
 
-resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' = {
+resource AA 'Microsoft.Automation/automationAccounts@2022-08-08' = {
   name: AAName
   location: (contains(Global, 'AALocation') ? Global.AALocation : resourceGroup().location)
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${UAI.id}': {}
+    }
+  }
   properties: {
     sku: {
       name: AAserviceTier
@@ -814,6 +824,15 @@ resource AA 'Microsoft.Automation/automationAccounts@2020-01-13-preview' = {
   }
 }
 
+resource symbolicname 'Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups@2022-08-08' = {
+  name: '${Deployment}-vn'
+  parent: AA
+  properties: {
+    // credential: {
+    //   name: 'string'
+    // }
+  }
+}
 
 
 /*

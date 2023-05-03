@@ -109,7 +109,8 @@
         "Antimalware": 1,
         "VMSSAzureADEnabled": 0,
         "SqlIaasExtension": 0,
-        "AzureDefender": 0
+        "AzureDefender": 0,
+        "chefClient": 0
       }
     },
     "DeploymentInfo": {
@@ -135,6 +136,26 @@
           },
           {
             "name": "AppService",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              },
+              {
+                "Name": "Storage Blob Data Owner"
+              }
+            ]
+          },
+          {
+            "name": "Automation",
             "RBAC": [
               {
                 "Name": "Key Vault Secrets User",

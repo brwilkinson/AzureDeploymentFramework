@@ -31,6 +31,9 @@
             "RBAC": [
               {
                 "Name": "Reader"
+              },
+              {
+                "Name": "Owner"
               }
             ]
           }

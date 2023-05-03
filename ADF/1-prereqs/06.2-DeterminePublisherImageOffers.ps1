@@ -38,6 +38,7 @@ $pubname = 'Microsoft.Azure.Monitor'
 $pubname = 'Microsoft.EnterpriseCloud.Monitoring'
 $pubname = 'Microsoft.Azure.AzureDefenderForServers'
 $pubname = 'Microsoft.Azure.KeyVault'
+$pubname = 'Microsoft.Azure.Automation.HybridWorker'
 Get-AzVMExtensionImageType -PublisherName $pubname -Location $Location
 
 # Extensions
@@ -55,6 +56,8 @@ $ExtType = 'MDE.Windows'
 $ExtType = 'MDE.Linux'
 $ExtType = 'KeyVaultForLinux'
 $ExtType = 'KeyVaultForWindows'
+$ExtType = 'HybridWorkerForWindows'
+$ExtType = 'HybridWorkerForLinux'
 Get-AzVMExtensionImage -Location $location -PublisherName $pubname -Type $ExtType | Select-Object PublisherName, Type, Version
 
 # 3 retrieve the SKUs of the offering

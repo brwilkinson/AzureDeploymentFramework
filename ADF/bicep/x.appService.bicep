@@ -118,7 +118,7 @@ resource WS 'Microsoft.Web/sites@2022-09-01' = {
   name: '${Deployment}-${appprefix}${ws.Name}'
   identity: {
     type: 'SystemAssigned, UserAssigned'
-    userAssignedIdentities: (contains(MSILookup, ws.NAME) ? userAssignedIdentities[MSILookup[ws.NAME]] : userAssignedIdentities.Default)
+    userAssignedIdentities: contains(MSILookup, ws.NAME) ? userAssignedIdentities[MSILookup[ws.NAME]] : userAssignedIdentities.Default
   }
   kind: ws.kind
   location: resourceGroup().location
