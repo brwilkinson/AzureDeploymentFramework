@@ -1,11 +1,11 @@
-trigger: #none
-  batch: 'true'
-  branches:
-    include: [ main ]
-  paths:
-    include:
-    - ADF/tenants/LAB/AEU2.D1.parameters.json
-    - ADF/tenants/LAB/AEU2.D1.ado-pipelines-All.yml
+trigger: none
+  # batch: 'true'
+  # branches:
+  #   include: [ main ]
+  # paths:
+  #   include:
+  #   - ADF/tenants/LAB/AEU2.D1.parameters.json
+  #   - ADF/tenants/LAB/AEU2.D1.ado-pipelines-All.yml
 
 variables:
   ORG:        PE
