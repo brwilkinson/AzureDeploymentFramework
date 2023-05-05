@@ -29,15 +29,14 @@ Function global:Start-AzDeploy
         
         [parameter(mandatory)]
         [alias('DP')]
-        # [validateset('T0', 'P0', 'S1', 'S2', 'S3', 'D2', 'D3', 'T4', 'T5', 'T6', 'U6', 'P7', 'G0', 'G1', 'M0', 'A0')]
         [string] $Deployment,
 
         [ValidateScript({
-        $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
-        if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
-    })]
+                $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
+                if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+            })]
         [alias('AppName')]
-        [string] $App = 'AOA',
+        [string] $App,
 
         [validateset('AEU1', 'AEU2', 'ACU1', 'AWCU', 'AWU1', 'AWU2')]
         [String] $Prefix,
@@ -56,6 +55,8 @@ Function global:Start-AzDeploy
         [switch] $WhatIf,
 
         [switch] $NoPackage,
+
+        # [switch] $Legacy,
 
         [validateset('ResourceIdOnly', 'FullResourcePayloads')]
         [String] $WhatIfFormat = 'ResourceIdOnly',
@@ -372,7 +373,7 @@ Function global:Start-AzDeploy
                         
                         $global:err = Resolve-AzError -Last
                         $err
-                        $m = $err | foreach Message
+                        $m = $err | ForEach-Object Message
                         throw $m
                     }
                 }

@@ -2,13 +2,14 @@
 
 param (
     [String]$Env,
-    [string]$Prefix = 'ACU1',
-    [String]$stage = 'ALL',
+    [string]$Prefix,
+    [String]$stage,
     [ValidateScript({
-        $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
-        if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
-    })]
-    [string]$App = 'ADF',
+            $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
+            if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+        })]
+    [string]$App,
+    # [switch]$Legacy,
     [switch]$FullUpload
 )
 
@@ -25,4 +26,4 @@ $Params = @{
     TemplateFile = $templatefile
 }
 
-Start-AzDeploy @Params -FullUpload:$FullUpload -NoPackage # -LogAzDebug:$LogAzDebug
+Start-AzDeploy @Params -FullUpload:$FullUpload -NoPackage # -Legacy:$Legacy # -LogAzDebug:$LogAzDebug

@@ -2,10 +2,11 @@ function Global:AzSet
 {
     param (
         [parameter(Mandatory)]
-        [string]$Enviro,
+        [ValidateSet('ABC', 'AKS', 'AOA', 'CTL', 'GW', 'HUB', 'LAB', 'PST', 'SFM')]
+        [alias('AppName')]
+        [string] $App,
         [parameter(Mandatory)]
-        [ValidateSet('ADF', 'AKS', 'AOA', 'GW', 'HUB', 'LAB', 'MON', 'PST', 'SFM', 'CTL')]
-        [string]$App
+        [string]$Enviro
     )
     # F5 to load
     $ADF = Get-Item -Path "$PSScriptRoot/.."

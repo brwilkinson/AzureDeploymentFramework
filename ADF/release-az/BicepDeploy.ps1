@@ -5,11 +5,12 @@ param (
     [string]$Prefix,
     [String]$stage,
     [ValidateScript({
-        $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
-        if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
-    })]
+            $tenants = (Get-ChildItem -Path $PSScriptRoot/.. -Filter Tenants -Recurse | Get-ChildItem | ForEach-Object Name)
+            if ($_ -in $tenants) { $true }else { throw "Tenant [$_] not found in [$tenants]" }
+        })]
     [string]$App = 'ADF',
     [switch]$FullUpload,
+    # [switch]$Legacy,
     [string]$CN = '.',
     [string]$CN2 = '.'
 )
@@ -42,4 +43,4 @@ if ($IsLinux -and (bicep --version) -match '0.7.4')
     bicep --version
 }
 
-Start-AzDeploy @Params -FullUpload:$FullUpload -NoPackage # -LogAzDebug:$LogAzDebug
+Start-AzDeploy @Params -FullUpload:$FullUpload -NoPackage # -Legacy:$Legacy # -LogAzDebug:$LogAzDebug

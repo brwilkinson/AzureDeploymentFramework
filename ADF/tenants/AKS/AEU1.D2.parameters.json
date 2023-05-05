@@ -44,7 +44,7 @@
         "RT": 0,
         "FW": 0,
         "VNGW": 0,
-        "NATGW": 1,
+        "NATGW": 0, // disable based on cost in lab
         "ERGW": 0,
         "LB": 0,
         "TM": 0,
@@ -422,7 +422,7 @@
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
             "delegations": "Microsoft.App/environments", //"Microsoft.ContainerInstance/containerGroups",
-            "NGW": 1
+            "NGW": 0 // disable temp based on $s
           },
           // {
           //   "name": "snAPIM01",
@@ -449,7 +449,7 @@
             "NSG": 1,
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
-            "NGW": 1
+            "NGW": 0 // disable temp based on $s
           },
           {
             "name": "waf01-subnet", // WAF dedicated
@@ -468,7 +468,7 @@
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
-            "NGW": 1
+            "NGW": 0 // disable temp based on $s
           },
           {
             "name": "snMT01",
@@ -477,7 +477,7 @@
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
-            "NGW": 1
+            "NGW": 0 // disable temp based on $s
           },
           {
             "name": "snMT02",
@@ -486,7 +486,7 @@
             "Route": 0, //1
             "FlowLogEnabled": 1,
             "FlowAnalyticsEnabled": 1,
-            "NGW": 1
+            "NGW": 0 // disable temp based on $s
           }
         ],
         "NatGWInfo": [
