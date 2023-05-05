@@ -107,7 +107,7 @@ resource NICPLB 'Microsoft.Network/networkInterfaces@2021-02-01' = if (contains(
       {
         name: 'ipconfig1'
         properties: {
-          loadBalancerBackendAddressPools: [
+          loadBalancerBackendAddressPools: contains(NIC, 'NATRules') ? [] : [
             {
               id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', '${Deployment}-lb${NIC.PLB}', NIC.PLB)
             }

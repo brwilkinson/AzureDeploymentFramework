@@ -39,7 +39,7 @@ var lowerLookup = {
 }
 
 var excludeZones = json(loadTextContent('./global/excludeAvailabilityZones.json'))
-var availabilityZones = contains(excludeZones,Prefix) ? null : [
+var availabilityZones = contains(excludeZones,Prefix)  ? null : [
   1
   2
   3
@@ -63,7 +63,6 @@ var frontendIPConfigurationsPrivate = [for (fe, index) in LB.FrontEnd: {
 
 var frontendIPConfigurationsPublic = [for (fe, index) in LB.FrontEnd: {
   name: fe.LBFEName
-  zones: availabilityZones
   properties: {
     publicIPAddress: {
       id: string(resourceId('Microsoft.Network/publicIPAddresses', '${lbname}-publicip${index + 1}'))

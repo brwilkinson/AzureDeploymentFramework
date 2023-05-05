@@ -49,7 +49,7 @@
         "LB": 0,
         "TM": 0,
         "WAFPOLICY": 1,
-        "WAF": 1, //
+        "WAF": 0, //
         "FRONTDOORPOLICY": 0,
         "FRONTDOOR": 0,
         "SetExternalDNS": 0,
@@ -69,12 +69,12 @@
         "MySQLDB": 0,
         "Function": 0,
         "SB": 0,
-        "LT": 1,
+        "LT": 0,
         "AzureSYN": 0,
         // below require secrets from KV
         "VMSS": 0,
         "ACI": 0,
-        "AKS": 1, //
+        "AKS": 0, //
         "AzureSQL": 0,
         "SFM": 0,
         "SFMNP": 0,
@@ -98,7 +98,7 @@
         "VMInsights": 1,
         "AdminCenter": 1,
         "BackupWindowsWorkloadSQL": 0,
-        "DSC": 1,
+        "DSC": 0,
         "GuestConfig": 1,
         "Scripts": 1,
         "MSI": 1,
@@ -109,7 +109,8 @@
         "Antimalware": 1,
         "VMSSAzureADEnabled": 0,
         "SqlIaasExtension": 0,
-        "AzureDefender": 0
+        "AzureDefender": 0,
+        "chefClient": 0
       }
     },
     "DeploymentInfo": {
@@ -121,7 +122,8 @@
               {
                 "Name": "AcrPull",
                 "RG": "G1",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               }
             ]
           },
@@ -131,17 +133,20 @@
               {
                 "Name": "AcrPull",
                 "RG": "G1",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
                 "Name": "Key Vault Reader",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               }
               // {
               //   "Name": "Key Vault Administrator",
@@ -161,7 +166,8 @@
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               }
             ]
           },
@@ -171,17 +177,20 @@
               {
                 "Name": "Private DNS Zone Contributor",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
                 "Name": "Key Vault Certificates Officer",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
                 "Name": "Network Contributor"
@@ -192,17 +201,62 @@
             ]
           },
           {
+            "name": "Automation",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              },
+              {
+                "Name": "Storage Blob Data Owner"
+              }
+            ]
+          },
+          {
+            "name": "StorageAccountFileContributor",
+            "RBAC": [
+              {
+                "Name": "Storage File Data SMB Share Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Blob Data Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Queue Data Contributor",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              }
+            ]
+          },
+          {
             "Name": "CertificateRequest",
             "RBAC": [
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
                 "Name": "Key Vault Certificates Officer",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               }
             ]
           }
@@ -277,17 +331,20 @@
               {
                 "Name": "Desktop Virtualization Virtual Machine Contributor", // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
                 "Name": "Key Vault Secrets User",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               },
               {
                 "Name": "Network Contributor",
                 "RG": "P0",
-                "Tenant": "HUB"
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
               }
               // {
               //   "Name": "DNS Zone Contributor",
@@ -330,15 +387,15 @@
           //   "delegations": "Microsoft.Web/serverfarms",
           //    "NGW": 1
           // },
-          // {
-          //   "name": "snMT03",
-          //   "prefix": "96/27",
-          //   "NSG": 1,
-          //   "FlowLogEnabled": 1,
-          //   "FlowAnalyticsEnabled": 1,
-          //   "delegations": "Microsoft.ContainerInstance/containerGroups",
-          //    "NGW": 1
-          // },
+          {
+            "name": "snMT03",
+            "prefix": "96/27",
+            "NSG": 1,
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "delegations": "Microsoft.App/environments", //"Microsoft.ContainerInstance/containerGroups",
+            "NGW": 1
+          },
           // {
           //   "name": "snAPIM01",
           //   "NSGRuleName": "APIM", // APIM Dedicated
@@ -367,7 +424,9 @@
             "NGW": 1
           },
           {
-            "name": "snWAF01", // WAF dedicated
+            "name": "waf01-subnet", // WAF dedicated
+            "NSGRuleName": "SNWAF01",
+            "AddDeploymentPrefix": 1,
             "prefix": "0/24",
             "NSG": 1,
             "Route": 0,
@@ -483,9 +542,9 @@
           "SecurityInsights",
           // testing
           "WindowsDefenderATP",
-          "KeyVaultAnalytics",
-          "BehaviorAnalyticsInsights",
-          "ServiceFabric"
+          "KeyVaultAnalytics"
+          // "BehaviorAnalyticsInsights",
+          // "ServiceFabric"
           // disabled
           // "Updates",
           // "AgentHealthAssessment",
@@ -600,19 +659,21 @@
         "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.25.5", // 1.23.8, 1.24.0
+            "Version": "1.25.6",
             "skuTier": "Free", //Free
             "podIdentity": 0,
             "privateCluster": 0,
             "AllowALLIPs": 1, // Add in NAT Public IP to allow range for VMSSCSE to work.
             "AgentPoolsSN": "snMT01",
             "WAFName": "AGIC01",
-            "BrownFields": 1,
-            "AppGateway": 0,
+            "BrownFields": 0,
+            "AppGateway": 1,
             "AutoScale": 1,
             "enableRBAC": 1,
-            "enableOSM": 1,
-            "enableIngressAppRouting": 1,
+            "enableOSM": 0,
+            "enableIstio": 0,
+            "enableIngressAppRouting": 0,
+            "enableAppRoutingDNS": 0,
             "enableDefender": 0,
             "enablePolicy": 0,
             "enableaciConnector": 0,
