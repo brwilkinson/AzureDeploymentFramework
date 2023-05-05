@@ -1,7 +1,7 @@
 {
   "experimentalFeaturesEnabled": {
     // "paramsFiles": false,
-    // "extensibility": false,
+    // "extensibility": true,
     // "resourceTypedParamsAndOutputs": false,
     // "userDefinedTypes": false
     // "symbolicNameCodegen": true

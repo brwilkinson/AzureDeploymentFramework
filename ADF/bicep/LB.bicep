@@ -69,12 +69,12 @@ module LBs 'LB-LB.bicep' = [for (lb,index) in LBInfo: if(LB[index].match) {
     Deployment: Deployment
     DeploymentURI: DeploymentURI
     DeploymentID: DeploymentID
-    backEndPools: (contains(lb, 'BackEnd') ? lb.BackEnd : json('[]'))
-    NATRules: (contains(lb, 'NATRules') ? lb.NATRules : json('[]'))
-    NATPools: (contains(lb, 'NATPools') ? lb.NATPools : json('[]'))
-    outboundRules: (contains(lb, 'outboundRules') ? lb.outboundRules : json('[]'))
-    Services: (contains(lb, 'Services') ? lb.Services : json('[]'))
-    probes: (contains(lb, 'probes') ? lb.probes : json('[]'))
+    backEndPools: lb.?BackEnd ?? []
+    NATRules: lb.?NATRules ?? []
+    NATPools: lb.?NATPools ?? []
+    outboundRules: lb.?outboundRules ?? []
+    Services: lb.?Services ?? []
+    probes: lb.?probes ?? []
     LB: lb
     Global: Global
     Prefix: Prefix

@@ -48,7 +48,7 @@
         "ERGW": 0,
         "LB": 0,
         "TM": 0,
-        "WAFPOLICY": 0, //
+        "WAFPOLICY": 1,
         "WAF": 0, //
         "FRONTDOORPOLICY": 0,
         "FRONTDOOR": 0,
@@ -116,6 +116,14 @@
     "DeploymentInfo": {
       "value": {
         "uaiInfo": [
+          {
+            "Name": "Reader",
+            "RBAC": [
+              {
+                "Name": "Reader"
+              }
+            ]
+          },
           {
             "name": "GlobalAcrPull",
             "RBAC": [
@@ -202,6 +210,26 @@
           },
           {
             "name": "Automation",
+            "RBAC": [
+              {
+                "Name": "Key Vault Secrets User",
+                "RG": "P0",
+                "Tenant": "HUB",
+                "Prefix": "ACU1"
+              },
+              {
+                "Name": "Storage Account Contributor"
+              },
+              {
+                "Name": "Storage Queue Data Contributor"
+              },
+              {
+                "Name": "Storage Blob Data Owner"
+              }
+            ]
+          },
+          {
+            "name": "AppService",
             "RBAC": [
               {
                 "Name": "Key Vault Secrets User",
@@ -671,10 +699,10 @@
         "AKSInfo": [
           {
             "Name": "01",
-            "Version": "1.25.6", // LTS
+            "Version": "1.25.6",
             "skuTier": "Free", //Free
             "podIdentity": 0,
-            "privateCluster": 1,
+            "privateCluster": 0,
             "AllowALLIPs": 1, // Add in NAT Public IP to allow range for VMSSCSE to work.
             "AgentPoolsSN": "snMT01",
             "WAFName": "AGIC01",
@@ -683,7 +711,7 @@
             "AutoScale": 1,
             "enableRBAC": 1,
             "enableOSM": 0,
-            "enableIstio": 0,
+            "enableIstio": 1,
             "enableIngressAppRouting": 0,
             "enableAppRoutingDNS": 0,
             "enableDefender": 0,
@@ -691,6 +719,21 @@
             "enableaciConnector": 0,
             "aksAADAdminGroups": [
               "brwilkinson"
+            ],
+            "namespaces": [
+              {
+                "name": "testrbac",
+                "rolesInfo": [
+                  {
+                    "Name": "brwilkinson",
+                    "RBAC": [
+                      {
+                        "Name": "Azure Kubernetes Service RBAC Writer"
+                      }
+                    ]
+                  }
+                ]
+              }
             ],
             "AgentPools": [
               {
@@ -757,6 +800,124 @@
           //   "workloadProfileName": "Dedicated-D4"
           // }
         ],
+        "appServiceplanInfo": [
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "P1v2",
+            "skutier": "PremiumV2",
+            "skucapacity": 1,
+            "deploy": 1
+          },
+          {
+            "Name": "ASP01",
+            "kind": "elastic",
+            "perSiteScaling": false,
+            "reserved": false,
+            "skuname": "EP1",
+            "skutier": "ElasticPremium",
+            "skucapacity": 1,
+            "maxWorkerCount": 100,
+            "deploy": 1
+          }
+        ],
+        "FunctionInfo": [
+          {
+            "Name": "DIS03",
+            "kind": "functionapp",
+            "AppSVCPlan": "ASP01",
+            "saname": "data1",
+            "stack": "dotnet",
+            "_Subnet": "snMT01",
+            "preWarmedCount": 1,
+            "customDNS": 0,
+            "authsettingsV2": {
+              "applicationId": "84a491fe-f713-42f9-8e13-66bfb5dcc09b", // clientid needs access to the keyvault to read the secret
+              "requireAuthentication": 1
+            }
+          }
+        ],
+        "WebSiteInfo": [
+          {
+            "Name": "WPS01",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "dotnet",
+            "saname": "diag",
+            "customDNS": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          },
+          {
+            "Name": "WPS02",
+            "kind": "app",
+            "AppSVCPlan": "WPS01",
+            "stack": "dotnet",
+            "saname": "diag",
+            "customDNS": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snFE01",
+                "groupID": "sites"
+              }
+            ]
+          }
+        ],
+        "LBInfo": [
+          {
+            "Name": "SSH01",
+            "Sku": "Standard",
+            "Type": "Public",
+            "BackEnd": [
+              "SSH01"
+            ],
+            "FrontEnd": [
+              {
+                "LBFEName": "SSH",
+                "PublicIP": "Static"
+              }
+            ],
+            "NATRules": [
+              {
+                "Name": "SSH",
+                "protocol": "Tcp",
+                "frontendPort": 22,
+                "backendPort": 22,
+                "enableFloatingIP": false,
+                "idleTimeoutInMinutes": 4,
+                "LBFEName": "SSH"
+              }
+            ],
+            "Probes": [
+              // {
+              //   "ProbeName": "HTTP",
+              //   "LBBEProbePort": 80
+              // }
+              // {
+              //   "ProbeName": "HTTPS",
+              //   "LBBEProbePort": 443,
+              //   "protocol": "Tcp"
+              // }
+            ],
+            "Services": [
+              // {
+              //   "LBFEName": "APIM",
+              //   "LBBEName": "APIM",
+              //   "RuleName": "APIM-HTTPS",
+              //   "LBFEPort": 443,
+              //   "LBBEPort": 443,
+              //   "ProbeName": "HTTPS",
+              //   "DirectReturn": false
+              // }
+            ]
+          }
+        ],
         "Appservers": {
           "AppServers": [
             {
@@ -765,10 +926,10 @@
               "_DSC": "PULL",
               "_DDRole": "64GB",
               "OSType": "ubuntu-server-focal",
-              "runCommands": "setupUbuntu.sh",
+              "_runCommands": "setupUbuntu.sh",
               "OSstorageAccountType": "Standard_LRS",
               "HotPatch": true,
-              "HRW": 1,
+              "HRW": 0,
               "DeployJIT": 1,
               "_shutdown": {
                 "time": "2100",
@@ -780,8 +941,12 @@
                   "Subnet": "snFE01",
                   "Primary": 1,
                   "FastNic": 1,
-                  "PublicIP": "Static",
-                  "StaticIP": "61"
+                  "StaticIP": "61",
+                  // "PublicIP": "Static",
+                  "PLB": "SSH01",
+                  "NATRules": [
+                    "SSH"
+                  ]
                 }
               ]
             },

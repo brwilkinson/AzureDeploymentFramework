@@ -452,6 +452,18 @@ resource AKSDiags 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
   }
 }
 
+var namespaces = AKSInfo.?namespaces ?? []
+module aksNamespace 'x.extAKSNamespace.bicep' = [for (ns, index) in namespaces: {
+  name: '${AKS.name}-${ns.name}'
+  params: {
+    kubeConfig: AKS.listClusterAdminCredential().kubeconfigs[0].value
+    namespace: ns
+    AKSResourceId: AKS.id
+    Global: Global
+    deployment: Deployment
+  }
+}]
+
 /*
 resource monitorAccount 'Microsoft.Monitor/accounts@2021-06-03-preview' existing = {
   name: '${DeploymentURI}Monitor'
