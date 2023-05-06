@@ -17,4 +17,4 @@ sudo apt-get update
 # Install PowerShell
 sudo apt-get install -y powershell
 # Start PowerShell
-pwsh -nologo -noprofile -command 'echo $PSVersionTable' 
+pwsh -nologo -noprofile -command 'echo $PSVersionTable'
