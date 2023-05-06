@@ -35,7 +35,7 @@
     "extensions": {
         "recommendations": [
             "ms-vscode.azure-account",
-            "ms-vscode.powershell-preview",
+            "ms-vscode.powershell",
             "msazurermtools.azurerm-vscode-tools",
             "GitHub.vscode-pull-request-github",
             "eamodio.gitlens",
