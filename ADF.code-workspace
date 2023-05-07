@@ -45,5 +45,62 @@
             "humao.rest-client"
             // "pspester.pester-test"
         ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "PowerShell: Launch Current File",
+                "type": "PowerShell",
+                "console": "integratedTerminal",
+                "request": "launch",
+                "script": "${file}",
+                "cwd": "${fileDirname}",
+                "args": [
+                    "-NoExit",
+                    "-NoLogo"
+                ]
+            }
+        ],
+        "compounds": [
+            {
+                "name": "PowerShell: Launch Current File",
+                "configurations": [
+                    "PowerShell: Launch Current File"
+                ]
+            }
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "PowerShell",
+                "type": "shell",
+                "command": "",
+                "runOptions": {
+                    "instanceLimit": 5,
+                    "reevaluateOnRerun": true,
+                    "runOn": "folderOpen"
+                },
+                "promptOnClose": true,
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-NoExit",
+                            "-NoLogo",
+                            "-File",
+                            "${workspaceFolder}/.vscode/Startup.ps1"
+                        ]
+                    }
+                },
+                "isBackground": true,
+                "presentation": {
+                    "reveal": "always",
+                    "panel": "dedicated"
+                }
+            }
+        ]
     }
 }

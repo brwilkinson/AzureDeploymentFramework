@@ -3,22 +3,20 @@
 // https://containers.dev/implementors/spec/ 
 {
   "name": "Ubuntu",
+  "remoteUser": "vscode",
   "build": {
     "dockerfile": "Dockerfile",
-    // Update 'VARIANT' to pick an Ubuntu version: focal, bionic
     "args": {
-      "VARIANT": "7.0"
-      // Options
-      // "INSTALL_NODE": "true",
-      // "NODE_VERSION": "lts/*"
-      // "INSTALL_AZURE_CLI": "true"
-      // "INSTALL_AZURE_POWERSHELL": "true"  // do feature request for this ?! 
+      "VARIANT": "7.0",
+      "USERNAME": "vscode"
     }
   },
-  // Set *default* container specific settings.json values on container create.
-  "additionalProperties": {
-  
-  },
+  "userEnvProbe": "none",
+  "additionalProperties": {},
+  "mounts": [
+    "source=Azure_Context,target=/home/vscode/.Azure,type=volume",
+    "source=PowerShell_PSReadLine_History,target=/home/vscode/PowerShell_PSReadLine_History,type=volume"
+  ],
   "features": {
     "ghcr.io/devcontainers/features/azure-cli": "latest",
     "ghcr.io/devcontainers/features/powershell": "latest",
@@ -38,12 +36,12 @@
         "powershell.powerShellDefaultVersion": "PowerShell",
         "terminal.integrated.defaultProfile.linux": "pwsh",
         "terminal.integrated.profiles.linux": {
-          "PowerShell": {
+          "pwsh": {
             "path": "/usr/bin/pwsh",
             "icon": "terminal-powershell",
             "args": [
-                "-nologo"
-                // "-noprofile"
+              "-nologo"
+              // "-noprofile"
             ]
           }
         }
@@ -60,11 +58,16 @@
         "ms-dotnettools.csharp"
       ]
     }
-  },
+  }
+  // "postCreateCommand": "/usr/bin/pwsh -noexit -nologo -c 'uname -a'",
+  // "postStartCommand": "pwsh -noexit -nologo -c 'uname -a'",
+  // "postAttachCommand": "/usr/bin/pwsh -noexit -nologo -c 'uname -a'",
+  // "initializeCommand": "/usr/bin/pwsh -noexit -nologo -c 'uname -a'",
+  // "onCreateCommand": "/usr/bin/pwsh -noexit -nologo -c 'uname -a'",
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "uname -a",
   // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-  "remoteUser": "vscode"
+
 }
