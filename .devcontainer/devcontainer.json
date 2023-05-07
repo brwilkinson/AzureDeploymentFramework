@@ -11,6 +11,12 @@
       "USERNAME": "vscode"
     }
   },
+  "containerEnv": {
+
+  },
+  "remoteEnv": {
+
+  },
   "userEnvProbe": "none",
   "additionalProperties": {},
   "mounts": [
@@ -59,15 +65,4 @@
       ]
     }
   }
-  // "postCreateCommand": "/usr/bin/pwsh -noexit -nologo -c 'uname -a'",
-  // "postStartCommand": "pwsh -noexit -nologo -c 'uname -a'",
-  // "postAttachCommand": "/usr/bin/pwsh -noexit -nologo -c 'uname -a'",
-  // "initializeCommand": "/usr/bin/pwsh -noexit -nologo -c 'uname -a'",
-  // "onCreateCommand": "/usr/bin/pwsh -noexit -nologo -c 'uname -a'",
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "uname -a",
-  // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-
 }
