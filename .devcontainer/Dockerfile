@@ -18,5 +18,3 @@ RUN chmod 777 /home/$env:USERNAME/.config -R
 RUN chmod 777 /home/$env:USERNAME/.Azure -R
 RUN chmod 777 /home/$env:USERNAME/PowerShell_PSReadLine_History -R
 
-
-
