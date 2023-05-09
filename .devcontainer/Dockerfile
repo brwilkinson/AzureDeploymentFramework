@@ -9,7 +9,7 @@ ARG CERTPW=$env:USERNAME
 
 COPY library-scripts/profile.ps1 /home/${USERNAME}/.config/powershell/profile.ps1
 
-RUN install-module az, posh-git, Terminal-Icons -Force -Scope AllUsers
+RUN install-module az, posh-git, Terminal-Icons, Az.Tools.Predictor -Force -Scope AllUsers
 RUN mkdir /home/$env:USERNAME/.Azure
 RUN mkdir /home/$env:USERNAME/PowerShell_PSReadLine_History
 RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
