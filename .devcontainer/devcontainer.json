@@ -7,16 +7,20 @@
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "VARIANT": "7.0",
-      "USERNAME": "vscode"
+      "VARIANT": "7.0"
+      
     }
   },
-  "containerEnv": {
-
-  },
-  "remoteEnv": {
-
-  },
+  // "containerEnv": {
+  //   "USERNAME": "vscode"
+  // },
+	"remoteEnv": {
+		"USERNAME": "vscode"
+	},
+  "postCreateCommand": "echo Verifying postCreateCommand: ${USERNAME:-FAILURE}",
+	"postStartCommand": "echo Verifying postStartCommand: ${USERNAME:-FAILURE}",
+	"postAttachCommand": "echo Verifying postAttachCommand: ${USERNAME:-FAILURE}",
+  "onCreateCommand": "",
   "userEnvProbe": "none",
   "additionalProperties": {},
   "mounts": [
