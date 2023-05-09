@@ -1,9 +1,3 @@
-$ADF = Get-Item -Path "$PSScriptRoot/../ADF"
-if (!(Test-Path ADF:/)) { New-PSDrive -PSProvider FileSystem -Root $ADF -Name ADF -Scope Global > $null }
-Import-Module -Name ADF:/release-az/azSet.psm1 -Scope Global -Force
-
-Set-Location ADF:\
-
 Write-Host -ForegroundColor DarkBlue -Object @"
 ________________________________________________
  __          __  _                            _
