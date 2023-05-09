@@ -926,11 +926,11 @@
               "_DSC": "PULL",
               "_DDRole": "64GB",
               "OSType": "ubuntu-server-focal",
-              "runCommands": "setupUbuntu.sh",
+              "_runCommands": "setupUbuntu.sh",
               "OSstorageAccountType": "Standard_LRS",
               "HotPatch": true,
               "HRW": 0,
-              "DeployJIT": 0,
+              "DeployJIT": 1,
               "_shutdown": {
                 "time": "2100",
                 "enabled": 0
