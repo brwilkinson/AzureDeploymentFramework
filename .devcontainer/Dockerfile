@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/dotnet:${VARIANT}
 
 SHELL ["/usr/bin/pwsh", "-c"]
 ARG USERNAME
-ARG CERTPW=$env:USERNAME
+ARG CERTPW=${USERNAME}
 
 COPY library-scripts/profile.ps1 /home/${USERNAME}/.config/powershell/profile.ps1
 
@@ -17,6 +17,4 @@ RUN chmod +x /usr/local/bin/oh-my-posh
 RUN chmod 777 /home/$env:USERNAME/.config -R
 RUN chmod 777 /home/$env:USERNAME/.Azure -R
 RUN chmod 777 /home/$env:USERNAME/PowerShell_PSReadLine_History -R
-
-
 
