@@ -772,8 +772,9 @@
         ],
         "managedEnvInfo": [
           {
-            "Name": "01",
-            "Subnet": "snMT03",
+            "Name": "02",
+            "_Subnet": "snMT03",
+            // "internal": 0,
             "workloadProfiles": [
               {
                 "workloadProfileType": "Consumption",
@@ -792,7 +793,10 @@
         "containerAppInfo": [
           {
             "Name": "01",
-            "kubeENV": "01"
+            "kubeENV": "02",
+            "image": "mcr.microsoft.com/azuredocs/aks-helloworld:v1",
+            "imagename": "simple-hello-world-container",
+            "title": "Hello World 12"
           }
           // {
           //   "Name": "02",
