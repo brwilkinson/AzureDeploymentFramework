@@ -69,7 +69,7 @@ resource KUBE 'Microsoft.App/managedEnvironments@2022-11-01-preview' = [for (kub
     // zoneRedundant: contains(kubeenv, 'Subnet') ? availabilityZones : false
     vnetConfiguration: {
       infrastructureSubnetId: contains(kubeenv, 'Subnet') ? resourceId('Microsoft.Network/virtualNetworks/subnets', '${Deployment}-vn', kubeenv.Subnet) : null
-      internal: true
+      internal: bool(kubeenv.?internal ?? false)
       // outboundSettings: {
       //   outBoundType: 'LoadBalancer'
       // }

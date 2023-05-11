@@ -53,7 +53,7 @@ resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' exist
   name: '${Deployment}-uaiGlobalAcrPull'
 }
 
-resource managedENV 'Microsoft.App/managedEnvironments@2022-10-01' existing = {
+resource managedENV 'Microsoft.App/managedEnvironments@2022-11-01-preview' existing = {
   name: toLower('${Deployment}-kube${containerAppInfo.kubeENV}')
 }
 
@@ -70,7 +70,8 @@ resource containerAPP 'Microsoft.App/containerApps@2022-11-01-preview' = {
     managedEnvironmentId: managedENV.id
     workloadProfileName: containerAppInfo.?workloadProfileName ?? null
     configuration: {
-      activeRevisionsMode: 'multiple'
+      maxInactiveRevisions: 5
+      activeRevisionsMode: 'Single'
       ingress: {
         external: true
         targetPort: 80
@@ -93,18 +94,19 @@ resource containerAPP 'Microsoft.App/containerApps@2022-11-01-preview' = {
     template: {
       containers: [
         {
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-          name: 'simple-hello-world-container'
+          image: containerAppInfo.image
+          name: containerAppInfo.imagename
           command: []
           resources: {
             cpu: json('0.25')
             memory: '0.5Gi'
           }
-          args: [
-
-          ]
+          args: []
           env: [
-
+            {
+              name: 'TITLE'
+              value: containerAppInfo.title
+            }
           ]
         }
       ]
