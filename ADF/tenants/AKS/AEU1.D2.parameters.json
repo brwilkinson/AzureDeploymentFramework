@@ -930,7 +930,7 @@
               "_DSC": "PULL",
               "_DDRole": "64GB",
               "OSType": "ubuntu-server-focal",
-              "_runCommands": "setupUbuntu.sh",
+              "runCommands": "setupUbuntu.sh",
               "OSstorageAccountType": "Standard_LRS",
               "HotPatch": true,
               "HRW": 0,
@@ -946,11 +946,11 @@
                   "Primary": 1,
                   "FastNic": 1,
                   "StaticIP": "61",
-                  "PublicIP": "Static"
-                  // "PLB": "SSH01",
-                  // "NATRules": [
-                  //   "SSH"
-                  // ]
+                  // "PublicIP": "Static"
+                  "PLB": "SSH01",
+                  "NATRules": [
+                    "SSH"
+                  ]
                 }
               ]
             },

@@ -11,11 +11,11 @@ param logAnalyticsId string
 var flowLogEnabled = contains(subNet,'FlowLogEnabled') && bool(subNet.FlowLogEnabled)
 var FlowAnalyticsEnabled = contains(subNet,'FlowAnalyticsEnabled') && bool(subNet.FlowAnalyticsEnabled)
 
-resource NetworkWatcher 'Microsoft.Network/networkWatchers@2019-11-01' existing = {
+resource NetworkWatcher 'Microsoft.Network/networkWatchers@2022-11-01' existing = {
   name: '${watcherDeployment}-networkwatcher'
 }
 
-resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2020-11-01' = {
+resource NWFlowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-11-01' = {
   name: flowLogName
   parent: NetworkWatcher
   location: resourceGroup().location

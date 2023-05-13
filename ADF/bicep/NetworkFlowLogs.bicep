@@ -59,7 +59,7 @@ var watcherDeployment = '${gh.watcherRGPrefix}-${gh.watcherRGOrgName}-${gh.watch
 
 var SADiagName = '${DeploymentURI}sadiag'
 var retentionPolicydays = 29
-var flowLogversion = 1
+var flowLogversion = 2
 var AnalyticsInterval = 10
 
 resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {

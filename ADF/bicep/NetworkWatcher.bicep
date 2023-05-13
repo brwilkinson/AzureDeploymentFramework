@@ -45,7 +45,7 @@ var Deployment = '${Prefix}-${Global.OrgName}-${Global.Appname}-${Environment}${
 
 var networkWatcherInfo = DeploymentInfo.?networkWatcherInfo ?? []
 
-resource NetworkWatcher 'Microsoft.Network/networkWatchers@2019-11-01' = {
+resource NetworkWatcher 'Microsoft.Network/networkWatchers@2022-11-01' = {
   name: '${Deployment}-${networkWatcherInfo.name}'
   location: resourceGroup().location
   properties: {}

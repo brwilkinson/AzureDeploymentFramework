@@ -2,8 +2,7 @@
   "Global": {
     "hubRG": {
       "name": "P0",
-      "AppName": "HUB",
-      "Prefix": "ACU1"
+      "AppName": "HUB"
     },
     "hubKV": {
       "name": "VLT01",

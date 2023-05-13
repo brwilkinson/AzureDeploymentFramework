@@ -61,7 +61,7 @@
                 "promptOnClose": true,
                 "options": {
                     "shell": {
-                        "executable": "/usr/bin/pwsh",
+                        "executable": "pwsh",
                         "args": [
                             "-NoExit",
                             "-NoLogo",
