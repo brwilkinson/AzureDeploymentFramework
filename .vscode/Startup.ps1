@@ -50,7 +50,7 @@ Write-Host -ForegroundColor DarkBlue -Object @'
 - Deploy the Resources - use your primary prefix
 '@
 Write-Host -ForegroundColor DarkYellow -Object @'
-    > AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\00-ALL-SUB.bicep
+    > AzDeploy @Current -Prefix ACU1 -TF ADF:\bicep\01-ALL-RG.bicep
 '@
 Write-Host -ForegroundColor DarkBlue -Object @'
 ________________________________________________
