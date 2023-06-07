@@ -245,6 +245,9 @@
               },
               {
                 "Name": "Storage Blob Data Owner"
+              },
+              {
+                "Name": "Reader"
               }
             ]
           },
@@ -424,16 +427,16 @@
             "delegations": "Microsoft.App/environments", //"Microsoft.ContainerInstance/containerGroups",
             "NGW": 0 // disable temp based on $s
           },
-          // {
-          //   "name": "snAPIM01",
-          //   "NSGRuleName": "APIM", // APIM Dedicated
-          //   "prefix": "128/27",
-          //   "NSG": 1,
-          //   "Route": 0, //1
-          //   "FlowLogEnabled": 1,
-          //   "FlowAnalyticsEnabled": 1,
-          //    "NGW": 1
-          // },
+          {
+            "name": "snAPIM01",
+            "NSGRuleName": "APIM", // APIM Dedicated
+            "prefix": "128/27",
+            "NSG": 1,
+            "Route": 0, //1
+            "FlowLogEnabled": 1,
+            "FlowAnalyticsEnabled": 1,
+            "NGW": 0 // disable temp based on $s
+          },
           // {
           //   "name": "snBE03",
           //   "prefix": "160/27",
@@ -529,6 +532,27 @@
             "containers": [
               {
                 "name": "runbooks"
+              }
+            ]
+          },
+          {
+            "name": "data1",
+            "skuName": "Standard_LRS",
+            "allNetworks": 1,
+            "logging": {
+              "r": 0,
+              "w": 0,
+              "d": 1
+            },
+            "blobVersioning": 1,
+            "changeFeed": 1,
+            "softDeletePolicy": {
+              "enabled": 1,
+              "days": 7
+            },
+            "containers": [
+              {
+                "name": "vmrequest"
               }
             ]
           }
@@ -829,15 +853,15 @@
         ],
         "FunctionInfo": [
           {
-            "Name": "DIS03",
+            "Name": "VMR01",
             "kind": "functionapp",
             "AppSVCPlan": "ASP01",
             "saname": "data1",
-            "stack": "dotnet",
+            "stack": "powershell",
             "_Subnet": "snMT01",
             "preWarmedCount": 1,
             "customDNS": 0,
-            "authsettingsV2": {
+            "_authsettingsV2": {
               "applicationId": "84a491fe-f713-42f9-8e13-66bfb5dcc09b", // clientid needs access to the keyvault to read the secret
               "requireAuthentication": 1
             }
@@ -946,11 +970,11 @@
                   "Primary": 1,
                   "FastNic": 1,
                   "StaticIP": "61",
-                  // "PublicIP": "Static"
-                  "PLB": "SSH01",
-                  "NATRules": [
-                    "SSH"
-                  ]
+                  "PublicIP": "Static"
+                  // "PLB": "SSH01",
+                  // "NATRules": [
+                  //   "SSH"
+                  // ]
                 }
               ]
             },
@@ -964,8 +988,8 @@
               "ExcludeDomainJoin": 1,
               "OSstorageAccountType": "Standard_LRS",
               "HotPatch": true,
-              "HRW": 1,
-              "DeployJIT": 1,
+              "HRW": 0,
+              "DeployJIT": 0,
               "shutdown": {
                 "time": "2100",
                 "enabled": 0
@@ -980,9 +1004,74 @@
                   "StaticIP": "62"
                 }
               ]
+            },
+            {
+              "Name": "JMP02",
+              "Role": "JMP",
+              "DDRole": "64GB",
+              "OSType": "Server2022", //"Server2022",
+              "runCommands": "setupWindows.ps1",
+              "ExcludeAdminCenter": 0,
+              "ExcludeDomainJoin": 1,
+              "OSstorageAccountType": "Standard_LRS",
+              "HotPatch": true,
+              "HRW": 0,
+              "DeployJIT": 0,
+              "shutdown": {
+                "time": "2100",
+                "enabled": 0
+              },
+              "Zone": 1,
+              "NICs": [
+                {
+                  "Subnet": "snFE01",
+                  "Primary": 1,
+                  "FastNic": 1,
+                  "PublicIP": "Static",
+                  "StaticIP": "63"
+                }
+              ]
             }
           ]
-        }
+        },
+        "APIMInfo": [
+          {
+            "name": "01",
+            "apimSku": "Premium",
+            "Subnet": "snAPIM01",
+            "virtualNetworkType": "Internal",
+            "_redisCache": "APIM01",
+            "stv1": 0,
+            "capacity": 1,
+            "_publicAccess": 0,
+            "_privateLinkInfo": [
+              {
+                "Subnet": "snAPIM01",
+                "groupID": "Gateway"
+              }
+            ],
+            "_SSLCerts": [
+              {
+                "name": "api.ppe",
+                "zone": "aginow.net",
+                "createCert": 1
+              }
+            ],
+            "_additionalLocations": [
+              {
+                "prefix": "AEU1",
+                "Subnet": "snAPIM01",
+                "capacity": 1,
+                "_privateLinkInfo": [
+                  {
+                    "Subnet": "snAPIM01",
+                    "groupID": "Gateway"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     }
   }

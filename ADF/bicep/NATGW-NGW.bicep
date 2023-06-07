@@ -24,7 +24,7 @@ module PublicIP 'x.publicIP.bicep' = {
   }
 }
 
-resource NGW 'Microsoft.Network/natGateways@2021-02-01' = {
+resource NGW 'Microsoft.Network/natGateways@2022-11-01' = {
   name: '${Deployment}-ngw${NATGWInfo.Name}'
   location: resourceGroup().location
   sku: {

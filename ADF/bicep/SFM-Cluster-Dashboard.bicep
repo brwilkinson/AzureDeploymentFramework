@@ -500,6 +500,9 @@ module filterPartsLogsDashboardParts 'x.arrayFilter.ps1.bicep' = {
   }
 }
 
+// TODO
+// var filterLogsDashboardParts = filter(LogsDashboardParts, dashboard => )
+
 module filterPartsMonitorChartPart 'x.arrayFilter.ps1.bicep' = {
   name: '${Deployment}-portalDashboard-filterPartsMonitorChartPart'
   params: {

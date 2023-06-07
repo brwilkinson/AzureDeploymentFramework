@@ -163,7 +163,8 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
       APPINSIGHTS_INSTRUMENTATIONKEY: AppInsights.properties.InstrumentationKey
       APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=${AppInsights.properties.InstrumentationKey}'
       WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
-      AzureWebJobsStorage_accountName: SA[index].name
+      // AzureWebJobsStorage__accountname: SA[index].name // needs system assigned mi RBAC assigned
+      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       Storage: 'DefaultEndpointsProtocol=https;AccountName=${SA[index].name};AccountKey=${SA[index].listKeys().keys[0].value}'
       WEBSITE_CONTENTSHARE: replace(toLower('${Deployment}-fn${ws.Name}'), '-', '')
       // WEBSITE_CONTENTOVERVNET: 1
@@ -172,7 +173,7 @@ module functionAppSettings 'x.appServiceSettings.bicep' = [for (ws, index) in We
       FUNCTIONS_WORKER_RUNTIME: ws.stack
       FUNCTIONS_EXTENSION_VERSION: '~4'
       AzureWebJobsDisableHomepage: 'true'
-      MICROSOFT_PROVIDER_AUTHENTICATION_SECRET: contains(ws.?authsettingsV2,'applicationId') ? '@Microsoft.KeyVault(VaultName=${KV.name};SecretName=${ws.Name}-${ws.authsettingsV2.applicationId})' : null
+      MICROSOFT_PROVIDER_AUTHENTICATION_SECRET: contains(ws,'wsauthsettingsV2') ? '@Microsoft.KeyVault(VaultName=${KV.name};SecretName=${ws.Name}-${ws.authsettingsV2.applicationId})' : null
     }
   }
 }]
