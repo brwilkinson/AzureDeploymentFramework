@@ -1,10 +1,20 @@
 
-## Azure Deployment Framework - v 0.3 [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/).
+## Azure Deployment Framework - v0.0.3 [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/).
 
-#### This is now Version 0.3
-- v 0.3 is main branch - current
-- v 0.2 in ADFv2 branch - created March 2023
-- v 0.1 in armjson branch - created 2022
+#### Goals of this project
+- Implement a composable model for Environment deployments
+  - Composition and Orchestration is defined 100% in the parameter file, not within templates.
+  - All deployment pipelines are static and re-usable, no composition is needed in pipelines.
+- Implement a version 1.0.1 template release when [Bicep](https://github.com/Azure/bicep) goes version 1.0.1
+- Implement new Bicep Preview Feature (in progress) for version 0.0.4
+  - BicepParam (Bicep parameter files)
+  - User-defined data types for all object definitions
+    - [bicep/user-defined-data-types](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types) 
+
+#### This is now Version 0.0.3
+- version 0.0.3 is main branch - current
+- version 0.0.2 in ADFv2 branch - created March 2023
+- version 0.0.1 in armjson branch - created 2022
 
 #### This project is currently in Preview. [[ADF Source]](https://github.com/brwilkinson/AzureDeploymentFramework)
 - If you have previously forked this project, I recommend to pull in recent commits [Mar 2023]
