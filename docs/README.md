@@ -1,5 +1,5 @@
 
-## Azure Deployment Framework - v0.0.3 [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/).
+## Azure Deployment Framework - version 0.0.3 [[ADF Docs]](https://brwilkinson.github.io/AzureDeploymentFramework/).
 
 #### Goals of this project
 - Implement a composable model for Environment deployments
