@@ -2,5 +2,32 @@ theme: jekyll-theme-cayman
 exclude:
   - "ADF/"
 
+# title: AzureDeploymentFramework Docs
+# description: Declarative Infrastructure as Code for Azure
+# baseurl: ""
+# url: "https://brwilkinson.github.io/AzureDeploymentFramework/"
+# repository: brwilkinson/AzureDeploymentFramework
 
-# https://jekyllrb.com/
+# # theme: just-the-docs
+
+# remote_theme: just-the-docs/just-the-docs@v0.5.2
+
+# color_scheme: dark
+
+# # # Aux links for the upper right navigation
+# aux_links:
+#   "AzureDeploymentFramework Docs":
+#     - "//brwilkinson.github.io/AzureDeploymentFramework/"
+
+
+# # logo: "/assets/images/just-the-docs.png"
+# # favicon_ico: "/assets/images/favicon.ico"
+
+# version: 0.0.1
+
+# mermaid:
+#   # Version of mermaid library
+#   # Pick an available version from https://cdn.jsdelivr.net/npm/mermaid/
+#   version: "9.1.3"
+
+# footer_content: "Copyright &copy; 2023 Benwilk. Distributed by an <a href=\"https://github.com/brwilkinson/AzureDeploymentFramework/blob/main/LICENSE\">MIT license.</a>"
