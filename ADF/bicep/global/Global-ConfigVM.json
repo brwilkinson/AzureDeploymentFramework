@@ -90,7 +90,7 @@
     }
   },
   "computeSizeLookupOptions": {
-    "API-P": "Standard_D4s_v3",
+    "API-P": "Standard_D2ads_v5",
     "API-D": "Standard_D4s_v3",
     "API-S": "Standard_D2s_v3",
     "SFM-P": "Standard_D2ads_v5",

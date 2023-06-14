@@ -710,7 +710,7 @@ resource AppServerAzureMonitor 'Microsoft.Compute/virtualMachineScaleSets/extens
 // }
 
 resource VMSSAutoscale 'Microsoft.Insights/autoscalesettings@2021-05-01-preview' = {
-  name: '${Deployment}-ss${AppServer.Name}-Autoscale'
+  name: '${Deployment}-vmss${AppServer.Name}-Autoscale'
   location: resourceGroup().location
   properties: {
     name: '${Deployment}-ss${AppServer.Name}-Autoscale'
