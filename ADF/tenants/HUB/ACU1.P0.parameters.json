@@ -91,6 +91,14 @@
                 "Name": "Key Vault Administrator"
               }
             ]
+          },
+          {
+            "Name": "AppConfigDataOwner",
+            "RBAC": [
+              {
+                "Name": "App Configuration Data Owner"
+              }
+            ]
           }
         ],
         "PIMInfo": [
@@ -435,6 +443,38 @@
           // "ContainerInsights",
           // "ServiceFabric",
           // "SQLAdvancedThreatProtection"
+        ],
+        "appConfigurationInfo": [
+          {
+            "name": "01",
+            "sku": "standard",
+            "publicNetworkAccess": 1,
+            "_PrivateLinkInfo": [
+              {
+                "Subnet": "snMT02",
+                "groupID": "configurationStores"
+              }
+            ],
+            "keyValues": [
+              {
+                "keyName": "Key123",
+                "keyvalue": "Key123",
+                "label": "green"
+              }
+            ],
+            "featureFlags": [
+              {
+                "keyName": "FF123",
+                "keyvalue": {
+                  "id": "FF123",
+                  "description": "FF123",
+                  "enabled": true,
+                  "conditions": {}
+                },
+                "label": "green"
+              }
+            ]
+          }
         ]
       }
     }

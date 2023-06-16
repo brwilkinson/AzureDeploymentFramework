@@ -45,6 +45,28 @@ resource AC 'Microsoft.AppConfiguration/configurationStores@2020-06-01' = {
   }
 }
 
+module keyValues 'AppConfig-AC-KeyValues.ps1.bicep' = [for (item, index) in appConfigInfo.?keyValues ?? [] : {
+  name: 'dp-appConfig-keyValues-${item.keyName}'
+  params: {
+    Deployment: Deployment
+    ACName: AC.name
+    keyName: item.keyName
+    keyValue: item.keyValue
+    label: item.?label
+  }
+}]
+
+module featureFlags 'AppConfig-AC-KeyValues.ps1.bicep' = [for (item, index) in appConfigInfo.?featureFlags ?? [] : {
+  name: 'dp-appConfig-keyValues-${item.keyName}'
+  params: {
+    Deployment: Deployment
+    ACName: AC.name
+    keyName: item.keyName
+    keyValue: item.keyValue
+    label: item.?label
+  }
+}]
+
 resource ACDiags 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'service'
   scope: AC
