@@ -27,7 +27,7 @@ resource UAI 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' exist
 }
 
 resource setCertificateIssuer 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'setAppConfigKey-${keyName}'
+  name: 'setAppConfigKeyName-${keyName}'
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -38,11 +38,17 @@ resource setCertificateIssuer 'Microsoft.Resources/deploymentScripts@2020-10-01'
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '9.7'
-    arguments: ' -myconfig ${ACName} -keyName ${keyName} -label ${label} -keyvalue ${keyValue} -type kv -contentTypeKV ${contentType}'
+    arguments: ' -myconfig ${ACName} -keyName ${keyName} -label ${label} -type kv -contentTypeKV ${contentType}'
     scriptContent: loadTextContent('../bicep/loadTextContext/setAppConfigKey.ps1')
     forceUpdateTag: now
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
     timeout: 'PT${logStartMinsAgo}M'
+    environmentVariables: [
+      {
+        name: 'keyValue'
+        value: keyValue
+      }
+    ]
   }
 }

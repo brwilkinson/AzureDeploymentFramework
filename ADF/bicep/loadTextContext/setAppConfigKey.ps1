@@ -10,7 +10,6 @@ param (
     [string]$myconfig = 'ACU1-PE-HUB-P0-appconf01',
     [string]$keyName = 'FastDeployWeb11foo',
     [string]$label = 'Deploy',
-    [string]$keyvalue = '{"id":"FastDeployWeb11","description":"FastDeployWeb11","enabled":true,"conditions":{}}',
     [ValidateSet('kv', 'ff')]
     [string]$type = 'ff',
     [string]$contentTypeKV
@@ -35,8 +34,8 @@ $HostName = "${myconfig}.azconfig.io"
 $uri = "https://${HostName}/kv/${key}?label=${label}&api-version=1.0"
 $method = 'PUT'
 $body = @{
-    value          = $keyvalue
-    'content_type' = $Type -eq 'ff' ? $ContentTypeFF : $contentTypeKV
+    value          = $ENV:keyValue
+    'content_type' = $type -eq 'ff' ? $ContentType[$Type] : $contentTypeKV
     key            = $keyName
     tags           = $Tags
 } | ConvertTo-Json -Depth 5
