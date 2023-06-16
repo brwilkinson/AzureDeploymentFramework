@@ -56,13 +56,13 @@ module keyValues 'AppConfig-AC-KeyValues.ps1.bicep' = [for (item, index) in appC
   }
 }]
 
-module featureFlags 'AppConfig-AC-KeyValues.ps1.bicep' = [for (item, index) in appConfigInfo.?featureFlags ?? [] : {
-  name: 'dp-appConfig-keyValues-${item.keyName}'
+module featureFlags 'AppConfig-AC-FeatureFlag.ps1.bicep' = [for (item, index) in appConfigInfo.?featureFlags ?? [] : {
+  name: 'dp-appConfig-featureFlags-${item.keyName}'
   params: {
     Deployment: Deployment
     ACName: AC.name
     keyName: item.keyName
-    keyValue: item.keyValue
+    keyValue: string(item.keyValue)
     label: item.?label
   }
 }]
