@@ -55,7 +55,7 @@ var managementGroupInfo = [for (mg, index) in mgInfo: {
 
 @batchSize(1)
 module mgInfo_displayName 'man-MG-ManagementGroups.bicep' = [for (mg,index) in mgInfo: if (managementGroupInfo[index].match) {
-  name: 'dp-${mg.name}'
+  name: replace('dp-${mg.DisplayName}',' ','_')
   params: {
     mgInfo: mg
   }

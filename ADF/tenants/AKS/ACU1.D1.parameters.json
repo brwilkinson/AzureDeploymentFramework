@@ -688,7 +688,7 @@
                 "osType": "Linux",
                 "osSKU": "Mariner",
                 "maxPods": 110,
-                "vmSize": "Standard_B4ms", // "Standard_D2ads_v5", // AMD --> "Standard_D2plds_v5", Standard_D2ps_v5 // NON AMD Standard_D2ads_v5
+                "vmSize": "Standard_D2ads_v5", //"Standard_B4ms", // "Standard_D2ads_v5", // AMD --> "Standard_D2plds_v5", Standard_D2ps_v5 // NON AMD Standard_D2ads_v5
                 "mode": "System",
                 "subnet": "snMT01"
               }

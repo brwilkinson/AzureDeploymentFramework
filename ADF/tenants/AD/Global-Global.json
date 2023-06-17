@@ -1,0 +1,58 @@
+{
+  "Global": {
+    "OrgName": "PE",
+    "AppName": "AD",
+    "GlobalSA": {
+      "name": "global"
+    },
+    "GlobalACR": {
+      "name": "global"
+    },
+    "GlobalRG": {
+      "name": "G1"
+    },
+    "_GlobalDNS": {
+      "Prefix": "ACU1",
+      "RG": "G1",
+      "AppName": "HUB",
+      "Org": "PE",
+      "SubId": "fe8c6f31-247d-4941-a62d-fde7a2185aca"
+    },
+    "AppId": 0,
+    "Network": {
+      "first": 10,
+      "second": 248,
+      "third": 248
+    },
+    "PrimaryLocation": "WestUS3",
+    "SecondaryLocation": "EastUS",
+    "vmAdminUserName": "brw",
+    "sqlCredentialName": "sqladmin",
+    "MicrosoftCAThumbprints": [
+      "2f2877c5d778c31e0f29c7e371df5471bd673173",
+      "30e01761ab97e59a06b41ef20af6f2de7ef4f7b0",
+      "6c3af02e7f269aa73afd0eff2a88a4a1f04ed1e5",
+      "e7eea674ca718e3befd90858e09f8372ad0ae2aa"
+    ],
+    "CertName": "aks-helloworld",
+    "ADDomainName": "aginow.net",
+    "DomainName": "aginow.net",
+    "DomainNameExt": "aginow.net",
+    "ADOProject": "ADF",
+    "AZDevOpsOrg": "AzureDeploymentFramework",
+    "ServicePrincipalAdmins": [
+      "BenWilkinson-ADM"
+    ],
+    "apimPublisherEmail": "benwilk@aginow.net",
+    "alertRecipients": [
+      "benwilk@aginow.net"
+    ],
+    "ObjectIdLookup": {
+      "brwilkinson": "b4c6476f-06f8-4197-ae6f-bcc45a1b2428",
+      "mydbadmin": "6cfa16b6-996b-40ca-8747-44199c964f79",
+      "grafanaUser": "a617acd2-9240-46cc-bce5-1984f5ac447f",
+      "AzureKeyVault": "93c27d83-f79b-4cb2-8dd4-4aa716542e74",
+      "ACIService": "88536fb9-d60a-4aee-8195-041425d6e927"
+    }
+  }
+}

@@ -1,23 +1,34 @@
 param mgInfo object
 
+var mgName = mgInfo.?Name ?? mgInfo.DisplayName
+
 targetScope = 'managementGroup'
 
 resource parentMG 'Microsoft.Management/managementGroups@2021-04-01' existing = {
-  name: mgInfo.ParentName
+  name: mgInfo.Parent
   scope: tenant()
 }
 
 resource MG 'Microsoft.Management/managementGroups@2021-04-01' = {
-  name: mgInfo.name
+  name: mgName
   scope: tenant()
   properties: {
     displayName: mgInfo.displayName
     details: {
-      parent: mgInfo.parentName == null ? null : /*
+      parent: mgInfo.?parent == null ? null : /*
       */  {
             id: parentMG.id
           }
     }
+  }
+}
+
+resource symbolicname 'Microsoft.Management/managementGroups/settings@2021-04-01' = if(mgInfo.DisplayName == 'Tenant Root Group') {
+  name: 'default'
+  parent: MG
+  properties: {
+    defaultManagementGroup: resourceId('Microsoft.Management/managementGroups',mgInfo.defaultManagementGroup)
+    requireAuthorizationForGroupCreation: true
   }
 }
 

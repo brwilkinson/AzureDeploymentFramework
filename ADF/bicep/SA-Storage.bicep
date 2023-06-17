@@ -422,6 +422,7 @@ module SAContainers 'x.storageContainer.bicep' = [for (container, index) in cont
 
 // just put here for example, apply on subscription level
 var defenderSAOverrideenabled = 'false'
+#disable-next-line BCP081
 resource defenderSA 'Microsoft.Security/DefenderForStorageSettings@2022-12-01-preview' = if (false) {
   name: 'current'
   scope: SA

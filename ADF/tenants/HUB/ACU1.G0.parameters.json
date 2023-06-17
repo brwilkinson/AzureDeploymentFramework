@@ -73,7 +73,8 @@
             "Containers",
             "OpenSourceRelationalDatabases",
             "CosmosDbs",
-            "CloudPosture"
+            "CloudPosture",
+            "Api"
           ],
           "Free": [
             // "KubernetesService",

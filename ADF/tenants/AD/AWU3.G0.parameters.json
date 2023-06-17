@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
-      "value": "ACU1"
+      "value": "AWU3"
     },
     "Environment": {
       "value": "G"
@@ -13,9 +13,9 @@
     },
     "Stage": {
       "value": {
-        "RoleDefinition": 1,
-        "Security": 0,
-        "RBAC": 1,
+        "RoleDefinition": 0,
+        "Security": 1,
+        "RBAC": 0,
         "PIM": 0,
         "SP": 0
       }
@@ -30,31 +30,6 @@
             "Name": "BenWilkinson",
             "RBAC": [
               {
-                "Name": "Key Vault Administrator"
-              },
-              {
-                "Name": "Security Admin"
-              },
-              {
-                "Name": "Reader"
-              }
-            ]
-          },
-          {
-            "Name": "SimonAdams",
-            "RBAC": [
-              {
-                "Name": "Reader"
-              },
-              {
-                "Name": "ProviderHub_Contributor"
-              }
-            ]
-          },
-          {
-            "Name": "CathyEvans",
-            "RBAC": [
-              {
                 "Name": "Reader"
               }
             ]
@@ -65,34 +40,22 @@
             "Name": "BenWilkinson-ADM",
             "RBAC": [
               {
+                "Name": "User Access Administrator"
+              },
+              {
                 "Name": "Owner"
               },
               {
-                "Name": "User Access Administrator"
+                "Name": "Key Vault Administrator"
               },
               {
                 "Name": "Security Admin"
               }
             ]
-          },
-          {
-            "Name": "SimonAdams-ADM",
-            "RBAC": [
-              {
-                "Name": "Owner"
-              }
-            ]
           }
         ],
         "SPInfo": [
-          {
-            "Name": "ADO_{ADOProject}_{RGNAME}",
-            "RBAC": [
-              {
-                "Name": "Contributor"
-              }
-            ]
-          }
+          // Manually add Owner on this service principal
         ],
         "SecurityPricingInfo": {
           "Standard": [
@@ -107,6 +70,7 @@
             "Containers",
             "OpenSourceRelationalDatabases",
             "CosmosDbs",
+            "CloudPosture",
             "Api"
           ],
           "Free": [
@@ -116,7 +80,7 @@
         },
         "RoleDefinitionsInfo": [
           {
-            "RoleName": "SF_App_Contributor",
+            "RoleName": "PE_SF_App_Contributor",
             "description": "Manage Service Fabric Applications",
             "notActions": [],
             "actions": [
@@ -126,34 +90,6 @@
               "Microsoft.ServiceFabric/clusters/applicationTypes/*",
               "Microsoft.ServiceFabric/managedclusters/applications/*",
               "Microsoft.ServiceFabric/managedclusters/applicationTypes/*"
-            ]
-          },
-          {
-            "RoleName": "ProviderHub_Contributor",
-            "description": "Manage Microsoft ProviderHub",
-            "notActions": [],
-            "actions": [
-              "Microsoft.ProviderHub/*",
-              "Microsoft.Resources/deployments/*"
-            ]
-          },
-          {
-            "RoleName": "DeploymentScripts_Contributor",
-            "description": "Allow to deploy DeploymentScripts",
-            "notActions": [],
-            "actions": [
-              "Microsoft.Resources/deploymentScripts/*",
-              "Microsoft.ContainerInstance/containerGroups/*"
-            ]
-          },
-          {
-            "RoleName": "CloudTest_Contributor",
-            "description": "Allow to deploy CloudTest resources e.g. accounts, images and devops pools",
-            "notActions": [],
-            "actions": [
-              "Microsoft.CloudTest/accounts/*",
-              "Microsoft.CloudTest/images/*",
-              "Microsoft.CloudTest/hostedpools/*"
             ]
           }
         ]

@@ -24,17 +24,9 @@ var addressPrefixes = [
   '${networkId.upper}.${networkId.lower}.0/21'
 ]
 
-var lowerLookup = {
-  snWAF01: 1
-  AzureFirewallSubnet: 1
-  snFE01: 2
-  snMT01: 4
-  snBE01: 6
-}
-
 var PAWAllowIPs = loadJsonContent('global/IPRanges-PAWNetwork.json')
-var IPAddressforRemoteAccess = contains(Global,'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
-var AllowIPList = concat(PAWAllowIPs,IPAddressforRemoteAccess,addressPrefixes)
+var IPAddressforRemoteAccess = contains(Global, 'IPAddressforRemoteAccess') ? Global.IPAddressforRemoteAccess : []
+var AllowIPList = concat(PAWAllowIPs, IPAddressforRemoteAccess, addressPrefixes)
 
 var ports = [for (port, index) in portList: {
   number: port
@@ -47,15 +39,20 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-11-01' existing 
   name: '${Deployment}-vm${VM.name}'
 }
 
-resource StandardJITAccess 'Microsoft.Security/locations/jitNetworkAccessPolicies@2020-01-01' = {
-  name: '${resourceGroup().location}/JIT_${virtualMachine.name}'
-  kind: 'Basic'
-  properties: {
-    virtualMachines: [
-      {
-        id: virtualMachine.id
-        ports: ports
-      }
-    ]
+#disable-next-line BCP081
+resource securityLocation 'Microsoft.Security/locations@2020-01-01' existing = {
+  name: resourceGroup().location
+
+  resource StandardJITAccess 'jitNetworkAccessPolicies' = {
+    name: 'JIT_${virtualMachine.name}'
+    kind: 'Basic'
+    properties: {
+      virtualMachines: [
+        {
+          id: virtualMachine.id
+          ports: ports
+        }
+      ]
+    }
   }
 }

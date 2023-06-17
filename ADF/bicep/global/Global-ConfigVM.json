@@ -98,9 +98,9 @@
     "SFM-U": "Standard_D2ads_v5",
     "CTNR-P": "Standard_D4s_v3",
     "CTNR-D": "Standard_D2s_v3",
-    "ADp-P": "Standard_D2s_v3",
-    "ADp-D": "Standard_A2m_v2",
-    "ADs-P": "Standard_D2s_v3",
+    "ADp-P": "Standard_D2ads_v5",
+    "ADp-D": "Standard_D2ads_v5",
+    "ADs-P": "Standard_D2ads_v5",
     "ADs-D": "Standard_A2m_v2",
     "AAP-P": "Standard_D2s_v3",
     "AAP-D": "Standard_D2s_v3",
@@ -421,6 +421,7 @@
         "version": "latest"
       },
       "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
       "OS": "Windows",
       "OSDiskGB": 127,
       "RoleExtensions": {
@@ -428,14 +429,31 @@
         "chefClient": 0
       }
     },
-    "Server2022Containerssmall": {
+    "Server2022Core": {
       "imageReference": {
         "publisher": "MicrosoftWindowsServer",
         "Offer": "WindowsServer",
-        "sku": "datacenter-core-20h2-with-containers-smalldisk-g2",
+        "sku": "2022-datacenter-azure-edition-core",
         "version": "latest"
       },
       "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
+      "OS": "Windows",
+      "OSDiskGB": 127,
+      "RoleExtensions": {
+        "Scripts": 0,
+        "chefClient": 0
+      }
+    },
+    "Server2022CoreSmall": {
+      "imageReference": {
+        "publisher": "MicrosoftWindowsServer",
+        "Offer": "WindowsServer",
+        "sku": "2022-datacenter-azure-edition-core-smalldisk",
+        "version": "latest"
+      },
+      "licenseType": "Windows_Server",
+      "patchMode": "AutomaticByPlatform",
       "OS": "Windows",
       "OSDiskGB": 127,
       "RoleExtensions": {

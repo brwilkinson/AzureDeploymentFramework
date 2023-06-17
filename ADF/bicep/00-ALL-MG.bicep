@@ -67,3 +67,20 @@ module dp_Deployment_ManagementGroups 'man-MG.bicep' = if (bool(Stage.?MG ?? 0))
     // dp_Deployment_RG
   ]
 }
+
+// module dp_Deployment_RBAC 'man-RBAC.bicep' = { // if (bool(Stage.RBAC)) {   // Filter in nested deployment, so always deploy this one.
+//   name: 'dp${Deployment}-RBAC'
+//   params: {
+//     // move these to Splatting later
+//     DeploymentID: DeploymentID
+//     DeploymentInfo: DeploymentInfo
+//     Environment: Environment
+//     Extensions: Extensions
+//     Global: Global
+//     Prefix: Prefix
+//     Stage: Stage
+//   }
+//   dependsOn: [
+//     dp_Deployment_RG
+//   ]
+// }

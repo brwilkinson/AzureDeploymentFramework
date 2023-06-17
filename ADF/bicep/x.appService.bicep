@@ -54,7 +54,7 @@ resource OMS 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
 //   scope: resourceGroup('AWU2-PE-AOA-RG-P0') //resourceGroup(HubKVRGName)
 // }
 
-resource sadiag 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+resource sadiag 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: '${DeploymentURI}sadiag'
 }
 
@@ -90,7 +90,7 @@ var userAssignedIdentities = {
   }
 }
 
-resource SA 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+resource SA 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: '${DeploymentURI}sa${ws.saname}'
 }
 

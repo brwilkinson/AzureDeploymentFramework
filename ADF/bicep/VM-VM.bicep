@@ -417,6 +417,7 @@ module AppServerJIT 'x.vmJIT.bicep' = if (bool(AppServer.DeployJIT)) {
   }
   dependsOn: [
     virtualMachine
+    AppServerDSC
   ]
 }
 
@@ -684,7 +685,7 @@ resource AppServerDSC 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' 
       }
       configurationArguments: {
         DomainName: Global.ADDomainName
-        Thumbprint: Global.CertThumbprint
+        Thumbprint: Global.?CertThumbprint
         storageAccountId: saaccountidglobalsource.id
         deployment: Deployment
         networkid: '${networkId.upper}.${contains(lowerLookup, AppServer.NICs[0].subnet) ? int(networkId.lower) + (1 * lowerLookup[AppServer.NICs[0].subnet]) : networkId.lower}.'
@@ -752,7 +753,7 @@ resource AppServerDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@
   properties: {
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
     type: OSType[AppServer.OSType].OS == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
-    typeHandlerVersion: '9.5'
+    typeHandlerVersion: '9'
     autoUpgradeMinorVersion: true
   }
 }
@@ -770,24 +771,25 @@ resource AppServerAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@202
   }
 }
 
-// SF ✅
-resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.MonitoringAgent)) {
-  name: 'MonitoringAgent'
-  parent: virtualMachine
-  location: resourceGroup().location
-  properties: {
-    publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-    type: OSType[AppServer.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
-    typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.4'
-    autoUpgradeMinorVersion: true
-    settings: {
-      workspaceId: OMS.properties.customerId
-    }
-    protectedSettings: {
-      workspaceKey: OMS.listKeys().primarySharedKey
-    }
-  }
-}
+// SF ✅ - this is now deprecated
+// 
+// resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.MonitoringAgent)) {
+//   name: 'MonitoringAgent'
+//   parent: virtualMachine
+//   location: resourceGroup().location
+//   properties: {
+//     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+//     type: OSType[AppServer.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
+//     typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.4'
+//     autoUpgradeMinorVersion: true
+//     settings: {
+//       workspaceId: OMS.properties.customerId
+//     }
+//     protectedSettings: {
+//       workspaceKey: OMS.listKeys().primarySharedKey
+//     }
+//   }
+// }
 
 resource AppServerGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.GuestHealthAgent)) {
   name: (OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')
@@ -965,16 +967,16 @@ resource RSV 'Microsoft.RecoveryServices/vaults@2016-06-01' existing = {
   }
 }
 
-resource windowsOpenSSHExtension 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = if(OSType[AppServer.OSType].OS == 'Windows') {
-  name: 'WindowsOpenSSH'
-  parent: virtualMachine
-  location: resourceGroup().location
-  properties: {
-    publisher: 'Microsoft.Azure.OpenSSH'
-    type: 'WindowsOpenSSH'
-    typeHandlerVersion: '3.0'
-  }
-}
+// resource windowsOpenSSHExtension 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = if(OSType[AppServer.OSType].OS == 'Windows') {
+//   name: 'WindowsOpenSSH'
+//   parent: virtualMachine
+//   location: resourceGroup().location
+//   properties: {
+//     publisher: 'Microsoft.Azure.OpenSSH'
+//     type: 'WindowsOpenSSH'
+//     typeHandlerVersion: '3.0'
+//   }
+// }
 
 var runCommandsScriptLookup = {
   'setupUbuntu.sh': loadTextContent('loadTextContext/setupUbuntu.sh')

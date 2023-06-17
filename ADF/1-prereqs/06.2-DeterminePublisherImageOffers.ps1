@@ -11,6 +11,7 @@ break
 $Location = 'eastus2'
 $Location = 'centralus'
 $Location = 'westus'
+$Location = 'westus3'
 $Location = 'eastus'
 Get-AzVMImagePublisher -Location $location | Select-Object PublisherName 
 
@@ -101,6 +102,9 @@ $sku = '2019-datacenter-with-containers-g2'
 $sku = '2019-datacenter-with-containers-gs'
 $sku = '2019-Datacenter-with-Containers'
 $sku = 'windows-server-2019-azure-edition-preview'
+$sku = '2022-datacenter-azure-edition-core'
+$sku = '2022-datacenter-azure-edition-core-smalldisk'
+$sku = '2022-datacenter-azure-edition-smalldisk'
 $sku = '2019-datacenter-gen2'
 $sku = 'windows-server-2022-g2'
 $sku = 'Enterprise'

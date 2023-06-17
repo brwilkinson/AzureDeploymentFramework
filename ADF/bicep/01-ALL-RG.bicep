@@ -4,6 +4,7 @@
   'ACU1'
   'AWU1'
   'AWU2'
+  'AWU3'
   'AWCU'
 ])
 param Prefix string
@@ -647,7 +648,28 @@ module dp_Deployment_TM 'TM.bicep' = if (bool(Stage.?TM ?? 0)) {
   ]
 }
 
-module ADPrimary 'VM.bicep' = if (bool(Stage.?ADPrimary ?? 0)) {
+module dp_Deployment_VNETDNSPublic 'x.setVNET.bicep' = if (bool(Stage.?ADPrimary ?? 0) || bool(Stage.?CreateADPDC ?? 0)) {
+  name: 'dp${Deployment}-VNETDNSPublic'
+  params: {
+    Deployment: Deployment
+    DeploymentID: DeploymentID
+    Prefix: Prefix
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    DNSServers: [
+      DNSServers[0]
+      AzureDNS
+    ]
+    Global: Global
+  }
+  dependsOn: [
+    dp_Deployment_VNET
+    dp_Deployment_OMS
+    dp_Deployment_SA
+  ]
+}
+
+module ADPrimary 'VM.bicep' = if (bool(Stage.?ADPrimary ?? 0) || bool(Stage.?CreateADPDC ?? 0)) {
   name: 'ADPrimary'
   params: {
     // move these to Splatting later
@@ -665,7 +687,25 @@ module ADPrimary 'VM.bicep' = if (bool(Stage.?ADPrimary ?? 0)) {
   ]
 }
 
-module ADSecondary 'VM.bicep' = if (bool(Stage.?ADSecondary ?? 0)) {
+module dp_Deployment_VNETDNSDC1 'x.setVNET.bicep' = if (bool(Stage.?ADPrimary ?? 0) || bool(Stage.?CreateADPDC ?? 0)) {
+  name: 'dp${Deployment}-VNETDNSDC1'
+  params: {
+    Deployment: Deployment
+    DeploymentID: DeploymentID
+    Prefix: Prefix
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    DNSServers: [
+      DNSServers[0]
+    ]
+    Global: Global
+  }
+  dependsOn: [
+    ADPrimary
+  ]
+}
+
+module ADSecondary 'VM.bicep' = if (bool(Stage.?ADSecondary ?? 0) || bool(Stage.?CreateADBDC ?? 0)) {
   name: 'ADSecondary'
   params: {
     // move these to Splatting later
@@ -680,6 +720,26 @@ module ADSecondary 'VM.bicep' = if (bool(Stage.?ADSecondary ?? 0)) {
   dependsOn: [
     dp_Deployment_OMS
     dp_Deployment_SA
+    dp_Deployment_VNETDNSDC1
+  ]
+}
+
+module dp_Deployment_VNETDNSDC2 'x.setVNET.bicep' = if (bool(Stage.?ADSecondary ?? 0) || bool(Stage.?CreateADBDC ?? 0)) {
+  name: 'dp${Deployment}-VNETDNSDC2'
+  params: {
+    Deployment: Deployment
+    DeploymentID: DeploymentID
+    Prefix: Prefix
+    DeploymentInfo: DeploymentInfo
+    Environment: Environment
+    DNSServers: [
+      DNSServers[0]
+      DNSServers[1]
+    ]
+    Global: Global
+  }
+  dependsOn: [
+    ADSecondary
   ]
 }
 
@@ -696,6 +756,8 @@ module AppServers 'VM.bicep' = if (bool(Stage.?VMApp ?? 0)) {
     Stage: Stage
   }
   dependsOn: [
+    dp_Deployment_VNETDNSDC1
+    dp_Deployment_VNETDNSDC2
     dp_Deployment_OMS
     dp_Deployment_LB
     // DNSLookup
@@ -723,45 +785,45 @@ module VMFile 'VM.bicep' = if (bool(Stage.?VMFILE ?? 0)) {
   ]
 }
 
-module AppServersLinux 'VM.bicep' = if (bool(Stage.?VMAppLinux ?? 0)) {
-  name: 'AppServersLinux'
-  params: {
-    // move these to Splatting later
-    DeploymentID: DeploymentID
-    DeploymentInfo: DeploymentInfo
-    Environment: Environment
-    Extensions: Extensions
-    Global: Global
-    Prefix: Prefix
-    Stage: Stage
-  }
-  dependsOn: [
-    dp_Deployment_VNET
-    dp_Deployment_DNSResolver
-    dp_Deployment_LB
-    dp_Deployment_OMS
-    dp_Deployment_SA
-  ]
-}
+// module AppServersLinux 'VM.bicep' = if (bool(Stage.?VMAppLinux ?? 0)) {
+//   name: 'AppServersLinux'
+//   params: {
+//     // move these to Splatting later
+//     DeploymentID: DeploymentID
+//     DeploymentInfo: DeploymentInfo
+//     Environment: Environment
+//     Extensions: Extensions
+//     Global: Global
+//     Prefix: Prefix
+//     Stage: Stage
+//   }
+//   dependsOn: [
+//     dp_Deployment_VNET
+//     dp_Deployment_DNSResolver
+//     dp_Deployment_LB
+//     dp_Deployment_OMS
+//     dp_Deployment_SA
+//   ]
+// }
 
-module SQLServers 'VM.bicep' = if (bool(Stage.?VMSQL ?? 0)) {
-  name: 'SQLServers'
-  params: {
-    // move these to Splatting later
-    DeploymentID: DeploymentID
-    DeploymentInfo: DeploymentInfo
-    Environment: Environment
-    Extensions: Extensions
-    Global: Global
-    Prefix: Prefix
-    Stage: Stage
-  }
-  dependsOn: [
-    dp_Deployment_LB
-    dp_Deployment_OMS
-    dp_Deployment_SA
-  ]
-}
+// module SQLServers 'VM.bicep' = if (bool(Stage.?VMSQL ?? 0)) {
+//   name: 'SQLServers'
+//   params: {
+//     // move these to Splatting later
+//     DeploymentID: DeploymentID
+//     DeploymentInfo: DeploymentInfo
+//     Environment: Environment
+//     Extensions: Extensions
+//     Global: Global
+//     Prefix: Prefix
+//     Stage: Stage
+//   }
+//   dependsOn: [
+//     dp_Deployment_LB
+//     dp_Deployment_OMS
+//     dp_Deployment_SA
+//   ]
+// }
 
 module dp_Deployment_DASHBOARD 'Dashboard.bicep' = if (bool(Stage.DASHBOARD)) {
   name: 'dp${Deployment}-DASHBOARD'

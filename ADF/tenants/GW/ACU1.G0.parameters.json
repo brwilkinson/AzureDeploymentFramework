@@ -79,7 +79,8 @@
             "Arm",
             "Containers",
             "OpenSourceRelationalDatabases",
-            "CosmosDbs"
+            "CosmosDbs",
+            "Api"
           ],
           "Free": [
             "KubernetesService",

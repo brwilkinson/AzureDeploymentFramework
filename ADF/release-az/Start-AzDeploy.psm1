@@ -38,7 +38,7 @@ Function global:Start-AzDeploy
         [alias('AppName')]
         [string] $App,
 
-        [validateset('AEU1', 'AEU2', 'ACU1', 'AWCU', 'AWU1', 'AWU2')]
+        [validateset('AEU1', 'AEU2', 'ACU1', 'AWCU', 'AWU1', 'AWU2', 'AWU3')]
         [String] $Prefix,
 
         [alias('CommonName')]

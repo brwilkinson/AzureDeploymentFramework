@@ -2,7 +2,7 @@ function Global:AzSet
 {
     param (
         [parameter(Mandatory)]
-        [ValidateSet('ABC', 'AKS', 'AOA', 'CTL', 'GW', 'HUB', 'LAB', 'PST', 'SFM')]
+        [ValidateSet('ABC', 'AKS', 'AOA', 'CTL', 'GW', 'HUB', 'LAB', 'PST', 'SFM', 'AD')]
         [alias('AppName')]
         [string] $App,
         [parameter(Mandatory)]

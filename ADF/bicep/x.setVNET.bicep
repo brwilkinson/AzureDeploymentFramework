@@ -3,17 +3,17 @@ param DeploymentID string
 param DeploymentInfo object
 param DNSServers array
 param Global object
-#disable-next-line no-unused-params
 param Prefix string
 param Environment string
 
+var GlobalRGJ = json(Global.GlobalRG)
 var HubRGJ = json(Global.hubRG)
 
 var gh = {
-  hubRGPrefix:  HubRGJ.?Prefix ?? Prefix
+  hubRGPrefix: HubRGJ.?Prefix ?? Prefix
   hubRGOrgName: HubRGJ.?OrgName ?? Global.OrgName
   hubRGAppName: HubRGJ.?AppName ?? Global.AppName
-  hubRGRGName:  HubRGJ.?name ?? HubRGJ.?name ?? '${Environment}${DeploymentID}'
+  hubRGRGName: HubRGJ.?name ?? HubRGJ.?name ?? '${Environment}${DeploymentID}'
 }
 
 var HubRGName = '${gh.hubRGPrefix}-${gh.hubRGOrgName}-${gh.hubRGAppName}-RG-${gh.hubRGRGName}'
@@ -34,10 +34,12 @@ var addressPrefixes = [
 
 var lowerLookup = {
   snWAF01: 1
+  'waf01-subnet': 1
   AzureFirewallSubnet: 1
   snFE01: 2
   snMT01: 4
-  snBE01: 6
+  // snBE01: 6
+  snMT02: 6
 }
 
 var SubnetInfo = DeploymentInfo.?SubnetInfo ?? []
@@ -48,12 +50,16 @@ var RouteTableGlobal = {
   id: resourceId(HubRGName, 'Microsoft.Network/routeTables/', '${replace(HubVNName, 'vn', 'rt')}${Domain}${Global.RTName}')
 }
 
-resource NSG 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = [for (sn, index) in SubnetInfo : {
-  name: '${Deployment}-nsg${sn.name}'
-}]
-
 var delegations = {
   default: []
+  'Microsoft.App/environments': [
+    {
+      name: 'delegation'
+      properties: {
+        serviceName: 'Microsoft.App/environments'
+      }
+    }
+  ]
   'Microsoft.Web/serverfarms': [
     {
       name: 'delegation'
@@ -92,7 +98,16 @@ var serviceEndpoints = {
   ]
 }
 
-resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
+resource NSG 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = [for (sn, index) in SubnetInfo: {
+  name: '${Deployment}-nsg${sn.name}'
+}]
+
+// resource ddosProtectionPlan 'Microsoft.Network/ddosProtectionPlans@2022-01-01' existing = {
+//   name: 'ddosProtection01'
+//   scope: resourceGroup(globalRGName)
+// }
+
+resource VNET 'Microsoft.Network/virtualNetworks@2022-01-01' = {
   name: '${Deployment}-vn'
   location: resourceGroup().location
   properties: {
@@ -102,18 +117,23 @@ resource VNET 'Microsoft.Network/virtualNetworks@2021-02-01' = {
     dhcpOptions: {
       dnsServers: array(DNSServers)
     }
-    subnets: [for (sn,index) in SubnetInfo: {
-      name: sn.name
+    // enableDdosProtection: contains(Stage, 'VNetDDOS') && bool(Stage.VNetDDOS)
+    // ddosProtectionPlan: !(contains(Stage, 'VNetDDOS') && bool(Stage.VNetDDOS)) ? null : {
+    //   id: ddosProtectionPlan.id
+    // }
+    subnets: [for (sn, index) in SubnetInfo: {
+      // below needed for AKS AGIC
+      name: contains(sn,'AddDeploymentPrefix') ? '${Deployment}-${sn.name}' : sn.name
       properties: {
-        addressPrefix: '${networkId.upper}.${ contains(lowerLookup,sn.name) ? int(networkId.lower) + ( 1 * lowerLookup[sn.name]) : networkId.lower }.${sn.Prefix}'
-        networkSecurityGroup: ! (contains(sn, 'NSG') && bool(sn.NSG)) ? null : /*
-        */  {
-              id: NSG[index].id
-            }
-        natGateway: ! (contains(sn, 'NGW') && bool(sn.NGW)) ? null : /*
-        */  {
-              id: resourceId('Microsoft.Network/natGateways','${Deployment}-ngwNAT01')
-            }
+        addressPrefix: '${networkId.upper}.${contains(lowerLookup, sn.name) ? int(networkId.lower) + (1 * lowerLookup[sn.name]) : networkId.lower}.${sn.Prefix}'
+        networkSecurityGroup: !(contains(sn, 'NSG') && bool(sn.NSG)) ? null : /*
+        */ {
+          id: contains(sn, 'NSGID') ? sn.NSGID : NSG[index].id
+        }
+        natGateway: !(contains(sn, 'NGW') && bool(sn.NGW)) ? null : /*
+        */ {
+          id: resourceId('Microsoft.Network/natGateways', '${Deployment}-ngwNAT01')
+        }
         routeTable: contains(sn, 'Route') && bool(sn.Route) ? RouteTableGlobal : null
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Disabled'
