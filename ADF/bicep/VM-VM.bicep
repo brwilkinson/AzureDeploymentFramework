@@ -518,19 +518,6 @@ resource AzureDefenderForServers 'Microsoft.Compute/virtualMachines/extensions@2
   }
 }
 
-resource AzureGuestConfig 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.GuestConfig)) {
-  name: 'AzureGuestConfig'
-  parent: virtualMachine
-  location: resourceGroup().location
-  properties: {
-    publisher: 'Microsoft.GuestConfiguration'
-    type: OSType[AppServer.OSType].OS == 'Windows' ? 'ConfigurationForWindows' : 'ConfigurationForLinux'
-    typeHandlerVersion: '1.2'
-    autoUpgradeMinorVersion: true
-    settings: {}
-  }
-}
-
 resource AppServerAdminCenter 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.AdminCenter) && (contains(AppServer, 'ExcludeAdminCenter') && AppServer.ExcludeAdminCenter != 1)) {
   name: 'AdminCenter'
   parent: virtualMachine
@@ -753,7 +740,7 @@ resource AppServerDependencyAgent 'Microsoft.Compute/virtualMachines/extensions@
   properties: {
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
     type: OSType[AppServer.OSType].OS == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
-    typeHandlerVersion: '9'
+    typeHandlerVersion: '9.0'
     autoUpgradeMinorVersion: true
   }
 }
@@ -792,8 +779,20 @@ resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@
   dependsOn: [
     AppServerAzureMonitor
     AppServerDSC
-    AppServerGuestHealth
   ]
+}
+
+resource AzureGuestConfig 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if (VM.match && bool(VM.Extensions.GuestConfig)) {
+  name: 'AzureGuestConfig'
+  parent: virtualMachine
+  location: resourceGroup().location
+  properties: {
+    publisher: 'Microsoft.GuestConfiguration'
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'ConfigurationForWindows' : 'ConfigurationForLinux'
+    typeHandlerVersion: '1.2'
+    autoUpgradeMinorVersion: true
+    settings: {}
+  }
 }
 
 resource AppServerGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.GuestHealthAgent)) {
@@ -806,6 +805,11 @@ resource AppServerGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020
     type: OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent'
     typeHandlerVersion: (OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.0')
   }
+  dependsOn: [
+    AppServerAzureMonitor
+    AppServerMonitoringAgent
+    AppServerDSC
+  ]
 }
 
 resource vmInsights 'Microsoft.Insights/dataCollectionRuleAssociations@2019-11-01-preview' = {
@@ -988,7 +992,7 @@ var runCommandsScriptLookup = {
   'setupWindows.ps1': loadTextContent('loadTextContext/setupWindows.ps1')
 }
 
-resource runCommands 'Microsoft.Compute/virtualMachines/runCommands@2022-11-01' = if(contains(AppServer,'runCommands')) {
+resource runCommands 'Microsoft.Compute/virtualMachines/runCommands@2022-11-01' = if (contains(AppServer, 'runCommands')) {
   name: 'runCommands'
   location: resourceGroup().location
   parent: virtualMachine
