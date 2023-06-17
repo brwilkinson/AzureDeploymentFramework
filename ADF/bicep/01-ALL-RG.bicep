@@ -648,6 +648,7 @@ module dp_Deployment_TM 'TM.bicep' = if (bool(Stage.?TM ?? 0)) {
   ]
 }
 
+// This is used for Promotion of Domain Controllers
 module dp_Deployment_VNETDNSPublic 'x.setVNET.bicep' = if (bool(Stage.?ADPrimary ?? 0) || bool(Stage.?CreateADPDC ?? 0)) {
   name: 'dp${Deployment}-VNETDNSPublic'
   params: {
@@ -687,6 +688,7 @@ module ADPrimary 'VM.bicep' = if (bool(Stage.?ADPrimary ?? 0) || bool(Stage.?Cre
   ]
 }
 
+// This is used for Promotion of Domain Controllers
 module dp_Deployment_VNETDNSDC1 'x.setVNET.bicep' = if (bool(Stage.?ADPrimary ?? 0) || bool(Stage.?CreateADPDC ?? 0)) {
   name: 'dp${Deployment}-VNETDNSDC1'
   params: {
@@ -724,6 +726,7 @@ module ADSecondary 'VM.bicep' = if (bool(Stage.?ADSecondary ?? 0) || bool(Stage.
   ]
 }
 
+// This is used for Promotion of Domain Controllers
 module dp_Deployment_VNETDNSDC2 'x.setVNET.bicep' = if (bool(Stage.?ADSecondary ?? 0) || bool(Stage.?CreateADBDC ?? 0)) {
   name: 'dp${Deployment}-VNETDNSDC2'
   params: {

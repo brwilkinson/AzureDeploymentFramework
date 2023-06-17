@@ -89,7 +89,7 @@
         "IaaSDiagnostics": 0,
         "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
-        "GuestHealthAgent": 1,
+        "GuestHealthAgent": 0, // slow to deploy
         "VMInsights": 1,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
