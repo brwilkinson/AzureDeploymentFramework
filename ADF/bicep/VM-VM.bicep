@@ -773,23 +773,28 @@ resource AppServerAzureMonitor 'Microsoft.Compute/virtualMachines/extensions@202
 
 // SF ✅ - this is now deprecated
 // 
-// resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.MonitoringAgent)) {
-//   name: 'MonitoringAgent'
-//   parent: virtualMachine
-//   location: resourceGroup().location
-//   properties: {
-//     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-//     type: OSType[AppServer.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
-//     typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.4'
-//     autoUpgradeMinorVersion: true
-//     settings: {
-//       workspaceId: OMS.properties.customerId
-//     }
-//     protectedSettings: {
-//       workspaceKey: OMS.listKeys().primarySharedKey
-//     }
-//   }
-// }
+resource AppServerMonitoringAgent 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.MonitoringAgent)) {
+  name: 'MonitoringAgent'
+  parent: virtualMachine
+  location: resourceGroup().location
+  properties: {
+    publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+    type: OSType[AppServer.OSType].OS == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
+    typeHandlerVersion: OSType[AppServer.OSType].OS == 'Windows' ? '1.0' : '1.4'
+    autoUpgradeMinorVersion: true
+    settings: {
+      workspaceId: OMS.properties.customerId
+    }
+    protectedSettings: {
+      workspaceKey: OMS.listKeys().primarySharedKey
+    }
+  }
+  dependsOn: [
+    AppServerAzureMonitor
+    AppServerDSC
+    AppServerGuestHealth
+  ]
+}
 
 resource AppServerGuestHealth 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = if (VM.match && bool(VM.Extensions.GuestHealthAgent)) {
   name: (OSType[AppServer.OSType].OS == 'Windows' ? 'GuestHealthWindowsAgent' : 'GuestHealthLinuxAgent')

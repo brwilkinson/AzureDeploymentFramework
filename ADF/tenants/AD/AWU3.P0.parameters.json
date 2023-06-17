@@ -85,11 +85,11 @@
     },
     "Extensions": {
       "value": {
-        // "MonitoringAgent": 1,
+        "MonitoringAgent": 1,
         "IaaSDiagnostics": 0,
-        "DependencyAgent": 0,
+        "DependencyAgent": 1,
         "AzureMonitorAgent": 1,
-        "GuestHealthAgent": 0,
+        "GuestHealthAgent": 1,
         "VMInsights": 1,
         "AdminCenter": 0,
         "BackupWindowsWorkloadSQL": 0,
