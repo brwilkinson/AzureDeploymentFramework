@@ -32,6 +32,7 @@ param DeploymentInfo = {
   ]
   RoleDefinitionsInfo: [
     {
+      //  Use "Desktop Virtualization Virtual Machine Contributor" role instead of defining the custom role below
       RoleName: 'Key_Vault_Reader'
       description: 'Lets you run deployments from the KeyVault'
       notActions: []
@@ -57,9 +58,6 @@ param DeploymentInfo = {
     {
       DisplayName: 'Platform'
       Parent: 'AGI'
-      subscriptions: [
-        '25f44cf9-ac07-4fcb-a1ad-ac4caf214f1b'
-      ]
     }
   ]
 }

@@ -48,7 +48,9 @@ param DeploymentInfo = {
       ]
     }
   ]
-  SPInfo: []
+  SPInfo: [
+    // Manually add Owner on this service principal
+  ]
   SecurityPricingInfo: {
     Standard: [
       'VirtualMachines'
@@ -65,7 +67,10 @@ param DeploymentInfo = {
       'CloudPosture'
       'Api'
     ]
-    Free: []
+    Free: [
+      // "KubernetesService",
+      // "ContainerRegistry"
+    ]
   }
   RoleDefinitionsInfo: [
     {

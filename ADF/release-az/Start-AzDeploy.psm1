@@ -319,7 +319,7 @@ Function global:Start-AzDeploy
         'M0'
         {
             Write-Output 'M0'
-            $MGName = Get-AzManagementGroup | Where-Object displayname -EQ 'Root Management Group' | ForEach-Object Name
+            $MGName = Get-AzManagementGroup | Where-Object displayname -Match 'Root Management Group|Tenant Root Group' | ForEach-Object Name
             if ($WhatIf)
             {
                 $Common.Remove('Name')

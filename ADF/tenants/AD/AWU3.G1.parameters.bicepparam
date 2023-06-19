@@ -68,12 +68,14 @@ param Stage = {
   SB: 0
   LT: 0
   AzureSYN: 0
+  // below require secrets from KV
   VMSS: 0
   ACI: 0
   AKS: 0
   AzureSQL: 0
   SFM: 0
   SFMNP: 0
+  // VM templates
   ADPrimary: 0
   ADSecondary: 0
   InitialDOP: 0
@@ -197,6 +199,8 @@ param DeploymentInfo = {
           groupID: 'vault'
         }
       ]
+      // Needs updating to support public providers
+      //  https://learn.microsoft.com/en-us/azure/key-vault/certificates/how-to-integrate-certificate-authority#before-you-begin
       _CertIssuerInfo: [
         {
           name: 'DigiCert'

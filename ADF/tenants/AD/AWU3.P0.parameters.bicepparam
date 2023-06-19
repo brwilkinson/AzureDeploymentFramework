@@ -84,7 +84,7 @@ param Extensions = {
   IaaSDiagnostics: 0
   DependencyAgent: 1
   AzureMonitorAgent: 1
-  GuestHealthAgent: 0
+  GuestHealthAgent: 0 // slow to deploy
   VMInsights: 1
   AdminCenter: 0
   BackupWindowsWorkloadSQL: 0
@@ -227,6 +227,17 @@ param DeploymentInfo = {
         }
       ]
     }
+    // {
+    //   Name: 'ADO_{ADOProject}_{RGNAME}'
+    //   RBAC: [
+    //     {
+    //       Name: 'ACRPush'
+    //     }
+    //     {
+    //       Name: 'Azure Kubernetes Service RBAC Cluster Admin'
+    //     }
+    //   ]
+    // }
     {
       Name: 'GH_{GHProject}_{RGNAME}'
       RBAC: [
@@ -253,7 +264,7 @@ param DeploymentInfo = {
           RG: 'P0'
         }
         {
-          Name: 'Desktop Virtualization Virtual Machine Contributor'
+          Name: 'Desktop Virtualization Virtual Machine Contributor' // only built in role with 'MICROSOFT.KEYVAULT/VAULTS/DEPLOY/ACTION'
           RG: 'P0'
         }
         {
@@ -267,6 +278,11 @@ param DeploymentInfo = {
         {
           Name: 'DNS Zone Contributor'
           RG: 'P0'
+        }
+        {
+          Name: 'DNS Zone Contributor'
+          RG: 'P0'
+          PREFIX: 'AEU1'
         }
       ]
     }
@@ -358,11 +374,21 @@ param DeploymentInfo = {
     name: 'networkwatcher'
   }
   DNSPrivateZoneInfo: [
+    // {
+    //   linkDNS: 1
+    //   zone: 'aginow.net'
+    //   Autoregistration: false
+    // }
     {
       linkDNS: 1
       zone: 'privatelink.vaultcore.azure.net'
       Autoregistration: false
     }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.azurewebsites.net'
+    //   Autoregistration: false
+    // }
     {
       linkDNS: 1
       #disable-next-line no-hardcoded-env-urls
@@ -373,6 +399,73 @@ param DeploymentInfo = {
       linkDNS: 1
       #disable-next-line no-hardcoded-env-urls
       zone: 'privatelink.blob.core.windows.net'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      #disable-next-line no-hardcoded-env-urls
+      zone: 'privatelink.queue.core.windows.net'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.afs.azure.net'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.servicebus.windows.net'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      #disable-next-line no-hardcoded-env-urls
+      zone: 'privatelink.database.windows.net'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.azconfig.io'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.azurecr.io'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.eastus.azmk8s.io'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.{region}.azmk8s.io'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.mongo.cosmos.azure.com'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.documents.azure.com'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.redis.cache.windows.net'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.sql.azuresynapse.net'
+      Autoregistration: false
+    }
+    {
+      linkDNS: 1
+      zone: 'privatelink.azure-api.net'
       Autoregistration: false
     }
   ]
@@ -499,7 +592,7 @@ param DeploymentInfo = {
         ExcludeDomainJoin: 1
         DeployJIT: 1
         OSstorageAccountType: 'Premium_LRS'
-        Zone: 1
+        Zone: 1 // not supported in westus
         NICs: [
           {
             Subnet: 'snAD01'
@@ -518,7 +611,7 @@ param DeploymentInfo = {
         OSType: 'Server2022CoreSmall'
         DeployJIT: 1
         OSstorageAccountType: 'Premium_LRS'
-        Zone: 2
+        Zone: 2 // not supported in westus
         NICs: [
           {
             Subnet: 'snAD01'
