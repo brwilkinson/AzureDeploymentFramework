@@ -58,6 +58,9 @@ param DeploymentInfo = {
     {
       DisplayName: 'Platform'
       Parent: 'AGI'
+      subscriptions: [
+        '25f44cf9-ac07-4fcb-a1ad-ac4caf214f1b'
+      ]
     }
   ]
 }
