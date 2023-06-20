@@ -28,7 +28,7 @@ $userObjectId = 'b4c6476f-06f8-4197-ae6f-bcc45a1b2428'
 # initialize the very first Management
 New-AzManagementGroup -GroupName AGI
 
-$root = Get-AzManagementGroup | Where-Object DisplayName -EQ 'Root Management Group'
+$root = Get-AzManagementGroup | Where-Object DisplayName -Match 'Root Management Group|Tenant Root Group'
 $root
 
 # Set owner here, since cannot re-use role assignment templates across scopes yet...

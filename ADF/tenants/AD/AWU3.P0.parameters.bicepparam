@@ -423,49 +423,54 @@ param DeploymentInfo = {
       zone: 'privatelink.database.windows.net'
       Autoregistration: false
     }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.azconfig.io'
+    //   Autoregistration: false
+    // }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.azurecr.io'
+    //   Autoregistration: false
+    // }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.eastus.azmk8s.io'
+    //   Autoregistration: false
+    // }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.{region}.azmk8s.io'
+    //   Autoregistration: false
+    // }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.mongo.cosmos.azure.com'
+    //   Autoregistration: false
+    // }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.documents.azure.com'
+    //   Autoregistration: false
+    // }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.redis.cache.windows.net'
+    //   Autoregistration: false
+    // }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.sql.azuresynapse.net'
+    //   Autoregistration: false
+    // }
+    // {
+    //   linkDNS: 1
+    //   zone: 'privatelink.azure-api.net'
+    //   Autoregistration: false
+    // }
     {
       linkDNS: 1
-      zone: 'privatelink.azconfig.io'
-      Autoregistration: false
-    }
-    {
-      linkDNS: 1
-      zone: 'privatelink.azurecr.io'
-      Autoregistration: false
-    }
-    {
-      linkDNS: 1
-      zone: 'privatelink.eastus.azmk8s.io'
-      Autoregistration: false
-    }
-    {
-      linkDNS: 1
-      zone: 'privatelink.{region}.azmk8s.io'
-      Autoregistration: false
-    }
-    {
-      linkDNS: 1
-      zone: 'privatelink.mongo.cosmos.azure.com'
-      Autoregistration: false
-    }
-    {
-      linkDNS: 1
-      zone: 'privatelink.documents.azure.com'
-      Autoregistration: false
-    }
-    {
-      linkDNS: 1
-      zone: 'privatelink.redis.cache.windows.net'
-      Autoregistration: false
-    }
-    {
-      linkDNS: 1
-      zone: 'privatelink.sql.azuresynapse.net'
-      Autoregistration: false
-    }
-    {
-      linkDNS: 1
-      zone: 'privatelink.azure-api.net'
+      zone: 'privatelink.cognitiveservices.azure.com'
       Autoregistration: false
     }
   ]
