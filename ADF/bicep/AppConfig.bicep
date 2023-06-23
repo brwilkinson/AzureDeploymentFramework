@@ -44,11 +44,11 @@ var DeploymentURI = toLower('${Prefix}${Global.OrgName}${Global.Appname}${Enviro
 
 var appConfigurationInfo = DeploymentInfo.?appConfigurationInfo ?? []
 
-var appConfig = [for (ac,index) in appConfigurationInfo : {
+var appConfig = [for (ac, index) in appConfigurationInfo: {
   match: ((Global.CN == '.') || contains(array(Global.CN), ac.Name))
 }]
 
-module AppConfig 'AppConfig-AC.bicep' = [for (ac,index) in appConfigurationInfo : if(appConfig[index].match) {
+module AppConfig 'AppConfig-AC.bicep' = [for (ac, index) in appConfigurationInfo: if (appConfig[index].match) {
   name: 'dp${Deployment}-appConfig-Deploy${ac.name}'
   params: {
     Deployment: Deployment

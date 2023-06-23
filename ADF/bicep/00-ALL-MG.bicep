@@ -4,6 +4,7 @@
   'ACU1'
   'AWU1'
   'AWU2'
+  'AWU3'
   'AWCU'
 ])
 param Prefix string
