@@ -10,7 +10,7 @@ var privateLink = [for item in PrivateLinkInfo: {
   vNet: '${Deployment}-vn'
 }]
 
-resource subnetPrivateEndpoint 'Microsoft.Network/privateEndpoints@2019-11-01' = [for (pl, index) in PrivateLinkInfo: {
+resource subnetPrivateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = [for (pl, index) in PrivateLinkInfo: {
   name: '${resourceName}-pl-${pl.groupID}-${pl.Subnet}'
   location: resourceGroup().location
   properties: {
@@ -28,6 +28,7 @@ resource subnetPrivateEndpoint 'Microsoft.Network/privateEndpoints@2019-11-01' =
         }
       }
     ]
+    customNetworkInterfaceName: '${resourceName}-pl-${pl.groupID}-${pl.Subnet}-nic'
     manualPrivateLinkServiceConnections: []
     subnet: {
       id: resourceId('Microsoft.Network/virtualNetworks/subnets', privateLink[index].vNet, pl.Subnet)
