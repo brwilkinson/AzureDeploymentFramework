@@ -108,7 +108,7 @@ jobs:
           ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "00-ALL-SUB"'
           FailOnStandardError: true
           azurePowerShellVersion: "LatestVersion"
-          preferredAzurePowerShellVersion: 8.0.0
+          # preferredAzurePowerShellVersion: 8.0.0
           pwsh: true
 
   - job: JOB_01_ALL_RG__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
@@ -127,5 +127,5 @@ jobs:
           ScriptArguments: '-app ${{ parameters.APP }} -env ${{ parameters.ENV }} -Prefix ${{ parameters.PREFIX }} -stage "01-ALL-RG" -FullUpload:$${{ parameters.FullUpload }}'
           FailOnStandardError: true
           azurePowerShellVersion: "LatestVersion"
-          preferredAzurePowerShellVersion: 8.0.0
+          # preferredAzurePowerShellVersion: 8.0.0
           pwsh: true
