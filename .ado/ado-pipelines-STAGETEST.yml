@@ -103,10 +103,12 @@ parameters:
     default: false
 
   - name: 'BICEP_TRACING_ENABLED'
-    value: 'True'
+    type: string
+    default: 'True'
 
   - name: 'BICEP_TRACING_VERBOSITY'
-    value: 'Full'
+    type: string
+    default: 'Full'
 
 jobs:
   - job: JOB_${{ replace(replace(parameters.STAGE,'-','_'),'.','_') }}__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
