@@ -150,5 +150,5 @@ jobs:
           Inline: |
             Get-AzContext
             # Get-AzResourceGroup
-            dir env:bicep*
+            dir env:
             bicep build ADF/bicep/main.bicep
