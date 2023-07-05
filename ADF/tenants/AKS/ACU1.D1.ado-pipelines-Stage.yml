@@ -40,6 +40,9 @@ variables:
   PREFIXPRIMARY: ACU1
   APPPRIMARY: HUB
 
+  BICEP_TRACING_ENABLED: True
+  BICEP_TRACING_VERBOSITY: Full
+
 stages:
   - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
     jobs:
