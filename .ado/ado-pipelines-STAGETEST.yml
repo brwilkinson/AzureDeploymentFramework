@@ -140,12 +140,7 @@ jobs:
           FailOnStandardError: true
           azurePowerShellVersion: "LatestVersion"
           Inline: |
-            echo 'BICEP_TRACING_ENABLED'
-            echo $BICEP_TRACING_ENABLED
-            echo 'BICEP_TRACING_VERBOSITY'
-            echo $BICEP_TRACING_VERBOSITY
             Get-AzContext
-            # Get-AzResourceGroup
             dir env:Bicep* | select Key,Value
             bicep build ADF/bicep/main.bicep
             ls ADF/bicep/main*
