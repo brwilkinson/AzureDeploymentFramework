@@ -149,6 +149,6 @@ jobs:
           azurePowerShellVersion: "LatestVersion"
           Inline: |
             Get-AzContext
-            Get-AzResourceGroup
+            # Get-AzResourceGroup
             dir env:bicep*
             bicep build ADF/bicep/main.bicep
