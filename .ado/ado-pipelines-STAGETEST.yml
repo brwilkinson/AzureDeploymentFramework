@@ -102,13 +102,13 @@ parameters:
     type: boolean
     default: false
 
-  - name: 'BICEP_TRACING_ENABLED'
+  - name: BICEP_TRACING_ENABLED
     type: string
-    default: 'True'
+    default: True
 
-  - name: 'BICEP_TRACING_VERBOSITY'
+  - name: BICEP_TRACING_VERBOSITY
     type: string
-    default: 'Full'
+    default: Full
 
 jobs:
   - job: JOB_${{ replace(replace(parameters.STAGE,'-','_'),'.','_') }}__${{ parameters.PREFIX }}_${{ parameters.ORG }}_${{ parameters.APP }}_RG_${{ parameters.ENV }}
@@ -150,5 +150,5 @@ jobs:
           Inline: |
             Get-AzContext
             # Get-AzResourceGroup
-            dir env:
+            dir env: | select Key,Value
             bicep build ADF/bicep/main.bicep
