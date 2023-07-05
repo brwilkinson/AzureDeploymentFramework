@@ -43,7 +43,7 @@ variables:
 stages:
   - stage: Deploy_All_${{ variables.PREFIX }}_${{ variables.ORG }}_${{ variables.APP }}_RG_${{ variables.ENV }}
     jobs:
-      - template: ..\..\..\.ado\ado-pipelines-STAGE.yml
+      - template: ..\..\..\.ado\ado-pipelines-STAGETEST.yml
         parameters:
           ORG:        ${{ variables.ORG }}
           APP:        ${{ variables.APP }}
