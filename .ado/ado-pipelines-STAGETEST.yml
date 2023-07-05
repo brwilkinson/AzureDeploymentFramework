@@ -103,10 +103,12 @@ parameters:
     default: false
 
   - name: BICEP_TRACING_ENABLED
+    displayName: Switch to enable tracing
     type: string
     default: True
 
   - name: BICEP_TRACING_VERBOSITY
+    displayName: Switch to enable tracing verbosity
     type: string
     default: Full
 
@@ -148,6 +150,10 @@ jobs:
           FailOnStandardError: true
           azurePowerShellVersion: "LatestVersion"
           Inline: |
+            echo 'BICEP_TRACING_ENABLED'
+            echo $(BICEP_TRACING_ENABLED)
+            echo 'BICEP_TRACING_VERBOSITY'
+            echo $(BICEP_TRACING_VERBOSITY)
             Get-AzContext
             # Get-AzResourceGroup
             dir env: | select Key,Value
