@@ -137,7 +137,7 @@ jobs:
           ${{ else }}:
             azureSubscription: ${{ parameters.SP }}-${{ parameters.ENV }}
           ScriptType: InlineScript
-          FailOnStandardError: fail
+          FailOnStandardError: false
           azurePowerShellVersion: "LatestVersion"
           Inline: |
             Get-AzContext
