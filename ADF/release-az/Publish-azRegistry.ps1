@@ -1,12 +1,12 @@
 $Base = 'D:\Repos\ADF\ADF\bicep\'
-$ACR = 'acu1brwaoat5registry01'
+$ACR = 'acu1pehubg1acrglobal'
 
-set-location -path $Base
+Set-Location -Path $Base
 
-Get-AzContainerRegistry | where Name -EQ $ACR
+Get-AzContainerRegistry | Where-Object Name -EQ $ACR
 
-$tag = '1.4'
-$file = 'sub-RG'
+$tag = '1.0.1'
+$file = 'SA'
 $path = 'bicep/core'
 $target = "br:${ACR}.azurecr.io/${Path}/${file}:${tag}".ToLower()
 Write-Output $target
@@ -15,7 +15,7 @@ bicep publish ./${file}.bicep --target $target
 
 #> bicep publish ./sub-RG.bicep --target br:acu1brwaoat5registry01.azurecr.io/bicep/core/sub-rg:1.1
 
-$target = "br/coremodules:${file}:${tag}".ToLower()
+$target = "br/CoreModules:${file}:${tag}".ToLower()
 echo $target
 echo "bicep publish ./bicep/${file}.bicep --target $target"
 bicep publish ./bicep${file}.bicep --target $target

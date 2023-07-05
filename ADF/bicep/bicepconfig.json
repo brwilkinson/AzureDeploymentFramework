@@ -41,7 +41,7 @@
   "moduleAliases": {
     "br": {
       "CoreModules": {
-        "registry": "acu1brwaoat5registry01.azurecr.io",
+        "registry": "acu1pehubg1acrglobal.azurecr.io",
         "modulePath": "bicep/core"
       }
     }
