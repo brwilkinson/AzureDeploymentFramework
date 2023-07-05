@@ -152,3 +152,4 @@ jobs:
             # Get-AzResourceGroup
             dir env: | select Key,Value
             bicep build ADF/bicep/main.bicep
+            ls ADF/bicep/main*
