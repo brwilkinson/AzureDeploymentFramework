@@ -151,9 +151,9 @@ jobs:
           azurePowerShellVersion: "LatestVersion"
           Inline: |
             echo 'BICEP_TRACING_ENABLED'
-            echo $(BICEP_TRACING_ENABLED)
+            echo $BICEP_TRACING_ENABLED
             echo 'BICEP_TRACING_VERBOSITY'
-            echo $(BICEP_TRACING_VERBOSITY)
+            echo $BICEP_TRACING_VERBOSITY
             Get-AzContext
             # Get-AzResourceGroup
             dir env: | select Key,Value
