@@ -72,6 +72,9 @@ $ResourceTypeName = 'VirtualMachines'
 $ResourceTypeName = 'storageAccounts'
 $ResourceTypeName = 'machines'
 $ResourceTypeName = 'service'
+
+$ProviderNamespace = 'Microsoft.Compute'
+$ResourceTypeName = 'diskEncryptionSets'
 ((Get-AzResourceProvider -ProviderNamespace $ProviderNamespace).ResourceTypes | Where-Object ResourceTypeName -eq $ResourceTypeName).ApiVersions
 
 <#

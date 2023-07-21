@@ -1,6 +1,10 @@
 using '../../bicep/00-ALL-SUB.bicep'
 
-param Global = {}
+param Global = union(
+  loadJsonContent('Global-${Prefix}.json'),
+  loadJsonContent('Global-Global.json'),
+  loadJsonContent('Global-Config.json')
+  )
 
 param Prefix = 'AWU3'
 

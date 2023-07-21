@@ -129,6 +129,7 @@ jobs:
       #     pwsh: true
 
       - task: AzurePowerShell@5
+        displayName: Test Bicep in PowerShell + Azure Context
         inputs:
           ${{ if and(eq(parameters.STAGE, '00-ALL-SUB'), eq(parameters.UAI, 1)) }}:
             azureSubscription: ${{ parameters.SPG0 }}-G0_UAI
@@ -138,6 +139,7 @@ jobs:
             azureSubscription: ${{ parameters.SP }}-${{ parameters.ENV }}
           ScriptType: InlineScript
           FailOnStandardError: true
+          
           azurePowerShellVersion: "LatestVersion"
           Inline: |
             Get-AzContext

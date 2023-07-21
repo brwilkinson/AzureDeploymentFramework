@@ -1,9 +1,9 @@
 {
   "experimentalFeaturesEnabled": {
-    // "paramsFiles": false,
+    // "paramsFiles": false, // now GA
     // "extensibility": true,
     // "resourceTypedParamsAndOutputs": false,
-    // "userDefinedTypes": false
+    // "userDefinedTypes": false,
     // "symbolicNameCodegen": true
   },
   "analyzers": {

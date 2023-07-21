@@ -267,8 +267,8 @@ Function global:Start-AzDeploy
     $OptionalParameters['Environment'] = $Deployment.substring(0, 1)
     $OptionalParameters['DeploymentID'] = $Deployment.substring(1)
 
-    $BaseParam = "$Artifacts/tenants/$App/$Prefix.$Deployment.parameters"
-    $TemplateParametersFile = (Test-Path -Path "${BaseParam}.bicepparam") ? "${BaseParam}.bicepparam" : "${BaseParam}.json"
+    $BaseParam = "$Artifacts/tenants/$App/$Prefix.$Deployment"
+    $TemplateParametersFile = (Test-Path -Path "${BaseParam}.bicepparam") ? "${BaseParam}.bicepparam" : "${BaseParam}.parameters.json"
     Write-Warning -Message "Using parameter file: [$TemplateParametersFile]"
     $TemplateArgs.Add('TemplateParameterFile', $TemplateParametersFile)
 
